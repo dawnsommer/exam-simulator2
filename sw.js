@@ -1,6 +1,6 @@
-const CACHE_NAME = 'exam-simulator2-local-library-a22-9-1-20260706-v1';
+const CACHE_NAME = 'exam-simulator2-local-library-a22-14-20260706-v1';
 const APP_SHELL = [
-  './', './index.html?v=A22.9.1', './offline.html', './manifest.webmanifest', './jszip.min.js',
+  './', './index.html?v=A22.14', './offline.html', './manifest.webmanifest', './jszip.min.js',
   './icons/icon-192.png', './icons/icon-512.png',
   './ui_icons/prev.png', './ui_icons/next.png', './ui_icons/lab.png', './ui_icons/notes.png', './ui_icons/calculator.png', './ui_icons/settings.png', './ui_icons/lock.png', './ui_icons/endblock.png'
 ];
@@ -18,9 +18,9 @@ self.addEventListener('fetch', event => {
   if (isNav) {
     event.respondWith(fetch(req, {cache:'no-store'}).then(resp => {
       const copy = resp.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put('./index.html?v=A22.9.1', copy)).catch(()=>{});
+      caches.open(CACHE_NAME).then(cache => cache.put('./index.html?v=A22.14', copy)).catch(()=>{});
       return resp;
-    }).catch(() => caches.match('./index.html?v=A22.9.1').then(hit => hit || caches.match('./offline.html'))));
+    }).catch(() => caches.match('./index.html?v=A22.14').then(hit => hit || caches.match('./offline.html'))));
     return;
   }
   event.respondWith(caches.match(req).then(hit => hit || fetch(req).then(resp => {
