@@ -6,7 +6,7 @@
   function deriveModified(progress,suspended,rec){
     const v=[];try{v.push(progress?.bundle?.updatedAt,progress?.exportedAt,progress?.session?.updatedAt,progress?.session?.completedAt,progress?.updatedAt);(progress?.bundle?.attempts||[]).forEach(a=>v.push(a?.completedAt,a?.createdAt,a?.session?.updatedAt,a?.session?.completedAt));}catch(e){}
     try{v.push(suspended?.updatedAt,suspended?.resumeCapturedAt,rec?.updatedAt);}catch(e){}
-    const ms=Math.max(0,...v.map(U.validDate));return ms?new Date(ms).toISOString():U.iso();
+    const ms=Math.max(0,...v.map(U.validDate));return ms?new Date(ms).toISOString():'';
   }
   async function readLocal({flush=true}={}){
     const b=bridge();await b.ensureReady();if(flush)await b.flushActive();
@@ -60,9 +60,20 @@
     const cp=await R.meta.get('preBackupRecoverySnapshot',null);if(!cp)throw new Error('No pre-backup recovery checkpoint is available.');
     const b=bridge();window.__STEP_SYNC_APPLYING_REMOTE=true;
     try{
-      for(const rec of (cp.catalog?.forms||[])){
+      /* Recovery is an exact progress rollback for forms currently loaded on this device.
+         It never replaces the form library itself. */
+      const currentCatalog=await b.catalog();
+      for(const rec of (currentCatalog?.forms||[])){
         const key=B.entityKey(rec.id,rec.bankHash),e=cp.forms?.[key];
-        if(e){if(e.progress)await b.writeFormProgressText(rec.id,JSON.stringify(e.progress),rec.bankHash);else await b.deleteFormProgress(rec.id);await b.writeFormSuspendedText(rec.id,e.suspended?JSON.stringify(e.suspended):null,rec.bankHash);await b.setThreeDigitScore(rec.id,e.threeDigitScore||'');}
+        if(e){
+          if(e.progress)await b.writeFormProgressText(rec.id,JSON.stringify(e.progress),rec.bankHash);else await b.deleteFormProgress(rec.id);
+          await b.writeFormSuspendedText(rec.id,e.suspended?JSON.stringify(e.suspended):null,rec.bankHash);
+          await b.setThreeDigitScore(rec.id,e.threeDigitScore||'');
+        }else{
+          await b.deleteFormProgress(rec.id);
+          await b.writeFormSuspendedText(rec.id,null,rec.bankHash);
+          await b.setThreeDigitScore(rec.id,'');
+        }
       }
       if(cp.qbank?.progress)await b.writeQbankText(JSON.stringify(cp.qbank.progress));else await b.writeQbankText(null);
       await b.refresh();

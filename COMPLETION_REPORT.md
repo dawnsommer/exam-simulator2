@@ -1,142 +1,174 @@
-# exam-simulator2 — Cloud Production Completion Report
+# exam-simulator2 — Progress Sync V2 Completion Report
 
-Build: `EXAM-SIMULATOR2-CLOUD-8`
+Build: `EXAM-SIMULATOR2-PROGRESS-V2-1`
 
-## Architecture preserved
+## What was replaced
 
-- Existing simulator IndexedDB / DATA abstraction remains authoritative for runtime use.
-- Main browser library DB remains `StepExamSimulatorV784_A4_iPadBrowserLibrary_DB`.
-- DATA-handle DB remains `StepExamSimulatorV75_DATA_Handle_DB`.
-- Existing form/progress JSON structures, attempts, highlights, Qbank behavior, scoring, settings, and manual import/export remain intact.
+The CLOUD8 progress synchronization state machine was removed and replaced. The previous `knownCloud`, `lastBackedUpHash`, `dirtyKeys`, `protectedDeletes`, and `deleteTombstones` decision model is no longer referenced by executable progress-sync code.
 
-## Added cloud architecture
+The following infrastructure was preserved:
 
-- Shared OAuth Worker: `https://study-tools-auth-worker.summerofdawn20.workers.dev`
-- `app_id`: `exam-simulator2`
-- return URL: `https://dawnsommer.github.io/exam-simulator2/`
-- Google scope: `https://www.googleapis.com/auth/drive.appdata`
-- Drive payloads remain browser ↔ Google Drive directly; Worker handles authentication/token refresh only.
-- Opaque Worker session is persisted in `ExamSimulator2_SYNC_META_DB`.
-- Short-lived Google Drive access token is memory-only.
-- Drive HTTP 401 refreshes via Worker and retries once; 403 does not automatically discard the Worker session.
+- simulator native IndexedDB / DATA progress storage
+- simulator save/import representation
+- highlight anchor data
+- Qbank progress storage
+- 3-digit score integration
+- Google Drive `appDataFolder`
+- shared Cloudflare OAuth Worker and silent `/token` refresh
+- direct browser → Google Drive payload traffic
+- Full Form Library Backup / restore / pause / resume
+- production GitHub Pages base path and PWA scope
 
-## Progress backup
+## V2 authority model
 
-- Tiny manifest: `exam-simulator2.manifest.json`
-- One hidden Drive backup file per form/version (`formId + bankHash` identity).
-- Qbank progress has its own backup entity.
-- Existing progress is serialized losslessly; highlight anchors are preserved.
-- Manually entered 3-digit score travels with that form's progress backup.
-- Routine exam activity saves locally immediately and marks the affected form dirty.
-- Cloud uploads are checkpoint/debounce-driven, not tied to every answer/highlight.
-- Empty/missing local data is never treated as a delete.
-- Explicit delete/reset while cloud backup is enabled creates a tombstone.
-- Same-form cloud/local divergence is conflict-guarded rather than blindly overwritten.
-- Restore is explicit and creates a local recovery checkpoint first.
+Each local entity now stores:
 
-## Full Form Library backup
+- `baseCloudVersionId`
+- `baseContentHash`
+- `lastSyncedAt`
+- local change timestamp/reason metadata
+- explicit-delete state when the simulator itself records a delete/reset
+- a `forceDecision` guard after recovery restores
 
-- Separate manual system from progress backup.
-- Backs up non-progress DATA files such as `catalog.json`, `forms/`, `assets/`, and other library files.
-- Library manifest: `exam-simulator2.library.manifest.json`.
-- Resumable/chunked uploads and range downloads.
-- Progress UI includes percentage, bytes, current file, speed, ETA, Pause, Resume, and Cancel.
-- Large payloads transfer directly between browser and Google Drive.
-- Restore writes directly into the browser/IndexedDB-backed library.
-- `catalog.json` is restored last.
-- After successful restore, obsolete non-progress local library files are pruned; `progress/` is preserved.
-- Normal library backup keeps the latest committed manifest/file set and asynchronously removes superseded Drive file objects.
+The current cloud manifest stores a unique version lineage for each form/Qbank entity.
 
-## PWA / caching
+Automatic Local → Cloud is allowed only when the cloud current version is still the local entity's base version, or when the entity has never existed in cloud.
 
-- Service-worker build: `EXAM-SIMULATOR2-CLOUD-8`.
-- Cache namespace: `exam-simulator2-*`.
-- Cache/service-worker reset code is scoped to `/exam-simulator2/` and no longer clears unrelated GitHub Pages apps.
-- Core cloud JS and manifest are network-first to reduce stale PWA code.
-- Worker token/disconnect POST responses and Drive payloads are not application-shell cached.
+## V2 classifications
 
-## Tests actually performed in the build environment
+The pure classifier can return:
 
-- `node --check` passed for every external cloud JS module and `sw.js`.
-- All 33 inline scripts in `index.html` passed JavaScript syntax validation.
-- Final production index was diffed against the uploaded source; only intended cloud/storage hooks were added/changed.
-- Static scan confirmed no GIS `initTokenClient`, Google OAuth client ID, or old browser-only Google auth remains.
-- Mocked Worker OAuth lifecycle passed:
-  - `#cloud-auth` capture
-  - immediate URL-fragment removal
-  - persistent Worker-session storage
-  - `/token` access-token acquisition
-  - Drive 401 → one refresh → one retry
-  - account-email capture
-  - device-local `/disconnect`
-- Synthetic cloud serialization/restore round-trip passed for answers, flags, strikeouts, 3-digit score, stem highlight anchors, and explanation highlight anchors.
+- `ALIGNED`
+- `LOCAL_AHEAD_SAFE`
+- `LOCAL_ONLY_SAFE`
+- `CLOUD_AHEAD`
+- `CLOUD_ONLY`
+- `DIVERGED`
+- `UNTRACKED_BOTH`
+- `DELETED_LOCAL_SAFE`
+- `DELETE_CONFLICT`
+- `CLOUD_MISSING_CHANGED`
+- `BANK_HASH_MISMATCH`
+- `CLOUD_RETAINED_UNLOADED`
 
-## Deployment tests still required
+Timestamps are not used to choose authority.
 
-The build environment cannot complete a real Google OAuth/PWA flow for your account. After deployment, verify:
+## Checkpoint behavior
 
-1. Google Cloud OAuth Web Client includes exact redirect URI:
-   `https://study-tools-auth-worker.summerofdawn20.workers.dev/oauth/callback`
-2. Connect once → Worker callback returns → `#cloud-auth` disappears.
-3. Reload → no Google consent prompt.
-4. Close/reopen Safari and installed iPad PWA → Worker session silently obtains a fresh Drive access token.
-5. Back up and restore a disposable form.
-6. Back up and restore a disposable full library and confirm old non-progress library storage is pruned while progress remains.
-7. Test Mac + iPad multi-device discrepancy/conflict behavior before relying on the production cloud copy.
+Routine answers/highlights remain immediate local IndexedDB writes only.
 
-## EXAM-SIMULATOR2-CLOUD-8 UI update
+Cloud checkpoints occur on major simulator events, app startup/foreground, network restoration, and manual Back Up Now.
 
-- Progress Backup conflicts now render as a dedicated action-needed notification card instead of adding a destructive Replace-Cloud button to the normal action row.
-- During a conflict, the card offers two explicit directions: **Keep This Device → Cloud** or **Use Cloud Backup → This Device**. The standard row is reduced to Check Again / Disconnect until the conflict is resolved.
-- The Form Library persistent toolbar is reduced to four top-level controls in one compact row: **Add New Form**, **Progress**, **Update App**, and **Others**.
-- Progress contains Import Progress File / Export Progress File. Others contains storage connection/refresh, catalog write, and full-library import/export.
-- Added a clickable **Google Backup** status pill to the left of the existing local library status. It follows the real sync state event and opens Progress Backup when tapped.
-- Cloud status labels include Synced, Syncing/Connecting, Pending, Conflict, Cloud Available, Offline, Reconnect, Error, and Off.
-- Qbank's pool/source line is now stacked below the available-question count so `Qbank · Unused` no longer competes for horizontal space.
+At a checkpoint:
 
+1. local progress loads first
+2. tiny Drive manifest is read
+3. each form is classified by lineage
+4. only `LOCAL_AHEAD_SAFE`, `LOCAL_ONLY_SAFE`, and `DELETED_LOCAL_SAFE` may upload automatically
+5. cloud-ahead/diverged/untracked states stop and require a user decision
 
-## EXAM-SIMULATOR2-CLOUD-8 structural Library fix
-- Removed the CLOUD3 interval mutation and CLOUD4 menu-panel reparenting patch.
-- Persistent Workflow remains a true 50/50 right-side column beside Recently Completed Forms at iPad/desktop widths; stacking occurs only below 620 CSS px.
-- Progress and Others are native collapsed `<details>` menus again. Their panels remain children of the menu and use fixed positioning only while open, preventing inline-button clutter and lower-card clipping.
-- No sync/storage/auth logic changed in this patch.
+## New-device / data-loss behavior
 
-### Internal validation for CLOUD-5
-- `node --check` passed for all cloud JS modules and `sw.js`.
-- All 35 inline scripts in `index.html` passed `node --check` after extraction.
-- Headless Chromium layout harness at an iPad-class width verified:
-  - Recent Completed Forms and Persistent Workflow render on the same row.
-  - Computed columns are approximately 50/50.
-  - Workflow action bar uses `flex-direction: column`.
-  - Closed Progress/Others dropdowns expose zero visible option buttons.
-  - Open Progress dropdown exposes only its intended options and uses `position: fixed` with top-level z-index `2147483001`.
-- Previous CLOUD3 interval layout mutation and CLOUD4 DOM-reparenting dropdown code are absent.
+Missing local progress is never interpreted as deletion unless an explicit local delete/reset marker exists.
 
+A fresh device with cloud progress receives `CLOUD_ONLY` and is offered cloud restore. It cannot automatically upload an empty local state over cloud.
 
-## CLOUD-7 conflict resolution fix
-- Fixed acknowledged cloud deletion tombstones being reclassified as cloud-newer after **Keep This Device → Cloud**.
-- Conflict resolution now enters an explicit busy state while Drive work is in flight.
-- **Use Cloud Backup → This Device** now restores only the currently conflicting form(s), not every matching cloud backup.
-- After either conflict choice, known-cloud lineage, dirty flags, deletion tombstones, protected-delete state and hashes are reconciled before the final analysis.
-- Regression tests covered keep-local deletion, cloud restore, and scoped cloud restore with an unrelated dirty form.
+## Previous cloud recovery
 
-## CLOUD-7 backup transaction fix
+Every successful Local → Cloud replacement preserves the previous cloud current version as that entity's single previous recovery point. The older previous recovery is pruned after the new manifest transaction commits.
 
-- Manual **Back Up Now** now performs a read-only manifest comparison before any form upload.
-- A same-form divergence (`cloud-newer` with a local copy, or a true local/cloud conflict) becomes a decision **before writing anything**.
-- **Keep This Device → Cloud** force-uploads the selected local form(s) even when they are not currently marked dirty, then commits the manifest and only afterward updates `knownCloud`, `lastBackedUpHash`, dirty/tombstone state.
-- **Use Cloud Backup → This Device** restores only the selected conflicting form(s) and reconciles lineage metadata.
-- Decision screens remember the remote `backupId`; if Drive changes again before the user chooses, the operation stops and presents the updated decision instead of overwriting unseen data.
-- `Check Cloud Manifest` remains read-only.
-- Local lineage is no longer advanced before a successful Drive manifest commit. A manifest-write failure leaves local dirty/known-cloud metadata unchanged.
-- Regression tests covered clean backup→aligned, pre-upload conflict detection, Keep Device resolution, Restore Cloud resolution, immediate manifest check after backup, and manifest commit failure.
+Users can restore or delete individual previous cloud recovery copies, or delete all previous recoveries. Current progress and dated snapshots are unaffected by deleting previous recovery copies.
 
+## Local recovery
 
-## EXAM-SIMULATOR2-CLOUD-8 progress discrepancy diagnostics/recovery
+Before cloud → local restore or dated-snapshot restore, one complete local progress recovery point is saved in the sync metadata IndexedDB.
 
-- Fixed phantom `Cloud backup available` cases caused by retained progress backups for forms not currently loaded or for older/different `bankHash` versions. These are now classified as retained recovery/archived backups and do not make active progress appear unsynced.
-- A cloud deletion tombstone with no corresponding local progress is semantically aligned even if local lineage metadata was lost.
-- Remote lineage is also recognized by the last backed-up content hash, preventing a changed backup ID with identical known content from creating a false conflict after the next local edit.
-- Added `Diagnose Differences` showing per-entity state plus truncated local/cloud hashes, bank hashes, known backup ID and current cloud backup ID. No question content is displayed.
-- Added progress-only `Clear Cloud Progress Backup`; this targets only the progress manifest and per-form/Qbank progress backup files and leaves the Full Form Library backup untouched.
-- Added progress-only `Replace Cloud Progress with This Device`; it uploads fresh progress payloads first, commits the new progress manifest only after all uploads succeed, updates local lineage/dirty state, then cleans superseded progress payloads. The Full Form Library backup is never part of this operation.
+The recovery rollback is progress-only and now restores the currently loaded forms/Qbank exactly; it does not replace the form library.
+
+Users can Undo Restore or delete the local recovery point to reclaim local storage.
+
+## Daily + manual progress snapshots
+
+A separate Drive history manifest is used:
+
+`exam-simulator2.progress-history.json`
+
+- Daily snapshots are enabled by default.
+- At most seven daily snapshots are retained.
+- Manual snapshots are timestamped and may have an optional label.
+- Snapshot creation uses Drive `files.copy` on current per-form backup files, avoiding a full browser re-upload of the progress collection.
+- Snapshot restore is local-first. If cloud current versions are newer, the restored local copy becomes a deliberate branch and requires an explicit direction before cloud can be overwritten.
+- Snapshot deletion does not affect current sync or the Full Form Library backup.
+
+## Advanced maintenance
+
+- `Clear Current Cloud Sync` removes only the current progress manifest and its current/previous per-form sync files. Dated progress snapshots and Full Form Library Backup remain intact.
+- `Replace Current Cloud with This Device` first creates a timestamped manual cloud recovery snapshot when current cloud progress exists, then rebuilds current cloud progress from local state.
+
+## Manifest compatibility
+
+Legacy schema-1 progress manifests are accepted and converted to the V2 shape in memory. Stable legacy version IDs are derived from the existing backup/file/hash identity. A legacy cloud entry is only adopted automatically when local content is semantically identical.
+
+## Build/cache changes
+
+- build: `EXAM-SIMULATOR2-PROGRESS-V2-1`
+- service-worker cache version bumped
+- manifest start URL bumped
+- production bridge build ID bumped
+- Google Backup top sticker recognizes V2 states such as Cloud Restore Available and Backup Decision Required
+
+## Tests actually performed
+
+Static/syntax:
+
+- all external JS modules passed `node --check`
+- service worker passed `node --check`
+- all 34 inline scripts in `index.html` passed syntax validation
+
+Pure classifier tests:
+
+- same-content aligned adoption
+- Device 1 local-ahead safe
+- stale device cloud-ahead
+- both-sides changed → diverged
+- new device cloud-only
+- untracked local+cloud → explicit decision
+- explicit deletion safe
+- explicit deletion conflict
+- missing local progress never treated as deletion
+- aligned cloud tombstone
+- local progress created after known cloud deletion
+- forced snapshot deletion requires a decision
+
+Mocked Drive/state-machine integration tests:
+
+- first local-only backup creates current version and settles aligned
+- second local backup advances cloud version and preserves one previous cloud recovery
+- restoring previous cloud recovery changes local only, keeps cloud current unchanged, saves local undo recovery, and creates a deliberate branch decision
+- old-device cloud-ahead classification
+- true divergent local/cloud classification
+- fresh/new device recovery classification
+- cloud → local restore + base-version adoption
+- manual dated snapshot creation
+- legacy manifest migration produces stable version identity
+- manual Back Up Now performs zero divergent overwrite before user decision
+- explicit **Keep This Device → Cloud** decision creates a new current version, preserves the old current as previous recovery, and settles aligned
+- fresh-device automatic checkpoint does not alter cloud
+- explicit safe local deletion creates a cloud tombstone and previous recovery, then settles aligned
+- restoring an older dated snapshot leaves newer current cloud untouched and requires explicit direction
+- daily snapshot retention caps at 7
+- clearing current cloud sync preserves dated snapshots
+- clearing current cloud sync leaves an unrelated Full Form Library manifest/file untouched
+
+## Not performed in this environment
+
+Real Google/Drive/iPad integration still requires the deployed production origin and user Google session. Specifically not claimed as tested here:
+
+- actual Worker OAuth callback on production GitHub Pages
+- real Drive `files.copy` for daily/manual snapshots
+- actual iPad Safari/Home-Screen PWA storage wipe/reopen behavior
+- multi-device concurrent production sessions
+- 30–50 MB real progress corpus
+- 300 MB real Full Form Library transfer
+
+These should be tested on disposable form/progress data before relying on V2 for exam-critical recovery.

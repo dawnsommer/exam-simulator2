@@ -1,412 +1,380 @@
 (function(){
   'use strict';
-  const R=window.StepProgressSync,C=R.config,U=R.util,S=R.storage,A=R.auth,B=R.backupModel;
-  let running=null,checkpointTimer=null,cloudState={manifest:null,file:null,files:[]},decisionKeys=[],decisionExpected={};
-  let uiState={status:'Disconnected',detail:'Progress is stored locally in this exam-simulator2 on this device.',lastBackup:'',lastError:'',account:'',summary:null};
-  const emit=()=>{try{window.dispatchEvent(new CustomEvent('stepsync:state',{detail:{...uiState}}));}catch(e){}renderUi();};
+  const R=window.StepProgressSync,C=R.config,U=R.util,S=R.storage,A=R.auth,B=R.backupModel,V=R.syncV2Model,CLASS=V.CLASS;
+  const V2_STATE_KEY='progressSyncV2Entities';
+  const V2_ENGINE_KEY='progressSyncEngineVersion';
+  const DAILY_ENABLED_KEY='progressDailySnapshotsEnabled';
+  const LOCAL_RECOVERY_LABEL='preBackupRecoverySnapshot';
+  let running=null, checkpointTimer=null, cloudState={manifest:null,file:null,files:[]}, historyState={history:null,file:null,files:[]};
+  let decisionRows=[], decisionExpected={};
+  let uiState={status:'Disconnected',detail:'Progress is stored locally on this device.',lastBackup:'',lastError:'',account:'',summary:null,history:null};
+
+  const emit=()=>{try{window.dispatchEvent(new CustomEvent('stepsync:state',{detail:{...uiState}}));}catch(_e){} renderUi();};
   function setStatus(status,detail='',extra={}){uiState={...uiState,status,detail,...extra};emit();}
-  const getMap=async(k)=>await R.meta.get(k,{})||{};
-  const setMap=(k,v)=>R.meta.set(k,v||{});
-  async function markDirtyKey(key,reason){if(window.__STEP_SYNC_APPLYING_REMOTE)return;const d=await getMap('dirtyKeys');d[key]={at:U.iso(),reason:reason||'progress changed'};await setMap('dirtyKeys',d);setStatus(navigator.onLine===false?'Offline — saved locally':'Local backup pending',reason||'Progress changed locally.');}
-  async function markDirtyAll(reason){await R.meta.set('dirtyAll',{at:U.iso(),reason:reason||'progress metadata changed'});setStatus(navigator.onLine===false?'Offline — saved locally':'Local backup pending',reason||'Progress changed locally.');}
+  const clone=v=>U.clone(v);
+  const escHtml=v=>String(v==null?'':v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const short=v=>String(v||'').slice(0,12)||'—';
+  const fmtDate=v=>{const n=Date.parse(v||'');return Number.isFinite(n)?new Date(n).toLocaleString():'—';};
+  const localDay=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+  const getStates=async()=>await R.meta.get(V2_STATE_KEY,{})||{};
+  const setStates=v=>R.meta.set(V2_STATE_KEY,v||{});
+  async function patchState(key,patch){const m=await getStates();m[key]={...(m[key]||{}),...patch};await setStates(m);return m[key];}
+  async function removeState(key){const m=await getStates();delete m[key];await setStates(m);}
+
+  function connected(){return !!A.getState().authorized;}
+  function tone(){const s=uiState.status;if(/Backed up|Synced/i.test(s))return'good';if(/decision|newer|restore available|pending/i.test(s))return'warn';if(/failed|error/i.test(s))return'bad';if(/Backing|Checking|Restoring|Connecting|Creating|Resolving/i.test(s))return'busy';return'';}
+
+  function escapeQ(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+  async function listByName(name){
+    const q=`name = '${escapeQ(name)}' and trashed = false`,params=new URLSearchParams({spaces:'appDataFolder',q,fields:'files(id,name,modifiedTime,size)',orderBy:'modifiedTime desc',pageSize:'50'});
+    const r=await A.driveFetch('https://www.googleapis.com/drive/v3/files?'+params.toString());const d=await r.json();return Array.isArray(d.files)?d.files:[];
+  }
+  async function downloadJson(id,label){const r=await A.driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media`);return U.parseJson(await r.text(),label);}
+  async function createFile(name,mimeType='application/json'){
+    const r=await A.driveFetch('https://www.googleapis.com/drive/v3/files?fields=id,name,modifiedTime,size',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,parents:['appDataFolder'],mimeType})});return await r.json();
+  }
+  async function uploadJson(id,obj){const body=JSON.stringify(obj);const r=await A.driveFetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(id)}?uploadType=media&fields=id,name,modifiedTime,size`,{method:'PATCH',headers:{'Content-Type':'application/json'},body});return {...await r.json(),_bytes:new Blob([body]).size};}
+  async function createJson(name,obj){let f=null;try{f=await createFile(name);const up=await uploadJson(f.id,obj);return {...f,...up};}catch(e){if(f?.id)try{await deleteDriveFile(f.id);}catch(_e){}throw e;}}
+  async function copyDriveFile(fileId,name){
+    const r=await A.driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}/copy?fields=id,name,modifiedTime,size`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,parents:['appDataFolder']})});return await r.json();
+  }
+  async function deleteDriveFile(id){if(!id)return;await A.driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}`,{method:'DELETE',acceptStatuses:[404]});}
+  async function removeDuplicateFiles(files,keep){for(const f of files||[]){if(f.id===keep)continue;try{await deleteDriveFile(f.id);}catch(e){console.warn('Could not remove duplicate metadata file',e);}}}
+
+  function emptyManifest(deviceId=''){return {type:C.MANIFEST_TYPE,schemaVersion:C.MANIFEST_SCHEMA_VERSION||2,syncModel:C.PROGRESS_SYNC_MODEL||'lineage-v2',appId:C.CLOUD.appId,updatedAt:U.iso(),build:C.BUILD,lastWriterDeviceId:deviceId,entries:{}};}
+  function legacyCurrent(e,key=''){if(!e)return null;return {versionId:String(e.backupId||(`legacy-${e.fileId||e.contentHash||key||'entry'}`)),parentVersionId:'',revision:Number(e.revision||1),fileId:e.fileId||'',fileName:e.fileName||'',contentHash:e.contentHash||e.checksum||'',updatedAt:e.updatedAt||'',deviceId:e.deviceId||'',sizeBytes:Number(e.sizeBytes||e.size||0),deletedAt:e.deletedAt||null};}
+  function normalizeEntry(key,e){
+    if(!e)return null;
+    if(e.current)return {key,kind:e.kind||'form',formId:e.formId||'',bankHash:e.bankHash||'',current:{...e.current},previous:e.previous?{...e.previous}:null};
+    return {key,kind:e.kind||'form',formId:e.formId||'',bankHash:e.bankHash||'',current:legacyCurrent(e,key),previous:null};
+  }
+  function normalizeManifest(m){
+    if(!m)return null;if(typeof m!=='object'||m.type!==C.MANIFEST_TYPE)throw new Error('Cloud progress manifest is invalid.');if(m.appId&&m.appId!==C.CLOUD.appId)throw new Error('Cloud progress manifest belongs to a different application.');
+    const version=Number(m.schemaVersion||1);if(version!==1&&version!==(C.MANIFEST_SCHEMA_VERSION||2))throw new Error(`Unsupported cloud progress manifest schema ${version}.`);
+    const out={...m,schemaVersion:C.MANIFEST_SCHEMA_VERSION||2,syncModel:C.PROGRESS_SYNC_MODEL||'lineage-v2',appId:C.CLOUD.appId,entries:{}};
+    for(const [key,e] of Object.entries(m.entries||{})){const n=normalizeEntry(key,e);if(n)out.entries[key]=n;}
+    return out;
+  }
+  async function readManifest(){
+    const files=await listByName(C.MANIFEST_FILE);if(!files.length){cloudState={manifest:null,file:null,files:[]};return cloudState;}
+    let last=null;for(const file of files){try{const manifest=normalizeManifest(await downloadJson(file.id,'Google Drive progress manifest'));cloudState={manifest,file,files};return cloudState;}catch(e){last=e;console.warn('Ignoring invalid progress manifest candidate',file.id,e);}}
+    throw last||new Error('No valid cloud progress manifest was found.');
+  }
+  async function writeManifest(manifest){
+    manifest={...manifest,schemaVersion:C.MANIFEST_SCHEMA_VERSION||2,syncModel:C.PROGRESS_SYNC_MODEL||'lineage-v2',updatedAt:U.iso(),build:C.BUILD,appId:C.CLOUD.appId,lastWriterDeviceId:await R.meta.deviceId()};
+    let file=cloudState.file;if(!file)file=await createFile(C.MANIFEST_FILE);const up=await uploadJson(file.id,manifest);await removeDuplicateFiles(cloudState.files||[],file.id);cloudState={manifest,file:{...file,...up},files:[{...file,...up}]};return cloudState;
+  }
+
+  function emptyHistory(){return {type:C.HISTORY_TYPE,schemaVersion:C.HISTORY_SCHEMA_VERSION||1,appId:C.CLOUD.appId,updatedAt:U.iso(),build:C.BUILD,snapshots:[]};}
+  function normalizeHistory(h){if(!h)return emptyHistory();if(h.type!==C.HISTORY_TYPE)throw new Error('Progress history manifest is invalid.');if(Number(h.schemaVersion)!==(C.HISTORY_SCHEMA_VERSION||1))throw new Error('Unsupported progress history schema.');if(h.appId&&h.appId!==C.CLOUD.appId)throw new Error('Progress history belongs to a different application.');h.snapshots=Array.isArray(h.snapshots)?h.snapshots:[];return h;}
+  async function readHistory(){const files=await listByName(C.HISTORY_FILE);if(!files.length){historyState={history:emptyHistory(),file:null,files:[]};return historyState;}let last=null;for(const file of files){try{const history=normalizeHistory(await downloadJson(file.id,'Progress history manifest'));historyState={history,file,files};return historyState;}catch(e){last=e;}}throw last||new Error('No valid progress history manifest was found.');}
+  async function writeHistory(history){history={...history,type:C.HISTORY_TYPE,schemaVersion:C.HISTORY_SCHEMA_VERSION||1,appId:C.CLOUD.appId,updatedAt:U.iso(),build:C.BUILD};let file=historyState.file;if(!file)file=await createFile(C.HISTORY_FILE);const up=await uploadJson(file.id,history);await removeDuplicateFiles(historyState.files||[],file.id);historyState={history,file:{...file,...up},files:[{...file,...up}]};uiState.history=history;return historyState;}
+
+  function fileNameFor(entity,versionId){if(entity.kind==='qbank')return `${C.CLOUD.driveFilePrefix}.qbank.${versionId}.json`;return `${C.CLOUD.driveFilePrefix}.form.${U.safeName(entity.formId)}.${U.safeName(String(entity.bankHash||'').slice(0,12))}.${versionId}.json`;}
+  function snapshotFileName(snapshotId,key){return `${C.CLOUD.driveFilePrefix}.snapshot.${snapshotId}.${U.safeName(key)}.json`;}
+  function currentOf(entry){return entry?.current||null;}
+  function remoteIdentity(entry){return {kind:entry.kind,formId:entry.formId||'',bankHash:entry.bankHash||''};}
+  function storageEntry(entry,version){return {...remoteIdentity(entry),key:entry.key,current:version};}
+
   async function keyForProgressFilename(name,detail={}){
     if(/^QBANK_MODE_progress\.json$/i.test(name))return B.qbankKey;
     if(detail?.formId)return B.entityKey(detail.formId,detail.bankHash||'');
     const m=String(name||'').match(/^(.+?)_(?:progress_save|suspended_test)\.json$/i);if(!m)return'';
-    try{const cat=await window.StepExamSyncBridge.catalog(),rec=(cat.forms||[]).find(x=>String(x.id)===m[1]);return rec?B.entityKey(rec.id,rec.bankHash):'';}catch(e){return'';}
+    try{const cat=await window.StepExamSyncBridge.catalog(),rec=(cat.forms||[]).find(x=>String(x.id)===m[1]);return rec?B.entityKey(rec.id,rec.bankHash):'';}catch(_e){return'';}
   }
   async function recordProgressMutation(detail){
-    if(window.__STEP_SYNC_APPLYING_REMOTE)return;
-    const key=await keyForProgressFilename(detail?.filename,detail);if(!key)return;
-    const op=String(detail?.operation||'changed');
-    await markDirtyKey(key,`${detail?.filename||'progress'} ${op}`);
+    if(window.__STEP_SYNC_APPLYING_REMOTE)return;const key=await keyForProgressFilename(detail?.filename,detail);if(!key)return;const op=String(detail?.operation||'changed');
+    await patchState(key,{localUpdatedAt:U.iso(),lastMutationReason:`${detail?.filename||'progress'} ${op}`,explicitDeleted:op==='delete',deleteAt:op==='delete'?U.iso():null});
     const enabled=await R.meta.get('syncEnabled',false);
-    if(op==='delete'){
-      const p=await getMap('protectedDeletes');p[key]={at:U.iso()};await setMap('protectedDeletes',p);
-      if(enabled){const t=await getMap('deleteTombstones');t[key]={deletedAt:U.iso(),deviceId:await R.meta.deviceId(),reason:'explicit local progress delete/reset'};await setMap('deleteTombstones',t);}
-    }else{
-      const t=await getMap('deleteTombstones');if(t[key]){delete t[key];await setMap('deleteTombstones',t);}
-      /* Keep protectedDeletes until an explicit cloud decision/upload succeeds. This prevents reset → new attempt from silently replacing a recovery copy. */
-    }
-    if(!enabled)return;
-    const rt=window.StepExamSyncBridge?.runtime?.();
-    if(op==='delete')scheduleCheckpoint('Explicit progress delete/reset',3500);
-    else if(!rt?.examVisible)scheduleCheckpoint('Durable progress changed',8000);
+    if(enabled)setStatus(navigator.onLine===false?'Offline — saved locally':'Local backup pending',op==='delete'?'Local deletion recorded. It will only reach cloud if this device still descends from the current cloud version.':'Progress changed locally. It will remain local until a backup checkpoint.');
+    else setStatus('Disconnected','Progress changed locally. Google backup is disconnected on this device.');
   }
-  function scheduleCheckpoint(reason,delay=1800){clearTimeout(checkpointTimer);checkpointTimer=setTimeout(()=>backupNow({reason,interactive:false}).catch(()=>{}),delay);}
-  function escapeQ(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
-  async function listByName(name){
-    const q=`name = '${escapeQ(name)}' and trashed = false`,params=new URLSearchParams({spaces:'appDataFolder',q,fields:'files(id,name,modifiedTime,size)',orderBy:'modifiedTime desc',pageSize:'20'});
-    const r=await A.driveFetch('https://www.googleapis.com/drive/v3/files?'+params.toString());const d=await r.json();return Array.isArray(d.files)?d.files:[];
-  }
-  async function downloadJson(id,label){const r=await A.driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media`);return U.parseJson(await r.text(),label);}
-  async function createFile(name){const r=await A.driveFetch('https://www.googleapis.com/drive/v3/files?fields=id,name,modifiedTime',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,parents:['appDataFolder'],mimeType:'application/json'})});return await r.json();}
-  async function uploadJson(id,obj){const r=await A.driveFetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(id)}?uploadType=media&fields=id,name,modifiedTime,size`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)});return await r.json();}
-  async function removeDuplicateFiles(files,keep){for(const f of files||[]){if(f.id===keep)continue;try{await A.driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(f.id)}`,{method:'DELETE'});}catch(e){console.warn('Could not remove duplicate backup metadata file',e);}}}
-  function emptyManifest(deviceId=''){return {type:C.MANIFEST_TYPE,schemaVersion:C.SCHEMA_VERSION,appId:C.CLOUD.appId,updatedAt:U.iso(),build:C.BUILD,lastWriterDeviceId:deviceId,entries:{}};}
-  function validateManifest(m){if(!m||typeof m!=='object'||m.type!==C.MANIFEST_TYPE)throw new Error('Cloud manifest is invalid.');if(Number(m.schemaVersion)!==C.SCHEMA_VERSION)throw new Error(`Unsupported cloud manifest schema ${String(m.schemaVersion)}.`);if(m.appId&&m.appId!==C.CLOUD.appId)throw new Error('Cloud manifest belongs to a different application.');if(!m.entries||typeof m.entries!=='object'||Array.isArray(m.entries))m.entries={};return m;}
-  async function readManifest(){
-    const files=await listByName(C.MANIFEST_FILE);if(!files.length){cloudState={manifest:null,file:null,files:[]};return cloudState;}
-    const file=files[0],manifest=validateManifest(await downloadJson(file.id,'Google Drive backup manifest'));cloudState={manifest,file,files};return cloudState;
-  }
-  async function writeManifest(manifest){
-    manifest.updatedAt=U.iso();manifest.build=C.BUILD;manifest.appId=C.CLOUD.appId;manifest.lastWriterDeviceId=await R.meta.deviceId();let file=cloudState.file;
-    if(!file)file=await createFile(C.MANIFEST_FILE);const up=await uploadJson(file.id,manifest);await removeDuplicateFiles(cloudState.files||[],file.id);cloudState={manifest,file:{...file,...up},files:[{...file,...up}]};return up;
-  }
-  function fileNameFor(entity){if(entity.kind==='qbank')return `${C.CLOUD.driveFilePrefix}.qbank.progress.json`;return `${C.CLOUD.driveFilePrefix}.form.${U.safeName(entity.formId)}.${U.safeName(String(entity.bankHash||'').slice(0,12))}.json`;}
-  async function ensureBackupFile(entity,remoteEntry){
-    if(remoteEntry?.fileId)return {id:remoteEntry.fileId,name:remoteEntry.fileName||fileNameFor(entity)};
-    const name=remoteEntry?.fileName||fileNameFor(entity),found=await listByName(name);if(found.length)return found[0];return await createFile(name);
-  }
-  async function uploadEntity(entity,manifest,{force=false}={}){
-    const key=entity.key,remote=manifest.entries[key]||null,known=await getMap('knownCloud'),protectedDeletes=await getMap('protectedDeletes');
-    if(!force&&remote&&protectedDeletes[key]&&entity.contentHash!==remote.contentHash)return {conflict:true,key,entity,remote,reason:'local progress was reset/deleted after the last backup'};
-    if(!force&&remote){const knownId=known[key]?.backupId||'';if(!knownId||knownId!==remote.backupId){if(entity.contentHash!==remote.contentHash)return {conflict:true,key,entity,remote};}}
-    if(remote&&entity.contentHash===remote.contentHash)return {unchanged:true,key,entry:remote,localHash:entity.contentHash};
-    const deviceId=await R.meta.deviceId(),meta={backupId:U.uuid(),revision:Number(remote?.revision||0)+1,updatedAt:U.iso(),deviceId,contentHash:entity.contentHash};
-    const backup=entity.kind==='qbank'?S.makeQbankBackup(entity,meta):S.makeFormBackup(entity,meta),file=await ensureBackupFile(entity,remote),uploaded=await uploadJson(file.id,backup);
-    manifest.entries[key]={key,kind:entity.kind,formId:entity.formId||'',bankHash:entity.bankHash||'',fileId:file.id,fileName:file.name||fileNameFor(entity),backupId:meta.backupId,revision:meta.revision,contentHash:meta.contentHash,checksum:meta.contentHash,updatedAt:uploaded.modifiedTime||meta.updatedAt,deviceId,size:Number(uploaded.size||new Blob([JSON.stringify(backup)]).size),sizeBytes:Number(uploaded.size||new Blob([JSON.stringify(backup)]).size),deletedAt:null};
-    return {uploaded:true,key,entry:manifest.entries[key],localHash:entity.contentHash};
-  }
-  async function uploadDeletion(key,manifest,{force=false}={}){
-    const tombstones=await getMap('deleteTombstones'),t=tombstones[key];if(!t)return {unchanged:true,key};
-    const remote=manifest.entries[key]||null,known=await getMap('knownCloud');
-    if(remote&&!force){const knownId=known[key]?.backupId||'';if(!knownId||knownId!==remote.backupId)return {conflict:true,key,remote,tombstone:t,reason:'cloud changed since this device last knew it'};}
-    if(!remote)return {noRemote:true,key,clearTombstone:true};
-    const deviceId=await R.meta.deviceId(),backupId=U.uuid(),deletedAt=t.deletedAt||U.iso();
-    manifest.entries[key]={...remote,backupId,revision:Number(remote.revision||0)+1,updatedAt:U.iso(),deviceId,deletedAt,contentHash:'',checksum:''};
-    return {deleted:true,key,entry:manifest.entries[key]};
-  }
-  async function analyze({flush=false}={}){
-    const local=await S.localIndex({flush}),cs=await readManifest(),manifest=cs.manifest||emptyManifest(local.deviceId),known=await getMap('knownCloud'),lastHashes=await getMap('lastBackedUpHash'),dirty=await getMap('dirtyKeys'),dirtyAll=await R.meta.get('dirtyAll',null),protectedDeletes=await getMap('protectedDeletes'),tombstones=await getMap('deleteTombstones');
-    const catalogForms=Array.isArray(local.catalog?.forms)?local.catalog.forms:[],catalogById=new Map(catalogForms.map(rec=>[String(rec.id),rec]));
-    const rows=[],keys=new Set([...Object.keys(local.index),...Object.keys(manifest.entries||{}),...Object.keys(tombstones)]);let conflicts=0,pending=0,cloudNewer=0,cloudOnly=0,aligned=0,retained=0,archivedVersions=0;
+  function scheduleCheckpoint(reason,delay=1800){clearTimeout(checkpointTimer);checkpointTimer=setTimeout(()=>syncCheckpoint(reason).catch(()=>{}),delay);}
+
+  function rowLabel(row){if(row.remote?.kind==='qbank'||row.local?.kind==='qbank'||row.key===B.qbankKey)return'Qbank';return row.local?.formId||row.remote?.formId||row.key.split('@@')[0];}
+  function matchingInfo(local,manifest){const forms=Array.isArray(local.catalog?.forms)?local.catalog.forms:[],byId=new Map(forms.map(r=>[String(r.id),r]));return entry=>{if(entry?.kind!=='form')return {matching:true,different:false};const rec=byId.get(String(entry.formId||''));if(!rec)return {matching:false,different:false};const matching=String(rec.bankHash||'')===String(entry.bankHash||'');return {matching,different:!matching};};}
+
+  async function analyze({flush=false,adoptAligned=true}={}){
+    const local=await S.localIndex({flush}),cs=await readManifest(),manifest=cs.manifest||emptyManifest(local.deviceId),states=await getStates(),match=matchingInfo(local,manifest);
+    const keys=new Set([...Object.keys(local.index),...Object.keys(manifest.entries||{}),...Object.keys(states)]),rows=[];
+    const counts={aligned:0,localSafe:0,cloudAhead:0,cloudOnly:0,diverged:0,deleteConflict:0,retained:0,bankMismatch:0};
+    let changedStates=false;
     for(const key of [...keys].sort()){
-      const l=local.index[key]||null,r=manifest.entries[key]||null,k=known[key]||null,t=tombstones[key]||null;
-      const localBaseHash=lastHashes[key]||'';
-      const localChanged=!!l&&(!!dirtyAll||!!dirty[key]||!localBaseHash||localBaseHash!==l.contentHash);
-      const remoteKnownById=!!r&&!!k&&k.backupId===r.backupId;
-      const remoteKnownByHash=!!r&&!!localBaseHash&&!!r.contentHash&&localBaseHash===r.contentHash;
-      const remoteChanged=!!r&&!(remoteKnownById||remoteKnownByHash);
-      const same=!!l&&!!r&&!r.deletedAt&&!!r.contentHash&&l.contentHash===r.contentHash;
-      const loadedRec=r?.kind==='form'?catalogById.get(String(r.formId||''))||null:null;
-      const matchingFormLoaded=!!loadedRec&&String(loadedRec.bankHash||'')===String(r?.bankHash||'');
-      const differentVersionLoaded=!!loadedRec&&!matchingFormLoaded;
-      let state='';
-      if(t){
-        if(r&&remoteChanged){state='conflict';conflicts++;}
-        else if(r){state='local-delete-pending';pending++;}
-        else{state='aligned';aligned++;}
-      }else if(r?.deletedAt){
-        /* If both sides are already absent, the deletion is semantically aligned even when this browser
-           lost its old lineage metadata. A matching remote tombstone must not become a phantom cloud difference. */
-        if(!l){state='aligned';aligned++;}
-        else if(localChanged){state='conflict';conflicts++;}
-        else{state='cloud-newer';cloudNewer++;}
-      }else if(same){
-        state='aligned';aligned++;
-      }else if(l&&r&&protectedDeletes[key]){
-        state='conflict';conflicts++;
-      }else if(l&&r&&localChanged&&remoteChanged){
-        state='conflict';conflicts++;
-      }else if(l&&localChanged){
-        state='local-pending';pending++;
-      }else if(l&&r&&remoteChanged){
-        state='cloud-newer';cloudNewer++;
-      }else if(!l&&r){
-        if(r.kind==='form'&&!matchingFormLoaded){
-          if(differentVersionLoaded){state='cloud-archived-version';archivedVersions++;}
-          else{state='cloud-retained-unloaded';retained++;}
-        }else{
-          state='cloud-only';cloudOnly++;
-        }
-      }else if(l&&!r){
-        state='local-pending';pending++;
-      }else{
-        state='aligned';aligned++;
-      }
-      if(protectedDeletes[key]&&r&&!l&&!t&&matchingFormLoaded){state='cloud-only';}
-      rows.push({key,local:l,remote:r,known:k,tombstone:t,state,localChanged,remoteChanged,localBaseHash,remoteKnownById,remoteKnownByHash,matchingFormLoaded,differentVersionLoaded});
+      const l=local.index[key]||null,r=manifest.entries[key]||null,st=states[key]||{},mi=match(r);
+      const state=V.classify({local:l,remote:r,state:st,matchingFormLoaded:mi.matching,differentVersionLoaded:mi.different});
+      const current=currentOf(r);
+      if(state===CLASS.ALIGNED){counts.aligned++;if(adoptAligned&&current){const next={...st,baseCloudVersionId:String(current.versionId||''),baseContentHash:String(current.contentHash||''),lastSyncedAt:current.updatedAt||U.iso(),explicitDeleted:false,deleteAt:null,forceDecision:false};states[key]=next;changedStates=true;}}
+      else if(state===CLASS.LOCAL_AHEAD_SAFE||state===CLASS.LOCAL_ONLY_SAFE||state===CLASS.DELETED_LOCAL_SAFE)counts.localSafe++;
+      else if(state===CLASS.CLOUD_AHEAD)counts.cloudAhead++;
+      else if(state===CLASS.CLOUD_ONLY)counts.cloudOnly++;
+      else if(state===CLASS.DELETE_CONFLICT)counts.deleteConflict++;
+      else if(state===CLASS.BANK_HASH_MISMATCH)counts.bankMismatch++;
+      else if(state===CLASS.CLOUD_RETAINED_UNLOADED)counts.retained++;
+      else counts.diverged++;
+      rows.push({key,local:l,remote:r,stateMeta:st,state,current,matchingFormLoaded:mi.matching,differentVersionLoaded:mi.different,label:rowLabel({key,local:l,remote:r})});
     }
-    const summary={localCount:Object.keys(local.index).length,cloudCount:Object.keys(manifest.entries||{}).filter(k=>!manifest.entries[k]?.deletedAt).length,conflicts,pending,cloudNewer,cloudOnly,aligned,retained,archivedVersions,manifestUpdatedAt:cs.manifest?.updatedAt||'',rows};
-    return {local,manifest,summary};
+    if(changedStates)await setStates(states);
+    const activeDecision=rows.filter(isDecisionRow),summary={localCount:Object.keys(local.index).length,cloudCount:Object.values(manifest.entries||{}).filter(e=>e?.current&&!e.current.deletedAt).length,...counts,decisionCount:activeDecision.length,previousRecoveryCount:Object.values(manifest.entries||{}).filter(e=>e?.previous).length,manifestUpdatedAt:manifest.updatedAt||'',rows};
+    return {local,manifest,states,rows,summary};
   }
-  function backupDecisionRows(a){
-    return (a?.summary?.rows||[]).filter(row=>row.state==='conflict'||(row.state==='cloud-newer'&&!!row.local));
-  }
-  function rememberDecision(rows){
-    decisionKeys=rows.map(r=>r.key);decisionExpected={};
-    for(const row of rows)decisionExpected[row.key]=row.remote?.backupId||'';
-  }
-  function clearDecision(){decisionKeys=[];decisionExpected={};}
-  function setBackupDecision(a,rows,detail=''){
-    rememberDecision(rows);uiState.summary=a.summary;
-    setStatus('Backup decision required',detail||`${rows.length} progress backup${rows.length===1?'':'s'} differ between this device and Google Drive. Nothing was uploaded. Choose which copy should become authoritative.`,{summary:a.summary});
-  }
+  function isDecisionRow(row){return [CLASS.CLOUD_AHEAD,CLASS.CLOUD_ONLY,CLASS.DIVERGED,CLASS.UNTRACKED_BOTH,CLASS.DELETE_CONFLICT,CLASS.CLOUD_MISSING_CHANGED].includes(row.state);}
+  function canKeepLocal(row){return !!row.local||row.stateMeta?.explicitDeleted===true;}
+  function canUseCloud(row){return !!row.current;}
+  function safeUploadRows(a){return a.rows.filter(r=>[CLASS.LOCAL_AHEAD_SAFE,CLASS.LOCAL_ONLY_SAFE,CLASS.DELETED_LOCAL_SAFE].includes(r.state));}
+  function rememberDecision(rows){decisionRows=rows.map(r=>({key:r.key,state:r.state,label:r.label,canKeepLocal:canKeepLocal(r),canUseCloud:canUseCloud(r)}));decisionExpected={};for(const row of rows)decisionExpected[row.key]=String(row.current?.versionId||'');}
+  function clearDecision(){decisionRows=[];decisionExpected={};}
+
   function setAnalysisStatus(a){
-    uiState.summary=a.summary;const conflicts=a.summary.rows.filter(r=>r.state==='conflict');
-    if(conflicts.length){rememberDecision(conflicts);setStatus('Backup decision required',`${conflicts.length} progress file${conflicts.length===1?'':'s'} changed both locally and in cloud. Nothing was overwritten.`,{summary:a.summary});}
-    else{
-      clearDecision();
-      if(a.summary.cloudNewer||a.summary.cloudOnly)setStatus('Cloud backup available',`${a.summary.cloudNewer+a.summary.cloudOnly} active cloud backup${a.summary.cloudNewer+a.summary.cloudOnly===1?'':'s'} differ from this device. Use Restore from Cloud if you want them.`,{summary:a.summary});
-      else if(a.summary.pending)setStatus('Local backup pending',`${a.summary.pending} local progress file${a.summary.pending===1?'':'s'} can be backed up.`,{summary:a.summary});
-      else{
-        const retained=Number(a.summary.retained||0)+Number(a.summary.archivedVersions||0);
-        setStatus('Backed up',retained?`Active local progress is aligned with Google Drive. ${retained} older/unloaded cloud recovery backup${retained===1?' is':'s are'} retained but not treated as a conflict.`:'Local progress and the known cloud backup lineage are aligned.',{summary:a.summary});
-      }
-    }
+    uiState.summary=a.summary;const d=a.rows.filter(isDecisionRow);
+    if(d.length){rememberDecision(d);const onlyCloud=d.every(r=>r.state===CLASS.CLOUD_ONLY&&!canKeepLocal(r));setStatus(onlyCloud?'Cloud restore available':'Backup decision required',onlyCloud?`${d.length} cloud progress backup${d.length===1?' is':'s are'} available for forms that have no local progress on this device.`:`${d.length} progress item${d.length===1?'':'s'} cannot be synchronized automatically because this device and cloud no longer share the same current version.`,{summary:a.summary});return;}
+    clearDecision();if(a.summary.localSafe)setStatus('Local backup pending',`${a.summary.localSafe} local progress item${a.summary.localSafe===1?' is':'s are'} safely ahead of its known cloud base and can be backed up automatically.`,{summary:a.summary});
+    else setStatus('Backed up',a.summary.retained||a.summary.bankMismatch?'Active progress is aligned. Older/unloaded form-version backups are retained as recovery data and do not block sync.':'Local progress and current cloud versions are aligned.',{summary:a.summary});
   }
-  async function ensureCloudSession({interactive=false}={}){
-    await A.initialize();
-    if(A.getState().authorized)return true;
-    if(interactive){setStatus('Connecting…','Redirecting to Google authorization through the shared authentication Worker…');await A.connect();return false;}
-    setStatus('Reconnect Google','The persistent authentication session is unavailable on this device. Local progress is safe.');
-    return false;
+
+  async function ensureCloudSession({interactive=false}={}){await A.initialize();if(A.getState().authorized)return true;if(interactive){setStatus('Connecting…','Redirecting to Google authorization through the shared authentication Worker…');await A.connect();return false;}setStatus('Reconnect Google','The Worker session is unavailable on this device. Local progress is safe.');return false;}
+  async function validateAccount(){const acct=await A.validate();uiState.account=acct.emailAddress||acct.email||'';return acct;}
+
+  function versionMeta(entity,oldCurrent,uploaded,versionId){return {versionId,parentVersionId:String(oldCurrent?.versionId||''),revision:Number(oldCurrent?.revision||0)+1,fileId:uploaded?.id||'',fileName:uploaded?.name||'',contentHash:entity?.contentHash||'',updatedAt:uploaded?.modifiedTime||U.iso(),deviceId:'',sizeBytes:Number(uploaded?.size||uploaded?._bytes||0),deletedAt:null};}
+  function tombstoneMeta(oldCurrent,versionId,deviceId){return {versionId,parentVersionId:String(oldCurrent?.versionId||''),revision:Number(oldCurrent?.revision||0)+1,fileId:'',fileName:'',contentHash:'',updatedAt:U.iso(),deviceId,sizeBytes:0,deletedAt:U.iso()};}
+
+  async function prepareEntityUpload(row,draft,newFiles,cleanup){
+    const oldEntry=draft.entries[row.key]||row.remote||null,oldCurrent=currentOf(oldEntry),oldPrevious=oldEntry?.previous||null,entity=row.local,versionId=U.uuid(),deviceId=await R.meta.deviceId();
+    if(!entity)throw new Error(`No local progress exists for ${row.label}.`);
+    if(oldCurrent&&!oldCurrent.deletedAt&&oldCurrent.contentHash&&oldCurrent.contentHash===entity.contentHash)return {key:row.key,unchanged:true,current:oldCurrent,entity};
+    const meta={backupId:versionId,revision:Number(oldCurrent?.revision||0)+1,updatedAt:U.iso(),deviceId,contentHash:entity.contentHash};
+    const backup=entity.kind==='qbank'?S.makeQbankBackup(entity,meta):S.makeFormBackup(entity,meta);backup.syncModel=C.PROGRESS_SYNC_MODEL;backup.versionId=versionId;backup.parentVersionId=String(oldCurrent?.versionId||'');
+    const up=await createJson(fileNameFor(entity,versionId),backup);newFiles.push(up.id);
+    const current=versionMeta(entity,oldCurrent,up,versionId);current.deviceId=deviceId;
+    draft.entries[row.key]={key:row.key,kind:entity.kind,formId:entity.formId||'',bankHash:entity.bankHash||'',current,previous:oldCurrent?clone(oldCurrent):null};
+    if(oldPrevious?.fileId&&oldPrevious.fileId!==oldCurrent?.fileId)cleanup.push(oldPrevious.fileId);
+    return {key:row.key,uploaded:true,current,entity};
   }
-  async function checkCloud({interactive=false}={}){
-    if(navigator.onLine===false){setStatus('Offline — saved locally','Cloud manifest cannot be checked while offline. Local progress is safe.');return null;}
-    if(!(await ensureCloudSession({interactive})))return null;
-    const acct=await A.validate();uiState.account=acct.emailAddress||acct.email||'';const a=await analyze({flush:false});setAnalysisStatus(a);return a;
+  async function prepareDeletion(row,draft,cleanup){
+    const oldEntry=draft.entries[row.key]||row.remote||null,oldCurrent=currentOf(oldEntry),oldPrevious=oldEntry?.previous||null;
+    if(!oldCurrent)return {key:row.key,noRemote:true,current:null};
+    if(oldCurrent.deletedAt)return {key:row.key,unchanged:true,current:oldCurrent};
+    const current=tombstoneMeta(oldCurrent,U.uuid(),await R.meta.deviceId());draft.entries[row.key]={key:row.key,kind:oldEntry.kind,formId:oldEntry.formId||'',bankHash:oldEntry.bankHash||'',current,previous:clone(oldCurrent)};
+    if(oldPrevious?.fileId&&oldPrevious.fileId!==oldCurrent?.fileId)cleanup.push(oldPrevious.fileId);
+    return {key:row.key,deleted:true,current};
   }
-  async function commitBackupResults(done,{manifestChanged=false,dirtyAll=false}={}){
-    const known=await getMap('knownCloud'),lastHashes=await getMap('lastBackedUpHash'),dirty=await getMap('dirtyKeys'),tombs=await getMap('deleteTombstones'),protectedDeletes=await getMap('protectedDeletes');
-    for(const x of done){
-      const entry=x.entry||cloudState.manifest?.entries?.[x.key]||null;
-      if(x.uploaded||x.unchanged){
-        if(entry)known[x.key]={backupId:entry.backupId||'',contentHash:entry.contentHash||x.localHash||''};
-        if(x.localHash)lastHashes[x.key]=x.localHash;else if(entry?.contentHash)lastHashes[x.key]=entry.contentHash;
-        delete dirty[x.key];delete protectedDeletes[x.key];delete tombs[x.key];
-      }else if(x.deleted){
-        if(entry)known[x.key]={backupId:entry.backupId||'',contentHash:''};
-        delete lastHashes[x.key];delete dirty[x.key];delete tombs[x.key];delete protectedDeletes[x.key];
-      }else if(x.noRemote){
-        delete known[x.key];delete lastHashes[x.key];delete dirty[x.key];delete tombs[x.key];delete protectedDeletes[x.key];
-      }
-    }
-    await setMap('knownCloud',known);await setMap('lastBackedUpHash',lastHashes);await setMap('dirtyKeys',dirty);await setMap('deleteTombstones',tombs);await setMap('protectedDeletes',protectedDeletes);
-    if(dirtyAll&&Object.keys(dirty).length===0)await R.meta.del('dirtyAll');
-    if(manifestChanged){const t=cloudState.file?.modifiedTime||U.iso();await R.meta.set('lastBackupAt',t);uiState.lastBackup=t;}
-  }
-  async function backupCore({reason='manual',interactive=false,force=false,resolveKeys=null,expectedCloud=null}={}){
-    const enabled=await R.meta.get('syncEnabled',false);if(!enabled&&!interactive){setStatus('Disconnected','Google backup is disabled on this device.');return null;}
-    if(navigator.onLine===false){setStatus('Offline — saved locally','Backup pending. Local progress is safe.');return null;}
-    if(!(await ensureCloudSession({interactive})))return null;
-    const acct=await A.validate();uiState.account=acct.emailAddress||acct.email||'';
-    setStatus(interactive?'Checking cloud…':'Backing up…',interactive?'Checking the cloud manifest before any upload…':reason,{summary:null});
-    const a=await analyze({flush:true}),manifest=a.manifest;
-    const decisionRows=backupDecisionRows(a);
-    if(interactive&&!force&&decisionRows.length){setBackupDecision(a,decisionRows);return {uploaded:0,deleted:0,conflicts:decisionRows,requiresDecision:true};}
-    const resolveSet=Array.isArray(resolveKeys)&&resolveKeys.length?new Set(resolveKeys):null;
-    if(force&&resolveSet&&expectedCloud){
-      const changedAgain=[];
-      for(const row of a.summary.rows){
-        if(!resolveSet.has(row.key))continue;
-        const expected=expectedCloud[row.key]||'',current=row.remote?.backupId||'';
-        if(expected!==current){const sameContent=!!row.local&&!!row.remote&&!row.remote.deletedAt&&row.local.contentHash===row.remote.contentHash;if(!sameContent)changedAgain.push(row);}
-      }
-      if(changedAgain.length){setBackupDecision(a,changedAgain,'Google Drive changed again after the decision screen opened. Nothing was overwritten; review the updated conflict before choosing again.');return {uploaded:0,deleted:0,conflicts:changedAgain,requiresDecision:true};}
-    }
-    const dirty=await getMap('dirtyKeys'),dirtyAll=await R.meta.get('dirtyAll',null),lastHashes=await getMap('lastBackedUpHash');
-    const candidates=[],deletions=[];
-    for(const row of a.summary.rows){
-      const targeted=!!(force&&resolveSet?.has(row.key));
-      if(row.tombstone){if(targeted||row.state==='local-delete-pending'||(!interactive&&row.state==='conflict'))deletions.push(row.key);continue;}
-      if(!row.local)continue;
-      const changed=!!(dirtyAll||dirty[row.key]||!lastHashes[row.key]||lastHashes[row.key]!==row.local.contentHash);
-      if(targeted||(changed&&row.state!=='cloud-newer'))candidates.push(row.local);
-    }
-    if(!candidates.length&&!deletions.length){const afterNoop=await analyze({flush:false});setAnalysisStatus(afterNoop);return {uploaded:0,deleted:0,conflicts:[]};}
-    setStatus(force?'Resolving conflict…':'Backing up…',force?'Writing the selected local progress to Google Drive…':reason,{summary:null});
-    const conflicts=[],done=[];
-    for(const key of deletions){const r=await uploadDeletion(key,manifest,{force:!!(force&&resolveSet?.has(key))});if(r.conflict)conflicts.push(r);else done.push(r);}
-    for(const ent of candidates){const r=await uploadEntity(ent,manifest,{force:!!(force&&resolveSet?.has(ent.key))});if(r.conflict)conflicts.push(r);else done.push(r);}
-    const manifestChanged=done.some(x=>x.uploaded||x.deleted);
-    if(manifestChanged)await writeManifest(manifest);
-    await commitBackupResults(done,{manifestChanged,dirtyAll:!!dirtyAll});
-    const after=await analyze({flush:false}),afterDecision=backupDecisionRows(after);
-    if(conflicts.length||afterDecision.length){const rows=afterDecision.length?afterDecision:conflicts.map(x=>a.summary.rows.find(r=>r.key===x.key)).filter(Boolean);setBackupDecision(after,rows,`${rows.length} cloud backup${rows.length===1?'':'s'} changed before they could be safely backed up. Nothing was overwritten for those item(s).`);}
-    else{
-      clearDecision();const remainingDirty=Object.keys(await getMap('dirtyKeys')).length||!!(await R.meta.get('dirtyAll',null));
-      if(!remainingDirty&&!after.summary.cloudNewer&&!after.summary.cloudOnly)setStatus('Backed up','All local changes are safely stored in Google Drive.',{summary:after.summary});else setAnalysisStatus(after);
-    }
-    return {uploaded:done.filter(x=>x.uploaded).length,deleted:done.filter(x=>x.deleted).length,conflicts};
-  }
-  async function backupNow(opts={}){if(running)return running;running=backupCore(opts).catch(async e=>{await handleError(e);throw e;}).finally(()=>{running=null;});return running;}
-  async function forceBackup(){
-    const resolvingKeys=[...decisionKeys],expected={...decisionExpected};
-    if(!resolvingKeys.length){const a=await analyze({flush:false}),rows=backupDecisionRows(a);if(rows.length){setBackupDecision(a,rows);return;}setAnalysisStatus(a);return;}
-    clearDecision();
-    setStatus('Resolving conflict…',`Applying this device as the source of truth for ${resolvingKeys.length} progress backup${resolvingKeys.length===1?'':'s'}…`,{summary:null});
-    return backupNow({reason:'Resolve conflict: keep this device',interactive:true,force:true,resolveKeys:resolvingKeys,expectedCloud:expected});
-  }
-  async function restoreFromCloud({keys=null,conflictResolution=false}={}){
-    const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring cloud progress.');
-    if(!(await ensureCloudSession({interactive:true})))return;
-    const requestedKeys=Array.isArray(keys)&&keys.length?new Set(keys):null,expected={...decisionExpected};
-    if(conflictResolution){clearDecision();setStatus('Resolving conflict…','Downloading the selected cloud backup and reconciling this device…',{summary:null});}
-    else setStatus('Restoring from cloud…','Checking matching cloud backups before applying them to this device…',{summary:null});
-    const a=await analyze({flush:true}),entries=Object.values(a.manifest.entries||{});if(!entries.length){setStatus('Backed up','No cloud backups exist yet.');return;}
-    if(conflictResolution&&requestedKeys){
-      const changedAgain=[];
-      for(const row of a.summary.rows){if(!requestedKeys.has(row.key))continue;const exp=expected[row.key]||'',cur=row.remote?.backupId||'';if(exp&&exp!==cur)changedAgain.push(row);}
-      if(changedAgain.length){setBackupDecision(a,changedAgain,'Google Drive changed again after the decision screen opened. Nothing was restored; review the updated conflict before choosing again.');return;}
-    }
-    const catalogKeys=new Set((a.local.catalog.forms||[]).map(r=>B.entityKey(r.id,r.bankHash)));
-    const restorable=entries.filter(e=>(e.kind==='qbank'||catalogKeys.has(e.key))&&(!requestedKeys||requestedKeys.has(e.key)));
-    const skipped=entries.length-restorable.length;
-    if(!restorable.length)throw new Error(requestedKeys?'The conflicting cloud backup no longer exists or does not match the form currently loaded on this device.':'Cloud backups exist, but none match forms currently loaded on this device. Restore/import the matching Form Library first.');
-    const prompt=conflictResolution
-      ?`Use Google Drive for ${restorable.length} conflicting progress backup${restorable.length===1?'':'s'}? Only the conflicting item(s) will replace local progress. A local recovery checkpoint will be created first.`
-      :`Restore ${restorable.length} matching cloud backup${restorable.length===1?'':'s'} to this device? Existing local progress for those items will be replaced. A local recovery checkpoint will be created first.${skipped?` ${skipped} unmatched/deleted backup(s) will be left untouched.`:''}`;
-    if(!conflictResolution&&!confirm(prompt)){const afterCancel=await analyze({flush:false});setAnalysisStatus(afterCancel);return;}
-    setStatus(conflictResolution?'Resolving conflict…':'Restoring from cloud…',`Downloading and applying ${restorable.length} cloud backup${restorable.length===1?'':'s'}…`,{summary:null});
-    await S.checkpoint();const known=await getMap('knownCloud'),lastHashes=await getMap('lastBackedUpHash'),dirty=await getMap('dirtyKeys');let restored=0;
+
+  async function commitRows(rows,{expectedVersions=null,force=false}={}){
+    if(!rows.length)return {done:[],changed:false};
+    const fresh=await analyze({flush:true,adoptAligned:true}),freshByKey=new Map(fresh.rows.map(r=>[r.key,r]));
+    const selected=[];
+    for(const requested of rows){const row=freshByKey.get(requested.key);if(!row)continue;const expected=expectedVersions?String(expectedVersions[row.key]??''):null,current=String(row.current?.versionId||'');if(expected!==null&&expected!==current)throw new Error(`${row.label} changed in Google Drive after the decision was shown. Recheck before overwriting.`);selected.push(row);}
+    const draft=clone(fresh.manifest),newFiles=[],cleanup=[],done=[];
     try{
-      for(const entry of restorable){if(entry.deletedAt){await S.applyDeletion(entry);known[entry.key]={backupId:entry.backupId,contentHash:''};delete lastHashes[entry.key];}else{const obj=S.validateBackup(await downloadJson(entry.fileId,entry.fileName||entry.key),entry);await S.applyBackup(entry,obj);known[entry.key]={backupId:entry.backupId,contentHash:entry.contentHash};lastHashes[entry.key]=entry.contentHash;}delete dirty[entry.key];restored++;}
-    }catch(e){try{await S.restoreCheckpoint();}catch(rb){console.error('Cloud restore rollback failed',rb);}throw new Error(`Cloud restore failed; the pre-restore local checkpoint was reapplied. ${e.message}`);}
-    await setMap('knownCloud',known);await setMap('lastBackedUpHash',lastHashes);await setMap('dirtyKeys',dirty);await R.meta.del('dirtyAll');const p=await getMap('protectedDeletes'),tombs=await getMap('deleteTombstones');for(const e of restorable){delete p[e.key];delete tombs[e.key];}await setMap('protectedDeletes',p);await setMap('deleteTombstones',tombs);
-    const after=await analyze({flush:false});setAnalysisStatus(after);
-    if(!after.summary.conflicts&&!after.summary.pending&&!after.summary.cloudNewer&&!after.summary.cloudOnly)setStatus('Backed up',`${conflictResolution?'Conflict resolved. ':' '}Restored ${restored} cloud backup${restored===1?'':'s'} to this device.`,{summary:after.summary});
-    await runValidate();
-  }
-  async function restoreConflictsFromCloud(){
-    const keys=[...decisionKeys];
-    if(!keys.length){const a=await analyze({flush:false});setAnalysisStatus(a);return;}
-    return restoreFromCloud({keys,conflictResolution:true});
-  }
-  async function connect(){
-    setStatus('Connecting…','Redirecting to Google authorization through the shared authentication Worker…');
-    await A.connect();
-  }
-  async function disconnect(){
-    const result=await A.disconnect();await R.meta.set('syncEnabled',false);
-    setStatus('Disconnected',result?.warning?`Google backup is disabled locally. ${result.warning}`:'Google backup is disabled on this browser/device. Local progress and existing Drive files remain untouched.',{account:'',lastError:''});
-  }
-  async function handleError(e){console.error('Progress backup failed',e);await R.meta.set('lastError',{at:U.iso(),message:e.message||String(e),status:e.status||0,reason:e.reason||''});if(e?.status===401){setStatus('Reconnect Google','The saved authentication session is no longer valid. Local progress is safe.',{lastError:e.message||String(e)});return;}if(e?.name==='WorkerAuthError'&&e?.status===0){setStatus('Authentication service unavailable','Cloud authentication could not be reached. Local progress is safe and remains pending.',{lastError:e.message||String(e)});return;}const suffix=e?.status===403?` The service returned 403${e.reason?` (${e.reason})`:''}; the saved session was not automatically discarded.`:'';setStatus('Backup failed — local progress is safe',(e.message||String(e))+suffix,{lastError:e.message||String(e)});}
-  async function deleteDriveFile(id){if(!id)return;await A.driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}`,{method:'DELETE'});}
-  async function listProgressCloudFiles(){
-    const q=`name contains '${escapeQ(C.CLOUD.driveFilePrefix)}' and trashed = false`,params=new URLSearchParams({spaces:'appDataFolder',q,fields:'files(id,name,modifiedTime,size)',orderBy:'modifiedTime desc',pageSize:'1000'});
-    const r=await A.driveFetch('https://www.googleapis.com/drive/v3/files?'+params.toString()),d=await r.json(),prefix=C.CLOUD.driveFilePrefix;
-    return (Array.isArray(d.files)?d.files:[]).filter(f=>f.name===C.MANIFEST_FILE||f.name===`${prefix}.qbank.progress.json`||f.name.startsWith(`${prefix}.form.`)||f.name.startsWith(`${prefix}.rebuild.`));
-  }
-  async function clearCloudProgressBackup({confirmUser=true}={}){
-    if(!(await ensureCloudSession({interactive:true})))return null;
-    if(confirmUser&&!confirm('Delete ONLY the Google Drive progress backups for exam-simulator2? This removes the progress manifest and per-form/Qbank progress backup files. Your local progress and the Full Form Library backup will NOT be deleted.'))return null;
-    setStatus('Clearing cloud progress…','Deleting only progress backup files from Google Drive. The full Form Library backup is untouched.',{summary:null});
-    const files=await listProgressCloudFiles();let removed=0;
-    for(const f of files){try{await deleteDriveFile(f.id);removed++;}catch(e){console.warn('Could not delete progress cloud file',f.name,e);}}
-    cloudState={manifest:null,file:null,files:[]};await setMap('knownCloud',{});await R.meta.del('lastBackupAt');uiState.lastBackup='';
-    await R.meta.set('dirtyAll',{at:U.iso(),reason:'Cloud progress backup cleared; local progress requires a new backup'});
-    const a=await analyze({flush:false});setAnalysisStatus(a);return {removed,summary:a.summary};
-  }
-  async function replaceCloudProgressWithDevice(){
-    const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before replacing the cloud progress backup.');
-    if(!(await ensureCloudSession({interactive:true})))return null;
-    if(!confirm('Replace the ENTIRE Google Drive progress backup with the progress currently on this device? This affects only progress backups. The Full Form Library backup is NOT touched.'))return null;
-    setStatus('Replacing cloud progress…','Building a fresh progress backup from this device. Existing cloud progress remains usable until the new manifest is committed.',{summary:null});
-    const local=await S.localIndex({flush:true}),old=await readManifest(),oldManifest=old.manifest||emptyManifest(local.deviceId),newManifest=emptyManifest(local.deviceId),created=[];
-    const deviceId=await R.meta.deviceId(),entities=Object.values(local.index);
-    try{
-      for(const entity of entities){
-        const meta={backupId:U.uuid(),revision:1,updatedAt:U.iso(),deviceId,contentHash:entity.contentHash};
-        const backup=entity.kind==='qbank'?S.makeQbankBackup(entity,meta):S.makeFormBackup(entity,meta);
-        const suffix=U.uuid().replace(/-/g,'').slice(0,10),name=entity.kind==='qbank'?`${C.CLOUD.driveFilePrefix}.rebuild.${suffix}.qbank.progress.json`:`${C.CLOUD.driveFilePrefix}.rebuild.${suffix}.form.${U.safeName(entity.formId)}.${U.safeName(String(entity.bankHash||'').slice(0,12))}.json`;
-        const file=await createFile(name);created.push(file.id);const uploaded=await uploadJson(file.id,backup);
-        newManifest.entries[entity.key]={key:entity.key,kind:entity.kind,formId:entity.formId||'',bankHash:entity.bankHash||'',fileId:file.id,fileName:name,backupId:meta.backupId,revision:meta.revision,contentHash:meta.contentHash,checksum:meta.contentHash,updatedAt:uploaded.modifiedTime||meta.updatedAt,deviceId,size:Number(uploaded.size||new Blob([JSON.stringify(backup)]).size),sizeBytes:Number(uploaded.size||new Blob([JSON.stringify(backup)]).size),deletedAt:null};
+      for(const row of selected){
+        if(row.stateMeta?.explicitDeleted===true&&!row.local)done.push(await prepareDeletion(row,draft,cleanup));
+        else if(row.local)done.push(await prepareEntityUpload(row,draft,newFiles,cleanup));
       }
-      /* Commit the new manifest only after every new payload is safely uploaded. */
-      cloudState={manifest:oldManifest,file:old.file,files:old.files||[]};await writeManifest(newManifest);
-    }catch(e){for(const id of created){try{await deleteDriveFile(id);}catch(_e){}}throw e;}
-    const newIds=new Set(Object.values(newManifest.entries).map(e=>e.fileId));
-    for(const e of Object.values(oldManifest.entries||{})){if(e?.fileId&&!newIds.has(e.fileId)){try{await deleteDriveFile(e.fileId);}catch(err){console.warn('Old progress backup cleanup failed',e.fileId,err);}}}
-    const known={},lastHashes={};for(const e of Object.values(newManifest.entries)){known[e.key]={backupId:e.backupId,contentHash:e.contentHash||''};if(e.contentHash)lastHashes[e.key]=e.contentHash;}
-    await setMap('knownCloud',known);await setMap('lastBackedUpHash',lastHashes);await setMap('dirtyKeys',{});await setMap('deleteTombstones',{});await setMap('protectedDeletes',{});await R.meta.del('dirtyAll');
-    const when=cloudState.file?.modifiedTime||U.iso();await R.meta.set('lastBackupAt',when);uiState.lastBackup=when;clearDecision();
-    const after=await analyze({flush:false});setAnalysisStatus(after);return {uploaded:entities.length,summary:after.summary};
+      const changed=done.some(x=>x.uploaded||x.deleted);
+      if(changed)await writeManifest(draft);
+      const states=await getStates();
+      for(const x of done){
+        if(x.noRemote){delete states[x.key];continue;}
+        const current=x.current||draft.entries[x.key]?.current;if(!current)continue;
+        states[x.key]={...(states[x.key]||{}),baseCloudVersionId:String(current.versionId||''),baseContentHash:String(current.contentHash||''),lastSyncedAt:current.updatedAt||U.iso(),localUpdatedAt:states[x.key]?.localUpdatedAt||U.iso(),explicitDeleted:false,deleteAt:null,forceDecision:false,lastMutationReason:''};
+      }
+      await setStates(states);if(changed){const t=cloudState.manifest?.updatedAt||U.iso();await R.meta.set('lastBackupAt',t);uiState.lastBackup=t;}
+      for(const id of cleanup)try{await deleteDriveFile(id);}catch(e){console.warn('Could not prune superseded previous recovery file',e);}
+      return {done,changed};
+    }catch(e){for(const id of newFiles)try{await deleteDriveFile(id);}catch(_e){}throw e;}
   }
-  function diagnosticLabel(row){if(row.remote?.kind==='qbank'||row.local?.kind==='qbank')return 'Qbank';return String(row.local?.formId||row.remote?.formId||row.key);}
-  function diagnosticReason(row){
-    if(row.state==='cloud-archived-version')return 'Cloud backup is for an older/different bankHash of a form that is loaded locally.';
-    if(row.state==='cloud-retained-unloaded')return 'Cloud recovery backup belongs to a form that is not currently loaded on this device.';
-    if(row.state==='cloud-only')return 'Matching form is loaded locally, but this device has no progress while Drive does.';
-    if(row.state==='cloud-newer')return 'Drive has a different active backup lineage/content from this device.';
-    if(row.state==='local-pending')return 'Local progress differs from the last backed-up content and is waiting to upload.';
-    if(row.state==='conflict')return 'Both local state and Drive changed relative to this device\'s known backup lineage.';
-    if(row.state==='local-delete-pending')return 'An explicit local delete/reset is waiting to be backed up.';
-    return 'Local and cloud state are semantically aligned.';
+
+  async function syncCheckpoint(reason='Checkpoint'){
+    if(running)return running;running=(async()=>{
+      const enabled=await R.meta.get('syncEnabled',false);if(!enabled)return null;if(navigator.onLine===false){setStatus('Offline — saved locally','Local progress is safe. Cloud backup will be reconsidered when online.');return null;}if(!(await ensureCloudSession({interactive:false})))return null;await validateAccount();
+      setStatus('Checking cloud…',`${reason}: checking version lineage before any upload.`);let a=await analyze({flush:true});const safe=safeUploadRows(a);
+      if(safe.length){setStatus('Backing up…',`${reason}: ${safe.length} safely descended progress item${safe.length===1?'':'s'} → Google Drive.`);await commitRows(safe);a=await analyze({flush:false});}
+      setAnalysisStatus(a);if(!a.rows.some(isDecisionRow)&&!a.summary.localSafe)ensureDailySnapshot().catch(e=>console.warn('Daily snapshot skipped',e));return a;
+    })().catch(handleError).finally(()=>{running=null;});return running;
   }
-  function escHtml(v){return String(v==null?'':v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
-  async function runCloudDiagnostics(){
-    if(!(await ensureCloudSession({interactive:true})))return null;const a=await analyze({flush:false}),box=document.getElementById('stepSyncDiagnostics');if(!box)return a;
-    const interesting=a.summary.rows.filter(r=>r.state!=='aligned');
-    if(!interesting.length){box.innerHTML='<div class="sync-diag-ok"><b>No active differences found.</b><span>Local progress and the cloud manifest are aligned.</span></div>';return a;}
-    box.innerHTML=interesting.map(row=>`<div class="sync-diag-row"><div class="sync-diag-title"><b>${escHtml(diagnosticLabel(row))}</b><span>${escHtml(row.state)}</span></div><div class="sync-diag-reason">${escHtml(diagnosticReason(row))}</div><div class="sync-diag-grid"><span>Local hash <code>${escHtml((row.local?.contentHash||'—').slice(0,14))}</code></span><span>Cloud hash <code>${escHtml((row.remote?.contentHash||'—').slice(0,14))}</code></span><span>Known backup <code>${escHtml((row.known?.backupId||'—').slice(0,14))}</code></span><span>Cloud backup <code>${escHtml((row.remote?.backupId||'—').slice(0,14))}</code></span><span>Local bankHash <code>${escHtml((row.local?.bankHash||'—').slice(0,14))}</code></span><span>Cloud bankHash <code>${escHtml((row.remote?.bankHash||'—').slice(0,14))}</code></span></div></div>`).join('');return a;
+
+  async function manualBackup(){
+    if(running)return running;running=(async()=>{
+      if(!(await ensureCloudSession({interactive:true})))return null;await validateAccount();setStatus('Checking cloud…','Back Up Now first checks current cloud version IDs. Nothing is uploaded until that check is complete.');
+      let a=await analyze({flush:true});const decisions=a.rows.filter(isDecisionRow);if(decisions.length){rememberDecision(decisions);setAnalysisStatus(a);return {requiresDecision:true};}
+      const safe=safeUploadRows(a);if(safe.length){setStatus('Backing up…',`Uploading ${safe.length} safely ahead progress item${safe.length===1?'':'s'}…`);await commitRows(safe);a=await analyze({flush:false});}
+      setAnalysisStatus(a);if(!a.rows.some(isDecisionRow)&&!a.summary.localSafe)ensureDailySnapshot().catch(e=>console.warn('Daily snapshot skipped',e));return a;
+    })().catch(handleError).finally(()=>{running=null;});return running;
   }
+
+  async function resolveKeepLocal(){
+    if(!decisionRows.length){const a=await analyze({flush:true});rememberDecision(a.rows.filter(isDecisionRow));}
+    const keys=new Set(decisionRows.filter(x=>x.canKeepLocal).map(x=>x.key));if(!keys.size)throw new Error('The current decision contains no local progress that can safely be chosen as the source.');
+    const a=await analyze({flush:true}),rows=a.rows.filter(r=>keys.has(r.key));setStatus('Resolving conflict…',`Keeping this device for ${rows.length} progress item${rows.length===1?'':'s'} and preserving the previous cloud copy as one-step recovery.`);
+    await commitRows(rows,{expectedVersions:decisionExpected,force:true});const after=await analyze({flush:false});setAnalysisStatus(after);return after;
+  }
+
+  async function saveLocalRecovery(){await S.checkpoint();return true;}
+  async function applyRemoteRows(rows,{expectedVersions=null}={}){
+    if(!rows.length)return;await saveLocalRecovery();const fresh=await analyze({flush:true}),byKey=new Map(fresh.rows.map(r=>[r.key,r]));const states=await getStates();window.__STEP_SYNC_APPLYING_REMOTE=true;
+    try{
+      for(const req of rows){const row=byKey.get(req.key);if(!row?.current)continue;const exp=expectedVersions?String(expectedVersions[row.key]??''):null,cur=String(row.current.versionId||'');if(exp!==null&&exp!==cur)throw new Error(`${row.label} changed in Google Drive after the decision screen opened. Recheck before restoring.`);
+        if(row.current.deletedAt)await S.applyDeletion(storageEntry(row.remote,row.current));else{const backup=await downloadJson(row.current.fileId,`${row.label} cloud progress`);await S.applyBackup(storageEntry(row.remote,row.current),backup);}states[row.key]={...(states[row.key]||{}),baseCloudVersionId:cur,baseContentHash:String(row.current.contentHash||''),lastSyncedAt:row.current.updatedAt||U.iso(),localUpdatedAt:U.iso(),explicitDeleted:false,deleteAt:null,forceDecision:false,lastMutationReason:''};}
+      await setStates(states);
+    }finally{window.__STEP_SYNC_APPLYING_REMOTE=false;}
+    await window.StepExamSyncBridge?.refresh?.();
+  }
+  async function resolveUseCloud(){
+    if(!decisionRows.length){const a=await analyze({flush:true});rememberDecision(a.rows.filter(isDecisionRow));}
+    const keys=new Set(decisionRows.filter(x=>x.canUseCloud).map(x=>x.key));if(!keys.size)throw new Error('There is no cloud copy available for the current decision.');
+    const a=await analyze({flush:true}),rows=a.rows.filter(r=>keys.has(r.key));setStatus('Resolving conflict…',`Restoring ${rows.length} cloud progress item${rows.length===1?'':'s'} to this device. The current local progress is being saved as the one-step recovery point first.`);await applyRemoteRows(rows,{expectedVersions:decisionExpected});const after=await analyze({flush:false});setAnalysisStatus(after);return after;
+  }
+
+  async function restoreCurrentCloud(){
+    const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring cloud progress.');if(!(await ensureCloudSession({interactive:true})))return;await validateAccount();const a=await analyze({flush:true});
+    const rows=a.rows.filter(r=>r.current&&r.matchingFormLoaded!==false);if(!rows.length)throw new Error('No cloud progress matches forms currently loaded on this device.');
+    if(!confirm(`Restore ${rows.length} current cloud progress item${rows.length===1?'':'s'} to this device? A complete local progress recovery point will be saved first. Local-only progress without a cloud counterpart will be left untouched.`))return;
+    setStatus('Restoring from cloud…','Saving local recovery point, then restoring current Google Drive progress.');await applyRemoteRows(rows);const after=await analyze({flush:false});setAnalysisStatus(after);return after;
+  }
+
+  async function restorePreviousCloud(key){
+    const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring recovery progress.');if(!(await ensureCloudSession({interactive:true})))return;const a=await analyze({flush:true}),row=a.rows.find(r=>r.key===key),prev=row?.remote?.previous;if(!row||!prev)throw new Error('Previous cloud recovery is no longer available.');
+    if(!confirm(`Restore the previous cloud copy for ${row.label} from ${fmtDate(prev.updatedAt)}? Current local progress will be saved as the local recovery point first.`))return;
+    await saveLocalRecovery();window.__STEP_SYNC_APPLYING_REMOTE=true;try{if(prev.deletedAt)await S.applyDeletion(storageEntry(row.remote,prev));else{const b=await downloadJson(prev.fileId,`${row.label} previous cloud recovery`);await S.applyBackup(storageEntry(row.remote,prev),b);}}finally{window.__STEP_SYNC_APPLYING_REMOTE=false;}
+    await patchState(key,{baseCloudVersionId:String(prev.versionId||''),baseContentHash:String(prev.contentHash||''),lastSyncedAt:prev.updatedAt||'',localUpdatedAt:U.iso(),explicitDeleted:!!prev.deletedAt,forceDecision:true,lastMutationReason:'Previous cloud recovery restored locally'});await window.StepExamSyncBridge?.refresh?.();const after=await analyze({flush:false});setAnalysisStatus(after);
+  }
+  async function deletePreviousCloud(key){
+    if(!(await ensureCloudSession({interactive:true})))return;const cs=await readManifest(),m=cs.manifest||emptyManifest(),e=m.entries[key],prev=e?.previous;if(!prev)return;if(!confirm(`Delete the one-step previous cloud recovery for ${e.formId||'Qbank'}? Current cloud progress will not be changed.`))return;
+    const draft=clone(m);draft.entries[key].previous=null;await writeManifest(draft);if(prev.fileId)try{await deleteDriveFile(prev.fileId);}catch(e2){console.warn('Could not delete old recovery file',e2);}const a=await analyze({flush:false});setAnalysisStatus(a);
+  }
+  async function deleteAllPreviousCloud(){
+    if(!(await ensureCloudSession({interactive:true})))return;const cs=await readManifest(),m=cs.manifest||emptyManifest(),prevs=Object.values(m.entries||{}).map(e=>e.previous).filter(Boolean);if(!prevs.length)return;if(!confirm(`Delete ${prevs.length} previous cloud recovery cop${prevs.length===1?'y':'ies'}? Current progress and dated snapshots are unaffected.`))return;
+    const draft=clone(m);for(const e of Object.values(draft.entries||{}))e.previous=null;await writeManifest(draft);for(const p of prevs)if(p.fileId)try{await deleteDriveFile(p.fileId);}catch(_e){}const a=await analyze({flush:false});setAnalysisStatus(a);
+  }
+
+  async function copyCurrentToSnapshot(manifest,kind,label){
+    const snapshotId=U.uuid(),createdAt=U.iso(),copied=[];const entries={};
+    try{
+      for(const [key,e] of Object.entries(manifest.entries||{})){const cur=currentOf(e);if(!cur)continue;let fileId='';if(!cur.deletedAt&&cur.fileId){const cp=await copyDriveFile(cur.fileId,snapshotFileName(snapshotId,key));fileId=cp.id;copied.push(cp.id);}entries[key]={key,kind:e.kind,formId:e.formId||'',bankHash:e.bankHash||'',sourceVersionId:cur.versionId||'',contentHash:cur.contentHash||'',updatedAt:cur.updatedAt||'',deletedAt:cur.deletedAt||null,fileId,sizeBytes:Number(cur.sizeBytes||0)};}
+      return {snapshotId,kind,label:label||'',createdAt,dayKey:kind==='daily'?localDay():'',deviceId:await R.meta.deviceId(),sourceManifestUpdatedAt:manifest.updatedAt||'',entries,_copied:copied};
+    }catch(e){for(const id of copied)try{await deleteDriveFile(id);}catch(_e){}throw e;}
+  }
+  async function commitSnapshotFromManifest(manifest,kind='manual',label=''){
+    if(!Object.keys(manifest.entries||{}).length)throw new Error('There is no cloud progress to snapshot yet.');
+    const snap=await copyCurrentToSnapshot(manifest,kind,label),hs=await readHistory(),history=clone(hs.history||emptyHistory()),oldSnapshots=[...(history.snapshots||[])],removed=[];delete snap._copied;history.snapshots.push(snap);
+    if(kind==='daily'){const daily=history.snapshots.filter(s=>s.kind==='daily').sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt)),keep=new Set(daily.slice(0,C.DAILY_SNAPSHOT_RETENTION||7).map(s=>s.snapshotId));history.snapshots=history.snapshots.filter(s=>s.kind!=='daily'||keep.has(s.snapshotId));for(const s of oldSnapshots)if(s.kind==='daily'&&!keep.has(s.snapshotId))removed.push(s);}
+    try{await writeHistory(history);}catch(e){for(const ent of Object.values(snap.entries||{}))if(ent.fileId)try{await deleteDriveFile(ent.fileId);}catch(_e){}throw e;}
+    for(const old of removed)for(const ent of Object.values(old.entries||{}))if(ent.fileId)try{await deleteDriveFile(ent.fileId);}catch(_e){}
+    await R.meta.set(kind==='daily'?'lastDailySnapshotAt':'lastManualSnapshotAt',snap.createdAt);uiState.history=history;renderUi();return snap;
+  }
+  async function createSnapshot(kind='manual',label=''){
+    if(!(await ensureCloudSession({interactive:true})))return null;await validateAccount();let a=await analyze({flush:true});const decisions=a.rows.filter(isDecisionRow);if(decisions.length){rememberDecision(decisions);setAnalysisStatus(a);throw new Error('Resolve the current cloud/local decision before creating a dated progress backup.');}
+    const safe=safeUploadRows(a);if(safe.length){setStatus('Backing up…','Bringing current per-form cloud progress up to date before creating the snapshot.');await commitRows(safe);a=await analyze({flush:false});}
+    const manifest=a.manifest;setStatus('Creating recovery snapshot…',kind==='daily'?'Creating today’s server-side recovery snapshot in Google Drive.':'Creating a timestamped manual progress backup in Google Drive.');
+    const snap=await commitSnapshotFromManifest(manifest,kind,label);setStatus('Backed up',kind==='daily'?`Daily recovery snapshot saved at ${fmtDate(snap.createdAt)}.`:`Manual progress backup saved at ${fmtDate(snap.createdAt)}.`);return snap;
+  }
+  async function ensureDailySnapshot(){
+    const enabled=await R.meta.get(DAILY_ENABLED_KEY,true);if(!enabled||navigator.onLine===false||!A.getState().authorized)return;const hs=await readHistory(),today=localDay();if((hs.history.snapshots||[]).some(s=>s.kind==='daily'&&s.dayKey===today))return;await createSnapshot('daily',`Daily ${today}`);
+  }
+  async function createManualSnapshot(){const label=prompt('Optional label for this manual progress backup:','');if(label===null)return;return createSnapshot('manual',label.trim());}
+  async function deleteSnapshot(snapshotId){if(!(await ensureCloudSession({interactive:true})))return;const hs=await readHistory(),history=clone(hs.history),snap=(history.snapshots||[]).find(s=>s.snapshotId===snapshotId);if(!snap)return;if(!confirm(`Delete ${snap.kind==='daily'?'daily':'manual'} progress backup from ${fmtDate(snap.createdAt)}?`))return;history.snapshots=history.snapshots.filter(s=>s.snapshotId!==snapshotId);await writeHistory(history);for(const ent of Object.values(snap.entries||{}))if(ent.fileId)try{await deleteDriveFile(ent.fileId);}catch(_e){}renderUi();}
+  async function restoreSnapshot(snapshotId){
+    const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring a progress snapshot.');if(!(await ensureCloudSession({interactive:true})))return;const hs=await readHistory(),snap=(hs.history.snapshots||[]).find(s=>s.snapshotId===snapshotId);if(!snap)throw new Error('That progress snapshot no longer exists.');
+    if(!confirm(`Restore the ${snap.kind==='daily'?'daily':'manual'} progress backup from ${fmtDate(snap.createdAt)}${snap.label?` (${snap.label})`:''}? This replaces local progress to that recovery point. Your current local progress will be saved as the one-step local recovery first.`))return;
+    await saveLocalRecovery();const local=await S.localIndex({flush:true}),snapKeys=new Set(Object.keys(snap.entries||{})),states=await getStates();window.__STEP_SYNC_APPLYING_REMOTE=true;
+    try{
+      for(const [key,ent] of Object.entries(snap.entries||{})){
+        const rec=ent.kind==='form'?(local.catalog.forms||[]).find(r=>B.entityKey(r.id,r.bankHash)===key):null;if(ent.kind==='form'&&!rec)continue;
+        const ident={key,kind:ent.kind,formId:ent.formId||'',bankHash:ent.bankHash||''};if(ent.deletedAt)await S.applyDeletion(ident);else if(ent.fileId){const b=await downloadJson(ent.fileId,`${ent.formId||'Qbank'} snapshot progress`);await S.applyBackup(ident,b);}states[key]={...(states[key]||{}),baseCloudVersionId:String(ent.sourceVersionId||''),baseContentHash:String(ent.contentHash||''),lastSyncedAt:ent.updatedAt||'',localUpdatedAt:U.iso(),explicitDeleted:!!ent.deletedAt,deleteAt:ent.deletedAt||null,forceDecision:true,lastMutationReason:'Dated progress snapshot restored'};
+      }
+      for(const [key,l] of Object.entries(local.index)){if(snapKeys.has(key))continue;await S.applyDeletion({key,kind:l.kind,formId:l.formId||'',bankHash:l.bankHash||''});states[key]={...(states[key]||{}),localUpdatedAt:U.iso(),explicitDeleted:true,deleteAt:U.iso(),forceDecision:true,lastMutationReason:'Absent from restored progress snapshot'};}
+      await setStates(states);
+    }finally{window.__STEP_SYNC_APPLYING_REMOTE=false;}
+    await window.StepExamSyncBridge?.refresh?.();const a=await analyze({flush:false});setAnalysisStatus(a);
+  }
+
+  async function clearCurrentCloud(){
+    if(!(await ensureCloudSession({interactive:true})))return;const cs=await readManifest();if(!cs.manifest)throw new Error('There is no current cloud progress backup to clear.');if(!confirm('Clear CURRENT cloud progress synchronization data? Per-form current/previous sync files will be removed. Dated manual/daily progress snapshots and the Full Form Library backup will NOT be deleted. Local progress remains on this device.'))return;
+    const ids=new Set();for(const e of Object.values(cs.manifest.entries||{})){if(e.current?.fileId)ids.add(e.current.fileId);if(e.previous?.fileId)ids.add(e.previous.fileId);}for(const f of cs.files||[])try{await deleteDriveFile(f.id);}catch(_e){}for(const id of ids)try{await deleteDriveFile(id);}catch(_e){}
+    cloudState={manifest:null,file:null,files:[]};const states=await getStates();for(const [k,st] of Object.entries(states)){states[k]={...st,baseCloudVersionId:'',baseContentHash:'',lastSyncedAt:'',forceDecision:false,explicitDeleted:false,deleteAt:null};}await setStates(states);const a=await analyze({flush:false});setAnalysisStatus(a);
+  }
+  async function replaceCurrentCloudWithDevice(){
+    if(!(await ensureCloudSession({interactive:true})))return;await validateAccount();if(!confirm('Replace CURRENT cloud progress with this device? A timestamped manual cloud recovery snapshot of the existing current backup will be created first when possible. The Full Form Library backup and older dated snapshots are unaffected.'))return;
+    const before=await analyze({flush:true});if(Object.keys(before.manifest.entries||{}).length){setStatus('Creating recovery snapshot…','Preserving the existing current cloud progress before replacement.');await commitSnapshotFromManifest(before.manifest,'manual',`Before current-cloud replace ${new Date().toLocaleString()}`);}
+    setStatus('Resolving conflict…','Rebuilding current cloud progress from this device after creating a recovery snapshot.');const draft=clone((await readManifest()).manifest||emptyManifest(before.local.deviceId)),states=await getStates(),newFiles=[],cleanup=[],done=[];
+    try{
+      const localKeys=new Set(Object.keys(before.local.index));for(const row of before.rows){if(row.local){done.push(await prepareEntityUpload({...row,stateMeta:states[row.key]||{}},draft,newFiles,cleanup));}else if(row.remote?.current&&!row.remote.current.deletedAt){const rr={...row,stateMeta:{...(states[row.key]||{}),explicitDeleted:true}};done.push(await prepareDeletion(rr,draft,cleanup));}}
+      await writeManifest(draft);for(const x of done){if(!x.current)continue;states[x.key]={...(states[x.key]||{}),baseCloudVersionId:x.current.versionId,baseContentHash:x.current.contentHash||'',lastSyncedAt:x.current.updatedAt||U.iso(),localUpdatedAt:U.iso(),explicitDeleted:false,deleteAt:null,forceDecision:false};}await setStates(states);for(const id of cleanup)try{await deleteDriveFile(id);}catch(_e){}const a=await analyze({flush:false});setAnalysisStatus(a);
+    }catch(e){for(const id of newFiles)try{await deleteDriveFile(id);}catch(_e){}throw e;}
+  }
+
+  async function restoreLocalRecovery(){const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before undoing a cloud restore.');const cp=await R.meta.get(LOCAL_RECOVERY_LABEL,null);if(!cp)throw new Error('No local recovery point is available.');if(!confirm('Undo the last cloud/snapshot restore and return to the saved local recovery point? Cloud progress will not be changed automatically.'))return;await S.restoreCheckpoint();const local=await S.localIndex({flush:false}),states=await getStates();for(const [key,e] of Object.entries(local.index)){states[key]={...(states[key]||{}),localUpdatedAt:U.iso(),forceDecision:true,lastMutationReason:'Local recovery point restored'};}await setStates(states);const a=await analyze({flush:false});setAnalysisStatus(a);}
+  async function deleteLocalRecovery(){if(!await R.meta.get(LOCAL_RECOVERY_LABEL,null))return;if(!confirm('Delete the one-step local recovery point? Current local and cloud progress are unaffected.'))return;await R.meta.del('preBackupRecoverySnapshot');await R.meta.del('preBackupRecoveryAt');renderUi();}
+
+  async function checkCloud({interactive=false}={}){if(navigator.onLine===false){setStatus('Offline — saved locally','Cloud manifest cannot be checked while offline.');return null;}if(!(await ensureCloudSession({interactive})))return null;await validateAccount();setStatus('Checking cloud…','Comparing local base version IDs with the current Drive manifest.');const a=await analyze({flush:false});setAnalysisStatus(a);readHistory().then(x=>{uiState.history=x.history;renderUi();}).catch(()=>{});return a;}
+
+  async function runCloudDiagnostics(){if(!(await ensureCloudSession({interactive:true})))return;const a=await analyze({flush:false}),box=document.getElementById('stepSyncDiagnostics');if(!box)return a;const interesting=a.rows.filter(r=>r.state!==CLASS.ALIGNED&&r.state!==CLASS.CLOUD_RETAINED_UNLOADED&&r.state!==CLASS.BANK_HASH_MISMATCH);if(!interesting.length){box.innerHTML='<div class="sync-diag-ok"><b>No active lineage differences.</b><span>Every active local copy either matches cloud or safely descends from the current cloud version.</span></div>';return a;}box.innerHTML=interesting.map(r=>`<div class="sync-diag-row"><div class="sync-diag-title"><b>${escHtml(r.label)}</b><span>${escHtml(r.state)}</span></div><div class="sync-diag-reason">Base cloud version <code>${escHtml(short(r.stateMeta?.baseCloudVersionId))}</code> • Current cloud version <code>${escHtml(short(r.current?.versionId))}</code></div><div class="sync-diag-grid"><span>Local changed <b>${escHtml(fmtDate(r.local?.modifiedAt||r.stateMeta?.localUpdatedAt))}</b></span><span>Cloud changed <b>${escHtml(fmtDate(r.current?.updatedAt))}</b></span><span>Local hash <code>${escHtml(short(r.local?.contentHash))}</code></span><span>Base hash <code>${escHtml(short(r.stateMeta?.baseContentHash))}</code></span><span>Cloud hash <code>${escHtml(short(r.current?.contentHash))}</code></span><span>Explicit local delete <b>${r.stateMeta?.explicitDeleted?'yes':'no'}</b></span></div></div>`).join('');return a;}
+
+  async function handleError(e){console.error(e);if(e?.name==='WorkerAuthError'&&e.status===401)setStatus('Reconnect Google','The Worker session expired or was removed. Local progress is safe.',{lastError:e.message});else if(e?.name==='WorkerAuthError')setStatus('Authentication service unavailable','Cloud authentication failed. Local progress is safe.',{lastError:e.message});else if(e?.name==='DriveHttpError'&&e.status===401)setStatus('Reconnect Google','Google Drive authorization could not be refreshed. Local progress is safe.',{lastError:e.message});else setStatus('Backup failed','Cloud operation failed. Local progress is safe.',{lastError:e?.message||String(e)});throw e;}
+  async function connect(){await A.connect();}
+  async function disconnect(){const r=await A.disconnect();await R.meta.set('syncEnabled',false);clearDecision();setStatus('Disconnected',r.warning?`Disconnected locally. ${r.warning}`:'Cloud backup is disconnected on this device. Local progress and cloud data were not deleted.',{account:'',summary:null});}
+
+  function controls(){if(!connected())return `<button class="primary" data-step-sync-action="connect">Connect Google Account</button>`;return `<button class="primary" data-step-sync-action="backup">Back Up Now</button><button class="secondary" data-step-sync-action="restore-current">Restore Current Cloud</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;}
   function installStyles(){
     if(document.getElementById('stepProgressSyncStyle'))return;const st=document.createElement('style');st.id='stepProgressSyncStyle';st.textContent=`
-    #progressSyncTab{position:relative}#progressSyncTab .sync-tab-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:7px;background:#7d92a2;box-shadow:0 0 0 3px rgba(125,146,162,.14)}#progressSyncTab.sync-connected .sync-tab-dot{background:#34c78b;box-shadow:0 0 0 3px rgba(52,199,139,.16)}#progressSyncTab.sync-attention .sync-tab-dot{background:#f0ad45;box-shadow:0 0 0 3px rgba(240,173,69,.16)}
-    #progressSyncPanel{--sync-ink:#0b1f2d;--sync-muted:#637888;--sync-line:#dbe6ed;--sync-soft:#f5f9fb;--sync-green:#159468;--sync-warn:#b87312;--sync-red:#a83b3b}#progressSyncPanel .sync-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px;margin-bottom:18px}#progressSyncPanel .sync-hero h2{margin:2px 0 5px;color:var(--sync-ink);font-size:25px}#progressSyncPanel .sync-hero p{margin:0;color:var(--sync-muted);font-size:13px;max-width:760px;line-height:1.55}
-    #progressSyncPanel .sync-status-pill{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid var(--sync-line);background:#fff;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900;color:var(--sync-ink)}#progressSyncPanel .sync-status-pill i{width:9px;height:9px;border-radius:50%;background:#899ba8;display:block}#progressSyncPanel .sync-status-pill.good i{background:var(--sync-green)}#progressSyncPanel .sync-status-pill.warn i{background:#e2a032}#progressSyncPanel .sync-status-pill.bad i{background:var(--sync-red)}#progressSyncPanel .sync-status-pill.busy i{background:#1976d2;animation:stepSyncPulse 1s infinite alternate}@keyframes stepSyncPulse{from{opacity:.35}to{opacity:1}}
-    #progressSyncPanel .sync-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:18px}#progressSyncPanel .sync-card{background:#fff;border:1px solid var(--sync-line);border-radius:22px;padding:20px;box-shadow:0 12px 30px rgba(24,54,84,.07)}#progressSyncPanel .sync-card h3{margin:0 0 5px;color:var(--sync-ink);font-size:16px}#progressSyncPanel .sync-card>p{margin:0;color:var(--sync-muted);font-size:12px;line-height:1.5}
-    #progressSyncPanel .sync-account{display:flex;align-items:center;gap:14px;margin-top:18px;padding:15px;border:1px solid #d7ebe3;background:#f5fbf8;border-radius:18px}#progressSyncPanel .sync-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#153b54;color:#fff;font-size:16px;font-weight:950}#progressSyncPanel .sync-account-email{font-size:14px;font-weight:900;color:var(--sync-ink)}#progressSyncPanel .sync-account-sub{font-size:11px;color:var(--sync-muted);margin-top:3px}#progressSyncPanel .sync-disconnected{margin-top:18px;padding:18px;border:1px dashed #cbdbe5;background:var(--sync-soft);border-radius:18px;font-size:12px;color:var(--sync-muted)}
-    #progressSyncPanel .sync-detail{margin-top:13px;border-radius:14px;padding:11px 13px;background:var(--sync-soft);color:#425c6d;font-size:12px;line-height:1.5;min-height:18px}#progressSyncPanel .sync-detail.bad{background:#fff5f5;color:#883838;border:1px solid #f0d4d4}#progressSyncPanel .sync-detail.warn{background:#fff9ed;color:#7f5a16;border:1px solid #f0dfb8}#progressSyncPanel .sync-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}#progressSyncPanel .sync-actions button{min-width:128px}#progressSyncPanel .sync-decision-notice{margin-top:13px;border:1px solid #edcd8b;background:linear-gradient(180deg,#fffaf0,#fff5df);border-radius:18px;padding:14px 15px;color:#553b0b}#progressSyncPanel .sync-decision-notice[hidden]{display:none!important}#progressSyncPanel .sync-decision-head{display:flex;gap:11px;align-items:flex-start}#progressSyncPanel .sync-decision-icon{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;background:#f2b647;color:#fff;font-weight:950;font-size:17px}#progressSyncPanel .sync-decision-copy b{display:block;font-size:13px;color:#4a3309;margin-bottom:3px}#progressSyncPanel .sync-decision-copy span{display:block;font-size:11px;line-height:1.45;color:#76591f}#progressSyncPanel .sync-decision-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;margin-left:45px}#progressSyncPanel .sync-decision-actions button{min-width:150px}#progressSyncPanel .sync-decision-actions .use-local{background:#fff!important;border-color:#d3a34e!important;color:#754800!important}#progressSyncPanel .sync-decision-actions .use-cloud{background:#153b54!important;border-color:#153b54!important;color:#fff!important}
-    #progressSyncPanel .sync-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}#progressSyncPanel .sync-meta{background:var(--sync-soft);border:1px solid #e3edf2;border-radius:14px;padding:11px}#progressSyncPanel .sync-meta span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.055em;font-weight:900;color:#79909f}#progressSyncPanel .sync-meta b{display:block;margin-top:4px;font-size:12px;color:var(--sync-ink);word-break:break-word}
-    #progressSyncPanel .sync-protection-list{display:flex;flex-direction:column;gap:10px;margin-top:17px}#progressSyncPanel .sync-protection{display:grid;grid-template-columns:31px 1fr;gap:10px;align-items:start;padding:11px;border:1px solid #e2ebf0;border-radius:15px;background:#fbfdfe}#progressSyncPanel .sync-protection-icon{width:31px;height:31px;border-radius:10px;background:#eaf3f8;color:#1f607e;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:950}#progressSyncPanel .sync-protection b{display:block;font-size:12px;color:var(--sync-ink)}#progressSyncPanel .sync-protection span{display:block;font-size:11px;color:var(--sync-muted);margin-top:2px;line-height:1.4}
-    #progressSyncPanel .sync-inventory{grid-column:1/-1}#stepSyncInventory{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}#stepSyncInventory .sync-metric{background:var(--sync-soft);border:1px solid #e0ebf1;border-radius:14px;padding:11px}#stepSyncInventory .sync-metric span{display:block;font-size:10px;text-transform:uppercase;color:#78909e;font-weight:850}#stepSyncInventory .sync-metric b{display:block;margin-top:4px;font-size:18px;color:var(--sync-ink)}#progressSyncPanel .sync-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:14px;color:#728797;font-size:11px;flex-wrap:wrap}#progressSyncPanel .sync-footer a{font-weight:850;color:#315f7d;text-decoration:none}.sync-danger{border-color:#e0b8b8!important;color:#8c3030!important}
-    #stepSyncDiagnostics{margin-top:12px;display:flex;flex-direction:column;gap:9px}.sync-diag-row,.sync-diag-ok{border:1px solid #dde8ee;border-radius:14px;padding:11px 12px;background:#fbfdfe}.sync-diag-ok{background:#f0fbf6;color:#176846;display:flex;flex-direction:column;gap:2px}.sync-diag-title{display:flex;justify-content:space-between;gap:8px;align-items:center}.sync-diag-title span{font-size:10px;text-transform:uppercase;font-weight:900;color:#8a5a15}.sync-diag-reason{font-size:11px;color:#607685;margin-top:4px;line-height:1.4}.sync-diag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:5px 10px;margin-top:8px;font-size:10px;color:#607685}.sync-diag-grid code{font-size:10px;color:#17384c}.sync-maintenance{margin-top:14px;padding-top:13px;border-top:1px solid #e0e9ee;display:flex;gap:8px;flex-wrap:wrap}.sync-maintenance-note{width:100%;font-size:10px;color:#7a8d99;line-height:1.4}
-    @media(max-width:900px){#progressSyncPanel .sync-layout{grid-template-columns:1fr}#progressSyncPanel .sync-hero{flex-direction:column}}@media(max-width:600px){#progressSyncPanel .sync-hero,#progressSyncPanel .sync-card{padding:16px}#progressSyncPanel .sync-meta-grid{grid-template-columns:1fr}#progressSyncPanel .sync-actions button{flex:1 1 140px}}
+    #progressSyncTab{position:relative}#progressSyncTab .sync-tab-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:7px;background:#7d92a2}#progressSyncTab.sync-connected .sync-tab-dot{background:#34c78b}#progressSyncTab.sync-attention .sync-tab-dot{background:#f0ad45}
+    #progressSyncPanel{--sync-ink:#0b1f2d;--sync-muted:#637888;--sync-line:#dbe6ed;--sync-soft:#f5f9fb;--sync-green:#159468;--sync-warn:#b87312;--sync-red:#a83b3b}#progressSyncPanel .sync-hero{display:flex;justify-content:space-between;gap:18px;padding:20px 22px;margin-bottom:16px}#progressSyncPanel .sync-hero h2{margin:2px 0 5px;font-size:24px;color:var(--sync-ink)}#progressSyncPanel .sync-hero p{margin:0;color:var(--sync-muted);font-size:12px;line-height:1.5;max-width:760px}.sync-status-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--sync-line);background:#fff;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900;white-space:nowrap}.sync-status-pill i{width:9px;height:9px;border-radius:50%;background:#899ba8}.sync-status-pill.good i{background:var(--sync-green)}.sync-status-pill.warn i{background:#e2a032}.sync-status-pill.bad i{background:var(--sync-red)}.sync-status-pill.busy i{background:#1976d2;animation:stepSyncPulse 1s infinite alternate}@keyframes stepSyncPulse{from{opacity:.35}to{opacity:1}}
+    #progressSyncPanel .sync-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:16px}#progressSyncPanel .sync-card{background:#fff;border:1px solid var(--sync-line);border-radius:20px;padding:18px;box-shadow:0 10px 26px rgba(24,54,84,.06)}#progressSyncPanel .sync-card h3{margin:0 0 5px;font-size:16px;color:var(--sync-ink)}#progressSyncPanel .sync-card p{margin:0;color:var(--sync-muted);font-size:11px;line-height:1.5}.sync-detail{margin-top:12px;padding:11px 13px;border-radius:13px;background:var(--sync-soft);font-size:12px;color:#425c6d}.sync-detail.warn{background:#fff9ed;color:#7f5a16}.sync-detail.bad{background:#fff5f5;color:#883838}.sync-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.sync-account,.sync-disconnected{margin-top:15px;padding:14px;border-radius:15px;border:1px solid #dbe6ed;background:#f8fbfc}.sync-account-email{font-weight:900;font-size:13px}.sync-account-sub{font-size:10px;color:var(--sync-muted);margin-top:3px}
+    .sync-decision-notice{margin-top:13px;border:1px solid #edcd8b;background:#fff8e8;border-radius:16px;padding:14px}.sync-decision-notice[hidden]{display:none!important}.sync-decision-title{font-weight:900;color:#553b0b}.sync-decision-list{display:flex;flex-direction:column;gap:7px;margin-top:9px}.sync-decision-row{display:grid;grid-template-columns:minmax(110px,1fr) 1.2fr 1.2fr;gap:8px;font-size:10px;padding:8px;border-radius:10px;background:rgba(255,255,255,.65)}.sync-decision-row b{font-size:11px}.sync-decision-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.sync-decision-actions .use-cloud{background:#153b54!important;color:#fff!important}.sync-decision-actions .use-local{background:#fff!important;color:#754800!important;border-color:#d3a34e!important}
+    #stepSyncInventory{margin-top:13px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.sync-metric{background:var(--sync-soft);border:1px solid #e0ebf1;border-radius:13px;padding:10px}.sync-metric span{display:block;font-size:9px;text-transform:uppercase;color:#78909e;font-weight:850}.sync-metric b{display:block;margin-top:4px;font-size:16px;color:var(--sync-ink)}.sync-inventory{grid-column:1/-1}.sync-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:10px;color:#728797}.sync-section-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.sync-recovery-list,.sync-history-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}.sync-recovery-item,.sync-history-item{border:1px solid #e0e9ee;border-radius:13px;padding:10px;background:#fbfdfe;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.sync-recovery-item b,.sync-history-item b{font-size:11px}.sync-recovery-item span,.sync-history-item span{display:block;font-size:10px;color:var(--sync-muted);margin-top:2px}.sync-mini-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.sync-mini-actions button{padding:6px 8px!important;font-size:10px!important;min-width:0!important}.sync-danger{border-color:#e0b8b8!important;color:#8c3030!important}.sync-note{font-size:10px;color:var(--sync-muted);line-height:1.45;margin-top:8px}.sync-toggle-on{color:#16744f!important;border-color:#b9dfcf!important;background:#f0fbf6!important}
+    #stepSyncDiagnostics{margin-top:10px;display:flex;flex-direction:column;gap:8px}.sync-diag-row,.sync-diag-ok{border:1px solid #dde8ee;border-radius:13px;padding:10px;background:#fbfdfe}.sync-diag-ok{background:#f0fbf6;color:#176846}.sync-diag-title{display:flex;justify-content:space-between;gap:8px}.sync-diag-title span{font-size:9px;font-weight:900;color:#8a5a15}.sync-diag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px 9px;margin-top:7px;font-size:9px;color:#607685}.sync-diag-grid code{font-size:9px}.sync-maintenance{margin-top:13px;padding-top:12px;border-top:1px solid #e0e9ee;display:flex;gap:7px;flex-wrap:wrap}
+    @media(max-width:900px){#progressSyncPanel .sync-layout{grid-template-columns:1fr}.sync-decision-row{grid-template-columns:1fr}.sync-inventory{grid-column:auto}}
     `;document.head.appendChild(st);
   }
-  function tone(){if(uiState.status==='Backed up')return'good';if(/Backing up|Connecting|Restoring cloud session|Resolving conflict|Restoring from cloud/.test(uiState.status))return'busy';if(/pending|available|decision|required|Reconnect|Offline/i.test(uiState.status))return'warn';if(/failed/i.test(uiState.status))return'bad';return'';}
-  function connected(){return A.getState().authorized&&uiState.status!=='Disconnected'&&uiState.status!=='Reconnect Google';}
-  function controls(){if(/Backing up|Connecting|Restoring cloud session|Resolving conflict|Restoring from cloud/.test(uiState.status))return`<button class="primary" disabled>${uiState.status}</button>`;if(uiState.status==='Reconnect Google')return`<button class="primary" data-step-sync-action="check">Reconnect Google</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;if(connected()&&decisionKeys.length)return`<button class="secondary" data-step-sync-action="check">Check Again</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;if(connected())return`<button class="primary" data-step-sync-action="backup">Back Up Now</button><button class="secondary" data-step-sync-action="restore-cloud">Restore from Cloud</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;return`<button class="primary" data-step-sync-action="connect">Connect Google Account</button>`;}
   function ensureSurface(){
-    const side=document.querySelector('.modern-sidebar');if(side&&!document.getElementById('progressSyncTab')){const btn=document.createElement('button');btn.type='button';btn.id='progressSyncTab';btn.className='menu-tab';btn.innerHTML='Progress Backup <span class="sync-tab-dot" aria-hidden="true"></span>';const settings=document.getElementById('settingsTab');settings?side.insertBefore(btn,settings):side.appendChild(btn);}
-    const main=document.querySelector('.modern-main'),settingsPanel=document.getElementById('settingsPanel');if(main&&!document.getElementById('progressSyncPanel')){const p=document.createElement('section');p.id='progressSyncPanel';p.className='mode-panel';p.innerHTML=`
-      <div class="sync-hero glass-panel"><div><div class="panel-kicker">Local-first recovery • Google Drive</div><h2>Google Progress Backup</h2><p>Each form has its own hidden Drive backup file. The tiny manifest is checked first. Routine answers/highlights stay local; major checkpoints upload only changed form backups when the cloud lineage is safe.</p></div><div id="stepSyncStatusPill" class="sync-status-pill"><i></i><span id="stepSyncStatusText">Disconnected</span></div></div>
-      <div class="sync-layout"><section class="sync-card"><h3>Connection & backup</h3><p>Local IndexedDB is always the working source of truth. Cloud restore is explicit and never happens silently.</p><div id="stepSyncAccountArea"></div><div id="stepSyncDetailText" class="sync-detail"></div><div id="stepSyncDecisionNotice" class="sync-decision-notice" hidden></div><div id="stepSyncActions" class="sync-actions"></div><div class="sync-meta-grid"><div class="sync-meta"><span>Last successful backup</span><b id="stepSyncLastText">Never</b></div><div class="sync-meta"><span>Cloud index</span><b>${C.MANIFEST_FILE}</b></div></div></section>
-      <section class="sync-card"><h3>Protection model</h3><p>No whole-database merge is performed.</p><div class="sync-protection-list"><div class="sync-protection"><div class="sync-protection-icon">L</div><div><b>Local-first</b><span>Answers/highlights save immediately to the simulator's existing IndexedDB format.</span></div></div><div class="sync-protection"><div class="sync-protection-icon">1</div><div><b>One backup per form</b><span>Completing one form updates only that form's cloud backup plus the tiny manifest.</span></div></div><div class="sync-protection"><div class="sync-protection-icon">#</div><div><b>Lineage guard</b><span>If another device changed the same cloud backup, automatic upload stops and asks for direction.</span></div></div><div class="sync-protection"><div class="sync-protection-icon">↶</div><div><b>Explicit restore</b><span>Cloud never silently overwrites local progress. Restore creates a local rollback checkpoint first.</span></div></div><div class="sync-protection"><div class="sync-protection-icon">D</div><div><b>Deletion is explicit</b><span>An in-app delete while sync is enabled creates a tombstone. Missing browser data never means delete; disconnected deletes keep the Drive recovery copy protected.</span></div></div></div></section>
-      <section class="sync-card sync-inventory"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div><h3>Backup inventory</h3><p>Only the manifest is needed to detect discrepancies; form files are downloaded only during Restore.</p></div><div><button class="secondary" data-step-sync-action="check">Check Cloud Manifest</button> <button class="secondary" data-step-sync-action="diagnose">Diagnose Differences</button> <button class="secondary" data-step-sync-action="validate">Validate Local Progress</button> <button class="secondary" data-step-sync-action="restore-checkpoint">Restore Recovery Checkpoint</button></div></div><div id="stepSyncInventory"><div class="sync-metric"><span>Status</span><b>Not checked</b></div></div><div id="stepSyncDiagnostics"></div><div class="sync-maintenance"><div class="sync-maintenance-note">Progress-only maintenance. These actions never touch the separate Full Form Library backup.</div><button class="secondary sync-danger" data-step-sync-action="clear-cloud-progress">Clear Cloud Progress Backup</button><button class="secondary sync-danger" data-step-sync-action="replace-cloud-progress">Replace Cloud Progress with This Device</button></div><div class="sync-footer"><span>Production exam-simulator2 cloud backup.</span><span><a href="./privacy.html" target="_blank" rel="noopener">Privacy Policy</a> · Build ${C.BUILD}</span></div></section></div>`;settingsPanel?.parentNode?settingsPanel.parentNode.insertBefore(p,settingsPanel.nextSibling):main.appendChild(p);}
-    renderUi();
+    installStyles();const tabBar=document.querySelector('.menu-tabs');if(tabBar&&!document.getElementById('progressSyncTab')){const t=document.createElement('button');t.id='progressSyncTab';t.className='menu-tab';t.type='button';t.innerHTML='Progress Backup <span class="sync-tab-dot"></span>';tabBar.appendChild(t);}if(document.getElementById('progressSyncPanel')){renderUi();return;}
+    const settingsPanel=document.getElementById('settingsPanel'),main=settingsPanel?.parentNode||document.querySelector('main')||document.body,p=document.createElement('section');p.id='progressSyncPanel';p.className='mode-panel';p.innerHTML=`<div class="sync-hero"><div><h2>Google Progress Backup</h2><p><b>Progress Sync V2:</b> local IndexedDB is the runtime source of truth. Automatic Local → Cloud is allowed only when this device still descends from the current cloud version. Timestamps are shown for decisions but never choose authority.</p></div><div id="stepSyncStatusPill" class="sync-status-pill"><i></i><span id="stepSyncStatusText">Disconnected</span></div></div><div class="sync-layout">
+      <section class="sync-card"><h3>Current progress</h3><p>Per-form version lineage prevents an old device or cleared browser from silently overwriting a newer cloud copy.</p><div id="stepSyncAccountArea"></div><div id="stepSyncDetailText" class="sync-detail"></div><div id="stepSyncDecisionNotice" class="sync-decision-notice" hidden></div><div id="stepSyncActions" class="sync-actions"></div><div class="sync-note">Last successful current backup: <b id="stepSyncLastText">Never</b></div></section>
+      <section class="sync-card"><h3>One-step recovery</h3><p>Every cloud overwrite keeps one previous cloud version. Every cloud→local restore saves one complete local progress recovery point first.</p><div id="stepSyncLocalRecovery"></div><div id="stepSyncPreviousRecovery" class="sync-recovery-list"></div><div class="sync-section-actions"><button class="secondary" data-step-sync-action="delete-all-previous">Delete All Previous Cloud Recoveries</button></div></section>
+      <section class="sync-card"><h3>Dated progress backups</h3><p>Daily and manual recovery snapshots are separate from current synchronization. They use server-side Drive copies of the current per-form backups.</p><div class="sync-section-actions"><button id="stepSyncDailyToggle" class="secondary" data-step-sync-action="toggle-daily">Daily snapshots</button><button class="primary" data-step-sync-action="manual-snapshot">Create Manual Progress Backup</button></div><div id="stepSyncHistory" class="sync-history-list"></div></section>
+      <section class="sync-card"><h3>How V2 decides</h3><p>Version lineage is authoritative; timestamps are explanatory only.</p><div class="sync-recovery-list"><div class="sync-recovery-item"><div><b>Same cloud version</b><span>Local changes can auto-backup safely.</span></div></div><div class="sync-recovery-item"><div><b>Cloud version advanced</b><span>Old/new device is detected and the app asks before either side is replaced.</span></div></div><div class="sync-recovery-item"><div><b>Missing local progress</b><span>Never treated as deletion unless the simulator recorded an explicit delete/reset.</span></div></div></div></section>
+      <section class="sync-card sync-inventory"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div><h3>Diagnostics & maintenance</h3><p>Current sync, dated progress snapshots, and the Full Form Library backup are independent systems.</p></div><div class="sync-section-actions"><button class="secondary" data-step-sync-action="check">Check Cloud Manifest</button><button class="secondary" data-step-sync-action="diagnose">Diagnose Lineage</button><button class="secondary" data-step-sync-action="validate">Validate Local Progress</button></div></div><div id="stepSyncInventory"></div><div id="stepSyncDiagnostics"></div><div class="sync-maintenance"><button class="secondary sync-danger" data-step-sync-action="clear-current-cloud">Clear Current Cloud Sync</button><button class="secondary sync-danger" data-step-sync-action="replace-current-cloud">Replace Current Cloud with This Device</button></div><div class="sync-footer"><span>Progress Sync V2 • Full Form Library backup remains separate.</span><span><a href="./privacy.html" target="_blank" rel="noopener">Privacy Policy</a> · Build ${C.BUILD}</span></div></section>
+    </div>`;settingsPanel?.parentNode?settingsPanel.parentNode.insertBefore(p,settingsPanel.nextSibling):main.appendChild(p);renderUi();
   }
   function activate(){ensureSurface();document.querySelectorAll('.mode-panel.active').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.menu-tab.active').forEach(x=>x.classList.remove('active'));document.getElementById('progressSyncPanel')?.classList.add('active');document.getElementById('progressSyncTab')?.classList.add('active');if(connected())checkCloud({interactive:false}).catch(()=>{});}
+
+  function renderDecision(notice){
+    if(!notice)return;if(!connected()||!decisionRows.length){notice.hidden=true;notice.innerHTML='';return;}notice.hidden=false;const rows=uiState.summary?.rows?.filter(r=>decisionRows.some(d=>d.key===r.key))||[];const canLocal=decisionRows.some(r=>r.canKeepLocal),canCloud=decisionRows.some(r=>r.canUseCloud);
+    notice.innerHTML=`<div class="sync-decision-title">Progress choice required</div><div class="sync-note">Nothing will be overwritten until you choose. Version IDs decide safety; timestamps below help you identify the copy you intended to keep.</div><div class="sync-decision-list">${rows.slice(0,12).map(r=>`<div class="sync-decision-row"><b>${escHtml(r.label)}</b><span>This device: ${escHtml(fmtDate(r.local?.modifiedAt||r.stateMeta?.localUpdatedAt))}</span><span>Cloud: ${escHtml(fmtDate(r.current?.updatedAt))} · ${escHtml(r.state)}</span></div>`).join('')}${rows.length>12?`<div class="sync-note">+ ${rows.length-12} more</div>`:''}</div><div class="sync-decision-actions">${canLocal?'<button class="secondary use-local" data-step-sync-action="keep-local">Keep This Device → Cloud</button>':''}${canCloud?'<button class="primary use-cloud" data-step-sync-action="use-cloud">Use Cloud Backup → This Device</button>':''}<button class="secondary" data-step-sync-action="check">Not Now / Check Again</button></div>`;
+  }
+  async function renderRecovery(){
+    const localBox=document.getElementById('stepSyncLocalRecovery'),prevBox=document.getElementById('stepSyncPreviousRecovery');if(localBox){const at=await R.meta.get('preBackupRecoveryAt',''),cp=await R.meta.get('preBackupRecoverySnapshot',null);localBox.innerHTML=cp?`<div class="sync-recovery-item"><div><b>Previous local progress</b><span>Saved ${escHtml(fmtDate(at))} before the last cloud/snapshot restore.</span></div><div class="sync-mini-actions"><button class="secondary" data-step-sync-action="restore-local-recovery">Undo Restore</button><button class="secondary sync-danger" data-step-sync-action="delete-local-recovery">Delete</button></div></div>`:`<div class="sync-note">No local recovery point yet.</div>`;}
+    if(prevBox){const entries=Object.values(cloudState.manifest?.entries||{}).filter(e=>e?.previous);prevBox.innerHTML=entries.length?entries.slice(0,20).map(e=>`<div class="sync-recovery-item"><div><b>${escHtml(e.kind==='qbank'?'Qbank':e.formId)}</b><span>Previous cloud copy: ${escHtml(fmtDate(e.previous.updatedAt))}</span></div><div class="sync-mini-actions"><button class="secondary" data-step-sync-action="restore-previous" data-sync-key="${escHtml(encodeURIComponent(e.key))}">Restore</button><button class="secondary sync-danger" data-step-sync-action="delete-previous" data-sync-key="${escHtml(encodeURIComponent(e.key))}">Delete</button></div></div>`).join(''):`<div class="sync-note">No previous cloud recovery copies yet.</div>`;}
+  }
+  function renderHistory(){const box=document.getElementById('stepSyncHistory'),toggle=document.getElementById('stepSyncDailyToggle');R.meta.get(DAILY_ENABLED_KEY,true).then(on=>{if(toggle){toggle.textContent=`Daily snapshots: ${on?'On':'Off'}`;toggle.classList.toggle('sync-toggle-on',!!on);}});if(!box)return;const snaps=[...(uiState.history?.snapshots||[])].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt));box.innerHTML=snaps.length?snaps.map(s=>`<div class="sync-history-item"><div><b>${escHtml(s.kind==='daily'?'Daily backup':(s.label||'Manual backup'))}</b><span>${escHtml(fmtDate(s.createdAt))}${s.kind==='manual'&&s.label?` · ${escHtml(s.label)}`:''}</span></div><div class="sync-mini-actions"><button class="secondary" data-step-sync-action="restore-snapshot" data-snapshot-id="${escHtml(s.snapshotId)}">Restore</button><button class="secondary sync-danger" data-step-sync-action="delete-snapshot" data-snapshot-id="${escHtml(s.snapshotId)}">Delete</button></div></div>`).join(''):`<div class="sync-note">No dated progress backups yet. Daily snapshots keep the last ${C.DAILY_SNAPSHOT_RETENTION||7} days.</div>`;}
   function renderUi(){
     const pill=document.getElementById('stepSyncStatusPill'),st=document.getElementById('stepSyncStatusText'),dt=document.getElementById('stepSyncDetailText'),notice=document.getElementById('stepSyncDecisionNotice'),aa=document.getElementById('stepSyncAccountArea'),acts=document.getElementById('stepSyncActions'),last=document.getElementById('stepSyncLastText'),tab=document.getElementById('progressSyncTab'),inv=document.getElementById('stepSyncInventory');
-    if(pill)pill.className='sync-status-pill '+tone();
-    if(st)st.textContent=uiState.status;
-    if(dt){dt.textContent=uiState.detail||'';dt.className='sync-detail '+(tone()==='bad'?'bad':tone()==='warn'?'warn':'');}
-    if(notice){
-      const conflictCount=Number(uiState.summary?.conflicts||decisionKeys.length||0);
-      if(connected()&&conflictCount>0){
-        notice.hidden=false;
-        notice.innerHTML=`<div class="sync-decision-head"><div class="sync-decision-icon">!</div><div class="sync-decision-copy"><b>Cloud backup needs your choice</b><span>${conflictCount} progress backup${conflictCount===1?'':'s'} differ on this device and in Google Drive. Nothing has been overwritten. Choose the copy you want only when you are ready.</span></div></div><div class="sync-decision-actions"><button class="secondary use-local" data-step-sync-action="force">Keep This Device → Cloud</button><button class="primary use-cloud" data-step-sync-action="restore-conflicts">Use Cloud Backup → This Device</button></div>`;
-      }else{notice.hidden=true;notice.innerHTML='';}
-    }
-    if(aa)aa.innerHTML=connected()?`<div class="sync-account"><div class="sync-avatar">G</div><div><div class="sync-account-email">${String(uiState.account).replace(/[&<>]/g,'')}</div><div class="sync-account-sub">Connected through shared OAuth Worker • Drive data transfers directly</div></div></div>`:`<div class="sync-disconnected">Progress is currently stored locally. Connect once through the shared OAuth Worker; later reloads/reopens silently refresh Drive access while the device session remains valid.</div>`;
-    if(acts)acts.innerHTML=controls();
-    if(last)last.textContent=uiState.lastBackup?new Date(uiState.lastBackup).toLocaleString():'Never';
-    if(tab){tab.classList.toggle('sync-connected',connected());tab.classList.toggle('sync-attention',tone()==='warn'||tone()==='bad');}
-    if(inv&&uiState.summary){const sm=uiState.summary,items=[['Local backups',sm.localCount],['Cloud backups',sm.cloudCount],['Local pending',sm.pending],['Cloud available',sm.cloudNewer+sm.cloudOnly],['Retained recovery',Number(sm.retained||0)+Number(sm.archivedVersions||0)],['Need decision',Math.max(sm.conflicts,decisionKeys.length)],['Aligned',sm.aligned]];inv.innerHTML=items.map(([a,b])=>`<div class="sync-metric"><span>${a}</span><b>${b}</b></div>`).join('');}
+    if(pill)pill.className='sync-status-pill '+tone();if(st)st.textContent=uiState.status;if(dt){dt.textContent=uiState.detail||'';dt.className='sync-detail '+(tone()==='bad'?'bad':tone()==='warn'?'warn':'');}renderDecision(notice);
+    if(aa)aa.innerHTML=connected()?`<div class="sync-account"><div class="sync-account-email">${escHtml(uiState.account||'Connected Google account')}</div><div class="sync-account-sub">Persistent Worker session • Drive payloads transfer directly between this device and Google Drive.</div></div>`:`<div class="sync-disconnected">Progress is local-first. Connect Google once; the shared Cloudflare Worker silently refreshes Drive access on later reload/reopen.</div>`;
+    if(acts)acts.innerHTML=controls();if(last)last.textContent=uiState.lastBackup?fmtDate(uiState.lastBackup):'Never';if(tab){tab.classList.toggle('sync-connected',connected());tab.classList.toggle('sync-attention',tone()==='warn'||tone()==='bad');}
+    if(inv&&uiState.summary){const s=uiState.summary,items=[['Local progress',s.localCount],['Current cloud',s.cloudCount],['Safe local ahead',s.localSafe],['Cloud ahead',s.cloudAhead],['Cloud only',s.cloudOnly],['Need decision',s.decisionCount],['Previous recoveries',s.previousRecoveryCount],['Aligned',s.aligned]];inv.innerHTML=items.map(([a,b])=>`<div class="sync-metric"><span>${a}</span><b>${b}</b></div>`).join('');}
+    renderRecovery().catch(()=>{});renderHistory();
   }
-  async function runValidate(){const r=await S.validateLocal(),inv=document.getElementById('stepSyncInventory');if(inv){const items=[['Loaded forms',r.loadedForms],['Progress forms',r.stats.forms],['Attempts',r.stats.attempts],['Answered',r.stats.answered],['Stem highlights',r.stats.stemHighlights],['Explanation highlights',r.stats.expHighlights],['Qbank tests',r.stats.qbankTests],['Backup entities',r.entities],['Est. local payload',(r.estimatedBytes/1024/1024).toFixed(2)+' MB']];inv.innerHTML=items.map(([a,b])=>`<div class="sync-metric"><span>${a}</span><b>${b}</b></div>`).join('');}return r;}
-  async function restoreCheckpoint(){const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring a recovery checkpoint.');if(!confirm('Restore the last local pre-restore recovery checkpoint?'))return;await S.restoreCheckpoint();await markDirtyAll('Recovery checkpoint restored locally');await runValidate();}
-  async function action(a){if(a==='connect')return connect();if(a==='check')return checkCloud({interactive:true});if(a==='diagnose')return runCloudDiagnostics();if(a==='backup')return backupNow({reason:'Manual Back Up Now',interactive:true});if(a==='force')return forceBackup();if(a==='restore-conflicts')return restoreConflictsFromCloud();if(a==='restore-cloud')return restoreFromCloud();if(a==='clear-cloud-progress')return clearCloudProgressBackup();if(a==='replace-cloud-progress')return replaceCloudProgressWithDevice();if(a==='disconnect')return disconnect();if(a==='validate')return runValidate();if(a==='restore-checkpoint')return restoreCheckpoint();}
-  document.addEventListener('click',e=>{const tab=e.target?.closest?.('#progressSyncTab');if(tab){e.preventDefault();activate();return;}const other=e.target?.closest?.('.menu-tab:not(#progressSyncTab)');if(other)document.getElementById('progressSyncPanel')?.classList.remove('active');const b=e.target?.closest?.('[data-step-sync-action]');if(!b)return;e.preventDefault();b.disabled=true;action(b.dataset.stepSyncAction).catch(err=>alert(err.message||String(err))).finally(()=>{b.disabled=false;});},true);
+  async function runValidate(){const r=await S.validateLocal(),inv=document.getElementById('stepSyncInventory');if(inv){const items=[['Loaded forms',r.loadedForms],['Progress forms',r.stats.forms],['Attempts',r.stats.attempts],['Answered',r.stats.answered],['Stem highlights',r.stats.stemHighlights],['Explanation highlights',r.stats.expHighlights],['Qbank tests',r.stats.qbankTests],['Backup entities',r.entities],['Est. payload',(r.estimatedBytes/1024/1024).toFixed(2)+' MB']];inv.innerHTML=items.map(([a,b])=>`<div class="sync-metric"><span>${a}</span><b>${b}</b></div>`).join('');}return r;}
+
+  async function action(a,el){
+    if(a==='connect')return connect();if(a==='check')return checkCloud({interactive:true});if(a==='diagnose')return runCloudDiagnostics();if(a==='backup')return manualBackup();if(a==='keep-local')return resolveKeepLocal();if(a==='use-cloud')return resolveUseCloud();if(a==='restore-current')return restoreCurrentCloud();if(a==='disconnect')return disconnect();if(a==='validate')return runValidate();if(a==='restore-local-recovery')return restoreLocalRecovery();if(a==='delete-local-recovery')return deleteLocalRecovery();if(a==='delete-all-previous')return deleteAllPreviousCloud();if(a==='restore-previous')return restorePreviousCloud(decodeURIComponent(el.dataset.syncKey||''));if(a==='delete-previous')return deletePreviousCloud(decodeURIComponent(el.dataset.syncKey||''));if(a==='manual-snapshot')return createManualSnapshot();if(a==='restore-snapshot')return restoreSnapshot(el.dataset.snapshotId||'');if(a==='delete-snapshot')return deleteSnapshot(el.dataset.snapshotId||'');if(a==='toggle-daily'){const on=await R.meta.get(DAILY_ENABLED_KEY,true);await R.meta.set(DAILY_ENABLED_KEY,!on);renderUi();return;}if(a==='clear-current-cloud')return clearCurrentCloud();if(a==='replace-current-cloud')return replaceCurrentCloudWithDevice();
+  }
+
+  document.addEventListener('click',e=>{const tab=e.target?.closest?.('#progressSyncTab');if(tab){e.preventDefault();activate();return;}const other=e.target?.closest?.('.menu-tab:not(#progressSyncTab)');if(other)document.getElementById('progressSyncPanel')?.classList.remove('active');const b=e.target?.closest?.('[data-step-sync-action]');if(!b)return;e.preventDefault();b.disabled=true;Promise.resolve(action(b.dataset.stepSyncAction,b)).catch(err=>alert(err.message||String(err))).finally(()=>{b.disabled=false;});},true);
   window.addEventListener('stepsim:progress-write',e=>{if(window.__STEP_SYNC_APPLYING_REMOTE)return;recordProgressMutation(e.detail).catch(console.warn);});
-  window.addEventListener('stepsim:three-digit-score',e=>{if(window.__STEP_SYNC_APPLYING_REMOTE)return;const d=e.detail||{};const key=B.entityKey(d.formId,d.bankHash);markDirtyKey(key,'3-digit score changed').then(()=>R.meta.get('syncEnabled',false)).then(on=>{if(on)scheduleCheckpoint('3-digit score changed',8000);}).catch(()=>{});});
-  document.addEventListener('click',e=>{const el=e.target?.closest?.('#finishBlock,#endBlockBtn,#backMenu,#reportSaveMenu,#menuNow,[data-v9="delete-attempt"],[data-v9="qbank-delete"]');if(el)R.meta.get('syncEnabled',false).then(on=>{if(on)scheduleCheckpoint(`Major checkpoint: ${el.id||el.dataset?.v9||'navigation'}`,2500);});},true);
+  window.addEventListener('stepsim:three-digit-score',e=>{if(window.__STEP_SYNC_APPLYING_REMOTE)return;const d=e.detail||{},key=B.entityKey(d.formId,d.bankHash);patchState(key,{localUpdatedAt:U.iso(),explicitDeleted:false,deleteAt:null,lastMutationReason:'3-digit score changed'}).then(async()=>{const enabled=await R.meta.get('syncEnabled',false);setStatus(enabled?'Local backup pending':'Disconnected',enabled?'3-digit score changed locally. It will back up at the next checkpoint.':'3-digit score changed locally. Google backup is disconnected on this device.');}).catch(()=>{});});
+  document.addEventListener('click',e=>{const el=e.target?.closest?.('#finishBlock,#endBlockBtn,#backMenu,#reportSaveMenu,#menuNow,[data-v9="delete-attempt"],[data-v9="qbank-delete"]');if(el)R.meta.get('syncEnabled',false).then(on=>{if(on)scheduleCheckpoint(`Major checkpoint: ${el.id||el.dataset?.v9||'navigation'}`,2200);});},true);
   window.addEventListener('online',()=>{R.meta.get('syncEnabled',false).then(on=>{if(on)scheduleCheckpoint('Network restored',1800);});});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;R.meta.get('syncEnabled',false).then(on=>{if(on)scheduleCheckpoint('App returned to foreground',2500);});});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;R.meta.get('syncEnabled',false).then(on=>{if(on)scheduleCheckpoint('App returned to foreground',2200);});});
+
   async function boot(){
-    installStyles();
-    if('serviceWorker'in navigator){try{await navigator.serviceWorker.register('./sw.js?v='+encodeURIComponent(C.BUILD),{scope:'./'});}catch(e){console.warn('Service worker registration failed',e);}}
+    installStyles();await R.meta.set(V2_ENGINE_KEY,2);if('serviceWorker'in navigator){try{await navigator.serviceWorker.register('./sw.js?v='+encodeURIComponent(C.BUILD),{scope:'./'});}catch(e){console.warn('Service worker registration failed',e);}}
     const mo=new MutationObserver(()=>{if(!document.getElementById('progressSyncTab')||!document.getElementById('progressSyncPanel'))ensureSurface();});mo.observe(document.documentElement,{childList:true,subtree:true});ensureSurface();
-    try{await A.initialize();}catch(e){console.warn('Cloud auth initialization failed',e);}
-    const enabled=await R.meta.get('syncEnabled',false),acct=await R.meta.get('googleAccount',null),last=await R.meta.get('lastBackupAt','');uiState.account=acct?.email||acct?.emailAddress||'';uiState.lastBackup=last||'';
-    if(enabled&&A.getState().authorized){setStatus('Restoring cloud session…','Local progress is ready. Refreshing Drive access silently through the shared authentication Worker…');setTimeout(()=>backupNow({reason:'App startup checkpoint',interactive:false}).catch(()=>{}),800);}
-    else if(enabled)setStatus('Reconnect Google','Cloud backup is enabled, but this device no longer has a valid Worker session. Local progress is safe.');
-    else setStatus('Disconnected','Progress is currently stored locally in this exam-simulator2 on this device.');
+    try{await A.initialize();}catch(e){console.warn('Cloud auth initialization failed',e);}const enabled=await R.meta.get('syncEnabled',false),acct=await R.meta.get('googleAccount',null),last=await R.meta.get('lastBackupAt','');uiState.account=acct?.email||acct?.emailAddress||'';uiState.lastBackup=last||'';
+    readHistory().then(x=>{uiState.history=x.history;renderUi();}).catch(()=>{});
+    if(enabled&&A.getState().authorized){setStatus('Checking cloud…','Local progress is ready. Progress Sync V2 is checking version lineage before any automatic backup.');setTimeout(()=>syncCheckpoint('App startup').catch(()=>{}),900);}else if(enabled)setStatus('Reconnect Google','Cloud backup is enabled, but this device no longer has a valid Worker session. Local progress is safe.');else setStatus('Disconnected','Progress is currently stored locally on this device.');
   }
-  R.sync={backupNow,checkCloud,restoreFromCloud,resolveConflictKeepLocal:forceBackup,resolveConflictUseCloud:restoreConflictsFromCloud,clearCloudProgressBackup,replaceCloudProgressWithDevice,runCloudDiagnostics,connect,disconnect,markDirtyKey,getState:()=>({...uiState}),runValidate};
+
+  R.sync={backupNow:manualBackup,checkCloud,restoreFromCloud:restoreCurrentCloud,resolveConflictKeepLocal:resolveKeepLocal,resolveConflictUseCloud:resolveUseCloud,clearCloudProgressBackup:clearCurrentCloud,replaceCloudProgressWithDevice:replaceCurrentCloudWithDevice,runCloudDiagnostics,connect,disconnect,markDirtyKey:async key=>patchState(key,{localUpdatedAt:U.iso(),explicitDeleted:false,lastMutationReason:'marked dirty'}),getState:()=>({...uiState}),runValidate,_test:{CLASS,classify:V.classify,normalizeManifest,isDecisionRow,canKeepLocal,canUseCloud,analyze,commitRows,createSnapshot,readHistory,restoreSnapshot,syncCheckpoint,restorePreviousCloud,deletePreviousCloud,commitSnapshotFromManifest}};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();

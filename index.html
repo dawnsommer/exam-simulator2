@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-CLOUD-8"></script>
-<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-CLOUD-8"></script>
+<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
+<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
 
 <style>
 :root{
@@ -5099,7 +5099,7 @@ document.addEventListener('click', function(e){
   /* exam-simulator2: narrow cloud storage bridge.
      This exposes only durable progress operations; form source files/assets stay private to the simulator. */
   window.StepExamSyncBridge = Object.freeze({
-    build: 'EXAM-SIMULATOR2-CLOUD-8',
+    build: 'EXAM-SIMULATOR2-PROGRESS-V2-1',
     async ensureReady(){
       if(!dataDirHandle){ await restoreLastDataFolder(); }
       if(!dataDirHandle) throw new Error('Simulator library storage is not available.');
@@ -10093,10 +10093,10 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-CLOUD-8"></script>
-<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-CLOUD-8"></script>
-<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-CLOUD-8"></script>
-<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-CLOUD-8"></script>
+<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
+<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
+<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
+<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10289,10 +10289,10 @@ try{
   function backupLabel(state){
     const s=String(state?.status||'Disconnected');
     if(s==='Backed up') return ['good','Google Backup: Synced'];
-    if(/Backing up|Connecting|Restoring cloud session|Restoring/i.test(s)) return ['busy',/Backing up/i.test(s)?'Google Backup: Syncing':'Google Backup: Connecting'];
+    if(/Backing up|Checking cloud|Connecting|Restoring|Creating recovery|Resolving/i.test(s)) return ['busy',/Connecting/i.test(s)?'Google Backup: Connecting':'Google Backup: Syncing'];
     if(/Backup decision required/i.test(s)) return ['conflict','Google Backup: Conflict'];
+    if(/Cloud restore available/i.test(s)) return ['pending','Google Backup: Restore Available'];
     if(/Local backup pending/i.test(s)) return ['pending','Google Backup: Pending'];
-    if(/Cloud backup available/i.test(s)) return ['pending','Google Backup: Cloud Available'];
     if(/Offline|Authentication service unavailable/i.test(s)) return ['offline','Google Backup: Offline'];
     if(/Reconnect/i.test(s)) return ['pending','Google Backup: Reconnect'];
     if(/failed|error/i.test(s)) return ['error','Google Backup: Error'];

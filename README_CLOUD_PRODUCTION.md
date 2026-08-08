@@ -1,54 +1,109 @@
-# exam-simulator2 — Production Cloud Build
+# exam-simulator2 — Progress Sync V2 Production Build
 
-Build: `EXAM-SIMULATOR2-CLOUD-8`
+Build: `EXAM-SIMULATOR2-PROGRESS-V2-1`
 
 Production URL: `https://dawnsommer.github.io/exam-simulator2/`
 
-## Architecture
+## Core architecture
 
-- Existing IndexedDB / DATA storage remains the immediate local source of truth.
-- Google Drive `appDataFolder` stores one progress backup per form/version plus a small manifest.
-- 3-digit scores are included with the corresponding form progress backup.
-- Full Form Library backup is separate, manual, resumable, and transfers directly browser ↔ Google Drive.
-- `study-tools-auth-worker.summerofdawn20.workers.dev` handles OAuth/session/token refresh only.
-- Google refresh tokens remain on the Worker. Short-lived Drive access tokens remain in browser memory only.
+- Existing simulator IndexedDB / DATA storage remains the immediate runtime source of truth.
+- Google Drive `appDataFolder` remains the cloud storage backend.
+- The shared Cloudflare Worker remains OAuth/session/token-refresh only; simulator payloads never pass through it.
+- Full Form Library Backup remains a separate manual/resumable system.
 
-## Google Cloud requirement
+## Progress Sync V2 rule
 
-The OAuth Web Client used by the shared Worker must include this exact Authorized redirect URI:
+Each local progress entity stores the `baseCloudVersionId` it descended from. Automatic Local → Cloud backup is allowed only when Drive still reports that exact current version.
+
+Timestamps are displayed to the user but **do not choose authority**.
+
+### Normal Device 1
+
+Local changes while cloud remains at the same base version → checkpoint automatically backs up only the changed form → new cloud version created → local base advances to that version.
+
+### New / cleared Device 2
+
+No local progress + cloud progress exists → never interpreted as deletion → app offers cloud restore. No automatic empty-device upload occurs.
+
+### Old Device 3
+
+Local base version differs from the current cloud version → automatic upload stops. If local remained unchanged, cloud is classified as newer; if local also changed, the copies are classified as diverged. The user chooses direction.
+
+## One-step recovery
+
+- Local → Cloud overwrite: previous cloud current becomes the single `previous` recovery version for that form/Qbank entry.
+- Cloud → Local restore: the simulator saves one complete local progress recovery point before applying cloud data.
+- Previous cloud recovery and local recovery can be explicitly restored or deleted.
+
+## Dated progress backups
+
+Progress Sync V2 adds a separate dated recovery system:
+
+- Daily recovery snapshots: enabled by default, created once per day after a successful aligned cloud checkpoint, last 7 retained.
+- Manual progress snapshots: created explicitly by the user with an optional label.
+- Snapshots use Google Drive server-side copies of the already-uploaded per-form progress files; the browser does not re-upload the full 30–50 MB progress collection merely to create a snapshot.
+- Restoring an old dated snapshot restores locally first and deliberately creates a branch/decision if current cloud has advanced. It cannot silently overwrite current cloud.
+
+## Current progress manifest
+
+`exam-simulator2.manifest.json`
+
+Manifest schema V2 stores, per form/Qbank:
+
+- form identity + `bankHash`
+- `current.versionId`
+- `current.parentVersionId`
+- current checksum/content hash
+- updated timestamp/device metadata
+- optional deletion timestamp
+- one optional `previous` cloud recovery version
+
+Legacy schema-1 manifests from the prior cloud builds are read and migrated in memory. If local content exactly matches a legacy cloud entry, V2 safely adopts that cloud version as its base. If they differ and no V2 lineage exists, V2 asks the user instead of guessing.
+
+## Cloud authentication
+
+Shared Worker:
+
+`https://study-tools-auth-worker.summerofdawn20.workers.dev`
+
+Production app ID:
+
+`exam-simulator2`
+
+Return URL:
+
+`https://dawnsommer.github.io/exam-simulator2/`
+
+Google Drive scope:
+
+`https://www.googleapis.com/auth/drive.appdata`
+
+The Google OAuth Web Client used by the Worker must include this exact redirect URI:
 
 `https://study-tools-auth-worker.summerofdawn20.workers.dev/oauth/callback`
 
-## Production cloud configuration
+## Full Form Library Backup
 
-- `app_id`: `exam-simulator2`
-- return URL: `https://dawnsommer.github.io/exam-simulator2/`
-- Drive prefix: `exam-simulator2`
+Unchanged from the previous production cloud build:
 
-## First deployment test
+- explicit/manual only
+- catalog + forms + assets
+- resumable chunked upload/download
+- progress/ excluded
+- browser/iPad ↔ Google Drive directly
+- Cloudflare Worker supplies authentication only
+- restore prunes obsolete non-progress library files after successful transfer
+- `catalog.json` restored last
 
-1. Open the production Pages URL and verify the simulator/library works before connecting Google.
-2. Open Progress Sync and connect Google once.
-3. Verify the callback returns and the URL fragment disappears.
-4. Reload: no new Google consent prompt.
-5. Close/reopen Safari or installed PWA: no new consent prompt while the Worker session remains valid.
-6. Back up one disposable form and restore it.
-7. Test a full library backup/restore with disposable data before relying on it for recovery.
+## First deployment checks
 
-## CLOUD-2 interface
-
-The Form Library now exposes only four persistent workflow controls: Add New Form, Progress, Update App, and Others. Google backup state is visible beside the local Library connection status. Backup conflicts appear as an action-needed notification rather than as a permanent destructive toolbar button.
-
-### CLOUD-7 manual backup behavior
-
-`Back Up Now` first checks the tiny cloud manifest. If the same form differs locally and in Drive, the app asks for direction before uploading. Choosing **Keep This Device → Cloud** makes the local copy authoritative and completes the manifest/lineage transaction; choosing **Use Cloud Backup → This Device** restores only the conflicting form. A successful manual backup must re-check as aligned unless Drive changes again afterward.
-
-
-## CLOUD-8 diagnostics and progress-only recovery
-
-If the Progress Backup tab reports a difference that is not obvious, use **Diagnose Differences**. It reports which form/Qbank entry differs and whether the cause is active cloud progress, an unloaded-form recovery backup, an archived bankHash version, a local pending change, or a true conflict.
-
-Two progress-only maintenance actions are available:
-
-- **Clear Cloud Progress Backup** — removes only the progress manifest and per-form/Qbank cloud backups. It never deletes the Full Form Library backup.
-- **Replace Cloud Progress with This Device** — transactionally rebuilds the entire progress cloud backup from the current device. New progress files are uploaded before the manifest is committed; old progress payloads are cleaned only after the new manifest is active.
+1. Verify existing simulator progress/library before connecting Google.
+2. Connect Google and verify Worker callback/session.
+3. Reload and reopen PWA: no repeated Google consent while Worker session remains valid.
+4. Back up one disposable form; confirm a new V2 version is created and status settles to Synced.
+5. Change that form again; confirm automatic/manual backup creates one previous cloud recovery copy.
+6. Simulate an old device by using a second browser with older local progress; confirm the app asks before overwriting.
+7. On a clean/fresh browser with the matching form library, confirm cloud-only progress is offered for restore and is never treated as deletion.
+8. Test Undo Restore / previous cloud recovery.
+9. Create and restore a Manual Progress Backup.
+10. Verify daily snapshot retention and the separate Full Form Library backup.
