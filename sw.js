@@ -1,4 +1,4 @@
-const BUILD = 'EXAM-SIMULATOR2-CLOUD-1';
+const BUILD = 'EXAM-SIMULATOR2-CLOUD-2';
 const CACHE_PREFIX = 'exam-simulator2-';
 const CACHE_NAME = `${CACHE_PREFIX}${BUILD}`;
 const INDEX_KEY = `./index.html?v=${BUILD}`;

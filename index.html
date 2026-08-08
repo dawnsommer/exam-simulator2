@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
-<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
+<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
+<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
 
 <style>
 :root{
@@ -5087,7 +5087,7 @@ document.addEventListener('click', function(e){
   /* exam-simulator2: narrow cloud storage bridge.
      This exposes only durable progress operations; form source files/assets stay private to the simulator. */
   window.StepExamSyncBridge = Object.freeze({
-    build: 'EXAM-SIMULATOR2-CLOUD-1',
+    build: 'EXAM-SIMULATOR2-CLOUD-2',
     async ensureReady(){
       if(!dataDirHandle){ await restoreLastDataFolder(); }
       if(!dataDirHandle) throw new Error('Simulator library storage is not available.');
@@ -10081,10 +10081,112 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
-<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
-<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
-<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
+<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
+<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
+<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
+<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
+
+
+<style id="exam-sim-cloud2-ui-polish">
+/* Production Cloud-2 UI polish: compact Library actions, top backup status, Qbank fit. */
+.library-toolbar{align-items:flex-start!important}
+.library-actions.a5-library-actions,.library-actions.exam-final-library-actions{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:7px!important;flex-wrap:nowrap!important;width:auto!important;max-width:none!important;min-width:0!important}
+.exam-final-library-actions .exam-final-actionbar{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:7px!important;flex-wrap:nowrap!important;width:100%!important}
+.exam-final-library-actions button,.exam-final-library-actions summary{min-height:35px!important;padding:8px 11px!important;border-radius:12px!important;font-size:11px!important;line-height:1!important;font-weight:900!important;white-space:nowrap!important;cursor:pointer!important;box-shadow:0 6px 16px rgba(18,45,70,.07)!important}
+.exam-final-library-actions #loadNewFormBtn{background:linear-gradient(135deg,#0076b6,#005783)!important;color:#fff!important;border:1px solid #00496f!important}
+.exam-final-library-actions #updateAppShellBtn{background:linear-gradient(135deg,#d64242,#b72a2a)!important;color:#fff!important;border:1px solid #8f1e1e!important}
+.exam-final-library-actions .exam-toolbar-menu{position:relative!important;display:inline-block!important}
+.exam-final-library-actions .exam-toolbar-menu summary{list-style:none!important;border:1px solid #bed1dd!important;background:#fff!important;color:#142a3a!important}
+.exam-final-library-actions .exam-toolbar-menu summary::-webkit-details-marker{display:none!important}
+.exam-final-library-actions .exam-progress-menu summary{background:linear-gradient(135deg,#ff9f1c,#f07e16)!important;color:#fff!important;border-color:#c86100!important}
+.exam-final-library-actions .exam-toolbar-menu[open] summary{filter:brightness(.98)}
+.exam-final-library-actions .exam-toolbar-menu-panel{position:absolute!important;right:0!important;top:calc(100% + 7px)!important;min-width:238px!important;background:#fff!important;border:1px solid #d5e4ec!important;border-radius:15px!important;box-shadow:0 18px 46px rgba(8,24,39,.18)!important;padding:7px!important;z-index:220!important;display:flex!important;flex-direction:column!important;gap:5px!important}
+.exam-final-library-actions .exam-toolbar-menu-panel button{width:100%!important;text-align:left!important;background:#f8fbfd!important;color:#20313e!important;border:1px solid transparent!important;border-radius:10px!important;box-shadow:none!important;padding:9px 10px!important}
+.exam-final-library-actions .exam-toolbar-menu-panel button:hover{background:#eef8ff!important;border-color:#d5e4ec!important}
+.exam-final-library-actions #a5ProgressStatus{display:none!important}
+.modern-hero .exam-storage-status-row{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;flex-wrap:wrap!important}
+#googleBackupStatus{appearance:none;border:1px solid #cedae2;background:#f5f8fa;color:#506574;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:900;line-height:1;white-space:nowrap;cursor:pointer;box-shadow:0 5px 14px rgba(20,50,70,.06)}
+#googleBackupStatus::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:#899ba8;vertical-align:0}
+#googleBackupStatus[data-tone="good"]{background:#effbf5;border-color:#b9e5cf;color:#12633e}#googleBackupStatus[data-tone="good"]::before{background:#19a36f}
+#googleBackupStatus[data-tone="busy"]{background:#eef7ff;border-color:#bad8ef;color:#155d8a}#googleBackupStatus[data-tone="busy"]::before{background:#2589cf;animation:examCloudPulse .9s infinite alternate}
+#googleBackupStatus[data-tone="pending"]{background:#fff8e8;border-color:#ead39b;color:#795614}#googleBackupStatus[data-tone="pending"]::before{background:#e3a332}
+#googleBackupStatus[data-tone="conflict"]{background:#fff3e8;border-color:#e8bb86;color:#874a12}#googleBackupStatus[data-tone="conflict"]::before{background:#df7d28}
+#googleBackupStatus[data-tone="offline"]{background:#f4f5f6;border-color:#d8dde1;color:#606d75}#googleBackupStatus[data-tone="offline"]::before{background:#8c989f}
+#googleBackupStatus[data-tone="error"]{background:#fff2f2;border-color:#e8bebe;color:#8a3333}#googleBackupStatus[data-tone="error"]::before{background:#c34d4d}
+@keyframes examCloudPulse{from{opacity:.35}to{opacity:1}}
+/* Qbank: keep pool source/mode underneath the available count instead of forcing one long row. */
+.v10-available-head{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:2px!important;min-width:0!important}
+.v10-available-head>span:first-child{display:block!important;max-width:100%!important;white-space:normal!important;line-height:1.12!important}
+.v10-available-head>span:nth-child(2){display:block!important;width:100%!important;font-size:11px!important;font-weight:850!important;color:#657b8a!important;white-space:normal!important;line-height:1.25!important;margin-top:1px!important}
+@media(max-width:1000px){.library-toolbar{gap:10px!important}.library-actions.exam-final-library-actions{flex:0 0 auto!important}.exam-final-library-actions button,.exam-final-library-actions summary{font-size:10.5px!important;padding:8px 9px!important}}
+@media(max-width:760px){.library-toolbar{flex-direction:column!important}.library-actions.exam-final-library-actions{width:100%!important;justify-content:flex-start!important}.exam-final-library-actions .exam-final-actionbar{justify-content:flex-start!important}.exam-final-library-actions button,.exam-final-library-actions summary{font-size:10px!important;padding:8px 8px!important}.exam-final-library-actions .exam-toolbar-menu-panel{left:0!important;right:auto!important}.modern-hero .exam-storage-status-row{justify-content:flex-start!important}}
+</style>
+<script id="exam-sim-cloud2-ui-polish">
+(function(){
+  if(window.__examSimCloud2UiPolish) return;
+  window.__examSimCloud2UiPolish=true;
+  const byId=id=>document.getElementById(id);
+  const qs=(s,r=document)=>r.querySelector(s);
+  function makeMenu(cls,label,nodes){
+    const d=document.createElement('details');d.className='exam-toolbar-menu '+(cls||'');
+    const sm=document.createElement('summary');sm.textContent=label;d.appendChild(sm);
+    const panel=document.createElement('div');panel.className='exam-toolbar-menu-panel';
+    nodes.filter(Boolean).forEach(n=>panel.appendChild(n));d.appendChild(panel);
+    d.addEventListener('toggle',()=>{if(d.open)document.querySelectorAll('.exam-toolbar-menu[open]').forEach(o=>{if(o!==d)o.open=false;});});
+    return d;
+  }
+  function applyLibraryToolbar(){
+    const actions=qs('.library-actions'); if(!actions) return;
+    const load=byId('loadNewFormBtn'), expProg=byId('exportProgressOnlyBackupBtn'), impProg=byId('importProgressOnlyBackupBtn'), update=byId('updateAppShellBtn');
+    const connect=byId('connectDataFolderBtn'), scan=byId('scanDataFolderBtn'), catalog=byId('exportCatalogBtn'), expFull=byId('exportFullLibraryBackupBtn'), impFull=byId('importFullLibraryBackupBtn');
+    if(!load||!expProg||!impProg||!update) return;
+    if(actions.dataset.finalToolbar==='1' && qs('.exam-final-actionbar',actions)) return;
+    actions.dataset.finalToolbar='1'; actions.className='library-actions a5-library-actions exam-final-library-actions'; actions.innerHTML='';
+    const bar=document.createElement('div');bar.className='exam-final-actionbar';
+    load.textContent='Add New Form';
+    expProg.textContent='Export Progress File'; impProg.textContent='Import Progress File';
+    update.textContent='Update App';
+    if(connect) connect.textContent='Connect / Start Library Storage';
+    if(scan) scan.textContent='Scan / Refresh Library';
+    if(catalog) catalog.textContent='Write Catalog';
+    if(expFull) expFull.textContent='Export Full Library Backup';
+    if(impFull) impFull.textContent='Import Full Library Backup';
+    bar.appendChild(load);
+    bar.appendChild(makeMenu('exam-progress-menu','Progress ▾',[impProg,expProg]));
+    bar.appendChild(update);
+    bar.appendChild(makeMenu('exam-other-menu','Others ▾',[connect,scan,catalog,expFull,impFull]));
+    actions.appendChild(bar);
+  }
+  function ensureBackupSticker(){
+    const data=byId('dataFolderStatus'); if(!data) return null;
+    let row=data.closest('.exam-storage-status-row');
+    if(!row){row=document.createElement('div');row.className='exam-storage-status-row';const parent=data.parentNode;parent.insertBefore(row,data);row.appendChild(data);}
+    let cloud=byId('googleBackupStatus');
+    if(!cloud){cloud=document.createElement('button');cloud.type='button';cloud.id='googleBackupStatus';cloud.dataset.tone='offline';cloud.textContent='Google Backup: Off';row.insertBefore(cloud,data);cloud.addEventListener('click',()=>{const tab=byId('progressSyncTab');if(tab)tab.click();});}
+    return cloud;
+  }
+  function backupLabel(state){
+    const s=String(state?.status||'Disconnected');
+    if(s==='Backed up') return ['good','Google Backup: Synced'];
+    if(/Backing up|Connecting|Restoring cloud session|Restoring/i.test(s)) return ['busy',/Backing up/i.test(s)?'Google Backup: Syncing':'Google Backup: Connecting'];
+    if(/Backup decision required/i.test(s)) return ['conflict','Google Backup: Conflict'];
+    if(/Local backup pending/i.test(s)) return ['pending','Google Backup: Pending'];
+    if(/Cloud backup available/i.test(s)) return ['pending','Google Backup: Cloud Available'];
+    if(/Offline|Authentication service unavailable/i.test(s)) return ['offline','Google Backup: Offline'];
+    if(/Reconnect/i.test(s)) return ['pending','Google Backup: Reconnect'];
+    if(/failed|error/i.test(s)) return ['error','Google Backup: Error'];
+    if(/Disconnected/i.test(s)) return ['offline','Google Backup: Off'];
+    return ['offline','Google Backup: '+s];
+  }
+  function setBackupSticker(state){const el=ensureBackupSticker();if(!el)return;const [tone,label]=backupLabel(state);el.dataset.tone=tone;el.textContent=label;el.title=(state?.detail||'')+'\nTap to open Progress Backup.';}
+  window.addEventListener('stepsync:state',e=>setBackupSticker(e.detail||{}));
+  document.addEventListener('click',e=>{if(e.target.closest?.('.exam-toolbar-menu'))return;document.querySelectorAll('.exam-toolbar-menu[open]').forEach(d=>d.open=false);},true);
+  function run(){applyLibraryToolbar();ensureBackupSticker();try{const st=window.StepProgressSync?.sync?.getState?.();if(st)setBackupSticker(st);}catch(e){}}
+  try{if(typeof renderLibrary==='function'&&!renderLibrary.__cloud2Toolbar){const prior=renderLibrary;renderLibrary=async function(){const out=await prior.apply(this,arguments);try{applyLibraryToolbar();}catch(e){}return out;};renderLibrary.__cloud2Toolbar=true;}}catch(e){}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();
+  setTimeout(run,350);setTimeout(run,1300);setTimeout(run,2200);
+})();
+</script>
 
 </body>
 </html>

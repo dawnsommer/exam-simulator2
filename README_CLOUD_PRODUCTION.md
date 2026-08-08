@@ -1,6 +1,6 @@
 # exam-simulator2 — Production Cloud Build
 
-Build: `EXAM-SIMULATOR2-CLOUD-1`
+Build: `EXAM-SIMULATOR2-CLOUD-2`
 
 Production URL: `https://dawnsommer.github.io/exam-simulator2/`
 
@@ -34,3 +34,7 @@ The OAuth Web Client used by the shared Worker must include this exact Authorize
 5. Close/reopen Safari or installed PWA: no new consent prompt while the Worker session remains valid.
 6. Back up one disposable form and restore it.
 7. Test a full library backup/restore with disposable data before relying on it for recovery.
+
+## CLOUD-2 interface
+
+The Form Library now exposes only four persistent workflow controls: Add New Form, Progress, Update App, and Others. Google backup state is visible beside the local Library connection status. Backup conflicts appear as an action-needed notification rather than as a permanent destructive toolbar button.

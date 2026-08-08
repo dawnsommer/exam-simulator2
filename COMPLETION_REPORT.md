@@ -1,6 +1,6 @@
 # exam-simulator2 — Cloud Production Completion Report
 
-Build: `EXAM-SIMULATOR2-CLOUD-1`
+Build: `EXAM-SIMULATOR2-CLOUD-2`
 
 ## Architecture preserved
 
@@ -49,7 +49,7 @@ Build: `EXAM-SIMULATOR2-CLOUD-1`
 
 ## PWA / caching
 
-- Service-worker build: `EXAM-SIMULATOR2-CLOUD-1`.
+- Service-worker build: `EXAM-SIMULATOR2-CLOUD-2`.
 - Cache namespace: `exam-simulator2-*`.
 - Cache/service-worker reset code is scoped to `/exam-simulator2/` and no longer clears unrelated GitHub Pages apps.
 - Core cloud JS and manifest are network-first to reduce stale PWA code.
@@ -83,3 +83,13 @@ The build environment cannot complete a real Google OAuth/PWA flow for your acco
 5. Back up and restore a disposable form.
 6. Back up and restore a disposable full library and confirm old non-progress library storage is pruned while progress remains.
 7. Test Mac + iPad multi-device discrepancy/conflict behavior before relying on the production cloud copy.
+
+## EXAM-SIMULATOR2-CLOUD-2 UI update
+
+- Progress Backup conflicts now render as a dedicated action-needed notification card instead of adding a destructive Replace-Cloud button to the normal action row.
+- During a conflict, the card offers two explicit directions: **Keep This Device → Cloud** or **Use Cloud Backup → This Device**. The standard row is reduced to Check Again / Disconnect until the conflict is resolved.
+- The Form Library persistent toolbar is reduced to four top-level controls in one compact row: **Add New Form**, **Progress**, **Update App**, and **Others**.
+- Progress contains Import Progress File / Export Progress File. Others contains storage connection/refresh, catalog write, and full-library import/export.
+- Added a clickable **Google Backup** status pill to the left of the existing local library status. It follows the real sync state event and opens Progress Backup when tapped.
+- Cloud status labels include Synced, Syncing/Connecting, Pending, Conflict, Cloud Available, Offline, Reconnect, Error, and Off.
+- Qbank's pool/source line is now stacked below the available-question count so `Qbank · Unused` no longer competes for horizontal space.
