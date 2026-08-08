@@ -10,6 +10,9 @@
 <meta name="apple-mobile-web-app-title" content="Step Simulator">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
+<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
+<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
 
 <style>
 :root{
@@ -2377,11 +2380,11 @@ document.addEventListener('click', function(e){
   function setGate(connected){ const gate=$('#dataGate'); if(!gate) return; const browserMode=isBrowserLibraryHandle(dataDirHandle); gate.classList.toggle('locked',!connected); gate.innerHTML= connected ? (browserMode ? `<div><h3>iPad Browser Library connected</h3><p>Forms, progress, Qbank history, and assets are stored privately inside this Safari/GitHub Pages site. Use backup buttons for safety.</p></div><button id="dataGateRescan" class="secondary" type="button">Refresh Library</button>` : `<div><h3>DATA folder connected</h3><p>Library mode is file-based. Forms are read lazily from DATA/forms and progress is written to DATA/progress.</p></div><button id="dataGateRescan" class="secondary" type="button">Rescan DATA</button>`) : `<div><h3>Library storage required</h3><p>On iPad/GitHub Pages this starts browser-private storage. On desktop with ?folderAccess=1, you may select a DATA folder.</p></div><button id="dataGateConnect" class="primary" type="button">Connect / Start Library Storage</button>`; $('#dataGateConnect')?.addEventListener('click',()=>connectDataFolder().catch(e=>alert(e.message||String(e)))); $('#dataGateRescan')?.addEventListener('click',()=>scanDataFolder().catch(e=>alert(e.message||String(e)))); }
   function updateDataFolderStatus(){ const el=$('#dataFolderStatus'); if(!el) return; if(dataDirHandle){ const browserMode=isBrowserLibraryHandle(dataDirHandle); el.textContent= browserMode ? 'iPad Browser Library: connected' : `DATA folder: connected (${dataDirHandle.name || 'selected folder'})`; el.classList.add('connected'); setGate(true); } else { el.textContent='Library storage: not connected'; el.classList.remove('connected'); setGate(false); } }
   async function getSubdir(name){ if(!dataDirHandle) throw new Error('Connect the DATA folder first.'); return await dataDirHandle.getDirectoryHandle(name,{create:true}); }
-  async function writeText(dir, filename, text){ const fh=await dir.getFileHandle(filename,{create:true}); const w=await fh.createWritable(); await w.write(text); await w.close(); }
+  async function writeText(dir, filename, text){ const fh=await dir.getFileHandle(filename,{create:true}); const w=await fh.createWritable(); await w.write(text); await w.close(); try{ if(/(?:_progress_save|_suspended_test|QBANK_MODE_progress)\.json$/i.test(String(filename||''))) window.dispatchEvent(new CustomEvent('stepsim:progress-write',{detail:{filename:String(filename),operation:'write'}})); }catch(_e){} }
   async function readText(dir, filename){ const fh=await dir.getFileHandle(filename); return await (await fh.getFile()).text(); }
-  async function removeFile(dir, filename){ try{ await dir.removeEntry(filename); }catch(e){} }
+  async function removeFile(dir, filename){ let removed=false; try{ await dir.removeEntry(filename); removed=true; }catch(e){} try{ if(removed && /(?:_progress_save|_suspended_test|QBANK_MODE_progress)\.json$/i.test(String(filename||''))) window.dispatchEvent(new CustomEvent('stepsim:progress-write',{detail:{filename:String(filename),operation:'delete'}})); }catch(_e){} }
   async function writeBinary(dir, filename, blob){ const fh=await dir.getFileHandle(filename,{create:true}); const w=await fh.createWritable(); await w.write(blob); await w.close(); }
-  async function writeCatalog(){ if(!dataDirHandle) return; ensureCatalogShape(); catalog.updatedAt=nowIso(); await writeText(dataDirHandle,'catalog.json',JSON.stringify(catalog,null,2)); }
+  async function writeCatalog(){ if(!dataDirHandle) return; ensureCatalogShape(); catalog.updatedAt=nowIso(); await writeText(dataDirHandle,'catalog.json',JSON.stringify(catalog,null,2)); try{ window.dispatchEvent(new CustomEvent('stepsim:catalog-write')); }catch(_e){} }
   async function loadCatalog(){ ensureCatalogShape(); if(!dataDirHandle) return; try{ catalog=JSON.parse(await readText(dataDirHandle,'catalog.json')); ensureCatalogShape(); }catch(e){ catalog={fileType:'StepExamSimulatorV75Catalog', updatedAt:nowIso(), forms:[]}; await writeCatalog(); } }
   async function formsDir(){ return await getSubdir('forms'); }
   async function progressDir(){ return await getSubdir('progress'); }
@@ -2733,9 +2736,9 @@ document.addEventListener('click', function(e){
     return `<article class="v75-card ${cls}" data-form-id="${escapeAttr(rec.id)}"><div class="v75-head"><div><div class="v75-title">${escapeHtml(rec.displayName||rec.id)} <button class="rename-btn" data-action="rename" title="Rename">✎</button></div><div class="v75-sub">${escapeHtml(rec.subject||'Custom')} · ${escapeHtml(rec.id)} · ${rec.totalQuestions||0} Qs</div></div><div class="v75-head-right"><div class="v75-badge-row"><span class="v75-badge ${badgeCls}">${badge}</span>${(isN && tabScoreChipEnabled(getFormTabKey(rec)))?`<span class="v75-three-chip"><b>${escapeHtml(three)}</b><span>3-digit</span></span>`:''}</div></div></div><div class="v75-score-row"><div class="v75-bigmetric"><b>${scoreText}</b><span>Score %</span></div><div class="v75-mini-metrics"><div class="v75-mini"><b>${s.progressPct||0}%</b><span>Answered</span></div><div class="v75-mini"><b>${s.completedBlocks||0}/${s.blockCount||0}</b><span>Blocks</span></div><div class="v75-mini"><b>${s.marked||0}</b><span>Marked</span></div></div></div><div class="v75-progress"><div style="width:${Math.max(0,Math.min(100,s.progressPct||0))}%"></div></div><div class="v75-chiprow"><span class="v75-chip green">Imported ${escapeHtml(fmtDate(rec.importedAt))}</span><span class="v75-chip">${rec.optimized?'Optimized':'Original images'}</span>${rec.imageAssets?`<span class="v75-chip purple">${rec.imageAssets} assets</span>`:''}${rec.lastBackup?`<span class="v75-chip">Backup saved</span>`:''}</div><div class="v75-card-footer"><div class="v75-primary-actions"><button class="primary" data-action="start">Start / Setup</button><button class="secondary" data-action="review" ${s.completed?'':'disabled'}>Review</button></div><details class="v75-menu"><summary>More ▾</summary><div class="v75-menu-panel"><button data-action="import-save">Import Progress Save</button><button data-action="export-save">Export Progress Save</button>${isN?'<button data-action="score3">Set 3-digit score</button>':''}<button data-action="optimize">Optimize Images</button><button data-action="rename">Rename</button><button class="dangerish" data-action="delete-progress">Delete Current Progress</button><button class="dangerish" data-action="delete">Remove Form</button></div></details></div></article>`;
   }
   async function renameForm(id){ const rec=catalogForm(id); if(!rec) return; const next=await appPrompt('Rename this form:', rec.displayName||id, {title:'Rename Form'}); if(next===null) return; rec.displayName=next.trim()||rec.defaultName||id; upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); renderQbankMode(); }
-  async function setThreeDigitScore(id){ const rec=catalogForm(id); if(!rec) return; const next=await appPrompt('Enter converted 3-digit score:', rec.threeDigitScore||'', {title:'Set 3-digit score'}); if(next===null) return; const clean=next.trim(); if(clean && !/^\d{3}$/.test(clean)) return alert('Enter exactly 3 digits, e.g. 245.'); rec.threeDigitScore=clean; upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); }
+  async function setThreeDigitScore(id){ const rec=catalogForm(id); if(!rec) return; const next=await appPrompt('Enter converted 3-digit score:', rec.threeDigitScore||'', {title:'Set 3-digit score'}); if(next===null) return; const clean=next.trim(); if(clean && !/^\d{3}$/.test(clean)) return alert('Enter exactly 3 digits, e.g. 245.'); rec.threeDigitScore=clean; rec.updatedAt=nowIso(); upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); }
   async function deleteProgress(id){ const rec=catalogForm(id); if(!rec) return; const ok=await appConfirm(`Delete current progress for ${rec.displayName||id}? The form JSON stays loaded in DATA/forms.`, {okText:'Delete Progress', danger:true}); if(!ok) return; await removeFile(await progressDir(), `${id}_progress_save.json`); rec.progressSummary=null; upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); renderQbankMode(); }
-  async function deleteForm(id){ const rec=catalogForm(id); if(!rec) return; if(!await appConfirm(`Remove ${rec.displayName||id} from DATA catalog and delete its form/progress files?`, {okText:'Remove Form', danger:true})) return; await removeFile(await formsDir(), `${id}.json`); await removeFile(await progressDir(), `${id}_progress_save.json`); removeCatalogForm(id); loadedFormCache.delete(id); await writeCatalog(); renderLibrary(); renderQbankMode(); }
+  async function deleteForm(id){ const rec=catalogForm(id); if(!rec) return; if(!await appConfirm(`Remove ${rec.displayName||id} from DATA catalog and delete its form/progress files?`, {okText:'Remove Form', danger:true})) return; await removeFile(await formsDir(), `${id}.json`); await removeFile(await progressDir(), `${id}_progress_save.json`); try{ window.dispatchEvent(new CustomEvent('stepsim:progress-write',{detail:{filename:`${id}_progress_save.json`,operation:'delete',formId:id,bankHash:rec.bankHash||''}})); }catch(_e){} removeCatalogForm(id); loadedFormCache.delete(id); await writeCatalog(); renderLibrary(); renderQbankMode(); }
   async function optimizeExistingForm(id){
     const rec=catalogForm(id); if(!rec) return;
     const rawText=await readRawFormText(id);
@@ -2980,8 +2983,8 @@ document.addEventListener('click', function(e){
   async function updateAppShellPreserveLibrary(){
     const ok=await appConfirm('Clear the app shell/cache and reload the clean GitHub Pages URL? This does not delete your iPad Browser Library, forms, progress, or assets.', {okText:'Update App'});
     if(!ok) return;
-    try{ if('caches' in window){ const keys=await caches.keys(); await Promise.all(keys.map(k=>caches.delete(k))); } }catch(e){ console.warn('Could not clear caches', e); }
-    try{ if(navigator.serviceWorker){ const regs=await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r=>r.unregister())); } }catch(e){ console.warn('Could not unregister service workers', e); }
+    try{ if('caches' in window){ const keys=await caches.keys(); await Promise.all(keys.filter(k=>String(k).startsWith('exam-simulator2-')).map(k=>caches.delete(k))); } }catch(e){ console.warn('Could not clear caches', e); }
+    try{ if(navigator.serviceWorker){ const regs=await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.filter(r=>String(r.scope||'').includes('/exam-simulator2/')).map(r=>r.unregister())); } }catch(e){ console.warn('Could not unregister service workers', e); }
     const base=location.origin + location.pathname.replace(/[^/]*$/, '');
     location.replace(base);
   }
@@ -5001,7 +5004,12 @@ document.addEventListener('click', function(e){
         if(typeof setThreeDigitScore === 'function' && !setThreeDigitScore.__v2110Wrapped){
           const v2110BaseSetThreeDigitScore = setThreeDigitScore;
           setThreeDigitScore = async function(id){
+            let before=''; try{ before=String((catalogForm(id)||{}).threeDigitScore||''); }catch(e){}
             const out = await v2110BaseSetThreeDigitScore.apply(this, arguments);
+            try{
+              const rec=catalogForm(id), after=String((rec||{}).threeDigitScore||'');
+              if(before!==after && !window.__STEP_SYNC_APPLYING_REMOTE) window.dispatchEvent(new CustomEvent('stepsim:three-digit-score',{detail:{formId:String(id),bankHash:String((rec||{}).bankHash||''),value:after}}));
+            }catch(e){}
             try{ await renderLibrary(); }catch(e){}
             return out;
           };
@@ -5053,6 +5061,88 @@ document.addEventListener('click', function(e){
           try{ renderSettings(); }catch(err){}
         }, true);
       })();
+
+
+  /* exam-simulator2 cloud-library bridge helpers. Progress remains a separate backup system. */
+  async function stepSyncResolveLibraryPath(relPath, createDirs=false){
+    const parts=normalizeZipPath(relPath).split('/').filter(Boolean);
+    if(!parts.length) throw new Error('Invalid library path.');
+    let dir=dataDirHandle;
+    for(let i=0;i<parts.length-1;i++) dir=await dir.getDirectoryHandle(parts[i],{create:!!createDirs});
+    return {dir,name:parts[parts.length-1]};
+  }
+  async function stepSyncWalkLibrary(dir,prefix='',out=[]){
+    for await(const [name,h] of dir.entries()){
+      const path=prefix?`${prefix}/${name}`:name;
+      if(path==='progress' || path.startsWith('progress/')) continue;
+      if(h.kind==='directory') await stepSyncWalkLibrary(h,path,out);
+      else if(h.kind==='file'){
+        const file=await h.getFile();
+        out.push({path,size:Number(file.size)||0,type:file.type||'application/octet-stream',lastModified:Number(file.lastModified)||0});
+      }
+    }
+    return out;
+  }
+
+  /* exam-simulator2: narrow cloud storage bridge.
+     This exposes only durable progress operations; form source files/assets stay private to the simulator. */
+  window.StepExamSyncBridge = Object.freeze({
+    build: 'EXAM-SIMULATOR2-CLOUD-1',
+    async ensureReady(){
+      if(!dataDirHandle){ await restoreLastDataFolder(); }
+      if(!dataDirHandle) throw new Error('Simulator library storage is not available.');
+      return true;
+    },
+    async flushActive(){
+      try{ if(typeof persistBlockProgress==='function' && activeSession) persistBlockProgress(); }catch(e){}
+      try{ if(typeof saveSessionToStorage==='function' && activeSession) await saveSessionToStorage(); }catch(e){ console.warn('Sync bridge flush failed',e); }
+      return true;
+    },
+    storageProfile(){ return { browserLibrary:isBrowserLibraryHandle(dataDirHandle), connected:!!dataDirHandle, database:'StepExamSimulatorV784_A4_iPadBrowserLibrary_DB' }; },
+    runtime(){
+      let examVisible=false; try{ const el=document.getElementById('examScreen'); examVisible=!!(el && !el.classList.contains('hidden') && getComputedStyle(el).display!=='none'); }catch(e){}
+      return { examVisible, activeFormId:activeRunContext&&activeRunContext.formId||'', activeType:activeRunContext&&activeRunContext.type||'', qbank:!!(activeRunContext&&activeRunContext.qbank), hasActiveSession:!!activeSession };
+    },
+    async catalog(){ await this.ensureReady(); ensureCatalogShape(); return JSON.parse(JSON.stringify(catalog)); },
+    async listLibraryFiles(){ await this.ensureReady(); const out=await stepSyncWalkLibrary(dataDirHandle,'',[]); return out.sort((a,b)=>a.path.localeCompare(b.path)); },
+    async pruneLibraryToPaths(keepPaths){ await this.ensureReady(); const keep=new Set((keepPaths||[]).map(normalizeZipPath)); const files=await stepSyncWalkLibrary(dataDirHandle,'',[]); let removed=0; for(const f of files){ const path=normalizeZipPath(f.path); if(!path || path==='progress' || path.startsWith('progress/') || keep.has(path)) continue; try{ const r=await stepSyncResolveLibraryPath(path,false); await r.dir.removeEntry(r.name); removed++; }catch(e){ console.warn('Could not prune obsolete library file',path,e); } } loadedFormCache.clear(); return {removed}; },
+    async readLibraryFileBlob(path){ await this.ensureReady(); const r=await stepSyncResolveLibraryPath(path,false); const fh=await r.dir.getFileHandle(r.name,{create:false}); return await fh.getFile(); },
+    async writeLibraryFileBlob(path,blob){ await this.ensureReady(); const r=await stepSyncResolveLibraryPath(path,true); await writeBinary(r.dir,r.name,blob); return true; },
+    async refreshLibraryAfterRestore(){ await this.ensureReady(); try{ await scanDataFolder(); }catch(e){ console.warn('Library rescan after cloud restore failed',e); } try{ await renderLibrary(); }catch(e){} try{ await renderQbankMode(); }catch(e){} return true; },
+    async readFormProgressText(id){ await this.ensureReady(); try{return await readText(await progressDir(),`${id}_progress_save.json`);}catch(e){return null;} },
+    async readFormSuspendedText(id){ await this.ensureReady(); try{return await readText(await progressDir(),`${id}_suspended_test.json`);}catch(e){return null;} },
+    async readQbankText(){ await this.ensureReady(); try{return await readText(await progressDir(),'QBANK_MODE_progress.json');}catch(e){return null;} },
+    async writeFormProgressText(id,text,bankHash){
+      await this.ensureReady(); const rec=catalogForm(id); if(!rec) throw new Error(`Form ${id} is not loaded locally.`);
+      if(bankHash && rec.bankHash && bankHash!==rec.bankHash) throw new Error(`Form version mismatch for ${id}.`);
+      const obj=JSON.parse(String(text||'')); if(!obj || typeof obj!=='object') throw new Error(`Invalid progress payload for ${id}.`);
+      const payloadId=String(obj.formSlot||obj.bundle?.formSlot||obj.session?.libraryFormId||id); if(payloadId && payloadId!==id) throw new Error(`Progress slot mismatch for ${id}.`);
+      const hashes=[]; if(obj.session?.bankHash) hashes.push(obj.session.bankHash); if(obj.bundle?.attempts) obj.bundle.attempts.forEach(a=>{if(a&&a.session&&a.session.bankHash)hashes.push(a.session.bankHash);});
+      if(rec.bankHash && hashes.some(h=>h && h!==rec.bankHash)) throw new Error(`Progress bank hash does not match loaded ${id}.`);
+      await writeText(await progressDir(),`${id}_progress_save.json`,JSON.stringify(obj,null,2));
+      try{ await refreshProgressSummaries(); }catch(e){} try{ await renderLibrary(); }catch(e){} try{ await renderQbankMode(); }catch(e){}
+      return true;
+    },
+    async writeFormSuspendedText(id,text,bankHash){
+      await this.ensureReady(); const rec=catalogForm(id); if(!rec) throw new Error(`Form ${id} is not loaded locally.`);
+      if(bankHash && rec.bankHash && bankHash!==rec.bankHash) throw new Error(`Form version mismatch for ${id}.`);
+      if(text==null){ await removeFile(await progressDir(),`${id}_suspended_test.json`); return true; }
+      const obj=JSON.parse(String(text)); if(obj && obj.bankHash && rec.bankHash && obj.bankHash!==rec.bankHash) throw new Error(`Suspended progress bank hash mismatch for ${id}.`);
+      await writeText(await progressDir(),`${id}_suspended_test.json`,JSON.stringify(obj,null,2)); return true;
+    },
+    async deleteFormProgress(id){ await this.ensureReady(); await removeFile(await progressDir(),`${id}_progress_save.json`); await removeFile(await progressDir(),`${id}_suspended_test.json`); const rec=catalogForm(id); if(rec){rec.progressSummary=null; upsertCatalogForm(rec); await writeCatalog();} try{await renderLibrary();}catch(e){} return true; },
+    async writeQbankText(text){
+      await this.ensureReady(); if(text==null){ await removeFile(await progressDir(),'QBANK_MODE_progress.json'); return true; }
+      const incoming=JSON.parse(String(text)); if(!incoming || typeof incoming!=='object') throw new Error('Invalid Qbank progress payload.');
+      let local={}; try{local=JSON.parse((await readText(await progressDir(),'QBANK_MODE_progress.json'))||'{}');}catch(e){}
+      /* Keep device-local interface defaults; only durable Qbank progress is cloud-managed. */
+      if(local.settings!==undefined) incoming.settings=local.settings; else delete incoming.settings;
+      if(local.lastSelectedFormIds!==undefined) incoming.lastSelectedFormIds=local.lastSelectedFormIds; else delete incoming.lastSelectedFormIds;
+      await writeText(await progressDir(),'QBANK_MODE_progress.json',JSON.stringify(incoming,null,2)); try{await renderQbankMode();}catch(e){} return true;
+    },
+    async setThreeDigitScore(id,value){ await this.ensureReady(); const rec=catalogForm(id); if(!rec) throw new Error(`Form ${id} is not loaded locally.`); const nextScore=value==null?'':String(value); const scoreChanged=String(rec.threeDigitScore||'')!==nextScore; rec.threeDigitScore=nextScore; if(scoreChanged && !window.__STEP_SYNC_APPLYING_REMOTE) rec.updatedAt=nowIso(); upsertCatalogForm(rec); await writeCatalog(); if(scoreChanged && !window.__STEP_SYNC_APPLYING_REMOTE){ try{window.dispatchEvent(new CustomEvent('stepsim:three-digit-score',{detail:{formId:String(id),bankHash:String(rec.bankHash||''),value:nextScore}}));}catch(_e){} } try{await renderLibrary();}catch(e){} return true; },
+    async refresh(){ try{await refreshProgressSummaries();}catch(e){} try{await renderLibrary();}catch(e){} try{await renderQbankMode();}catch(e){} return true; }
+  });
 
   updateDataFolderStatus(); setMenuMode('quick'); renderMenu(); renderLibrary(); renderQbankMode(); restoreLastDataFolder().catch(e=>appAlert(e.message||String(e),'DATA Folder'));
 })();
@@ -5743,8 +5833,8 @@ html:fullscreen .bottombar{bottom:0!important}
             else ok = confirm('Clear app cache and reload? This does not delete your imported forms/progress.');
           }catch(e){}
           if(!ok) return;
-          try{ if('caches' in window){ var keys=await caches.keys(); await Promise.all(keys.map(function(k){return caches.delete(k);})); } }catch(e){ console.warn('Could not clear caches', e); }
-          try{ if(navigator.serviceWorker){ var regs=await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(function(r){return r.unregister();})); } }catch(e){ console.warn('Could not unregister service workers', e); }
+          try{ if('caches' in window){ var keys=await caches.keys(); await Promise.all(keys.filter(function(k){return String(k).indexOf('exam-simulator2-')===0;}).map(function(k){return caches.delete(k);})); } }catch(e){ console.warn('Could not clear caches', e); }
+          try{ if(navigator.serviceWorker){ var regs=await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.filter(function(r){return String(r.scope||'').indexOf('/exam-simulator2/')!==-1;}).map(function(r){return r.unregister();})); } }catch(e){ console.warn('Could not unregister service workers', e); }
           var base = location.origin + location.pathname.replace(/[^/]*$/, '');
           location.replace(base);
         };
@@ -9989,6 +10079,12 @@ try{
   }catch(e){}
 })();
 </script>
+
+<!-- exam-simulator2 Google Drive progress backup + library recovery -->
+<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
+<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
+<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
+<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-CLOUD-1"></script>
 
 </body>
 </html>
