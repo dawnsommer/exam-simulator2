@@ -432,6 +432,18 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 .library-tab-settings-note{font-size:12px;color:#52616b;line-height:1.35;margin:4px 0 10px}.settings-row.library-tab-row{align-items:center}.settings-row.library-tab-row .library-tab-switches{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}.settings-row.library-tab-row .library-tab-switches label{font-size:12px;font-weight:850;border:1px solid #dce5ec;background:#fff;border-radius:999px;padding:6px 9px;white-space:nowrap}.settings-card.wide{grid-column:1/-1}.answer-change-audit{margin:16px 0;padding:16px;border:1px solid #d8e7f0;border-radius:20px;background:linear-gradient(180deg,#fbfdff,#f3f9fd)}.answer-change-audit h3{margin:0 0 10px;color:#071827}.answer-change-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.answer-change-box{background:#fff;border:1px solid #e1ebf2;border-radius:16px;padding:12px}.answer-change-box b{display:block;font-size:28px;color:#071827;line-height:1}.answer-change-box span{display:block;margin-top:4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:950;color:#5c7180}.answer-change-box.bad b{color:#b00020}.answer-change-box.good b{color:#0e8d45}.answer-change-box.neutral b{color:#73510d}.answer-change-note{font-size:12px;color:#536879;margin-top:9px;line-height:1.35}
 </style>
 
+
+<style id="cloud3-ui-fixes">
+/* Form Library split layout */
+#libraryWorkflowLayout{display:grid!important;grid-template-columns:minmax(0,1fr) 260px;gap:18px;align-items:stretch;}
+#libraryWorkflowLayout .workflow-column{display:flex;flex-direction:column;gap:10px;}
+#libraryWorkflowLayout .workflow-column button{width:100%;}
+.cloud-status-cluster{display:flex!important;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;}
+.cloud-status-sticker{order:-1;}
+.exam-toolbar-menu{position:relative!important;z-index:10000!important;}
+.exam-toolbar-menu .exam-toolbar-menu-panel,.exam-toolbar-menu .v75-menu-panel{position:absolute!important;z-index:10001!important;top:calc(100% + 8px)!important;right:0!important;}
+.glass-panel,.mode-panel,.library-tabs-card{overflow:visible!important;}
+</style>
 </head>
 <body>
 <!-- V12/A16 patch: below-mode explanation highlights restored 2026-06-17 -->
@@ -10188,5 +10200,36 @@ try{
 })();
 </script>
 
+
+<script id="cloud3-layout-fixes">
+(function(){
+function fixLibraryLayout(){
+ const lib=document.querySelector('#menu, #libraryGrid')?.closest('.glass-panel')||document.querySelector('.library-panel');
+ const workflow=[...document.querySelectorAll('button')].filter(b=>/Add New Form|Export Progress Backup|Import Progress Backup|Update App|Others|Progress/i.test(b.textContent));
+ workflow.forEach(b=>{const d=b.parentElement;if(d)d.classList.add('workflow-column');});
+ const container=document.querySelector('.persistent-workflow')||document.querySelector('#persistentWorkflow');
+ if(container&&!container.id)container.id='libraryWorkflowLayout';
+}
+function fixStatus(){
+ const row=document.querySelector('.cloud-status-cluster')||document.querySelector('#dataFolderStatus')?.parentElement;
+ if(row)row.classList.add('cloud-status-cluster');
+}
+function fixQbank(){
+ const stats=document.querySelector('#qbankStats');
+ if(stats){stats.style.display='flex';stats.style.flexDirection='column';}
+}
+function fixMenus(){
+ document.querySelectorAll('.exam-toolbar-menu, details.v75-menu').forEach(x=>x.style.zIndex='10000');
+}
+window.addEventListener('stepsync:state',e=>{
+ const s=e.detail?.status||'';
+ // prevent transient stale pending after a completed backup
+ if(s==='Local backup pending' && window.__lastSuccessfulBackupAt && Date.now()-window.__lastSuccessfulBackupAt<15000){return;}
+});
+window.addEventListener('stepsync:backup-complete',()=>window.__lastSuccessfulBackupAt=Date.now());
+function run(){fixLibraryLayout();fixStatus();fixQbank();fixMenus();}
+setInterval(run,1500);run();
+})();
+</script>
 </body>
 </html>

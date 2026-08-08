@@ -133,7 +133,12 @@
     if(done.some(x=>x.uploaded||x.deleted))await writeManifest(manifest);
     const dirtyNext=await getMap('dirtyKeys'),tombNext=await getMap('deleteTombstones'),protectedNext=await getMap('protectedDeletes');for(const x of done){delete dirtyNext[x.key];if(x.deleted){delete tombNext[x.key];delete protectedNext[x.key];delete lastHashes[x.key];}}await setMap('dirtyKeys',dirtyNext);await setMap('deleteTombstones',tombNext);await setMap('protectedDeletes',protectedNext);await setMap('lastBackedUpHash',lastHashes);if(dirtyAll)await R.meta.del('dirtyAll');
     if(done.some(x=>x.uploaded||x.deleted)){const t=cloudState.file?.modifiedTime||U.iso();await R.meta.set('lastBackupAt',t);uiState.lastBackup=t;}
-    const after=await analyze({flush:false});if(conflicts.length){decisionKeys=conflicts.map(x=>x.key);setStatus('Backup decision required',`${conflicts.length} cloud backup${conflicts.length===1?'':'s'} changed since this device last knew them. Safe files were backed up; conflicting files were left untouched.`,{summary:after.summary});}else setAnalysisStatus(after);
+    const after=await analyze({flush:false});if(conflicts.length){decisionKeys=conflicts.map(x=>x.key);setStatus('Backup decision required',`${conflicts.length} cloud backup${conflicts.length===1?'':'s'} changed since this device last knew them. Safe files were backed up; conflicting files were left untouched.`,{summary:after.summary});}else {
+      const remainingDirty=Object.keys(await getMap('dirtyKeys')).length || !!(await R.meta.get('dirtyAll',null));
+      if(!remainingDirty && after.summary && !after.summary.conflicts?.length){
+        setStatus('Backed up','All local changes are safely stored in Google Drive.',{summary:after.summary});
+      } else setAnalysisStatus(after);
+    }
     return {uploaded:done.filter(x=>x.uploaded).length,deleted:done.filter(x=>x.deleted).length,conflicts};
   }
   async function backupNow(opts={}){if(running)return running;running=backupCore(opts).catch(async e=>{await handleError(e);throw e;}).finally(()=>{running=null;});return running;}
