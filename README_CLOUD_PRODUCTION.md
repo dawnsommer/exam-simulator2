@@ -1,6 +1,6 @@
 # exam-simulator2 — Production Cloud Build
 
-Build: `EXAM-SIMULATOR2-CLOUD-5`
+Build: `EXAM-SIMULATOR2-CLOUD-6`
 
 Production URL: `https://dawnsommer.github.io/exam-simulator2/`
 

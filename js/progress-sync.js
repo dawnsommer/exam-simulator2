@@ -87,7 +87,16 @@
       const l=local.index[key]||null,r=manifest.entries[key]||null,k=known[key]||null,t=tombstones[key]||null,localChanged=!!l&&(dirtyAll||dirty[key]||!lastHashes[key]||lastHashes[key]!==l.contentHash),remoteChanged=!!r&&(!k||k.backupId!==r.backupId),same=!!l&&!!r&&!r.deletedAt&&l.contentHash===r.contentHash;
       let state='';
       if(t){if(r&&remoteChanged){state='conflict';conflicts++;}else if(r){state='local-delete-pending';pending++;}else{state='aligned';aligned++;}}
-      else if(r?.deletedAt){if(l&&localChanged){state='conflict';conflicts++;}else{state='cloud-newer';cloudNewer++;}}
+      else if(r?.deletedAt){
+        /* A cloud tombstone that this device already acknowledged is aligned when the local copy is absent.
+           Previously it was always classified as cloud-newer, which recreated the conflict immediately
+           after "Keep This Device → Cloud" successfully propagated a local delete. */
+        if(!l){
+          if(remoteChanged){state='cloud-newer';cloudNewer++;}
+          else{state='aligned';aligned++;}
+        }else if(localChanged){state='conflict';conflicts++;}
+        else{state='cloud-newer';cloudNewer++;}
+      }
       else if(same){state='aligned';aligned++;}
       else if(l&&r&&protectedDeletes[key]){state='conflict';conflicts++;}
       else if(l&&r&&localChanged&&remoteChanged){state='conflict';conflicts++;}
@@ -143,22 +152,45 @@
   }
   async function backupNow(opts={}){if(running)return running;running=backupCore(opts).catch(async e=>{await handleError(e);throw e;}).finally(()=>{running=null;});return running;}
   async function forceBackup(){
-    if(!confirm('Replace conflicting cloud backups with the progress currently on THIS DEVICE? Cloud-only backups with no local copy will be preserved.'))return;
-    await backupNow({reason:'Explicit Replace Cloud with This Device',interactive:true,force:true});
+    if(!confirm('Keep the progress currently on THIS DEVICE for the conflicting item(s)? This will replace those cloud backup states. Cloud-only backups with no local copy are preserved.'))return;
+    /* Hide the decision card while the authoritative write is actually in flight. */
+    const resolvingKeys=[...decisionKeys];decisionKeys=[];
+    setStatus('Resolving conflict…',`Applying this device as the source of truth for ${resolvingKeys.length||'the'} conflicting backup${resolvingKeys.length===1?'':'s'}…`,{summary:null});
+    const result=await backupNow({reason:'Resolve conflict: keep this device',interactive:true,force:true});
+    /* backupCore re-analyzes after the manifest commit. Do one final authoritative analysis here so
+       the decision UI cannot be resurrected by stale pre-action summary state. */
+    const after=await analyze({flush:false});setAnalysisStatus(after);
+    return result;
   }
-  async function restoreFromCloud(){
+  async function restoreFromCloud({keys=null,conflictResolution=false}={}){
     const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring cloud progress.');
     if(!(await ensureCloudSession({interactive:true})))return;
+    const requestedKeys=Array.isArray(keys)&&keys.length?new Set(keys):null;
+    if(conflictResolution){decisionKeys=[];setStatus('Resolving conflict…','Downloading the selected cloud backup and reconciling this device…',{summary:null});}
+    else setStatus('Restoring from cloud…','Checking matching cloud backups before applying them to this device…',{summary:null});
     const a=await analyze({flush:true}),entries=Object.values(a.manifest.entries||{});if(!entries.length){setStatus('Backed up','No cloud backups exist yet.');return;}
-    const catalogKeys=new Set((a.local.catalog.forms||[]).map(r=>B.entityKey(r.id,r.bankHash)));const restorable=entries.filter(e=>e.kind==='qbank'||catalogKeys.has(e.key));const skipped=entries.length-restorable.length;
-    if(!restorable.length)throw new Error('Cloud backups exist, but none match forms currently loaded on this device. Restore/import the matching Form Library first.');
-    if(!confirm(`Restore ${restorable.length} matching cloud backup${restorable.length===1?'':'s'} to this device? Existing local progress for those items will be replaced. A local recovery checkpoint will be created first.${skipped?` ${skipped} unmatched/deleted backup(s) will be left untouched.`:''}`))return;
+    const catalogKeys=new Set((a.local.catalog.forms||[]).map(r=>B.entityKey(r.id,r.bankHash)));
+    const restorable=entries.filter(e=>(e.kind==='qbank'||catalogKeys.has(e.key))&&(!requestedKeys||requestedKeys.has(e.key)));
+    const skipped=entries.length-restorable.length;
+    if(!restorable.length)throw new Error(requestedKeys?'The conflicting cloud backup no longer exists or does not match the form currently loaded on this device.':'Cloud backups exist, but none match forms currently loaded on this device. Restore/import the matching Form Library first.');
+    const prompt=conflictResolution
+      ?`Use Google Drive for ${restorable.length} conflicting progress backup${restorable.length===1?'':'s'}? Only the conflicting item(s) will replace local progress. A local recovery checkpoint will be created first.`
+      :`Restore ${restorable.length} matching cloud backup${restorable.length===1?'':'s'} to this device? Existing local progress for those items will be replaced. A local recovery checkpoint will be created first.${skipped?` ${skipped} unmatched/deleted backup(s) will be left untouched.`:''}`;
+    if(!confirm(prompt)){const afterCancel=await analyze({flush:false});setAnalysisStatus(afterCancel);return;}
+    setStatus(conflictResolution?'Resolving conflict…':'Restoring from cloud…',`Downloading and applying ${restorable.length} cloud backup${restorable.length===1?'':'s'}…`,{summary:null});
     await S.checkpoint();const known=await getMap('knownCloud'),lastHashes=await getMap('lastBackedUpHash'),dirty=await getMap('dirtyKeys');let restored=0;
     try{
       for(const entry of restorable){if(entry.deletedAt){await S.applyDeletion(entry);known[entry.key]={backupId:entry.backupId,contentHash:''};delete lastHashes[entry.key];}else{const obj=S.validateBackup(await downloadJson(entry.fileId,entry.fileName||entry.key),entry);await S.applyBackup(entry,obj);known[entry.key]={backupId:entry.backupId,contentHash:entry.contentHash};lastHashes[entry.key]=entry.contentHash;}delete dirty[entry.key];restored++;}
     }catch(e){try{await S.restoreCheckpoint();}catch(rb){console.error('Cloud restore rollback failed',rb);}throw new Error(`Cloud restore failed; the pre-restore local checkpoint was reapplied. ${e.message}`);}
     await setMap('knownCloud',known);await setMap('lastBackedUpHash',lastHashes);await setMap('dirtyKeys',dirty);await R.meta.del('dirtyAll');const p=await getMap('protectedDeletes'),tombs=await getMap('deleteTombstones');for(const e of restorable){delete p[e.key];delete tombs[e.key];}await setMap('protectedDeletes',p);await setMap('deleteTombstones',tombs);
-    const after=await analyze({flush:false});setStatus('Backed up',`Restored ${restored} cloud backup${restored===1?'':'s'} to this device.`,{summary:after.summary});await runValidate();
+    const after=await analyze({flush:false});setAnalysisStatus(after);
+    if(!after.summary.conflicts&&!after.summary.pending&&!after.summary.cloudNewer&&!after.summary.cloudOnly)setStatus('Backed up',`${conflictResolution?'Conflict resolved. ':' '}Restored ${restored} cloud backup${restored===1?'':'s'} to this device.`,{summary:after.summary});
+    await runValidate();
+  }
+  async function restoreConflictsFromCloud(){
+    const keys=[...decisionKeys];
+    if(!keys.length){const a=await analyze({flush:false});setAnalysisStatus(a);return;}
+    return restoreFromCloud({keys,conflictResolution:true});
   }
   async function connect(){
     setStatus('Connecting…','Redirecting to Google authorization through the shared authentication Worker…');
@@ -183,9 +215,9 @@
     @media(max-width:900px){#progressSyncPanel .sync-layout{grid-template-columns:1fr}#progressSyncPanel .sync-hero{flex-direction:column}}@media(max-width:600px){#progressSyncPanel .sync-hero,#progressSyncPanel .sync-card{padding:16px}#progressSyncPanel .sync-meta-grid{grid-template-columns:1fr}#progressSyncPanel .sync-actions button{flex:1 1 140px}}
     `;document.head.appendChild(st);
   }
-  function tone(){if(uiState.status==='Backed up')return'good';if(/Backing up|Connecting|Restoring cloud session/.test(uiState.status))return'busy';if(/pending|available|decision|required|Reconnect|Offline/i.test(uiState.status))return'warn';if(/failed/i.test(uiState.status))return'bad';return'';}
+  function tone(){if(uiState.status==='Backed up')return'good';if(/Backing up|Connecting|Restoring cloud session|Resolving conflict|Restoring from cloud/.test(uiState.status))return'busy';if(/pending|available|decision|required|Reconnect|Offline/i.test(uiState.status))return'warn';if(/failed/i.test(uiState.status))return'bad';return'';}
   function connected(){return A.getState().authorized&&uiState.status!=='Disconnected'&&uiState.status!=='Reconnect Google';}
-  function controls(){if(/Backing up|Connecting|Restoring cloud session/.test(uiState.status))return`<button class="primary" disabled>${uiState.status}</button>`;if(uiState.status==='Reconnect Google')return`<button class="primary" data-step-sync-action="check">Reconnect Google</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;if(connected()&&decisionKeys.length)return`<button class="secondary" data-step-sync-action="check">Check Again</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;if(connected())return`<button class="primary" data-step-sync-action="backup">Back Up Now</button><button class="secondary" data-step-sync-action="restore-cloud">Restore from Cloud</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;return`<button class="primary" data-step-sync-action="connect">Connect Google Account</button>`;}
+  function controls(){if(/Backing up|Connecting|Restoring cloud session|Resolving conflict|Restoring from cloud/.test(uiState.status))return`<button class="primary" disabled>${uiState.status}</button>`;if(uiState.status==='Reconnect Google')return`<button class="primary" data-step-sync-action="check">Reconnect Google</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;if(connected()&&decisionKeys.length)return`<button class="secondary" data-step-sync-action="check">Check Again</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;if(connected())return`<button class="primary" data-step-sync-action="backup">Back Up Now</button><button class="secondary" data-step-sync-action="restore-cloud">Restore from Cloud</button><button class="secondary" data-step-sync-action="disconnect">Disconnect</button>`;return`<button class="primary" data-step-sync-action="connect">Connect Google Account</button>`;}
   function ensureSurface(){
     const side=document.querySelector('.modern-sidebar');if(side&&!document.getElementById('progressSyncTab')){const btn=document.createElement('button');btn.type='button';btn.id='progressSyncTab';btn.className='menu-tab';btn.innerHTML='Progress Backup <span class="sync-tab-dot" aria-hidden="true"></span>';const settings=document.getElementById('settingsTab');settings?side.insertBefore(btn,settings):side.appendChild(btn);}
     const main=document.querySelector('.modern-main'),settingsPanel=document.getElementById('settingsPanel');if(main&&!document.getElementById('progressSyncPanel')){const p=document.createElement('section');p.id='progressSyncPanel';p.className='mode-panel';p.innerHTML=`
@@ -205,7 +237,7 @@
       const conflictCount=Number(uiState.summary?.conflicts||decisionKeys.length||0);
       if(connected()&&conflictCount>0){
         notice.hidden=false;
-        notice.innerHTML=`<div class="sync-decision-head"><div class="sync-decision-icon">!</div><div class="sync-decision-copy"><b>Cloud backup needs your choice</b><span>${conflictCount} progress backup${conflictCount===1?'':'s'} differ on this device and in Google Drive. Nothing has been overwritten. Choose the copy you want only when you are ready.</span></div></div><div class="sync-decision-actions"><button class="secondary use-local" data-step-sync-action="force">Keep This Device → Cloud</button><button class="primary use-cloud" data-step-sync-action="restore-cloud">Use Cloud Backup → This Device</button></div>`;
+        notice.innerHTML=`<div class="sync-decision-head"><div class="sync-decision-icon">!</div><div class="sync-decision-copy"><b>Cloud backup needs your choice</b><span>${conflictCount} progress backup${conflictCount===1?'':'s'} differ on this device and in Google Drive. Nothing has been overwritten. Choose the copy you want only when you are ready.</span></div></div><div class="sync-decision-actions"><button class="secondary use-local" data-step-sync-action="force">Keep This Device → Cloud</button><button class="primary use-cloud" data-step-sync-action="restore-conflicts">Use Cloud Backup → This Device</button></div>`;
       }else{notice.hidden=true;notice.innerHTML='';}
     }
     if(aa)aa.innerHTML=connected()?`<div class="sync-account"><div class="sync-avatar">G</div><div><div class="sync-account-email">${String(uiState.account).replace(/[&<>]/g,'')}</div><div class="sync-account-sub">Connected through shared OAuth Worker • Drive data transfers directly</div></div></div>`:`<div class="sync-disconnected">Progress is currently stored locally. Connect once through the shared OAuth Worker; later reloads/reopens silently refresh Drive access while the device session remains valid.</div>`;
@@ -216,7 +248,7 @@
   }
   async function runValidate(){const r=await S.validateLocal(),inv=document.getElementById('stepSyncInventory');if(inv){const items=[['Loaded forms',r.loadedForms],['Progress forms',r.stats.forms],['Attempts',r.stats.attempts],['Answered',r.stats.answered],['Stem highlights',r.stats.stemHighlights],['Explanation highlights',r.stats.expHighlights],['Qbank tests',r.stats.qbankTests],['Backup entities',r.entities],['Est. local payload',(r.estimatedBytes/1024/1024).toFixed(2)+' MB']];inv.innerHTML=items.map(([a,b])=>`<div class="sync-metric"><span>${a}</span><b>${b}</b></div>`).join('');}return r;}
   async function restoreCheckpoint(){const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring a recovery checkpoint.');if(!confirm('Restore the last local pre-restore recovery checkpoint?'))return;await S.restoreCheckpoint();await markDirtyAll('Recovery checkpoint restored locally');await runValidate();}
-  async function action(a){if(a==='connect')return connect();if(a==='check')return checkCloud({interactive:true});if(a==='backup')return backupNow({reason:'Manual Back Up Now',interactive:true});if(a==='force')return forceBackup();if(a==='restore-cloud')return restoreFromCloud();if(a==='disconnect')return disconnect();if(a==='validate')return runValidate();if(a==='restore-checkpoint')return restoreCheckpoint();}
+  async function action(a){if(a==='connect')return connect();if(a==='check')return checkCloud({interactive:true});if(a==='backup')return backupNow({reason:'Manual Back Up Now',interactive:true});if(a==='force')return forceBackup();if(a==='restore-conflicts')return restoreConflictsFromCloud();if(a==='restore-cloud')return restoreFromCloud();if(a==='disconnect')return disconnect();if(a==='validate')return runValidate();if(a==='restore-checkpoint')return restoreCheckpoint();}
   document.addEventListener('click',e=>{const tab=e.target?.closest?.('#progressSyncTab');if(tab){e.preventDefault();activate();return;}const other=e.target?.closest?.('.menu-tab:not(#progressSyncTab)');if(other)document.getElementById('progressSyncPanel')?.classList.remove('active');const b=e.target?.closest?.('[data-step-sync-action]');if(!b)return;e.preventDefault();b.disabled=true;action(b.dataset.stepSyncAction).catch(err=>alert(err.message||String(err))).finally(()=>{b.disabled=false;});},true);
   window.addEventListener('stepsim:progress-write',e=>{if(window.__STEP_SYNC_APPLYING_REMOTE)return;recordProgressMutation(e.detail).catch(console.warn);});
   window.addEventListener('stepsim:three-digit-score',e=>{if(window.__STEP_SYNC_APPLYING_REMOTE)return;const d=e.detail||{};const key=B.entityKey(d.formId,d.bankHash);markDirtyKey(key,'3-digit score changed').then(()=>R.meta.get('syncEnabled',false)).then(on=>{if(on)scheduleCheckpoint('3-digit score changed',8000);}).catch(()=>{});});
@@ -233,6 +265,6 @@
     else if(enabled)setStatus('Reconnect Google','Cloud backup is enabled, but this device no longer has a valid Worker session. Local progress is safe.');
     else setStatus('Disconnected','Progress is currently stored locally in this exam-simulator2 on this device.');
   }
-  R.sync={backupNow,checkCloud,restoreFromCloud,connect,disconnect,markDirtyKey,getState:()=>({...uiState}),runValidate};
+  R.sync={backupNow,checkCloud,restoreFromCloud,resolveConflictKeepLocal:forceBackup,resolveConflictUseCloud:restoreConflictsFromCloud,connect,disconnect,markDirtyKey,getState:()=>({...uiState}),runValidate};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
