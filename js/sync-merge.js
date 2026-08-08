@@ -1,76 +1,65 @@
 (function(){
   'use strict';
-  const R=window.StepProgressSync;
-  const CLASS=Object.freeze({
+  const R=window.StepProgressSync=window.StepProgressSync||{};
+  const STATES=Object.freeze({
     ALIGNED:'ALIGNED',
+    LOCAL_ONLY:'LOCAL_ONLY',
     LOCAL_AHEAD_SAFE:'LOCAL_AHEAD_SAFE',
-    LOCAL_ONLY_SAFE:'LOCAL_ONLY_SAFE',
-    CLOUD_AHEAD:'CLOUD_AHEAD',
     CLOUD_ONLY:'CLOUD_ONLY',
+    CLOUD_AHEAD:'CLOUD_AHEAD',
     DIVERGED:'DIVERGED',
-    UNTRACKED_BOTH:'UNTRACKED_BOTH',
     DELETED_LOCAL_SAFE:'DELETED_LOCAL_SAFE',
     DELETE_CONFLICT:'DELETE_CONFLICT',
     BANK_HASH_MISMATCH:'BANK_HASH_MISMATCH',
-    CLOUD_RETAINED_UNLOADED:'CLOUD_RETAINED_UNLOADED',
-    CLOUD_MISSING_CHANGED:'CLOUD_MISSING_CHANGED'
+    UNTRACKED_BOTH:'UNTRACKED_BOTH'
   });
   const entityKey=(id,hash)=>`${String(id)}@@${String(hash||'NOHASH')}`;
   const qbankKey='__QBANK__';
 
-  /* Progress Sync V2 classifier.
-     Timestamps are deliberately NOT used to choose authority. They are display/debug metadata only.
-     The decision is based on whether the local copy descends from the current cloud version. */
-  function classify({local=null,remote=null,state=null,matchingFormLoaded=true,differentVersionLoaded=false}={}){
-    state=state||{};
-    const current=remote?.current||null;
-    const base=String(state.baseCloudVersionId||'');
-    const baseHash=String(state.baseContentHash||'');
-    const explicitDeleted=state.explicitDeleted===true;
-    const forceDecision=state.forceDecision===true;
-    const localHash=String(local?.contentHash||'');
-    const remoteHash=String(current?.contentHash||'');
-    const remoteVersion=String(current?.versionId||'');
-    const remoteDeleted=!!current?.deletedAt;
+  /* Pure Progress Sync V2 classifier. Timestamps never decide direction. */
+  function classifyFormSync(local,cloud){
+    local=local||null; cloud=cloud||null;
+    if(local?.bankHashMismatch||cloud?.bankHashMismatch)return STATES.BANK_HASH_MISMATCH;
 
-    if(current && remote?.kind==='form' && !matchingFormLoaded){
-      return differentVersionLoaded?CLASS.BANK_HASH_MISMATCH:CLASS.CLOUD_RETAINED_UNLOADED;
+    const localExists=!!local?.exists;
+    const explicitDelete=!!local?.deleted;
+    const dirty=!!local?.dirty;
+    const base=String(local?.baseCloudVersionId||'');
+    const localHash=String(local?.contentHash||local?.localContentHash||'');
+    const cloudExists=!!cloud;
+    const cloudDeleted=!!cloud?.deleted;
+    const cloudVersion=String(cloud?.currentVersionId||'');
+    const cloudHash=String(cloud?.checksum||cloud?.contentHash||'');
+
+    if(!cloudExists){
+      if(explicitDelete)return STATES.ALIGNED;
+      return localExists?STATES.LOCAL_ONLY:STATES.ALIGNED;
     }
 
-    if(local && current && !remoteDeleted && localHash && remoteHash && localHash===remoteHash)return CLASS.ALIGNED;
-    if(!local && current && remoteDeleted)return CLASS.ALIGNED;
-
-    if(explicitDeleted && !local){
-      if(!current)return CLASS.ALIGNED;
-      if(remoteDeleted && (!base || base===remoteVersion))return CLASS.ALIGNED;
-      if(forceDecision)return CLASS.DELETE_CONFLICT;
-      if(base && base===remoteVersion)return CLASS.DELETED_LOCAL_SAFE;
-      return CLASS.DELETE_CONFLICT;
+    if(explicitDelete){
+      if(!base)return STATES.DELETE_CONFLICT;
+      return base===cloudVersion?STATES.DELETED_LOCAL_SAFE:STATES.DELETE_CONFLICT;
     }
 
-    if(!local && current && !remoteDeleted)return CLASS.CLOUD_ONLY;
-
-    if(local && !current){
-      if(forceDecision || base)return CLASS.CLOUD_MISSING_CHANGED;
-      return CLASS.LOCAL_ONLY_SAFE;
+    if(!localExists){
+      return cloudDeleted?STATES.ALIGNED:STATES.CLOUD_ONLY;
     }
 
-    if(!local && !current)return CLASS.ALIGNED;
+    if(!cloudDeleted && localHash && cloudHash && localHash===cloudHash)return STATES.ALIGNED;
 
-    if(local && current && remoteDeleted){
-      if(forceDecision)return CLASS.DIVERGED;
-      if(base && base===remoteVersion)return CLASS.LOCAL_AHEAD_SAFE;
-      if(!base)return CLASS.UNTRACKED_BOTH;
-      return CLASS.DIVERGED;
+    if(!base){
+      return cloudDeleted?STATES.UNTRACKED_BOTH:STATES.UNTRACKED_BOTH;
     }
 
-    if(forceDecision)return CLASS.DIVERGED;
-    if(!base)return CLASS.UNTRACKED_BOTH;
-    if(base===remoteVersion)return CLASS.LOCAL_AHEAD_SAFE;
-    if(baseHash && localHash===baseHash)return CLASS.CLOUD_AHEAD;
-    return CLASS.DIVERGED;
+    if(base===cloudVersion){
+      /* The current Drive version is exactly the version this local copy descended from. */
+      return STATES.LOCAL_AHEAD_SAFE;
+    }
+
+    if(dirty)return STATES.DIVERGED;
+    return STATES.CLOUD_AHEAD;
   }
 
   R.backupModel={entityKey,qbankKey};
-  R.syncV2Model={CLASS,classify};
+  R.classifier={STATES,classifyFormSync};
 })();
