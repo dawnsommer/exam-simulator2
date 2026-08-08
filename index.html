@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
-<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
+<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-CLOUD-5"></script>
+<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-CLOUD-5"></script>
 
 <style>
 :root{
@@ -5099,7 +5099,7 @@ document.addEventListener('click', function(e){
   /* exam-simulator2: narrow cloud storage bridge.
      This exposes only durable progress operations; form source files/assets stay private to the simulator. */
   window.StepExamSyncBridge = Object.freeze({
-    build: 'EXAM-SIMULATOR2-CLOUD-2',
+    build: 'EXAM-SIMULATOR2-CLOUD-5',
     async ensureReady(){
       if(!dataDirHandle){ await restoreLastDataFolder(); }
       if(!dataDirHandle) throw new Error('Simulator library storage is not available.');
@@ -10093,10 +10093,10 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
-<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
-<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
-<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-CLOUD-2"></script>
+<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-CLOUD-5"></script>
+<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-CLOUD-5"></script>
+<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-CLOUD-5"></script>
+<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-CLOUD-5"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10133,39 +10133,92 @@ try{
 @media(max-width:1000px){.library-toolbar{gap:10px!important}.library-actions.exam-final-library-actions{flex:0 0 auto!important}.exam-final-library-actions button,.exam-final-library-actions summary{font-size:10.5px!important;padding:8px 9px!important}}
 @media(max-width:760px){.library-toolbar{flex-direction:column!important}.library-actions.exam-final-library-actions{width:100%!important;justify-content:flex-start!important}.exam-final-library-actions .exam-final-actionbar{justify-content:flex-start!important}.exam-final-library-actions button,.exam-final-library-actions summary{font-size:10px!important;padding:8px 8px!important}.exam-final-library-actions .exam-toolbar-menu-panel{left:0!important;right:auto!important}.modern-hero .exam-storage-status-row{justify-content:flex-start!important}}
 
-/* CLOUD4 structural UI patch */
-.library-toolbar .library-actions.exam-final-library-actions,
-.library-toolbar .library-actions.a5-library-actions{
+/* CLOUD5 structural Library fix.
+   Keep Recent Completed Forms and Persistent Workflow side-by-side on iPad/desktop.
+   Dropdown panels remain inside their <details> elements and become fixed overlays only while open. */
+#libraryModePanel .library-hero-right-v195b,
+#libraryModePanel .library-hero-right-v195b > .library-toolbar.glass-panel{
+  overflow:visible!important;
+}
+#libraryModePanel .library-hero-right-v195b > .library-toolbar.glass-panel.workflow-card-v201.workflow-split-v217{
+  position:relative!important;
+  z-index:80!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  align-items:stretch!important;
+  gap:18px!important;
+  overflow:visible!important;
+  backdrop-filter:none!important;
+}
+#libraryModePanel .workflow-divider-v217{display:none!important;}
+#libraryModePanel .workflow-recent-pane-v217,
+#libraryModePanel .workflow-actions-pane-v217{
+  min-width:0!important;
+  width:100%!important;
+}
+#libraryModePanel .workflow-recent-pane-v217{
+  grid-column:1!important;
+  padding-right:4px!important;
+}
+#libraryModePanel .workflow-actions-pane-v217,
+#libraryModePanel .library-actions.exam-final-library-actions.workflow-actions-pane-v217,
+#libraryModePanel .library-actions.a5-library-actions.workflow-actions-pane-v217{
+  grid-column:2!important;
   display:flex!important;
   flex-direction:column!important;
   align-items:stretch!important;
   justify-content:flex-start!important;
-  gap:10px!important;
-  width:100%!important;
+  gap:9px!important;
+  max-width:none!important;
+  margin:0!important;
 }
-#libraryModePanel .library-toolbar{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) minmax(220px,0.9fr)!important;
-  align-items:stretch!important;
-  gap:16px!important;
-}
-#libraryModePanel .library-actions{
-  justify-self:end!important;
-  max-width:260px!important;
-}
-#libraryModePanel .exam-final-actionbar,
-#libraryModePanel .exam-final-library-actions .exam-final-actionbar{
+#libraryModePanel .workflow-actions-pane-v217 .exam-final-actionbar{
   display:flex!important;
   flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:9px!important;
   width:100%!important;
-  gap:8px!important;
 }
-#libraryModePanel .exam-toolbar-menu,
-#libraryModePanel .exam-final-actionbar > button,
-#libraryModePanel .exam-toolbar-menu > summary{
+#libraryModePanel .workflow-actions-pane-v217 .exam-final-actionbar > button,
+#libraryModePanel .workflow-actions-pane-v217 .exam-final-actionbar > .exam-toolbar-menu,
+#libraryModePanel .workflow-actions-pane-v217 .exam-toolbar-menu > summary{
   width:100%!important;
   box-sizing:border-box!important;
 }
+#libraryModePanel .workflow-actions-pane-v217 .exam-final-actionbar > button,
+#libraryModePanel .workflow-actions-pane-v217 .exam-toolbar-menu > summary{
+  min-height:36px!important;
+  padding:8px 11px!important;
+  font-size:11px!important;
+  line-height:1.05!important;
+  text-align:center!important;
+  white-space:normal!important;
+}
+
+/* Toolbar dropdown overlay: stays collapsed as native <details>; only the open panel is fixed above lower cards. */
+#libraryModePanel .exam-toolbar-menu{position:relative!important;z-index:100!important;}
+#libraryModePanel .exam-toolbar-menu:not([open]) > .exam-toolbar-menu-panel{display:none!important;}
+#libraryModePanel .exam-toolbar-menu[open]{z-index:2147483000!important;}
+#libraryModePanel .exam-toolbar-menu[open] > .exam-toolbar-menu-panel{
+  display:flex!important;
+  position:fixed!important;
+  left:var(--cloud-menu-left,12px)!important;
+  top:var(--cloud-menu-top,12px)!important;
+  right:auto!important;
+  bottom:auto!important;
+  z-index:2147483001!important;
+  width:var(--cloud-menu-width,280px)!important;
+  min-width:238px!important;
+  max-width:min(300px,calc(100vw - 24px))!important;
+  max-height:min(70vh,460px)!important;
+  overflow:auto!important;
+  margin:0!important;
+}
+#libraryModePanel .library-filters,
+#libraryModePanel .library-grid,
+#libraryModePanel .library-tabs-card{position:relative!important;z-index:1!important;}
 
 /* cloud/local status group */
 .exam-storage-status-row{
@@ -10176,18 +10229,16 @@ try{
   gap:10px!important;
 }
 
-/* cloud4 dropdown layer */
-.exam-cloud4-menu-layer{
-  position:fixed!important;
-  z-index:999999!important;
-  overflow:visible!important;
-}
-.exam-cloud4-menu-layer .exam-toolbar-menu-panel,
-.exam-cloud4-menu-layer .v75-menu-panel{
-  position:fixed!important;
-  z-index:1000000!important;
-  max-height:70vh!important;
-  overflow:auto!important;
+/* Only truly narrow phone layouts stack. iPads remain 50/50. */
+@media(max-width:620px){
+  #libraryModePanel .library-hero-right-v195b > .library-toolbar.glass-panel.workflow-card-v201.workflow-split-v217{
+    grid-template-columns:1fr!important;
+    grid-template-rows:auto auto!important;
+  }
+  #libraryModePanel .workflow-recent-pane-v217{grid-column:1!important;}
+  #libraryModePanel .workflow-actions-pane-v217,
+  #libraryModePanel .library-actions.exam-final-library-actions.workflow-actions-pane-v217,
+  #libraryModePanel .library-actions.a5-library-actions.workflow-actions-pane-v217{grid-column:1!important;}
 }
 
 </style>
@@ -10206,7 +10257,7 @@ try{
     return d;
   }
   function applyLibraryToolbar(){
-    const actions=qs('.library-actions'); if(!actions) return;
+    const actions=qs('#libraryModePanel .library-actions') || qs('.library-actions'); if(!actions) return;
     const load=byId('loadNewFormBtn'), expProg=byId('exportProgressOnlyBackupBtn'), impProg=byId('importProgressOnlyBackupBtn'), update=byId('updateAppShellBtn');
     const connect=byId('connectDataFolderBtn'), scan=byId('scanDataFolderBtn'), catalog=byId('exportCatalogBtn'), expFull=byId('exportFullLibraryBackupBtn'), impFull=byId('importFullLibraryBackupBtn');
     if(!load||!expProg||!impProg||!update) return;
@@ -10259,61 +10310,75 @@ try{
 </script>
 
 
-<script id="cloud3-layout-fixes">
+
+<script id="exam-sim-cloud5-library-layout-fix">
 (function(){
-function fixLibraryLayout(){
- const lib=document.querySelector('#menu, #libraryGrid')?.closest('.glass-panel')||document.querySelector('.library-panel');
- const workflow=[...document.querySelectorAll('button')].filter(b=>/Add New Form|Export Progress Backup|Import Progress Backup|Update App|Others|Progress/i.test(b.textContent));
- workflow.forEach(b=>{const d=b.parentElement;if(d)d.classList.add('workflow-column');});
- const container=document.querySelector('.persistent-workflow')||document.querySelector('#persistentWorkflow');
- if(container&&!container.id)container.id='libraryWorkflowLayout';
-}
-function fixStatus(){
- const row=document.querySelector('.cloud-status-cluster')||document.querySelector('#dataFolderStatus')?.parentElement;
- if(row)row.classList.add('cloud-status-cluster');
-}
-function fixQbank(){
- const stats=document.querySelector('#qbankStats');
- if(stats){stats.style.display='flex';stats.style.flexDirection='column';}
-}
-function fixMenus(){
- document.querySelectorAll('.exam-toolbar-menu, details.v75-menu').forEach(x=>x.style.zIndex='10000');
-}
-window.addEventListener('stepsync:state',e=>{
- const s=e.detail?.status||'';
- // prevent transient stale pending after a completed backup
- if(s==='Local backup pending' && window.__lastSuccessfulBackupAt && Date.now()-window.__lastSuccessfulBackupAt<15000){return;}
-});
-window.addEventListener('stepsync:backup-complete',()=>window.__lastSuccessfulBackupAt=Date.now());
-function run(){fixLibraryLayout();fixStatus();fixQbank();fixMenus();}
-setInterval(run,1500);run();
+  if(window.__examSimCloud5LibraryFix) return;
+  window.__examSimCloud5LibraryFix=true;
+
+  function toolbarMenus(){
+    return Array.from(document.querySelectorAll('#libraryModePanel .exam-final-actionbar .exam-toolbar-menu'));
+  }
+  function positionMenu(details){
+    if(!details || !details.open) return;
+    const summary=details.querySelector(':scope > summary');
+    const panel=details.querySelector(':scope > .exam-toolbar-menu-panel');
+    if(!summary || !panel) return;
+    const r=summary.getBoundingClientRect();
+    const viewportW=Math.max(document.documentElement.clientWidth||0, window.innerWidth||0);
+    const viewportH=Math.max(document.documentElement.clientHeight||0, window.innerHeight||0);
+    const width=Math.min(280, Math.max(238, viewportW-24));
+    panel.style.setProperty('--cloud-menu-width',width+'px');
+    let left=Math.min(Math.max(12, r.right-width), Math.max(12,viewportW-width-12));
+    panel.style.setProperty('--cloud-menu-left',left+'px');
+    panel.style.setProperty('--cloud-menu-top',Math.min(viewportH-12, r.bottom+7)+'px');
+    requestAnimationFrame(function(){
+      if(!details.open) return;
+      const h=Math.min(panel.scrollHeight||panel.offsetHeight||0, Math.max(120,viewportH-24));
+      let top=r.bottom+7;
+      if(top+h>viewportH-12) top=Math.max(12,r.top-h-7);
+      panel.style.setProperty('--cloud-menu-top',top+'px');
+    });
+  }
+  function wireMenu(details){
+    if(!details || details.dataset.cloud5MenuWired==='1') return;
+    details.dataset.cloud5MenuWired='1';
+    details.addEventListener('toggle',function(){
+      if(details.open){
+        toolbarMenus().forEach(function(other){ if(other!==details) other.open=false; });
+        requestAnimationFrame(function(){ positionMenu(details); });
+      }
+    });
+  }
+  function ensureLayout(){
+    const toolbar=document.querySelector('#libraryModePanel .library-hero-right-v195b > .library-toolbar.glass-panel');
+    if(toolbar){
+      toolbar.classList.add('workflow-card-v201','workflow-split-v217');
+      const info=toolbar.querySelector(':scope > .workflow-recent-pane-v217') || toolbar.querySelector(':scope > div:not(.library-actions):not(.workflow-divider-v217)');
+      const actions=toolbar.querySelector(':scope > .library-actions');
+      if(info) info.classList.add('workflow-recent-pane-v217');
+      if(actions) actions.classList.add('workflow-actions-pane-v217');
+    }
+    toolbarMenus().forEach(wireMenu);
+  }
+  function repositionOpen(){ toolbarMenus().forEach(positionMenu); }
+
+  window.addEventListener('resize',repositionOpen,{passive:true});
+  window.addEventListener('scroll',repositionOpen,true);
+  document.addEventListener('click',function(e){
+    if(e.target && e.target.closest && e.target.closest('#libraryModePanel .exam-toolbar-menu')) return;
+    toolbarMenus().forEach(function(d){ if(d.open) d.open=false; });
+  },true);
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',ensureLayout); else ensureLayout();
+  setTimeout(ensureLayout,250);
+  setTimeout(ensureLayout,900);
+  setTimeout(ensureLayout,1800);
+  const mo=new MutationObserver(function(){ ensureLayout(); });
+  const startObserver=function(){ const panel=document.getElementById('libraryModePanel'); if(panel) mo.observe(panel,{childList:true,subtree:true}); };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',startObserver); else startObserver();
 })();
 </script>
 
-<script>
-/* CLOUD4 dropdown escape + persistent layout */
-(function(){
- function escapeMenus(){
-   document.querySelectorAll('.exam-toolbar-menu-panel,.v75-menu-panel').forEach(function(menu){
-     if(menu.dataset.cloud4Moved) return;
-     var parent=menu.closest('.exam-toolbar-menu');
-     if(!parent) return;
-     parent.classList.add('cloud4-host');
-     document.body.appendChild(menu);
-     menu.dataset.cloud4Moved='1';
-     menu.classList.add('exam-cloud4-menu-layer');
-     var place=function(){
-       var r=parent.getBoundingClientRect();
-       menu.style.left=Math.min(r.left, window.innerWidth-260)+'px';
-       menu.style.top=(r.bottom+6)+'px';
-     };
-     place();
-     window.addEventListener('resize',place);
-     window.addEventListener('scroll',place,true);
-   });
- }
- setInterval(escapeMenus,500);
-})();
-</script>
 </body>
 </html>
