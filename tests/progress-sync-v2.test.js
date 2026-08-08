@@ -58,6 +58,10 @@ async function assert(cond,msg){if(!cond)throw new Error(msg)}
  await assert(a.rows[0].state==='ALIGNED','first backup should align');
  const v1=a.rows[0].current.versionId;
  console.log('PASS device1 first backup aligned',v1);
+ // Local progress import must NOT inherit this browser's old cloud lineage. Different content becomes untracked; identical content may re-adopt safely.
+ setLocal(ent('IMPORTED','2026-08-08T01:30:00Z'));await sync.markImportedProgressBranch({source:'test-import',forms:[{formId:'N-11',bankHash:'hash11'}]});
+ let imported=await sync._test.analyze({flush:false});await assert(imported.rows[0].state==='UNTRACKED_BOTH','imported different progress must require one-time local-vs-cloud decision');let importStates=await meta.get('progressSyncV2Entities',{});await assert(!importStates[B.entityKey('N-11','hash11')]?.baseCloudVersionId,'import must clear base cloud version lineage');console.log('PASS imported different progress clears cloud lineage');
+ setLocal(ent('A','2026-08-08T01:40:00Z'));await sync.markImportedProgressBranch({source:'test-import-same',forms:[{formId:'N-11',bankHash:'hash11'}]});imported=await sync._test.analyze({flush:false});await assert(imported.rows[0].state==='ALIGNED','imported content identical to current cloud should safely re-adopt cloud lineage');console.log('PASS imported identical progress safely re-adopts cloud version');
  // Local change descends from same current -> automatic safe backup + previous recovery
  setLocal(ent('B','2026-08-08T02:00:00Z'));
  await sync.backupNow(); a=await sync._test.analyze({flush:false});

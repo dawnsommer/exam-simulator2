@@ -1,6 +1,6 @@
 # exam-simulator2 — Progress Sync V2 Completion Report
 
-Build: `EXAM-SIMULATOR2-PROGRESS-V2-1`
+Build: `EXAM-SIMULATOR2-PROGRESS-V2-2`
 
 ## What was replaced
 
@@ -109,9 +109,29 @@ A separate Drive history manifest is used:
 
 Legacy schema-1 progress manifests are accepted and converted to the V2 shape in memory. Stable legacy version IDs are derived from the existing backup/file/hash identity. A legacy cloud entry is only adopted automatically when local content is semantically identical.
 
+
+## Local import/export lineage rules
+
+Progress Sync V2 now explicitly separates local portable backups from cloud lineage:
+
+- Local single-form progress exports and local Progress Backup ZIPs contain native simulator progress and 3-digit-score metadata only.
+- They never contain the active Google `versionId`, `baseCloudVersionId`, Worker session, Google access token, or sync metadata database.
+- After a local progress import, the imported form/Qbank lineage is deliberately cleared. If imported content equals current cloud content, V2 safely re-adopts that cloud version; otherwise the imported copy becomes an untracked local branch and requires one explicit local-vs-cloud decision before any overwrite.
+- A complete local progress recovery point is created before a local progress ZIP or single-form save replaces local progress.
+
+Local and cloud Form Library backups are now library-only:
+
+- include catalog structure, forms, and assets
+- exclude `progress/` and Qbank progress
+- strip progress-owned catalog fields (`threeDigitScore`, `progressSummary`) from the backup representation
+- preserve the device's existing progress-owned catalog fields when a library backup is restored
+- legacy full ZIPs that happen to contain `progress/` have that progress ignored by the Library importer
+
+This prevents a Library import/export from silently transporting progress or cloud authority.
+
 ## Build/cache changes
 
-- build: `EXAM-SIMULATOR2-PROGRESS-V2-1`
+- build: `EXAM-SIMULATOR2-PROGRESS-V2-2`
 - service-worker cache version bumped
 - manifest start URL bumped
 - production bridge build ID bumped
@@ -123,7 +143,7 @@ Static/syntax:
 
 - all external JS modules passed `node --check`
 - service worker passed `node --check`
-- all 34 inline scripts in `index.html` passed syntax validation
+- all 35 inline scripts in `index.html` passed syntax validation
 
 Pure classifier tests:
 
@@ -159,6 +179,9 @@ Mocked Drive/state-machine integration tests:
 - daily snapshot retention caps at 7
 - clearing current cloud sync preserves dated snapshots
 - clearing current cloud sync leaves an unrelated Full Form Library manifest/file untouched
+- imported different progress clears cloud lineage and becomes `UNTRACKED_BOTH`
+- imported content identical to cloud safely re-adopts the current cloud version
+- local/cloud library backup segregation static checks passed
 
 ## Not performed in this environment
 

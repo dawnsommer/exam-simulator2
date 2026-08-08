@@ -1,6 +1,6 @@
 # exam-simulator2 — Progress Sync V2 Production Build
 
-Build: `EXAM-SIMULATOR2-PROGRESS-V2-1`
+Build: `EXAM-SIMULATOR2-PROGRESS-V2-2`
 
 Production URL: `https://dawnsommer.github.io/exam-simulator2/`
 
@@ -107,3 +107,16 @@ Unchanged from the previous production cloud build:
 8. Test Undo Restore / previous cloud recovery.
 9. Create and restore a Manual Progress Backup.
 10. Verify daily snapshot retention and the separate Full Form Library backup.
+
+
+## Local portable backups (V2.2)
+
+### Progress Backup
+
+Local Progress Backup is intentionally independent from Google lineage. It contains native `progress/` files plus a small `progress_metadata.json` for progress-owned metadata such as the 3-digit score. It does **not** export `versionId`, `baseCloudVersionId`, Worker sessions, tokens, or sync metadata.
+
+After import, the affected progress is treated as a new local branch. V2 compares it with the cloud manifest before any upload. Matching content re-adopts the current cloud version automatically; different content requires an explicit direction.
+
+### Library Backup
+
+Local and cloud Library Backup are library-only: catalog structure + forms + assets. They exclude `progress/`, Qbank progress, 3-digit scores, progress summaries, and cloud lineage. Restoring a Library Backup preserves existing local progress and progress-owned catalog metadata. Legacy full ZIPs that contain a `progress/` folder are imported as library-only; that progress folder is ignored.

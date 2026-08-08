@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
-<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
+<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-PROGRESS-V2-2"></script>
+<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-PROGRESS-V2-2"></script>
 
 <style>
 :root{
@@ -546,8 +546,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
             <button id="exportCatalogBtn" class="secondary" type="button">Write Catalog</button>
             <button id="exportProgressOnlyBackupBtn" class="secondary" type="button">Export Progress Backup</button>
             <button id="importProgressOnlyBackupBtn" class="secondary" type="button">Import Progress Backup</button>
-            <button id="exportFullLibraryBackupBtn" class="secondary" type="button">Export Full Library Backup</button>
-            <button id="importFullLibraryBackupBtn" class="secondary" type="button">Import Full Library Backup</button>
+            <button id="exportFullLibraryBackupBtn" class="secondary" type="button">Export Library Backup</button>
+            <button id="importFullLibraryBackupBtn" class="secondary" type="button">Import Library Backup</button>
             <button id="updateAppShellBtn" class="secondary" type="button">Update App / Clear Cache</button>
           </div>
         </div>
@@ -2621,8 +2621,34 @@ document.addEventListener('click', function(e){
   async function writeProgress(id, session){ if(!dataDirHandle || !id || !session) return; const dir=await progressDir(); const rec=catalogForm(id); if(rec){ session.libraryFormId=id; session.libraryFormName=rec.displayName||id; session.bankHash=rec.bankHash||session.bankHash; }
     session.updatedAt=nowIso(); const payload={fileType:'StepExamSimulatorV7Save', saveVersion:7, exportedAt:nowIso(), formSlot:id, session}; await writeText(dir, `${id}_progress_save.json`, JSON.stringify(payload,null,2)); if(rec){ rec.progressSummary=summarizeSession(session, rec.totalQuestions); upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); }
   }
-  async function importSaveToForm(id, file){ const rec=catalogForm(id); if(!rec) throw new Error('Load the form JSON first.'); const data=JSON.parse(await file.text()); const session=normalizeProgressPayload(data); if(!isUsableProgressSession(session)) throw new Error('This is not a valid v7 saved-progress file.'); if(!Number(session.version)) session.version=7; session.bankHash=rec.bankHash; session.libraryFormId=id; session.libraryFormName=rec.displayName||id; await writeProgress(id, session); alert('Progress save imported into DATA/progress.'); }
-  async function exportSave(id){ const session=await readProgress(id); if(!session) throw new Error('No progress save exists for this form.'); const payload={fileType:'StepExamSimulatorV7Save', saveVersion:7, exportedAt:nowIso(), formSlot:id, session}; const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${id}_progress_save.json`; a.click(); URL.revokeObjectURL(a.href); }
+  function notifyLocalProgressImport(detail){
+    try{ window.dispatchEvent(new CustomEvent('stepsim:local-progress-imported',{detail:detail||{}})); }catch(_e){}
+  }
+  async function savePreImportRecoveryPoint(){
+    try{ if(window.StepProgressSync?.storage?.checkpoint) await window.StepProgressSync.storage.checkpoint(); }catch(e){ console.warn('Could not create pre-import progress recovery point',e); }
+  }
+  async function importSaveToForm(id, file){
+    const rec=catalogForm(id); if(!rec) throw new Error('Load the form JSON first.');
+    const data=JSON.parse(await file.text()); const session=normalizeProgressPayload(data);
+    if(!isUsableProgressSession(session)) throw new Error('This is not a valid v7 saved-progress file.');
+    const sourceHash=String(data?.bankHash||session?.bankHash||''); if(sourceHash&&rec.bankHash&&sourceHash!==String(rec.bankHash)) throw new Error(`This progress save belongs to a different version of ${rec.displayName||id}.`);
+    await savePreImportRecoveryPoint();
+    if(!Number(session.version)) session.version=7; session.bankHash=rec.bankHash; session.libraryFormId=id; session.libraryFormName=rec.displayName||id;
+    window.__STEP_LOCAL_PROGRESS_IMPORTING=true;
+    try{
+      await writeProgress(id, session);
+      if(Object.prototype.hasOwnProperty.call(data||{},'threeDigitScore')){
+        rec.threeDigitScore=data.threeDigitScore==null?'':String(data.threeDigitScore); upsertCatalogForm(rec); await writeCatalog();
+      }
+    }finally{window.__STEP_LOCAL_PROGRESS_IMPORTING=false;}
+    notifyLocalProgressImport({source:'single-form-progress-file',forms:[{formId:id,bankHash:String(rec.bankHash||'')}]});
+    alert('Progress save imported. It is treated as a new local progress branch until Google Backup is checked.');
+  }
+  async function exportSave(id){
+    const session=await readProgress(id); if(!session) throw new Error('No progress save exists for this form.'); const rec=catalogForm(id);
+    const payload={fileType:'StepExamSimulatorV7Save', saveVersion:7, exportedAt:nowIso(), formSlot:id, bankHash:String(rec?.bankHash||session?.bankHash||''), threeDigitScore:String(rec?.threeDigitScore||''), cloudLineageIncluded:false, session};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${id}_progress_save.json`; a.click(); URL.revokeObjectURL(a.href);
+  }
 
   function setMenuMode(modeName){
     modeName = ['quick','library','qbank'].includes(modeName) ? modeName : 'quick';
@@ -2910,9 +2936,9 @@ document.addEventListener('click', function(e){
   $('#connectDataFolderBtn')?.addEventListener('click',()=>connectDataFolder().catch(e=>alert(e.message||String(e))));
   $('#scanDataFolderBtn')?.addEventListener('click',()=>scanDataFolder(true).catch(e=>alert(e.message||String(e))));
   $('#exportCatalogBtn')?.addEventListener('click',()=>writeCatalog().then(()=>alert('Catalog written.')).catch(e=>alert(e.message||String(e))));
-  $('#exportFullLibraryBackupBtn')?.addEventListener('click',()=>exportFullLibraryBackup().catch(e=>alert('Full backup export failed: '+(e.message||String(e)))));
+  $('#exportFullLibraryBackupBtn')?.addEventListener('click',()=>exportFullLibraryBackup().catch(e=>alert('Library backup export failed: '+(e.message||String(e)))));
   $('#importFullLibraryBackupBtn')?.addEventListener('click',()=>{ const inp=$('#fullLibraryBackupInput'); if(inp){ inp.value=''; inp.click(); } });
-  $('#fullLibraryBackupInput')?.addEventListener('change',async()=>{ const inp=$('#fullLibraryBackupInput'); const file=inp?.files?.[0]; try{ await importLibraryBackup(file,'full'); }catch(e){ alert('Full backup import failed: '+(e.message||String(e))); } finally{ if(inp) inp.value=''; } });
+  $('#fullLibraryBackupInput')?.addEventListener('change',async()=>{ const inp=$('#fullLibraryBackupInput'); const file=inp?.files?.[0]; try{ await importLibraryBackup(file,'full'); }catch(e){ alert('Library backup import failed: '+(e.message||String(e))); } finally{ if(inp) inp.value=''; } });
   $('#exportProgressOnlyBackupBtn')?.addEventListener('click',()=>exportProgressOnlyBackup().catch(e=>alert('Progress backup export failed: '+(e.message||String(e)))));
   $('#importProgressOnlyBackupBtn')?.addEventListener('click',()=>{ const inp=$('#progressOnlyBackupInput'); if(inp){ inp.value=''; inp.click(); } });
   $('#progressOnlyBackupInput')?.addEventListener('change',async()=>{ const inp=$('#progressOnlyBackupInput'); const file=inp?.files?.[0]; try{ await importLibraryBackup(file,'progress'); }catch(e){ alert('Progress backup import failed: '+(e.message||String(e))); } finally{ if(inp) inp.value=''; } });
@@ -2927,6 +2953,25 @@ document.addEventListener('click', function(e){
 
 
   function backupTimestampA4(){ const d=new Date(); const z=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}_${z(d.getHours())}-${z(d.getMinutes())}-${z(d.getSeconds())}`; }
+  function clonePlainA4(v){ try{return JSON.parse(JSON.stringify(v));}catch(e){return v;} }
+  function libraryCatalogForBackup(source=catalog){
+    const out=clonePlainA4(source||{forms:[]})||{forms:[]}; if(!Array.isArray(out.forms)) out.forms=[];
+    out.backupScope='library-only'; out.progressIncluded=false;
+    out.forms=out.forms.map(rec=>{ const x={...rec}; delete x.progressSummary; x.threeDigitScore=''; return x; });
+    return out;
+  }
+  function progressOwnedCatalogMap(source=catalog){
+    const out=new Map(); for(const rec of (source?.forms||[])){ const key=`${String(rec.id||'')}@@${String(rec.bankHash||'')}`; out.set(key,{threeDigitScore:String(rec.threeDigitScore||''),progressSummary:clonePlainA4(rec.progressSummary||null)}); } return out;
+  }
+  function sanitizeImportedLibraryCatalog(imported,currentCatalog){
+    const out=libraryCatalogForBackup(imported||{forms:[]}),keep=progressOwnedCatalogMap(currentCatalog||catalog);
+    out.forms=(out.forms||[]).map(rec=>{ const key=`${String(rec.id||'')}@@${String(rec.bankHash||'')}`,owned=keep.get(key); if(owned){rec.threeDigitScore=owned.threeDigitScore||'';rec.progressSummary=owned.progressSummary||null;} else {rec.threeDigitScore='';rec.progressSummary=null;} return rec; });
+    out.backupScope=undefined; out.progressIncluded=undefined; return out;
+  }
+  function progressBackupMetadata(){
+    ensureCatalogShape();
+    return {fileType:'ExamSimulator2LocalProgressBackupMetadata',schemaVersion:2,exportedAt:nowIso(),cloudLineageIncluded:false,forms:(catalog.forms||[]).map(rec=>({formId:String(rec.id||''),bankHash:String(rec.bankHash||''),threeDigitScore:String(rec.threeDigitScore||'')})).filter(x=>x.formId)};
+  }
   async function addDirectoryToZipRecursive(dirHandle, zipFolder){
     for await (const [name, handle] of dirHandle.entries()){
       if(isZipMetadataEntry(name)) continue;
@@ -2943,23 +2988,23 @@ document.addEventListener('click', function(e){
   async function exportFullLibraryBackup(){
     if(!dataDirHandle) await connectDataFolder();
     if(!dataDirHandle) throw new Error('Library storage is not connected.');
-    if(!window.JSZip) throw new Error('Full backup requires JSZip. Reload once online and try again.');
-    await writeCatalog(); if(activeSession) await saveSessionToStorage();
+    if(!window.JSZip) throw new Error('Library backup requires JSZip. Reload once online and try again.');
+    await writeCatalog();
     const zip=new JSZip();
-    zip.file('README_RESTORE.txt', 'Full Step Exam Simulator library backup. Contains catalog.json, forms/, progress/, assets/, and qbank progress if present. Restore using Form Library > Import Full Library Backup.');
-    try{ zip.file('catalog.json', await readText(dataDirHandle,'catalog.json')); }catch(e){}
-    await addDirectoryIfPresentToZip('forms', zip); await addDirectoryIfPresentToZip('progress', zip); await addDirectoryIfPresentToZip('assets', zip);
+    zip.file('README_RESTORE.txt', 'Step Exam Simulator LIBRARY-ONLY backup. Contains catalog structure, forms, and assets. It deliberately excludes progress, scores, sync lineage/version IDs, and Qbank progress. Use the separate Progress Backup for user progress.');
+    zip.file('catalog.json', JSON.stringify(libraryCatalogForBackup(),null,2));
+    await addDirectoryIfPresentToZip('forms', zip); await addDirectoryIfPresentToZip('assets', zip);
     const blob=await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`exam_simulator2_full_library_backup_${backupTimestampA4()}.zip`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`exam_simulator2_library_backup_${backupTimestampA4()}.zip`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   }
   async function exportProgressOnlyBackup(){
     if(!dataDirHandle) await connectDataFolder();
     if(!dataDirHandle) throw new Error('Library storage is not connected.');
     if(!window.JSZip) throw new Error('Progress backup requires JSZip. Reload once online and try again.');
-    await writeCatalog(); if(activeSession) await saveSessionToStorage();
+    await writeCatalog(); try{if(window.StepExamSyncBridge?.flushActive)await window.StepExamSyncBridge.flushActive();else if(activeSession)await saveSessionToStorage();}catch(e){console.warn('Could not flush active progress before export',e);}
     const zip=new JSZip();
-    zip.file('README_RESTORE.txt', 'Small progress-only backup. It includes progress/ saves and catalog metadata. Reimport forms/ZIPs first, then import this progress backup.');
-    try{ zip.file('catalog_snapshot.json', await readText(dataDirHandle,'catalog.json')); }catch(e){}
+    zip.file('README_RESTORE.txt', 'LOCAL PROGRESS-ONLY backup. Contains native progress files plus 3-digit-score metadata. Google cloud lineage/version IDs are deliberately NOT included. Reimport matching forms/library first, then import this progress backup. Imported progress is treated as a new local branch until Google Backup is checked.');
+    zip.file('progress_metadata.json', JSON.stringify(progressBackupMetadata(),null,2));
     await addDirectoryIfPresentToZip('progress', zip);
     const blob=await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}});
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`exam_simulator2_progress_backup_${backupTimestampA4()}.zip`; try{ localStorage.setItem('stepSimA5ProgressStatus', JSON.stringify({lastExportedAt:new Date().toISOString(), lastExportedFile:a.download})); window.stepSimA5RenderProgressStatus && window.stepSimA5RenderProgressStatus(); }catch(_e){} a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
@@ -2971,27 +3016,58 @@ document.addEventListener('click', function(e){
     for(let i=0;i<parts.length-1;i++) dir=await dir.getDirectoryHandle(parts[i], {create:true});
     await writeBinary(dir, parts[parts.length-1], blob);
   }
+  async function zipJsonIfPresent(zip,name){ const e=zip.file(name); if(!e)return null; try{return JSON.parse(await e.async('text'));}catch(err){throw new Error(`${name} is malformed: ${err.message}`);} }
+  async function applyProgressMetadata(meta,legacyCatalog){
+    const list=Array.isArray(meta?.forms)?meta.forms:Array.isArray(legacyCatalog?.forms)?legacyCatalog.forms.map(r=>({formId:r.id,bankHash:r.bankHash,threeDigitScore:r.threeDigitScore})):[];
+    if(!list.length)return [];
+    ensureCatalogShape(); const touched=[];
+    for(const m of list){ const rec=catalogForm(String(m.formId||m.id||'')); if(!rec)continue; if(m.bankHash&&rec.bankHash&&String(m.bankHash)!==String(rec.bankHash))continue; const score=m.threeDigitScore==null?'':String(m.threeDigitScore); if(String(rec.threeDigitScore||'')!==score){rec.threeDigitScore=score;upsertCatalogForm(rec);} touched.push({formId:String(rec.id),bankHash:String(rec.bankHash||'')}); }
+    await writeCatalog(); return touched;
+  }
   async function importLibraryBackup(file, mode='full'){
     if(!file) throw new Error('Choose a backup ZIP file.');
     if(!window.JSZip) throw new Error('Backup import requires JSZip. Reload once online and try again.');
     if(!dataDirHandle) await connectDataFolder();
     if(!dataDirHandle) throw new Error('Library storage is not connected.');
-    const label=mode==='progress'?'progress-only backup':'full library backup';
-    const ok=await appConfirm(`Import this ${label}? Matching files in this browser library may be replaced.`, {okText:'Import Backup'});
-    if(!ok) return;
-    const zip=await JSZip.loadAsync(file);
-    const entries=Object.values(zip.files||{}).filter(e=>!e.dir && !isZipMetadataEntry(e.name));
-    const usable=entries.filter(e=>{
-      const p=normalizeZipPath(e.name);
-      if(mode==='progress') return /^progress\//i.test(p);
-      return p==='catalog.json' || /^(forms|progress|assets)\//i.test(p);
-    });
-    if(!usable.length) throw new Error(mode==='progress' ? 'No progress/ files found in this backup.' : 'This ZIP does not look like a full library backup. Expected catalog.json, forms/, progress/, or assets/.');
-    for(const e of usable){ const p=normalizeZipPath(e.name); const blob=await e.async('blob'); await writeBackupEntryToLibrary(p, blob); }
-    loadedFormCache.clear(); revokeDataAssetObjectUrls(); await loadCatalog(); await scanDataFolder(true); await renderLibrary(); await renderQbankMode();
-    if(mode==='progress'){ try{ localStorage.setItem('stepSimA5ProgressStatus', JSON.stringify(Object.assign({}, JSON.parse(localStorage.getItem('stepSimA5ProgressStatus')||'{}'), {lastImportedAt:new Date().toISOString(), lastImportedFile:file && file.name ? file.name : 'progress backup'}))); window.stepSimA5RenderProgressStatus && window.stepSimA5RenderProgressStatus(); }catch(_e){} }
-    alert(`${label} imported: ${usable.length} file(s).`);
+    const isProgress=mode==='progress',label=isProgress?'progress backup':'library backup';
+    const msg=isProgress?'Import this local progress backup? Matching progress files may be replaced. Imported progress will NOT inherit any Google cloud version ID and will be treated as a new local branch.':'Import this library-only backup? Forms/assets/catalog structure will be replaced where applicable, but ALL existing local progress and 3-digit scores are preserved separately.';
+    const ok=await appConfirm(msg, {okText:'Import Backup'}); if(!ok) return;
+    const zip=await JSZip.loadAsync(file),entries=Object.values(zip.files||{}).filter(e=>!e.dir && !isZipMetadataEntry(e.name));
+    const currentCatalog=clonePlainA4(catalog),progressMeta=await zipJsonIfPresent(zip,'progress_metadata.json'),legacyCatalog=await zipJsonIfPresent(zip,'catalog_snapshot.json');
+    const usable=entries.filter(e=>{ const p=normalizeZipPath(e.name); if(isProgress)return /^progress\//i.test(p); return p==='catalog.json' || /^(forms|assets)\//i.test(p); });
+    if(!usable.length) throw new Error(isProgress?'No progress/ files found in this backup.':'This ZIP does not contain a library backup (catalog.json, forms/, or assets/). Progress-only files are intentionally ignored here.');
+    if(isProgress) await savePreImportRecoveryPoint();
+    const importedProgressIds=new Set(); let importedQbank=false;
+    const sorted=usable.slice().sort((a,b)=>{const pa=normalizeZipPath(a.name),pb=normalizeZipPath(b.name);if(pa==='catalog.json')return 1;if(pb==='catalog.json')return -1;return pa.localeCompare(pb);});
+    if(isProgress)window.__STEP_LOCAL_PROGRESS_IMPORTING=true;
+    try{
+      for(const e of sorted){
+        const p=normalizeZipPath(e.name);
+        if(!isProgress && p==='catalog.json'){
+          const incoming=JSON.parse(await e.async('text')),safe=sanitizeImportedLibraryCatalog(incoming,currentCatalog); await writeBackupEntryToLibrary(p,new Blob([JSON.stringify(safe,null,2)],{type:'application/json'})); continue;
+        }
+        const blob=await e.async('blob');
+        if(isProgress&&window.StepExamSyncBridge){
+          if(/^progress\/QBANK_MODE_progress\.json$/i.test(p)){await window.StepExamSyncBridge.writeQbankText(await blob.text());importedQbank=true;continue;}
+          let m=p.match(/^progress\/(.+?)_progress_save\.json$/i); if(m){const rec=catalogForm(m[1]);if(!rec)throw new Error(`Import the matching form ${m[1]} before importing its progress.`);await window.StepExamSyncBridge.writeFormProgressText(m[1],await blob.text(),rec.bankHash||'');importedProgressIds.add(m[1]);continue;}
+          m=p.match(/^progress\/(.+?)_suspended_test\.json$/i); if(m){const rec=catalogForm(m[1]);if(!rec)throw new Error(`Import the matching form ${m[1]} before importing its suspended progress.`);await window.StepExamSyncBridge.writeFormSuspendedText(m[1],await blob.text(),rec.bankHash||'');importedProgressIds.add(m[1]);continue;}
+        }
+        await writeBackupEntryToLibrary(p, blob);
+        if(isProgress){ const m=p.match(/^progress\/(.+?)_(?:progress_save|suspended_test)\.json$/i); if(m)importedProgressIds.add(m[1]); }
+      }
+    }finally{if(isProgress)window.__STEP_LOCAL_PROGRESS_IMPORTING=false;}
+    if(!isProgress && window.StepExamSyncBridge?.pruneLibraryToPaths){ try{await window.StepExamSyncBridge.pruneLibraryToPaths(sorted.map(e=>normalizeZipPath(e.name)));}catch(e){console.warn('Could not prune obsolete local library files after import',e);} }
+    loadedFormCache.clear(); revokeDataAssetObjectUrls(); await loadCatalog(); await scanDataFolder(true);
+    if(isProgress){
+      const scoreTouched=await applyProgressMetadata(progressMeta,legacyCatalog); await refreshProgressSummaries();
+      const forms=[...new Set([...importedProgressIds,...scoreTouched.map(x=>x.formId)])].map(id=>{const rec=catalogForm(id);return rec?{formId:String(rec.id),bankHash:String(rec.bankHash||'')}:null;}).filter(Boolean);
+      notifyLocalProgressImport({source:'progress-backup-zip',forms,qbank:importedQbank});
+      try{ localStorage.setItem('stepSimA5ProgressStatus', JSON.stringify(Object.assign({}, JSON.parse(localStorage.getItem('stepSimA5ProgressStatus')||'{}'), {lastImportedAt:new Date().toISOString(), lastImportedFile:file && file.name ? file.name : 'progress backup'}))); window.stepSimA5RenderProgressStatus && window.stepSimA5RenderProgressStatus(); }catch(_e){}
+    }
+    await renderLibrary(); await renderQbankMode();
+    alert(isProgress?`Progress backup imported: ${usable.length} progress file(s). Google lineage was intentionally reset for the imported progress.`:`Library backup imported: ${usable.length} library file(s). Existing progress and 3-digit scores were preserved.`);
   }
+
   async function updateAppShellPreserveLibrary(){
     const ok=await appConfirm('Clear the app shell/cache and reload the clean GitHub Pages URL? This does not delete your iPad Browser Library, forms, progress, or assets.', {okText:'Update App'});
     if(!ok) return;
@@ -5099,7 +5175,7 @@ document.addEventListener('click', function(e){
   /* exam-simulator2: narrow cloud storage bridge.
      This exposes only durable progress operations; form source files/assets stay private to the simulator. */
   window.StepExamSyncBridge = Object.freeze({
-    build: 'EXAM-SIMULATOR2-PROGRESS-V2-1',
+    build: 'EXAM-SIMULATOR2-PROGRESS-V2-2',
     async ensureReady(){
       if(!dataDirHandle){ await restoreLastDataFolder(); }
       if(!dataDirHandle) throw new Error('Simulator library storage is not available.');
@@ -5116,10 +5192,24 @@ document.addEventListener('click', function(e){
       return { examVisible, activeFormId:activeRunContext&&activeRunContext.formId||'', activeType:activeRunContext&&activeRunContext.type||'', qbank:!!(activeRunContext&&activeRunContext.qbank), hasActiveSession:!!activeSession };
     },
     async catalog(){ await this.ensureReady(); ensureCatalogShape(); return JSON.parse(JSON.stringify(catalog)); },
-    async listLibraryFiles(){ await this.ensureReady(); const out=await stepSyncWalkLibrary(dataDirHandle,'',[]); return out.sort((a,b)=>a.path.localeCompare(b.path)); },
+    async listLibraryFiles(){
+      await this.ensureReady(); const out=await stepSyncWalkLibrary(dataDirHandle,'',[]);
+      const cat=out.find(x=>normalizeZipPath(x.path)==='catalog.json'); if(cat){const blob=new Blob([JSON.stringify(libraryCatalogForBackup(),null,2)],{type:'application/json'});cat.size=blob.size;cat.type='application/json';}
+      return out.sort((a,b)=>a.path.localeCompare(b.path));
+    },
     async pruneLibraryToPaths(keepPaths){ await this.ensureReady(); const keep=new Set((keepPaths||[]).map(normalizeZipPath)); const files=await stepSyncWalkLibrary(dataDirHandle,'',[]); let removed=0; for(const f of files){ const path=normalizeZipPath(f.path); if(!path || path==='progress' || path.startsWith('progress/') || keep.has(path)) continue; try{ const r=await stepSyncResolveLibraryPath(path,false); await r.dir.removeEntry(r.name); removed++; }catch(e){ console.warn('Could not prune obsolete library file',path,e); } } loadedFormCache.clear(); return {removed}; },
-    async readLibraryFileBlob(path){ await this.ensureReady(); const r=await stepSyncResolveLibraryPath(path,false); const fh=await r.dir.getFileHandle(r.name,{create:false}); return await fh.getFile(); },
-    async writeLibraryFileBlob(path,blob){ await this.ensureReady(); const r=await stepSyncResolveLibraryPath(path,true); await writeBinary(r.dir,r.name,blob); return true; },
+    async readLibraryFileBlob(path){
+      await this.ensureReady(); const norm=normalizeZipPath(path);
+      if(norm==='catalog.json') return new Blob([JSON.stringify(libraryCatalogForBackup(),null,2)],{type:'application/json'});
+      const r=await stepSyncResolveLibraryPath(norm,false); const fh=await r.dir.getFileHandle(r.name,{create:false}); return await fh.getFile();
+    },
+    async writeLibraryFileBlob(path,blob){
+      await this.ensureReady(); const norm=normalizeZipPath(path),r=await stepSyncResolveLibraryPath(norm,true);
+      if(norm==='catalog.json'){
+        const incoming=JSON.parse(await blob.text()),safe=sanitizeImportedLibraryCatalog(incoming,catalog); await writeBinary(r.dir,r.name,new Blob([JSON.stringify(safe,null,2)],{type:'application/json'})); return true;
+      }
+      await writeBinary(r.dir,r.name,blob); return true;
+    },
     async refreshLibraryAfterRestore(){ await this.ensureReady(); try{ await scanDataFolder(); }catch(e){ console.warn('Library rescan after cloud restore failed',e); } try{ await renderLibrary(); }catch(e){} try{ await renderQbankMode(); }catch(e){} return true; },
     async readFormProgressText(id){ await this.ensureReady(); try{return await readText(await progressDir(),`${id}_progress_save.json`);}catch(e){return null;} },
     async readFormSuspendedText(id){ await this.ensureReady(); try{return await readText(await progressDir(),`${id}_suspended_test.json`);}catch(e){return null;} },
@@ -5693,9 +5783,9 @@ html:fullscreen .bottombar{bottom:0!important}
     if(expProg) expProg.textContent='Export Current Progress';
     if(impProg) impProg.textContent='Import Previous Progress';
     row2.appendChild(menu('a5-progress-menu','Progress ▾',[expProg,impProg]));
-    if(expFull) expFull.textContent='Export Full Library Backup';
-    if(impFull) impFull.textContent='Import Full Library Backup';
-    row2.appendChild(menu('a5-full-menu','Full Library Backup ▾',[expFull,impFull]));
+    if(expFull) expFull.textContent='Export Library Backup';
+    if(impFull) impFull.textContent='Import Library Backup';
+    row2.appendChild(menu('a5-full-menu','Library Backup ▾',[expFull,impFull]));
     if(update){ update.textContent='Update App / Clear Cache'; row2.appendChild(update); }
     actions.appendChild(row1); actions.appendChild(row2); actions.appendChild(strip); renderProgressStatus();
   }
@@ -10093,10 +10183,10 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
-<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
-<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
-<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-PROGRESS-V2-1"></script>
+<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-PROGRESS-V2-2"></script>
+<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-PROGRESS-V2-2"></script>
+<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-PROGRESS-V2-2"></script>
+<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-PROGRESS-V2-2"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10270,8 +10360,8 @@ try{
     if(connect) connect.textContent='Connect / Start Library Storage';
     if(scan) scan.textContent='Scan / Refresh Library';
     if(catalog) catalog.textContent='Write Catalog';
-    if(expFull) expFull.textContent='Export Full Library Backup';
-    if(impFull) impFull.textContent='Import Full Library Backup';
+    if(expFull) expFull.textContent='Export Library Backup';
+    if(impFull) impFull.textContent='Import Library Backup';
     bar.appendChild(load);
     bar.appendChild(makeMenu('exam-progress-menu','Progress ▾',[impProg,expProg]));
     bar.appendChild(update);
