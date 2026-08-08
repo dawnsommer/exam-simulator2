@@ -390,3 +390,14 @@ The build intentionally keeps portable Progress, local Library, active cloud pro
 Local DATA/IndexedDB remains the runtime source of truth.
 
 Automatic Local → Cloud replacement is permitted only when the current Drive version is still the version the local copy descended from. If Drive lineage has advanced, V2 requires an explicit decision. A second manifest check before commit also prevents a normal upload from winning a race against a concurrent device update.
+
+## V2.2.3 unified schema policy
+
+- All newly written cloud progress artifacts use schemaVersion 2.
+- All newly written progress-history manifests use schemaVersion 2.
+- All newly written Full Form Library cloud manifests use schemaVersion 2.
+- Full Library manifests explicitly declare `backupType: "library"` and `containsProgress: false`.
+- Existing schemaVersion 1 Full Library manifests remain readable and are normalized in memory to v2; the next committed library backup rewrites the existing manifest as schema 2.
+- Existing schemaVersion 1 progress-history manifests remain readable and are rewritten as schema 2 on the next history mutation.
+- Schema 1 is retained only as a legacy read/import compatibility marker. It is not emitted by new cloud writers.
+- Build/cache ID: EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.3.

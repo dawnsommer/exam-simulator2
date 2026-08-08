@@ -120,6 +120,20 @@ T('Extra. Concurrent manifest advancement aborts staged upload',async()=>{
 T('Extra. bankHash mismatch is isolated from active form',async()=>{
   const e=await buildEnv({progress:prog(2),bankHash:'BANK2'}),oldKey='N-11@@OLD';const pf=e.drive.addJson('old-bank.json',{type:e.R.config.FORM_BACKUP_TYPE,schemaVersion:2,appId:'exam-simulator2',versionId:'oldv',formId:'N-11',bankHash:'OLD',contentHash:'OLDHASH',payload:{progress:prog(0),suspended:null,threeDigitScore:''}});e.drive.addJson(e.R.config.MANIFEST_FILE,{type:e.R.config.MANIFEST_TYPE,schemaVersion:2,appId:'exam-simulator2',forms:{[oldKey]:{formId:'N-11',bankHash:'OLD',currentVersionId:'oldv',driveFileId:pf.id,checksum:'OLDHASH',sizeBytes:+pf.size,updatedAt:'2026-08-01T00:00:00Z',deviceId:'OLD',deleted:false}},qbank:null});const a=await e.R.sync.analyze();assert.equal(a.summary.rows.find(r=>r.key===oldKey).state,'BANK_HASH_MISMATCH');assert.equal(a.summary.rows.find(r=>r.key==='N-11@@BANK2').state,'LOCAL_ONLY');
 });
+T('Extra. Google Backup UI actions cannot strand replacement buttons disabled',async()=>{
+  const src=read('js/progress-sync.js');
+  assert.match(src,/async function runUiAction\(button,fn\)/);
+  assert.match(src,/Unknown Google Backup action/);
+  assert.match(src,/handleError\(err\)/);
+  assert.doesNotMatch(src,/b\.disabled=true;action\(/);
+  assert.match(src,/querySelectorAll\('#progressSyncPanel \[data-step-sync-action\]/);
+});
+T('Extra. Sync metadata open cannot hang indefinitely',async()=>{
+  const src=read('js/sync-config.js');
+  assert.match(src,/req\.onblocked=/);
+  assert.match(src,/Sync metadata database did not open in time/);
+  assert.match(src,/META_FALLBACK_PREFIX/);
+});
 T('Extra. V1 manifest migrates once and legacy decision metadata is retired',async()=>{
   const e=await buildEnv({progress:prog(0)}),ent=await localEntity(e),pf=e.drive.addJson('legacy-form.json',{type:e.R.config.FORM_BACKUP_TYPE,schemaVersion:1,appId:'exam-simulator2',backupId:'legacy10',formId:'N-11',bankHash:'BANK1',contentHash:ent.contentHash,payload:{progress:prog(0),suspended:null,threeDigitScore:''}}),key=ent.key;e.drive.addJson(e.R.config.MANIFEST_FILE,{type:e.R.config.MANIFEST_TYPE,schemaVersion:1,appId:'exam-simulator2',entries:{[key]:{key,kind:'form',formId:'N-11',bankHash:'BANK1',fileId:pf.id,backupId:'legacy10',contentHash:ent.contentHash,updatedAt:'2026-08-01T00:00:00Z',deviceId:'OLD'}}});await e.meta.set('knownCloud',{[key]:{backupId:'legacy10'}});await e.meta.set('dirtyKeys',{});await e.R.sync.checkCloud({interactive:false});const m=e.drive.jsonByName(e.R.config.MANIFEST_FILE);assert.equal(m.schemaVersion,2);assert.equal(m.forms[key].currentVersionId,'legacy10');assert.equal(await e.meta.get('v2LegacyMetaMigrated',false),true);assert.deepEqual(await e.meta.get('knownCloud',{}),{});
 });

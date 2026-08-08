@@ -20,8 +20,16 @@
 
   async function listByName(name){const q=`name = '${escapeQ(name)}' and trashed = false`,params=new URLSearchParams({spaces:'appDataFolder',q,fields:'files(id,name,modifiedTime,size,mimeType)',orderBy:'modifiedTime desc',pageSize:'20'});const r=await A.driveFetch('https://www.googleapis.com/drive/v3/files?'+params.toString());const d=await r.json();return Array.isArray(d.files)?d.files:[];}
   async function downloadJson(id,label){const r=await A.driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?alt=media`);return U.parseJson(await r.text(),label);}
-  function emptyManifest(){return {type:C.LIBRARY_MANIFEST_TYPE,schemaVersion:C.LIBRARY_SCHEMA_VERSION,appId:C.CLOUD.appId,backupId:U.uuid(),createdAt:U.iso(),updatedAt:U.iso(),build:C.BUILD,deviceId:'',totalBytes:0,fileCount:0,entries:{}};}
-  function validateManifest(m){if(!m||typeof m!=='object'||m.type!==C.LIBRARY_MANIFEST_TYPE)throw new Error('Cloud library manifest is invalid.');if(Number(m.schemaVersion)!==Number(C.LIBRARY_SCHEMA_VERSION))throw new Error(`Unsupported library backup schema ${String(m.schemaVersion)}.`);if(m.appId&&m.appId!==C.CLOUD.appId)throw new Error('Cloud library manifest belongs to a different application.');if(!m.entries||typeof m.entries!=='object'||Array.isArray(m.entries))m.entries={};return m;}
+  function emptyManifest(){return {type:C.LIBRARY_MANIFEST_TYPE,schemaVersion:C.LIBRARY_SCHEMA_VERSION,backupType:'library',containsProgress:false,appId:C.CLOUD.appId,backupId:U.uuid(),createdAt:U.iso(),updatedAt:U.iso(),build:C.BUILD,deviceId:'',totalBytes:0,fileCount:0,entries:{}};}
+  function normalizeManifest(m){
+    if(!m||typeof m!=='object'||m.type!==C.LIBRARY_MANIFEST_TYPE)throw new Error('Cloud library manifest is invalid.');
+    const schema=Number(m.schemaVersion||0);
+    if(schema!==1&&schema!==Number(C.LIBRARY_SCHEMA_VERSION))throw new Error(`Unsupported library backup schema ${String(m.schemaVersion)}.`);
+    if(m.appId&&m.appId!==C.CLOUD.appId)throw new Error('Cloud library manifest belongs to a different application.');
+    const entries=(m.entries&&typeof m.entries==='object'&&!Array.isArray(m.entries))?m.entries:{};
+    return {...m,schemaVersion:C.LIBRARY_SCHEMA_VERSION,backupType:'library',containsProgress:false,appId:C.CLOUD.appId,entries};
+  }
+  function validateManifest(m){return normalizeManifest(m);}
   async function readCloudManifest(){const files=await listByName(C.LIBRARY_MANIFEST_FILE);if(!files.length)return {manifest:null,file:null,files:[]};let lastErr=null;for(const file of files){try{return {manifest:validateManifest(await downloadJson(file.id,'Library backup manifest')),file,files};}catch(e){lastErr=e;console.warn('Ignoring invalid library manifest candidate',file.id,e);}}throw lastErr||new Error('No valid cloud library manifest was found.');}
   async function createMetadataFile(name,mimeType='application/octet-stream'){const r=await A.driveFetch('https://www.googleapis.com/drive/v3/files?fields=id,name,modifiedTime,size,mimeType',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,parents:['appDataFolder'],mimeType})});return await r.json();}
   async function uploadSmallJson(fileId,obj){

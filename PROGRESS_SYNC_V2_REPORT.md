@@ -390,3 +390,7 @@ The build intentionally keeps portable Progress, local Library, active cloud pro
 Local DATA/IndexedDB remains the runtime source of truth.
 
 Automatic Local → Cloud replacement is permitted only when the current Drive version is still the version the local copy descended from. If Drive lineage has advanced, V2 requires an explicit decision. A second manifest check before commit also prevents a normal upload from winning a race against a concurrent device update.
+
+## V2.2.3 schema unification
+
+Current cloud write schema is now uniformly version 2 for active progress, per-form/Qbank payloads, progress history, and Full Form Library manifests. Readers remain backward-compatible with schema 1 where legacy data can exist. Library schema-1 manifests are normalized to schema 2 in memory, with `backupType: "library"` and `containsProgress: false`, and are naturally upgraded on the next successful backup commit. Progress-history schema-1 manifests are handled the same way. No new cloud writer emits schema 1.

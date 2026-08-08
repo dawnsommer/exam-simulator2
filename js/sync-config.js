@@ -14,13 +14,13 @@
   const C = ROOT.config = Object.freeze({
     CLOUD: CLOUD_CONFIG,
     APP_NAME: CLOUD_CONFIG.appId,
-    BUILD: 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2',
+    BUILD: 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.3',
     DRIVE_SCOPE: 'https://www.googleapis.com/auth/drive.appdata',
     MANIFEST_FILE: `${CLOUD_CONFIG.driveFilePrefix}.manifest.json`,
     MANIFEST_TYPE: 'exam-simulator2-progress-manifest',
     HISTORY_MANIFEST_FILE: `${CLOUD_CONFIG.driveFilePrefix}.progress-history.json`,
     HISTORY_MANIFEST_TYPE: 'exam-simulator2-progress-history',
-    HISTORY_SCHEMA_VERSION: 1,
+    HISTORY_SCHEMA_VERSION: 2,
     FORM_BACKUP_TYPE: 'exam-simulator2-form-progress-backup',
     QBANK_BACKUP_TYPE: 'exam-simulator2-qbank-progress-backup',
     SCHEMA_VERSION: 2,
@@ -38,18 +38,27 @@
     PROD_WARNING: 'Production exam-simulator2 — local-first progress with optional Google Drive backup.'
   });
 
+  const META_FALLBACK_PREFIX='ExamSimulator2_SYNC_META_FALLBACK:';
+  function fallbackGet(key,fallback=null){try{const raw=localStorage.getItem(META_FALLBACK_PREFIX+key);return raw===null?fallback:JSON.parse(raw);}catch(_e){return fallback;}}
+  function fallbackSet(key,val){try{localStorage.setItem(META_FALLBACK_PREFIX+key,JSON.stringify(val));}catch(_e){}return val;}
+  function fallbackDel(key){try{localStorage.removeItem(META_FALLBACK_PREFIX+key);}catch(_e){}}
   function openDb(){
     return new Promise((resolve,reject)=>{
-      const req=indexedDB.open(C.META_DB,1);
+      if(!('indexedDB' in window)){reject(new Error('IndexedDB is unavailable for sync metadata.'));return;}
+      let done=false;const finish=(fn,v)=>{if(done)return;done=true;clearTimeout(timer);fn(v);};
+      const timer=setTimeout(()=>finish(reject,new Error('Sync metadata database did not open in time.')),3000);
+      let req;try{req=indexedDB.open(C.META_DB,1);}catch(e){finish(reject,e);return;}
       req.onupgradeneeded=()=>{ if(!req.result.objectStoreNames.contains(C.META_STORE)) req.result.createObjectStore(C.META_STORE); };
-      req.onsuccess=()=>resolve(req.result);
-      req.onerror=()=>reject(req.error || new Error('Could not open sync metadata database.'));
+      req.onsuccess=()=>finish(resolve,req.result);
+      req.onerror=()=>finish(reject,req.error || new Error('Could not open sync metadata database.'));
+      req.onblocked=()=>finish(reject,new Error('Sync metadata database is blocked by another open app tab. Close other exam-simulator2 tabs and try again.'));
     });
   }
+  async function withDb(op,fallbackOp){try{return await op(await openDb());}catch(e){console.warn('Sync metadata IndexedDB unavailable; using local fallback for this device.',e);return fallbackOp();}}
   ROOT.meta={
-    async get(key,fallback=null){const db=await openDb();try{return await new Promise((res,rej)=>{const tx=db.transaction(C.META_STORE,'readonly');const r=tx.objectStore(C.META_STORE).get(key);r.onsuccess=()=>res(r.result===undefined?fallback:r.result);r.onerror=()=>rej(r.error);});}finally{db.close();}},
-    async set(key,val){const db=await openDb();try{await new Promise((res,rej)=>{const tx=db.transaction(C.META_STORE,'readwrite');tx.objectStore(C.META_STORE).put(val,key);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}finally{db.close();}return val;},
-    async del(key){const db=await openDb();try{await new Promise((res,rej)=>{const tx=db.transaction(C.META_STORE,'readwrite');tx.objectStore(C.META_STORE).delete(key);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);});}finally{db.close();}},
+    async get(key,fallback=null){return withDb(async db=>{try{return await new Promise((res,rej)=>{const tx=db.transaction(C.META_STORE,'readonly');const r=tx.objectStore(C.META_STORE).get(key);r.onsuccess=()=>res(r.result===undefined?fallback:r.result);r.onerror=()=>rej(r.error);tx.onabort=()=>rej(tx.error||new Error('Sync metadata read aborted.'));});}finally{db.close();}},()=>fallbackGet(key,fallback));},
+    async set(key,val){return withDb(async db=>{try{await new Promise((res,rej)=>{const tx=db.transaction(C.META_STORE,'readwrite');tx.objectStore(C.META_STORE).put(val,key);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error||new Error('Sync metadata write aborted.'));});return val;}finally{db.close();}},()=>fallbackSet(key,val));},
+    async del(key){return withDb(async db=>{try{await new Promise((res,rej)=>{const tx=db.transaction(C.META_STORE,'readwrite');tx.objectStore(C.META_STORE).delete(key);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error||new Error('Sync metadata delete aborted.'));});}finally{db.close();}},()=>fallbackDel(key));},
     async deviceId(){let id=await this.get('deviceId','');if(!id){id=(crypto.randomUUID?crypto.randomUUID():('dev_'+Date.now()+'_'+Math.random().toString(36).slice(2)));await this.set('deviceId',id);}return id;}
   };
   ROOT.util={
