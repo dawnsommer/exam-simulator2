@@ -1,6 +1,6 @@
 # exam-simulator2 — Production Cloud Build
 
-Build: `EXAM-SIMULATOR2-CLOUD-7`
+Build: `EXAM-SIMULATOR2-CLOUD-8`
 
 Production URL: `https://dawnsommer.github.io/exam-simulator2/`
 
@@ -43,3 +43,12 @@ The Form Library now exposes only four persistent workflow controls: Add New For
 
 `Back Up Now` first checks the tiny cloud manifest. If the same form differs locally and in Drive, the app asks for direction before uploading. Choosing **Keep This Device → Cloud** makes the local copy authoritative and completes the manifest/lineage transaction; choosing **Use Cloud Backup → This Device** restores only the conflicting form. A successful manual backup must re-check as aligned unless Drive changes again afterward.
 
+
+## CLOUD-8 diagnostics and progress-only recovery
+
+If the Progress Backup tab reports a difference that is not obvious, use **Diagnose Differences**. It reports which form/Qbank entry differs and whether the cause is active cloud progress, an unloaded-form recovery backup, an archived bankHash version, a local pending change, or a true conflict.
+
+Two progress-only maintenance actions are available:
+
+- **Clear Cloud Progress Backup** — removes only the progress manifest and per-form/Qbank cloud backups. It never deletes the Full Form Library backup.
+- **Replace Cloud Progress with This Device** — transactionally rebuilds the entire progress cloud backup from the current device. New progress files are uploaded before the manifest is committed; old progress payloads are cleaned only after the new manifest is active.

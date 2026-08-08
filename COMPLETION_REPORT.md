@@ -1,6 +1,6 @@
 # exam-simulator2 — Cloud Production Completion Report
 
-Build: `EXAM-SIMULATOR2-CLOUD-7`
+Build: `EXAM-SIMULATOR2-CLOUD-8`
 
 ## Architecture preserved
 
@@ -49,7 +49,7 @@ Build: `EXAM-SIMULATOR2-CLOUD-7`
 
 ## PWA / caching
 
-- Service-worker build: `EXAM-SIMULATOR2-CLOUD-7`.
+- Service-worker build: `EXAM-SIMULATOR2-CLOUD-8`.
 - Cache namespace: `exam-simulator2-*`.
 - Cache/service-worker reset code is scoped to `/exam-simulator2/` and no longer clears unrelated GitHub Pages apps.
 - Core cloud JS and manifest are network-first to reduce stale PWA code.
@@ -84,7 +84,7 @@ The build environment cannot complete a real Google OAuth/PWA flow for your acco
 6. Back up and restore a disposable full library and confirm old non-progress library storage is pruned while progress remains.
 7. Test Mac + iPad multi-device discrepancy/conflict behavior before relying on the production cloud copy.
 
-## EXAM-SIMULATOR2-CLOUD-7 UI update
+## EXAM-SIMULATOR2-CLOUD-8 UI update
 
 - Progress Backup conflicts now render as a dedicated action-needed notification card instead of adding a destructive Replace-Cloud button to the normal action row.
 - During a conflict, the card offers two explicit directions: **Keep This Device → Cloud** or **Use Cloud Backup → This Device**. The standard row is reduced to Check Again / Disconnect until the conflict is resolved.
@@ -95,7 +95,7 @@ The build environment cannot complete a real Google OAuth/PWA flow for your acco
 - Qbank's pool/source line is now stacked below the available-question count so `Qbank · Unused` no longer competes for horizontal space.
 
 
-## EXAM-SIMULATOR2-CLOUD-7 structural Library fix
+## EXAM-SIMULATOR2-CLOUD-8 structural Library fix
 - Removed the CLOUD3 interval mutation and CLOUD4 menu-panel reparenting patch.
 - Persistent Workflow remains a true 50/50 right-side column beside Recently Completed Forms at iPad/desktop widths; stacking occurs only below 620 CSS px.
 - Progress and Others are native collapsed `<details>` menus again. Their panels remain children of the menu and use fixed positioning only while open, preventing inline-button clutter and lower-card clipping.
@@ -131,3 +131,12 @@ The build environment cannot complete a real Google OAuth/PWA flow for your acco
 - Local lineage is no longer advanced before a successful Drive manifest commit. A manifest-write failure leaves local dirty/known-cloud metadata unchanged.
 - Regression tests covered clean backup→aligned, pre-upload conflict detection, Keep Device resolution, Restore Cloud resolution, immediate manifest check after backup, and manifest commit failure.
 
+
+## EXAM-SIMULATOR2-CLOUD-8 progress discrepancy diagnostics/recovery
+
+- Fixed phantom `Cloud backup available` cases caused by retained progress backups for forms not currently loaded or for older/different `bankHash` versions. These are now classified as retained recovery/archived backups and do not make active progress appear unsynced.
+- A cloud deletion tombstone with no corresponding local progress is semantically aligned even if local lineage metadata was lost.
+- Remote lineage is also recognized by the last backed-up content hash, preventing a changed backup ID with identical known content from creating a false conflict after the next local edit.
+- Added `Diagnose Differences` showing per-entity state plus truncated local/cloud hashes, bank hashes, known backup ID and current cloud backup ID. No question content is displayed.
+- Added progress-only `Clear Cloud Progress Backup`; this targets only the progress manifest and per-form/Qbank progress backup files and leaves the Full Form Library backup untouched.
+- Added progress-only `Replace Cloud Progress with This Device`; it uploads fresh progress payloads first, commits the new progress manifest only after all uploads succeed, updates local lineage/dirty state, then cleans superseded progress payloads. The Full Form Library backup is never part of this operation.
