@@ -1,6 +1,6 @@
 # exam-simulator2 — Production Cloud Build
 
-Build: `EXAM-SIMULATOR2-CLOUD-6`
+Build: `EXAM-SIMULATOR2-CLOUD-7`
 
 Production URL: `https://dawnsommer.github.io/exam-simulator2/`
 
@@ -38,3 +38,8 @@ The OAuth Web Client used by the shared Worker must include this exact Authorize
 ## CLOUD-2 interface
 
 The Form Library now exposes only four persistent workflow controls: Add New Form, Progress, Update App, and Others. Google backup state is visible beside the local Library connection status. Backup conflicts appear as an action-needed notification rather than as a permanent destructive toolbar button.
+
+### CLOUD-7 manual backup behavior
+
+`Back Up Now` first checks the tiny cloud manifest. If the same form differs locally and in Drive, the app asks for direction before uploading. Choosing **Keep This Device → Cloud** makes the local copy authoritative and completes the manifest/lineage transaction; choosing **Use Cloud Backup → This Device** restores only the conflicting form. A successful manual backup must re-check as aligned unless Drive changes again afterward.
+

@@ -1,6 +1,6 @@
 # exam-simulator2 — Cloud Production Completion Report
 
-Build: `EXAM-SIMULATOR2-CLOUD-6`
+Build: `EXAM-SIMULATOR2-CLOUD-7`
 
 ## Architecture preserved
 
@@ -49,7 +49,7 @@ Build: `EXAM-SIMULATOR2-CLOUD-6`
 
 ## PWA / caching
 
-- Service-worker build: `EXAM-SIMULATOR2-CLOUD-6`.
+- Service-worker build: `EXAM-SIMULATOR2-CLOUD-7`.
 - Cache namespace: `exam-simulator2-*`.
 - Cache/service-worker reset code is scoped to `/exam-simulator2/` and no longer clears unrelated GitHub Pages apps.
 - Core cloud JS and manifest are network-first to reduce stale PWA code.
@@ -84,7 +84,7 @@ The build environment cannot complete a real Google OAuth/PWA flow for your acco
 6. Back up and restore a disposable full library and confirm old non-progress library storage is pruned while progress remains.
 7. Test Mac + iPad multi-device discrepancy/conflict behavior before relying on the production cloud copy.
 
-## EXAM-SIMULATOR2-CLOUD-6 UI update
+## EXAM-SIMULATOR2-CLOUD-7 UI update
 
 - Progress Backup conflicts now render as a dedicated action-needed notification card instead of adding a destructive Replace-Cloud button to the normal action row.
 - During a conflict, the card offers two explicit directions: **Keep This Device → Cloud** or **Use Cloud Backup → This Device**. The standard row is reduced to Check Again / Disconnect until the conflict is resolved.
@@ -95,7 +95,7 @@ The build environment cannot complete a real Google OAuth/PWA flow for your acco
 - Qbank's pool/source line is now stacked below the available-question count so `Qbank · Unused` no longer competes for horizontal space.
 
 
-## EXAM-SIMULATOR2-CLOUD-6 structural Library fix
+## EXAM-SIMULATOR2-CLOUD-7 structural Library fix
 - Removed the CLOUD3 interval mutation and CLOUD4 menu-panel reparenting patch.
 - Persistent Workflow remains a true 50/50 right-side column beside Recently Completed Forms at iPad/desktop widths; stacking occurs only below 620 CSS px.
 - Progress and Others are native collapsed `<details>` menus again. Their panels remain children of the menu and use fixed positioning only while open, preventing inline-button clutter and lower-card clipping.
@@ -113,9 +113,21 @@ The build environment cannot complete a real Google OAuth/PWA flow for your acco
 - Previous CLOUD3 interval layout mutation and CLOUD4 DOM-reparenting dropdown code are absent.
 
 
-## CLOUD-6 conflict resolution fix
+## CLOUD-7 conflict resolution fix
 - Fixed acknowledged cloud deletion tombstones being reclassified as cloud-newer after **Keep This Device → Cloud**.
 - Conflict resolution now enters an explicit busy state while Drive work is in flight.
 - **Use Cloud Backup → This Device** now restores only the currently conflicting form(s), not every matching cloud backup.
 - After either conflict choice, known-cloud lineage, dirty flags, deletion tombstones, protected-delete state and hashes are reconciled before the final analysis.
 - Regression tests covered keep-local deletion, cloud restore, and scoped cloud restore with an unrelated dirty form.
+
+## CLOUD-7 backup transaction fix
+
+- Manual **Back Up Now** now performs a read-only manifest comparison before any form upload.
+- A same-form divergence (`cloud-newer` with a local copy, or a true local/cloud conflict) becomes a decision **before writing anything**.
+- **Keep This Device → Cloud** force-uploads the selected local form(s) even when they are not currently marked dirty, then commits the manifest and only afterward updates `knownCloud`, `lastBackedUpHash`, dirty/tombstone state.
+- **Use Cloud Backup → This Device** restores only the selected conflicting form(s) and reconciles lineage metadata.
+- Decision screens remember the remote `backupId`; if Drive changes again before the user chooses, the operation stops and presents the updated decision instead of overwriting unseen data.
+- `Check Cloud Manifest` remains read-only.
+- Local lineage is no longer advanced before a successful Drive manifest commit. A manifest-write failure leaves local dirty/known-cloud metadata unchanged.
+- Regression tests covered clean backup→aligned, pre-upload conflict detection, Keep Device resolution, Restore Cloud resolution, immediate manifest check after backup, and manifest commit failure.
+

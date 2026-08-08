@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const R=window.StepProgressSync,C=R.config,U=R.util,S=R.storage,A=R.auth,B=R.backupModel;
-  let running=null,checkpointTimer=null,cloudState={manifest:null,file:null,files:[]},decisionKeys=[];
+  let running=null,checkpointTimer=null,cloudState={manifest:null,file:null,files:[]},decisionKeys=[],decisionExpected={};
   let uiState={status:'Disconnected',detail:'Progress is stored locally in this exam-simulator2 on this device.',lastBackup:'',lastError:'',account:'',summary:null};
   const emit=()=>{try{window.dispatchEvent(new CustomEvent('stepsync:state',{detail:{...uiState}}));}catch(e){}renderUi();};
   function setStatus(status,detail='',extra={}){uiState={...uiState,status,detail,...extra};emit();}
@@ -59,25 +59,22 @@
     const name=remoteEntry?.fileName||fileNameFor(entity),found=await listByName(name);if(found.length)return found[0];return await createFile(name);
   }
   async function uploadEntity(entity,manifest,{force=false}={}){
-    const key=entity.key,remote=manifest.entries[key]||null,known=await getMap('knownCloud'),lastHashes=await getMap('lastBackedUpHash'),protectedDeletes=await getMap('protectedDeletes');
+    const key=entity.key,remote=manifest.entries[key]||null,known=await getMap('knownCloud'),protectedDeletes=await getMap('protectedDeletes');
     if(!force&&remote&&protectedDeletes[key]&&entity.contentHash!==remote.contentHash)return {conflict:true,key,entity,remote,reason:'local progress was reset/deleted after the last backup'};
     if(!force&&remote){const knownId=known[key]?.backupId||'';if(!knownId||knownId!==remote.backupId){if(entity.contentHash!==remote.contentHash)return {conflict:true,key,entity,remote};}}
-    if(remote&&entity.contentHash===remote.contentHash){known[key]={backupId:remote.backupId,contentHash:remote.contentHash};lastHashes[key]=entity.contentHash;await setMap('knownCloud',known);await setMap('lastBackedUpHash',lastHashes);return {unchanged:true,key};}
+    if(remote&&entity.contentHash===remote.contentHash)return {unchanged:true,key,entry:remote,localHash:entity.contentHash};
     const deviceId=await R.meta.deviceId(),meta={backupId:U.uuid(),revision:Number(remote?.revision||0)+1,updatedAt:U.iso(),deviceId,contentHash:entity.contentHash};
     const backup=entity.kind==='qbank'?S.makeQbankBackup(entity,meta):S.makeFormBackup(entity,meta),file=await ensureBackupFile(entity,remote),uploaded=await uploadJson(file.id,backup);
     manifest.entries[key]={key,kind:entity.kind,formId:entity.formId||'',bankHash:entity.bankHash||'',fileId:file.id,fileName:file.name||fileNameFor(entity),backupId:meta.backupId,revision:meta.revision,contentHash:meta.contentHash,checksum:meta.contentHash,updatedAt:uploaded.modifiedTime||meta.updatedAt,deviceId,size:Number(uploaded.size||new Blob([JSON.stringify(backup)]).size),sizeBytes:Number(uploaded.size||new Blob([JSON.stringify(backup)]).size),deletedAt:null};
-    known[key]={backupId:meta.backupId,contentHash:meta.contentHash};lastHashes[key]=entity.contentHash;await setMap('knownCloud',known);await setMap('lastBackedUpHash',lastHashes);
-    const p=await getMap('protectedDeletes');delete p[key];await setMap('protectedDeletes',p);
-    return {uploaded:true,key,entry:manifest.entries[key]};
+    return {uploaded:true,key,entry:manifest.entries[key],localHash:entity.contentHash};
   }
   async function uploadDeletion(key,manifest,{force=false}={}){
     const tombstones=await getMap('deleteTombstones'),t=tombstones[key];if(!t)return {unchanged:true,key};
     const remote=manifest.entries[key]||null,known=await getMap('knownCloud');
     if(remote&&!force){const knownId=known[key]?.backupId||'';if(!knownId||knownId!==remote.backupId)return {conflict:true,key,remote,tombstone:t,reason:'cloud changed since this device last knew it'};}
-    if(!remote){delete tombstones[key];await setMap('deleteTombstones',tombstones);return {unchanged:true,key};}
+    if(!remote)return {noRemote:true,key,clearTombstone:true};
     const deviceId=await R.meta.deviceId(),backupId=U.uuid(),deletedAt=t.deletedAt||U.iso();
     manifest.entries[key]={...remote,backupId,revision:Number(remote.revision||0)+1,updatedAt:U.iso(),deviceId,deletedAt,contentHash:'',checksum:''};
-    known[key]={backupId,contentHash:''};await setMap('knownCloud',known);
     return {deleted:true,key,entry:manifest.entries[key]};
   }
   async function analyze({flush=false}={}){
@@ -111,12 +108,27 @@
     const summary={localCount:Object.keys(local.index).length,cloudCount:Object.keys(manifest.entries||{}).filter(k=>!manifest.entries[k]?.deletedAt).length,conflicts,pending,cloudNewer,cloudOnly,aligned,manifestUpdatedAt:cs.manifest?.updatedAt||'',rows};
     return {local,manifest,summary};
   }
+  function backupDecisionRows(a){
+    return (a?.summary?.rows||[]).filter(row=>row.state==='conflict'||(row.state==='cloud-newer'&&!!row.local));
+  }
+  function rememberDecision(rows){
+    decisionKeys=rows.map(r=>r.key);decisionExpected={};
+    for(const row of rows)decisionExpected[row.key]=row.remote?.backupId||'';
+  }
+  function clearDecision(){decisionKeys=[];decisionExpected={};}
+  function setBackupDecision(a,rows,detail=''){
+    rememberDecision(rows);uiState.summary=a.summary;
+    setStatus('Backup decision required',detail||`${rows.length} progress backup${rows.length===1?'':'s'} differ between this device and Google Drive. Nothing was uploaded. Choose which copy should become authoritative.`,{summary:a.summary});
+  }
   function setAnalysisStatus(a){
-    uiState.summary=a.summary;decisionKeys=a.summary.rows.filter(r=>r.state==='conflict').map(r=>r.key);
-    if(a.summary.conflicts)setStatus('Backup decision required',`${a.summary.conflicts} progress file${a.summary.conflicts===1?'':'s'} changed both locally and in cloud. Nothing was overwritten.`,{summary:a.summary});
-    else if(a.summary.cloudNewer||a.summary.cloudOnly)setStatus('Cloud backup available',`${a.summary.cloudNewer+a.summary.cloudOnly} cloud backup${a.summary.cloudNewer+a.summary.cloudOnly===1?'':'s'} differ from this device. Use Restore from Cloud if you want them.`,{summary:a.summary});
-    else if(a.summary.pending)setStatus('Local backup pending',`${a.summary.pending} local progress file${a.summary.pending===1?'':'s'} can be backed up.`,{summary:a.summary});
-    else setStatus('Backed up','Local progress and the known cloud backup lineage are aligned.',{summary:a.summary});
+    uiState.summary=a.summary;const conflicts=a.summary.rows.filter(r=>r.state==='conflict');
+    if(conflicts.length){rememberDecision(conflicts);setStatus('Backup decision required',`${conflicts.length} progress file${conflicts.length===1?'':'s'} changed both locally and in cloud. Nothing was overwritten.`,{summary:a.summary});}
+    else{
+      clearDecision();
+      if(a.summary.cloudNewer||a.summary.cloudOnly)setStatus('Cloud backup available',`${a.summary.cloudNewer+a.summary.cloudOnly} cloud backup${a.summary.cloudNewer+a.summary.cloudOnly===1?'':'s'} differ from this device. Use Restore from Cloud if you want them.`,{summary:a.summary});
+      else if(a.summary.pending)setStatus('Local backup pending',`${a.summary.pending} local progress file${a.summary.pending===1?'':'s'} can be backed up.`,{summary:a.summary});
+      else setStatus('Backed up','Local progress and the known cloud backup lineage are aligned.',{summary:a.summary});
+    }
   }
   async function ensureCloudSession({interactive=false}={}){
     await A.initialize();
@@ -130,45 +142,89 @@
     if(!(await ensureCloudSession({interactive})))return null;
     const acct=await A.validate();uiState.account=acct.emailAddress||acct.email||'';const a=await analyze({flush:false});setAnalysisStatus(a);return a;
   }
-  async function backupCore({reason='manual',interactive=false,force=false}={}){
+  async function commitBackupResults(done,{manifestChanged=false,dirtyAll=false}={}){
+    const known=await getMap('knownCloud'),lastHashes=await getMap('lastBackedUpHash'),dirty=await getMap('dirtyKeys'),tombs=await getMap('deleteTombstones'),protectedDeletes=await getMap('protectedDeletes');
+    for(const x of done){
+      const entry=x.entry||cloudState.manifest?.entries?.[x.key]||null;
+      if(x.uploaded||x.unchanged){
+        if(entry)known[x.key]={backupId:entry.backupId||'',contentHash:entry.contentHash||x.localHash||''};
+        if(x.localHash)lastHashes[x.key]=x.localHash;else if(entry?.contentHash)lastHashes[x.key]=entry.contentHash;
+        delete dirty[x.key];delete protectedDeletes[x.key];delete tombs[x.key];
+      }else if(x.deleted){
+        if(entry)known[x.key]={backupId:entry.backupId||'',contentHash:''};
+        delete lastHashes[x.key];delete dirty[x.key];delete tombs[x.key];delete protectedDeletes[x.key];
+      }else if(x.noRemote){
+        delete known[x.key];delete lastHashes[x.key];delete dirty[x.key];delete tombs[x.key];delete protectedDeletes[x.key];
+      }
+    }
+    await setMap('knownCloud',known);await setMap('lastBackedUpHash',lastHashes);await setMap('dirtyKeys',dirty);await setMap('deleteTombstones',tombs);await setMap('protectedDeletes',protectedDeletes);
+    if(dirtyAll&&Object.keys(dirty).length===0)await R.meta.del('dirtyAll');
+    if(manifestChanged){const t=cloudState.file?.modifiedTime||U.iso();await R.meta.set('lastBackupAt',t);uiState.lastBackup=t;}
+  }
+  async function backupCore({reason='manual',interactive=false,force=false,resolveKeys=null,expectedCloud=null}={}){
     const enabled=await R.meta.get('syncEnabled',false);if(!enabled&&!interactive){setStatus('Disconnected','Google backup is disabled on this device.');return null;}
     if(navigator.onLine===false){setStatus('Offline — saved locally','Backup pending. Local progress is safe.');return null;}
     if(!(await ensureCloudSession({interactive})))return null;
-    const acct=await A.validate();uiState.account=acct.emailAddress||acct.email||'';setStatus('Backing up…',reason);
-    const a=await analyze({flush:true}),manifest=a.manifest;const dirty=await getMap('dirtyKeys'),dirtyAll=await R.meta.get('dirtyAll',null),lastHashes=await getMap('lastBackedUpHash');
-    const candidates=[],deletions=[];for(const row of a.summary.rows){if(row.tombstone){deletions.push(row.key);continue;}if(!row.local)continue;const changed=!!(dirtyAll||dirty[row.key]||!lastHashes[row.key]||lastHashes[row.key]!==row.local.contentHash);if(changed)candidates.push(row.local);}
-    if(!candidates.length&&!deletions.length){setAnalysisStatus(a);return {uploaded:0,deleted:0,conflicts:[]};}
-    const conflicts=[],done=[];for(const key of deletions){const r=await uploadDeletion(key,manifest,{force});if(r.conflict)conflicts.push(r);else done.push(r);}for(const ent of candidates){const r=await uploadEntity(ent,manifest,{force});if(r.conflict)conflicts.push(r);else done.push(r);}
-    if(done.some(x=>x.uploaded||x.deleted))await writeManifest(manifest);
-    const dirtyNext=await getMap('dirtyKeys'),tombNext=await getMap('deleteTombstones'),protectedNext=await getMap('protectedDeletes');for(const x of done){delete dirtyNext[x.key];if(x.deleted){delete tombNext[x.key];delete protectedNext[x.key];delete lastHashes[x.key];}}await setMap('dirtyKeys',dirtyNext);await setMap('deleteTombstones',tombNext);await setMap('protectedDeletes',protectedNext);await setMap('lastBackedUpHash',lastHashes);if(dirtyAll)await R.meta.del('dirtyAll');
-    if(done.some(x=>x.uploaded||x.deleted)){const t=cloudState.file?.modifiedTime||U.iso();await R.meta.set('lastBackupAt',t);uiState.lastBackup=t;}
-    const after=await analyze({flush:false});if(conflicts.length){decisionKeys=conflicts.map(x=>x.key);setStatus('Backup decision required',`${conflicts.length} cloud backup${conflicts.length===1?'':'s'} changed since this device last knew them. Safe files were backed up; conflicting files were left untouched.`,{summary:after.summary});}else {
-      const remainingDirty=Object.keys(await getMap('dirtyKeys')).length || !!(await R.meta.get('dirtyAll',null));
-      if(!remainingDirty && after.summary && !after.summary.conflicts?.length){
-        setStatus('Backed up','All local changes are safely stored in Google Drive.',{summary:after.summary});
-      } else setAnalysisStatus(after);
+    const acct=await A.validate();uiState.account=acct.emailAddress||acct.email||'';
+    setStatus(interactive?'Checking cloud…':'Backing up…',interactive?'Checking the cloud manifest before any upload…':reason,{summary:null});
+    const a=await analyze({flush:true}),manifest=a.manifest;
+    const decisionRows=backupDecisionRows(a);
+    if(interactive&&!force&&decisionRows.length){setBackupDecision(a,decisionRows);return {uploaded:0,deleted:0,conflicts:decisionRows,requiresDecision:true};}
+    const resolveSet=Array.isArray(resolveKeys)&&resolveKeys.length?new Set(resolveKeys):null;
+    if(force&&resolveSet&&expectedCloud){
+      const changedAgain=[];
+      for(const row of a.summary.rows){
+        if(!resolveSet.has(row.key))continue;
+        const expected=expectedCloud[row.key]||'',current=row.remote?.backupId||'';
+        if(expected!==current){const sameContent=!!row.local&&!!row.remote&&!row.remote.deletedAt&&row.local.contentHash===row.remote.contentHash;if(!sameContent)changedAgain.push(row);}
+      }
+      if(changedAgain.length){setBackupDecision(a,changedAgain,'Google Drive changed again after the decision screen opened. Nothing was overwritten; review the updated conflict before choosing again.');return {uploaded:0,deleted:0,conflicts:changedAgain,requiresDecision:true};}
+    }
+    const dirty=await getMap('dirtyKeys'),dirtyAll=await R.meta.get('dirtyAll',null),lastHashes=await getMap('lastBackedUpHash');
+    const candidates=[],deletions=[];
+    for(const row of a.summary.rows){
+      const targeted=!!(force&&resolveSet?.has(row.key));
+      if(row.tombstone){if(targeted||row.state==='local-delete-pending'||(!interactive&&row.state==='conflict'))deletions.push(row.key);continue;}
+      if(!row.local)continue;
+      const changed=!!(dirtyAll||dirty[row.key]||!lastHashes[row.key]||lastHashes[row.key]!==row.local.contentHash);
+      if(targeted||(changed&&row.state!=='cloud-newer'))candidates.push(row.local);
+    }
+    if(!candidates.length&&!deletions.length){const afterNoop=await analyze({flush:false});setAnalysisStatus(afterNoop);return {uploaded:0,deleted:0,conflicts:[]};}
+    setStatus(force?'Resolving conflict…':'Backing up…',force?'Writing the selected local progress to Google Drive…':reason,{summary:null});
+    const conflicts=[],done=[];
+    for(const key of deletions){const r=await uploadDeletion(key,manifest,{force:!!(force&&resolveSet?.has(key))});if(r.conflict)conflicts.push(r);else done.push(r);}
+    for(const ent of candidates){const r=await uploadEntity(ent,manifest,{force:!!(force&&resolveSet?.has(ent.key))});if(r.conflict)conflicts.push(r);else done.push(r);}
+    const manifestChanged=done.some(x=>x.uploaded||x.deleted);
+    if(manifestChanged)await writeManifest(manifest);
+    await commitBackupResults(done,{manifestChanged,dirtyAll:!!dirtyAll});
+    const after=await analyze({flush:false}),afterDecision=backupDecisionRows(after);
+    if(conflicts.length||afterDecision.length){const rows=afterDecision.length?afterDecision:conflicts.map(x=>a.summary.rows.find(r=>r.key===x.key)).filter(Boolean);setBackupDecision(after,rows,`${rows.length} cloud backup${rows.length===1?'':'s'} changed before they could be safely backed up. Nothing was overwritten for those item(s).`);}
+    else{
+      clearDecision();const remainingDirty=Object.keys(await getMap('dirtyKeys')).length||!!(await R.meta.get('dirtyAll',null));
+      if(!remainingDirty&&!after.summary.cloudNewer&&!after.summary.cloudOnly)setStatus('Backed up','All local changes are safely stored in Google Drive.',{summary:after.summary});else setAnalysisStatus(after);
     }
     return {uploaded:done.filter(x=>x.uploaded).length,deleted:done.filter(x=>x.deleted).length,conflicts};
   }
   async function backupNow(opts={}){if(running)return running;running=backupCore(opts).catch(async e=>{await handleError(e);throw e;}).finally(()=>{running=null;});return running;}
   async function forceBackup(){
-    if(!confirm('Keep the progress currently on THIS DEVICE for the conflicting item(s)? This will replace those cloud backup states. Cloud-only backups with no local copy are preserved.'))return;
-    /* Hide the decision card while the authoritative write is actually in flight. */
-    const resolvingKeys=[...decisionKeys];decisionKeys=[];
-    setStatus('Resolving conflict…',`Applying this device as the source of truth for ${resolvingKeys.length||'the'} conflicting backup${resolvingKeys.length===1?'':'s'}…`,{summary:null});
-    const result=await backupNow({reason:'Resolve conflict: keep this device',interactive:true,force:true});
-    /* backupCore re-analyzes after the manifest commit. Do one final authoritative analysis here so
-       the decision UI cannot be resurrected by stale pre-action summary state. */
-    const after=await analyze({flush:false});setAnalysisStatus(after);
-    return result;
+    const resolvingKeys=[...decisionKeys],expected={...decisionExpected};
+    if(!resolvingKeys.length){const a=await analyze({flush:false}),rows=backupDecisionRows(a);if(rows.length){setBackupDecision(a,rows);return;}setAnalysisStatus(a);return;}
+    clearDecision();
+    setStatus('Resolving conflict…',`Applying this device as the source of truth for ${resolvingKeys.length} progress backup${resolvingKeys.length===1?'':'s'}…`,{summary:null});
+    return backupNow({reason:'Resolve conflict: keep this device',interactive:true,force:true,resolveKeys:resolvingKeys,expectedCloud:expected});
   }
   async function restoreFromCloud({keys=null,conflictResolution=false}={}){
     const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring cloud progress.');
     if(!(await ensureCloudSession({interactive:true})))return;
-    const requestedKeys=Array.isArray(keys)&&keys.length?new Set(keys):null;
-    if(conflictResolution){decisionKeys=[];setStatus('Resolving conflict…','Downloading the selected cloud backup and reconciling this device…',{summary:null});}
+    const requestedKeys=Array.isArray(keys)&&keys.length?new Set(keys):null,expected={...decisionExpected};
+    if(conflictResolution){clearDecision();setStatus('Resolving conflict…','Downloading the selected cloud backup and reconciling this device…',{summary:null});}
     else setStatus('Restoring from cloud…','Checking matching cloud backups before applying them to this device…',{summary:null});
     const a=await analyze({flush:true}),entries=Object.values(a.manifest.entries||{});if(!entries.length){setStatus('Backed up','No cloud backups exist yet.');return;}
+    if(conflictResolution&&requestedKeys){
+      const changedAgain=[];
+      for(const row of a.summary.rows){if(!requestedKeys.has(row.key))continue;const exp=expected[row.key]||'',cur=row.remote?.backupId||'';if(exp&&exp!==cur)changedAgain.push(row);}
+      if(changedAgain.length){setBackupDecision(a,changedAgain,'Google Drive changed again after the decision screen opened. Nothing was restored; review the updated conflict before choosing again.');return;}
+    }
     const catalogKeys=new Set((a.local.catalog.forms||[]).map(r=>B.entityKey(r.id,r.bankHash)));
     const restorable=entries.filter(e=>(e.kind==='qbank'||catalogKeys.has(e.key))&&(!requestedKeys||requestedKeys.has(e.key)));
     const skipped=entries.length-restorable.length;
@@ -176,7 +232,7 @@
     const prompt=conflictResolution
       ?`Use Google Drive for ${restorable.length} conflicting progress backup${restorable.length===1?'':'s'}? Only the conflicting item(s) will replace local progress. A local recovery checkpoint will be created first.`
       :`Restore ${restorable.length} matching cloud backup${restorable.length===1?'':'s'} to this device? Existing local progress for those items will be replaced. A local recovery checkpoint will be created first.${skipped?` ${skipped} unmatched/deleted backup(s) will be left untouched.`:''}`;
-    if(!confirm(prompt)){const afterCancel=await analyze({flush:false});setAnalysisStatus(afterCancel);return;}
+    if(!conflictResolution&&!confirm(prompt)){const afterCancel=await analyze({flush:false});setAnalysisStatus(afterCancel);return;}
     setStatus(conflictResolution?'Resolving conflict…':'Restoring from cloud…',`Downloading and applying ${restorable.length} cloud backup${restorable.length===1?'':'s'}…`,{summary:null});
     await S.checkpoint();const known=await getMap('knownCloud'),lastHashes=await getMap('lastBackedUpHash'),dirty=await getMap('dirtyKeys');let restored=0;
     try{
@@ -244,7 +300,7 @@
     if(acts)acts.innerHTML=controls();
     if(last)last.textContent=uiState.lastBackup?new Date(uiState.lastBackup).toLocaleString():'Never';
     if(tab){tab.classList.toggle('sync-connected',connected());tab.classList.toggle('sync-attention',tone()==='warn'||tone()==='bad');}
-    if(inv&&uiState.summary){const sm=uiState.summary,items=[['Local backups',sm.localCount],['Cloud backups',sm.cloudCount],['Local pending',sm.pending],['Cloud available',sm.cloudNewer+sm.cloudOnly],['Need decision',sm.conflicts],['Aligned',sm.aligned]];inv.innerHTML=items.map(([a,b])=>`<div class="sync-metric"><span>${a}</span><b>${b}</b></div>`).join('');}
+    if(inv&&uiState.summary){const sm=uiState.summary,items=[['Local backups',sm.localCount],['Cloud backups',sm.cloudCount],['Local pending',sm.pending],['Cloud available',sm.cloudNewer+sm.cloudOnly],['Need decision',Math.max(sm.conflicts,decisionKeys.length)],['Aligned',sm.aligned]];inv.innerHTML=items.map(([a,b])=>`<div class="sync-metric"><span>${a}</span><b>${b}</b></div>`).join('');}
   }
   async function runValidate(){const r=await S.validateLocal(),inv=document.getElementById('stepSyncInventory');if(inv){const items=[['Loaded forms',r.loadedForms],['Progress forms',r.stats.forms],['Attempts',r.stats.attempts],['Answered',r.stats.answered],['Stem highlights',r.stats.stemHighlights],['Explanation highlights',r.stats.expHighlights],['Qbank tests',r.stats.qbankTests],['Backup entities',r.entities],['Est. local payload',(r.estimatedBytes/1024/1024).toFixed(2)+' MB']];inv.innerHTML=items.map(([a,b])=>`<div class="sync-metric"><span>${a}</span><b>${b}</b></div>`).join('');}return r;}
   async function restoreCheckpoint(){const rt=window.StepExamSyncBridge?.runtime?.();if(rt?.examVisible)throw new Error('Leave the active exam before restoring a recovery checkpoint.');if(!confirm('Restore the last local pre-restore recovery checkpoint?'))return;await S.restoreCheckpoint();await markDirtyAll('Recovery checkpoint restored locally');await runValidate();}
