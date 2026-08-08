@@ -1,6 +1,6 @@
 # exam-simulator2 — Progress Sync V2 Production Build
 
-Build: `EXAM-SIMULATOR2-PROGRESS-V2-2`
+Build: `EXAM-SIMULATOR2-PROGRESS-V2-3-STABLE`
 
 Production URL: `https://dawnsommer.github.io/exam-simulator2/`
 

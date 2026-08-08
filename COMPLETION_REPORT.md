@@ -1,6 +1,6 @@
 # exam-simulator2 — Progress Sync V2 Completion Report
 
-Build: `EXAM-SIMULATOR2-PROGRESS-V2-2`
+Build: `EXAM-SIMULATOR2-PROGRESS-V2-3-STABLE`
 
 ## What was replaced
 
@@ -131,7 +131,7 @@ This prevents a Library import/export from silently transporting progress or clo
 
 ## Build/cache changes
 
-- build: `EXAM-SIMULATOR2-PROGRESS-V2-2`
+- build: `EXAM-SIMULATOR2-PROGRESS-V2-3-STABLE`
 - service-worker cache version bumped
 - manifest start URL bumped
 - production bridge build ID bumped
@@ -195,3 +195,8 @@ Real Google/Drive/iPad integration still requires the deployed production origin
 - 300 MB real Full Form Library transfer
 
 These should be tested on disposable form/progress data before relying on V2 for exam-critical recovery.
+
+
+## V2.3 stability regression fix
+
+The V2/V2.2 crash/missing-tab regression was traced to the UI boot integration, not the lineage model. V2 had changed the tab target from the simulator's real `.modern-sidebar` to a non-existent `.menu-tabs`. Because the Progress Backup tab could never be created, a whole-document `MutationObserver` remained permanently active. Its callback called `ensureSurface()`, which called `renderUi()`, which mutated the DOM and retriggered the observer, creating a self-sustaining render loop capable of exhausting Chromium. V2.3 restores `.modern-sidebar` insertion and replaces the unbounded observer with three bounded retries.
