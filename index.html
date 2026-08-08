@@ -10132,6 +10132,64 @@ try{
 .v10-available-head>span:nth-child(2){display:block!important;width:100%!important;font-size:11px!important;font-weight:850!important;color:#657b8a!important;white-space:normal!important;line-height:1.25!important;margin-top:1px!important}
 @media(max-width:1000px){.library-toolbar{gap:10px!important}.library-actions.exam-final-library-actions{flex:0 0 auto!important}.exam-final-library-actions button,.exam-final-library-actions summary{font-size:10.5px!important;padding:8px 9px!important}}
 @media(max-width:760px){.library-toolbar{flex-direction:column!important}.library-actions.exam-final-library-actions{width:100%!important;justify-content:flex-start!important}.exam-final-library-actions .exam-final-actionbar{justify-content:flex-start!important}.exam-final-library-actions button,.exam-final-library-actions summary{font-size:10px!important;padding:8px 8px!important}.exam-final-library-actions .exam-toolbar-menu-panel{left:0!important;right:auto!important}.modern-hero .exam-storage-status-row{justify-content:flex-start!important}}
+
+/* CLOUD4 structural UI patch */
+.library-toolbar .library-actions.exam-final-library-actions,
+.library-toolbar .library-actions.a5-library-actions{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  width:100%!important;
+}
+#libraryModePanel .library-toolbar{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(220px,0.9fr)!important;
+  align-items:stretch!important;
+  gap:16px!important;
+}
+#libraryModePanel .library-actions{
+  justify-self:end!important;
+  max-width:260px!important;
+}
+#libraryModePanel .exam-final-actionbar,
+#libraryModePanel .exam-final-library-actions .exam-final-actionbar{
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  gap:8px!important;
+}
+#libraryModePanel .exam-toolbar-menu,
+#libraryModePanel .exam-final-actionbar > button,
+#libraryModePanel .exam-toolbar-menu > summary{
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+
+/* cloud/local status group */
+.exam-storage-status-row{
+  justify-content:flex-end!important;
+  align-items:center!important;
+  margin-left:auto!important;
+  flex-wrap:nowrap!important;
+  gap:10px!important;
+}
+
+/* cloud4 dropdown layer */
+.exam-cloud4-menu-layer{
+  position:fixed!important;
+  z-index:999999!important;
+  overflow:visible!important;
+}
+.exam-cloud4-menu-layer .exam-toolbar-menu-panel,
+.exam-cloud4-menu-layer .v75-menu-panel{
+  position:fixed!important;
+  z-index:1000000!important;
+  max-height:70vh!important;
+  overflow:auto!important;
+}
+
 </style>
 <script id="exam-sim-cloud2-ui-polish">
 (function(){
@@ -10229,6 +10287,32 @@ window.addEventListener('stepsync:state',e=>{
 window.addEventListener('stepsync:backup-complete',()=>window.__lastSuccessfulBackupAt=Date.now());
 function run(){fixLibraryLayout();fixStatus();fixQbank();fixMenus();}
 setInterval(run,1500);run();
+})();
+</script>
+
+<script>
+/* CLOUD4 dropdown escape + persistent layout */
+(function(){
+ function escapeMenus(){
+   document.querySelectorAll('.exam-toolbar-menu-panel,.v75-menu-panel').forEach(function(menu){
+     if(menu.dataset.cloud4Moved) return;
+     var parent=menu.closest('.exam-toolbar-menu');
+     if(!parent) return;
+     parent.classList.add('cloud4-host');
+     document.body.appendChild(menu);
+     menu.dataset.cloud4Moved='1';
+     menu.classList.add('exam-cloud4-menu-layer');
+     var place=function(){
+       var r=parent.getBoundingClientRect();
+       menu.style.left=Math.min(r.left, window.innerWidth-260)+'px';
+       menu.style.top=(r.bottom+6)+'px';
+     };
+     place();
+     window.addEventListener('resize',place);
+     window.addEventListener('scroll',place,true);
+   });
+ }
+ setInterval(escapeMenus,500);
 })();
 </script>
 </body>
