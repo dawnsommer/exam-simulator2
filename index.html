@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4"></script>
-<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4"></script>
+<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
+<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
 
 <style>
 :root{
@@ -602,6 +602,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="modalRoot" class="hidden"></div>
 
 <script src="jszip.min.js"></script>
+<script src="./js/qid-migration.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
 <script>
 
 
@@ -650,6 +651,7 @@ function blockSeconds(n){
   return Math.max(60, Math.round(n * spq));
 }
 function fmt(sec){ sec=Math.max(0,Math.floor(sec)); const m=Math.floor(sec/60), s=sec%60; return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+function questionTimeText(sec){ return fmt(Number(sec)||0); }
 function isLocked(){ return !!(reviewMode || state.reviewMode || state.blockCompleted); }
 function getQuestionImage(q){ return q.image || q.exhibit || q.exhibitImage || q.imageUrl || q.contextImage || q.figure || ''; }
 function renderStemLabs(q){
@@ -1397,8 +1399,8 @@ function finishBlock(autoAdvance=false){
 }
 function endBlock(){ finishBlock(true); }
 function renderBlockTransition(result){
-  $('#workspace').innerHTML = `<div class="review-panel"><h2>Block Complete</h2><p><b>${escapeHtml(result.blockName)}</b></p><p>Score: <b>${result.correct}/${result.total}</b> (${result.percent}%)</p><p>This block is saved and locked. Proceed to the next block when ready.</p><table class="report-table"><thead><tr><th>Item</th><th>Your Answer</th><th>Correct</th><th>Subject</th></tr></thead><tbody>${result.answers.map(r=>`<tr><td>${r.item}${r.flagged?' ⚑':''}</td><td>${r.chosen===null?'—':letters[r.chosen]}</td><td>${letters[r.correct]}</td><td>${escapeHtml(canonicalSubject(r.subject || r.topic))}</td></tr>`).join('')}</tbody></table><div class="menu-actions"><button id="nextBlock" class="primary">Proceed to Next Block</button><button id="exportResults" class="secondary">Export Results JSON</button><button id="backMenu" class="secondary">Return to Main Menu</button></div></div>`;
-  $('#nextBlock').addEventListener('click',()=>startBlock(blockPointer+1)); $('#exportResults').addEventListener('click',downloadResults); $('#backMenu').addEventListener('click',returnToMenu);
+  $('#workspace').innerHTML = `<div class="review-panel"><h2>Block Complete</h2><p><b>${escapeHtml(result.blockName)}</b></p><p>Score: <b>${result.correct}/${result.total}</b> (${result.percent}%)</p><p>This block is saved and locked. Proceed to the next block when ready.</p><table class="report-table"><thead><tr><th>Item</th><th>Your Answer</th><th>Correct</th><th>Subject</th><th>Time Taken</th></tr></thead><tbody>${result.answers.map(r=>`<tr><td>${r.item}${r.flagged?' ⚑':''}</td><td>${r.chosen===null?'—':letters[r.chosen]}</td><td>${letters[r.correct]}</td><td>${escapeHtml(canonicalSubject(r.subject || r.topic))}</td><td>${questionTimeText(r.questionTimeSeconds)}</td></tr>`).join('')}</tbody></table><div class="menu-actions"><button id="nextBlock" class="primary">Proceed to Next Block</button><button id="exportResults" class="secondary">Export Results JSON</button><button id="exportIncorrectResults" class="secondary">Export Incorrect Qs JSON</button><button id="backMenu" class="secondary">Return to Main Menu</button></div></div>`;
+  $('#nextBlock').addEventListener('click',()=>startBlock(blockPointer+1)); $('#exportResults').addEventListener('click',downloadResults); $('#exportIncorrectResults').addEventListener('click',downloadIncorrectResults); $('#backMenu').addEventListener('click',returnToMenu);
 }
 function canonicalSubject(raw){
   const s = String(raw||'').toLowerCase().replace(/[_-]/g,' ').trim();
@@ -1427,15 +1429,32 @@ function renderFinalReport(){
   const allAnswers = results.flatMap(r=>r.answers || []);
   const total = results.reduce((s,r)=>s+r.total,0); const correct = results.reduce((s,r)=>s+r.correct,0); const percent = total ? Math.round(correct/total*100) : 0;
   const blockRows = results.map(r=>`<tr><td>${escapeHtml(r.blockName)}</td><td>${r.correct}/${r.total}</td><td>${r.percent}%</td><td>${r.elapsedSeconds===null?'—':fmt(r.elapsedSeconds)}</td></tr>`).join('');
-  const answerRows = allAnswers.map(r=>`<tr class="answer-review-row"><td>${r.block}.${r.item}${r.flagged?' ⚑':''}</td><td>${escapeHtml(canonicalSubject(r.subject || r.topic))}</td><td>${escapeHtml(r.topic||'')}</td><td>${r.chosen===null?'—':letters[r.chosen]}</td><td>${letters[r.correct]}</td><td>${r.chosen===r.correct?'Correct':'Incorrect'}</td><td><b>${escapeHtml(r.correctText)}</b><details><summary>Show explanation</summary><div>${escapeHtml(r.explanation || (r.explanationPanel ? 'See question review panel for rich explanation.' : 'No explanation provided.'))}</div></details></td></tr>`).join('');
-  $('#workspace').innerHTML = `<div class="review-panel"><h2>Test Complete</h2><div class="score-summary"><div class="score-ring" style="--p:${percent}"><div class="score-ring-inner"><b>${percent}%</b><span>${correct}/${total} correct</span></div></div><div><p><b>Total score:</b> ${correct}/${total}</p><p><b>Blocks completed:</b> ${results.length}/${activeBlocks.length || results.length}</p><p><b>Mode:</b> ${reviewMode?'Saved review':(timer.enabled?'Timed':'Untimed')}</p></div></div><h3 class="report-section-title">Score Report Sheet</h3><table class="report-table"><thead><tr><th>Block</th><th>Score</th><th>Percent</th><th>Elapsed</th></tr></thead><tbody>${blockRows}</tbody></table><h3 class="report-section-title">Subject Breakdown of Wrongs</h3>${subjectBreakdownHtml(allAnswers)}<h3 class="report-section-title">All Questions & Answers</h3><table class="report-table"><thead><tr><th>Item</th><th>Subject</th><th>Topic</th><th>Your Answer</th><th>Correct</th><th>Status</th><th>Answer / Explanation</th></tr></thead><tbody>${answerRows}</tbody></table><div class="menu-actions"><button id="exportResults" class="secondary">Export Results JSON</button><button id="backMenu" class="secondary">Return to Main Menu</button></div></div>`;
-  $('#exportResults').addEventListener('click',downloadResults); $('#backMenu').addEventListener('click',returnToMenu);
+  const answerRows = allAnswers.map(r=>`<tr class="answer-review-row"><td>${r.block}.${r.item}${r.flagged?' ⚑':''}</td><td>${escapeHtml(canonicalSubject(r.subject || r.topic))}</td><td>${escapeHtml(r.topic||'')}</td><td>${r.chosen===null?'—':letters[r.chosen]}</td><td>${letters[r.correct]}</td><td>${r.chosen===r.correct?'Correct':'Incorrect'}</td><td>${questionTimeText(r.questionTimeSeconds)}</td><td><b>${escapeHtml(r.correctText)}</b><details><summary>Show explanation</summary><div>${escapeHtml(r.explanation || (r.explanationPanel ? 'See question review panel for rich explanation.' : 'No explanation provided.'))}</div></details></td></tr>`).join('');
+  $('#workspace').innerHTML = `<div class="review-panel"><h2>Test Complete</h2><div class="score-summary"><div class="score-ring" style="--p:${percent}"><div class="score-ring-inner"><b>${percent}%</b><span>${correct}/${total} correct</span></div></div><div><p><b>Total score:</b> ${correct}/${total}</p><p><b>Blocks completed:</b> ${results.length}/${activeBlocks.length || results.length}</p><p><b>Mode:</b> ${reviewMode?'Saved review':(timer.enabled?'Timed':'Untimed')}</p></div></div><h3 class="report-section-title">Score Report Sheet</h3><table class="report-table"><thead><tr><th>Block</th><th>Score</th><th>Percent</th><th>Elapsed</th></tr></thead><tbody>${blockRows}</tbody></table><h3 class="report-section-title">Subject Breakdown of Wrongs</h3>${subjectBreakdownHtml(allAnswers)}<h3 class="report-section-title">All Questions & Answers</h3><table class="report-table"><thead><tr><th>Item</th><th>Subject</th><th>Topic</th><th>Your Answer</th><th>Correct</th><th>Status</th><th>Time Taken</th><th>Answer / Explanation</th></tr></thead><tbody>${answerRows}</tbody></table><div class="menu-actions"><button id="exportResults" class="secondary">Export Results JSON</button><button id="exportIncorrectResults" class="secondary">Export Incorrect Qs JSON</button><button id="backMenu" class="secondary">Return to Main Menu</button></div></div>`;
+  $('#exportResults').addEventListener('click',downloadResults); $('#exportIncorrectResults').addEventListener('click',downloadIncorrectResults); $('#backMenu').addEventListener('click',returnToMenu);
 }
 function returnToMenu(){ commitQuestionTime(); persistBlockProgress(); closeLabPanel(); closeOverview(); closeImagePreview(); closeModal(); $('#floatingCalc').classList.add('hidden'); if(timer.interval) clearInterval(timer.interval); $('#examScreen').classList.add('hidden'); $('#menu').classList.remove('hidden'); renderMenu(); }
 function downloadResults(){
   const results = getCompletedResults();
   const blob = new Blob([JSON.stringify({title:importedBank?.title||'', completedAt:new Date().toISOString(), saveVersion:7, results}, null, 2)], {type:'application/json'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='exam_results_v7.json'; a.click(); URL.revokeObjectURL(a.href);
+}
+function downloadIncorrectResults(){
+  const results = getCompletedResults().slice().sort((a,b)=>(Number(a.blockIndex)||Number(a.block)||0)-(Number(b.blockIndex)||Number(b.block)||0));
+  let incorrectNumber = 0;
+  const incorrectQuestions = [];
+  const filteredResults = results.map(result=>{
+    const answers = (result.answers||[]).slice().sort((a,b)=>(Number(a.item)||0)-(Number(b.item)||0)).filter(answer=>answer.chosen !== answer.correct).map(answer=>{
+      incorrectNumber += 1;
+      const out = {...answer, incorrectNumber};
+      incorrectQuestions.push(out);
+      return out;
+    });
+    return {...result, originalTotal:result.total, originalCorrect:result.correct, total:answers.length, correct:0, percent:0, answers};
+  }).filter(result=>result.answers.length);
+  const payload = {title:importedBank?.title||'', completedAt:new Date().toISOString(), saveVersion:7, exportType:'incorrect-questions', totalIncorrect:incorrectQuestions.length, incorrectQuestions, results:filteredResults};
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='exam_incorrect_results_v7.json'; a.click(); URL.revokeObjectURL(a.href);
 }
 function highlightSelection(){
   if(isLocked()) return;
@@ -2449,7 +2468,7 @@ document.addEventListener('click', function(e){
   function releaseActiveMemory(){ if(activeRunContext.type==='library' || activeRunContext.qbank){ importedBank=null; currentBankHash=''; currentBankRawText=''; configuredBlocks=[]; activeBlocks=[]; questions=[]; loadedFormCache.clear(); revokeDataAssetObjectUrls(); } activeRunContext={type:'quick',formId:'',qbank:false}; }
 
   function makeQuestionIndex(bank, formId){
-    const out=[]; (bank.blocks||[]).forEach((b,bi)=>{ (b.questions||[]).forEach((q,qi)=>{ const stem=String(q.stem ?? q.question ?? q.prompt ?? q.vignette ?? '').replace(/\s+/g,' ').trim(); out.push({key:`${formId}:${bi}:${qi}`, formId, blockIndex:bi, questionIndex:qi, subject:canonicalSubject(q.subject||q.system||q.topic||''), topic:String(q.topic||q.subject||q.system||'').trim(), recognizer:stem.slice(0,80)}); }); }); return out;
+    const out=[],formUid=window.StepQidMigration?StepQidMigration.resolveFormUid(bank,formId):formId; (bank.blocks||[]).forEach((b,bi)=>{ (b.questions||[]).forEach((q,qi)=>{ const stem=String(q.stem ?? q.question ?? q.prompt ?? q.vignette ?? '').replace(/\s+/g,' ').trim(),qid=String(q.qid||''),key=window.StepQidMigration&&StepQidMigration.validQid(qid)?StepQidMigration.keyFor(formUid,qid):`${formId}:${bi}:${qi}`; out.push({key,qid:StepQidMigration?.validQid(qid)?qid:'',formUid,formId,blockIndex:bi,questionIndex:qi,subject:canonicalSubject(q.subject||q.system||q.topic||''),topic:String(q.topic||q.subject||q.system||'').trim(),recognizer:stem.slice(0,80)}); }); }); return out;
   }
 
   function questionCountFromBank(bank){
@@ -2507,7 +2526,7 @@ document.addEventListener('click', function(e){
   }
   function makeCatalogRecord(id, meta, bank, rawText, bankHash, sourceFiles, prev={}){
     const total=questionCountFromBank(bank);
-    return { id, displayName:prev.displayName||meta.defaultName||id, defaultName:meta.defaultName||id, type:meta.type||'Custom', group:meta.group||'Custom', filter:meta.filter||'Custom', subject:meta.subject||'Custom', expectedQuestions:meta.expectedQuestions||total, suggestedBlockSize:String(meta.suggestedBlockSize||'40'), bankHash, totalQuestions:total, sourceFiles, formFile:`forms/${id}.json`, progressFile:`progress/${id}_progress_save.json`, importedAt:prev.importedAt||nowIso(), updatedAt:nowIso(), threeDigitScore:prev.threeDigitScore||'', optimized:!!prev.optimized, imageAssets:prev.imageAssets||0, questionIndex:makeQuestionIndex(bank,id), progressSummary:prev.progressSummary||null, custom:!slotById(id) };
+    return { id, formUid:bank.formUid||prev.formUid||id, qidSchemaVersion:Number(bank.qidSchemaVersion||prev.qidSchemaVersion||0), legacyBankHashes:bank.legacyBankHashes||prev.legacyBankHashes||[], displayName:prev.displayName||meta.defaultName||id, defaultName:meta.defaultName||id, type:meta.type||'Custom', group:meta.group||'Custom', filter:meta.filter||'Custom', subject:meta.subject||'Custom', expectedQuestions:meta.expectedQuestions||total, suggestedBlockSize:String(meta.suggestedBlockSize||'40'), bankHash, totalQuestions:total, sourceFiles, formFile:`forms/${id}.json`, progressFile:`progress/${id}_progress_save.json`, importedAt:prev.importedAt||nowIso(), updatedAt:nowIso(), threeDigitScore:prev.threeDigitScore||'', optimized:!!prev.optimized, imageAssets:prev.imageAssets||0, questionIndex:makeQuestionIndex(bank,id), progressSummary:prev.progressSummary||null, custom:!slotById(id) };
   }
   async function buildBankFromFiles(meta, files){
     files=Array.from(files||[]).filter(Boolean); if(!files.length) throw new Error('Choose one or more JSON or ZIP files.'); files.sort(naturalFileSort);
@@ -2820,7 +2839,7 @@ document.addEventListener('click', function(e){
   const originalImportFromFiles=importFromFiles;
   importFromFiles=async function(files){ activeRunContext={type:'quick', formId:'', qbank:false}; return await originalImportFromFiles(files); };
   const originalCreateSession=createSession;
-  createSession=function(which){ const s=originalCreateSession(which); if(activeRunContext.type==='library' && activeRunContext.formId){ const rec=catalogForm(activeRunContext.formId); s.libraryFormId=activeRunContext.formId; s.libraryFormName=rec?.displayName||activeRunContext.formId; s.bankHash=rec?.bankHash||s.bankHash; } if(activeRunContext.qbank){ s.qbankMode=true; s.qbankKeys=qbankRuntime.pendingKeys.slice(); s.qbankFormIds=qbankRuntime.pendingFormIds.slice(); s.libraryFormId='QBANK_MODE'; s.title=importedBank?.title||'Qbank Mode'; readQbankProgress().then(qp=>{ (s.qbankKeys||[]).forEach(k=>qp.used[k]=true); qp.activeSession=s; qp.sessions=qp.sessions||[]; qp.sessions.push({startedAt:s.startedAt, bankHash:s.bankHash, total:(s.qbankKeys||[]).length, formIds:s.qbankFormIds}); return writeQbankProgress(qp); }).catch(console.warn); } return s; };
+  createSession=function(which){ const s=originalCreateSession(which); if(activeRunContext.type==='library' && activeRunContext.formId){ const rec=catalogForm(activeRunContext.formId); s.libraryFormId=activeRunContext.formId; s.libraryFormName=rec?.displayName||activeRunContext.formId; s.formUid=rec?.formUid||activeRunContext.formId; s.bankHash=rec?.bankHash||s.bankHash; if(Number(rec?.qidSchemaVersion||0)>=1){s.qidMappingVersion=1;(s.blocks||[]).forEach((bp,bi)=>{const source=activeBlocks?.[bi]?.questions||configuredBlocks?.[bi]?.questions||[];bp.questionQids=source.map(q=>String(q.qid||'')).filter(Boolean);bp.qidMappingVersion=1;});} } if(activeRunContext.qbank){ s.qbankMode=true; s.qbankKeys=qbankRuntime.pendingKeys.slice(); s.qbankFormIds=qbankRuntime.pendingFormIds.slice(); s.libraryFormId='QBANK_MODE'; s.title=importedBank?.title||'Qbank Mode'; readQbankProgress().then(qp=>{ (s.qbankKeys||[]).forEach(k=>qp.used[k]=true); qp.activeSession=s; qp.sessions=qp.sessions||[]; qp.sessions.push({startedAt:s.startedAt, bankHash:s.bankHash, total:(s.qbankKeys||[]).length, formIds:s.qbankFormIds}); return writeQbankProgress(qp); }).catch(console.warn); } return s; };
   saveSessionToStorage=function(){ if(!activeSession) return; activeSession.updatedAt=nowIso(); if(activeSession.qbankMode){ clearTimeout(saveWriteTimer); saveWriteTimer=setTimeout(async()=>{ const qp=await readQbankProgress(); (activeSession.qbankKeys||[]).forEach(k=>qp.used[k]=true); qp.activeSession=activeSession; await writeQbankProgress(qp); renderQbankMode(); }, 350); return; } if(activeSession.libraryFormId && activeSession.libraryFormId!=='QBANK_MODE'){ clearTimeout(saveWriteTimer); const id=activeSession.libraryFormId; saveWriteTimer=setTimeout(()=>writeProgress(id, activeSession).catch(console.warn),350); } };
   renderSaveStatus=function(){ const box=$('#saveStatus'); const actions=$('#saveActions'); if(box){box.classList.add('hidden');box.innerHTML='';} if(actions) actions.classList.add('hidden'); };
   const originalReturnToMenu=returnToMenu;
@@ -2897,11 +2916,13 @@ document.addEventListener('click', function(e){
     const blocks=results.length?results:((activeSession?.blocks||[]).map((b,i)=>b?.result).filter(Boolean));
     const allAnswers=blocks.flatMap(r=>r.answers||[]); const changeAudit=answerChangeAuditHtml(allAnswers);
     const tabs=blocks.map((r,i)=>`<button class="report-tab ${i===0?'active':''}" data-report-tab="${i}">Block ${i+1}: ${r.percent??Math.round((r.correct||0)/(r.total||1)*100)}%</button>`).join('');
-    const bodies=blocks.map((r,i)=>`<div class="report-block" data-report-body="${i}" style="display:${i===0?'block':'none'}"><table class="report-q-table"><thead><tr><th>Q</th><th>Recognizer / broad topic</th><th>Subject</th><th>Status</th><th>Action</th></tr></thead><tbody>${(r.answers||[]).map(a=>{ const status=a.chosen===null?'blank':(a.isCorrect?'ok':'bad'); const text=a.chosen===null?'Unanswered':(a.isCorrect?'Correct':'Incorrect'); return `<tr><td><b>${a.item}</b></td><td>${escapeHtml(recognizerForAnswer(a))}</td><td>${escapeHtml(canonicalSubject(a.subject||a.topic||''))}</td><td><span class="status-dot ${status}">${text}</span></td><td><button class="secondary review-one" data-b="${i}" data-q="${(a.item||1)-1}">Review</button></td></tr>`; }).join('')}</tbody></table></div>`).join('');
-    $('#workspace').innerHTML=`<div class="modern-report"><div class="report-hero"><div><h2>Report Card</h2><p>${escapeHtml(activeSession?.title||importedBank?.title||'Exam')} · ${blocks.length} block(s) completed</p></div><div class="report-score-wrap"><div class="report-ring" style="--p:${percent}"><div><b>${percent}%</b><span>${correct}/${total}</span></div></div></div></div>${changeAudit}<div class="report-tabs">${tabs}</div>${bodies}<div class="report-actions"><button id="reportSaveMenu" class="primary">Save & Back to Main Menu</button><button id="reportExport" class="secondary">Export Results JSON</button></div></div>`;
+    const bodies=blocks.map((r,i)=>`<div class="report-block" data-report-body="${i}" style="display:${i===0?'block':'none'}"><table class="report-q-table"><thead><tr><th>Q</th><th>Recognizer / broad topic</th><th>Subject</th><th>Status</th><th>Time Taken</th><th>Action</th></tr></thead><tbody>${(r.answers||[]).map(a=>{ const status=a.chosen===null?'blank':(a.isCorrect?'ok':'bad'); const text=a.chosen===null?'Unanswered':(a.isCorrect?'Correct':'Incorrect'); const subject=canonicalSubject(a.subject||a.topic||''); const statusRank=status==='bad'?0:(status==='blank'?1:2); return `<tr data-sort-order="${Number(a.item)||0}" data-sort-status="${statusRank}" data-sort-time="${Number(a.questionTimeSeconds)||0}" data-sort-subject="${escapeAttr(subject.toLowerCase())}"><td><b>${a.item}</b></td><td>${escapeHtml(recognizerForAnswer(a))}</td><td>${escapeHtml(subject)}</td><td><span class="status-dot ${status}">${text}</span></td><td>${questionTimeText(a.questionTimeSeconds)}</td><td><button class="secondary review-one" data-b="${i}" data-q="${(a.item||1)-1}">Review</button></td></tr>`; }).join('')}</tbody></table></div>`).join('');
+    $('#workspace').innerHTML=`<div class="modern-report"><div class="report-hero"><div><h2>Report Card</h2><p>${escapeHtml(activeSession?.title||importedBank?.title||'Exam')} · ${blocks.length} block(s) completed</p></div><div class="report-score-wrap"><div class="report-ring" style="--p:${percent}"><div><b>${percent}%</b><span>${correct}/${total}</span></div></div></div></div>${changeAudit}<div class="report-tabs">${tabs}</div><div class="report-sort-controls"><label for="reportSort">Sort questions by:</label><select id="reportSort"><option value="testOrder">Test order</option><option value="status">Status (Incorrect first)</option><option value="time">Time taken (shortest first)</option><option value="subject">Subject (A–Z)</option></select></div>${bodies}<div class="report-actions"><button id="reportSaveMenu" class="primary">Save & Back to Main Menu</button><button id="reportExport" class="secondary">Export Results JSON</button><button id="reportExportIncorrect" class="secondary">Export Incorrect Qs JSON</button></div></div>`;
+    function sortReportRows(mode){ const key=mode==='testOrder'?'sortOrder':'sort'+mode.charAt(0).toUpperCase()+mode.slice(1); $$('.report-block').forEach(block=>{ const tbody=block.querySelector('tbody'); if(!tbody) return; Array.from(tbody.querySelectorAll('tr')).sort((a,b)=>{ const av=a.dataset[key]||''; const bv=b.dataset[key]||''; if(mode==='subject') return av.localeCompare(bv)||Number(a.dataset.sortOrder)-Number(b.dataset.sortOrder); return Number(av)-Number(bv); }).forEach(row=>tbody.appendChild(row)); }); }
+    $('#reportSort')?.addEventListener('change',e=>sortReportRows(e.target.value));
     $$('.report-tab').forEach(btn=>btn.addEventListener('click',()=>{ const i=btn.dataset.reportTab; $$('.report-tab').forEach(b=>b.classList.toggle('active',b===btn)); $$('.report-block').forEach(b=>b.style.display=b.dataset.reportBody===i?'block':'none'); }));
     $$('.review-one').forEach(btn=>btn.addEventListener('click',()=>{ reviewMode=true; if(activeSession) activeSession.currentBlockPointer=Number(btn.dataset.b)||0; startBlock(Number(btn.dataset.b)||0); goToQuestionIndex(Number(btn.dataset.q)||0); }));
-    $('#reportSaveMenu')?.addEventListener('click',()=>returnToMenu()); $('#reportExport')?.addEventListener('click',downloadResults); saveSessionToStorage();
+    $('#reportSaveMenu')?.addEventListener('click',()=>returnToMenu()); $('#reportExport')?.addEventListener('click',downloadResults); $('#reportExportIncorrect')?.addEventListener('click',downloadIncorrectResults); saveSessionToStorage();
   };
 
   $('#quickTab')?.addEventListener('click',()=>setMenuMode('quick'));
@@ -2950,7 +2971,8 @@ document.addEventListener('click', function(e){
   function progressFormIdFromFilename(name){ return String(name||'').replace(/_(?:progress_save|suspended_test)\.json$/i,''); }
   function syncKeyForPortableProgress(formId,bankHash){
     const bm=window.StepProgressSync?.backupModel;
-    return formId==='QBANK_MODE' ? (bm?.qbankKey||'__QBANK__') : (bm?.entityKey?bm.entityKey(formId,bankHash):`${formId}@@${bankHash||'NOHASH'}`);
+    const rec=formId==='QBANK_MODE'?null:catalogForm(formId),formUid=rec?.formUid||formId;
+    return formId==='QBANK_MODE' ? (bm?.qbankKey||'__QBANK__') : (bm?.entityKey?bm.entityKey(formUid):formUid);
   }
   function extractProgressBankHash(text){
     try{ const obj=JSON.parse(String(text||'')); const hashes=[]; if(obj?.bankHash) hashes.push(obj.bankHash); if(obj?.session?.bankHash) hashes.push(obj.session.bankHash); if(obj?.bundle?.attempts) for(const a of obj.bundle.attempts) if(a?.session?.bankHash) hashes.push(a.session.bankHash); return String(hashes.find(Boolean)||''); }catch(e){ return ''; }
@@ -3598,7 +3620,7 @@ document.addEventListener('click', function(e){
       startLibraryForm=async function(id){const b=await readBundle(id), a=activeAtt(b); if(a&&sessionCanResume(a.session)){const r=await appConfirm('An incomplete attempt exists. Resume it?',{okText:'Resume existing',cancelText:'Start new attempt'}); if(r){await resumeLibraryForm(id); return} if(!await appConfirm('Start a new full attempt? Existing progress remains saved.',{okText:'Start new attempt'})) return} const type=b.attempts.length?'new_attempt':'initial'; await prepLibrary(id,{v9AttemptId:rid('attempt'),v9AttemptType:type,v9AttemptLabel:type==='initial'?'1st Attempt':`New Attempt ${b.attempts.length+1}`})};
       reviewLibraryForm=async function(id){const rec=catalogForm(id), b=await readBundle(id), a=activeAtt(b); if(!a)throw new Error('No progress save found.'); const bank=await readFormBank(id); importedBank=bank; currentBankRawText=JSON.stringify(bank,null,2); currentBankHash=rec.bankHash||await sha256Hex(currentBankRawText); activeRunContext={type:'library',formId:id,qbank:false,v9AttemptId:a.attemptId}; const s=cloneJson(a.session); s.bankHash=currentBankHash; s.libraryFormId=id; s.libraryFormName=rec.displayName||id; s.currentBlockPointer=0; if(s.blocks?.[0])s.blocks[0].current=0; loadSessionForReview(s)};
       resumeLibraryForm=async function(id){const rec=catalogForm(id), b=await readBundle(id), a=activeAtt(b), temp=await readSuspendedTemp(id); let s=temp&&sessionCanResume(temp)?temp:a?.session; if(!sessionCanResume(s))throw new Error('No resumable attempt.'); const bank=await readFormBank(id); importedBank=bank; currentBankRawText=JSON.stringify(bank,null,2); currentBankHash=rec.bankHash||await sha256Hex(currentBankRawText); activeRunContext={type:'library',formId:id,qbank:false,v9AttemptId:s.attemptId||a?.attemptId}; s.bankHash=currentBankHash; s.libraryFormId=id; s.libraryFormName=rec.displayName||id; await loadSessionForResume(s); await removeSuspendedTemp(id)};
-      async function retestRows(id,filter){const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id); if(!a)throw new Error('No selected attempt.'); const rows=[]; (bank.blocks||[]).forEach((bl,bi)=>(bl.questions||[]).forEach((q,qi)=>{const bp=a.session.blocks?.[bi], ans=bp?.answers?.[qi], marked=!!bp?.flagged?.[qi], wrong=ans!=null&&ans!==q.correct; if((filter==='wrongs'&&wrong)||(filter==='marked'&&marked)||(filter==='wrongs_marked'&&(wrong||marked))) rows.push({formId:id,blockIndex:bi,questionIndex:qi,key:`${id}:${bi}:${qi}`,seedStemHtml:bp?.stemHtml?.[qi],seedStruck:bp?.struck?.[qi]||[],seedFlagged:marked})})); return {rows,bank,attempt:a}}
+      async function retestRows(id,filter){const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id); if(!a)throw new Error('No selected attempt.'); const rows=[],uid=bank.formUid||catalogForm(id)?.formUid||id; (bank.blocks||[]).forEach((bl,bi)=>(bl.questions||[]).forEach((q,qi)=>{const bp=a.session.blocks?.[bi], ans=bp?.answers?.[qi], marked=!!bp?.flagged?.[qi], wrong=ans!=null&&ans!==q.correct,key=window.StepQidMigration&&StepQidMigration.validQid(q.qid)?StepQidMigration.keyFor(uid,q.qid):`${id}:${bi}:${qi}`; if((filter==='wrongs'&&wrong)||(filter==='marked'&&marked)||(filter==='wrongs_marked'&&(wrong||marked))) rows.push({formId:id,blockIndex:bi,questionIndex:qi,key,seedStemHtml:bp?.stemHtml?.[qi],seedStruck:bp?.struck?.[qi]||[],seedFlagged:marked})})); return {rows,bank,attempt:a}}
       async function startRetest(id,filter){const labs={wrongs:'Retest Wrongs',marked:'Retest Marked',wrongs_marked:'Retest Marked + Wrongs'}, got=await retestRows(id,filter); if(!got.rows.length)throw new Error(`No ${poolLabel(filter).toLowerCase()} questions found.`); if(!await appConfirm(`${labs[filter]} will create a separate ${got.rows.length}-question attempt.`,{okText:'Open Setup'}))return; const qs=got.rows.map(r=>{const q=cloneJson(got.bank.blocks[r.blockIndex].questions[r.questionIndex]); Object.assign(q,{_qbankKey:r.key,_seedStemHtml:r.seedStemHtml,_seedExpHtml:r.seedExpHtml,_seedStemAnchors:r.seedStemAnchors,_seedExpAnchors:r.seedExpAnchors,_seedStruck:r.seedStruck,_seedFlagged:r.seedFlagged}); return q}); importedBank={title:`${displayName(catalogForm(id))} — ${labs[filter]}`,description:`${labs[filter]} from ${got.attempt.label}`,librarySlotId:id,blocks:[{name:labs[filter],questions:qs}]}; currentBankRawText=JSON.stringify({title:importedBank.title,keys:got.rows.map(r=>r.key)},null,2); currentBankHash=await sha256Hex(currentBankRawText); selectedBlockIndex=0; activeSession=null; reviewMode=false; activeRunContext={type:'library',formId:id,qbank:false,v9AttemptId:rid('attempt'),v9AttemptType:`retest_${filter}`,v9AttemptLabel:labs[filter],v9SourceAttemptId:got.attempt.attemptId,v9SourceFilter:filter,v9Retest:true}; if($('#blockSizeSelect'))$('#blockSizeSelect').value='all'; renderMenu(); setMenuMode('quick')}
       const oldRenderMenu=renderMenu; renderMenu=function(){const o=oldRenderMenu(); if(activeRunContext?.v9Retest){const setup=document.querySelector('.setup-panel .setup-grid'); if(setup&&!$id('v9RetestOptions')) setup.insertAdjacentHTML('afterend',`<div id="v9RetestOptions" class="v9-retbox"><b>${esc(activeRunContext.v9AttemptLabel)}</b><br>Saved as separate attempt; original stays untouched.<div class="v9-ret-options"><label><input id="v9CarryHl" type="checkbox" checked> Carry saved stem highlights</label><label><input id="v9CarryStrike" type="checkbox" checked> Carry saved strikethroughs</label><label><input id="v9CarryMarked" type="checkbox"> Carry marked status</label></div></div>`)} return o};
       const oldCreate=createSession; createSession=function(which){const s=oldCreate(which); if(activeRunContext?.type==='library'&&activeRunContext.formId){Object.assign(s,{attemptId:activeRunContext.v9AttemptId||s.attemptId||'attempt_1',attemptType:activeRunContext.v9AttemptType||s.attemptType||'initial',attemptLabel:activeRunContext.v9AttemptLabel||s.attemptLabel||'1st Attempt'}); if(activeRunContext.v9Retest){const hl=!!$id('v9CarryHl')?.checked, st=!!$id('v9CarryStrike')?.checked, mk=!!$id('v9CarryMarked')?.checked; let flat=[];(activeBlocks||[]).forEach(b=>(b.questions||[]).forEach(q=>flat.push(q))); let pos=0; s.blocks.forEach(bp=>{for(let i=0;i<bp.total;i++,pos++){const q=flat[pos]||{}; if(hl&&Array.isArray(q._seedStemAnchors)&&q._seedStemAnchors.length){bp.stemHighlightAnchors=bp.stemHighlightAnchors||{}; bp.stemHighlightAnchors[i]=cloneJson(q._seedStemAnchors); bp.highlightMigrationVersion=15;} if(Array.isArray(q._seedExpAnchors)&&q._seedExpAnchors.length){bp.explanationHighlightAnchors=bp.explanationHighlightAnchors||{}; bp.explanationHighlightAnchors[i]=cloneJson(q._seedExpAnchors); bp.highlightMigrationVersion=15;} if(st&&q._seedStruck?.length)bp.struck[i]=q._seedStruck.slice(); if(mk&&q._seedFlagged)bp.flagged[i]=true}})}} if(activeRunContext?.qbank){const name=($id('qbankTestName')?.value||activeRunContext.qbankTestName||`Qbank — ${poolLabel(activeRunContext.qbankPoolType)} — ${(s.qbankKeys||[]).length}Q`).trim(); Object.assign(s,{qbankTestId:activeRunContext.qbankTestId||rid('qb'),qbankTestName:name,qbankRunMode:activeRunContext.qbankRunMode||'testing',tutorMode:activeRunContext.qbankRunMode==='tutor',qbankSourceMode:activeRunContext.qbankSourceMode||'separate',qbankPoolType:activeRunContext.qbankPoolType||'unused',qbankAttemptSource:activeRunContext.qbankAttemptSource||'first',title:name})} return s};
@@ -3651,7 +3673,7 @@ document.addEventListener('click', function(e){
           .v10-retest-card{border:1px solid #ead69d;background:linear-gradient(180deg,#fffaf0,#fff4d8);border-radius:18px;padding:14px;margin:12px 0;color:#3f2b00;box-shadow:0 8px 20px rgba(112,70,0,.07)}.v10-retest-card h3{margin:0 0 7px;color:#4b3000}.v10-count-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}.v10-count{background:#fff;border:1px solid #ead69d;border-radius:13px;padding:9px}.v10-count b{display:block;font-size:22px;color:#071827}.v10-count span{font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:900;color:#765114}.v10-retest-pool{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}.v10-retest-pool label,.v10-carry label{background:#fff;border:1px solid #ead69d;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:900}.v10-carry{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.v10-available-panel{margin:10px 0 0;border:1px solid #d8e8f0;background:#f6fbff;border-radius:16px;padding:12px}.v10-available-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.v10-available-head b{font-size:26px;color:#071827}.v10-breakdown{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:9px}.v10-breakdown div{background:#fff;border:1px solid #e0ebf2;border-radius:12px;padding:8px}.v10-breakdown b{display:block;font-size:17px}.v10-breakdown span{font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:900;color:#667a89}.v10-more-clean [data-v9^="retest-"]{display:none!important}.v10-setup-note{font-size:12px;color:#5a6e7d;margin-top:6px}.settings-card .v10-repair{border-color:#7b1835;background:#fff8fb}
         `; document.head.appendChild(v10Style);
 
-        function questionKey(id,bi,qi){return `${id}:${bi}:${qi}`}
+        function questionKey(id,bi,qi){const rec=catalogForm(id),row=(rec?.questionIndex||[]).find(r=>Number(r.blockIndex)===Number(bi)&&Number(r.questionIndex)===Number(qi));return row?.key||`${id}:${bi}:${qi}`}
         function getFormFromKey(k){return String(k||'').split(':')[0]||''}
         function qbankUsedFromSessions(qp){const used={}; (qp.sessions||[]).forEach(t=>{const keys=t.qbankKeys||t.session?.qbankKeys||[]; keys.forEach(k=>{if(k)used[k]=true})}); return used}
         function rebuildQbankUsed(qp){qp.used=qbankUsedFromSessions(qp); return qp}
@@ -3721,7 +3743,7 @@ document.addEventListener('click', function(e){
           return 'All questions';
         }
         function v101Counts(ctx){return Object.fromEntries(Object.entries(ctx.pools||{}).map(([k,v])=>[k,(v||[]).length]));}
-        function v102QuestionKey(id,bi,qi){ return `${id}:${bi}:${qi}`; }
+        function v102QuestionKey(id,bi,qi){ const rec=catalogForm(id),row=(rec?.questionIndex||[]).find(r=>Number(r.blockIndex)===Number(bi)&&Number(r.questionIndex)===Number(qi)); return row?.key||`${id}:${bi}:${qi}`; }
 
         async function newAttemptPools(id){
           const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id);
@@ -3938,7 +3960,7 @@ document.addEventListener('click', function(e){
         window.__StepExamV103PatchApplied = true;
         const V103_FLOW = 'library-new-attempt-setup';
         let v103Token = 0;
-        function v103Key(id,bi,qi){ return `${id}:${bi}:${qi}`; }
+        function v103Key(id,bi,qi){ const rec=catalogForm(id),row=(rec?.questionIndex||[]).find(r=>Number(r.blockIndex)===Number(bi)&&Number(r.questionIndex)===Number(qi)); return row?.key||`${id}:${bi}:${qi}`; }
         function v103RemoveBoxes(){ $id('v10RetestSetup')?.remove(); $id('v9RetestOptions')?.remove(); }
         function v103IsSetup(){ return !!(activeRunContext && activeRunContext.v103Flow===V103_FLOW && activeRunContext.formId); }
         function v103ClearSetupState(){
@@ -5183,6 +5205,28 @@ document.addEventListener('click', function(e){
       })();
 
 
+  /* Transactional QID migration storage boundary. IndexedDB-backed DATA remains authoritative. */
+  window.StepQidStorageBridge=Object.freeze({
+    profile:'ipad',
+    async readSnapshot(){
+      if(!dataDirHandle)await restoreLastDataFolder();if(!dataDirHandle)throw new Error('Simulator library storage is not available.');ensureCatalogShape();const forms={},progress={},fd=await formsDir(),pd=await progressDir();
+      for(const rec of catalog.forms||[]){try{forms[rec.id]=await readText(fd,`${rec.id}.json`)}catch(e){}}
+      for await(const [name,h] of pd.entries())if(h.kind==='file'&&isPortableProgressFilename(name))progress[name]=await(await h.getFile()).text();
+      return {schemaVersion:1,catalog:cloneJson(catalog),forms,progress};
+    },
+    async saveRecovery(snapshot){
+      const d=new Date(),z=n=>String(n).padStart(2,'0'),stamp=`${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}_${z(d.getHours())}-${z(d.getMinutes())}-${z(d.getSeconds())}`,bd=await(await progressDir()).getDirectoryHandle('backups',{create:true}),name=`QID_MIGRATION_PRE_${stamp}.json`,payload={fileType:'StepExamQidMigrationRecovery',schemaVersion:1,createdAt:nowIso(),snapshot};
+      await writeText(bd,name,JSON.stringify(payload));await writeText(bd,'QID_MIGRATION_LATEST.json',JSON.stringify(payload));return `progress/backups/${name}`;
+    },
+    async readRecovery(){try{const text=await readText(await(await progressDir()).getDirectoryHandle('backups',{create:false}),'QID_MIGRATION_LATEST.json'),obj=JSON.parse(text);return obj?.fileType==='StepExamQidMigrationRecovery'?obj.snapshot:null}catch(e){return null}},
+    async writeSnapshot(snapshot){
+      if(!snapshot?.catalog||!snapshot.forms||!snapshot.progress)throw new Error('QID migration snapshot is incomplete.');const fd=await formsDir(),pd=await progressDir();
+      for(const [id,text] of Object.entries(snapshot.forms))await writeText(fd,`${id}.json`,text);for(const [name,text] of Object.entries(snapshot.progress))await writeText(pd,name,text);
+      catalog=cloneJson(snapshot.catalog);ensureCatalogShape();await writeCatalog();loadedFormCache.clear();revokeDataAssetObjectUrls();return true;
+    },
+    async refresh(){await loadCatalog();loadedFormCache.clear();revokeDataAssetObjectUrls();await refreshProgressSummaries();await renderLibrary();await renderQbankMode();return true;}
+  });
+
   /* exam-simulator2 cloud-library bridge helpers. Progress remains a separate backup system. */
   async function stepSyncResolveLibraryPath(relPath, createDirs=false){
     const parts=normalizeZipPath(relPath).split('/').filter(Boolean);
@@ -5207,7 +5251,7 @@ document.addEventListener('click', function(e){
   /* exam-simulator2: narrow cloud storage bridge.
      This exposes only durable progress operations; form source files/assets stay private to the simulator. */
   window.StepExamSyncBridge = Object.freeze({
-    build: 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4',
+    build: 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0',
     async ensureReady(){
       if(!dataDirHandle){ await restoreLastDataFolder(); }
       if(!dataDirHandle) throw new Error('Simulator library storage is not available.');
@@ -6702,10 +6746,11 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
       await writeText(await progressDir(),`${id}_progress_save.json`,JSON.stringify(out,null,2));
     }catch(e){ console.warn('v16 raw bundle write failed', e); }
   }
-  function v16Key(id,bi,qi){ return `${id}:${Number(bi)||0}:${Number(qi)||0}`; }
+  function v16Key(id,bi,qi){ const rec=typeof catalogForm==='function'?catalogForm(id):null,row=(rec?.questionIndex||[]).find(r=>Number(r.blockIndex)===Number(bi)&&Number(r.questionIndex)===Number(qi)); return row?.key||`${id}:${Number(bi)||0}:${Number(qi)||0}`; }
   function v16QuestionKey(id,q,bi,qi){
     if(q && q._qbankKey) return q._qbankKey;
     const formId=(q&&(q.sourceFormId||q.formId)) || id || (activeRunContext&&activeRunContext.formId) || (activeSession&&activeSession.libraryFormId) || '';
+    if(window.StepQidMigration&&StepQidMigration.validQid(q?.qid)){const rec=typeof catalogForm==='function'?catalogForm(formId):null;return StepQidMigration.keyFor(q.formUid||rec?.formUid||formId,q.qid);}
     let sbi = q && (q._sourceBlockIndex ?? q.sourceBlockIndex ?? q.blockIndex);
     let sqi = q && (q._sourceQuestionIndex ?? q.sourceQuestionIndex ?? q.questionIndex);
     if(sbi===undefined || sbi===null || sbi==='') sbi=bi; else sbi=Number(sbi); if(sbi>0 && (q&&q._sourceBlockIndex!==undefined)) sbi=sbi-1;
@@ -10217,10 +10262,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4"></script>
-<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4"></script>
-<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4"></script>
-<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4"></script>
+<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
+<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
+<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
+<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
+<script src="./js/qid-settings.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">

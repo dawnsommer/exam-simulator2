@@ -1,4 +1,4 @@
-const BUILD = 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4';
+const BUILD = 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0';
 const CACHE_PREFIX = 'exam-simulator2-';
 const CACHE_NAME = `${CACHE_PREFIX}${BUILD}`;
 const INDEX_KEY = `./index.html?v=${BUILD}`;
@@ -6,6 +6,7 @@ const APP_SHELL = [
   './', INDEX_KEY, './offline.html', './privacy.html', './manifest.webmanifest', './jszip.min.js',
   './js/sync-config.js?v='+BUILD, './js/sync-merge.js?v='+BUILD, './js/sync-storage.js?v='+BUILD,
   './js/google-auth.js?v='+BUILD, './js/progress-sync.js?v='+BUILD, './js/library-backup.js?v='+BUILD,
+  './js/qid-migration.js?v='+BUILD, './js/qid-settings.js?v='+BUILD,
   './icons/icon-192.png', './icons/icon-512.png',
   './ui_icons/prev.png', './ui_icons/next.png', './ui_icons/lab.png', './ui_icons/notes.png',
   './ui_icons/calculator.png', './ui_icons/settings.png', './ui_icons/lock.png', './ui_icons/endblock.png'

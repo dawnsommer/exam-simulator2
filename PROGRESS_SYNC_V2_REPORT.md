@@ -394,3 +394,14 @@ Automatic Local → Cloud replacement is permitted only when the current Drive v
 ## V2.2.3 schema unification
 
 Current cloud write schema is now uniformly version 2 for active progress, per-form/Qbank payloads, progress history, and Full Form Library manifests. Readers remain backward-compatible with schema 1 where legacy data can exist. Library schema-1 manifests are normalized to schema 2 in memory, with `backupType: "library"` and `containsProgress: false`, and are naturally upgraded on the next successful backup commit. Progress-history schema-1 manifests are handled the same way. No new cloud writer emits schema 1.
+
+## V2.3.0 QID and safe automatic sync addendum
+
+- Stable entity identity is `formUid`; immutable question identity is `qid`; `bankHash` is retained as form-revision metadata.
+- Progress payloads include opaque `progressRevisionId`, parent revision, form revision, QID schema/count, and writer identity.
+- Clean cloud-only/cloud-ahead state auto-restores only outside an active exam and only after a local recovery; true divergence remains explicit.
+- Durable writes debounce for 2 seconds with a 5-second maximum, milestone actions checkpoint immediately, and in-flight changes schedule one follow-up upload.
+- Automatic history retains one rolling daily snapshot; manual snapshots are untouched.
+- QID migration requires one canonical device and blocks ordinary cloud activity until a verified Full Library + current-progress baseline is established.
+- Full Library backup re-reads the committed manifest before awaited garbage collection and deletes only managed appData `LIB_..._exam-simulator2_` files that are no longer referenced.
+- Build/cache ID: `EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0`.

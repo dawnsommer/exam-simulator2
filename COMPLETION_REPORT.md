@@ -401,3 +401,7 @@ Automatic Local → Cloud replacement is permitted only when the current Drive v
 - Existing schemaVersion 1 progress-history manifests remain readable and are rewritten as schema 2 on the next history mutation.
 - Schema 1 is retained only as a legacy read/import compatibility marker. It is not emitted by new cloud writers.
 - Build/cache ID: EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.3.
+
+## V2.3.0 completion addendum
+
+V2.3.0 adds shared QID/formUid migration, opaque progress revisions, clean automatic cloud recovery, bounded checkpoint scheduling with dirty-again follow-up, exact progress-transfer byte reporting, a single rolling automatic daily snapshot, explicit post-migration baseline establishment, and verified/awaited Full Library mirror garbage collection. Legacy schema readers remain supported; legacy/non-QID bank-hash mismatches continue to fail closed. The coordinated release identifier is `EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0`.

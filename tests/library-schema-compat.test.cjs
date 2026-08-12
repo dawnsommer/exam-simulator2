@@ -12,4 +12,8 @@ assert.match(lib,/schemaVersion:C\.LIBRARY_SCHEMA_VERSION,backupType:'library',c
 assert.match(progress,/schema!==1&&schema!==Number\(C\.HISTORY_SCHEMA_VERSION\)/,'Progress history reader must accept schema 1 and schema 2');
 assert.match(progress,/schemaVersion:C\.HISTORY_SCHEMA_VERSION/,'Progress history writes must use current schema 2');
 assert.doesNotMatch(lib,/schemaVersion\s*:\s*1/,'Library writer must never emit schema 1');
+assert.match(lib,/const manifestFile=await uploadSmallJson[\s\S]*verify=await readCloudManifest\(\)/,'Library backup must re-read the committed manifest before cleanup');
+assert.match(lib,/listManagedLibraryFiles\(\)/,'Library backup must garbage-collect only its managed LIB_ namespace');
+assert.match(lib,/await deleteDriveFile\(id,\{strict:true\}\)/,'Obsolete library cleanup must be awaited');
+assert.match(lib,/cleanupWarning/,'A cleanup failure must preserve the committed backup and report a warning');
 console.log('PASS Unified schema policy: all new cloud writes=2; library/history readers accept legacy schema 1');

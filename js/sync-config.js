@@ -14,7 +14,7 @@
   const C = ROOT.config = Object.freeze({
     CLOUD: CLOUD_CONFIG,
     APP_NAME: CLOUD_CONFIG.appId,
-    BUILD: 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4',
+    BUILD: 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0',
     DRIVE_SCOPE: 'https://www.googleapis.com/auth/drive.appdata',
     MANIFEST_FILE: `${CLOUD_CONFIG.driveFilePrefix}.manifest.json`,
     MANIFEST_TYPE: 'exam-simulator2-progress-manifest',

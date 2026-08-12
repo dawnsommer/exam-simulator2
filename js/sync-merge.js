@@ -13,7 +13,9 @@
     BANK_HASH_MISMATCH:'BANK_HASH_MISMATCH',
     UNTRACKED_BOTH:'UNTRACKED_BOTH'
   });
-  const entityKey=(id,hash)=>`${String(id)}@@${String(hash||'NOHASH')}`;
+  /* Permanent progress identity is formUid. bankHash is only the current form revision. */
+  const entityKey=(formUid)=>String(formUid||'');
+  const legacyEntityKey=(id,hash)=>`${String(id)}@@${String(hash||'NOHASH')}`;
   const qbankKey='__QBANK__';
 
   /* Pure Progress Sync V2 classifier. Timestamps never decide direction. */
@@ -60,6 +62,6 @@
     return STATES.CLOUD_AHEAD;
   }
 
-  R.backupModel={entityKey,qbankKey};
+  R.backupModel={entityKey,legacyEntityKey,qbankKey};
   R.classifier={STATES,classifyFormSync};
 })();

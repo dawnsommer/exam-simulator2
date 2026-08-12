@@ -2,7 +2,7 @@
 
 Last inspected: 2026-08-12  
 Effective simulator UI version: `A22.14` (final script in `index.html`)  
-Cloud/cache build: `EXAM-SIMULATOR2-PROGRESS-SYNC-V2.2.4`  
+Cloud/cache build: `EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0`  
 Scope: this nested repository only; do not inspect the parent LOCAL simulator for iPad-only work.
 
 ## Start here
@@ -30,6 +30,8 @@ The app is deployed at `https://dawnsommer.github.io/exam-simulator2/` and is in
 | `js/sync-storage.js` | Adapter between native simulator storage and cloud entities/recoveries | Payload/hash/apply/undo issues |
 | `js/progress-sync.js` | Drive manifests/version files, dirty tracking, checkpoints, conflict UI, history/recovery | Progress sync issues |
 | `js/library-backup.js` | Separate resumable full-library Drive backup/restore | Large library transfer issues |
+| `js/qid-migration.js` | Shared pure QID/formUid migration and legacy mapping logic | Identity/schema migration work |
+| `js/qid-settings.js` | Settings audit/backup/migrate/verify/restore and baseline UI | QID rollout/baseline work |
 | `sw.js` | App-shell cache/update policy | Offline/stale-version issues |
 | `manifest.webmanifest` | PWA metadata/start URL/icons | Install/launch issues |
 | `offline.html`, `privacy.html` | Offline fallback and privacy disclosure | PWA/legal surface |
@@ -91,7 +93,7 @@ Form import accepts JSON or ZIP. ZIP metadata junk is ignored; question JSON is 
 
 Catalog/form/progress paths mirror the LOCAL naming convention but live in the browser DB. A per-form progress file is a `StepExamSimulatorV10ProgressBundle` envelope with an active session and multi-attempt bundle. Progress includes answers, answer-change audit, flags, strikes, notes, per-question time, results, resume state, and v15 highlight anchors.
 
-Stable cloud/form identity is `formId + bankHash`, encoded as `formId@@bankHash`. Qbank is the special independent entity `__QBANK__`. Never restore or sync progress into a locally loaded form whose `bankHash` differs.
+Legacy cloud/form identity was `formId + bankHash`, encoded as `formId@@bankHash`. QID schema 1 uses stable `formUid` entity identity and immutable question `qid` values; `bankHash` is retained as revision metadata rather than entity identity. A cross-revision restore is allowed only when both sides declare QID schema 1, the `formUid` matches, and question counts are compatible. Qbank remains the independent entity `__QBANK__`, with migrated question references encoded as `formUid::qid`. Legacy/non-QID hash mismatches still fail closed.
 
 `StepExamSyncBridge` in `index.html` is the only supported boundary for cloud modules. It exposes catalog/runtime inspection; flush; per-form progress/suspended/Qbank read/write; 3-digit scores; library file listing/read/write/prune; and refresh. Cloud modules should not reach into simulator globals or IndexedDB directly.
 
@@ -101,12 +103,14 @@ Do not merge these concepts:
 
 1. **Portable Progress ZIP** — `progress/**` plus `progress_metadata.json`; contains native progress and 3-digit scores, but no forms/assets or cloud authority. Import validates `bankHash`, creates local recovery, resets lineage, then reclassifies against Drive.
 2. **Local Library ZIP** — sanitized `catalog.json` plus `forms/` and `assets/`; intentionally excludes progress, Qbank, scores, and lineage. Restore preserves matching local progress-owned catalog values.
-3. **Drive Progress Sync/History** — small per-entity progress payloads, an active v2 manifest, one previous cloud version, local undo recovery, daily history (maximum seven), and manual snapshots.
+3. **Drive Progress Sync/History** — small per-entity progress revisions, an active v2 manifest, one previous cloud version, local undo recovery, one rolling automatic daily snapshot, and user-created manual snapshots.
 4. **Full Drive Library Backup** — manual large/resumable transfer of catalog/forms/assets only. It has its own manifest and chunk staging. Restore writes `catalog.json` last and excludes `progress/`.
 
 The Update App action clears app-shell caches/service-worker registration and reloads the clean Pages URL; it must not delete the IndexedDB browser library.
 
-Simulator LOCAL now emits and accepts the same first two ZIP contracts. Cross-simulator transfer order is Full Form Library first, Portable Progress second. This compatibility was implemented in LOCAL only; do not add LOCAL filesystem access or hash-migration behavior to the iPad runtime. The iPad importer remains strict: the matching form and `bankHash` must already exist before portable form progress is applied.
+Simulator LOCAL emits and accepts the same first two ZIP contracts. Cross-simulator transfer order is Full Form Library first, Portable Progress second. QID-compatible imports use `formUid`/QID identity; legacy imports remain strict about the matching installed form and `bankHash`.
+
+The temporary **QID Migration & Compatibility** Settings card must be run on one canonical device only. Migration creates an IndexedDB recovery, suppresses sync mutation events, rewrites local identity, clears old lineage, and sets `qidMigrationPendingBaseline`. While that marker exists, normal cloud checks/uploads/restores are blocked. **Establish New Cloud Baseline** first verifies/mirrors Full Form Library, replaces per-form progress with opaque progress revisions, verifies alignment, records `qidCloudBaseline`, then removes the block. New devices restore Full Form Library first; clean cloud-only/cloud-ahead progress may then restore automatically.
 
 ## Google Drive architecture
 
@@ -132,7 +136,7 @@ Timestamps never choose overwrite direction. The pure classifier in `sync-merge.
 
 `ALIGNED`, `LOCAL_ONLY`, `LOCAL_AHEAD_SAFE`, `CLOUD_ONLY`, `CLOUD_AHEAD`, `DIVERGED`, `DELETED_LOCAL_SAFE`, `DELETE_CONFLICT`, `BANK_HASH_MISMATCH`, or `UNTRACKED_BOTH`.
 
-Automatic local → cloud replacement is safe only when local `baseCloudVersionId` still equals Drive `currentVersionId`. Before manifest commit, Drive is checked again to catch a concurrent device advance. Cloud → local, divergence, stale-device, untracked-both, and delete-conflict cases require explicit user direction. A missing local file is not deletion authority; only an explicit delete/reset action creates a tombstone intent.
+Automatic local → cloud replacement is safe only when local `baseCloudVersionId` still equals Drive `currentVersionId`. Before manifest commit, Drive is checked again to catch a concurrent device advance. Clean `CLOUD_ONLY`/`CLOUD_AHEAD` progress may restore automatically when there is no conflict and no active exam; a local recovery is created before replacement. Divergence, untracked-both, delete conflict, and identity incompatibility always require explicit user direction. A missing local file is not deletion authority; only an explicit delete/reset action creates a tombstone intent. Writes debounce for 2 seconds with a 5-second maximum delay, major milestones checkpoint immediately, and progress changed during an upload produces exactly one follow-up checkpoint.
 
 Portable backups never inherit Drive lineage. This is essential for fresh-device safety.
 
@@ -144,6 +148,7 @@ Portable backups never inherit Drive lineage. This is essential for fresh-device
 2. `sync-storage.js`
 3. `progress-sync.js`
 4. `library-backup.js`
+5. `qid-settings.js`
 
 When changing the cloud build, coordinate all of the following:
 
@@ -153,7 +158,7 @@ When changing the cloud build, coordinate all of the following:
 - `manifest.webmanifest` start URL
 - production/readme/report labels
 
-Current runtime JS/SW truth is `V2.2.4`, but `manifest.webmanifest` and some README headings still say `V2.2`. Treat that as known metadata drift; do not accidentally downgrade runtime cache-busters.
+Current coordinated runtime JS/SW/manifest truth is `V2.3.0`. QID migration is loaded before the app integration points and its Settings layer loads after the storage/cloud bridges exist.
 
 ## Validation commands
 
@@ -174,7 +179,7 @@ Also verify in a served/deployed browser:
 - fresh, stale, and divergent devices receive the correct explicit choices;
 - service-worker update loads the new build without deleting IndexedDB.
 
-As run on 2026-08-12, syntax checks passed. The combined suite had one failure: the daily-snapshot test hard-codes `2026-08-08` while `localDateKey()` uses the real current date, so on 2026-08-12 it reported 26/27 progress-sync scenarios plus both other test files passing. This is a test clock-coupling issue to fix/confirm before claiming a fully green suite; it was not repaired as part of this documentation task.
+As run on 2026-08-12, external syntax checks, inline-script parsing, shared QID tests, and the full mocked iPad suite passed. The former real-date-coupled daily snapshot test now derives the runtime date and verifies one rolling daily snapshot. Real OAuth, Drive, multi-device, iPad Safari/PWA, and large-transfer behavior still require production/device testing; mocked Node tests cannot prove them.
 
 Real OAuth, Drive, multi-device, iPad Safari/PWA, and large-transfer behavior still require production/device testing; mocked Node tests cannot prove them.
 
@@ -197,6 +202,10 @@ Keep newest entries first.
 
 | Date | Change | Files | Verification | Follow-up |
 |---|---|---|---|---|
+| 2026-08-12 | Added Score Report question sorting by Test order, Status, Time taken, or Subject; sorting reorders rows within every block while preserving each Review action. | `index.html`, `HANDOFF.md` | External syntax, inline script parse, and iPad regression suite run after the change. | Perform a manual browser check of each sort mode on a multi-block completed test. |
+| 2026-08-12 | Added per-question time-taken columns to the Score Report and block-complete table, plus an adjacent incorrect-only JSON export. Incorrect exports are sorted by block/item test order, retain original numbering, and add 1-based `incorrectNumber` values. | `index.html`, `HANDOFF.md` | External syntax, inline script parse, and iPad regression suite run after the change. | Perform a manual completed-test export check in the browser library build, including a test with no incorrect answers. |
+| 2026-08-12 | Added a reusable sealed multi-device Mock Drive/Auth harness with machine-readable operations and deterministic upload/download/manifest/delete/auth/corruption faults; added stale-clean/dirty, offline/auth recovery, failed transaction, idempotency, checksum corruption, QID-set compatibility, cross-revision, snapshot verification, debounce/priority, and 100 seeded classifier scenarios. Repaired cloud restore/snapshot validation to recompute payload checksums and reject size/hash mismatches before writes, and repaired cross-bankHash QID compatibility to validate incoming QIDs against the installed catalog before applying progress. | `js/progress-sync.js`, `js/sync-storage.js`, `tests/autonomous-sync-safety.test.cjs`, `tests/support/autonomous-harness.cjs`, `HANDOFF.md` | Full mocked iPad suite passes 115/115; external JS/SW syntax passes. In-app browser smoke passed at 768×1024 and 1024×768 with Google Backup, Full Library, and all six QID/baseline controls accessible, zero page overflow, and zero console errors. | Real OAuth/Drive, true network interception, large resumable-library fault injection, and physical iPad/PWA lifecycle behavior remain manual/next-phase gates; never run destructive faults on production Drive. |
+| 2026-08-12 | Released QID-aware V2.3.0 identity/migration and safe automatic sync: stable formUid entities, immutable QIDs, opaque progress revisions/parents, clean cloud auto-restore with local recovery, 2s/5s checkpoints plus dirty-again follow-up, exact progress byte UI, one rolling daily snapshot, explicit post-migration cloud baseline, and verified/awaited Full Library mirror cleanup limited to managed `LIB_..._exam-simulator2_` files. | `index.html`, `manifest.webmanifest`, `sw.js`, `js/qid-*.js`, `js/sync-{config,merge,storage}.js`, `js/progress-sync.js`, `js/library-backup.js`, `tests/*.test.cjs`, reports/readme, `HANDOFF.md` | External JS/SW syntax and all inline scripts parse; full mocked iPad suite and shared QID suite pass, including fresh/stale/divergent, race, rolling snapshot, dirty-again, legacy hash mismatch, Qbank/retest mapping, and library mirror policy coverage. | Deploy and test one disposable canonical migration/baseline, then Device 1 → fresh Device 2 → stale Device 3 on real iPad/Drive before production use. |
 | 2026-08-12 | Recorded adoption of the existing iPad Portable Progress and Local Library ZIP contracts by Simulator LOCAL. No iPad runtime code changed. | `HANDOFF.md` | iPad external JS/SW syntax passed; existing suite remained 26/27 plus both other test files passing, with only the known real-date daily-snapshot failure. LOCAL contract tests passed 6/6. | Keep these archive contracts backward compatible; test transfer in the order Library then Progress. |
 | 2026-08-12 | Clarified that the parent LOCAL `CKNotes4` fixture is unrelated to iPad runtime data. No runtime behavior changed. | `HANDOFF.md` | Cross-checked the documented IndexedDB/browser-library authority and standalone scope. | Keep LOCAL fixture details out of this handoff unless the runtime gains an explicit migration feature. |
 | 2026-08-12 | Created standalone iPad architecture/storage/sync/deployment handoff after full source, report, and test inspection. No runtime behavior changed. | `HANDOFF.md` | External JS/SW syntax passed; regression run produced 26/27 sync scenarios plus both other test files passing. | Make the daily snapshot test use an injected/fixed clock; align stale `V2.2` metadata labels with runtime `V2.2.4` when intentionally releasing. |
