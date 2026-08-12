@@ -5114,6 +5114,19 @@ document.addEventListener('click', function(e){
             return `<button class="filter-pill ${active?'active':''} ${sum.done?'done':''} ${v201TabClass(f)} v214-tab-bars ${(v201Internal(f)==='Overview'||tabMeterEnabled(v201Internal(f)))?'v211-meter-on':'v211-meter-off'}" data-filter="${escapeAttr(f)}" style="--tab-accent:${escapeAttr(color)}" type="button">${v2014TabContent(f,sum)}</button>`;
           }).join('');
           root.innerHTML=`<div class="library-tab-strip ${expanded?'expanded':''}">${tabs}</div><button class="library-tabs-toggle" type="button" aria-expanded="${expanded?'true':'false'}" aria-label="${expanded?'Collapse':'Expand'} library tabs"><span>${expanded?'Show fewer tabs':'Show all tabs'}</span><span class="library-tabs-chevron" aria-hidden="true">⌄</span></button>`;
+          const tabStrip=root.querySelector('.library-tab-strip'), tabToggle=root.querySelector('.library-tabs-toggle');
+          const syncTabDisclosure=()=>{ if(tabStrip && tabToggle){
+            const wasExpanded=tabStrip.classList.contains('expanded');
+            tabStrip.classList.remove('expanded');
+            const hasOverflow=tabStrip.scrollHeight > tabStrip.clientHeight + 2;
+            if(wasExpanded && hasOverflow) tabStrip.classList.add('expanded');
+            if(wasExpanded && !hasOverflow) root.dataset.tabsExpanded='0';
+            tabToggle.hidden=!hasOverflow;
+            tabToggle.style.display=hasOverflow?'inline-flex':'none';
+            tabToggle.setAttribute('aria-hidden',String(!hasOverflow));
+          }};
+          syncTabDisclosure();
+          requestAnimationFrame(syncTabDisclosure);
           root.querySelectorAll('.filter-pill').forEach(b=>b.addEventListener('click',()=>{ activeLibraryFilter=b.dataset.filter; renderLibrary(); }));
           root.querySelector('.library-tabs-toggle')?.addEventListener('click',()=>{ root.dataset.tabsExpanded=root.dataset.tabsExpanded==='1'?'0':'1'; v201RenderFilters(); });
           v201AfterLibraryPaint();
@@ -10705,7 +10718,7 @@ try{
   #examScreen.exam-dark .answer-change-note{color:#bcd4df!important}
   /* iPad-only: compact Form Library tabs by roughly 20% without changing other surfaces. */
   #libraryFilters .library-tab-strip{gap:6px!important}
-  #libraryFilters .library-tab-strip .filter-pill{flex-basis:124px!important;min-width:116px!important}
+  #libraryFilters .library-tab-strip .filter-pill{flex:0 0 124px!important;width:124px!important;min-width:124px!important;max-width:124px!important}
   #libraryFilters .library-tabs-toggle{min-height:27px!important;padding:6px 10px!important;font-size:9px!important;gap:6px!important}
   #libraryFilters .library-tabs-chevron{font-size:15px!important}
   #libraryFilters .library-tab-strip .filter-pill.v214-tab-bars,
