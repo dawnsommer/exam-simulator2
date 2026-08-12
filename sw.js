@@ -7,7 +7,7 @@ const APP_SHELL = [
   './js/sync-config.js?v='+BUILD, './js/sync-merge.js?v='+BUILD, './js/sync-storage.js?v='+BUILD,
   './js/google-auth.js?v='+BUILD, './js/progress-sync.js?v='+BUILD, './js/library-backup.js?v='+BUILD,
   './js/qid-migration.js?v='+BUILD, './js/qid-settings.js?v='+BUILD,
-  './icons/icon-192.png', './icons/icon-512.png',
+  './icons/icon-192.png?v=EXAM-SIMULATOR2-ICONS-1', './icons/icon-512.png?v=EXAM-SIMULATOR2-ICONS-1',
   './ui_icons/prev.png', './ui_icons/next.png', './ui_icons/lab.png', './ui_icons/notes.png',
   './ui_icons/calculator.png', './ui_icons/settings.png', './ui_icons/lock.png', './ui_icons/endblock.png'
 ];
