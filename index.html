@@ -445,6 +445,22 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 .exam-toolbar-menu .exam-toolbar-menu-panel,.exam-toolbar-menu .v75-menu-panel{position:absolute!important;z-index:10001!important;top:calc(100% + 8px)!important;right:0!important;}
 .glass-panel,.mode-panel,.library-tabs-card{overflow:visible!important;}
 </style>
+<style id="ipad-compact-disclosures">
+  #libraryFilters{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important}
+  #libraryFilters .library-tab-strip{display:flex;flex-wrap:wrap;gap:8px;max-height:174px;overflow:hidden;align-content:flex-start;transition:max-height .22s ease}
+  #libraryFilters .library-tab-strip.expanded{max-height:2000px}
+  #libraryFilters .library-tab-strip .filter-pill{flex:1 1 155px;min-width:145px;max-width:none}
+  #libraryFilters .library-tabs-toggle{align-self:center;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:34px;padding:7px 13px;border:1px solid #cbdde8;border-radius:999px;background:linear-gradient(180deg,#fff,#eef7fb);color:#31596f;font-size:11px;font-weight:950;box-shadow:0 5px 14px rgba(24,54,84,.08);cursor:pointer}
+  #libraryFilters .library-tabs-toggle:hover{background:#eaf6fb;box-shadow:0 8px 18px rgba(24,54,84,.12)}
+  #libraryFilters .library-tabs-chevron{font-size:18px;line-height:10px;transform:translateY(-2px);transition:transform .2s ease}
+  #libraryFilters .library-tab-strip.expanded + .library-tabs-toggle .library-tabs-chevron{transform:rotate(180deg) translateY(2px)}
+  .sync-recovery-older,.sync-history-older{margin-top:8px;border:1px solid var(--sync-line,#dbe6ed);border-radius:13px;background:#f8fbfd;overflow:hidden}
+  .sync-recovery-older>summary,.sync-history-older>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;color:#31596f;font-size:11px;font-weight:950;cursor:pointer}
+  .sync-recovery-older>summary::-webkit-details-marker,.sync-history-older>summary::-webkit-details-marker{display:none}
+  .sync-recovery-older>summary::after,.sync-history-older>summary::after{content:'⌄';font-size:17px;line-height:10px;transition:transform .18s ease}
+  .sync-recovery-older[open]>summary::after,.sync-history-older[open]>summary::after{transform:rotate(180deg)}
+  .sync-recovery-older .sync-recovery-list,.sync-history-older .sync-history-list{margin:0;padding:0 9px 9px}
+</style>
 </head>
 <body>
 <!-- V12/A16 patch: below-mode explanation highlights restored 2026-06-17 -->
@@ -5075,11 +5091,14 @@ document.addEventListener('click', function(e){
         function v201RenderFilters(){
           const root=d('libraryFilters'); if(!root) return; ensureCatalogShape();
           const filters=v201FilterList();
-          root.innerHTML=filters.map(f=>{
+          const expanded=root.dataset.tabsExpanded==='1';
+          const tabs=filters.map(f=>{
             const sum=filterSummary(f), color=v201Color(f), active=f===activeLibraryFilter;
             return `<button class="filter-pill ${active?'active':''} ${sum.done?'done':''} ${v201TabClass(f)} v214-tab-bars ${(v201Internal(f)==='Overview'||tabMeterEnabled(v201Internal(f)))?'v211-meter-on':'v211-meter-off'}" data-filter="${escapeAttr(f)}" style="--tab-accent:${escapeAttr(color)}" type="button">${v2014TabContent(f,sum)}</button>`;
           }).join('');
+          root.innerHTML=`<div class="library-tab-strip ${expanded?'expanded':''}">${tabs}</div><button class="library-tabs-toggle" type="button" aria-expanded="${expanded?'true':'false'}" aria-label="${expanded?'Collapse':'Expand'} library tabs"><span>${expanded?'Show fewer tabs':'Show all tabs'}</span><span class="library-tabs-chevron" aria-hidden="true">⌄</span></button>`;
           root.querySelectorAll('.filter-pill').forEach(b=>b.addEventListener('click',()=>{ activeLibraryFilter=b.dataset.filter; renderLibrary(); }));
+          root.querySelector('.library-tabs-toggle')?.addEventListener('click',()=>{ root.dataset.tabsExpanded=root.dataset.tabsExpanded==='1'?'0':'1'; v201RenderFilters(); });
           v201AfterLibraryPaint();
         }
         function v201TabChipHtml(rec){ const tab=getFormTabKey(rec), color=v201Color(tab), label=v201Label(tab); return `<span class="v201-tab-identity" style="--tab-accent:${escapeAttr(color)}" title="Library tab: ${escapeAttr(label)}"><i></i><span>${escapeHtml(label)}</span></span>`; }
