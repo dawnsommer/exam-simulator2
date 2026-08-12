@@ -4210,7 +4210,8 @@ document.addEventListener('click', function(e){
           const bank=await readFormBank(id); const bundle=await readBundle(id); a193EnsureBundleStores(bundle);
           (bundle.attempts||[]).forEach(a=>a193CollectStores(id,bank,bundle,a.session,false));
           (bundle.attempts||[]).forEach(a=>a193InjectExpStore(id,bank,bundle,a.session));
-          try{ await writeBundle(id,bundle); }catch(e){ console.warn('A20 bundle normalization write failed', e); }
+          // Read/prepare stays side-effect free. Normalized stores are committed
+          // by the next genuine progress mutation, not by opening a form.
           return {bank,bundle,attempt:activeAtt(bundle)};
         }
         async function a193FlushActive(id){
@@ -6460,7 +6461,9 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     var off=v15OffsetsForSelection(container); if(!off) return false;
     v15AddAnchor(type,state.current,off);
     try{ window.getSelection().removeAllRanges(); }catch(e){}
+    var priorMutation=window.__stepReviewMutationWrite; window.__stepReviewMutationWrite=true;
     try{ if(typeof persistBlockProgress==='function') persistBlockProgress(); }catch(e){}
+    finally{ window.__stepReviewMutationWrite=priorMutation; }
     try{ if(typeof renderQuestion==='function') renderQuestion(); }catch(e){}
     return true;
   }
@@ -6497,7 +6500,9 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     v15LastRemove={sig:sig,t:now};
     if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
     v15RemoveAnchor(type,state.current,id);
+    var priorMutation=window.__stepReviewMutationWrite; window.__stepReviewMutationWrite=true;
     try{ if(typeof persistBlockProgress==='function') persistBlockProgress(); }catch(err){}
+    finally{ window.__stepReviewMutationWrite=priorMutation; }
     try{ if(typeof renderQuestion==='function') renderQuestion(); }catch(err){}
     return true;
   }
@@ -6842,7 +6847,8 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     const bank=await readFormBank(id); const raw=await v16ReadRawBundle(id); const bundle=raw.bundle;
     (bundle.attempts||[]).forEach(a=>v16PullExpToStore(id,bank,bundle,a.session,false));
     (bundle.attempts||[]).forEach(a=>v16InjectExpFromStore(id,bank,bundle,a.session));
-    await v16WriteRawBundle(id,bundle,raw.payload);
+    // Keep read-time normalization in memory. Review/open operations must not
+    // rewrite durable progress or mark cloud state dirty.
     window.__v16ExpStoreCache=window.__v16ExpStoreCache||{}; window.__v16ExpStoreCache[id]=v16Clone(bundle[V16_GLOBAL_EXP]||{});
     return {bank,bundle,attempt:v16ActiveAttempt(bundle),payload:raw.payload,store:bundle[V16_GLOBAL_EXP]||{}};
   }
@@ -10553,6 +10559,28 @@ try{
   const mo=new MutationObserver(function(){ ensureLayout(); });
   const startObserver=function(){ const panel=document.getElementById('libraryModePanel'); if(panel) mo.observe(panel,{childList:true,subtree:true}); };
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',startObserver); else startObserver();
+})();
+</script>
+
+<script id="exam-sim-passive-review-write-guard">
+(function(){
+  if(window.__examSimPassiveReviewWriteGuard) return;
+  window.__examSimPassiveReviewWriteGuard=true;
+  function passiveReview(){
+    try{return !!(reviewMode || (state&&state.reviewMode)) && !window.__stepReviewMutationWrite;}catch(e){return false;}
+  }
+  try{
+    const priorSave=saveSessionToStorage;
+    saveSessionToStorage=function(){if(passiveReview())return;return priorSave.apply(this,arguments);};
+  }catch(e){}
+  try{
+    const priorWrite=writeProgress;
+    writeProgress=async function(){if(passiveReview())return;return await priorWrite.apply(this,arguments);};
+  }catch(e){}
+  try{
+    const priorWriteNow=writeActiveSessionNow;
+    writeActiveSessionNow=async function(){if(passiveReview())return;return await priorWriteNow.apply(this,arguments);};
+  }catch(e){}
 })();
 </script>
 
