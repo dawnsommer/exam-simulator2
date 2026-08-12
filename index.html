@@ -6976,14 +6976,16 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     try{ currentBankHash=await sha256Hex(currentBankRawText); }catch(e){ currentBankHash=''; }
     const attemptCount=(ctx.bundle&&ctx.bundle.attempts?ctx.bundle.attempts.length:0), attemptType=pool==='all'?(attemptCount?'new_attempt':'initial'):`retest_${pool}`, attemptLabel=pool==='all'?(attemptCount?`New Attempt ${attemptCount+1}`:'1st Attempt'):label;
     const rowMap={}; rows.forEach(r=>{ rowMap[r.key]=r; });
-    activeRunContext={type:'library',formId:id,qbank:false,v16NewAttempt:true,v16Ctx:ctx,v16Pool:pool,v16Counts:v16Counts(ctx),v16SourceAttemptId:ctx.attempt&&ctx.attempt.attemptId||null,v16ExpStore:v16Clone(ctx.store||{}),v16SourceRowMap:rowMap,v9AttemptId:v16Id('attempt'),v9AttemptType:attemptType,v9AttemptLabel:attemptLabel,v9SourceAttemptId:ctx.attempt&&ctx.attempt.attemptId||null,v9SourceFilter:pool};
+    activeRunContext={type:'library',formId:id,qbank:false,v16NewAttempt:true,v16Ctx:ctx,v16FormName:display,v16SourceAttemptLabel:ctx.attempt&&ctx.attempt.label||'',v16Pool:pool,v16Counts:v16Counts(ctx),v16SourceAttemptId:ctx.attempt&&ctx.attempt.attemptId||null,v16ExpStore:v16Clone(ctx.store||{}),v16SourceRowMap:rowMap,v9AttemptId:v16Id('attempt'),v9AttemptType:attemptType,v9AttemptLabel:attemptLabel,v9SourceAttemptId:ctx.attempt&&ctx.attempt.attemptId||null,v9SourceFilter:pool};
     selectedBlockIndex=0; configuredBlocks=[]; if(document.getElementById('blockSizeSelect')) document.getElementById('blockSizeSelect').value='all';
   }
   function v16RemoveSetup(){ document.getElementById('v16NewAttemptSetup')?.remove(); document.getElementById('v10RetestSetup')?.remove(); document.getElementById('v9RetestOptions')?.remove(); }
   function v16RenderSetup(){
     v16RemoveSetup(); if(!activeRunContext || !activeRunContext.v16NewAttempt) return; const setup=document.querySelector('.setup-panel .setup-grid'); if(!setup) return;
     const c=activeRunContext.v16Counts||{}, p=activeRunContext.v16Pool||'all', n=c[p]||0;
-    setup.insertAdjacentHTML('afterend',`<div id="v16NewAttemptSetup" class="v16-new-attempt-card"><h3>New Attempt Setup</h3><div class="v16-count-grid"><div class="v16-count"><b>${c.all||0}</b><span>All</span></div><div class="v16-count"><b>${c.wrongs||0}</b><span>Wrongs</span></div><div class="v16-count"><b>${c.marked||0}</b><span>Marked</span></div><div class="v16-count"><b>${c.wrongs_marked||0}</b><span>Wrong + Marked</span></div></div><b>Question pool</b><div class="v16-pool"><label><input name="v16Pool" value="all" type="radio" ${p==='all'?'checked':''}> All questions</label><label><input name="v16Pool" value="wrongs" type="radio" ${p==='wrongs'?'checked':''} ${c.wrongs?'':'disabled'}> Wrongs only</label><label><input name="v16Pool" value="marked" type="radio" ${p==='marked'?'checked':''} ${c.marked?'':'disabled'}> Marked only</label><label><input name="v16Pool" value="wrongs_marked" type="radio" ${p==='wrongs_marked'?'checked':''} ${c.wrongs_marked?'':'disabled'}> Wrongs + Marked</label></div><b>Carry into new attempt</b><div class="v16-carry"><label><input id="v16CarryStem" type="checkbox" checked> Stem highlights</label><label><input id="v16CarryStrike" type="checkbox" checked> Strikethroughs</label><label><input id="v16CarryMarked" type="checkbox"> Marked status</label></div><div class="v16-static-note">Explanation highlights are static review annotations and are always shared across attempts.</div><div class="v16-note"><b>${v16Esc(v16PoolLabel(p))}:</b> ${n} question${n===1?'':'s'} selected. Selected source attempt remains untouched.</div></div>`);
+    const sourceLabel=activeRunContext.v16SourceAttemptLabel||'No previous attempt';
+    const sourceNote=activeRunContext.v16SourceAttemptLabel?`Using “${v16Esc(sourceLabel)}” as the source. It will remain untouched.`:'No previous attempt is saved for this form. This will become the first attempt.';
+    setup.insertAdjacentHTML('afterend',`<div id="v16NewAttemptSetup" class="v16-new-attempt-card"><h3>New Attempt Setup</h3><div class="v16-context"><span>Selected form</span><b>${v16Esc(activeRunContext.v16FormName||activeRunContext.formId||'Selected form')}</b><small>${sourceNote}</small></div><div class="v16-count-grid"><div class="v16-count"><b>${c.all||0}</b><span>All</span></div><div class="v16-count"><b>${c.wrongs||0}</b><span>Wrongs</span></div><div class="v16-count"><b>${c.marked||0}</b><span>Marked</span></div><div class="v16-count"><b>${c.wrongs_marked||0}</b><span>Wrong + Marked</span></div></div><b>Question pool</b><div class="v16-pool"><label><input name="v16Pool" value="all" type="radio" ${p==='all'?'checked':''}> All questions</label><label><input name="v16Pool" value="wrongs" type="radio" ${p==='wrongs'?'checked':''} ${c.wrongs?'':'disabled'}> Wrongs only</label><label><input name="v16Pool" value="marked" type="radio" ${p==='marked'?'checked':''} ${c.marked?'':'disabled'}> Marked only</label><label><input name="v16Pool" value="wrongs_marked" type="radio" ${p==='wrongs_marked'?'checked':''} ${c.wrongs_marked?'':'disabled'}> Wrongs + Marked</label></div><b>Carry into new attempt</b><div class="v16-carry"><label><input id="v16CarryStem" type="checkbox" checked> Stem highlights</label><label><input id="v16CarryStrike" type="checkbox" checked> Strikethroughs</label><label><input id="v16CarryMarked" type="checkbox"> Marked status</label></div><div class="v16-static-note">Explanation highlights are static review annotations and are always shared across attempts.</div><div class="v16-note"><b>${v16Esc(v16PoolLabel(p))}:</b> ${n} question${n===1?'':'s'} selected. This creates a separate attempt.</div></div>`);
   }
   async function v16OpenNewAttemptSetup(id){ await v16FlushCurrentFormBeforeNewAttempt(id); const ctx=await v16BuildNewAttemptCtx(id); activeSession=null; reviewMode=false; await v16BuildNewAttemptBank(id,ctx,'all'); renderMenu(); if(typeof setMenuMode==='function') setMenuMode('quick'); v16RenderSetup(); }
 
@@ -10775,6 +10777,37 @@ try{
   #menu.theme-dark .blocks-table{background:#162537!important;color:#e8f0f7!important;border-color:#405f75!important}
   #menu.theme-dark .blocks-table th{background:#29465c!important;color:#f5f9fc!important}
   #menu.theme-dark .blocks-table td{background:#1d3448!important;color:#dcebf4!important;border-color:#405f75!important}
+</style>
+<style id="new-attempt-context-styles">
+  .v10-context,.v16-context{display:grid;gap:3px;margin:9px 0 11px;padding:10px 12px;border:1px solid #c9dce8;border-radius:13px;background:#eef7fb;color:#29495d}
+  .v10-context span,.v16-context span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:950;color:#5c7889}
+  .v10-context b,.v16-context b{font-size:14px;color:#102f42;overflow-wrap:anywhere}
+  .v10-context small,.v16-context small{font-size:11px;line-height:1.35;color:#536f80}
+  #menu.theme-dark .v10-context,#menu.theme-dark .v16-context{background:#203b51!important;border-color:#527089!important;color:#e8f0f7!important}
+  #menu.theme-dark .v10-context span,#menu.theme-dark .v16-context span{color:#b8d2df!important}
+  #menu.theme-dark .v10-context b,#menu.theme-dark .v16-context b{color:#f5f9fc!important}
+  #menu.theme-dark .v10-context small,#menu.theme-dark .v16-context small{color:#c5dce7!important}
+</style>
+<style id="menu-dark-category-chip-fixes">
+  #menu.theme-dark .v195-tab-identity,#menu.theme-dark .v201-tab-identity{background:#203449!important;color:#eef7fb!important;border-color:#6890a5!important;box-shadow:0 5px 14px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.08)!important}
+  #menu.theme-dark .v195-tab-identity span,#menu.theme-dark .v201-tab-identity span{color:#eef7fb!important;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+  #menu.theme-dark .v195-tab-identity i,#menu.theme-dark .v201-tab-identity i{background:var(--tab-accent,#7dd3fc)!important;box-shadow:0 0 0 2px rgba(255,255,255,.38),0 0 9px var(--tab-accent,#7dd3fc)!important}
+</style>
+<style id="menu-dark-new-attempt-fixes">
+  #menu.theme-dark .v9-retbox,#menu.theme-dark .v10-retest-card,#menu.theme-dark .v16-new-attempt-card{background:linear-gradient(135deg,#172f43,#122536)!important;color:#e8f0f7!important;border-color:#527089!important;box-shadow:0 14px 30px rgba(0,0,0,.24)!important}
+  #menu.theme-dark .v9-retbox h3,#menu.theme-dark .v10-retest-card h3,#menu.theme-dark .v16-new-attempt-card h3{color:#f5f9fc!important}
+  #menu.theme-dark .v10-count,#menu.theme-dark .v16-count{background:#203b51!important;border-color:#527089!important;color:#e8f0f7!important}
+  #menu.theme-dark .v10-count b,#menu.theme-dark .v16-count b{color:#f5fcff!important}
+  #menu.theme-dark .v10-count span,#menu.theme-dark .v16-count span{color:#b8d2df!important}
+  #menu.theme-dark .v10-retest-pool label,#menu.theme-dark .v10-carry label,#menu.theme-dark .v16-pool label,#menu.theme-dark .v16-carry label,#menu.theme-dark .v9-ret-options label{background:#203449!important;border-color:#527089!important;color:#e8f0f7!important}
+  #menu.theme-dark .v10-retest-pool label:hover,#menu.theme-dark .v10-carry label:hover,#menu.theme-dark .v16-pool label:hover,#menu.theme-dark .v16-carry label:hover,#menu.theme-dark .v9-ret-options label:hover{background:#2b536d!important;color:#fff!important}
+  #menu.theme-dark .v10-retest-card> b,#menu.theme-dark .v16-new-attempt-card> b{color:#dcebf4!important}
+  #menu.theme-dark .v10-setup-note,#menu.theme-dark .v16-note{color:#b8cad8!important}
+  #menu.theme-dark .v10-static-note,#menu.theme-dark .v16-static-note{background:#164c39!important;border-color:#4da97b!important;color:#baffdc!important}
+  #menu.theme-dark .v10-available-panel,#menu.theme-dark .v10-breakdown div{background:#1d3448!important;border-color:#527089!important;color:#dcebf4!important}
+  #menu.theme-dark .v10-available-head b,#menu.theme-dark .v10-breakdown b{color:#f5fcff!important}
+  #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
+  #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
 </body>
 </html>
