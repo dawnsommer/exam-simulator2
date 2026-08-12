@@ -120,11 +120,22 @@
     const walk=v=>{if(Array.isArray(v)){v.forEach(walk);return;}if(v&&typeof v==='object')for(const key of Object.keys(v)){if(metadata.has(key))delete v[key];else walk(v[key]);}};
     walk(out);return JSON.stringify(out);
   }
+  function carryFormIdentity(source,target,fallbackFormUid='form'){
+    const out=clone(target),explicit=String(source?.formUid||'').trim();
+    if(!validQid(explicit)||Number(source?.qidSchemaVersion)!==QID_SCHEMA_VERSION)return out;
+    const sourceValidation=validateForm(source,fallbackFormUid);
+    if(!sourceValidation.ok)return out;
+    out.formUid=explicit;out.qidSchemaVersion=QID_SCHEMA_VERSION;
+    if(Array.isArray(source.legacyBankHashes))out.legacyBankHashes=Array.from(new Set(source.legacyBankHashes.map(String).filter(Boolean)));
+    const targetValidation=validateForm(out,fallbackFormUid);
+    if(!targetValidation.ok||targetValidation.questionCount!==sourceValidation.questionCount)throw new Error('Imported QID identity metadata does not match the normalized question set.');
+    return out;
+  }
   function auditForm(bank,fallbackFormUid='form',progress=null){
     let validation;try{validation=validateForm(bank,fallbackFormUid);}catch(error){return {formUid:fallbackFormUid,questions:questionsOf(bank).length,validQids:0,duplicateQids:0,qidSchemaVersion:0,status:'ERROR',error:error.message};}
     const hasProgress=sessionsFromProgress(progress).length>0,progressMapped=!hasProgress||sessionsFromProgress(progress).every(s=>Number(s.qidMappingVersion)===QID_MAPPING_VERSION&&(s.blocks||[]).every(b=>Array.isArray(b.questionQids)));
     let status='MIGRATED';if(validation.duplicates.length)status='DUPLICATE QIDs';else if(validation.missing.length===validation.questionCount&&validation.questionCount)status='NEEDS QIDs';else if(validation.missing.length)status='PARTIAL';else if(!progressMapped)status='LEGACY PROGRESS';else if(!validation.ok)status='READY';
     return {formUid:validation.formUid,questions:validation.questionCount,validQids:validation.validQids,duplicateQids:validation.duplicates.length,qidSchemaVersion:validation.qidSchemaVersion,progressMapped,status};
   }
-  return {QID_SCHEMA_VERSION,QID_MAPPING_VERSION,validQid,safePart,resolveFormUid,questionsOf,generatedQid,planForm,migrateForm,validateForm,questionQidBlocks,sessionsFromProgress,applyProgressMapping,legacyPosition,keyFor,qbankQuestionKeys,auditQbank,migrateQbank,rewriteBankHash,invariantValue,auditForm};
+  return {QID_SCHEMA_VERSION,QID_MAPPING_VERSION,validQid,safePart,resolveFormUid,questionsOf,generatedQid,planForm,migrateForm,validateForm,questionQidBlocks,sessionsFromProgress,applyProgressMapping,legacyPosition,keyFor,qbankQuestionKeys,auditQbank,migrateQbank,rewriteBankHash,invariantValue,carryFormIdentity,auditForm};
 });
