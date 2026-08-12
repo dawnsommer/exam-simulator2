@@ -13,7 +13,8 @@
   function resolveFormUid(bank,fallback='form'){
     const existing=String(bank?.formUid||'').trim();
     if(validQid(existing))return existing;
-    const seeded=safePart(bank?.librarySlotId||bank?.id||fallback);
+    const fallbackSeed=safePart(fallback);
+    const seeded=fallbackSeed&&fallbackSeed!=='form'?fallbackSeed:safePart(bank?.librarySlotId||bank?.id||fallback);
     if(!seeded)throw new Error('A stable form identity is required before QIDs can be assigned.');
     return seeded;
   }
@@ -115,7 +116,7 @@
     walk(out);return out;
   }
   function invariantValue(value){
-    const out=clone(value),metadata=new Set(['formUid','qidSchemaVersion','qidMappingVersion','questionQids','legacyBankHashes','bankHash','a193QuestionKeys','libraryQuestionKeys','qbankKeys']);
+    const out=clone(value),metadata=new Set(['qid','formUid','qidSchemaVersion','qidMappingVersion','questionQids','legacyBankHashes','bankHash','a193QuestionKeys','libraryQuestionKeys','qbankKeys']);
     const walk=v=>{if(Array.isArray(v)){v.forEach(walk);return;}if(v&&typeof v==='object')for(const key of Object.keys(v)){if(metadata.has(key))delete v[key];else walk(v[key]);}};
     walk(out);return JSON.stringify(out);
   }
