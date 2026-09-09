@@ -1,6 +1,6 @@
 # Simulator for iPad (`exam-simulator2`) — standalone handoff
 
-Last inspected: 2026-08-12  
+Last inspected: 2026-09-10  
 Effective simulator UI version: `A22.14` (final script in `index.html`)  
 Cloud/cache build: `EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0`  
 Scope: this nested repository only; do not inspect the parent LOCAL simulator for iPad-only work.
@@ -202,6 +202,7 @@ Keep newest entries first.
 
 | Date | Change | Files | Verification | Follow-up |
 |---|---|---|---|---|
+| 2026-09-10 | Replaced iPad favicon, Apple touch, installed-PWA, and sidebar brand assets with the supplied red exam-card artwork at native 192/512 sizes. Advanced the icon URL cache key across HTML, manifest, and service-worker shell entries; exam toolbar icons remain unchanged. | `index.html`, `manifest.webmanifest`, `sw.js`, `icons/*.png`, `HANDOFF.md` | PNG dimensions/alpha, cache-key parity, manifest/SW syntax, inline-script parsing, and iPad regression suite verified. | Refresh once; if the installed home-screen icon remains stale, reinstall the PWA so iPadOS refreshes it. |
 | 2026-08-12 | Fixed Quick Import New Attempt Setup Dark Mode: retest/new-attempt cards, counts, pool choices, carry-forward chips, context/notes, available-question panels, and disabled/hover states now use readable dark surfaces and semantic contrast. | `index.html`, `HANDOFF.md` | All inline scripts parsed; final New Attempt dark-mode override layer detected. | Manually start a new attempt from a loaded form while menu Dark Mode is enabled. |
 | 2026-08-12 | Improved Dark Mode contrast for Form Library card category chips and color indicators, including NBME/OBGyn/IM-style tab identity chips. Chips now use readable dark surfaces, bright borders, shadow separation, and clearer category dots while preserving each tab’s accent color. | `index.html`, `HANDOFF.md` | All inline scripts parsed; final category-chip dark-mode override layer detected. | Manually inspect cards from several colored categories in iPad Dark Mode. |
 | 2026-08-12 | Added clearer context to New Attempt Setup when launching a form attempt: the card identifies the selected form, names the source attempt when available, explains that it remains untouched, and states that the new attempt is separate. Added matching light/dark context styling. | `index.html`, `HANDOFF.md` | All inline scripts parsed; browser loaded iPad setup and detected the context style layer. | Manually open New Attempt Setup from a populated Form Library form and confirm the selected-form/source copy. |
