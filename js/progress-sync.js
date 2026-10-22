@@ -256,7 +256,7 @@
   async function boot(){installStyles();
     /* Mount the known working sidebar/panel surface first; never block it on service worker/auth/network work. */
     if(!ensureSurface()){for(const delay of[120,350,900,1800])setTimeout(()=>ensureSurface(),delay);}
-    if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js?v='+encodeURIComponent(C.BUILD),{scope:'./'}).catch(e=>console.warn('Service worker registration failed',e));
+    // App-shell updates are registered independently in app-update.js.
     try{await A.initialize();}catch(e){console.warn('Cloud auth initialization failed',e);}const enabled=await R.meta.get('syncEnabled',false),acct=await R.meta.get('googleAccount',null),last=await R.meta.get('lastBackupAt','');uiState.account=acct?.email||acct?.emailAddress||'';uiState.lastBackup=last||'';
     if(enabled&&A.getState().authorized){setStatus('Checking','Simulator is ready. Cloud manifest check is deferred until the browser is idle.');idle(async()=>{try{const m=await getMap('formSyncMetaV2'),dirty=Object.values(m).some(x=>x.dirty);if(dirty)await backupNow({reason:'Deferred startup checkpoint',interactive:false});else await checkCloud({interactive:false,flush:false});}catch(e){await handleError(e);}},3000);}else if(enabled)setStatus('Reconnect','Google backup is enabled, but this device no longer has a valid Worker session. Local progress is safe.');else setStatus('Off','Progress is stored locally on this device.');
   }

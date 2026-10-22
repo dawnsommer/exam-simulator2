@@ -9,11 +9,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Step Simulator">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=EXAM-SIMULATOR2-ICONS-2">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=EXAM-SIMULATOR2-ICONS-2">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=1">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=1">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
-<script src="./js/google-auth.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
+<script src="./js/sync-config.js?v=1"></script>
+<script src="./js/google-auth.js?v=1"></script>
 
 <style>
 :root{
@@ -479,7 +479,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=EXAM-SIMULATOR2-ICONS-2" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=1" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -630,8 +630,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js"></script>
-<script src="./js/qid-migration.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
+<script src="jszip.min.js?v=1"></script>
+<script src="./js/qid-migration.js?v=1"></script>
 <script>
 
 
@@ -673,6 +673,15 @@ function escapeHtml(str){ return String(str??'').replace(/[&<>"']/g, m=>({'&':'&
 function escapeAttr(str){ return escapeHtml(str).replace(/`/g,'&#096;'); }
 function cloneJson(v){ return JSON.parse(JSON.stringify(v)); }
 function nowIso(){ return new Date().toISOString(); }
+function newSittingId(){ return globalThis.crypto?.randomUUID?.() || `sitting_${Date.now()}_${Math.random().toString(36).slice(2)}`; }
+function answerSessionId(){
+  if(!activeSession) return '';
+  return activeSession.sessionId || (activeSession.sessionId = 'legacy_' + (activeSession.attemptId || activeSession.startedAt || newSittingId()));
+}
+// A paused exam has one frozen clock for countdowns, elapsed time, and resume snapshots.
+function examClockNow(){ return timer.paused && timer.pauseStartedAt != null ? timer.pauseStartedAt : Date.now(); }
+function resultsFilePrefix(){ return String(activeSession?.libraryFormName || activeSession?.title || importedBank?.title || 'exam').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'') || 'exam'; }
+
 function getSecondsPerQuestion(){
   const inp = $('#secondsPerQuestion');
   const n = inp ? Number(inp.value) : activeSecondsPerQuestion;
@@ -883,7 +892,7 @@ function persistBlockProgress(){
   bp.answerChangeLog = Array.isArray(state.answerChangeLog) ? state.answerChangeLog.slice() : [];
   bp.blockCompleted = !!state.blockCompleted;
   bp.locked = !!state.blockCompleted;
-  bp.blockStartedAt = bp.blockStartedAt || state.blockStartedAt || Date.now();
+  bp.blockStartedAt = state.blockStartedAt || bp.blockStartedAt || Date.now();
   activeSession.currentBlockPointer = blockPointer;
   activeSession.results = (activeSession.blocks || []).map(b=>b && b.result ? b.result : null);
   saveSessionToStorage();
@@ -971,6 +980,7 @@ function createSession(which){
   activeBlocks = indexes.map(i=>configuredBlocks[i]);
   return {
     version:7,
+    sessionId:newSittingId(),
     bankHash:currentBankHash,
     title:importedBank?.title || '',
     blockSizeSetting:getBlockSizeSetting(),
@@ -1112,18 +1122,18 @@ function startBlock(ptr){
   timer.blockDeadline = Date.now() + timer.blockDuration*1000;
   timer.warned5 = false;
   exhibitState = {invert:false, contrast:false, zoom:false};
-  timer.paused = false; timer.pauseStartedAt = null; closePauseOverlay(); closeLabPanel(); closeOverview();
+  timer.paused = false; timer.pauseStartedAt = null; timer.lockedByUser=false; timer.tutorPaused=false; closePauseOverlay(); closeLabPanel(); closeOverview();
   if(timer.interval) clearInterval(timer.interval);
   if(timer.enabled && !isLocked()) startTimer(); else { $('#blockTime').textContent='--:--'; $('#dayTime').textContent='--:--'; }
   if(!isLocked()) state.currentQuestionEnterAt = Date.now();
   renderQuestion();
 }
-function startTimer(){ if(timer.interval) clearInterval(timer.interval); updateTime(); timer.interval = setInterval(updateTime, 500); }
+function startTimer(){ if(timer.interval) clearInterval(timer.interval); timer.interval=null; if(!timer.enabled || timer.paused || isLocked()) return; timer.interval=setInterval(updateTime,500); updateTime(); }
 function updateTime(){
   if(timer.paused) return;
   if(!timer.enabled || isLocked()){ $('#blockTime').textContent='--:--'; $('#dayTime').textContent='--:--'; return; }
-  const b = (timer.blockDeadline - Date.now())/1000;
-  const d = (timer.dayDeadline - Date.now())/1000;
+  const b = (timer.blockDeadline - examClockNow())/1000;
+  const d = (timer.dayDeadline - examClockNow())/1000;
   $('#blockTime').textContent = fmt(b); $('#dayTime').textContent = fmt(d);
   if(b <= 300 && b > 0 && !timer.warned5){ timer.warned5 = true; showTimeWarning(); }
   if(b<=0){ clearInterval(timer.interval); finishBlock(true); }
@@ -1145,7 +1155,7 @@ function fmtMinsSecs(sec){
 }
 function currentQuestionElapsedSeconds(index=state.current){
   const base = Array.isArray(state.questionTime) ? (Number(state.questionTime[index]) || 0) : 0;
-  if(!isLocked() && index === state.current && state.currentQuestionEnterAt){
+  if(!isLocked() && !timer.paused && index === state.current && state.currentQuestionEnterAt){
     return base + Math.max(0, Math.floor((Date.now() - state.currentQuestionEnterAt)/1000));
   }
   return base;
@@ -1153,13 +1163,13 @@ function currentQuestionElapsedSeconds(index=state.current){
 function getQuestionTimeSnapshot(){
   const n = questions.length || (state.questionTime ? state.questionTime.length : 0);
   const arr = Array.isArray(state.questionTime) ? state.questionTime.slice(0,n).concat(Array(Math.max(0,n-state.questionTime.length)).fill(0)) : Array(n).fill(0);
-  if(!isLocked() && state.currentQuestionEnterAt && state.current >= 0 && state.current < arr.length){
+  if(!isLocked() && !timer.paused && state.currentQuestionEnterAt && state.current >= 0 && state.current < arr.length){
     arr[state.current] = currentQuestionElapsedSeconds(state.current);
   }
   return arr.map(x=>Math.max(0, Math.floor(Number(x)||0)));
 }
 function commitQuestionTime(){
-  if(isLocked() || !state.currentQuestionEnterAt || !Array.isArray(state.questionTime)) return;
+  if(isLocked() || timer.paused || !state.currentQuestionEnterAt || !Array.isArray(state.questionTime)) return;
   state.questionTime[state.current] = currentQuestionElapsedSeconds(state.current);
   state.currentQuestionEnterAt = Date.now();
 }
@@ -1168,7 +1178,7 @@ function goToQuestionIndex(index){
   if(next === state.current){ renderQuestion(); return; }
   commitQuestionTime();
   state.current = next;
-  state.currentQuestionEnterAt = isLocked() ? null : Date.now();
+  state.currentQuestionEnterAt = isLocked() || timer.paused ? null : Date.now();
   persistBlockProgress();
   renderQuestion();
 }
@@ -1269,7 +1279,7 @@ function renderQuestion(){
   $('#workspace').innerHTML = `<div class="question-stack ${useBelowExplanation ? 'explanation-below' : 'explanation-split'}"><div class="question-flex"><section class="question-main ${questionMainClass}">${lockedBanner}<label class="mark-line"><input id="markQuestion" class="markbox" type="checkbox" ${state.flagged[state.current]?'checked':''} ${locked?'disabled':''}> <span>Mark Question</span></label><div id="stem" class="stem" style="font-size:${16.3*textZoom}px">${noticeHtml}${q._stemHtml || escapeHtml(q.stem)}</div><div class="stem-answer-spacer" aria-hidden="true"></div>${answerBox}${inlineFeedback}<button id="proceedBtn" class="proceed">${state.current===questions.length-1?(reviewMode && blockPointer<activeBlocks.length-1?'Proceed to Next Block':'Proceed to Review'):'Proceed to Next Item'}</button></section>${rightPanel}</div>${belowExplanation}</div>`;
   const mark = $('#markQuestion'); if(mark) mark.addEventListener('change',e=>{ if(locked) return; state.flagged[state.current]=e.target.checked; persistBlockProgress(); renderStatus(); });
   $$('.answer').forEach(el=>{
-    el.addEventListener('click',()=>{ if(locked) return; const nextChoice=Number(el.dataset.choice); const prevChoice=state.answers[state.current]; if(prevChoice===nextChoice) return; if(!Array.isArray(state.firstAnswers)) state.firstAnswers=Array(questions.length).fill(null); if(!Array.isArray(state.answerChangeLog)) state.answerChangeLog=[]; if(state.firstAnswers[state.current]===null || state.firstAnswers[state.current]===undefined) state.firstAnswers[state.current]=(prevChoice===null || prevChoice===undefined) ? nextChoice : prevChoice; if(prevChoice!==null && prevChoice!==undefined){ state.answerChangeLog.push({item:state.current+1, from:prevChoice, to:nextChoice, correct:q.correct, at:nowIso()}); } state.answers[state.current]=nextChoice; persistBlockProgress(); renderQuestion(); });
+    el.addEventListener('click',()=>{ if(locked) return; const nextChoice=Number(el.dataset.choice); const prevChoice=state.answers[state.current]; if(prevChoice===nextChoice) return; if(!Array.isArray(state.firstAnswers)) state.firstAnswers=Array(questions.length).fill(null); if(!Array.isArray(state.answerChangeLog)) state.answerChangeLog=[]; if(state.firstAnswers[state.current]===null || state.firstAnswers[state.current]===undefined) state.firstAnswers[state.current]=(prevChoice===null || prevChoice===undefined) ? nextChoice : prevChoice; if(prevChoice!==null && prevChoice!==undefined){ state.answerChangeLog.push({sessionId:answerSessionId(), block:blockPointer+1, item:state.current+1, from:prevChoice, to:nextChoice, correct:q.correct, at:nowIso()}); } state.answers[state.current]=nextChoice; persistBlockProgress(); renderQuestion(); });
     el.addEventListener('contextmenu',e=>{e.preventDefault(); if(locked) return; toggleStrike(Number(el.dataset.choice));});
   });
   const showBtn = $('#showAnsBtn'); if(showBtn) showBtn.addEventListener('click',()=>{state.revealed[state.current]=true;persistBlockProgress();renderQuestion();});
@@ -1393,8 +1403,31 @@ $('#prevNav').addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' ')
 $('#nextNav').addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); goNext(); } });
 $('#endBlockBtn').addEventListener('click',requestEndBlock);
 $('#lockBtn').addEventListener('click',pauseExam); $('#resumeBtn').addEventListener('click',resumeExam); $('#fullscreenBtn').addEventListener('click',toggleFullscreen);
-function pauseExam(){ if(!timer.enabled || timer.paused || isLocked()) return; commitQuestionTime(); state.currentQuestionEnterAt=null; persistBlockProgress(); timer.paused=true; timer.pauseStartedAt=Date.now(); if(timer.interval) clearInterval(timer.interval); $('#pauseOverlay').classList.remove('hidden'); }
-function resumeExam(){ if(!timer.paused) return; const delta=Date.now()-timer.pauseStartedAt; timer.blockDeadline+=delta; timer.dayDeadline+=delta; timer.paused=false; timer.pauseStartedAt=null; if(!isLocked()) state.currentQuestionEnterAt=Date.now(); closePauseOverlay(); startTimer(); }
+function pauseExam(){
+  if(!activeSession || timer.lockedByUser || isLocked()) return;
+  if(!timer.paused){ commitQuestionTime(); timer.pauseStartedAt=Date.now(); timer.paused=true; }
+  timer.lockedByUser=true;
+  state.currentQuestionEnterAt=null;
+  if(timer.interval){ clearInterval(timer.interval); timer.interval=null; }
+  $('#pauseOverlay').classList.remove('hidden');
+  persistBlockProgress();
+}
+function resumeExam(){
+  if(!timer.lockedByUser) return;
+  timer.lockedByUser=false;
+  closePauseOverlay();
+  if(timer.tutorPaused) return;
+  const delta=Math.max(0,Date.now()-(timer.pauseStartedAt ?? Date.now()));
+  if(timer.blockDeadline!=null) timer.blockDeadline+=delta;
+  if(timer.dayDeadline!=null) timer.dayDeadline+=delta;
+  if(state.blockStartedAt) state.blockStartedAt+=delta;
+  if(activeSession?.blocks?.[blockPointer]) activeSession.blocks[blockPointer].blockStartedAt=state.blockStartedAt;
+  timer.paused=false; timer.pauseStartedAt=null;
+  if(!isLocked()) state.currentQuestionEnterAt=Date.now();
+  if(timer.enabled && !isLocked()) startTimer();
+  persistBlockProgress();
+}
+
 function closePauseOverlay(){ $('#pauseOverlay').classList.add('hidden'); }
 async function toggleFullscreen(){ try{ if(!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); }catch(e){ alert('Full screen is unavailable in this browser window.'); } }
 function showExamOverview(){
@@ -1418,7 +1451,7 @@ function renderReview(){
 }
 function buildBlockResult(){
   const correct = state.answers.reduce((sum,a,i)=>sum + (a===questions[i].correct?1:0), 0);
-  return { blockIndex:blockPointer+1, blockName: activeBlocks[blockPointer].name, total:questions.length, correct, percent:Math.round(correct/questions.length*100), elapsedSeconds: timer.enabled ? Math.max(0, Math.round((Date.now()-state.blockStartedAt)/1000)) : null, completedAt:nowIso(), answers: state.answers.map((a,i)=>({ block:blockPointer+1, item:i+1, chosen:a, firstChosen:(Array.isArray(state.firstAnswers)?state.firstAnswers[i]:null), firstChosenText:(Array.isArray(state.firstAnswers)&&state.firstAnswers[i]!==null&&state.firstAnswers[i]!==undefined)?questions[i].choices[state.firstAnswers[i]]:'', changed:(Array.isArray(state.firstAnswers)&&state.firstAnswers[i]!==null&&state.firstAnswers[i]!==undefined&&a!==null&&a!==undefined&&state.firstAnswers[i]!==a), chosenText:a===null?'':questions[i].choices[a], correct:questions[i].correct, correctText:questions[i].choices[questions[i].correct], isCorrect:a===questions[i].correct, flagged:state.flagged[i], struck:state.struck[i] || [], subject:questions[i].subject||questions[i].system||questions[i].topic||'', topic:questions[i].topic||questions[i].subject||'', stem:questions[i].stem||'', stemHtml:questions[i]._stemHtml||'', questionTimeSeconds:(Array.isArray(state.questionTime)?(Number(state.questionTime[i])||0):0), answerChangeLog:(Array.isArray(state.answerChangeLog)?state.answerChangeLog.filter(x=>Number(x.item)===(i+1)):[]), explanation:questions[i].explanation||'', explanationPanel:questions[i].explanationPanel||questions[i].explanation_panel||null })) };
+  return { sessionId:answerSessionId(), blockIndex:blockPointer+1, blockName: activeBlocks[blockPointer].name, total:questions.length, correct, percent:Math.round(correct/questions.length*100), elapsedSeconds: timer.enabled ? Math.max(0, Math.round((examClockNow()-state.blockStartedAt)/1000)) : null, completedAt:nowIso(), answers: state.answers.map((a,i)=>({ block:blockPointer+1, item:i+1, chosen:a, firstChosen:(Array.isArray(state.firstAnswers)?state.firstAnswers[i]:null), firstChosenText:(Array.isArray(state.firstAnswers)&&state.firstAnswers[i]!==null&&state.firstAnswers[i]!==undefined)?questions[i].choices[state.firstAnswers[i]]:'', changed:(Array.isArray(state.firstAnswers)&&state.firstAnswers[i]!==null&&state.firstAnswers[i]!==undefined&&a!==null&&a!==undefined&&state.firstAnswers[i]!==a), chosenText:a===null?'':questions[i].choices[a], correct:questions[i].correct, correctText:questions[i].choices[questions[i].correct], isCorrect:a===questions[i].correct, flagged:state.flagged[i], struck:state.struck[i] || [], subject:questions[i].subject||questions[i].system||questions[i].topic||'', topic:questions[i].topic||questions[i].subject||'', stem:questions[i].stem||'', stemHtml:questions[i]._stemHtml||'', questionTimeSeconds:(Array.isArray(state.questionTime)?(Number(state.questionTime[i])||0):0), answerChangeLog:(Array.isArray(state.answerChangeLog)?state.answerChangeLog.filter(x=>Number(x.item)===(i+1)):[]), explanation:questions[i].explanation||'', explanationPanel:questions[i].explanationPanel||questions[i].explanation_panel||null })) };
 }
 function finishBlock(autoAdvance=false){
   commitQuestionTime();
@@ -1474,8 +1507,8 @@ function renderFinalReport(){
 function returnToMenu(){ commitQuestionTime(); persistBlockProgress(); closeLabPanel(); closeOverview(); closeImagePreview(); closeModal(); $('#floatingCalc').classList.add('hidden'); if(timer.interval) clearInterval(timer.interval); $('#examScreen').classList.add('hidden'); $('#menu').classList.remove('hidden'); renderMenu(); }
 function downloadResults(){
   const results = getCompletedResults();
-  const blob = new Blob([JSON.stringify({title:importedBank?.title||'', completedAt:new Date().toISOString(), saveVersion:7, results}, null, 2)], {type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='exam_results_v7.json'; a.click(); URL.revokeObjectURL(a.href);
+  const blob = new Blob([JSON.stringify({title:importedBank?.title||'', sessionId:answerSessionId(), completedAt:new Date().toISOString(), saveVersion:7, results}, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download=resultsFilePrefix()+'_exam_results_v7.json'; a.click(); URL.revokeObjectURL(a.href);
 }
 function downloadIncorrectResults(){
   const results = getCompletedResults().slice().sort((a,b)=>(Number(a.blockIndex)||Number(a.block)||0)-(Number(b.blockIndex)||Number(b.block)||0));
@@ -1490,9 +1523,9 @@ function downloadIncorrectResults(){
     });
     return {...result, originalTotal:result.total, originalCorrect:result.correct, total:answers.length, correct:0, percent:0, answers};
   }).filter(result=>result.answers.length);
-  const payload = {title:importedBank?.title||'', completedAt:new Date().toISOString(), saveVersion:7, exportType:'incorrect-questions', totalIncorrect:incorrectQuestions.length, incorrectQuestions, results:filteredResults};
+  const payload = {title:importedBank?.title||'', sessionId:answerSessionId(), completedAt:new Date().toISOString(), saveVersion:7, exportType:'incorrect-questions', totalIncorrect:incorrectQuestions.length, incorrectQuestions, results:filteredResults};
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='exam_incorrect_results_v7.json'; a.click(); URL.revokeObjectURL(a.href);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download=resultsFilePrefix()+'_exam_incorrect_results_v7.json'; a.click(); URL.revokeObjectURL(a.href);
 }
 function highlightSelection(){
   if(isLocked()) return;
@@ -1550,7 +1583,7 @@ function appConfirm(message, opts={}){ return appDialog({message, title:opts.tit
 function appPrompt(message, defaultValue='', opts={}){ return appDialog({message, title:opts.title||'Input', okText:opts.okText||'Save', cancelText:opts.cancelText||'Cancel', prompt:true, defaultValue}); }
 window.alert = function(message){ appAlert(message); };
 $('#labBtn').addEventListener('click',toggleLabPanel);
-$('#notesBtn').addEventListener('click',()=>openModal('Notes', `<textarea id="noteText" class="notes" placeholder="Type notes here...">${escapeHtml(state.notes||'')}</textarea><br><button id="saveNotes" class="primary">Save Notes</button>`));
+$('#notesBtn').addEventListener('click',()=>window.StepExamNotes?.toggle());
 $('#modalRoot').addEventListener('click',e=>{ if(e.target && e.target.id==='saveNotes'){ state.notes = $('#noteText').value; persistBlockProgress(); alert('Notes saved for this block.'); }});
 let calcState = { display:'0', stored:null, op:null, resetNext:false, memory:0 };
 $('#calcBtn').addEventListener('click',toggleCalculator);
@@ -1776,6 +1809,7 @@ function createSession(which){
   activeBlocks = indexes.map(i=>configuredBlocks[i]);
   return {
     version:7,
+    sessionId:newSittingId(),
     bankHash:currentBankHash,
     title:importedBank?.title || '',
     blockSizeSetting:getBlockSizeSetting(),
@@ -1838,7 +1872,7 @@ function totalBlockSeconds(){ return (activeBlocks||[]).reduce((s,b)=>s+blockSec
 function elapsedBlockSecondsApprox(){
   const results = getCompletedResults();
   const done = results.reduce((s,r)=>s+(r.elapsedSeconds||blockSeconds(r.total||0)),0);
-  if(state && !state.blockCompleted && state.blockStartedAt && timer.enabled) return done + Math.max(0, Math.floor((Date.now()-state.blockStartedAt)/1000));
+  if(state && !state.blockCompleted && state.blockStartedAt && timer.enabled) return done + Math.max(0, Math.floor((examClockNow()-state.blockStartedAt)/1000));
   return done;
 }
 function renderBreakScreen(){
@@ -1902,6 +1936,9 @@ function startBlock(ptr){
   state.revealed = bp?.revealed ? cloneJson(bp.revealed) : {};
   state.notes = bp?.notes || '';
   state.questionTime = bp?.questionTime ? bp.questionTime.slice() : Array(questions.length).fill(0);
+  state.firstAnswers = bp?.firstAnswers ? bp.firstAnswers.slice() : Array(questions.length).fill(null);
+  state.answerChangeLog = Array.isArray(bp?.answerChangeLog) ? bp.answerChangeLog.slice() : [];
+  answerSessionId();
   state.currentQuestionEnterAt = null;
   state.blockCompleted = !!bp?.blockCompleted;
   state.reviewMode = !!reviewMode;
@@ -1911,7 +1948,7 @@ function startBlock(ptr){
   timer.blockDeadline = Date.now() + timer.blockDuration*1000;
   timer.warned5 = false;
   exhibitState = {invert:false, contrast:false, zoom:false};
-  timer.paused = false; timer.pauseStartedAt = null; closePauseOverlay(); closeLabPanel(); closeOverview();
+  timer.paused = false; timer.pauseStartedAt = null; timer.lockedByUser=false; timer.tutorPaused=false; closePauseOverlay(); closeLabPanel(); closeOverview();
   if(timer.interval) clearInterval(timer.interval);
   if(timer.enabled && !isLocked()) startTimer(); else { $('#blockTime').textContent='--:--'; $('#dayTime').textContent='--:--'; }
   renderQuestion(); updateTopChrome();
@@ -1931,8 +1968,8 @@ function showExamOverview(){
 function showBlockTimeInfo(){
   if($('#examScreen').classList.contains('break-screen-active')) return;
   const root = $('#overviewRoot');
-  const elapsed = state.blockStartedAt ? Math.max(0, Math.floor((Date.now()-state.blockStartedAt)/1000)) : 0;
-  const remaining = timer.enabled && !isLocked() ? Math.max(0, Math.floor((timer.blockDeadline-Date.now())/1000)) : 0;
+  const elapsed = state.blockStartedAt ? Math.max(0, Math.floor((examClockNow()-state.blockStartedAt)/1000)) : 0;
+  const remaining = timer.enabled && !isLocked() ? Math.max(0, Math.floor((timer.blockDeadline-examClockNow())/1000)) : 0;
   const totalDay = totalBlockSeconds() || timer.dayDuration || 0;
   const elapsedDay = elapsedBlockSecondsApprox();
   const remainDay = Math.max(0,totalDay-elapsedDay);
@@ -2641,6 +2678,68 @@ document.addEventListener('click', function(e){
     }
     const optimized=await replaceIn(bank); return {bank:optimized, count};
   }
+  // Bulk ZIPs add separate forms in a single preflight/rollback operation.
+  window.StepBulkImportStore = (()=>{
+    let importing=false;
+    async function target(path,create=false){
+      const parts=path.split('/'),name=parts.pop();let dir=dataDirHandle;
+      for(const part of parts) dir=await dir.getDirectoryHandle(part,{create});
+      return {dir,name};
+    }
+    async function read(path){
+      try{const {dir,name}=await target(path);return await (await dir.getFileHandle(name)).getFile();}
+      catch(e){if(e.name==='NotFoundError')return null;throw e;}
+    }
+    async function write(path,blob){const {dir,name}=await target(path,true);await writeBinary(dir,name,blob);}
+    async function remove(path){try{const {dir,name}=await target(path);await dir.removeEntry(name);}catch(e){if(e.name!=='NotFoundError')throw e;}}
+    return {
+      installedIds(){return (catalog.forms||[]).map(f=>String(f.id));},
+      async importNewForms(plan){
+        if(importing)throw new Error('A bulk import is already running.');
+        if(!dataDirHandle)throw new Error('Connect library storage before importing forms.');
+        importing=true;
+        const previous=cloneJson(catalog),created=[];
+        let catalogBefore,writing=false;
+        try{
+          const installed=new Set(this.installedIds().map(id=>id.toLowerCase()));
+          const forms=plan.forms.filter(f=>!installed.has(f.id.toLowerCase()));
+          if(!forms.length)return {count:0,skipped:plan.forms.length};
+          const writes=[],records=[];
+          for(const f of forms){
+            const bank=normalizeBank(f.bank),hash=await sha256Hex(f.text);
+            const meta={...metaFor(f.id),defaultName:f.name,displayName:f.name};
+            const rec=makeCatalogRecord(f.id,meta,bank,f.text,hash,[f.source],{});
+            rec.displayName=f.name;rec.imageAssets=f.assets.length;rec.optimized=!!f.assets.length;
+            records.push(rec);
+            writes.push({path:`forms/${f.id}.json`,blob:new Blob([f.text],{type:'application/json'})},...f.assets);
+          }
+          // Never overwrite unindexed files. A scan may recover those orphaned forms.
+          for(const item of writes)if(await read(item.path))throw new Error(item.path+' already exists. Scan the library before importing.');
+          catalogBefore=await read('catalog.json');
+          const recovery={fileType:'StepExamBulkImportRecovery',createdAt:nowIso(),catalogText:catalogBefore?await catalogBefore.text():null,createdPaths:writes.map(x=>x.path)};
+          await write('progress/backups/PRE_BULK_IMPORT_'+Date.now()+'.json',new Blob([JSON.stringify(recovery,null,2)],{type:'application/json'}));
+          writing=true;
+          for(const item of writes){created.push(item.path);await write(item.path,item.blob);}
+          for(const rec of records)upsertCatalogForm(rec);
+          await writeCatalog(); // Commit index only after all form/assets writes succeed.
+          loadedFormCache.clear();
+          await renderLibrary();await renderQbankMode();
+          return {count:forms.length,skipped:plan.forms.length-forms.length};
+        }catch(err){
+          if(writing){
+            const failures=[];
+            for(const path of created.reverse())try{await remove(path);}catch(e){failures.push(path);}
+            catalog=previous;
+            try{if(catalogBefore)await write('catalog.json',catalogBefore);else await remove('catalog.json');}catch(e){failures.push('catalog.json');}
+            loadedFormCache.clear();
+            if(failures.length)throw new Error(err.message+' Rollback needs recovery for: '+failures.join(', '));
+          }
+          throw err;
+        }finally{importing=false;}
+      }
+    };
+  })();
+
   async function importMetaFiles(meta, files, optimize=false){
     if(!dataDirHandle) throw new Error('Connect / start library storage first.');
     let {bank, sourceFiles, zipAssets=0}=await buildBankFromFiles(meta, files);
@@ -3149,12 +3248,7 @@ document.addEventListener('click', function(e){
     alert(msg);
   }
   async function updateAppShellPreserveLibrary(){
-    const ok=await appConfirm('Clear the app shell/cache and reload the clean GitHub Pages URL? This does not delete your iPad Browser Library, forms, progress, or assets.', {okText:'Update App'});
-    if(!ok) return;
-    try{ if('caches' in window){ const keys=await caches.keys(); await Promise.all(keys.filter(k=>String(k).startsWith('exam-simulator2-')).map(k=>caches.delete(k))); } }catch(e){ console.warn('Could not clear caches', e); }
-    try{ if(navigator.serviceWorker){ const regs=await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.filter(r=>String(r.scope||'').includes('/exam-simulator2/')).map(r=>r.unregister())); } }catch(e){ console.warn('Could not unregister service workers', e); }
-    const base=location.origin + location.pathname.replace(/[^/]*$/, '');
-    location.replace(base);
+    return await window.StepAppUpdates.reloadLatest();
   }
 
   async function restoreLastDataFolder(){
@@ -3240,8 +3334,8 @@ document.addEventListener('click', function(e){
       return !!(session.suspended || session.resumeAvailable || session.resumeState || sessionAnsweredCount(session) || sessionCompletedBlockCount(session));
     }
     function quickSuspendKey(hash=currentBankHash){ return `${SAVE_PREFIX}${hash || 'quick'}::SUSPENDED_TEMP`; }
-    function currentRemainingSeconds(){ return timer.enabled && timer.blockDeadline ? Math.max(0, Math.floor((timer.blockDeadline - Date.now())/1000)) : null; }
-    function currentDayRemainingSeconds(){ return timer.enabled && timer.dayDeadline ? Math.max(0, Math.floor((timer.dayDeadline - Date.now())/1000)) : null; }
+    function currentRemainingSeconds(){ return timer.enabled && timer.blockDeadline ? Math.max(0, Math.floor((timer.blockDeadline - examClockNow())/1000)) : null; }
+    function currentDayRemainingSeconds(){ return timer.enabled && timer.dayDeadline ? Math.max(0, Math.floor((timer.dayDeadline - examClockNow())/1000)) : null; }
 
     function captureResumeState(markSuspended=true){
       if(!activeSession || !questions.length) return null;
@@ -3317,6 +3411,14 @@ document.addEventListener('click', function(e){
         try{ localStorage.setItem(quickSuspendKey(activeSession.bankHash), JSON.stringify(activeSession)); }catch(e){ console.warn('Could not store quick suspended session', e); }
       }
     }
+
+    window.StepAppUpdateFlush = async function(){
+      if(!activeSession || isLocked())return;
+      window.StepExamNotes?.flush();
+      captureResumeState(false);
+      persistBlockProgress();
+      await writeActiveSessionNow();
+    };
 
     const __v78ReadProgress = readProgress;
     readProgress = async function(id){
@@ -3670,7 +3772,7 @@ document.addEventListener('click', function(e){
 
       const oldRS=renderStatus; renderStatus=function(){const o=oldRS(); if(reviewMode||state.reviewMode||isLocked()) $$('#statusRows .status-row').forEach(r=>{const i=+r.dataset.i,a=state.answers?.[i]; if(a!=null&&questions?.[i]&&a!==questions[i].correct){r.classList.add('review-wrong'); if(!r.querySelector('.v9-x'))r.insertAdjacentHTML('afterbegin','<span class="v9-x">×</span>')}}); return o};
       function tutorUI(){if(!activeSession?.tutorMode||isLocked())return; const submitted=!!state.revealed[state.current], b=$id('proceedBtn'); if(!b)return; const c=b.cloneNode(true); b.parentNode.replaceChild(c,b); if(!submitted){c.textContent='Submit'; c.onclick=()=>{if(state.answers[state.current]==null)return alert('Select an answer before submitting.'); commitQuestionTime(); state.revealed[state.current]=true; state.currentQuestionEnterAt=null; if(timer.enabled&&!timer.paused){timer.paused=true; timer.tutorPaused=true; timer.pauseStartedAt=Date.now(); if(timer.interval)clearInterval(timer.interval)} persistBlockProgress(); renderQuestion()}}else{c.textContent=state.current===questions.length-1?'Proceed to Review':'Next Item'; state.currentQuestionEnterAt=null; if(timer.enabled&&!timer.paused){timer.paused=true; timer.tutorPaused=true; timer.pauseStartedAt=Date.now(); if(timer.interval)clearInterval(timer.interval)} c.onclick=()=>state.current<questions.length-1?goToQuestionIndex(state.current+1):renderReview()}}
-      const oldRenderQ=renderQuestion; renderQuestion=function(){const o=oldRenderQ(); tutorUI(); return o}; const oldGo=goToQuestionIndex; goToQuestionIndex=function(i){const o=oldGo(i); if(activeSession?.tutorMode&&!state.revealed[state.current]){if(timer.tutorPaused){const d=Date.now()-(timer.pauseStartedAt||Date.now()); timer.blockDeadline+=d; timer.dayDeadline+=d; timer.paused=false; timer.tutorPaused=false; timer.pauseStartedAt=null; if(timer.enabled)startTimer()} if(!state.currentQuestionEnterAt)state.currentQuestionEnterAt=Date.now()} tutorUI(); return o}; document.addEventListener('click',e=>{if(activeSession?.tutorMode&&state.revealed?.[state.current]&&e.target?.closest?.('.answer')){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}},true); document.addEventListener('contextmenu',e=>{if(activeSession?.tutorMode&&state.revealed?.[state.current]&&e.target?.closest?.('.answer')){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}},true);
+      const oldRenderQ=renderQuestion; renderQuestion=function(){const o=oldRenderQ(); tutorUI(); return o}; const oldGo=goToQuestionIndex; goToQuestionIndex=function(i){const o=oldGo(i); if(activeSession?.tutorMode&&!state.revealed[state.current]){if(timer.tutorPaused){const d=Date.now()-(timer.pauseStartedAt||Date.now()); timer.blockDeadline+=d; timer.dayDeadline+=d; if(state.blockStartedAt)state.blockStartedAt+=d; timer.paused=false; timer.tutorPaused=false; timer.pauseStartedAt=null; if(timer.enabled)startTimer()} if(!state.currentQuestionEnterAt)state.currentQuestionEnterAt=Date.now()} tutorUI(); return o}; document.addEventListener('click',e=>{if(activeSession?.tutorMode&&state.revealed?.[state.current]&&e.target?.closest?.('.answer')){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}},true); document.addEventListener('contextmenu',e=>{if(activeSession?.tutorMode&&state.revealed?.[state.current]&&e.target?.closest?.('.answer')){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()}},true);
 
       function qbankHTML(qp){const st=qp.settings; return `<div class="qbank-panel-grid"><div class="glass-panel"><div class="panel-kicker">Mixed practice</div><h2>Qbank Mode</h2><p>Generate testing/tutor blocks from separate Qbank history or read-only Form Library attempts.</p><div id="qbankStats" class="qbank-stat-row"></div><div class="qbank-controls"><div class="input-row full"><label>Test name</label><input id="qbankTestName" placeholder="Auto-name if blank"></div><div class="input-row"><label>Mode</label><select id="qbankRunMode"><option value="testing" ${st.defaultMode!=='tutor'?'selected':''}>Testing</option><option value="tutor" ${st.defaultMode==='tutor'?'selected':''}>Tutor</option></select></div><div class="input-row"><label>Progress source</label><select id="qbankSourceMode"><option value="separate" ${!st.linkToLibrary?'selected':''}>Separate Qbank</option><option value="linked" ${st.linkToLibrary?'selected':''}>Linked Form Library</option></select></div><div class="input-row"><label>Attempts</label><select id="qbankAttemptSource"><option value="first" ${st.defaultAttemptSource==='first'?'selected':''}>1st attempts only</option><option value="latest_completed" ${st.defaultAttemptSource==='latest_completed'?'selected':''}>Latest completed</option><option value="active" ${st.defaultAttemptSource==='active'?'selected':''}>Active selected</option></select></div><div class="input-row full"><label>Pool</label><select id="qbankQuestionMode"><option value="unused">Unused</option><option value="used">Used</option><option value="wrongs">Wrongs</option><option value="marked">Marked</option><option value="wrongs_marked">Wrongs + Marked</option><option value="all">All</option></select></div><div class="input-row"><label>Questions</label><input id="qbankQuestionCount" type="number" min="1" value="40"></div><div class="input-row"><label>Qs/block</label><input id="qbankBlockSize" type="number" min="1" value="${+st.defaultBlockSize||40}"></div><label class="switch-row full"><input id="qbankShuffle" type="checkbox" checked><span>Shuffle selected questions</span></label></div><div class="qbank-actions"><button class="primary" data-v9="qbank-start">Generate & Start</button></div><div class="qbank-warning">Qbank is read-only to Form Library and writes only to <b>DATA/progress/QBANK_MODE_progress.json</b>.</div></div><div class="glass-panel"><div class="panel-kicker">Loaded forms</div><h2>Select Forms</h2><div id="qbankFormList" class="qbank-form-list"></div></div></div>`}
       renderQbankMode=async function(){if(!$id('qbankModePanel'))return; const qp=await readQbankProgress(); if(!$id('qbankRunMode')) $id('qbankModePanel').innerHTML=qbankHTML(qp); const sel=qbankSavedSelectedIds(qp), pool=await qbankPool(), total=(catalog.forms||[]).filter(f=>sel.includes(f.id)).flatMap(f=>f.questionIndex||[]).length; const stats=$id('qbankStats'); if(stats) stats.innerHTML=`<div class="qbank-ring"><div class="qbank-ring-inner"><b>${pool.length}</b><span>Available</span></div></div><div class="qbank-mini-metrics"><div class="qbank-mini"><b>${Object.keys(qp.used||{}).length}</b><span>Qbank Used</span></div><div class="qbank-mini"><b>${total}</b><span>Selected Total</span></div><div class="qbank-mini"><b>${qp.sessions.length}</b><span>Tests</span></div></div>`; const list=$id('qbankFormList'); if(list) list.innerHTML=(catalog.forms||[]).length?(catalog.forms||[]).map(f=>`<label class="qbank-form-option"><input type="checkbox" data-qbank-form="${escapeAttr(f.id)}" ${sel.includes(f.id)?'checked':''}><div><div class="name">${esc(f.displayName||f.id)}</div><div class="meta">${esc(f.subject||'')} · ${f.id} · ${(f.questionIndex||[]).length||f.totalQuestions||0} questions</div></div><span class="qbank-tag">Loaded</span></label>`).join(''):'<div class="v75-empty"><h3>No loaded forms</h3><p>Load forms into the Library first.</p></div>'; updateQbankAvailable()};
@@ -4744,10 +4846,11 @@ document.addEventListener('click', function(e){
           return `<div class="v195-danger-zone"><p>Deleting a custom tab only moves its forms back to the base Custom tab. Form JSON and progress files are preserved.</p><div class="settings-list">${tabs.map(f=>{ const n=(catalog.forms||[]).filter(r=>r.filter===f).length; return `<div class="v195-custom-delete-row"><div><b>${escapeHtml(f)}</b><span>${n} form(s) will move to Custom.</span></div><button class="danger" data-v195-delete-tab="${escapeAttr(f)}">Delete tab</button></div>`; }).join('')}</div></div>`;
         }
         function v195BSettingsNav(active){
-          const tabs = [['library','Library progress'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup']];
+          const tabs = [['bulk','Bulk import'],['library','Library progress'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup']];
           return `<nav class="settings-nav-v195">${tabs.map(([id,label])=>`<button type="button" data-v195b-settings-tab="${id}" class="${active===id?'active':''}">${label}</button>`).join('')}</nav>`;
         }
         function v195BSettingsBody(active){
+          if(active==='bulk') return window.StepBulkImport?.panelHtml() || '<section class="settings-panel-v195"><h3>Bulk import</h3></section>';
           if(active==='library') return `<section class="settings-panel-v195"><h3>Library progress & Completed</h3><p>Select exactly what contributes to the tab meters, the single Form Library progress circle, and the Completed forms filter.</p><div id="libraryTabMeterSettings" class="settings-list">${v195BLibraryTabSettingsHtml()}</div></section>`;
           if(active==='order') return `<section class="settings-panel-v195"><h3>Tab order & colors</h3><p>Use drag handles for order. Colors remain tab-level identifiers, not card status colors.</p>${v195BTabOrderColorHtml()}</section>`;
           if(active==='custom') return `<section class="settings-panel-v195"><h3>Custom tab removal</h3><p>Destructive tab management is isolated here to prevent accidental deletion from the library tab row.</p>${v195BCustomTabsHtml()}</section>`;
@@ -4758,7 +4861,7 @@ document.addEventListener('click', function(e){
         const v195BPrevRenderSettings = renderSettings;
         renderSettings = function(){
           const p=$id('settingsPanel'); if(!p) return;
-          const active = window.__v195BSettingsActive || window.__v195SettingsActive || 'library';
+          const active = window.__v195BSettingsActive || window.__v195SettingsActive || 'bulk';
           v195BSettings();
           p.innerHTML = `<div class="library-toolbar glass-panel"><div><div class="panel-kicker">Global controls</div><h2>Settings</h2><p>Library progress inclusion, Completed inclusion, tab order, colors, custom-tab deletion, Qbank defaults, and backups.</p></div></div><div class="settings-shell-v195">${v195BSettingsNav(active)}<div class="settings-content-v195">${v195BSettingsBody(active)}</div></div>`;
           readQbankProgress().then(qp=>{
@@ -5444,8 +5547,8 @@ body{font-size:16px!important}
     const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
-  function liveBlockRemaining(){ return timer && timer.enabled && timer.blockDeadline ? Math.max(0, Math.floor((timer.blockDeadline - Date.now())/1000)) : 0; }
-  function liveDayRemaining(){ return timer && timer.enabled && timer.dayDeadline ? Math.max(0, Math.floor((timer.dayDeadline - Date.now())/1000)) : 0; }
+  function liveBlockRemaining(){ return timer && timer.enabled && timer.blockDeadline ? Math.max(0, Math.floor((timer.blockDeadline - examClockNow())/1000)) : 0; }
+  function liveDayRemaining(){ return timer && timer.enabled && timer.dayDeadline ? Math.max(0, Math.floor((timer.dayDeadline - examClockNow())/1000)) : 0; }
 
   const fsBtn = byId('fullscreenBtn');
   if(fsBtn && fsBtn.closest('.tool')) fsBtn.closest('.tool').classList.add('hidden');
@@ -5462,8 +5565,8 @@ body{font-size:16px!important}
         refreshTimeInfoPopover();
         return;
       }
-      const b = (timer.blockDeadline - Date.now())/1000;
-      const d = (timer.dayDeadline - Date.now())/1000;
+      const b = (timer.blockDeadline - examClockNow())/1000;
+      const d = (timer.dayDeadline - examClockNow())/1000;
       if(blockEl) blockEl.textContent = fmtHMS(b);
       if(dayEl) dayEl.textContent = fmtHMS(d);
       refreshTimeInfoPopover();
@@ -5481,7 +5584,7 @@ body{font-size:16px!important}
   function refreshTimeInfoPopover(){
     const root = byId('overviewRoot');
     if(!root || root.classList.contains('hidden') || !byId('timeInfoLiveRoot')) return;
-    const elapsed = state.blockStartedAt ? Math.max(0, Math.floor((Date.now()-state.blockStartedAt)/1000)) : 0;
+    const elapsed = state.blockStartedAt ? Math.max(0, Math.floor((examClockNow()-state.blockStartedAt)/1000)) : 0;
     const remaining = timer.enabled && !isLocked() ? liveBlockRemaining() : 0;
     const totalDay = (typeof totalBlockSeconds === 'function' && totalBlockSeconds()) || timer.dayDuration || 0;
     const elapsedDay = typeof elapsedBlockSecondsApprox === 'function' ? elapsedBlockSecondsApprox() : 0;
@@ -5520,7 +5623,7 @@ function showSettingsDropdown(anchor, breakOnly=false){
       ? [dropdownButton('Full Screen','fullscreen'), dropdownButton('Return to Main Menu','menu','danger-item')]
       : [dropdownButton('Increase Text Size','zoomUp'), dropdownButton('Decrease Text Size','zoomDown'), dropdownButton(isExamDarkMode()?'Exam Dark Mode: On':'Exam Dark Mode: Off','examDarkMode','exam-dark-toggle'), dropdownButton('Reverse Color','reverseColor'), dropdownButton('Full Screen','fullscreen'), dropdownButton('Review Screen','review'), dropdownButton('Return to Main Menu','menu','danger-item')];
     const layoutToggle = breakOnly ? '' : `<div class="review-layout-toggle"><div class="review-layout-title">Review explanation layout</div><div class="segmented-toggle"><button type="button" class="${getReviewExplanationLayout()==='split'?'active':''}" data-ref-action="layoutSplit">Split</button><button type="button" class="${getReviewExplanationLayout()==='below'?'active':''}" data-ref-action="layoutBelow">Below</button></div></div>`;
-    box.innerHTML = layoutToggle + items.join('');
+    box.innerHTML = layoutToggle + (breakOnly ? '' : window.StepExamNotes?.settingHtml() || '') + items.join('');
     document.body.appendChild(box);
     const rect = anchor.getBoundingClientRect();
     const top = Math.max(6, rect.bottom + 4);
@@ -5923,7 +6026,7 @@ html:fullscreen .bottombar{bottom:0!important}
     if(expFull) expFull.textContent='Export Full Library Backup';
     if(impFull) impFull.textContent='Import Full Library Backup';
     row2.appendChild(menu('a5-full-menu','Full Library Backup ▾',[expFull,impFull]));
-    if(update){ update.textContent='Update App / Clear Cache'; row2.appendChild(update); }
+    if(update){ update.textContent='Reload latest version'; row2.appendChild(update); }
     actions.appendChild(row1); actions.appendChild(row2); actions.appendChild(strip); renderProgressStatus();
   }
 
@@ -6065,18 +6168,7 @@ html:fullscreen .bottombar{bottom:0!important}
   function forceCleanUpdateUrl(){
     try{
       if(typeof updateAppShellPreserveLibrary === 'function' && !updateAppShellPreserveLibrary.__a7CleanUrl){
-        var replacement = async function(){
-          var ok = true;
-          try{
-            if(typeof appConfirm === 'function') ok = await appConfirm('Clear the app shell/cache and reload the clean GitHub Pages URL? This does not delete your iPad Browser Library, forms, progress, or assets.', {okText:'Update App'});
-            else ok = confirm('Clear app cache and reload? This does not delete your imported forms/progress.');
-          }catch(e){}
-          if(!ok) return;
-          try{ if('caches' in window){ var keys=await caches.keys(); await Promise.all(keys.filter(function(k){return String(k).indexOf('exam-simulator2-')===0;}).map(function(k){return caches.delete(k);})); } }catch(e){ console.warn('Could not clear caches', e); }
-          try{ if(navigator.serviceWorker){ var regs=await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.filter(function(r){return String(r.scope||'').indexOf('/exam-simulator2/')!==-1;}).map(function(r){return r.unregister();})); } }catch(e){ console.warn('Could not unregister service workers', e); }
-          var base = location.origin + location.pathname.replace(/[^/]*$/, '');
-          location.replace(base);
-        };
+        var replacement = async function(){ return await window.StepAppUpdates.reloadLatest(); };
         replacement.__a7CleanUrl = true;
         updateAppShellPreserveLibrary = replacement;
       }
@@ -7012,11 +7104,11 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     const oldSetMenuMode=setMenuMode; setMenuMode=function(name){ const out=oldSetMenuMode.apply(this,arguments); try{ if(name!=='quick' && activeRunContext&&activeRunContext.v16NewAttempt){ activeRunContext={type:'quick',formId:'',qbank:false}; v16RemoveSetup(); } }catch(e){} return out; };
   }catch(e){}
   document.addEventListener('change',async e=>{
-    if(e.target&&e.target.matches&&e.target.matches('input[name="v16Pool"]') && activeRunContext&&activeRunContext.v16NewAttempt){
+    if(e.target&&e.target.matches&&e.target.matches('input[name="v16Pool"]') && typeof activeRunContext!=='undefined' && activeRunContext&&activeRunContext.v16NewAttempt){
       try{ await v16BuildNewAttemptBank(activeRunContext.formId,activeRunContext.v16Ctx,e.target.value); renderMenu(); }catch(err){ alert(err.message||String(err)); }
     }
   },true);
-  document.addEventListener('click',e=>{ if(e.target&&e.target.closest&&e.target.closest('#clearBank,#importBtn,[data-action="review"],[data-action="resume"]')){ if(activeRunContext&&activeRunContext.v16NewAttempt){ activeRunContext={type:'quick',formId:'',qbank:false}; v16RemoveSetup(); } } },true);
+  document.addEventListener('click',e=>{ if(e.target&&e.target.closest&&e.target.closest('#clearBank,#importBtn,[data-action="review"],[data-action="resume"]')){ if(typeof activeRunContext!=='undefined' && activeRunContext&&activeRunContext.v16NewAttempt){ activeRunContext={type:'quick',formId:'',qbank:false}; v16RemoveSetup(); } } },true);
 
   try{
     const oldCreateSession=createSession;
@@ -10328,11 +10420,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
-<script src="./js/sync-storage.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
-<script src="./js/progress-sync.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
-<script src="./js/library-backup.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
-<script src="./js/qid-settings.js?v=EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0"></script>
+<script src="./js/sync-merge.js?v=1"></script>
+<script src="./js/sync-storage.js?v=1"></script>
+<script src="./js/progress-sync.js?v=1"></script>
+<script src="./js/library-backup.js?v=1"></script>
+<script src="./js/qid-settings.js?v=1"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10502,7 +10594,7 @@ try{
     const bar=document.createElement('div');bar.className='exam-final-actionbar';
     load.textContent='Add New Form';
     expProg.textContent='Export Progress File'; impProg.textContent='Import Progress File';
-    update.textContent='Update App';
+    update.textContent='Reload latest version';
     if(connect) connect.textContent='Connect / Start Library Storage';
     if(scan) scan.textContent='Scan / Refresh Library';
     if(catalog) catalog.textContent='Write Catalog';
@@ -10809,5 +10901,8 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
+<script src="./bulk-import.js?v=1"></script>
+<script src="./exam-notes.js?v=1"></script>
+<script src="./app-update.js?v=1"></script>
 </body>
 </html>

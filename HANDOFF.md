@@ -1,8 +1,8 @@
 # Simulator for iPad (`exam-simulator2`) — standalone handoff
 
-Last inspected: 2026-09-10  
+Last inspected: 2026-10-23  
 Effective simulator UI version: `A22.14` (final script in `index.html`)  
-Cloud/cache build: `EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0`  
+Cloud sync build: `EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0`; app-shell release: numeric `VERSION` in `sw.js` (currently `1`)  
 Scope: this nested repository only; do not inspect the parent LOCAL simulator for iPad-only work.
 
 ## Start here
@@ -150,15 +150,11 @@ Portable backups never inherit Drive lineage. This is essential for fresh-device
 4. `library-backup.js`
 5. `qid-settings.js`
 
-When changing the cloud build, coordinate all of the following:
+Before each deployment, run `node tools/release.mjs` from this folder. `--check` verifies the current coordinated shell without a bump. The release tool updates `sw.js` VERSION/SHELL, `app-update.js` version/download list, all script/style queries in `index.html`, and icon queries in the manifest. `index.html` and the manifest start URL stay unversioned. The app-shell release is independent of sync's `C.BUILD`/bridge protocol identity, currently `V2.3.0`.
 
-- `C.BUILD` in `js/sync-config.js`
-- cache-buster query strings in `index.html`
-- `BUILD`, cache name, and shell URLs in `sw.js`
-- `manifest.webmanifest` start URL
-- production/readme/report labels
+`app-update.js` owns relative `sw.js` registration with `updateViaCache: none`, update checks, a save-before-reload notice, and exact-scope refresh. `progress-sync.js` no longer registers a separate versioned worker. Cache reads/writes/deletes are limited to `exam-simulator2-` and to this folder's requests. User data and other apps are untouched. `StepAppUpdateFlush` captures frozen resume timing and awaits native durable writes before any update reload.
 
-Current coordinated runtime JS/SW/manifest truth is `V2.3.0`. QID migration is loaded before the app integration points and its Settings layer loads after the storage/cloud bridges exist.
+Shared root scripts `exam-notes.js` and `bulk-import.js` are byte-identical to LOCAL. Notes uses the existing block note field; **Keep notes open** is a separate iPad preference. The first Settings tab is **Bulk import**; one question JSON per folder is previewed and new form IDs are committed separately, with namespaced assets. Existing IDs are skipped. `StepBulkImportStore` preflights all paths, saves recovery metadata in `progress/backups/`, writes catalog last, and rolls back on failures. It never changes existing progress or cloud lineage.
 
 ## Validation commands
 
@@ -202,6 +198,7 @@ Keep newest entries first.
 
 | Date | Change | Files | Verification | Follow-up |
 |---|---|---|---|---|
+| 2026-10-23 | Fixed sitting/block answer-audit hydration and session tagging, Lock/Resume timing, prefixed result filenames, non-modal autosaved Notes/Keep notes open, and first-tab bulk folder ZIP import with preflight/recovery/rollback. Added independent release-numbered app-shell updates, generated versioned URLs/SHELL, save-before-reload notice, exact-scope Reload latest version, and 30-minute foreground checks. Guarded legacy v16 attempt listeners against out-of-scope activeRunContext on Resume/Review. | `index.html`, `sw.js`, `app-update.js`, `tools/release.mjs`, `bulk-import.js`, `exam-notes.js`, `manifest.webmanifest`, `js/progress-sync.js`, tests/readme, both handoffs | iPad 122/122 and LOCAL/shared 31/31 passed. Disposable Chrome browser verified native IndexedDB form/assets, durable note/audit suspend/resume, all pause clocks/untimed Lock, cached-script reload, release update notice/new assets, offline launch, escape-hatch preservation of another app’s cache/localStorage/IndexedDB/worker and saved exam progress, plus portrait layout. | Before every deploy run `node tools/release.mjs`; current prepared shell release is 1. Physical iPad/Safari and actual Pages rollout remain manual; no deployment or live Drive changes were made. |
 | 2026-09-10 | Replaced iPad favicon, Apple touch, installed-PWA, and sidebar brand assets with the supplied red exam-card artwork at native 192/512 sizes. Advanced the icon URL cache key across HTML, manifest, and service-worker shell entries; exam toolbar icons remain unchanged. | `index.html`, `manifest.webmanifest`, `sw.js`, `icons/*.png`, `HANDOFF.md` | PNG dimensions/alpha, cache-key parity, manifest/SW syntax, inline-script parsing, and iPad regression suite verified. | Refresh once; if the installed home-screen icon remains stale, reinstall the PWA so iPadOS refreshes it. |
 | 2026-08-12 | Fixed Quick Import New Attempt Setup Dark Mode: retest/new-attempt cards, counts, pool choices, carry-forward chips, context/notes, available-question panels, and disabled/hover states now use readable dark surfaces and semantic contrast. | `index.html`, `HANDOFF.md` | All inline scripts parsed; final New Attempt dark-mode override layer detected. | Manually start a new attempt from a loaded form while menu Dark Mode is enabled. |
 | 2026-08-12 | Improved Dark Mode contrast for Form Library card category chips and color indicators, including NBME/OBGyn/IM-style tab identity chips. Chips now use readable dark surfaces, bright borders, shadow separation, and clearer category dots while preserving each tab’s accent color. | `index.html`, `HANDOFF.md` | All inline scripts parsed; final category-chip dark-mode override layer detected. | Manually inspect cards from several colored categories in iPad Dark Mode. |
