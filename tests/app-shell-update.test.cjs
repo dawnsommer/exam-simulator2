@@ -39,3 +39,17 @@ test('form-update manifests bypass app caches and fail offline rather than using
  const req=new Request('https://example.test/exam-simulator2/form-updates-manifest.json');
  for(const offline of [false,true]){const w=worker({offline});w.stores.set('exam-simulator2-v'+version,new Map([[req.url,new Response('stale update')]]));let pending;w.handlers.fetch({request:req,respondWith(p){pending=p}});if(offline)await assert.rejects(pending,/offline/);else assert.equal(await(await pending).text(),'network');assert.equal(w.calls.opened.length,0);}
 });
+test('published site contains every offline shell file and every script index.html loads',async()=>{
+ const os=require('node:os'),{pathToFileURL}=require('node:url');
+ const {publish}=await import(pathToFileURL(path.join(root,'tools/publish.mjs')).href);
+ const out=fs.mkdtempSync(path.join(os.tmpdir(),'shell-publish-'));
+ try{
+  publish(root,path.join(out,'site'),'a'.repeat(40));
+  const shell=JSON.parse(fs.readFileSync(path.join(root,'sw.js'),'utf8').match(/const SHELL = (\[[\s\S]*?\]);/)[1]);
+  const scripts=[...fs.readFileSync(path.join(root,'index.html'),'utf8').matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)].map(m=>m[1]).filter(u=>!/^https?:/.test(u));
+  for(const url of [...shell,...scripts]){
+   const file=url.replace(/^\.\//,'').replace(/\?.*$/,'')||'index.html';
+   assert.ok(fs.existsSync(path.join(out,'site',file)),url+' is missing from the published site');
+  }
+ }finally{fs.rmSync(out,{recursive:true,force:true});}
+});
