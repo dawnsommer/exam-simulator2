@@ -12,7 +12,6 @@
   "./app-update.js?v=5",
   "./bulk-import.js?v=5",
   "./exam-notes.js?v=5",
-  "./icons/.DS_Store?v=5",
   "./icons/icon-192.png?v=5",
   "./icons/icon-512.png?v=5",
   "./icons/thunder/blue-128.png?v=5",

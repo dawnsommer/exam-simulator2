@@ -7,8 +7,9 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const write=(p,s)=>fs.writeFileSync(path.join(root,p),s);
 const current=Number(read('sw.js').match(/const VERSION = (\d+);/)[1]);
 const check=process.argv.includes('--check'), version=check?current:current+1;
-function walk(dir){return fs.readdirSync(path.join(root,dir),{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.posix.join(dir,e.name)):[path.posix.join(dir,e.name)]);}
-const assets=[...fs.readdirSync(root).filter(f=>/\.(js|css)$/.test(f)&&f!=='sw.js'),...['js','icons','ui_icons'].flatMap(walk)].sort();
+// Hidden files (macOS .DS_Store) are never deployed, so they must not enter the offline shell.
+function walk(dir){return fs.readdirSync(path.join(root,dir),{withFileTypes:true}).filter(e=>!e.name.startsWith('.')).flatMap(e=>e.isDirectory()?walk(path.posix.join(dir,e.name)):[path.posix.join(dir,e.name)]);}
+const assets=[...fs.readdirSync(root).filter(f=>/\.(js|css)$/.test(f)&&f!=='sw.js'&&!f.startsWith('.')),...['js','icons','ui_icons'].flatMap(walk)].sort();
 const url=f=>'./'+f+(/\.(js|css)$/.test(f)||f.startsWith('icons/')?'?v='+version:'');
 const shell=['./','index.html','offline.html','privacy.html','manifest.webmanifest',...assets.map(url)];
 const replaceVersion=s=>s.replace(/\?v=[A-Za-z0-9_.%-]+/g,'?v='+version);
