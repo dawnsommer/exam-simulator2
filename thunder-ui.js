@@ -1,5 +1,5 @@
-/* ThunderUSMLE UI layer (A23 Phase 1): brand, accent colors, the Library home layout, Settings › Appearance,
-   the iPad Backup & sync order and the Score Report. Shared by the Local and iPad apps; keep both copies identical.
+/* ThunderUSMLE UI layer (A23 Phase 1 + Phase A): brand, accent colors, the Library home view (rebuilt from the canvas
+   boards over StepLibraryBridge), the form details sheet, Settings › Appearance, the iPad Backup & sync order and the Score Report. Shared by the Local and iPad apps; keep both copies identical.
    It restyles the existing screens and adds a few controls. It never removes or renames the IDs and data-* hooks
    the other modules use, and it does not touch the exam interface (except the Score Report shown inside it). */
 (function(){
@@ -44,6 +44,7 @@
   const tileSvg = (size, cls) => `<svg class="${cls||'tu-logo'}" width="${size}" height="${size}" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" class="tu-logo-tile"/><path d="${BOLT}" class="tu-logo-deep" transform="translate(10 12)"/><path d="${BOLT}" fill="#FFFFFF"/></svg>`;
 
   /* ---------- styles ---------- */
+  const H = ':root[data-tu] body #menu'; // prefix that outranks the legacy menu rules
   const STYLES = `
 :root[data-tu-accent="crimson"]{--tu-brand:#A2283A;--tu-brand-deep:#6E1424;--tu-lp:#A2283A;--tu-lonp:#FFFFFF;--tu-lpc:#FFDADC;--tu-lonpc:#40000D;--tu-dp:#FFB2B9;--tu-donp:#67001A;--tu-dpc:#85152A;--tu-donpc:#FFDADC}
 :root[data-tu-accent="blue"]{--tu-brand:#2F5BD3;--tu-brand-deep:#1C3A93;--tu-lp:#2F5BD3;--tu-lonp:#FFFFFF;--tu-lpc:#DCE4FF;--tu-lonpc:#0F2A78;--tu-dp:#B3C5FF;--tu-donp:#0F2A78;--tu-dpc:#273F94;--tu-donpc:#DCE4FF}
@@ -115,171 +116,292 @@
 :root[data-tu] body #menu #settingsPanel .settings-shell-v195{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
 :root[data-tu] body #menu .modern-main :is(input[type=text],input[type=number],input[type=search],select,textarea):not(#tuSearch):not(#tuSort){border-radius:12px!important;border:1px solid var(--tu-line)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important}
 
-/* library layout */
-:root[data-tu] body #menu #libraryModePanel.active{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-areas:"actions actions actions actions actions actions find find find find find find" "overall overall overall overall overall recent recent recent recent recent recent recent" "cathead cathead cathead cathead cathead cathead cathead cathead cathead cathead cathead cathead" "cats cats cats cats cats cats cats cats cats cats cats cats" "resume resume resume resume resume resume resume resume resume resume resume resume" "status status status status status status status status status status status status" "grid grid grid grid grid grid grid grid grid grid grid grid";gap:16px;align-items:stretch}
-:root[data-tu] body #menu #libraryModePanel.active>:not(#tuFind):not(#tuCatsHead):not(#tuResume):not(#tuStatusBar):not(#libraryTopV195B):not(#libraryFilters):not(#libraryGrid){grid-column:1/-1}
-:root[data-tu] body #menu #libraryModePanel :is(#libraryTopV195B,.library-hero-left-v195b,.library-hero-right-v195b,.workflow-card-v201){display:contents!important}
-:root[data-tu] body #menu #libraryModePanel #libraryTopV195B .workflow-divider-v217{display:none!important}
-:root[data-tu] body #menu #libraryModePanel .library-actions{grid-area:actions!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;gap:8px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;min-width:0}
-:root[data-tu] body #menu #libraryModePanel .library-actions :is(button,summary){height:40px!important;min-height:0!important;padding:0 16px!important;border-radius:999px!important;font-size:13.5px!important;font-weight:700!important;box-shadow:none!important;width:auto!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel .library-actions .exam-final-actionbar.fu-toolbar{display:flex!important;flex-direction:row!important;width:auto!important;flex-wrap:wrap!important;gap:8px!important;align-items:center!important;grid-template-columns:none!important;background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important}
-:root[data-tu] body #menu #libraryModePanel .library-actions details{width:auto!important;position:relative!important}
-:root[data-tu] body #menu #libraryModePanel .library-actions .fu-more>summary{border:1px solid var(--tu-line)!important;background:transparent!important;color:var(--tu-on)!important;list-style:none!important;display:flex!important;align-items:center!important}
-:root[data-tu] body #menu #libraryModePanel .library-actions .exam-toolbar-menu-panel{background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;border-radius:16px!important;box-shadow:0 10px 30px rgba(0,0,0,.18)!important;padding:6px!important;z-index:40!important}
-:root[data-tu] body #menu #libraryModePanel .library-actions .exam-toolbar-menu-panel button{width:100%!important;justify-content:flex-start!important;text-align:left!important;border:0!important;border-radius:10px!important;height:38px!important;background:transparent!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryModePanel .library-actions .exam-toolbar-menu-panel button:hover{background:var(--tu-s2)!important}
-:root[data-tu] body #menu #libraryModePanel .library-actions #loadNewFormBtn{background:var(--tu-p)!important;color:var(--tu-onp)!important;border:0!important}
-:root[data-tu] body #menu #libraryModePanel #formUpdatesPanel:not([hidden]){flex:1 0 100%;border-radius:16px!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;color:var(--tu-on)!important}
-#tuFind{grid-area:find!important;display:flex;flex-wrap:nowrap;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
-#tuFind .tu-search{display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;flex:1 1 150px;width:auto;max-width:260px;min-width:0;border-radius:999px;background:var(--tu-s2);color:var(--tu-on3)}
-#tuFind select{flex:0 1 auto;min-width:0;max-width:170px}
-:root[data-tu] body #menu #tuFind .tu-search input{-webkit-appearance:none!important;appearance:none!important;border:0!important;background:transparent!important;outline:none!important;flex:1;min-width:0;font-size:14px!important;color:var(--tu-on)!important;padding:0!important;box-shadow:none!important;height:auto!important}
-:root[data-tu] body #menu #tuFind select{height:40px;border-radius:999px!important;border:0!important;background:var(--tu-s2)!important;color:var(--tu-on2)!important;padding:0 12px!important;font-weight:700!important;font-size:13px!important}
+/* shared controls */
 .tu-seg{display:flex;height:40px;border-radius:999px;overflow:hidden;background:var(--tu-s2)}
 .tu-seg button{border:0;background:transparent;color:var(--tu-on2);display:flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;min-width:44px;font-weight:700;font-size:13.5px;cursor:pointer}
 .tu-seg button[aria-pressed="true"],.tu-seg button[aria-checked="true"]{background:var(--tu-pc);color:var(--tu-onpc)}
-:root[data-tu] body #menu #libraryModePanel #libraryOverallMainV195B{grid-area:overall!important;display:flex!important;flex-direction:column!important;gap:12px!important;padding:18px 20px!important;margin:0!important;height:auto!important;min-height:0!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;border-radius:24px!important;box-shadow:var(--tu-shadow)!important;color:var(--tu-on)!important;overflow:hidden!important}
-:root[data-tu] body #menu #libraryModePanel #libraryOverallMainV195B::before,:root[data-tu] body #menu #libraryModePanel #libraryOverallMainV195B::after{display:none!important}
-:root[data-tu] body #menu #libraryModePanel .library-overall-copy-v201{display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:8px!important;text-align:left!important}
-:root[data-tu] body #menu #libraryModePanel .library-overall-copy-v201 h2{margin:0!important;font-size:16px!important;font-weight:800!important;letter-spacing:0!important;text-transform:none!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryModePanel .library-question-count-v201{font-size:13px!important;font-weight:800!important;color:var(--tu-on)!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel .library-question-count-v201 span{margin-left:5px!important;font-weight:600!important;color:var(--tu-on3)!important;text-transform:none!important;letter-spacing:0!important;font-size:12.5px!important}
-:root[data-tu] body #menu #libraryModePanel .library-ring-pair-v201{display:flex!important;justify-content:space-around!important;gap:16px!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel .library-main-ring-v201{width:112px!important;height:112px!important;border-radius:50%!important;background:conic-gradient(var(--tu-ring-c) calc(var(--p,0)*1%),var(--tu-s2) 0)!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:none!important;border:0!important;padding:0!important;--tu-ring-c:var(--tu-p)}
-:root[data-tu] body #menu #libraryModePanel .library-main-ring-v201.score{--tu-ring-c:var(--tu-ok)}
-:root[data-tu] body #menu #libraryModePanel .library-main-ring-v201::before,:root[data-tu] body #menu #libraryModePanel .library-main-ring-v201::after{display:none!important}
-:root[data-tu] body #menu #libraryModePanel .library-ring-inner-v201{width:88px!important;height:88px!important;border-radius:50%!important;background:var(--tu-surface)!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;box-shadow:none!important;border:0!important;inset:auto!important;position:static!important}
-:root[data-tu] body #menu #libraryModePanel .library-ring-inner-v201 b{font-size:24px!important;font-weight:800!important;color:var(--tu-on)!important;line-height:1.05!important}
-:root[data-tu] body #menu #libraryModePanel .library-ring-inner-v201 span{font-size:10.5px!important;font-weight:700!important;letter-spacing:.04em!important;text-transform:uppercase!important;color:var(--tu-on3)!important}
-:root[data-tu] body #menu #libraryModePanel .library-overall-statsline-v201{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin:auto 0 0!important}
-:root[data-tu] body #menu #libraryModePanel .library-overall-pill-v201{background:var(--tu-s1)!important;border:0!important;border-radius:14px!important;padding:9px 12px!important;color:var(--tu-on2)!important;font-size:12.5px!important;font-weight:700!important;text-align:left!important;box-shadow:none!important}
-:root[data-tu] body #menu #libraryModePanel .workflow-card-v201>div:not(.library-actions),:root[data-tu] body #menu #libraryModePanel .workflow-recent-pane-v217{grid-area:recent!important;display:flex!important;flex-direction:column!important;gap:2px!important;padding:16px 18px!important;margin:0!important;min-width:0!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;border-radius:24px!important;box-shadow:var(--tu-shadow)!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryModePanel .workflow-card-v201 .panel-kicker{display:none!important}
-:root[data-tu] body #menu #libraryModePanel .workflow-card-v201 h2::before{content:"Recently completed";font-size:16px}
-:root[data-tu] body #menu #libraryModePanel .workflow-card-v201 h2{margin:0 0 6px!important;font-size:0!important;font-weight:800!important;color:var(--tu-on)!important;background:none!important;-webkit-text-fill-color:currentColor!important}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-v201{overflow:visible!important;max-height:none!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-list-v201{display:flex!important;flex-direction:column!important;gap:2px!important;overflow:visible!important;flex-wrap:nowrap!important;grid-template-columns:none!important}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-item-v201{display:flex!important;align-items:center!important;gap:12px!important;min-height:42px!important;padding:6px 10px!important;margin:0!important;border-radius:12px!important;border:0!important;background:transparent!important;box-shadow:none!important;width:auto!important;min-width:0!important;max-width:none!important;flex:none!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-item-v201[data-tu-open]{cursor:pointer}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-item-v201[data-tu-open]:hover{background:var(--tu-s1)!important}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-item-v201::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--tu-ok);flex:none}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-item-v201 b{flex:1!important;min-width:0!important;font-weight:700!important;font-size:14px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-item-v201 span{font-size:12.5px!important;color:var(--tu-on3)!important;white-space:nowrap!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel .recent-completed-item-v201 .tu-recent-score{font-style:normal;width:46px;text-align:right;font-weight:800;font-size:14.5px;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryModePanel .recent-empty-v201{color:var(--tu-on3)!important;font-size:13.5px!important;background:transparent!important;border:0!important;padding:8px 0!important}
-#tuCatsHead{grid-area:cathead!important;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 -6px}
-#tuCatsHead h2,#tuFormsHead h2{margin:0!important;font-size:16px!important;font-weight:800!important}
 .tu-link{border:0;background:transparent;color:var(--tu-p);font-weight:700;font-size:13px;cursor:pointer;padding:6px 4px}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .library-tab-strip{grid-column:1/-1!important;width:auto!important;max-width:none!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .library-tabs-toggle{grid-column:1/-1!important;justify-self:center!important;height:34px!important;padding:0 14px!important;border-radius:999px!important;border:1px solid var(--tu-line)!important;background:var(--tu-surface)!important;color:var(--tu-on2)!important;font-weight:700!important;font-size:12.5px!important;box-shadow:none!important;width:auto!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters{grid-area:cats!important;display:grid!important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:8px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important;flex-wrap:nowrap!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .library-tab-strip{grid-column:1/-1!important;grid-row:auto!important;width:auto!important;display:grid!important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:8px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .library-tab-strip:not(.expanded){max-height:160px!important;overflow:hidden!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .library-tab-strip .filter-pill{width:auto!important;min-width:0!important;max-width:none!important;flex:none!important;min-height:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .filter-pill{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:6px!important;min-height:0!important;height:76px!important;overflow:hidden!important;width:auto!important;min-width:0!important;padding:9px 12px!important;margin:0!important;border-radius:14px!important;border:1.5px solid var(--tu-line2)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;box-shadow:none!important;text-align:left!important;transform:none!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .filter-pill:hover{border-color:var(--tu-line)!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .filter-pill.active{background:var(--tu-pc)!important;border-color:var(--tu-p)!important;color:var(--tu-onpc)!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .filter-pill *{color:inherit!important;text-shadow:none!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-tab-body{display:flex!important;flex-direction:column!important;gap:5px!important;width:100%!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .filter-title{display:flex!important;align-items:center!important;gap:7px!important;font-weight:800!important;font-size:14px!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .tab-sphere-v201{width:9px!important;height:9px!important;min-width:9px!important;flex:0 0 9px!important;border-radius:50%!important;box-shadow:none!important;border:0!important;transform:none!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-meters{display:flex!important;flex-direction:column!important;gap:3px!important;width:100%!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-meter{min-height:0!important;height:auto!important;padding:0!important;display:grid!important;grid-template-columns:64px 1fr!important;align-items:center!important;gap:6px!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-meter-name{font-size:10.5px!important;font-weight:700!important;letter-spacing:.03em!important;text-transform:uppercase!important;opacity:.75!important;text-align:left!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-meter-row{display:flex!important;align-items:center!important;gap:6px!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-meter-row b{font-size:11.5px!important;font-weight:800!important;min-width:30px!important;text-align:right!important;order:2!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-track{flex:1!important;height:4px!important;border-radius:99px!important;background:var(--tu-s3)!important;overflow:hidden!important;box-shadow:none!important;border:0!important;margin:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-fill{border-radius:99px!important;box-shadow:none!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-fill.score{background:var(--tu-ok)!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .v214-fill.completed{background:var(--tu-p)!important}
-:root[data-tu] body #menu #libraryModePanel #libraryFilters .filter-pill.active .v214-fill.completed{background:var(--tu-onpc)!important}
-#tuResume{grid-area:resume!important;background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:22px;box-shadow:var(--tu-shadow);overflow:hidden}
-#tuResume[hidden]{display:none!important}
-.tu-resume-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:12px 14px 12px 16px}
-.tu-resume-row+.tu-resume-row{border-top:1px solid var(--tu-line2);padding-left:70px}
-.tu-resume-ico{width:40px;height:40px;border-radius:50%;background:var(--tu-pc);color:var(--tu-onpc);display:flex;align-items:center;justify-content:center;flex:none}
-.tu-resume-text{flex:1 1 240px;min-width:0;display:flex;flex-direction:column;gap:2px}
-.tu-resume-text b{font-weight:800;font-size:15px;color:var(--tu-on)}
-.tu-resume-text span{font-size:13px;color:var(--tu-on3)}
-.tu-resume-bar{width:120px;height:5px;border-radius:99px;background:var(--tu-s2);overflow:hidden}.tu-resume-bar i{display:block;height:100%;background:var(--tu-p);border-radius:99px}
 .tu-btn{height:40px;padding:0 20px;border-radius:999px;border:0;background:var(--tu-p);color:var(--tu-onp);font-weight:800;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .tu-btn.tonal{background:var(--tu-pc);color:var(--tu-onpc)}
 .tu-btn.outline{background:transparent;color:var(--tu-on);border:1px solid var(--tu-line);font-weight:700}
 .tu-btn.text{background:transparent;color:var(--tu-p);padding:0 12px;font-weight:700}
 .tu-btn.small{height:36px;padding:0 16px;font-size:13.5px}
 .tu-btn:disabled{opacity:.45;cursor:not-allowed}
-#tuStatusBar{grid-area:status!important;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
-#tuStatusBar .tu-seg{background:var(--tu-surface);border:1px solid var(--tu-line)}
-#tuStatusBar .tu-seg button{border-right:1px solid var(--tu-line)}#tuStatusBar .tu-seg button:last-child{border-right:0}
-#tuStatusBar .tu-seg button span{font-weight:600;opacity:.75}
-#tuStatusBar .tu-shown{font-size:13.5px;color:var(--tu-on3)}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid{grid-area:grid!important;display:grid!important;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))!important;gap:16px!important;margin:0!important;padding:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid .tu-hide{display:none!important}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid .tu-empty{grid-column:1/-1;padding:36px;text-align:center;color:var(--tu-on3);background:var(--tu-surface);border:1px dashed var(--tu-line);border-radius:24px}
-:root[data-tu] body #menu #libraryGrid :is(.v75-card,.v75-card *){font-family:var(--tu-font)!important}
-:root[data-tu] body #menu #libraryGrid .v75-card{display:flex!important;flex-direction:column!important;gap:12px!important;padding:18px!important;margin:0!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;border-radius:24px!important;box-shadow:var(--tu-shadow)!important;color:var(--tu-on)!important;overflow:visible!important;min-height:0!important;transform:none!important}
-:root[data-tu] body #menu #libraryGrid .v75-card::before,:root[data-tu] body #menu #libraryGrid .v75-card::after{display:none!important}
-:root[data-tu] body #menu #libraryGrid .v75-card.suspended-card{border-color:var(--tu-warn)!important}
-:root[data-tu] body #menu #libraryGrid .v75-head{display:flex!important;flex-direction:column-reverse!important;gap:8px!important;margin:0!important;padding:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-head-right{align-self:stretch!important;min-width:0!important;max-width:none!important;flex:none!important;width:auto!important;margin:0!important;padding:0!important;position:static!important;transform:none!important}
-:root[data-tu] body #menu #libraryGrid .v75-badge-row{width:100%!important;min-width:0!important;max-width:none!important;display:flex!important;flex-direction:row-reverse!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;flex-wrap:nowrap!important;margin:0!important}
-:root[data-tu] body #menu #libraryGrid .v201-tab-identity{margin:0!important;position:static!important;transform:none!important;display:inline-flex!important;align-items:center!important;gap:7px!important;font-size:12.5px!important;font-weight:700!important;letter-spacing:.02em!important;color:var(--tu-on3)!important;background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important;text-transform:uppercase!important}
-:root[data-tu] body #menu #libraryGrid .v201-tab-identity i{position:static!important;margin:0!important;transform:none!important;width:9px!important;height:9px!important;border-radius:50%!important;box-shadow:none!important;border:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-badge{font-size:12px!important;font-weight:800!important;padding:4px 10px!important;border-radius:999px!important;background:var(--tu-s2)!important;color:var(--tu-on2)!important;border:0!important;box-shadow:none!important;text-transform:none!important;letter-spacing:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-badge.done{background:var(--tu-okc)!important;color:var(--tu-ok)!important}
-:root[data-tu] body #menu #libraryGrid .v75-badge.partial{background:var(--tu-pc)!important;color:var(--tu-onpc)!important}
-:root[data-tu] body #menu #libraryGrid .v75-badge.suspended{background:var(--tu-warnc)!important;color:var(--tu-warn)!important}
-:root[data-tu] body #menu #libraryGrid :is(.v75-three-chip,.v75-chip){font-size:12px!important;font-weight:800!important;padding:3px 9px!important;border-radius:8px!important;border:1px solid var(--tu-line)!important;background:transparent!important;color:var(--tu-on2)!important;box-shadow:none!important}
-:root[data-tu] body #menu #libraryGrid .v75-three-chip *{color:inherit!important}
-:root[data-tu] body #menu #libraryGrid .v75-title{display:flex!important;align-items:center!important;gap:6px!important;font-size:18px!important;font-weight:800!important;letter-spacing:-.01em!important;color:var(--tu-on)!important;line-height:1.25!important}
-:root[data-tu] body #menu #libraryGrid .v75-title .rename-btn{width:28px!important;height:28px!important;min-width:0!important;padding:0!important;border-radius:50%!important;border:0!important;background:transparent!important;color:var(--tu-on3)!important;box-shadow:none!important;opacity:.0;transition:opacity .15s}
-:root[data-tu] body #menu #libraryGrid .v75-card:is(:hover,:focus-within) .v75-title .rename-btn{opacity:1}
-@media (hover:none){:root[data-tu] body #menu #libraryGrid .v75-title .rename-btn{opacity:.7}}
-:root[data-tu] body #menu #libraryGrid :is(.v75-sub,.v9-card-note){font-size:13px!important;color:var(--tu-on3)!important;margin:2px 0 0!important;font-weight:500!important}
-:root[data-tu] body #menu #libraryGrid .v75-score-row{display:flex!important;align-items:center!important;gap:14px!important;margin:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-bigmetric{width:58px!important;height:58px!important;min-width:58px!important;border-radius:50%!important;padding:0!important;border:0!important;box-shadow:none!important;background:conic-gradient(var(--tu-card-ring,var(--tu-p)) calc(var(--tu-score,0)*1%),var(--tu-s2) 0)!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryGrid .completed-card .v75-bigmetric{--tu-card-ring:var(--tu-ok)}
-:root[data-tu] body #menu #libraryGrid .v75-bigmetric::before{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--tu-surface)}
-:root[data-tu] body #menu #libraryGrid .v75-bigmetric b{position:relative!important;font-size:14px!important;font-weight:800!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryGrid .v75-bigmetric span{display:none!important}
-:root[data-tu] body #menu #libraryGrid .v75-mini-metrics{flex:1!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;margin:0!important}
-:root[data-tu] body #menu #libraryGrid :is(.v75-mini,.v75-mini *){overflow:visible!important;text-indent:0!important;clip-path:none!important;-webkit-mask:none!important;mask:none!important;transform:none!important}
-:root[data-tu] body #menu #libraryGrid .v75-mini{display:flex!important;flex-direction:column!important;align-items:flex-start!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;min-height:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-mini b{font-size:15px!important;font-weight:800!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #libraryGrid .v75-mini span{font-size:11.5px!important;font-weight:600!important;color:var(--tu-on3)!important;text-transform:none!important;letter-spacing:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-progress{height:5px!important;border-radius:99px!important;background:var(--tu-s2)!important;overflow:hidden!important;margin:0!important;box-shadow:none!important;border:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-progress>div{background:var(--tu-p)!important;border-radius:99px!important;height:100%!important}
-:root[data-tu] body #menu #libraryGrid .completed-card .v75-progress>div{background:var(--tu-ok)!important}
-:root[data-tu] body #menu #libraryGrid .v75-chiprow{display:flex!important;flex-wrap:wrap!important;gap:6px!important;margin:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-chip.green{border-color:transparent!important;background:var(--tu-okc)!important;color:var(--tu-ok)!important}
-:root[data-tu] body #menu #libraryGrid :is(.v75-resume-chip,.v75-chip.amber,.v75-chip.orange){border-color:transparent!important;background:var(--tu-warnc)!important;color:var(--tu-warn)!important}
-:root[data-tu] body #menu #libraryGrid .v75-card-footer{display:flex!important;align-items:center!important;gap:8px!important;margin:auto 0 0!important;padding:0!important;border:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-primary-actions{display:flex!important;flex-wrap:wrap!important;gap:8px!important;flex:1!important;margin:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-primary-actions button{height:40px!important;min-height:0!important;padding:0 18px!important;border-radius:999px!important;font-size:14px!important;font-weight:700!important;box-shadow:none!important;width:auto!important;flex:none!important;margin:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-primary-actions button.primary{background:var(--tu-p)!important;color:var(--tu-onp)!important;border:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-primary-actions button.secondary{background:var(--tu-s2)!important;color:var(--tu-on)!important;border:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-primary-actions button:disabled{display:none!important}
-:root[data-tu] body #menu #libraryGrid details.v75-menu{position:relative!important;margin:0 0 0 auto!important}
-:root[data-tu] body #menu #libraryGrid details.v75-menu>summary{width:40px!important;height:40px!important;min-height:0!important;padding:0!important;border-radius:50%!important;border:0!important;background:transparent!important;color:transparent!important;font-size:0!important;display:flex!important;align-items:center!important;justify-content:center!important;list-style:none!important;box-shadow:none!important;cursor:pointer!important}
-:root[data-tu] body #menu #libraryGrid details.v75-menu>summary::-webkit-details-marker{display:none}
-:root[data-tu] body #menu #libraryGrid details.v75-menu>summary::before{content:"";width:20px;height:20px;background:var(--tu-on2);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='5' r='1.9'/%3E%3Ccircle cx='12' cy='12' r='1.9'/%3E%3Ccircle cx='12' cy='19' r='1.9'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='5' r='1.9'/%3E%3Ccircle cx='12' cy='12' r='1.9'/%3E%3Ccircle cx='12' cy='19' r='1.9'/%3E%3C/svg%3E") center/contain no-repeat}
-:root[data-tu] body #menu #libraryGrid details.v75-menu>summary:hover,:root[data-tu] body #menu #libraryGrid details.v75-menu[open]>summary{background:var(--tu-s2)!important}
-:root[data-tu] body #menu #libraryGrid .v75-menu-panel{position:absolute!important;right:0!important;bottom:46px!important;top:auto!important;left:auto!important;min-width:230px!important;padding:6px!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;border-radius:16px!important;box-shadow:0 12px 32px rgba(0,0,0,.2)!important;z-index:30!important;display:flex!important;flex-direction:column!important;gap:0!important}
-:root[data-tu] body #menu #libraryGrid .v75-menu-panel button{display:flex!important;width:100%!important;height:38px!important;min-height:0!important;padding:0 12px!important;margin:0!important;border:0!important;border-radius:10px!important;background:transparent!important;color:var(--tu-on)!important;font-size:13.5px!important;font-weight:600!important;text-align:left!important;justify-content:flex-start!important;align-items:center!important;box-shadow:none!important}
-:root[data-tu] body #menu #libraryGrid .v75-menu-panel button:hover{background:var(--tu-s2)!important}
-:root[data-tu] body #menu #libraryGrid .v75-menu-panel button.dangerish{color:var(--tu-bad)!important}
-:root[data-tu] body #menu #libraryGrid .v75-menu-panel :not(.dangerish)+button.dangerish{margin-top:7px!important;position:relative!important}
-:root[data-tu] body #menu #libraryGrid .v75-menu-panel :not(.dangerish)+button.dangerish::before{content:"";position:absolute;left:8px;right:8px;top:-4px;border-top:1px solid var(--tu-line2)}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid.tu-list{grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid.tu-list .v75-card{flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;gap:10px 18px!important;padding:12px 16px!important;border-radius:18px!important}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid.tu-list .v75-head{flex:1 1 260px!important;min-width:0!important}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid.tu-list .v75-score-row{flex:0 1 330px!important}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid.tu-list :is(.v75-progress,.v75-chiprow){display:none!important}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid.tu-list .v75-card-footer{margin:0!important;flex:0 0 auto!important}
-:root[data-tu] body #menu #libraryModePanel #libraryGrid.tu-list .v75-primary-actions{flex:none!important}
-@media (max-width:1300px) and (min-width:1001px){:root[data-tu] body #menu #libraryModePanel.active{grid-template-areas:"actions actions actions actions actions actions find find find find find find" "overall overall overall overall overall overall recent recent recent recent recent recent" "cathead cathead cathead cathead cathead cathead cathead cathead cathead cathead cathead cathead" "cats cats cats cats cats cats cats cats cats cats cats cats" "resume resume resume resume resume resume resume resume resume resume resume resume" "status status status status status status status status status status status status" "grid grid grid grid grid grid grid grid grid grid grid grid"}}
-@media (max-width:1000px){:root[data-tu] body #menu #libraryModePanel.active{grid-template-columns:minmax(0,1fr);grid-template-areas:"actions" "find" "overall" "recent" "cathead" "cats" "resume" "status" "grid"}#tuFind{justify-content:flex-start}}
-@media (max-width:600px){#tuFind{flex-wrap:wrap}#tuFind .tu-search{flex:1 1 100%;max-width:none}:root[data-tu] body #menu #libraryModePanel #libraryFilters{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+/* Library home: the legacy panel stays in the DOM for its hooks, hidden off-screen */
+${H} #libraryModePanel.tu-has-home.active{display:block!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+${H} #libraryModePanel.tu-has-home>:not(#tuHome){position:absolute!important;left:-10000px!important;top:0!important;width:900px!important;height:1px!important;overflow:hidden!important;visibility:hidden!important;pointer-events:none!important}
+${H} #libraryModePanel.tu-has-home #formUpdatesPanel:not([hidden]){position:fixed!important;visibility:visible!important;pointer-events:auto!important;top:76px;right:32px;width:min(440px,calc(100vw - 32px));max-height:min(70vh,560px);overflow:auto;z-index:80;margin:0!important;padding:16px!important;border-radius:20px!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;color:var(--tu-on)!important;box-shadow:0 12px 40px rgba(0,0,0,.22)!important;font:13.5px/1.5 var(--tu-font)!important}
+${H} #libraryModePanel.tu-has-home #formUpdatesPanel button{height:36px!important;padding:0 14px!important;border-radius:999px!important;font:700 13px var(--tu-font)!important}
+${H}[data-tu-page="library"] .modern-hero{display:none!important}
+${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:22px 32px 48px!important}
+${H} #tuHome{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px;color:var(--tu-on);font-family:var(--tu-font)}
+${H} #tuHome :is(h1,h2,h3){margin:0!important;color:var(--tu-on)!important;font-family:var(--tu-font)!important}
+${H} #tuHome button{font-family:var(--tu-font)!important;cursor:pointer}
+${H} #tuHome svg{flex:none}
+.tu-home-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
+.tu-home-title{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+${H} #tuHome .tu-home-title h1{font-size:28px!important;font-weight:800!important;letter-spacing:-.02em!important;line-height:1.15!important}
+.tu-home-title span{font-size:13.5px;color:var(--tu-on3)}
+.tu-home-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+${H} #tuHome .tu-iconbtn{position:relative;width:40px;height:40px;min-width:40px;border-radius:50%!important;border:0!important;background:var(--tu-s2)!important;color:var(--tu-on2)!important;display:inline-flex;align-items:center;justify-content:center;padding:0!important;box-shadow:none!important}
+${H} #tuHome .tu-iconbtn:hover{background:var(--tu-s3)!important}
+${H} #tuHome .tu-iconbtn:disabled{opacity:.5}
+${H} #tuHome .tu-iconbtn select{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:pointer;border:0!important;padding:0!important;margin:0!important;min-width:0!important}
+${H} #tuHome .tu-search{display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;width:260px;max-width:100%;border-radius:999px;background:var(--tu-s2);color:var(--tu-on3)}
+${H} #tuHome .tu-search input{-webkit-appearance:none!important;appearance:none!important;border:0!important;background:transparent!important;outline:none!important;flex:1!important;min-width:0!important;height:38px!important;padding:0!important;margin:0!important;box-shadow:none!important;font:14px var(--tu-font)!important;color:var(--tu-on)!important}
+${H} #tuHome .tu-search:focus-within{outline:3px solid var(--tu-p);outline-offset:2px}
+${H} #tuHome .tu-search input::placeholder{color:var(--tu-on3)}
+${H} #tuHome .tu-seg button{border:0!important;background:transparent!important;color:var(--tu-on2)!important;height:40px!important;min-height:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}
+${H} #tuHome .tu-seg button[aria-pressed="true"]{background:var(--tu-pc)!important;color:var(--tu-onpc)!important}
+${H} #tuHome .tu-view button{width:44px;padding:0!important}
+.tu-syncpill{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;border-radius:999px;border:0;font-weight:800;font-size:13px;white-space:nowrap}
+.tu-syncpill i,.tu-navcard .tu-navdot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.tu-syncpill em{font-style:normal;font-weight:600;opacity:.8}
+${H} :is(.tu-syncpill,.tu-syncstrip)[data-tone]{background:var(--tu-s2)!important;color:var(--tu-on2)!important;border:0!important}
+${H} :is(.tu-syncpill,.tu-syncstrip)[data-tone="good"]{background:var(--tu-okc)!important;color:var(--tu-ok)!important}
+${H} :is(.tu-syncpill,.tu-syncstrip)[data-tone="busy"]{background:var(--tu-pc)!important;color:var(--tu-onpc)!important}
+${H} :is(.tu-syncpill,.tu-syncstrip):is([data-tone="pending"],[data-tone="conflict"]){background:var(--tu-warnc)!important;color:var(--tu-warn)!important}
+${H} :is(.tu-syncpill,.tu-syncstrip)[data-tone="error"]{background:var(--tu-badc)!important;color:var(--tu-bad)!important}
+.tu-syncpill[data-tone="busy"] i{animation:tuPulse 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.tu-syncpill i{animation:none!important}}
+.tu-syncstrip{display:none}
+.tu-more{position:relative}
+.tu-more>summary{list-style:none}.tu-more>summary::-webkit-details-marker{display:none}
+.tu-more-panel{position:absolute;right:0;top:46px;z-index:30;min-width:240px;padding:6px;border-radius:16px;background:var(--tu-surface);border:1px solid var(--tu-line2);box-shadow:0 12px 32px rgba(0,0,0,.18);display:flex;flex-direction:column}
+${H} #tuHome .tu-more-panel button{display:flex;align-items:center;gap:10px;width:100%;height:40px!important;min-height:0!important;padding:0 12px!important;margin:0!important;border:0!important;border-radius:10px!important;background:transparent!important;color:var(--tu-on)!important;font:600 14px var(--tu-font)!important;text-align:left;box-shadow:none!important}
+${H} #tuHome .tu-more-panel button:hover{background:var(--tu-s2)!important}
+.tu-more-panel small{padding:8px 12px 4px;color:var(--tu-on3);font-size:12px}
+.tu-card{background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:24px;box-shadow:var(--tu-shadow)}
+.tu-home-top{display:flex;flex-wrap:wrap;gap:16px;align-items:stretch}
+.tu-overall{flex:1 1 340px;max-width:460px;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.tu-sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+${H} #tuHome .tu-sec-head h2{font-size:16px!important;font-weight:800!important;letter-spacing:0!important}
+.tu-sec-head>span{font-size:12px;font-weight:700;color:var(--tu-on3)}
+.tu-rings{display:flex;gap:18px;align-items:center;justify-content:space-around}
+.tu-ring112{width:112px;height:112px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--v)*1%),var(--tu-s2) 0);display:flex;align-items:center;justify-content:center}
+.tu-ring112>div{width:88px;height:88px;border-radius:50%;background:var(--tu-surface);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.tu-ring112 b{font-size:25px;font-weight:800;line-height:1.1}
+.tu-ring112 span{font-size:10.5px;color:var(--tu-on3);font-weight:700;letter-spacing:.04em}
+.tu-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:auto}
+.tu-pair>div{background:var(--tu-s1);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column}
+.tu-pair b{font-size:16px;font-weight:800}.tu-pair b small{font-weight:600;color:var(--tu-on3);font-size:13px}
+.tu-pair span{font-size:12px;color:var(--tu-on3);font-weight:600}
+.tu-recent{flex:999 1 360px;min-width:0;padding:16px 18px;display:flex;flex-direction:column;gap:4px}
+.tu-recent .tu-sec-head{padding-bottom:6px}
+${H} #tuHome .tu-recent-row{display:flex;align-items:center;gap:12px;min-height:44px;width:100%;padding:6px 10px!important;margin:0!important;border-radius:12px!important;border:0!important;background:transparent!important;color:var(--tu-on)!important;text-align:left;box-shadow:none!important;height:auto!important}
+${H} #tuHome .tu-recent-row:hover{background:var(--tu-s1)!important}
+.tu-recent-row>i{width:9px;height:9px;border-radius:50%;flex:none}
+.tu-recent-row>b{flex:1;min-width:0;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-recent-row>span{font-size:12.5px;color:var(--tu-on3);white-space:nowrap}
+.tu-recent-row>strong{width:46px;text-align:right;font-size:15px;font-weight:800}
+.tu-empty-note{color:var(--tu-on3);font-size:13.5px;padding:8px 10px}
+.tu-cats{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.tu-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tu-tiles.tu-clamp{max-height:142px;overflow:hidden}
+${H} #tuHome .tu-tile{text-align:left;display:flex;flex-direction:column;gap:6px;padding:9px 12px!important;margin:0!important;height:auto!important;min-height:0!important;border-radius:14px!important;border:1.5px solid var(--tu-line2)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;box-shadow:none!important}
+${H} #tuHome .tu-tile:hover{border-color:var(--tu-line)!important}
+${H} #tuHome .tu-tile[aria-pressed="true"]{background:var(--tu-pc)!important;border-color:var(--tu-p)!important;color:var(--tu-onpc)!important}
+.tu-tile-top{display:flex;align-items:center;gap:7px;width:100%}
+.tu-tile-top i{width:9px;height:9px;border-radius:50%;flex:none}
+.tu-tile-top b{font-weight:800;font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-tile-top span{font-size:12.5px;font-weight:700;opacity:.85}
+.tu-tile-bar{width:100%;height:4px;border-radius:99px;background:var(--tu-s3);overflow:hidden}.tu-tile-bar i{display:block;height:100%;border-radius:99px}
+.tu-tile>small{font-size:11.5px;opacity:.8}
+.tu-tiles-more{align-self:center}
+.tu-resume{overflow:hidden;border-radius:22px}
+.tu-resume-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:12px 14px 12px 16px}
+.tu-resume-row+.tu-resume-row{border-top:1px solid var(--tu-line2);padding:10px 14px 10px 70px}
+.tu-resume-ico{width:40px;height:40px;border-radius:50%;background:var(--tu-pc);color:var(--tu-onpc);display:flex;align-items:center;justify-content:center;flex:none}
+.tu-resume-text{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tu-resume-text b{font-weight:800;font-size:15.5px}.tu-resume-text b small{font-weight:600;color:var(--tu-on3);font-size:13.5px}
+.tu-resume-row+.tu-resume-row .tu-resume-text b{font-weight:700;font-size:14.5px}
+.tu-resume-text>span{font-size:13px;color:var(--tu-on3)}
+.tu-resume-bar{width:120px;height:5px;border-radius:99px;background:var(--tu-s2);overflow:hidden}.tu-resume-bar i{display:block;height:100%;background:var(--tu-p);border-radius:99px}
+.tu-forms{display:flex;flex-direction:column;gap:14px}
+.tu-forms-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+${H} #tuHome .tu-status{background:var(--tu-surface);border:1px solid var(--tu-line)}
+${H} #tuHome .tu-status button{padding:0 16px!important;border-right:1px solid var(--tu-line)!important}
+${H} #tuHome .tu-status button:last-child{border-right:0!important}
+.tu-status button span{font-weight:600;opacity:.75}
+.tu-shown{font-size:13.5px;color:var(--tu-on3)}
+.tu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.tu-form{padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0;container-type:inline-size}
+.tu-when-meta{display:none}
+@container (max-width:420px){.tu-form-actions .tu-when{visibility:hidden}.tu-when-meta{display:inline}}
+.tu-form-tag{display:flex;align-items:center;gap:8px}
+.tu-form-tag>i{width:9px;height:9px;border-radius:50%;flex:none}
+.tu-form-tag>span:not(.tu-st){font-size:12.5px;font-weight:700;color:var(--tu-on3);flex:1;min-width:0;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-st{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.tu-st.done{background:var(--tu-okc);color:var(--tu-ok)}.tu-st.progress{background:var(--tu-pc);color:var(--tu-onpc)}.tu-st.suspended{background:var(--tu-warnc);color:var(--tu-warn)}.tu-st.new{background:var(--tu-s2);color:var(--tu-on2)}
+.tu-form-name{display:flex;flex-direction:column;gap:3px;min-width:0}
+.tu-form-name>span{display:flex;align-items:center;gap:8px;min-width:0}
+.tu-form-name b{font-size:18px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-three{font-size:12px;font-weight:800;padding:3px 8px;border-radius:8px;border:1px solid var(--tu-line);color:var(--tu-on2);flex:none}
+.tu-form-name small{font-size:13px;color:var(--tu-on3)}
+.tu-form-stats{display:flex;align-items:center;gap:14px}
+.tu-ring58{width:58px;height:58px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--v)*1%),var(--tu-s2) 0);display:flex;align-items:center;justify-content:center;flex:none}
+.tu-ring58>b{width:46px;height:46px;border-radius:50%;background:var(--tu-surface);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.tu-three-stats{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tu-three-stats>div{display:flex;flex-direction:column}
+.tu-three-stats b{font-weight:800;font-size:15px}.tu-three-stats span{font-size:11.5px;color:var(--tu-on3);font-weight:600}
+.tu-bar5{height:5px;border-radius:99px;background:var(--tu-s2);overflow:hidden}.tu-bar5 i{display:block;height:100%;border-radius:99px}
+.tu-form-actions{display:flex;align-items:center;gap:8px;min-width:0}
+.tu-form-actions>button{flex:none;white-space:nowrap}
+${H} #tuHome .tu-form-actions .tu-btn{height:40px!important;min-height:0!important;padding:0 18px!important;font:700 14px var(--tu-font)!important;border:0!important;box-shadow:none!important;margin:0!important}
+${H} #tuHome .tu-btn{border:0!important;box-shadow:none!important;margin:0!important;min-height:0!important}
+${H} #tuHome .tu-btn:not(.tonal):not(.outline):not(.text):not(.quiet){background:var(--tu-p)!important;color:var(--tu-onp)!important}
+${H} #tuHome .tu-btn.tonal{background:var(--tu-pc)!important;color:var(--tu-onpc)!important}
+${H} #tuHome .tu-btn.quiet{background:var(--tu-s2)!important;color:var(--tu-on)!important}
+${H} #tuHome .tu-btn.outline{background:transparent!important;color:var(--tu-on)!important;border:1px solid var(--tu-line)!important}
+${H} #tuHome .tu-btn.text{background:transparent!important;color:var(--tu-p)!important}
+.tu-when{flex:1;min-width:0;font-size:12px;color:var(--tu-on3);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+${H} #tuHome .tu-kebab{width:40px;height:40px;min-width:40px;border-radius:50%!important;border:0!important;background:transparent!important;color:var(--tu-on2)!important;display:inline-flex;align-items:center;justify-content:center;padding:0!important;box-shadow:none!important;margin:0!important}
+${H} #tuHome .tu-kebab:hover{background:var(--tu-s2)!important}
+.tu-nomatch{grid-column:1/-1;padding:36px;text-align:center;color:var(--tu-on3);background:var(--tu-surface);border:1px dashed var(--tu-line);border-radius:24px}
+/* compact list */
+.tu-grid.tu-list{grid-template-columns:minmax(0,1fr);gap:8px}
+.tu-list .tu-form{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(250px,1fr) auto;grid-template-areas:"name stats actions" "tag stats actions";align-items:center;gap:2px 20px;padding:12px 16px;border-radius:18px}
+.tu-list .tu-form-tag{grid-area:tag}.tu-list .tu-form-tag>span:not(.tu-st){flex:none}.tu-list .tu-when-meta{display:none}.tu-list .tu-form-actions .tu-when{visibility:visible}.tu-list .tu-form-name{grid-area:name}.tu-list .tu-form-stats{grid-area:stats}.tu-list .tu-form-actions{grid-area:actions}
+.tu-list .tu-bar5,.tu-list .tu-form-name small{display:none}
+.tu-list .tu-form-name b{font-size:15.5px}
+.tu-list .tu-ring58{width:44px;height:44px}.tu-list .tu-ring58>b{width:34px;height:34px;font-size:12px}
+.tu-list .tu-when{flex:none}
+@media (max-width:1100px){.tu-list .tu-form{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name actions" "tag actions" "stats stats"}}
+
+/* sidebar: board order, storage / Google Drive card */
+${H} aside.modern-sidebar #tuAddForms{order:1}
+${H} aside.modern-sidebar #libraryTab{order:2}${H} aside.modern-sidebar #qbankTab{order:3}${H} aside.modern-sidebar #qbankTestsTab{order:4}
+${H} aside.modern-sidebar #quickTab{order:5}${H} aside.modern-sidebar #progressSyncTab{order:6}${H} aside.modern-sidebar #settingsTab{order:7}
+${H} aside.modern-sidebar #tuNavCard{order:8;margin-top:auto}
+${H} aside.modern-sidebar #themeToggle{order:9;margin-top:6px!important}
+${H} aside.modern-sidebar>:not(.brand-block):not(.menu-tab):not(#tuAddForms):not(#tuNavCard):not(#themeToggle){order:10}
+.tu-navcard{background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:16px;padding:14px;margin:0 2px;display:flex;flex-direction:column;gap:10px;font-family:var(--tu-font)}
+.tu-navcard>div{display:flex;align-items:center;gap:10px}
+.tu-navcard>div b{font-weight:700;font-size:14px;color:var(--tu-on)}
+.tu-navcard .tu-navdot{width:10px;height:10px;background:var(--tu-on3)}
+.tu-navcard .tu-navdot.ok{background:var(--tu-ok)}.tu-navcard .tu-navdot.busy{background:var(--tu-p)}.tu-navcard .tu-navdot.warn{background:var(--tu-warn)}.tu-navcard .tu-navdot.bad{background:var(--tu-bad)}
+.tu-navcard>span{font-size:12.5px;color:var(--tu-on3);line-height:1.4}
+.tu-navcard .tu-navbar{height:5px;border-radius:99px;background:var(--tu-s2);overflow:hidden}.tu-navcard .tu-navbar i{display:block;width:58%;height:100%;background:var(--tu-p);border-radius:99px;animation:tuSlide 1.4s ease-in-out infinite alternate}
+@keyframes tuSlide{from{transform:translateX(-40%)}to{transform:translateX(80%)}}
+@media (prefers-reduced-motion:reduce){.tu-navcard .tu-navbar i{animation:none}}
+.tu-navcard .tu-navbtns{display:flex;gap:8px}
+${H} .tu-navcard button{flex:1;height:36px!important;min-height:0!important;border-radius:999px!important;border:1px solid var(--tu-line)!important;background:transparent!important;color:var(--tu-on)!important;font:600 13px var(--tu-font)!important;padding:0 10px!important;margin:0!important;box-shadow:none!important;cursor:pointer}
+${H} .tu-navcard button:hover{background:var(--tu-s2)!important}
+
+/* Form details sheet */
+#tuSheet{position:fixed;inset:0;z-index:90;font-family:var(--tu-font);color:var(--tu-on)}
+#tuSheet[hidden]{display:none}
+.tu-scrim{position:absolute;inset:0;background:rgba(18,22,34,.42)}
+${H}.theme-dark #tuSheet .tu-scrim{background:rgba(0,0,0,.6)}
+.tu-sheet{position:absolute;top:12px;right:12px;bottom:12px;width:540px;max-width:calc(100% - 24px);background:var(--tu-surface);border-radius:28px;box-shadow:0 12px 48px rgba(0,0,0,.28);display:flex;flex-direction:column;overflow:hidden;animation:tuSheetIn .18s ease-out}
+@keyframes tuSheetIn{from{transform:translateX(24px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.tu-sheet{animation:none}}
+.tu-sheet-head{padding:22px 24px 0;display:flex;flex-direction:column;gap:14px}
+.tu-sheet-row{display:flex;align-items:center;gap:10px}
+.tu-chip-tab{display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:10px;border:1px solid var(--tu-line);font-size:13px;font-weight:700;color:var(--tu-on2)}
+.tu-chip-tab i{width:9px;height:9px;border-radius:50%}
+${H} #tuSheet .tu-round{width:40px;height:40px;min-width:40px;border-radius:50%!important;border:0!important;background:var(--tu-s1)!important;color:var(--tu-on2)!important;display:flex;align-items:center;justify-content:center;padding:0!important;margin:0!important;box-shadow:none!important;cursor:pointer}
+${H} #tuSheet .tu-round.clear{background:transparent!important}
+${H} #tuSheet .tu-round:hover{background:var(--tu-s2)!important}
+.tu-sheet-title{display:flex;align-items:flex-start;gap:10px}
+.tu-sheet-title>div{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+${H} #tuSheet h2{margin:0!important;font-size:26px!important;font-weight:800!important;letter-spacing:-.02em!important;color:var(--tu-on)!important;overflow-wrap:anywhere}
+.tu-sheet-title span{font-size:14px;color:var(--tu-on3)}
+.tu-sheet-tabs{display:flex;gap:4px;border-bottom:1px solid var(--tu-line2)}
+${H} #tuSheet .tu-sheet-tabs button{height:46px!important;min-height:0!important;padding:0 16px!important;margin:0!important;border:0!important;border-radius:0!important;border-bottom:3px solid transparent!important;background:transparent!important;font:700 14.5px var(--tu-font)!important;color:var(--tu-on2)!important;box-shadow:none!important;cursor:pointer}
+${H} #tuSheet .tu-sheet-tabs button[aria-selected="true"]{color:var(--tu-p)!important;border-bottom-color:var(--tu-p)!important}
+.tu-sheet-body{flex:1;overflow:auto;padding:20px 24px 24px;display:flex;flex-direction:column;gap:20px}
+.tu-sheet-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tu-sheet-stats>div{background:var(--tu-s1);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.tu-sheet-stats b{font-size:22px;font-weight:800}.tu-sheet-stats span{font-size:12px;font-weight:600;color:var(--tu-on3)}
+.tu-sheet-actions{display:flex;gap:10px;flex-wrap:wrap}
+${H} #tuSheet .tu-btn{height:48px!important;min-height:0!important;padding:0 22px!important;font:800 15px var(--tu-font)!important;border:0!important;box-shadow:none!important;margin:0!important;border-radius:999px!important}
+${H} #tuSheet .tu-btn:not(.tonal):not(.outline):not(.danger):not(.dangerfill){background:var(--tu-p)!important;color:var(--tu-onp)!important}
+${H} #tuSheet .tu-btn.tonal{background:var(--tu-pc)!important;color:var(--tu-onpc)!important}
+${H} #tuSheet .tu-btn.outline{background:transparent!important;color:var(--tu-on)!important;border:1px solid var(--tu-line)!important}
+${H} #tuSheet .tu-btn.small{height:38px!important;padding:0 14px!important;font:700 13px var(--tu-font)!important}
+${H} #tuSheet .tu-btn.danger{height:40px!important;padding:0 16px!important;font:700 13.5px var(--tu-font)!important;background:transparent!important;color:var(--tu-bad)!important;border:1px solid var(--tu-bad)!important}
+${H} #tuSheet .tu-btn.dangerfill{height:40px!important;padding:0 16px!important;font:700 13.5px var(--tu-font)!important;background:var(--tu-bad)!important;color:var(--tu-surface)!important}
+${H} #tuSheet .tu-btn:disabled{opacity:.45!important;cursor:not-allowed}
+.tu-sheet section{display:flex;flex-direction:column;gap:10px}
+${H} #tuSheet h3{margin:0!important;font-size:15px!important;font-weight:800!important;color:var(--tu-on)!important;letter-spacing:0!important}
+.tu-sheet-note{font-size:13px;color:var(--tu-on3)}
+.tu-sheet h3+.tu-sheet-note{margin-top:-4px}
+.tu-retests{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+${H} #tuSheet .tu-retest{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px!important;margin:0!important;height:auto!important;border-radius:18px!important;border:1px solid var(--tu-line)!important;background:transparent!important;color:var(--tu-on)!important;text-align:left;box-shadow:none!important;cursor:pointer}
+${H} #tuSheet .tu-retest:hover:not(:disabled){background:var(--tu-s1)!important}
+${H} #tuSheet .tu-retest:disabled{opacity:.5;cursor:not-allowed}
+.tu-retest b{font-size:22px;font-weight:800}.tu-retest span{font-size:13px;font-weight:700;color:var(--tu-on2)}
+.tu-list-box{border:1px solid var(--tu-line2);border-radius:20px;overflow:hidden}
+${H} #tuSheet .tu-attempt{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px!important;margin:0!important;height:auto!important;border:0!important;border-bottom:1px solid var(--tu-line2)!important;border-radius:0!important;background:transparent!important;color:var(--tu-on)!important;text-align:left;box-shadow:none!important;cursor:pointer}
+${H} #tuSheet .tu-attempt:last-child{border-bottom:0!important}
+${H} #tuSheet .tu-attempt[aria-checked="true"]{background:var(--tu-s1)!important;cursor:default}
+.tu-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--tu-line);display:flex;align-items:center;justify-content:center;flex:none}
+[aria-checked="true"]>.tu-radio{border-color:var(--tu-p)}[aria-checked="true"]>.tu-radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--tu-p)}
+.tu-attempt>div{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-attempt>div b{font-weight:800;font-size:14.5px}.tu-attempt>div span{font-size:12.5px;color:var(--tu-on3)}
+.tu-attempt>strong{font-weight:800;font-size:15px}
+.tu-rows{border:1px solid var(--tu-line2);border-radius:20px;overflow:hidden}
+.tu-rowi{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--tu-line2)}
+.tu-rowi:last-child{border-bottom:0}
+.tu-rowi>div{flex:1;display:flex;flex-direction:column;min-width:0}
+.tu-rowi>div b{font-weight:700;font-size:14.5px}.tu-rowi>div span{font-size:12.5px;color:var(--tu-on3)}
+.tu-rowi>strong{font-weight:800;font-size:15px}
+.tu-danger{border:1px solid var(--tu-badc);border-radius:20px;padding:16px}
+${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
+.tu-danger>div{display:flex;gap:8px;flex-wrap:wrap}
+.tu-loading{font-size:13px;color:var(--tu-on3);padding:6px 2px}
+
+/* narrow windows */
+@media (max-width:1000px){${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:18px 20px 40px!important}.tu-overall{max-width:none}}
+@media (max-width:560px){.tu-sheet-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.tu-retests{grid-template-columns:minmax(0,1fr)}.tu-sheet{top:0;right:0;bottom:0;max-width:100%;border-radius:0}}
+
+/* iPad portrait (board iPadPortrait): bottom navigation, Add forms button, sync strip, compact home */
+@media (max-width:900px){
+  ${H}.modern-menu-shell .modern-menu{display:block!important;padding-bottom:96px!important}
+  ${H} aside.modern-sidebar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;z-index:60!important;width:auto!important;height:auto!important;min-height:0!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:stretch!important;justify-content:space-around!important;gap:0!important;padding:8px 6px calc(10px + env(safe-area-inset-bottom))!important;overflow:visible!important;background:var(--tu-s1)!important;border-right:0!important;border-top:1px solid var(--tu-line2)!important}
+  ${H} aside.modern-sidebar>:is(.brand-block,#tuNavCard,#themeToggle,.sidebar-note){display:none!important}
+  ${H} aside.modern-sidebar .menu-tab{flex:1 1 0!important;min-width:0!important;flex-direction:column!important;gap:4px!important;height:auto!important;min-height:0!important;padding:0!important;margin:0!important;border-radius:0!important;background:transparent!important;color:var(--tu-on2)!important;font-size:12px!important;font-weight:600!important;justify-content:flex-start!important;box-shadow:none!important;border:0!important}
+  ${H} aside.modern-sidebar .menu-tab .tu-ico{width:64px;height:32px;padding:5px 21px;border-radius:999px;box-sizing:border-box}
+  ${H} aside.modern-sidebar .menu-tab.active{background:transparent!important;color:var(--tu-on)!important;font-weight:800!important}
+  ${H} aside.modern-sidebar .menu-tab.active .tu-ico{background:var(--tu-pc);color:var(--tu-onpc)}
+  ${H} aside.modern-sidebar .menu-tab .tu-tab-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  ${H} aside.modern-sidebar .menu-tab .sync-tab-dot{position:absolute;margin:0!important;transform:translate(14px,-2px)}
+  ${H} aside.modern-sidebar #tuAddForms{display:none!important}
+  ${H}[data-tu-page="library"] aside.modern-sidebar #tuAddForms{display:flex!important;position:fixed!important;left:auto!important;top:auto!important;right:24px!important;bottom:112px!important;width:auto!important;height:60px!important;padding:0 22px!important;margin:0!important;border-radius:18px!important;box-shadow:0 6px 20px rgba(20,26,40,.22)!important;z-index:61;font-size:15.5px!important;font-weight:800!important}
+  ${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:24px 24px 120px!important}
+  ${H} #tuHome{gap:14px}
+  ${H} #tuHome .tu-home-title h1{font-size:30px!important}
+  .tu-home-title span,${H} #tuHome .tu-sortbtn,${H} #tuHome .tu-view,${H} #tuHome .tu-syncpill{display:none!important}
+  ${H} #tuHome .tu-search{width:200px}
+  ${H} #tuHome .tu-iconbtn{width:44px;height:44px;min-width:44px}
+  .tu-syncstrip{display:flex;align-items:center;gap:10px;min-height:40px;width:100%;padding:4px 6px 4px 14px!important;border-radius:14px!important;text-align:left;font:13px var(--tu-font)!important;cursor:pointer}
+  .tu-syncstrip>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tu-syncstrip>em{font-style:normal;height:30px;padding:0 12px;border-radius:999px;background:var(--tu-surface);color:var(--tu-on);display:flex;align-items:center;font-weight:800;font-size:12.5px;flex:none}
+  .tu-home-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .tu-overall{display:contents}
+  .tu-overall>:not(.tu-mini3){display:none!important}
+  .tu-recent{display:none!important}
+  .tu-cats{background:transparent;border:0;box-shadow:none;padding:0}
+  .tu-cats .tu-sec-head{display:none}
+  .tu-tiles{display:flex;flex-wrap:wrap;gap:6px}
+  ${H} #tuHome .tu-tile{flex-direction:row;align-items:center;gap:7px;height:36px!important;padding:0 12px!important;border-radius:10px!important;border-width:1px!important}
+  .tu-tile .tu-tile-bar,.tu-tile>small,.tu-tile-top span{display:none}
+  .tu-tile-top{gap:7px;width:auto}
+  .tu-tile-top b{font-weight:700}
+  .tu-tile>em{font-style:normal;font-weight:600;opacity:.7;font-size:14px}
+  .tu-tiles.tu-clamp{max-height:78px}
+  .tu-resume-bar{display:none}
+  .tu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .tu-form{padding:16px;gap:12px}
+  .tu-forms-bar .tu-shown{display:none}
+}
+.tu-mini3{display:none}
+@media (max-width:900px){.tu-mini3{display:flex;flex-direction:column;background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:20px;padding:14px 16px}.tu-mini3 b{font-size:22px;font-weight:800}.tu-mini3 span{font-size:12.5px;color:var(--tu-on3);font-weight:600}}
+.tu-tile>em{display:none}
+@media (max-width:900px){.tu-tile>em{display:inline}}
+@media (max-width:600px){.tu-grid{grid-template-columns:minmax(0,1fr)}${H} #tuHome .tu-search{width:100%;flex:1 1 100%}}
 
 /* Settings › Appearance */
 :root[data-tu] body #menu #settingsPanel .settings-nav-v195 button{border-radius:999px!important;color:var(--tu-on2)!important;font-weight:600!important;background:transparent!important;border:0!important;box-shadow:none!important}
@@ -466,164 +588,414 @@
     }
     syncDarkFlag();
     heroTitle();
+    paintNav();
   }
   function heroTitle(){
+    const active = document.querySelector('#menu aside.modern-sidebar .menu-tab.active');
+    const menu = byId('menu'), page = active ? active.id.replace(/Tab$/, '') : '';
+    if(menu && menu.dataset.tuPage !== page) menu.dataset.tuPage = page; // the Library page draws its own header
     const hero = document.querySelector('#menu .modern-hero'); if(!hero) return;
     const h1 = hero.querySelector('h1'), p = hero.querySelector('h1 + p, p');
-    const active = document.querySelector('#menu aside.modern-sidebar .menu-tab.active');
     const t = (active && TITLES[active.id]) || 'Library';
     if(h1 && h1.textContent !== t) h1.textContent = t;
-    if(p){
-      let line = '';
-      if(t === 'Library'){
-        try{
-          const forms = (typeof catalog !== 'undefined' && catalog && Array.isArray(catalog.forms)) ? catalog.forms : [];
-          const qs = forms.reduce((n, f) => n + (Number(f.totalQuestions) || 0), 0);
-          if(forms.length) line = forms.length + (forms.length === 1 ? ' form' : ' forms') + (qs ? ' · ' + qs.toLocaleString() + ' questions' : '');
-        }catch(e){}
-      }
-      if(p.textContent !== line) p.textContent = line;
-    }
+    if(p && p.textContent) p.textContent = '';
   }
 
-  /* ---------- Library home ---------- */
+  /* ---------- Library home (A23 Phase A: canvas boards Main, LibraryDark, iPadPortrait, FormSheet) ----------
+     The view is rendered from StepLibraryBridge (read-only) and from the legacy dashboard numbers. Every button
+     clicks the matching control of the hidden legacy card or panel, so prompts, protections and saves still run. */
+  const bridge = () => window.StepLibraryBridge || null;
+  const TAB_DOTS = {'N-Forms':'#3B6FE0', IM:'#0F8B8D', OBGyn:'#C2417A', Surg:'#D9661F', Peds:'#7B5CD6', FM:'#3C9A4A', EM:'#D23F3F', Psych:'#5A67D8', Neuro:'#B7862A', Custom:'#7A8194', All:'#6B7280'};
+  const LEGACY_TAB_COLORS = ['#d9e3ea', '#38bdf8'];
   const STATUSES = [['all','All'],['progress','In progress'],['done','Completed'],['new','Not started']];
-  function cardStatus(card){
-    const b = card.querySelector('.v75-badge');
-    if(b && b.classList.contains('done')) return 'done';
-    if(b && (b.classList.contains('partial') || b.classList.contains('suspended'))) return 'progress';
-    if(card.classList.contains('completed-card')) return 'done';
-    if(card.classList.contains('suspended-card')) return 'progress';
-    return 'new';
+  const ST_LABEL = {done:'Completed', progress:'In progress', suspended:'Suspended', new:'Not started'};
+  const SORTS = [['default','Library order'],['recent','Recent activity'],['name','Name A–Z'],['score','Score: high to low'],['answered','Most answered'],['status','Status']];
+  const tabInternal = f => f === 'NBME' ? 'N-Forms' : f;
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+  const kebab = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>';
+  function shortDate(iso){
+    const d = new Date(iso); if(!iso || isNaN(d)) return '';
+    const o = {month:'short', day:'numeric'}; if(d.getFullYear() !== new Date().getFullYear()) o.year = 'numeric';
+    return d.toLocaleDateString(undefined, o);
   }
-  const cardTitle = card => { const t = card.querySelector('.v75-title'); return t ? Array.from(t.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim() : (card.dataset.formId || ''); };
-  const pct = text => { const m = String(text || '').match(/(\d+(?:\.\d+)?)\s*%/); return m ? Number(m[1]) : null; };
-  function ensureLibraryChrome(panel){
-    if(!byId('tuFind')){
-      const find = document.createElement('div'); find.id = 'tuFind';
-      find.innerHTML = `<label class="tu-search">${icon(ICONS.search, 18)}<span class="tu-sr">Search forms</span><input type="search" id="tuSearch" placeholder="Search forms" autocomplete="off"></label>` +
-        `<label><span class="tu-sr">Sort forms</span><select id="tuSort" title="Sort forms"><option value="default">Library order</option><option value="name">Name A–Z</option><option value="score">Score: high to low</option><option value="answered">Most answered</option><option value="status">Status</option></select></label>` +
-        `<div class="tu-seg" role="group" aria-label="View"><button type="button" data-tu-view="grid" aria-label="Grid view" title="Grid view">${icon(ICONS.grid, 16)}</button><button type="button" data-tu-view="list" aria-label="List view" title="List view">${icon(ICONS.list, 16)}</button></div>`;
-      panel.insertBefore(find, panel.firstChild);
-      find.querySelector('#tuSearch').addEventListener('input', () => scheduleLibrary());
-      const sort = find.querySelector('#tuSort'); sort.value = store.get(KEYS.sort, 'default');
-      sort.addEventListener('change', () => { store.set(KEYS.sort, sort.value); scheduleLibrary(); });
-      find.addEventListener('click', e => { const v = e.target.closest('[data-tu-view]'); if(v){ store.set(KEYS.view, v.dataset.tuView); scheduleLibrary(); } });
-    }
-    if(!byId('tuCatsHead')){
-      const head = document.createElement('div'); head.id = 'tuCatsHead';
-      head.innerHTML = '<h2>Categories</h2><button type="button" class="tu-link" id="tuCustomizeTabs">Customize tabs</button>';
-      panel.insertBefore(head, byId('libraryFilters'));
-      head.querySelector('#tuCustomizeTabs').addEventListener('click', () => { window.__v195BSettingsActive = 'order'; window.__v195SettingsActive = 'order'; window.__tuSettingsAppearance = false; byId('settingsTab')?.click(); });
-    }
-    if(!byId('tuResume')){
-      const r = document.createElement('section'); r.id = 'tuResume'; r.hidden = true; r.setAttribute('aria-label', 'Resume');
-      panel.insertBefore(r, byId('libraryGrid'));
-      r.addEventListener('click', e => {
-        const b = e.target.closest('[data-tu-resume]'); if(b){ const card = document.querySelector(`#libraryGrid .v75-card[data-form-id="${CSS.escape(b.dataset.tuResume)}"] [data-action="resume"]`); card?.click(); return; }
-        if(e.target.closest('[data-tu-resume-more]')){ r.classList.toggle('tu-open'); paintResume(true); }
-      });
-    }
-    if(!byId('tuStatusBar')){
-      const s = document.createElement('div'); s.id = 'tuStatusBar';
-      s.innerHTML = '<div class="tu-seg" role="group" aria-label="Status"></div><span class="tu-shown" aria-live="polite"></span>';
-      panel.insertBefore(s, byId('libraryGrid'));
-      s.addEventListener('click', e => { const b = e.target.closest('[data-tu-status]'); if(b){ store.set(KEYS.status, b.dataset.tuStatus); scheduleLibrary(); } });
-    }
+  // Library tabs in the user's order and colors, read from the legacy filter pills.
+  function libTabs(){
+    return Array.from(document.querySelectorAll('#libraryFilters .filter-pill[data-filter]')).filter(p => p.dataset.filter !== 'Overview').map(p => {
+      const key = p.dataset.filter, internal = tabInternal(key);
+      let color = (p.style.getPropertyValue('--tab-accent') || '').trim().toLowerCase();
+      if(!color || LEGACY_TAB_COLORS.includes(color)) color = TAB_DOTS[internal] || TAB_DOTS.Custom;
+      const raw = (p.querySelector('.v214-tab-label')?.textContent || key).trim();
+      return {key, internal, label: key === 'All' ? 'All forms' : (internal === 'N-Forms' ? 'NBME' : raw), color};
+    });
   }
-  let resumeItems = [];
-  function paintResume(keep){
-    const r = byId('tuResume'); if(!r) return;
-    if(!resumeItems.length){ r.hidden = true; r.innerHTML = ''; return; }
-    const open = r.classList.contains('tu-open');
-    const row = (it, first) => `<div class="tu-resume-row">${first ? `<span class="tu-resume-ico">${icon(ICONS.play, 18)}</span>` : ''}<div class="tu-resume-text"><b>${esc(it.title)}</b><span>${esc(it.meta)}</span></div>${it.answered != null ? `<span class="tu-resume-bar" aria-hidden="true"><i style="width:${Math.max(0, Math.min(100, it.answered))}%"></i></span>` : ''}${first && resumeItems.length > 1 ? `<button type="button" class="tu-btn text" data-tu-resume-more aria-expanded="${open}">${open ? 'Hide' : (resumeItems.length - 1) + ' more in progress'}</button>` : ''}<button type="button" class="tu-btn${first ? '' : ' outline small'}" data-tu-resume="${esc(it.id)}">Resume</button></div>`;
-    const html = resumeItems.slice(0, open ? resumeItems.length : 1).map((it, i) => row(it, i === 0)).join('');
-    if(r.innerHTML !== html) r.innerHTML = html;
-    r.hidden = false;
+  function blockCountOf(rec){ const idx = Array.isArray(rec.questionIndex) ? rec.questionIndex : []; return idx.reduce((n, q) => Math.max(n, (Number(q.blockIndex) || 0) + 1), 0) || 1; }
+  function formInfo(rec, tabsByKey){
+    const B = bridge(), s = rec.progressSummary || {};
+    const st = s.completed ? 'done' : s.canResume ? (s.suspended ? 'suspended' : 'progress') : (s.answered || s.inProgress) ? 'progress' : 'new';
+    let tabKey = 'Custom'; try{ tabKey = B.tabKey(rec) || 'Custom'; }catch(e){}
+    const tab = tabsByKey[tabKey] || {label: tabKey === 'N-Forms' ? 'NBME' : tabKey, color: TAB_DOTS[tabKey] || TAB_DOTS.Custom};
+    let chip = false; try{ chip = rec.type === 'N' && B.scoreChipOn(tabKey); }catch(e){}
+    const blocks = s.blockCount || blockCountOf(rec), attempts = Number(s.attemptCount) || (s.answered || s.completed ? 1 : 0);
+    const score = s.completed && s.scorePct != null ? Number(s.scorePct) : null;
+    return {
+      id: rec.id, rec, s, st, tabKey, tabLabel: tab.label, color: tab.color,
+      title: rec.displayName || rec.id, tag: (tab.label + ' · ' + rec.id).toUpperCase(),
+      three: chip && rec.threeDigitScore ? String(rec.threeDigitScore) : '',
+      blockCount: blocks, attemptsText: attempts ? plural(attempts, 'attempt') : 'no attempts',
+      meta: [(Number(rec.totalQuestions) || 0) + ' Qs', plural(blocks, 'block'), attempts ? plural(attempts, 'attempt') : 'no attempts'].join(' · '),
+      score, answered: Math.max(0, Math.min(100, Number(s.progressPct) || 0)), blocks: (s.completedBlocks || 0) + '/' + blocks, marked: Number(s.marked) || 0,
+      canResume: !!s.canResume, canReview: !!s.completed,
+      startLabel: (s.answered || s.scoreTotal || s.completed || s.inProgress) ? 'New attempt' : 'Start',
+      completedAt: s.completed ? (s.completedAt || '') : '', activity: s.updatedAt || s.completedAt || rec.updatedAt || rec.importedAt || ''
+    };
   }
-  let libraryQueued = false, libraryObserver = null;
+
+  // Legacy controls: the card for a form lives in the hidden #libraryGrid while its tab is selected.
+  const legacyCard = id => document.querySelector(`#libraryGrid .v75-card[data-form-id="${CSS.escape(id)}"]`);
+  async function withLegacyCard(id){
+    let card = legacyCard(id); if(card) return card;
+    document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click();
+    for(let i = 0; i < 60 && !(card = legacyCard(id)); i++) await wait(50);
+    return card;
+  }
+  async function cardAction(id, selector){
+    const card = await withLegacyCard(id), btn = card && card.querySelector(selector);
+    if(!btn || btn.disabled){ console.warn('ThunderUI: legacy control missing', id, selector); return false; }
+    btn.click(); return true;
+  }
+  // Answers an appPrompt the legacy code opens (used for "Progress / Attempts", which asks for a number).
+  async function answerPrompt(value){
+    for(let i = 0; i < 80; i++){
+      const input = byId('appDialogInput'), layer = byId('appDialogLayer');
+      if(input && layer && !layer.classList.contains('hidden') && !layer.hidden && input.offsetParent !== null){ input.value = value; byId('appDialogOk')?.click(); return true; }
+      await wait(50);
+    }
+    return false;
+  }
+
+  /* iPad Google Drive status, mirrored from the app's own sticker (#googleBackupStatus, fed by stepsync:state) */
+  let lastSyncDetail = '';
+  window.addEventListener('stepsync:state', e => { lastSyncDetail = String((e.detail && e.detail.detail) || ''); setTimeout(paintSyncBits, 0); });
+  const SYNC_VIEW = [
+    [/^Synced$/i, 'Synced', ''], [/^Syncing/i, 'Syncing…', ''], [/^Checking/i, 'Checking…', ''], [/^Connecting/i, 'Connecting…', ''],
+    [/^Local Changes/i, 'Local changes', 'Sync now'], [/^Cloud Newer/i, 'Cloud newer', 'Review'], [/^Conflict/i, 'Needs your choice', 'Choose version'],
+    [/^Offline/i, 'Offline', ''], [/^Reconnect/i, 'Reconnect', 'Reconnect'], [/^Error/i, 'Sync error', 'Retry'], [/^Baseline/i, 'Baseline needed', 'Open'], [/^Off$/i, 'Backup off', 'Turn on']
+  ];
+  function syncView(){
+    const el = byId('googleBackupStatus'); if(!el) return null;
+    const raw = el.textContent.replace(/^Google Backup:\s*/i, '').trim() || 'Off';
+    const hit = SYNC_VIEW.find(([re]) => re.test(raw)) || [null, raw, ''];
+    const detail = lastSyncDetail || String(el.title || '').split('\n')[0] || '';
+    const tone = el.dataset.tone || 'offline';
+    return {label: hit[1], action: hit[2], detail, tone, dot: {good:'ok', busy:'busy', pending:'warn', conflict:'warn', error:'bad'}[tone] || '', busy: tone === 'busy'};
+  }
+  function openSync(){ byId('progressSyncTab')?.click(); }
+
+  /* sidebar card: DATA folder (Local) or Google Drive (iPad) */
+  function paintNav(){
+    const side = document.querySelector('#menu aside.modern-sidebar'); if(!side) return;
+    let card = byId('tuNavCard');
+    if(!card){ card = document.createElement('div'); card.id = 'tuNavCard'; card.className = 'tu-navcard'; side.insertBefore(card, byId('themeToggle') || null); }
+    let html = '';
+    const sv = IPAD ? syncView() : null;
+    if(sv){
+      html = `<div><span class="tu-navdot ${sv.dot}"></span><b>Google Drive · ${esc(sv.label)}</b></div>${sv.detail ? `<span>${esc(sv.detail)}</span>` : ''}${sv.busy ? '<span class="tu-navbar" aria-hidden="true"><i></i></span>' : ''}<div class="tu-navbtns"><button type="button" data-tu-open-sync>${esc(sv.action || 'Backup & sync')}</button></div>`;
+    } else if(!IPAD){
+      const status = byId('dataFolderStatus'), ok = !!status && status.classList.contains('connected');
+      let n = 0; try{ n = bridge() ? bridge().forms().length : 0; }catch(e){}
+      html = `<div><span class="tu-navdot ${ok ? 'ok' : 'warn'}"></span><b>${ok ? 'DATA folder connected' : 'DATA folder not connected'}</b></div><span>${ok ? esc(plural(n, 'form')) + ' · saved to disk automatically' : 'Connect your DATA folder to load your forms and progress.'}</span><div class="tu-navbtns">${ok && byId('scanDataFolderBtn') ? '<button type="button" data-tu-proxy="scanDataFolderBtn">Rescan</button>' : ''}${byId('connectDataFolderBtn') ? `<button type="button" data-tu-proxy="connectDataFolderBtn">${ok ? 'Change' : 'Connect'}</button>` : ''}</div>`;
+    }
+    if(card.dataset.html !== html){ card.innerHTML = html; card.dataset.html = html; }
+    card.hidden = !html;
+  }
+  function paintSyncBits(){
+    paintNav();
+    const home = byId('tuHome'); if(!home) return;
+    const sv = IPAD ? syncView() : null;
+    setRegion('sync', sv ? `<button type="button" class="tu-syncpill" data-tone="${esc(sv.tone)}" data-tu-open-sync title="Google Drive progress sync: ${esc(sv.detail || sv.label)}"><i></i>${esc(sv.label)}</button>` : '');
+    setRegion('strip', sv ? `<button type="button" class="tu-syncstrip" data-tone="${esc(sv.tone)}" data-tu-open-sync aria-label="Google Drive sync: ${esc(sv.label)}. ${esc(sv.detail)}">${icon(ICONS.sync, 18)}<span><b>${esc(sv.label)}</b>${sv.detail ? ' · ' + esc(sv.detail) : ''}</span>${sv.action ? `<em>${esc(sv.action)}</em>` : ''}</button>` : '');
+  }
+
+  /* view state */
+  const homeUi = {resumeOpen:false, tabsOpen:false};
+  const regionCache = new Map();
+  function setRegion(name, html){
+    const el = document.querySelector(`#tuHome [data-tu-r="${name}"]`); if(!el) return;
+    if(regionCache.get(name) === html && el.dataset.tuFilled) return;
+    el.innerHTML = html; el.dataset.tuFilled = '1'; regionCache.set(name, html);
+  }
+  function ensureHome(panel){
+    let home = byId('tuHome'); if(home) return home;
+    regionCache.clear();
+    home = document.createElement('div'); home.id = 'tuHome';
+    const sorts = SORTS.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
+    home.innerHTML = `<header class="tu-home-head"><div class="tu-home-title"><h1>Library</h1><span data-tu-r="count"></span></div>` +
+      `<div class="tu-home-tools"><span data-tu-r="sync" style="display:contents"></span><span data-tu-r="updates" style="display:contents"></span>` +
+      `<label class="tu-search">${icon(ICONS.search, 18)}<span class="tu-sr">Search forms</span><input type="search" id="tuSearch" placeholder="Search forms" autocomplete="off"></label>` +
+      `<label class="tu-iconbtn tu-sortbtn" title="Sort forms">${icon('<path d="M8 4v16m0 0-4-4m4 4 4-4M14 6h6M14 11h4M14 16h2"/>', 18)}<span class="tu-sr">Sort forms</span><select id="tuSort">${sorts}</select></label>` +
+      `<div class="tu-seg tu-view" role="group" aria-label="View"><button type="button" data-tu-view="grid" aria-label="Grid view" title="Grid view">${icon(ICONS.grid, 16)}</button><button type="button" data-tu-view="list" aria-label="List view" title="List view">${icon(ICONS.list, 16)}</button></div>` +
+      `<span data-tu-r="more" style="display:contents"></span></div></header>` +
+      `<div data-tu-r="strip" style="display:contents"></div>` +
+      `<div class="tu-home-top"><section class="tu-card tu-overall" aria-label="Overall performance" data-tu-r="overall"></section><section class="tu-card tu-recent" aria-label="Recently completed" data-tu-r="recent"></section></div>` +
+      `<section class="tu-card tu-cats" aria-label="Categories"><div class="tu-sec-head"><h2>Categories</h2><button type="button" class="tu-link" id="tuCustomizeTabs">Customize tabs</button></div><div data-tu-r="cats" style="display:contents"></div></section>` +
+      `<section class="tu-card tu-resume" aria-label="Resume" data-tu-r="resume" hidden></section>` +
+      `<section class="tu-forms" aria-label="Forms"><div class="tu-forms-bar"><div class="tu-seg tu-status" role="group" aria-label="Status" data-tu-r="status"></div><span class="tu-shown" data-tu-r="shown" aria-live="polite"></span></div><div class="tu-grid" data-tu-r="cards"></div></section>`;
+    panel.insertBefore(home, panel.firstChild);
+    const sort = home.querySelector('#tuSort'); sort.value = store.get(KEYS.sort, 'default');
+    sort.addEventListener('change', () => { store.set(KEYS.sort, sort.value); scheduleLibrary(); });
+    home.querySelector('#tuSearch').addEventListener('input', () => scheduleLibrary());
+    home.addEventListener('click', onHomeClick);
+    return home;
+  }
+
+  function overallHtml(forms){
+    const legacy = byId('libraryOverallMainV195B');
+    const rings = legacy ? Array.from(legacy.querySelectorAll('.library-main-ring-v201')) : [];
+    const ringPct = cls => { const r = rings.find(x => x.classList.contains(cls)); const m = r && (r.querySelector('b')?.textContent || '').match(/(\d+(?:\.\d+)?)\s*%/); return m ? Number(m[1]) : null; };
+    const progress = ringPct('progress'), score = ringPct('score');
+    const qline = (legacy?.querySelector('.library-question-count-v201')?.firstChild?.textContent || '').trim();
+    const [qa, qt] = qline.split('/').map(x => Number(String(x).replace(/[^\d]/g, '')) || 0);
+    const fline = Array.from(legacy ? legacy.querySelectorAll('.library-overall-pill-v201') : []).map(x => x.textContent).find(t => /forms? complete/i.test(t)) || '';
+    const fm = fline.match(/(\d+)\s*\/\s*(\d+)/);
+    const fd = fm ? Number(fm[1]) : forms.filter(f => f.s.completed).length, ft = fm ? Number(fm[2]) : forms.length;
+    const ring = (v, c, label) => `<div class="tu-ring112" style="--v:${v == null ? 0 : v};--c:${c}" role="img" aria-label="${label} ${v == null ? 'not available' : v + ' percent'}"><div><b>${v == null ? '—' : v + '%'}</b><span>${label.toUpperCase()}</span></div></div>`;
+    return `<div class="tu-sec-head"><h2>Overall performance</h2><span>Included tabs only</span></div><div class="tu-rings">${ring(progress, 'var(--tu-p)', 'Progress')}${ring(score, 'var(--tu-ok)', 'Avg score')}</div>` +
+      `<div class="tu-pair"><div><b>${qa.toLocaleString()} <small>/ ${qt.toLocaleString()}</small></b><span>Questions answered</span></div><div><b>${fd} <small>/ ${ft}</small></b><span>Forms complete</span></div></div>` +
+      `<div class="tu-mini3"><b>${progress == null ? '—' : progress + '%'}</b><span>Overall progress</span></div><div class="tu-mini3"><b>${score == null ? '—' : score + '%'}</b><span>Average score</span></div><div class="tu-mini3"><b>${fd} / ${ft}</b><span>Forms done</span></div>`;
+  }
+  function recentHtml(forms){
+    const B = bridge();
+    const done = forms.filter(f => f.s.completed && (() => { try{ return B.completedOn(f.tabKey); }catch(e){ return true; } })())
+      .sort((a, b) => String(b.completedAt).localeCompare(String(a.completedAt))).slice(0, 5);
+    const rows = done.map(f => `<button type="button" class="tu-recent-row" data-tu-act="review" data-id="${esc(f.id)}" title="Open the score report for ${esc(f.title)}"><i style="background:${esc(f.color)}"></i><b>${esc(f.title)}</b><span>${esc([shortDate(f.completedAt), f.three].filter(Boolean).join(' · '))}</span><strong>${f.score == null ? '—' : f.score + '%'}</strong></button>`).join('');
+    return `<div class="tu-sec-head"><h2>Recently completed</h2>${done.length ? '<button type="button" class="tu-link" data-tu-see-all>See all</button>' : ''}</div>${rows || '<span class="tu-empty-note">Completed forms will appear here.</span>'}`;
+  }
+  function catsHtml(tabs, forms, cat){
+    const B = bridge();
+    const tiles = tabs.map(t => {
+      let recs = forms; if(t.key !== 'All'){ try{ const ids = new Set(B.recs(t.internal).map(r => r.id)); recs = forms.filter(f => ids.has(f.id)); }catch(e){ recs = []; } }
+      const done = recs.filter(f => f.s.completed), scoreTotal = done.reduce((n, f) => n + (Number(f.s.scoreTotal) || 0), 0), scoreCorrect = done.reduce((n, f) => n + (Number(f.s.scoreCorrect) || 0), 0);
+      const score = scoreTotal ? Math.round(scoreCorrect / scoreTotal * 100) + '%' : '—', pctDone = recs.length ? Math.round(done.length / recs.length * 100) : 0;
+      let meter = true; if(t.key !== 'All'){ try{ meter = B.meterOn(t.internal); }catch(e){} }
+      const on = cat === t.key;
+      return `<button type="button" class="tu-tile" data-tu-cat="${esc(t.key)}" aria-pressed="${on}"><span class="tu-tile-top"><i style="background:${esc(t.color)}"></i><b>${esc(t.label)}</b>${meter ? `<span>${score}</span>` : ''}</span>${meter ? `<span class="tu-tile-bar"><i style="width:${pctDone}%;background:${esc(t.color)}"></i></span>` : ''}<small>${done.length} of ${recs.length} done</small><em>${recs.length}</em></button>`;
+    }).join('');
+    return `<div class="tu-tiles${homeUi.tabsOpen ? '' : ' tu-clamp'}" data-tu-tiles>${tiles}</div><button type="button" class="tu-link tu-tiles-more" data-tu-tabs-more hidden aria-expanded="${homeUi.tabsOpen}">${homeUi.tabsOpen ? 'Show fewer tabs' : 'Show all tabs'}</button>`;
+  }
+  function resumeHtml(forms){
+    const list = forms.filter(f => f.canResume).sort((a, b) => String(b.activity).localeCompare(String(a.activity)));
+    if(!list.length) return '';
+    const open = homeUi.resumeOpen && list.length > 1;
+    const meta = f => [(f.st === 'suspended' ? 'Suspended ' : 'In progress · ') + shortDate(f.activity), 'block ' + Math.min((Number(f.s.currentBlockPointer) || 0) + 1, f.s.blockCount || 1) + ' of ' + (f.s.blockCount || 1), (f.s.answered || 0) + ' of ' + (f.s.total || f.rec.totalQuestions || 0) + ' answered'].filter(Boolean).join(' · ').replace(' · ·', ' ·');
+    const first = list[0];
+    let html = `<div class="tu-resume-row"><span class="tu-resume-ico">${icon(ICONS.play, 18)}</span><div class="tu-resume-text"><b>${esc(first.title)}${first.s.activeAttemptLabel ? ` <small>· ${esc(first.s.activeAttemptLabel)}</small>` : ''}</b><span>${esc(meta(first))}</span></div><span class="tu-resume-bar" aria-hidden="true"><i style="width:${first.answered}%"></i></span>` +
+      (list.length > 1 ? `<button type="button" class="tu-btn text" data-tu-resume-more aria-expanded="${open}">${open ? 'Hide' : (list.length - 1) + ' more in progress'}${icon(ICONS.chevron, 16)}</button>` : '') +
+      `<button type="button" class="tu-btn" data-tu-act="resume" data-id="${esc(first.id)}">Resume</button></div>`;
+    if(open) html += list.slice(1).map(f => `<div class="tu-resume-row"><div class="tu-resume-text"><b>${esc(f.title)}</b><span>${esc(meta(f))}</span></div><button type="button" class="tu-btn outline small" data-tu-act="resume" data-id="${esc(f.id)}">Resume</button></div>`).join('');
+    return html;
+  }
+  function cardHtml(f){
+    const ring = f.st === 'done' ? 'var(--tu-ok)' : 'var(--tu-p)';
+    const primary = f.canResume ? `<button type="button" class="tu-btn" data-tu-act="resume" data-id="${esc(f.id)}">${icon(ICONS.play, 16)}Resume</button>`
+      : `<button type="button" class="tu-btn" data-tu-act="start" data-id="${esc(f.id)}">${icon(ICONS.play, 16)}${f.startLabel}</button>`;
+    return `<article class="tu-card tu-form" data-tu-form="${esc(f.id)}"><div class="tu-form-tag"><i style="background:${esc(f.color)}"></i><span>${esc(f.tag)}</span><span class="tu-st ${f.st}">${ST_LABEL[f.st]}</span></div>` +
+      `<div class="tu-form-name"><span><b title="${esc(f.title)}">${esc(f.title)}</b>${f.three ? `<span class="tu-three" title="3-digit score">${esc(f.three)}</span>` : ''}</span><small>${esc(f.meta)}${f.completedAt ? `<span class="tu-when-meta"> · Completed ${esc(shortDate(f.completedAt))}</span>` : ''}</small></div>` +
+      `<div class="tu-form-stats"><div class="tu-ring58" style="--v:${f.score == null ? 0 : f.score};--c:${ring}" role="img" aria-label="Score ${f.score == null ? 'not available' : f.score + ' percent'}"><b>${f.score == null ? '—' : f.score + '%'}</b></div><div class="tu-three-stats"><div><b>${f.answered}%</b><span>Answered</span></div><div><b>${f.blocks}</b><span>Blocks</span></div><div><b>${f.marked}</b><span>Marked</span></div></div></div>` +
+      `<div class="tu-bar5" aria-hidden="true"><i style="width:${f.answered}%;background:${esc(f.color)}"></i></div>` +
+      `<div class="tu-form-actions">${primary}${f.canReview ? `<button type="button" class="tu-btn quiet" data-tu-act="review" data-id="${esc(f.id)}">Review</button>` : ''}<span class="tu-when">${f.completedAt ? 'Completed ' + esc(shortDate(f.completedAt)) : ''}</span><button type="button" class="tu-kebab" data-tu-act="sheet" data-id="${esc(f.id)}" aria-label="Details and more actions for ${esc(f.title)}" aria-haspopup="dialog">${kebab}</button></div></article>`;
+  }
+  function moreHtml(){
+    const items = [['exportCatalogBtn', 'Save library index'], ['exportFullLibraryBackupBtn', 'Export form library ZIP'], ['importFullLibraryBackupBtn', 'Import form library ZIP'], ['exportProgressOnlyBackupBtn', 'Export progress file'], ['importProgressOnlyBackupBtn', 'Import progress file'], ['updateAppShellBtn', 'Reload latest version']].filter(([id]) => byId(id));
+    if(!items.length) return '';
+    const version = (byId('appVersionLabel')?.textContent || '').trim();
+    return `<details class="tu-more"><summary class="tu-iconbtn" aria-label="More library actions" title="More">${icon('<circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/>', 20)}</summary><div class="tu-more-panel">${items.map(([id, l]) => `<button type="button" data-tu-proxy="${id}">${l}</button>`).join('')}${version ? `<small>${esc(version)}</small>` : ''}</div></details>`;
+  }
+
+  let libraryQueued = false, libraryObserver = null, sawAllFilter = false;
   function scheduleLibrary(){ if(libraryQueued) return; libraryQueued = true; requestAnimationFrame(() => { libraryQueued = false; try{ paintLibrary(); }catch(e){ console.warn('ThunderUI library paint failed', e); } }); }
   function paintLibrary(){
-    const panel = byId('libraryModePanel'), grid = byId('libraryGrid'); if(!panel || !grid) return;
-    ensureLibraryChrome(panel);
-    const cards = Array.from(grid.querySelectorAll(':scope > .v75-card'));
-    let seq = 0;
-    cards.forEach(card => {
-      if(!card.dataset.tuIdx) card.dataset.tuIdx = String(seq);
-      seq++;
-      const score = pct(card.querySelector('.v75-bigmetric b')?.textContent);
-      card.style.setProperty('--tu-score', score == null ? 0 : score);
-      const sum = card.querySelector('details.v75-menu > summary'); if(sum && !sum.getAttribute('aria-label')) sum.setAttribute('aria-label', 'More actions for ' + cardTitle(card));
-    });
-    // status filter + search
+    const panel = byId('libraryModePanel'), B = bridge(); if(!panel || !B || !byId('libraryFilters')) return;
+    // The legacy "Completed" tab becomes a status filter; open the library on All forms.
+    if(!sawAllFilter && B.filter() === 'Overview'){ const all = document.querySelector('#libraryFilters .filter-pill[data-filter="All"]'); if(all){ sawAllFilter = true; all.click(); return; } }
+    sawAllFilter = true;
+    const home = ensureHome(panel); panel.classList.add('tu-has-home');
+    const tabs = libTabs(), tabsByKey = {}; tabs.forEach(t => { tabsByKey[t.internal] = t; });
+    const forms = B.forms().map(r => formInfo(r, tabsByKey));
+    let cat = B.filter(); if(cat === 'Overview' || !tabs.some(t => t.key === cat)) cat = 'All';
+    const qs = forms.reduce((n, f) => n + (Number(f.rec.totalQuestions) || 0), 0);
+    setRegion('count', forms.length ? esc(plural(forms.length, 'form') + ' · ' + qs.toLocaleString() + ' questions') : '');
+    const upd = byId('formUpdatesCheck');
+    setRegion('updates', upd ? `<button type="button" class="tu-iconbtn" data-tu-proxy="formUpdatesCheck" aria-label="Check for form updates" title="${esc(upd.textContent.trim() || 'Check for updates')}"${upd.disabled ? ' disabled' : ''}>${icon(ICONS.download, 19)}</button>` : '');
+    setRegion('more', moreHtml());
+    setRegion('overall', overallHtml(forms));
+    setRegion('recent', recentHtml(forms));
+    setRegion('cats', catsHtml(tabs, forms, cat));
+    const r = home.querySelector('[data-tu-r="resume"]'), rh = resumeHtml(forms); setRegion('resume', rh); r.hidden = !rh;
+    // forms in the selected tab, then search, status and sort
+    let inCat = forms;
+    if(cat !== 'All'){ try{ const ids = new Set(B.recs(tabInternal(cat)).map(x => x.id)); inCat = forms.filter(f => ids.has(f.id)); }catch(e){} }
     const q = (byId('tuSearch')?.value || '').trim().toLowerCase();
+    if(q) inCat = inCat.filter(f => (f.title + ' ' + f.id + ' ' + f.tabLabel + ' ' + (f.rec.subject || '')).toLowerCase().includes(q));
     let status = store.get(KEYS.status, 'all'); if(!STATUSES.some(s => s[0] === status)) status = 'all';
-    const counts = {all:0, progress:0, done:0, new:0};
-    const matchQ = card => !q || (cardTitle(card) + ' ' + (card.querySelector('.v75-sub')?.textContent || '') + ' ' + (card.dataset.formId || '')).toLowerCase().includes(q);
-    let shown = 0;
-    cards.forEach(card => {
-      const st = cardStatus(card), mq = matchQ(card);
-      if(mq){ counts.all++; counts[st]++; }
-      const show = mq && (status === 'all' || status === st);
-      card.classList.toggle('tu-hide', !show);
-      if(show) shown++;
+    const isIn = (f, s) => s === 'all' || (s === 'progress' ? (f.st === 'progress' || f.st === 'suspended') : s === 'done' ? f.st === 'done' && (cat !== 'All' || (() => { try{ return B.completedOn(f.tabKey); }catch(e){ return true; } })()) : f.st === s);
+    setRegion('status', STATUSES.map(([id, label]) => `<button type="button" data-tu-status="${id}" aria-pressed="${status === id}">${label} <span>${inCat.filter(f => isIn(f, id)).length}</span></button>`).join(''));
+    const sort = store.get(KEYS.sort, 'default'); const sel = byId('tuSort'); if(sel && sel.value !== sort) sel.value = sort;
+    const rank = {progress:0, suspended:0, new:1, done:2}, order = new Map(forms.map((f, i) => [f.id, i]));
+    const shown = inCat.filter(f => isIn(f, status)).sort((a, b) => {
+      const d = order.get(a.id) - order.get(b.id);
+      if(sort === 'recent') return String(b.activity).localeCompare(String(a.activity)) || d;
+      if(sort === 'name') return a.title.localeCompare(b.title, undefined, {numeric:true}) || d;
+      if(sort === 'score') return (b.score ?? -1) - (a.score ?? -1) || d;
+      if(sort === 'answered') return b.answered - a.answered || d;
+      if(sort === 'status') return rank[a.st] - rank[b.st] || d;
+      return d;
     });
-    const seg = document.querySelector('#tuStatusBar .tu-seg');
-    if(seg){
-      const html = STATUSES.map(([id, label]) => `<button type="button" data-tu-status="${id}" aria-pressed="${status === id}">${label} <span>${counts[id]}</span></button>`).join('');
-      if(seg.innerHTML !== html) seg.innerHTML = html;
-      const lab = document.querySelector('#tuStatusBar .tu-shown'), txt = cards.length ? `Showing ${shown} of ${cards.length} in this tab` : '';
-      if(lab && lab.textContent !== txt) lab.textContent = txt;
-    }
-    let empty = grid.querySelector(':scope > .tu-empty');
-    if(cards.length && !shown){ if(!empty){ empty = document.createElement('div'); empty.className = 'tu-empty'; grid.appendChild(empty); } empty.textContent = q ? 'No forms match “' + q + '”.' : 'No forms with this status in this tab.'; }
-    else if(empty) empty.remove();
-    // sort (moves the existing cards within the grid; they keep their nodes and listeners)
-    const sort = store.get(KEYS.sort, 'default');
-    const sel = byId('tuSort'); if(sel && sel.value !== sort) sel.value = sort;
-    const rank = {progress:0, new:1, done:2};
-    const keyed = cards.slice().sort((a, b) => {
-      const ia = Number(a.dataset.tuIdx), ib = Number(b.dataset.tuIdx);
-      if(sort === 'name') return cardTitle(a).localeCompare(cardTitle(b), undefined, {numeric:true}) || ia - ib;
-      if(sort === 'score') return (pct(b.querySelector('.v75-bigmetric b')?.textContent) ?? -1) - (pct(a.querySelector('.v75-bigmetric b')?.textContent) ?? -1) || ia - ib;
-      if(sort === 'answered') return (pct(b.querySelector('.v75-mini b')?.textContent) ?? -1) - (pct(a.querySelector('.v75-mini b')?.textContent) ?? -1) || ia - ib;
-      if(sort === 'status') return rank[cardStatus(a)] - rank[cardStatus(b)] || ia - ib;
-      return ia - ib;
-    });
-    if(keyed.some((c, i) => c !== cards[i])){ const anchor = grid.querySelector(':scope > .tu-empty'); keyed.forEach(c => grid.insertBefore(c, anchor)); }
-    // view
+    const tabLabel = cat === 'All' ? '' : ' in ' + ((tabs.find(t => t.key === cat) || {}).label || cat);
+    setRegion('shown', forms.length ? `Showing ${shown.length} of ${plural(inCat.length, 'form')}${tabLabel}` : '');
+    const empty = !forms.length ? `<div class="tu-nomatch">No forms yet. Use <b>Add forms</b> to load your first form.</div>` : `<div class="tu-nomatch">${q ? 'No forms match “' + esc(q) + '”.' : 'No forms with this status' + esc(tabLabel) + '.'}</div>`;
+    setRegion('cards', shown.length ? shown.map(cardHtml).join('') : empty);
     const view = store.get(KEYS.view, 'grid') === 'list' ? 'list' : 'grid';
-    grid.classList.toggle('tu-list', view === 'list');
-    document.querySelectorAll('#tuFind [data-tu-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tuView === view)));
-    // resume strip, from the cards that offer Resume
-    resumeItems = Array.from(document.querySelectorAll('#libraryGrid .v75-card [data-action="resume"]:not([disabled])')).map(btn => {
-      const card = btn.closest('.v75-card');
-      const note = card.querySelector('.v75-resume-chip')?.textContent || card.querySelector('.v9-card-note')?.textContent || '';
-      const st = card.querySelector('.v75-badge')?.textContent || '';
-      return {id:card.dataset.formId, title:cardTitle(card), meta:[st, note].filter(Boolean).join(' · ').replace(/\s+/g, ' ').trim(), answered:pct(card.querySelector('.v75-mini b')?.textContent)};
-    }).filter(it => it.id);
-    paintResume();
-    // recently completed: add each form's score and open its review on click
-    document.querySelectorAll('#libraryModePanel .recent-completed-item-v201').forEach(item => {
-      const name = item.querySelector('b')?.getAttribute('title') || item.querySelector('b')?.textContent || '';
-      const card = Array.from(document.querySelectorAll('#libraryGrid .v75-card')).find(c => c.dataset.formId === name || cardTitle(c) === name);
-      if(!card) return;
-      const score = card.querySelector('.v75-bigmetric b')?.textContent || '';
-      let s = item.querySelector('.tu-recent-score'); if(!s){ s = document.createElement('em'); s.className = 'tu-recent-score'; item.appendChild(s); }
-      if(s.textContent !== score) s.textContent = score;
-      if(card.querySelector('[data-action="review"]:not([disabled])') && !item.dataset.tuOpen){
-        item.dataset.tuOpen = card.dataset.formId; item.tabIndex = 0; item.setAttribute('role', 'button'); item.title = 'Review ' + name;
-      }
-    });
+    home.querySelector('[data-tu-r="cards"]').classList.toggle('tu-list', view === 'list');
+    home.querySelectorAll('[data-tu-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tuView === view)));
+    paintSyncBits();
+    // "Show all tabs" only when the tiles overflow the collapsed height
+    const tiles = home.querySelector('[data-tu-tiles]'), more = home.querySelector('[data-tu-tabs-more]');
+    if(tiles && more){ tiles.classList.add('tu-clamp'); const over = tiles.scrollHeight > tiles.clientHeight + 2; tiles.classList.toggle('tu-clamp', !homeUi.tabsOpen); more.hidden = !over; }
+    if(sheetState.id) paintSheet();
     heroTitle();
     if(libraryObserver) libraryObserver.takeRecords();
   }
-  function openRecent(item){
-    const id = item.dataset.tuOpen; if(!id) return;
-    document.querySelector(`#libraryGrid .v75-card[data-form-id="${CSS.escape(id)}"] [data-action="review"]`)?.click();
+  function onHomeClick(e){
+    const t = e.target.closest('button, [data-tu-cat]'); if(!t || !byId('tuHome').contains(t)) return;
+    if(t.dataset.tuCat){ document.querySelector(`#libraryFilters .filter-pill[data-filter="${CSS.escape(t.dataset.tuCat)}"]`)?.click(); scheduleLibrary(); return; }
+    if(t.dataset.tuStatus){ store.set(KEYS.status, t.dataset.tuStatus); scheduleLibrary(); return; }
+    if(t.dataset.tuView){ store.set(KEYS.view, t.dataset.tuView); scheduleLibrary(); return; }
+    if(t.hasAttribute('data-tu-resume-more')){ homeUi.resumeOpen = !homeUi.resumeOpen; scheduleLibrary(); return; }
+    if(t.hasAttribute('data-tu-tabs-more')){ homeUi.tabsOpen = !homeUi.tabsOpen; scheduleLibrary(); return; }
+    if(t.hasAttribute('data-tu-see-all')){ store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    if(t.id === 'tuCustomizeTabs'){ window.__v195BSettingsActive = 'order'; window.__v195SettingsActive = 'order'; window.__tuSettingsAppearance = false; byId('settingsTab')?.click(); return; }
+    const act = t.dataset.tuAct, id = t.dataset.id; if(!act || !id) return;
+    if(act === 'sheet'){ openSheet(id, t); return; }
+    cardAction(id, `[data-action="${act}"]`);
   }
-  window.addEventListener('click', e => { const item = e.target.closest && e.target.closest('#libraryModePanel .recent-completed-item-v201[data-tu-open]'); if(item){ e.preventDefault(); e.stopPropagation(); setTimeout(() => openRecent(item), 0); } }, true);
-  document.addEventListener('keydown', e => { if(e.key !== 'Enter' && e.key !== ' ') return; const item = e.target.closest && e.target.closest('#libraryModePanel .recent-completed-item-v201[data-tu-open]'); if(item){ e.preventDefault(); setTimeout(() => openRecent(item), 0); } });
+  document.addEventListener('click', e => { if(e.target.closest && e.target.closest('[data-tu-open-sync]')){ e.preventDefault(); openSync(); } });
+  window.addEventListener('resize', () => { if(byId('tuHome')) scheduleLibrary(); }); // re-measures the "Show all tabs" toggle
+  document.addEventListener('click', e => { const p = e.target.closest && e.target.closest('#tuHome .tu-more-panel button'); if(p) p.closest('details')?.removeAttribute('open'); });
+
+  /* ---------- Form details sheet (board FormSheet), replaces the card's More menu ---------- */
+  const sheetState = {id:null, tab:'overview', attempts:null, counts:null, returnTo:null, token:0};
+  function ensureSheet(){
+    let el = byId('tuSheet'); if(el) return el;
+    el = document.createElement('div'); el.id = 'tuSheet'; el.hidden = true;
+    el.innerHTML = '<div class="tu-scrim" data-tu-close></div><aside class="tu-sheet" role="dialog" aria-modal="true" aria-labelledby="tuSheetTitle"></aside>';
+    (byId('menu') || document.body).appendChild(el);
+    el.addEventListener('click', onSheetClick);
+    el.addEventListener('keydown', e => {
+      if(e.key === 'Escape'){ e.preventDefault(); closeSheet(); return; }
+      if(e.key !== 'Tab') return;
+      const f = Array.from(el.querySelectorAll('button:not(:disabled)')).filter(b => b.offsetParent !== null); if(!f.length) return;
+      if(e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length - 1].focus(); }
+      else if(!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
+    });
+    return el;
+  }
+  async function loadSheetData(){
+    const B = bridge(), id = sheetState.id, token = ++sheetState.token;
+    sheetState.attempts = null; sheetState.counts = null;
+    try{ const a = await B.attempts(id); if(token === sheetState.token){ sheetState.attempts = a; paintSheet(); } }catch(e){ if(token === sheetState.token){ sheetState.attempts = {attempts:[], error:true}; paintSheet(); } }
+    try{ const c = await B.retestCounts(id); if(token === sheetState.token){ sheetState.counts = c; paintSheet(); } }catch(e){ if(token === sheetState.token){ sheetState.counts = {error:true}; paintSheet(); } }
+  }
+  function openSheet(id, from){
+    const el = ensureSheet(); sheetState.id = id; sheetState.tab = 'overview'; sheetState.returnTo = from || null;
+    el.hidden = false; paintSheet(); loadSheetData();
+    setTimeout(() => el.querySelector('[data-tu-close].tu-round')?.focus(), 0);
+  }
+  function closeSheet(){
+    const el = byId('tuSheet'); if(!el || el.hidden) return;
+    el.hidden = true; sheetState.id = null; sheetState.token++;
+    const back = sheetState.returnTo; sheetState.returnTo = null;
+    const again = back && back.dataset.id ? document.querySelector(`#tuHome [data-tu-act="sheet"][data-id="${CSS.escape(back.dataset.id)}"]`) : null;
+    (again || back)?.focus?.();
+  }
+  function paintSheet(){
+    const el = byId('tuSheet'), B = bridge(); if(!el || el.hidden || !B) return;
+    const rec = B.form(sheetState.id); if(!rec){ closeSheet(); return; }
+    const tabsByKey = {}; libTabs().forEach(t => { tabsByKey[t.internal] = t; });
+    const f = formInfo(rec, tabsByKey), card = legacyCard(f.id) || null;
+    const has = sel => !card || !!card.querySelector(sel);
+    const images = rec.optimized ? 'images optimized' + (rec.imageAssets ? ' · ' + plural(Number(rec.imageAssets), 'asset') : '') : 'original images';
+    const head = `<div class="tu-sheet-head"><div class="tu-sheet-row"><span class="tu-chip-tab"><i style="background:${esc(f.color)}"></i>${esc(f.tabLabel + ' · ' + f.id)}</span><span class="tu-st ${f.st}">${ST_LABEL[f.st]}</span><span style="flex:1"></span><button type="button" class="tu-round" data-tu-close aria-label="Close">${icon('<path d="M6 6l12 12M18 6 6 18"/>', 20)}</button></div>` +
+      `<div class="tu-sheet-title"><div><h2 id="tuSheetTitle">${esc(f.title)}</h2><span>${esc([plural(Number(rec.totalQuestions) || 0, 'question'), plural(f.blockCount, 'block'), f.attemptsText, images].join(' · '))}</span></div><button type="button" class="tu-round clear" data-tu-do="rename" aria-label="Rename form" title="Rename">${icon('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>', 20)}</button></div>` +
+      `<div class="tu-sheet-tabs" role="tablist" aria-label="Form sections"><button type="button" role="tab" data-tu-tab="overview" aria-selected="${sheetState.tab === 'overview'}">Overview</button><button type="button" role="tab" data-tu-tab="manage" aria-selected="${sheetState.tab === 'manage'}">Manage</button></div></div>`;
+    let body = '';
+    if(sheetState.tab === 'overview'){
+      const third = rec.type === 'N' ? [rec.threeDigitScore || '—', '3-digit'] : [f.answered + '%', 'Answered'];
+      body += `<div class="tu-sheet-stats"><div><b>${f.score == null ? '—' : f.score + '%'}</b><span>Score</span></div><div><b>${esc(third[0])}</b><span>${third[1]}</span></div><div><b>${esc(f.blocks)}</b><span>Blocks</span></div><div><b>${f.marked}</b><span>Marked</span></div></div>`;
+      body += `<div class="tu-sheet-actions">${f.canResume ? `<button type="button" class="tu-btn" data-tu-do="resume">${icon(ICONS.play, 18)}Resume</button><button type="button" class="tu-btn outline" data-tu-do="start">New attempt</button>` : `<button type="button" class="tu-btn" data-tu-do="start">${icon(ICONS.play, 18)}${f.startLabel}</button>`}${f.canReview ? `<button type="button" class="tu-btn tonal" data-tu-do="review">${icon('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', 18)}Review &amp; score report</button>` : ''}</div>`;
+      const c = sheetState.counts;
+      if(f.s.answered || f.s.completed){
+        const tile = (pool, n, label) => `<button type="button" class="tu-retest" data-tu-retest="${pool}" ${c && !c.error && !n ? 'disabled' : ''}><b>${c ? (c.error ? '—' : n) : '…'}</b><span>${label}</span></button>`;
+        body += `<section><h3>Retest from the active attempt</h3><span class="tu-sheet-note">Each retest is saved as its own attempt. The source attempt is never changed.</span><div class="tu-retests">${tile('wrongs', c && c.wrongs, 'Wrongs')}${tile('marked', c && c.marked, 'Marked')}${tile('wrongs_marked', c && c.wrongs_marked, 'Wrongs + marked')}</div></section>`;
+      }
+      const at = sheetState.attempts;
+      let list = '<div class="tu-loading">Loading attempts…</div>';
+      if(at && at.attempts){
+        list = at.attempts.length ? `<div class="tu-list-box" role="radiogroup" aria-label="Active attempt">${at.attempts.map((a, i) => {
+          const active = a.attemptId === at.activeAttemptId, sm = a.summary || {};
+          const meta = [active ? 'Active' : '', sm.completed ? 'completed ' + shortDate(a.completedAt || sm.completedAt) : (sm.answered ? sm.answered + ' of ' + sm.total + ' answered' : 'not started'), plural(sm.blockCount || 1, 'block')].filter(Boolean).join(' · ');
+          return `<button type="button" class="tu-attempt" role="radio" aria-checked="${active}" data-tu-attempt="${i + 1}"><span class="tu-radio"></span><div><b>${esc(a.label || 'Attempt ' + (i + 1))}</b><span>${esc(meta)}</span></div><strong>${sm.completed && sm.scorePct != null ? sm.scorePct + '%' : '—'}</strong></button>`;
+        }).join('')}</div><span class="tu-sheet-note">The active attempt drives the card, meters and retests.</span>` : '<span class="tu-sheet-note">No attempts saved yet.</span>';
+      }
+      body += `<section><h3>Attempts</h3>${list}</section>`;
+    } else {
+      const rows = [];
+      rows.push(`<div class="tu-rowi"><div><b>Library tab</b><span>Where this form appears and which meter it counts toward</span></div><strong>${esc(f.tabLabel)}</strong></div>`);
+      if(rec.type === 'N') rows.push(`<div class="tu-rowi"><div><b>3-digit score</b><span>Shown on the card when enabled for this tab</span></div><strong>${esc(rec.threeDigitScore || '—')}</strong>${has('[data-action="score3"]') ? '<button type="button" class="tu-btn outline small" data-tu-do="score3">Edit</button>' : ''}</div>`);
+      rows.push(`<div class="tu-rowi"><div><b>Progress file</b><span>Move this form’s attempts as a single file</span></div><button type="button" class="tu-btn outline small" data-tu-do="import-save">Import</button>${f.s.answered || f.s.completed ? '<button type="button" class="tu-btn outline small" data-tu-do="export-save">Export</button>' : ''}</div>`);
+      rows.push(`<div class="tu-rowi"><div><b>Images</b><span>${rec.optimized ? 'Optimized' + (rec.imageAssets ? ' · ' + esc(plural(Number(rec.imageAssets), 'asset')) : '') : 'Original images inside the form file'}</span></div><button type="button" class="tu-btn outline small" data-tu-do="optimize">${rec.optimized ? 'Optimize again' : 'Optimize'}</button></div>`);
+      body += `<div class="tu-rows">${rows.join('')}</div>`;
+      body += `<section class="tu-danger"><h3>Danger zone</h3><span class="tu-sheet-note">Each action asks for confirmation first.</span><div>${f.s.attemptCount || f.s.answered ? '<button type="button" class="tu-btn danger" data-tu-do="delete-attempt">Delete active attempt</button><button type="button" class="tu-btn danger" data-tu-do="delete-progress">Delete all progress</button>' : ''}<button type="button" class="tu-btn dangerfill" data-tu-do="delete">Remove form</button></div></section>`;
+    }
+    const html = head + `<div class="tu-sheet-body">${body}</div>`;
+    const box = el.querySelector('.tu-sheet');
+    if(box.dataset.html === html) return;
+    const scroll = box.querySelector('.tu-sheet-body')?.scrollTop || 0, focusKey = document.activeElement && box.contains(document.activeElement) ? ['tuDo', 'tuTab', 'tuRetest', 'tuAttempt'].map(k => document.activeElement.dataset[k] ? `[data-${k.replace(/[A-Z]/g, m => '-' + m.toLowerCase())}="${document.activeElement.dataset[k]}"]` : '').find(Boolean) || (document.activeElement.hasAttribute('data-tu-close') ? '.tu-round[data-tu-close]' : '') : '';
+    box.innerHTML = html; box.dataset.html = html;
+    const b2 = box.querySelector('.tu-sheet-body'); if(b2) b2.scrollTop = scroll;
+    if(focusKey) box.querySelector(focusKey)?.focus();
+  }
+  const SHEET_ACTIONS = {start:'[data-action="start"]', resume:'[data-action="resume"]', review:'[data-action="review"]', rename:'[data-action="rename"]', 'import-save':'[data-action="import-save"]', 'export-save':'[data-action="export-save"]', optimize:'[data-action="optimize"]', score3:'[data-action="score3"]', 'delete-attempt':'[data-v9="delete-attempt"]', 'delete-progress':'[data-action="delete-progress"]', delete:'[data-action="delete"]'};
+  const LEAVES = ['start', 'resume', 'review', 'delete'];
+  async function onSheetClick(e){
+    const t = e.target.closest('button, [data-tu-close]'); if(!t) return;
+    if(t.hasAttribute('data-tu-close')){ closeSheet(); return; }
+    const id = sheetState.id; if(!id) return;
+    if(t.dataset.tuTab){ sheetState.tab = t.dataset.tuTab; paintSheet(); return; }
+    if(t.dataset.tuDo){
+      const act = t.dataset.tuDo, sel = SHEET_ACTIONS[act]; if(!sel) return;
+      if(LEAVES.includes(act)) closeSheet();
+      await cardAction(id, sel);
+      if(!LEAVES.includes(act)) setTimeout(() => { if(sheetState.id === id) loadSheetData(); }, 400);
+      return;
+    }
+    if(t.dataset.tuRetest){
+      // A retest is a new attempt with a question pool: open the existing setup, then choose the pool there.
+      const pool = t.dataset.tuRetest; closeSheet();
+      if(!await cardAction(id, '[data-action="start"]')) return;
+      for(let i = 0; i < 1200; i++){
+        const radio = document.querySelector(`input[name="v10RetestPool"][value="${CSS.escape(pool)}"]`);
+        if(radio){ if(!radio.checked){ radio.checked = true; radio.dispatchEvent(new Event('change', {bubbles:true})); } return; }
+        if(byId('examScreen') && !byId('examScreen').classList.contains('hidden')) return;
+        await wait(50);
+      }
+      return;
+    }
+    if(t.dataset.tuAttempt && t.getAttribute('aria-checked') !== 'true'){
+      if(await cardAction(id, '[data-v9="attempts"]')) await answerPrompt(t.dataset.tuAttempt);
+      setTimeout(() => { if(sheetState.id === id) loadSheetData(); }, 400);
+    }
+  }
 
   /* ---------- Settings › Appearance ---------- */
   function appearanceHtml(){
@@ -867,9 +1239,11 @@
     if(side) new MutationObserver(() => brand()).observe(side, {childList:true});
     const menu = byId('menu'); if(menu) new MutationObserver(() => { syncDarkFlag(); heroTitle(); }).observe(menu, {attributes:true, attributeFilter:['class']});
     const sync = byId('progressSyncPanel'); if(sync) new MutationObserver(() => paintSync()).observe(sync, {childList:true});
-    const status = byId('dataFolderStatus'); if(status) new MutationObserver(() => { paintSync(); heroTitle(); }).observe(status, {childList:true, characterData:true, subtree:true});
+    const status = byId('dataFolderStatus'); if(status) new MutationObserver(() => { paintSync(); paintNav(); }).observe(status, {childList:true, characterData:true, subtree:true});
+    const watchCloud = () => { const c = byId('googleBackupStatus'); if(!c || c.dataset.tuWatched) return; c.dataset.tuWatched = '1'; new MutationObserver(() => paintSyncBits()).observe(c, {childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['data-tone', 'title']}); paintSyncBits(); };
+    watchCloud();
     // late modules (progress sync, form updates) add their tabs and panels after load
-    let tries = 0; const late = setInterval(() => { brand(); paintSync(); watchSettings(); wrapReport(); if(byId('progressSyncPanel') && !sync && !late.__obs){ late.__obs = true; new MutationObserver(() => paintSync()).observe(byId('progressSyncPanel'), {childList:true}); } if(++tries > 20) clearInterval(late); }, 500);
+    let tries = 0; const late = setInterval(() => { brand(); paintSync(); watchSettings(); wrapReport(); watchCloud(); scheduleLibrary(); if(byId('progressSyncPanel') && !sync && !late.__obs){ late.__obs = true; new MutationObserver(() => paintSync()).observe(byId('progressSyncPanel'), {childList:true}); } if(++tries > 20) clearInterval(late); }, 500);
   }
   window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), refresh:() => { brand(); scheduleLibrary(); paintSync(); }};
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
