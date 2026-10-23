@@ -9,13 +9,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=7">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=7">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=8">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=8">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=7"></script>
-<script src="./js/form-updates-core.js?v=7"></script>
-<script src="./js/form-update-store.js?v=7"></script>
-<script src="./js/google-auth.js?v=7"></script>
+<script src="./js/sync-config.js?v=8"></script>
+<script src="./js/form-updates-core.js?v=8"></script>
+<script src="./js/form-update-store.js?v=8"></script>
+<script src="./js/google-auth.js?v=8"></script>
 
 <style>
 :root{
@@ -481,7 +481,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=7" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=8" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -632,8 +632,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=7"></script>
-<script src="./js/qid-migration.js?v=7"></script>
+<script src="jszip.min.js?v=8"></script>
+<script src="./js/qid-migration.js?v=8"></script>
 <script>
 
 
@@ -2981,7 +2981,8 @@ document.addEventListener('click', function(e){
   function qbankSavedSelectedIds(qp){
     const allIds=(catalog.forms||[]).map(f=>f.id);
     const saved=Array.isArray(qp?.lastSelectedFormIds) ? qp.lastSelectedFormIds.filter(id=>allIds.includes(id)) : [];
-    return saved.length ? saved : allIds;
+    // A23 Phase C: a saved empty list is the user's Clear (no forms); only a missing list means every form
+    return Array.isArray(qp?.lastSelectedFormIds) && (saved.length || !qp.lastSelectedFormIds.length) ? saved : allIds;
   }
   async function persistQbankSelectedIds(ids){ const qp=await readQbankProgress(); qp.lastSelectedFormIds=ids; await writeQbankProgress(qp); }
   async function renderQbankMode(){
@@ -3546,9 +3547,11 @@ document.addEventListener('click', function(e){
       if(!keys.length) throw new Error('This qbank session has no saved question key list.');
       const formBanks={};
       const qs=[];
+      // A23 Phase C: QID keys (formUid::qid) resolve through the catalog question index; legacy keys are formId:block:question
+      const rowByKey={}; (catalog.forms||[]).forEach(f=>(f.questionIndex||[]).forEach(r=>{ if(r&&r.key) rowByKey[r.key]=r; }));
       for(const key of keys){
-        const parts=String(key).split(':');
-        const formId=parts[0], bi=Number(parts[1]), qi=Number(parts[2]);
+        const row=rowByKey[key], parts=String(key).split(':');
+        const formId=row?row.formId:parts[0], bi=Number(row?row.blockIndex:parts[1]), qi=Number(row?row.questionIndex:parts[2]);
         if(!formId || !Number.isFinite(bi) || !Number.isFinite(qi)) continue;
         if(!formBanks[formId]) formBanks[formId]=await readFormBank(formId);
         const q=cloneJson(formBanks[formId]?.blocks?.[bi]?.questions?.[qi] || null);
@@ -3677,7 +3680,10 @@ document.addEventListener('click', function(e){
       if(activeSession && sessionHasCompleted(activeSession)){
         const id = activeSession.libraryFormId && activeSession.libraryFormId!=='QBANK_MODE' ? activeSession.libraryFormId : '';
         if(id) removeSuspendedTemp(id).catch(console.warn);
-        if(activeSession.qbankMode){ readQbankProgress().then(qp=>{ qp.activeSession=null; return writeQbankProgress(qp); }).catch(console.warn); }
+        // A23 Phase C: store the completed Qbank test, then clear the active session. The block is locked for review by now,
+        // so the iPad's passive-review guard skipped this save (tests stayed "In progress"); the completion is a real write.
+        // Run side by side, the clearing read-modify-write could also land last with the stale record.
+        if(activeSession.qbankMode){ let saved; const priorMutation=window.__stepReviewMutationWrite; window.__stepReviewMutationWrite=true; try{ saved=saveSessionToStorage(); }catch(e){ console.warn(e); }finally{ window.__stepReviewMutationWrite=priorMutation; } Promise.resolve(saved).then(()=>readQbankProgress()).then(qp=>{ qp.activeSession=null; return writeQbankProgress(qp); }).catch(console.warn); }
         if(activeSession.bankHash){ try{ localStorage.removeItem(quickSuspendKey(activeSession.bankHash)); }catch(e){} }
       }
       return out;
@@ -3872,7 +3878,7 @@ document.addEventListener('click', function(e){
         let qbankPoolCache={key:'',rows:[],details:null}, qbankUpdateTimer=null;
         async function qbankPoolV10(){const qp=await readQbankProgress(), ids=qbankSelectedIds(), mode=$id('qbankQuestionMode')?.value||'unused', source=$id('qbankSourceMode')?.value||'qbank', attempt=$id('qbankAttemptSource')?.value||'completed_qbank', used=qbankUsedFromSessions(qp); const cacheKey=JSON.stringify({ids,mode,source,attempt,usedN:Object.keys(used).length,sessions:(qp.sessions||[]).map(t=>t.qbankTestId+':'+t.updatedAt).join('|')}); if(qbankPoolCache.key===cacheKey)return qbankPoolCache.rows; let rows=makeBaseRows(ids), selectedTotal=rows.length, poolSource=source==='linked'?'Form Library':'Qbank'; if(source==='linked'){const banks={}, out=[]; for(const r of rows){const a=await attemptFor(r.formId,attempt); if(!a){if(mode==='all'||(mode==='unused'&&!used[r.key]))out.push(r); continue} const bp=a.session.blocks?.[r.blockIndex]||{}, ans=bp.answers?.[r.questionIndex], marked=!!bp.flagged?.[r.questionIndex]; if(!banks[r.formId])banks[r.formId]=await readFormBank(r.formId); const correct=banks[r.formId]?.blocks?.[r.blockIndex]?.questions?.[r.questionIndex]?.correct, libUsed=ans!=null, wrong=libUsed&&ans!==correct, qUsed=!!used[r.key]; if(mode==='all'||(mode==='unused'&&!qUsed)||(mode==='used'&&qUsed)||(mode==='wrongs'&&wrong&&!qUsed)||(mode==='marked'&&marked&&!qUsed)||(mode==='wrongs_marked'&&(wrong||marked)&&!qUsed))out.push(r)} rows=out} else {const hist=qHist(qp,attempt); rows=rows.filter(r=>{const h=hist[r.key]||{}, qUsed=!!used[r.key]; return mode==='all'||(mode==='unused'&&!qUsed)||(mode==='used'&&qUsed)||(mode==='wrongs'&&h.wrong)||(mode==='marked'&&h.marked)||(mode==='wrongs_marked'&&(h.wrong||h.marked))})} qbankPoolCache={key:cacheKey,rows,details:{available:rows.length,selectedTotal,qbankUsed:Object.keys(used).length,tests:(qp.sessions||[]).length,poolSource,pool:mode,attempt}}; return rows}
         qbankPool=qbankPoolV10;
-        updateQbankAvailable=async function(){const pool=await qbankPoolV10(), inp=$id('qbankQuestionCount'), d=qbankPoolCache.details||{}; if(inp){inp.max=String(pool.length); if(!+inp.value||+inp.value>pool.length)inp.value=String(Math.min(pool.length,40)||pool.length||1)} const stats=$id('qbankStats'); if(stats) stats.innerHTML=`<div class="qbank-ring"><div class="qbank-ring-inner"><b>${pool.length}</b><span>Available</span></div></div><div class="qbank-mini-metrics"><div class="qbank-mini"><b>${d.qbankUsed||0}</b><span>Qbank Used</span></div><div class="qbank-mini"><b>${d.selectedTotal||0}</b><span>Selected Total</span></div><div class="qbank-mini"><b>${d.tests||0}</b><span>Tests</span></div></div><div class="v10-available-panel"><div class="v10-available-head"><span><b>${pool.length}</b> Qbank Available Qs</span><span>${esc(d.poolSource||'Qbank')} · ${esc(poolLabel(d.pool))}</span></div><div class="v10-breakdown"><div><b>${d.selectedTotal||0}</b><span>Selected forms total</span></div><div><b>${d.qbankUsed||0}</b><span>Already used in Qbank</span></div><div><b>${pool.length}</b><span>Available now</span></div><div><b>${esc(d.attempt||'')}</b><span>Attempt source</span></div></div></div>`};
+        updateQbankAvailable=async function(){const pool=await qbankPoolV10(), inp=$id('qbankQuestionCount'), d=qbankPoolCache.details||{}; if(inp){inp.max=String(pool.length); /* A23 Phase C: a count clamped to 1 while the pool was empty (first render) is not the user's choice; refill it */ if(!+inp.value||+inp.value>pool.length||(inp.dataset.qbAuto&&pool.length)){inp.value=String(Math.min(pool.length,40)||pool.length||1); inp.dataset.qbAuto=pool.length?'':'1'}} const stats=$id('qbankStats'); if(stats) stats.innerHTML=`<div class="qbank-ring"><div class="qbank-ring-inner"><b>${pool.length}</b><span>Available</span></div></div><div class="qbank-mini-metrics"><div class="qbank-mini"><b>${d.qbankUsed||0}</b><span>Qbank Used</span></div><div class="qbank-mini"><b>${d.selectedTotal||0}</b><span>Selected Total</span></div><div class="qbank-mini"><b>${d.tests||0}</b><span>Tests</span></div></div><div class="v10-available-panel"><div class="v10-available-head"><span><b>${pool.length}</b> Qbank Available Qs</span><span>${esc(d.poolSource||'Qbank')} · ${esc(poolLabel(d.pool))}</span></div><div class="v10-breakdown"><div><b>${d.selectedTotal||0}</b><span>Selected forms total</span></div><div><b>${d.qbankUsed||0}</b><span>Already used in Qbank</span></div><div><b>${pool.length}</b><span>Available now</span></div><div><b>${esc(d.attempt||'')}</b><span>Attempt source</span></div></div></div>`};
         const v10QbankHTML=qbankHTML; qbankHTML=function(qp){let html=v10QbankHTML(qp); html=html.replace('value="separate"','value="qbank"'); html=html.replace('>Separate Qbank<','>Qbank<'); html=html.replace('<option value="first"','<option value="completed_qbank">Completed Qbank tests</option><option value="latest_qbank">Latest Qbank test</option><option value="all_qbank">All Qbank tests</option><option value="first"'); return html};
         const v10RenderQbankMode=renderQbankMode; renderQbankMode=async function(){qbankPoolCache.key=''; const out=await v10RenderQbankMode(); const src=$id('qbankSourceMode'); if(src&&src.value==='separate')src.value='qbank'; await updateQbankAvailable(); return out};
         document.addEventListener('change',e=>{if(e.target?.matches?.('input[name="v10RetestPool"]')){const pool=e.target.value, id=activeRunContext.formId, ctx=activeRunContext.v10RetestCtx; if(ctx){buildRetestBank(id,ctx,pool); renderMenu();}} if(e.target?.matches?.('#qbankQuestionMode,#qbankSourceMode,#qbankAttemptSource,#qbankFormList input[data-qbank-form]')){clearTimeout(qbankUpdateTimer); qbankUpdateTimer=setTimeout(()=>updateQbankAvailable().catch(console.warn),170)}},true);
@@ -4240,7 +4246,12 @@ document.addEventListener('click', function(e){
         const v103ImportFromFiles=importFromFiles;
         importFromFiles=async function(files){ v103ClearSetupState(); return await v103ImportFromFiles(files); };
         const v103StartQbankMode=startQbankMode;
-        startQbankMode=async function(){ v103ClearSetupState(); return await v103StartQbankMode(); };
+        startQbankMode=async function(){ v103ClearSetupState();
+          /* A23 Phase C: a Qbank test is split by its own Questions per block (the blocks startQbankMode builds), not by the
+             shared Quick practice block size, which a library New Attempt leaves at "All in one". Resume rebuilds the same blocks. */
+          const bs=$('#blockSizeSelect'), prev=bs?bs.value:null; if(bs) bs.value='original';
+          try{ return await v103StartQbankMode(); }finally{ if(bs&&prev!=null) bs.value=prev; }
+        };
 
         document.addEventListener('click',e=>{ if(e.target?.closest?.('#clearBank,#importBtn,[data-action="review"],[data-action="resume"]')) v103ClearSetupState(); },true);
         document.addEventListener('change',e=>{ if(e.target?.matches?.('#fileInput,#saveFileInput')) v103ClearSetupState(); },true);
@@ -4277,7 +4288,15 @@ document.addEventListener('click', function(e){
             let token=a23SetupTokens.get(x); if(!token){ token=++a23SetupTokenN; a23SetupTokens.set(x,token); }
             return {formId:c.formId, token, attemptLabel:c.v9AttemptLabel||'', sourceLabel:x.hasPrior&&x.attempt?(x.attempt.label||''):'', pool:(a193?c.a193Pool:c.v10RetestPool)||'all', counts:Object.assign({},(a193?c.a193Counts:c.v10RetestCounts)||{}), box:a193?'a193NewAttemptSetup':'v10RetestSetup', poolInput:a193?'a193Pool':'v10RetestPool', carry:a193?['a193CarryStem','a193CarryStrike','a193CarryMarked']:['v9CarryHl','v9CarryStrike','v9CarryMarked']};
           },
-          quick:()=>{ const b=importedBank; if(!b) return null; let save=null; try{ const s=currentBankHash&&latestSaveForBank(); if(s&&s.session) save={updatedAt:s.session.updatedAt||s.session.startedAt||null, completed:(s.session.blocks||[]).filter(x=>x&&x.blockCompleted).length, blocks:(s.session.blocks||[]).length}; }catch(e){} return {title:b.title||'', library:!!b.librarySlotId, files:(b.sourceFiles||[]).slice(), sourceBlocks:(b.blocks||[]).length, total:(b.blocks||[]).reduce((n,x)=>n+((x&&x.questions)||[]).length,0), save}; }
+          quick:()=>{ const b=importedBank; if(!b) return null; let save=null; try{ const s=currentBankHash&&latestSaveForBank(); if(s&&s.session) save={updatedAt:s.session.updatedAt||s.session.startedAt||null, completed:(s.session.blocks||[]).filter(x=>x&&x.blockCompleted).length, blocks:(s.session.blocks||[]).length}; }catch(e){} return {title:b.title||'', library:!!b.librarySlotId, files:(b.sourceFiles||[]).slice(), sourceBlocks:(b.blocks||[]).length, total:(b.blocks||[]).reduce((n,x)=>n+((x&&x.questions)||[]).length,0), save}; },
+          /* A23 Phase C: Qbank totals, per-form use and the test history (read-only). Both apps run the same v9/v10/v10.3
+             Qbank layers (the iPad's v16 linked-pool layer never installs); the pool itself stays in the legacy panel. */
+          qbank:async()=>{
+            const qp=await readQbankProgress(), used=qp.used||{};
+            const forms=(catalog.forms||[]).map(f=>{ const idx=Array.isArray(f.questionIndex)?f.questionIndex:[]; return {id:f.id, questions:idx.length, total:Number(f.totalQuestions)||idx.length, used:idx.filter(r=>r&&used[r.key]).length}; }); // questions = pool rows
+            const tests=(qp.sessions||[]).filter(t=>t&&t.session).map(t=>({id:t.qbankTestId, name:t.name||'', mode:t.mode==='tutor'?'tutor':'testing', done:t.status==='completed', total:Number(t.total)||0, blocks:((t.session&&t.session.blocks)||[]).length, percent:t.summary&&t.summary.percent!=null?Number(t.summary.percent):null, sourceMode:t.sourceMode||'', poolType:t.poolType||'', attemptSource:t.attemptSource||'', formIds:(t.formIds||[]).slice(), createdAt:t.createdAt||null, updatedAt:t.updatedAt||null, completedAt:t.completedAt||null}));
+            return {used:Object.keys(used).length, forms, tests};
+          }
         });
       })();
 
@@ -10476,11 +10495,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=7"></script>
-<script src="./js/sync-storage.js?v=7"></script>
-<script src="./js/progress-sync.js?v=7"></script>
-<script src="./js/library-backup.js?v=7"></script>
-<script src="./js/qid-settings.js?v=7"></script>
+<script src="./js/sync-merge.js?v=8"></script>
+<script src="./js/sync-storage.js?v=8"></script>
+<script src="./js/progress-sync.js?v=8"></script>
+<script src="./js/library-backup.js?v=8"></script>
+<script src="./js/qid-settings.js?v=8"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10957,10 +10976,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=7"></script>
-<script src="./exam-notes.js?v=7"></script>
-<script src="./app-update.js?v=7"></script>
-<script src="./js/form-updates.js?v=7"></script>
+<script src="./bulk-import.js?v=8"></script>
+<script src="./exam-notes.js?v=8"></script>
+<script src="./app-update.js?v=8"></script>
+<script src="./js/form-updates.js?v=8"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11046,6 +11065,6 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h1,htm
 html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h4,
 html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h4{color:#9BE7C1!important}
 </style>
-<script src="./thunder-ui.js?v=7"></script>
+<script src="./thunder-ui.js?v=8"></script>
 </body>
 </html>

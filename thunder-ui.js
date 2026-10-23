@@ -1,5 +1,5 @@
-/* ThunderUSMLE UI layer (A23 Phase 1 + Phase A): brand, accent colors, the Library home view (rebuilt from the canvas
-   boards over StepLibraryBridge), the form details sheet, Settings › Appearance, the iPad Backup & sync order and the Score Report. Shared by the Local and iPad apps; keep both copies identical.
+/* ThunderUSMLE UI layer (A23 Phase 1 + Phases A–C): brand, accent colors, the Library home view (rebuilt from the canvas
+   boards over StepLibraryBridge), the form details sheet, the start dialog, Quick practice, Add forms, Qbank (build + history), Settings › Appearance, the iPad Backup & sync order and the Score Report. Shared by the Local and iPad apps; keep both copies identical.
    It restyles the existing screens and adds a few controls. It never removes or renames the IDs and data-* hooks
    the other modules use, and it does not touch the exam interface (except the Score Report shown inside it). */
 (function(){
@@ -114,7 +114,7 @@
 :root[data-tu] body #menu .modern-main button.primary:disabled{background:var(--tu-p)!important;color:var(--tu-onp)!important;border:0!important;border-radius:999px!important}
 :root[data-tu] body #menu #settingsPanel>.library-toolbar.glass-panel:first-child{display:none!important}
 :root[data-tu] body #menu #settingsPanel .settings-shell-v195{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
-:root[data-tu] body #menu .modern-main :is(input[type=text],input[type=number],input[type=search],select,textarea):not(#tuSearch):not(#tuSort){border-radius:12px!important;border:1px solid var(--tu-line)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important}
+:root[data-tu] body #menu .modern-main :is(input[type=text],input[type=number],input[type=search],select,textarea):not(#tuSearch):not(#tuSort):not(.tu-bare){border-radius:12px!important;border:1px solid var(--tu-line)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important}
 
 /* shared controls */
 .tu-seg{display:flex;height:40px;border-radius:999px;overflow:hidden;background:var(--tu-s2)}
@@ -359,15 +359,15 @@ ${H}.theme-dark .tu-layer .tu-scrim{background:rgba(0,0,0,.6)}
 .tu-dialog{pointer-events:auto;position:relative;max-width:100%;max-height:100%;background:var(--tu-surface);color:var(--tu-on);border-radius:28px;box-shadow:0 16px 56px rgba(0,0,0,.3);display:flex;flex-direction:column;overflow:hidden;animation:tuDlgIn .16s ease-out}
 @keyframes tuDlgIn{from{transform:translateY(8px) scale(.99);opacity:0}}
 @media (prefers-reduced-motion:reduce){.tu-dialog{animation:none}}
-${H} :is(.tu-layer,#tuQuick) :is(h1,h2,h3){margin:0!important;color:var(--tu-on)!important;font-family:var(--tu-font)!important;letter-spacing:-.01em!important;line-height:1.2!important;background:none!important;-webkit-text-fill-color:currentColor!important;text-shadow:none!important}
-${H} :is(.tu-layer,#tuQuick) button{font-family:var(--tu-font)!important;margin:0;box-shadow:none;cursor:pointer}
-${H} :is(.tu-layer,#tuQuick) button:disabled{cursor:not-allowed}
+${H} :is(.tu-layer,#tuQuick,.tu-qbview) :is(h1,h2,h3){margin:0!important;color:var(--tu-on)!important;font-family:var(--tu-font)!important;letter-spacing:-.01em!important;line-height:1.2!important;background:none!important;-webkit-text-fill-color:currentColor!important;text-shadow:none!important}
+${H} :is(.tu-layer,#tuQuick,.tu-qbview) button{font-family:var(--tu-font)!important;margin:0;box-shadow:none;cursor:pointer}
+${H} :is(.tu-layer,#tuQuick,.tu-qbview) button:disabled{cursor:not-allowed}
 ${H} .tu-layer .tu-round{width:40px;height:40px;min-width:40px;flex:none;border-radius:50%;border:0;background:var(--tu-s1);color:var(--tu-on2);display:flex;align-items:center;justify-content:center;padding:0}
 ${H} .tu-layer .tu-round:hover{background:var(--tu-s2)}
-.tu-layer .tu-btn,#tuQuick .tu-btn{border:0;font-family:var(--tu-font);justify-content:center;white-space:nowrap}
+.tu-layer .tu-btn,#tuQuick .tu-btn,.tu-qbview .tu-btn{border:0;font-family:var(--tu-font);justify-content:center;white-space:nowrap}
 .tu-layer .tu-btn.outline,#tuQuick .tu-btn.outline{border:1px solid var(--tu-line)}
 .tu-layer .tu-btn.dangertext,#tuQuick .tu-btn.dangertext{background:transparent;color:var(--tu-bad);font-weight:700}
-.tu-layer .tu-btn:hover:not(:disabled),#tuQuick .tu-btn:hover:not(:disabled){filter:brightness(.96)}
+.tu-layer .tu-btn:hover:not(:disabled),#tuQuick .tu-btn:hover:not(:disabled),.tu-qbview .tu-btn:hover:not(:disabled){filter:brightness(.96)}
 .tu-layer .tu-btn.outline:hover:not(:disabled),#tuQuick .tu-btn.outline:hover:not(:disabled){background:var(--tu-s2);filter:none}
 .tu-note{font-size:12.5px;color:var(--tu-on3);line-height:1.45}
 .tu-chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -596,6 +596,135 @@ ${H} #tuQuick .tu-qblocks button[aria-checked="true"]{background:var(--tu-s1)}
 #tuQuick .tu-qstart .tu-btn:not(.outline){padding:0 24px}
 .tu-qempty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:36px 16px;color:var(--tu-on3);border:1px dashed var(--tu-line);border-radius:20px}
 .tu-qempty b{color:var(--tu-on);font-size:15px}.tu-qempty span{font-size:13px;max-width:320px}
+
+/* Qbank (boards Qbank, QbankHistory): the legacy panels stay in the DOM, off-screen; History is a tab of Qbank, so the
+   sidebar's "Qbank tests" button is hidden (kept for its hooks) and Qbank stays highlighted on the History page */
+${H} :is(#qbankModePanel,#qbankTestsPanel).tu-has-qbank.active{display:block!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+${H} :is(#qbankModePanel,#qbankTestsPanel).tu-has-qbank>:not(.tu-qbview){position:absolute!important;left:-10000px!important;top:0!important;width:900px!important;height:1px!important;overflow:hidden!important;visibility:hidden!important;pointer-events:none!important}
+${H}:is([data-tu-page="qbank"],[data-tu-page="qbankTests"]) .modern-hero{display:none!important}
+${H} .modern-main:has(:is(#qbankModePanel,#qbankTestsPanel).tu-has-qbank.active){padding:28px 36px 56px!important}
+${H} aside.modern-sidebar #qbankTestsTab{display:none!important}
+${H}[data-tu-page="qbankTests"] aside.modern-sidebar #qbankTab{background:var(--tu-pc)!important;color:var(--tu-onpc)!important;font-weight:700!important}
+${H} .tu-qbview{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:22px;color:var(--tu-on);font-family:var(--tu-font);font-variant-numeric:tabular-nums}
+.tu-qbhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.tu-qbhead>div:first-child{display:flex;flex-direction:column;gap:4px;min-width:0}
+${H} .tu-qbhead h1{font-size:32px!important;font-weight:800!important;letter-spacing:-.02em!important}
+.tu-qbhead>div>span{font-size:14px;color:var(--tu-on3)}
+.tu-qbtabs{display:flex;height:44px;border:1px solid var(--tu-line);border-radius:999px;overflow:hidden;background:var(--tu-surface);flex:none}
+${H} .tu-qbtabs button{display:flex;align-items:center;gap:6px;padding:0 20px;border:0;border-radius:0;background:transparent;color:var(--tu-on2);font-weight:700;font-size:14px;height:100%}
+${H} .tu-qbtabs button+button{border-left:1px solid var(--tu-line)}
+${H} .tu-qbtabs button[aria-selected="true"]{background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-qbtabs button span{font-weight:600;opacity:.75}
+.tu-qbtotals{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.tu-qbtile{background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-qbtile b{font-size:28px;font-weight:800;line-height:1.2}
+.tu-qbtile span{font-size:13px;font-weight:700;color:var(--tu-on3)}
+.tu-qbtile.main{background:var(--tu-p);border-color:var(--tu-p);color:var(--tu-onp)}
+.tu-qbtile.main span{opacity:.9}
+.tu-qbgrid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.tu-qbview .tu-card{border-radius:28px}
+.tu-qbforms{flex:1 1 340px;min-width:0;padding:20px;display:flex;flex-direction:column;gap:14px}
+.tu-qbfhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+${H} .tu-qbfhead h2{font-size:18px!important;font-weight:800!important}
+.tu-qbfhead h2 span{font-weight:600;color:var(--tu-on3);font-size:14px}
+.tu-qbfhead>div{display:flex;gap:6px}
+${H} .tu-qbview .tu-link{height:34px;padding:0 12px;border-radius:999px;font-size:13.5px}
+${H} .tu-qbview .tu-link:hover{background:var(--tu-s2)}
+.tu-qbfind{display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;border-radius:999px;background:var(--tu-s2);color:var(--tu-on3)}
+${H} .tu-qbfind input{flex:1;min-width:0;height:100%;border:0!important;background:transparent!important;outline:none;padding:0!important;margin:0;font-size:14.5px;color:var(--tu-on)!important;box-shadow:none!important}
+.tu-qbfind:focus-within{outline:3px solid var(--tu-p);outline-offset:2px}
+.tu-qbgroups{display:flex;flex-direction:column;gap:14px}
+.tu-qbgroup{border:1px solid var(--tu-line2);border-radius:18px;overflow:hidden}
+${H} .tu-qbghead{width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;border-radius:0;background:var(--tu-s1);color:var(--tu-on);text-align:left}
+.tu-qbghead>i{width:10px;height:10px;border-radius:50%;flex:none}
+.tu-qbghead>b{flex:1;font-weight:800;font-size:14.5px;min-width:0}
+.tu-qbghead>span{font-size:12.5px;color:var(--tu-on3);font-weight:600;white-space:nowrap}
+.tu-qbghead>svg{color:var(--tu-on3);transition:transform .15s}
+.tu-qbghead[aria-expanded="false"]>svg{transform:rotate(-90deg)}
+@media (prefers-reduced-motion:reduce){.tu-qbghead>svg{transition:none}}
+${H} .tu-qbrow{width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;border:0;border-top:1px solid var(--tu-line2);border-radius:0;background:transparent;color:var(--tu-on);text-align:left}
+${H} .tu-qbrow:hover{background:var(--tu-s1)}
+.tu-qbrow>i{width:20px;height:20px;border-radius:6px;border:2px solid var(--tu-on3);display:flex;align-items:center;justify-content:center;color:var(--tu-onp);flex:none}
+.tu-qbrow[aria-checked="true"]>i{border-color:var(--tu-p);background:var(--tu-p)}
+.tu-qbrow>span{flex:1;display:flex;flex-direction:column;min-width:0}
+.tu-qbrow b{font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tu-qbrow small{font-size:12px;color:var(--tu-on3)}
+.tu-qbrow>em{font-style:normal;font-size:13px;font-weight:700;color:var(--tu-on2);white-space:nowrap}
+.tu-qbopts{flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.tu-qbcard{padding:20px;display:flex;flex-direction:column;gap:18px}
+.tu-qbfield{display:flex;flex-direction:column;gap:8px;min-width:0}
+label.tu-qbfield{gap:6px}
+.tu-qbfield>span{font-size:13px;font-weight:700;color:var(--tu-on2)}
+${H} .tu-qbview .tu-qbfield input{height:46px;border-radius:12px!important;border:1px solid var(--tu-line)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;padding:0 14px;font-size:15px;width:100%;box-sizing:border-box;margin:0;box-shadow:none}
+${H} .tu-qbview .tu-qbfield input[type=number]{font-weight:700}
+.tu-qbpair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+${H} .tu-qbradio{text-align:left;padding:12px 14px;border-radius:16px;border:1.5px solid var(--tu-line);background:transparent;color:var(--tu-on);display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-qbradio b{font-weight:800;font-size:14.5px}.tu-qbradio span{font-size:12.5px;opacity:.85;line-height:1.35}
+${H} .tu-qbradio[aria-checked="true"]{border-color:var(--tu-p);background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-qbattempt{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--tu-on2);flex-wrap:wrap}
+${H} .tu-qbview .tu-qbattempt select{height:38px;border-radius:10px!important;border:1px solid var(--tu-line)!important;background-color:var(--tu-surface)!important;color:var(--tu-on)!important;padding:0 10px 0 12px;font-weight:700;font-size:13.5px;margin:0;max-width:100%}
+.tu-qbview .tu-chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--tu-line);background:transparent;color:var(--tu-on);font-weight:700;font-size:13.5px;white-space:nowrap}
+.tu-qbview .tu-chip:is([aria-pressed="true"],[aria-checked="true"]){border-color:var(--tu-p);background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-qbnums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.tu-qbrange{display:flex;align-items:center;gap:12px;font-size:14px}
+${H} .tu-qbrange input{flex:1;min-width:0;accent-color:var(--tu-p);margin:0;height:24px}
+.tu-qbrange>span:last-child{color:var(--tu-on3);font-weight:600;white-space:nowrap}
+.tu-qbcard .tu-swrow{padding-top:4px}
+.tu-qbfoot{position:sticky;bottom:16px;z-index:2;background:var(--tu-s2);border-radius:24px;padding:14px 14px 14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tu-qbfoot>div{flex:1;min-width:150px;display:flex;flex-direction:column}
+.tu-qbfoot b{font-weight:800;font-size:15px}.tu-qbfoot span{font-size:12.5px;color:var(--tu-on3)}
+${H} .tu-qbview .tu-qbgo{height:50px;padding:0 26px;gap:8px;font-size:15px;font-weight:800}
+.tu-qttools{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.tu-qtfind{width:320px;max-width:100%}
+${H} .tu-qticon{width:36px;height:36px;min-width:36px;border-radius:50%;border:0;background:transparent;color:var(--tu-on2);display:flex;align-items:center;justify-content:center;padding:0;flex:none}
+${H} .tu-qticon:hover{background:var(--tu-s2)}
+${H} .tu-qticon.bad{color:var(--tu-bad)}
+.tu-qbhead-r{display:flex;align-items:center;gap:8px}
+.tu-qttable{overflow:hidden;container-type:inline-size}
+.tu-qtrow{display:grid;grid-template-columns:minmax(0,2.4fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr) minmax(0,1fr) minmax(216px,1.6fr);gap:12px;padding:14px 22px;align-items:center;border-bottom:1px solid var(--tu-line2)}
+.tu-qtrow:last-child{border-bottom:0}
+.tu-qthead{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--tu-on3)}
+.tu-qthead>span:last-child{text-align:right}
+.tu-qtname{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-qtname b{font-weight:800;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tu-qtname small{font-size:12.5px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-qtmode,.tu-qtst{font-style:normal;font-size:12.5px;font-weight:800;padding:4px 10px;border-radius:8px;background:var(--tu-s2);color:var(--tu-on2);white-space:nowrap;display:inline-block}
+.tu-qtmode.tutor{background:var(--tu-warnc);color:var(--tu-warn)}
+.tu-qtst{font-size:12px;border-radius:999px;background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-qtst.done{background:var(--tu-okc);color:var(--tu-ok)}
+.tu-qtqs{font-size:14px;font-weight:700;white-space:nowrap}
+.tu-qtscore{font-size:15px;font-weight:800;white-space:nowrap}
+.tu-qtlbl{display:none;font-weight:600;color:var(--tu-on3);font-size:13px}
+.tu-qtacts{display:flex;gap:6px;justify-content:flex-end;align-items:center}
+${H} .tu-qbview .tu-qtacts .tu-btn{height:36px;padding:0 16px;font-weight:700;font-size:13.5px}
+${H} .tu-qbview .tu-qtacts .tu-btn.tonal2{background:var(--tu-s2);color:var(--tu-on)}
+.tu-qtempty{padding:48px 22px;text-align:center;color:var(--tu-on3);font-size:14.5px;display:flex;flex-direction:column;gap:6px;align-items:center}
+.tu-qtempty b{color:var(--tu-on);font-size:15px}
+/* legacy dark rules force every span and label in #menu to fixed colors; take them back inside the Qbank views */
+${H} .tu-qbview :is(span,label){color:inherit!important}
+${H} .tu-qbview :is(.tu-qbhead>div>span,.tu-qbtile span,.tu-qbfhead h2 span,.tu-qbfind,.tu-qbghead>span,.tu-qbrange>span:last-child,.tu-swrow>div>span,.tu-qbfoot span,.tu-qtlbl){color:var(--tu-on3)!important}
+${H} .tu-qbview :is(.tu-qbfield>span,.tu-qbattempt){color:var(--tu-on2)!important}
+${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
+@container (max-width:780px){
+  .tu-qtrow.tu-qthead{display:none}
+  .tu-qtrow{display:flex;flex-wrap:wrap;gap:8px 12px;padding:14px 18px}
+  .tu-qtname{flex:1 1 100%}
+  .tu-qtlbl{display:inline}
+  .tu-qtacts{margin-left:auto}
+}
+@media (max-width:900px){
+  ${H}[data-tu-page="qbankTests"] aside.modern-sidebar #qbankTab{background:transparent!important;color:var(--tu-on)!important;font-weight:800!important}
+  ${H}[data-tu-page="qbankTests"] aside.modern-sidebar #qbankTab .tu-ico{background:var(--tu-pc);color:var(--tu-onpc)}
+  /* the page scrolls here, not .modern-main (which grows to its content), so let the sticky footer use the viewport */
+  ${H} .modern-main:has(:is(#qbankModePanel,#qbankTestsPanel).tu-has-qbank.active){padding:24px 24px 120px!important;overflow:visible!important}
+  ${H} .tu-qbview{gap:16px}
+  ${H} .tu-qbhead h1{font-size:30px!important}
+  /* one column: options first, the footer stays visible over the form list */
+  .tu-qbgrid{flex-direction:column;align-items:stretch}
+  .tu-qbopts{display:contents}
+  .tu-qbcard{order:1}.tu-qbforms{order:2;flex:none}
+  .tu-qbfoot{order:3;bottom:104px}
+}
 
 /* narrow windows */
 @media (max-width:1000px){${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:18px 20px 40px!important}.tu-overall{max-width:none}}
@@ -1534,6 +1663,247 @@ ${H} #tuQuick .tu-qblocks button[aria-checked="true"]{background:var(--tu-s1)}
     if(setupAction(t)) scheduleQuick();
   }
 
+  /* ---------- Qbank (boards Qbank, QbankHistory) ----------
+     #tuQbank (build a test) and #tuQtests (history) sit in the legacy Qbank panels, which stay in the DOM off-screen.
+     Values come from the legacy controls and StepLibraryBridge.qbank(); every control sets the hidden legacy input or
+     clicks its button, so pools, used-history, test records and saves still run through the v9/v10/v10.3 code. */
+  const QB_POOLS = [['unused', 'Unused'], ['used', 'Used'], ['wrongs', 'Wrongs'], ['marked', 'Marked'], ['wrongs_marked', 'Wrongs + marked'], ['all', 'All']];
+  const QB_ATTEMPTS = {
+    qbank: [['completed_qbank', 'Completed Qbank tests'], ['latest_qbank', 'Latest Qbank test'], ['all_qbank', 'All Qbank tests']],
+    linked: [['first', '1st attempts only'], ['latest_completed', 'Latest completed'], ['active', 'Active selected']]
+  };
+  // legacy values outside a source's list behave like these (v10 qHist / attemptFor fall through to them)
+  const QB_ATTEMPT_FALLBACK = {qbank:'completed_qbank', linked:'active'};
+  const QB_FILTERS = [['all', 'All'], ['progress', 'In progress'], ['completed', 'Completed'], ['testing', 'Testing'], ['tutor', 'Tutor'], ['linked', 'From Form Library'], ['separate', 'Separate Qbank']];
+  const QB_ICONS = {pencil:'<path d="M4 20h4L19 9l-4-4L4 16z"/>', trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>'};
+  const qbUi = {data:null, stale:true, seq:0, q:'', open:{}, missing:''};
+  let qbQueued = false;
+  const qbObservers = [];
+  function scheduleQbank(fresh){
+    if(fresh) qbUi.stale = true;
+    if(qbQueued) return; qbQueued = true;
+    requestAnimationFrame(() => { qbQueued = false; paintQbank().catch(e => console.warn('ThunderUI qbank failed', e)); });
+  }
+  const qbVal = id => { const el = byId(id); return el ? (el.type === 'checkbox' ? el.checked : el.value) : null; };
+  const qbLegacyForms = () => Array.from(document.querySelectorAll('#qbankFormList input[data-qbank-form]'));
+  function qbWatch(){
+    ['qbankModePanel', 'qbankTestsPanel'].forEach(id => {
+      const p = byId(id); if(!p || p.dataset.tuWatched) return;
+      p.dataset.tuWatched = '1';
+      const view = id === 'qbankModePanel' ? 'tuQbank' : 'tuQtests';
+      const o = new MutationObserver(recs => { if(recs.some(r => !(r.target.closest && r.target.closest('#' + view)))) scheduleQbank(true); });
+      o.observe(p, {childList:true, subtree:true, attributes:true, attributeFilter:['class', 'max', 'disabled']});
+      qbObservers.push(o);
+    });
+  }
+  function qbHeadHtml(which, count){
+    const sub = which === 'build' ? 'Mix questions across forms. Qbank keeps its own history and never edits your form attempts.' : 'Every generated test, newest first. Resume, review, rename, export or delete.';
+    const refresh = which === 'history' ? `<button type="button" class="tu-qticon" data-tu-qtrefresh aria-label="Refresh the test list" title="Refresh">${icon(QB_ICONS.refresh, 18)}</button>` : '';
+    return `<header class="tu-qbhead"><div><h1>Qbank</h1><span>${sub}</span></div><div class="tu-qbhead-r">${refresh}<div class="tu-qbtabs" role="tablist" aria-label="Qbank views">` +
+      `<button type="button" role="tab" aria-selected="${which === 'build'}" data-tu-qbtab="build">Build test</button>` +
+      `<button type="button" role="tab" aria-selected="${which === 'history'}" data-tu-qbtab="history">History <span>${count}</span></button></div></div></header>`;
+  }
+  function ensureQbView(panel, id){
+    let v = byId(id);
+    if(v && v.parentNode === panel) return v;
+    if(v) v.remove();
+    v = document.createElement('div'); v.id = id; v.className = 'tu-qbview';
+    if(id === 'tuQbank'){
+      v.innerHTML = `<div data-tu-r="head"></div><section class="tu-qbtotals" aria-label="Qbank totals" data-tu-r="totals"></section><div class="tu-qbgrid">` +
+        `<section class="tu-card tu-qbforms" aria-label="Choose forms"><div data-tu-r="fhead"></div><label class="tu-qbfind">${icon(ICONS.search, 18)}<span class="tu-sr">Filter forms</span><input type="search" class="tu-bare" placeholder="Filter forms" data-tu-qbfind></label><div class="tu-qbgroups" data-tu-r="groups"></div></section>` +
+        `<section class="tu-qbopts" aria-label="Test options"><div class="tu-card tu-qbcard" data-tu-r="opts"></div><div class="tu-qbfoot" data-tu-r="foot"></div></section></div>`;
+    } else {
+      v.innerHTML = `<div data-tu-r="head"></div><div class="tu-qttools"><label class="tu-qbfind tu-qtfind">${icon(ICONS.search, 18)}<span class="tu-sr">Search Qbank tests</span><input type="search" class="tu-bare" placeholder="Search tests or forms" data-tu-qtfind></label><div class="tu-chips" role="group" aria-label="Filter" data-tu-r="filters"></div></div>` +
+        `<section class="tu-card tu-qttable" aria-label="Qbank tests" data-tu-r="rows"></section>`;
+      const s = v.querySelector('[data-tu-qtfind]'); s.value = qbVal('qTestSearch') || '';
+    }
+    panel.insertBefore(v, panel.firstChild);
+    v.addEventListener('click', onQbClick);
+    v.addEventListener('input', onQbInput);
+    v.addEventListener('change', onQbChange);
+    return v;
+  }
+  const qbRegion = (v, name) => v.querySelector(`[data-tu-r="${name}"]`);
+  function qbModel(){
+    const B = bridge(), d = qbUi.data || {used:0, forms:[], tests:[]};
+    const byForm = {}; d.forms.forEach(f => { byForm[f.id] = f; });
+    const legacy = qbLegacyForms(), selected = legacy.filter(i => i.checked).map(i => i.dataset.qbankForm);
+    const source = qbVal('qbankSourceMode') === 'linked' ? 'linked' : 'qbank';
+    let attempt = qbVal('qbankAttemptSource') || ''; if(!QB_ATTEMPTS[source].some(([v]) => v === attempt)) attempt = QB_ATTEMPT_FALLBACK[source];
+    const countEl = byId('qbankQuestionCount'), max = parseInt(countEl && countEl.max, 10);
+    const available = isNaN(max) ? (parseInt(document.querySelector('#qbankStats .qbank-ring-inner b')?.textContent, 10) || 0) : max;
+    const count = Math.max(0, Math.min(available, parseInt(countEl && countEl.value, 10) || 0)), size = Math.max(1, parseInt(qbVal('qbankBlockSize'), 10) || 40);
+    return {
+      B, d, byForm, legacy, selected, source, attempt, available, count, size,
+      mode: qbVal('qbankRunMode') === 'tutor' ? 'tutor' : 'testing', pool: qbVal('qbankQuestionMode') || 'unused', shuffle: !!qbVal('qbankShuffle'),
+      selectedTotal: selected.reduce((n, id) => n + ((byForm[id] && byForm[id].questions) || 0), 0)
+    };
+  }
+  function qbTotalsHtml(m){
+    const tile = (n, label, main) => `<div class="tu-qbtile${main ? ' main' : ''}"><b>${esc(n)}</b><span>${label}</span></div>`;
+    return tile(m.available.toLocaleString(), 'Available now', true) + tile(m.selectedTotal.toLocaleString(), 'In selected forms') + tile(m.d.used.toLocaleString(), 'Used in Qbank') + tile(m.d.tests.length.toLocaleString(), 'Tests taken');
+  }
+  function qbGroups(m){
+    const tabs = libTabs().filter(t => t.key !== 'All'), byKey = {}, order = [];
+    tabs.forEach(t => { byKey[t.internal] = {key:t.internal, label:t.label, color:t.color, rows:[]}; order.push(t.internal); });
+    m.legacy.forEach(i => {
+      const id = i.dataset.qbankForm, rec = m.B.form(id) || {id};
+      let key = 'Custom'; try{ key = m.B.tabKey(rec) || 'Custom'; }catch(e){}
+      if(!byKey[key]){ byKey[key] = {key, label: key === 'N-Forms' ? 'NBME' : key, color: TAB_DOTS[key] || TAB_DOTS.Custom, rows:[]}; order.push(key); }
+      const f = m.byForm[id] || {total:0, questions:0, used:0}, title = rec.displayName || id;
+      byKey[key].rows.push({id, title, on:i.checked, meta: plural(f.total || f.questions, 'question') + (title !== id ? ' · ' + id : ''), unused: Math.max(0, f.questions - f.used)});
+    });
+    return order.map(k => byKey[k]).filter(g => g.rows.length);
+  }
+  function qbFormsHtml(m){
+    const q = qbUi.q.trim().toLowerCase(), groups = qbGroups(m);
+    const tick = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
+    if(!m.legacy.length) return `<div class="tu-qempty">${icon(ICONS.library, 28)}<b>No forms in your library</b><span>Add forms first; Qbank mixes questions from them.</span></div>`;
+    const out = groups.map(g => {
+      const n = g.rows.filter(r => r.on).length;
+      if(qbUi.open[g.key] == null) qbUi.open[g.key] = n > 0; // groups with nothing selected start folded, as on the board
+      const rows = q ? g.rows.filter(r => (r.title + ' ' + r.id).toLowerCase().includes(q)) : g.rows;
+      if(q && !rows.length) return '';
+      const open = q ? true : qbUi.open[g.key];
+      return `<div class="tu-qbgroup"><button type="button" class="tu-qbghead" aria-expanded="${open}" data-tu-qbgroup="${esc(g.key)}"><i style="background:${esc(g.color)}"></i><b>${esc(g.label)}</b><span>${n} of ${g.rows.length} selected</span>${icon(ICONS.chevron, 18)}</button>` +
+        (open ? rows.map(r => `<button type="button" class="tu-qbrow" role="checkbox" aria-checked="${r.on}" data-tu-qbform="${esc(r.id)}"><i>${r.on ? tick : ''}</i><span><b>${esc(r.title)}</b><small>${esc(r.meta)}</small></span><em>${r.unused.toLocaleString()} unused</em></button>`).join('') : '') + '</div>';
+    }).join('');
+    return out || `<div class="tu-qempty"><b>No forms match “${esc(qbUi.q.trim())}”</b></div>`;
+  }
+  function qbOptsHtml(m){
+    const card = (attr, v, label, hint, on) => `<button type="button" class="tu-qbradio" role="radio" aria-checked="${on}" data-${attr}="${v}"><b>${label}</b><span>${hint}</span></button>`;
+    const auto = `Auto: ${m.mode === 'tutor' ? 'Tutor' : 'Qbank'} — ${(QB_POOLS.find(([v]) => v === m.pool) || QB_POOLS[0])[1]} — ${m.count}Q — ${new Date().toLocaleDateString()}`;
+    return `<label class="tu-qbfield"><span>Test name</span><input type="text" placeholder="${esc(auto)}" data-tu-qbin="qbankTestName" autocomplete="off"></label>` +
+      `<div class="tu-qbfield"><span>Mode</span><div class="tu-qbpair" role="radiogroup" aria-label="Mode">${card('tu-qbmode', 'testing', 'Testing', 'Timed, answers at the end', m.mode === 'testing')}${card('tu-qbmode', 'tutor', 'Tutor', 'Submit each item to see the explanation', m.mode === 'tutor')}</div></div>` +
+      `<div class="tu-qbfield"><span>Count progress from</span><div class="tu-qbpair" role="radiogroup" aria-label="Progress source">${card('tu-qbsrc', 'qbank', 'Qbank history', 'Unused / used across your Qbank tests', m.source === 'qbank')}${card('tu-qbsrc', 'linked', 'Form Library attempts', 'Read-only: wrongs and marks from your forms', m.source === 'linked')}</div>` +
+      `<label class="tu-qbattempt"><span>Attempts used</span><select data-tu-qbin="qbankAttemptSource">${QB_ATTEMPTS[m.source].map(([v, l]) => `<option value="${v}"${v === m.attempt ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>` +
+      `<div class="tu-qbfield"><span>Question pool</span><div class="tu-chips" role="radiogroup" aria-label="Question pool">${QB_POOLS.map(([v, l]) => `<button type="button" class="tu-chip" role="radio" aria-checked="${m.pool === v}" data-tu-qbpool="${v}">${l}</button>`).join('')}</div></div>` +
+      `<div class="tu-qbnums"><label class="tu-qbfield"><span>Questions</span><input type="number" min="1" max="${m.available}" inputmode="numeric" data-tu-qbin="qbankQuestionCount"></label><label class="tu-qbfield"><span>Questions per block</span><input type="number" min="1" inputmode="numeric" data-tu-qbin="qbankBlockSize"></label></div>` +
+      `<label class="tu-qbrange"><span class="tu-sr">Question count slider</span><input type="range" min="1" max="${Math.max(1, m.available)}" data-tu-qbin="range"${m.available ? '' : ' disabled'}><span>max ${m.available.toLocaleString()}</span></label>` +
+      `<div class="tu-swrow"><div><b>Shuffle</b><span>Randomize which questions are picked and their order</span></div><button type="button" class="tu-switch" role="switch" aria-checked="${m.shuffle}" aria-label="Shuffle" data-tu-qbsw="qbankShuffle"><i></i></button></div>`;
+  }
+  function qbFootHtml(m){
+    const blocks = Math.max(1, Math.ceil(m.count / m.size));
+    const why = !m.selected.length ? 'Select at least one form' : !m.available ? 'No questions in this pool' : '';
+    const text = why || `${plural(m.count, 'question')} · ${plural(blocks, 'block')} · ${m.mode === 'tutor' ? 'Tutor' : 'Testing'} · from ${plural(m.selected.length, 'form')}`;
+    return `<div><b>${esc(text)}</b><span>Saved to Qbank history only</span></div><button type="button" class="tu-btn tu-qbgo" data-tu-qbgo${why ? ' disabled' : ''}>${icon(ICONS.play, 18)}Generate &amp; start</button>`;
+  }
+  // number/text inputs are filled after each render (not in the markup), so typing never triggers a re-render
+  function qbSyncInputs(v){
+    v.querySelectorAll('[data-tu-qbin]').forEach(el => {
+      if(el === document.activeElement || el.tagName === 'SELECT') return;
+      const key = el.dataset.tuQbin, val = key === 'range' ? qbVal('qbankQuestionCount') : qbVal(key);
+      if(val != null && el.value !== String(val)) el.value = String(val);
+    });
+  }
+  function paintQbBuild(panel){
+    const v = ensureQbView(panel, 'tuQbank'), m = qbModel();
+    panel.classList.add('tu-has-qbank');
+    swapHtml(qbRegion(v, 'head'), qbHeadHtml('build', m.d.tests.length));
+    swapHtml(qbRegion(v, 'totals'), qbTotalsHtml(m));
+    swapHtml(qbRegion(v, 'fhead'), `<div class="tu-qbfhead"><h2>Forms <span>${m.selected.length} selected</span></h2><div><button type="button" class="tu-link" data-tu-qball>Select all</button><button type="button" class="tu-link" data-tu-qbnone>Clear</button></div></div>`);
+    swapHtml(qbRegion(v, 'groups'), qbFormsHtml(m));
+    swapHtml(qbRegion(v, 'opts'), qbOptsHtml(m));
+    swapHtml(qbRegion(v, 'foot'), qbFootHtml(m));
+    qbSyncInputs(v);
+  }
+  function qtMeta(t, B){
+    const src = t.sourceMode === 'linked' ? `Form Library (${((QB_ATTEMPTS.linked.find(([v]) => v === t.attemptSource) || [0, 'active selected'])[1]).replace(/ only$/, '').toLowerCase()})` : 'Qbank history';
+    const names = t.formIds.map(id => { const r = B.form(id); return (r && r.displayName) || id; });
+    const forms = names.length > 3 ? names.length + ' forms' : names.join(', ');
+    const pool = (QB_POOLS.find(([v]) => v === t.poolType) || [0, ''])[1];
+    return [shortDate(t.completedAt || t.updatedAt || t.createdAt), src, pool, forms].filter(Boolean).join(' · ');
+  }
+  function paintQbHistory(panel){
+    const v = ensureQbView(panel, 'tuQtests'), B = bridge(), d = qbUi.data || {tests:[]};
+    panel.classList.add('tu-has-qbank');
+    const byId_ = {}; d.tests.forEach(t => { byId_[t.id] = t; });
+    const ids = Array.from(document.querySelectorAll('#qbankTestsGrid [data-qb-id]')).map(c => c.dataset.qbId);
+    const lost = ids.filter(id => !byId_[id]).join('|');
+    if(lost && qbUi.missing !== lost){ qbUi.missing = lost; scheduleQbank(true); } // a test the bridge data has not seen yet
+    const f = qbVal('qTestFilter') || 'all';
+    swapHtml(qbRegion(v, 'head'), qbHeadHtml('history', d.tests.length));
+    swapHtml(qbRegion(v, 'filters'), QB_FILTERS.map(([val, l]) => `<button type="button" class="tu-chip" aria-pressed="${f === val}" data-tu-qtf="${val}">${l}</button>`).join(''));
+    const head = '<div class="tu-qtrow tu-qthead" aria-hidden="true"><span>Test</span><span>Mode</span><span>Questions</span><span>Score</span><span>Status</span><span>Actions</span></div>';
+    const rows = ids.map(id => byId_[id]).filter(Boolean).map(t => {
+      const name = t.name || 'Qbank test', act = t.done ? 'review' : 'resume';
+      return `<div class="tu-qtrow" data-id="${esc(t.id)}"><span class="tu-qtname"><b>${esc(name)}</b><small title="${esc(qtMeta(t, B))}">${esc(qtMeta(t, B))}</small></span>` +
+        `<span><em class="tu-qtmode ${t.mode}">${t.mode === 'tutor' ? 'Tutor' : 'Testing'}</em></span><span class="tu-qtqs">${t.total} · ${plural(t.blocks || 1, 'block')}</span>` +
+        `<span class="tu-qtscore"><span class="tu-qtlbl">Score </span>${t.percent == null ? '—' : esc(Math.round(t.percent)) + '%'}</span><span><em class="tu-qtst ${t.done ? 'done' : ''}">${t.done ? 'Completed' : 'In progress'}</em></span>` +
+        `<span class="tu-qtacts"><button type="button" class="tu-btn small ${t.done ? 'tonal2' : ''}" data-tu-qtact="${act}" data-id="${esc(t.id)}" aria-label="${t.done ? 'Review' : 'Resume'} ${esc(name)}">${t.done ? 'Review' : 'Resume'}</button>` +
+        `<button type="button" class="tu-qticon" data-tu-qtact="rename" data-id="${esc(t.id)}" aria-label="Rename ${esc(name)}" title="Rename">${icon(QB_ICONS.pencil, 18)}</button>` +
+        `<button type="button" class="tu-qticon" data-tu-qtact="export" data-id="${esc(t.id)}" aria-label="Export ${esc(name)}" title="Export">${icon(ICONS.download, 18)}</button>` +
+        `<button type="button" class="tu-qticon bad" data-tu-qtact="delete" data-id="${esc(t.id)}" aria-label="Delete ${esc(name)}" title="Delete">${icon(QB_ICONS.trash, 18)}</button></span></div>`;
+    }).join('');
+    const empty = !d.tests.length ? '<div class="tu-qtempty"><b>No Qbank tests yet</b><span>Generated tests appear here.</span></div>' : '<div class="tu-qtempty">No tests match this filter.</div>';
+    swapHtml(qbRegion(v, 'rows'), head + (rows || empty));
+    const s = v.querySelector('[data-tu-qtfind]'); if(s && s !== document.activeElement && s.value !== (qbVal('qTestSearch') || '')) s.value = qbVal('qTestSearch') || '';
+  }
+  async function paintQbank(){
+    const B = bridge(); if(!B || !B.qbank) return;
+    qbWatch();
+    const build = byId('qbankModePanel'), tests = byId('qbankTestsPanel');
+    const showBuild = !!build && build.classList.contains('active') && !!byId('qbankRunMode'), showTests = !!tests && tests.classList.contains('active');
+    if(!showBuild && !showTests) return;
+    if(qbUi.stale || !qbUi.data){
+      const n = ++qbUi.seq; qbUi.stale = false;
+      const d = await B.qbank(); if(n !== qbUi.seq) return;
+      qbUi.data = d;
+    }
+    if(showBuild) paintQbBuild(build);
+    if(showTests) paintQbHistory(tests);
+    heroTitle();
+    qbObservers.forEach(o => o.takeRecords());
+  }
+  function qbSetForms(ids, on){
+    const inputs = qbLegacyForms().filter(i => ids.includes(i.dataset.qbankForm) && i.checked !== on); if(!inputs.length) return;
+    inputs.forEach(i => { i.checked = on; });
+    inputs[inputs.length - 1].dispatchEvent(new Event('change', {bubbles:true})); // the legacy handler reads every box and saves once
+  }
+  function qtLegacy(id, act){
+    const card = document.querySelector(`#qbankTestsGrid [data-qb-id="${CSS.escape(id)}"]`), b = card && card.querySelector(`[data-v9="qbank-${act}"]`);
+    if(!b){ console.warn('ThunderUI: legacy Qbank control missing', id, act); return false; }
+    b.click(); return true;
+  }
+  function onQbClick(e){
+    const t = e.target.closest('button'); if(!t || t.disabled) return;
+    const ds = t.dataset;
+    if(ds.tuQbtab){ byId(ds.tuQbtab === 'build' ? 'qbankTab' : 'qbankTestsTab')?.click(); return; }
+    if(ds.tuQbform){ const i = qbLegacyForms().find(x => x.dataset.qbankForm === ds.tuQbform); if(i) qbSetForms([ds.tuQbform], !i.checked); return; }
+    if(t.hasAttribute('data-tu-qball') || t.hasAttribute('data-tu-qbnone')){
+      const q = qbUi.q.trim().toLowerCase(), B = bridge();
+      const ids = qbLegacyForms().map(i => i.dataset.qbankForm).filter(id => { const r = B.form(id) || {}; return !q || ((r.displayName || id) + ' ' + id).toLowerCase().includes(q); });
+      qbSetForms(ids, t.hasAttribute('data-tu-qball')); return;
+    }
+    if(ds.tuQbgroup){ qbUi.open[ds.tuQbgroup] = t.getAttribute('aria-expanded') !== 'true'; scheduleQbank(); return; }
+    if(ds.tuQbmode){ setLegacy('qbankRunMode', ds.tuQbmode); scheduleQbank(); return; }
+    if(ds.tuQbsrc){ setLegacy('qbankSourceMode', ds.tuQbsrc); scheduleQbank(); return; }
+    if(ds.tuQbpool){ setLegacy('qbankQuestionMode', ds.tuQbpool); scheduleQbank(); return; }
+    if(ds.tuQbsw){ setLegacy(ds.tuQbsw, t.getAttribute('aria-checked') !== 'true'); scheduleQbank(); return; }
+    if(t.hasAttribute('data-tu-qbgo')){ document.querySelector('#qbankModePanel [data-v9="qbank-start"]')?.click(); return; }
+    if(ds.tuQtf){ setLegacy('qTestFilter', ds.tuQtf); scheduleQbank(); return; }
+    if(t.hasAttribute('data-tu-qtrefresh')){ document.querySelector('#qbankTestsPanel [data-v9="qtests-refresh"]')?.click(); scheduleQbank(true); return; }
+    if(ds.tuQtact && ds.id) qtLegacy(ds.id, ds.tuQtact);
+  }
+  function onQbInput(e){
+    const t = e.target;
+    if(t.hasAttribute('data-tu-qbfind')){ qbUi.q = t.value; const v = byId('tuQbank'); if(v) swapHtml(qbRegion(v, 'groups'), qbFormsHtml(qbModel())); return; }
+    if(t.hasAttribute('data-tu-qtfind')){ setLegacy('qTestSearch', t.value); return; }
+    const key = t.dataset.tuQbin; if(!key || t.tagName === 'SELECT') return;
+    if(key === 'range'){ setLegacy('qbankQuestionCount', t.value); const n = t.closest('.tu-qbview').querySelector('[data-tu-qbin="qbankQuestionCount"]'); if(n) n.value = t.value; }
+    else if(key === 'qbankQuestionCount' || key === 'qbankBlockSize'){ if(t.value !== '' && Number(t.value) >= 1) setLegacy(key, t.value); }
+    else setLegacy(key, t.value);
+    const v = byId('tuQbank'); if(v){ const m = qbModel(); swapHtml(qbRegion(v, 'foot'), qbFootHtml(m)); const r = v.querySelector('[data-tu-qbin="range"]'); if(r && key !== 'range') r.value = String(m.count); }
+  }
+  function onQbChange(e){
+    const t = e.target, key = t.dataset.tuQbin; if(!key) return;
+    if(t.tagName === 'SELECT'){ setLegacy(key, t.value); scheduleQbank(); return; }
+    if(key === 'qbankQuestionCount' || key === 'qbankBlockSize'){
+      const max = key === 'qbankQuestionCount' ? Math.max(1, qbModel().available) : 999, n = Math.max(1, Math.min(max, parseInt(t.value, 10) || 1));
+      t.value = String(n); setLegacy(key, n); scheduleQbank();
+    }
+  }
+
   /* ---------- Add forms dialog (boards AddForms, FormUpdates): fixed slots, custom form, bulk ZIP, online updates ----------
      Fixed and custom imports run through the legacy Load New Form modal, kept open off-screen; bulk import is the
      shared bulk-import.js (its #bulk* controls now live here instead of Settings); online updates are form-updates.js. */
@@ -1954,20 +2324,20 @@ ${H} #tuQuick .tu-qblocks button[aria-checked="true"]{background:var(--tu-s1)}
     if(panel){ libraryObserver = new MutationObserver(() => scheduleLibrary()); libraryObserver.observe(panel, {childList:true, subtree:true}); }
     const side = document.querySelector('#menu aside.modern-sidebar');
     if(side) new MutationObserver(() => brand()).observe(side, {childList:true});
-    const menu = byId('menu'); if(menu) new MutationObserver(() => { syncDarkFlag(); heroTitle(); scheduleStart(); scheduleQuick(); if(menu.classList.contains('hidden')){ closeAdd(); closeUpdates(); } }).observe(menu, {attributes:true, attributeFilter:['class']}); // a run hides the menu
+    const menu = byId('menu'); if(menu) new MutationObserver(() => { syncDarkFlag(); heroTitle(); scheduleStart(); scheduleQuick(); scheduleQbank(true); if(menu.classList.contains('hidden')){ closeAdd(); closeUpdates(); } }).observe(menu, {attributes:true, attributeFilter:['class']}); // a run hides the menu
     // the legacy setup (Quick practice and the start dialog's controls) repaints inside #quickModePanel
     const quick = byId('quickModePanel');
     if(quick){
       quickObserver = new MutationObserver(recs => { if(recs.some(r => !(r.target.closest && r.target.closest('#tuQuick')))){ scheduleStart(); scheduleQuick(); } });
       quickObserver.observe(quick, {childList:true, subtree:true, attributes:true, attributeFilter:['class', 'disabled']});
     }
-    scheduleQuick();
+    scheduleQuick(); scheduleQbank(true);
     const sync = byId('progressSyncPanel'); if(sync) new MutationObserver(() => paintSync()).observe(sync, {childList:true});
     const status = byId('dataFolderStatus'); if(status) new MutationObserver(() => { paintSync(); paintNav(); }).observe(status, {childList:true, characterData:true, subtree:true});
     const watchCloud = () => { const c = byId('googleBackupStatus'); if(!c || c.dataset.tuWatched) return; c.dataset.tuWatched = '1'; new MutationObserver(() => paintSyncBits()).observe(c, {childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['data-tone', 'title']}); paintSyncBits(); };
     watchCloud();
     // late modules (progress sync, form updates) add their tabs and panels after load
-    let tries = 0; const late = setInterval(() => { brand(); paintSync(); watchSettings(); wrapReport(); watchCloud(); scheduleLibrary(); if(byId('progressSyncPanel') && !sync && !late.__obs){ late.__obs = true; new MutationObserver(() => paintSync()).observe(byId('progressSyncPanel'), {childList:true}); } if(++tries > 20) clearInterval(late); }, 500);
+    let tries = 0; const late = setInterval(() => { brand(); paintSync(); watchSettings(); wrapReport(); watchCloud(); scheduleLibrary(); qbWatch(); if(byId('progressSyncPanel') && !sync && !late.__obs){ late.__obs = true; new MutationObserver(() => paintSync()).observe(byId('progressSyncPanel'), {childList:true}); } if(++tries > 20) clearInterval(late); }, 500);
   }
   window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), refresh:() => { brand(); scheduleLibrary(); paintSync(); }};
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
