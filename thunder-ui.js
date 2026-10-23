@@ -131,8 +131,6 @@
 /* Library home: the legacy panel stays in the DOM for its hooks, hidden off-screen */
 ${H} #libraryModePanel.tu-has-home.active{display:block!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
 ${H} #libraryModePanel.tu-has-home>:not(#tuHome){position:absolute!important;left:-10000px!important;top:0!important;width:900px!important;height:1px!important;overflow:hidden!important;visibility:hidden!important;pointer-events:none!important}
-${H} #libraryModePanel.tu-has-home #formUpdatesPanel:not([hidden]){position:fixed!important;visibility:visible!important;pointer-events:auto!important;top:76px;right:32px;width:min(440px,calc(100vw - 32px));max-height:min(70vh,560px);overflow:auto;z-index:80;margin:0!important;padding:16px!important;border-radius:20px!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;color:var(--tu-on)!important;box-shadow:0 12px 40px rgba(0,0,0,.22)!important;font:13.5px/1.5 var(--tu-font)!important}
-${H} #libraryModePanel.tu-has-home #formUpdatesPanel button{height:36px!important;padding:0 14px!important;border-radius:999px!important;font:700 13px var(--tu-font)!important}
 ${H}[data-tu-page="library"] .modern-hero{display:none!important}
 ${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:22px 32px 48px!important}
 ${H} #tuHome{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px;color:var(--tu-on);font-family:var(--tu-font)}
@@ -352,6 +350,252 @@ ${H} #tuSheet .tu-attempt[aria-checked="true"]{background:var(--tu-s1)!important
 ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
 .tu-danger>div{display:flex;gap:8px;flex-wrap:wrap}
 .tu-loading{font-size:13px;color:var(--tu-on3);padding:6px 2px}
+
+/* Phase B dialogs (boards StartSetup, StartSetupiPad, AddForms, FormUpdates): layers appended to #menu */
+.tu-layer{position:fixed;inset:0;z-index:90;font-family:var(--tu-font);color:var(--tu-on);font-variant-numeric:tabular-nums}
+.tu-layer[hidden]{display:none}
+${H}.theme-dark .tu-layer .tu-scrim{background:rgba(0,0,0,.6)}
+.tu-dialog-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;pointer-events:none}
+.tu-dialog{pointer-events:auto;position:relative;max-width:100%;max-height:100%;background:var(--tu-surface);color:var(--tu-on);border-radius:28px;box-shadow:0 16px 56px rgba(0,0,0,.3);display:flex;flex-direction:column;overflow:hidden;animation:tuDlgIn .16s ease-out}
+@keyframes tuDlgIn{from{transform:translateY(8px) scale(.99);opacity:0}}
+@media (prefers-reduced-motion:reduce){.tu-dialog{animation:none}}
+${H} :is(.tu-layer,#tuQuick) :is(h1,h2,h3){margin:0!important;color:var(--tu-on)!important;font-family:var(--tu-font)!important;letter-spacing:-.01em!important;line-height:1.2!important;background:none!important;-webkit-text-fill-color:currentColor!important;text-shadow:none!important}
+${H} :is(.tu-layer,#tuQuick) button{font-family:var(--tu-font)!important;margin:0;box-shadow:none;cursor:pointer}
+${H} :is(.tu-layer,#tuQuick) button:disabled{cursor:not-allowed}
+${H} .tu-layer .tu-round{width:40px;height:40px;min-width:40px;flex:none;border-radius:50%;border:0;background:var(--tu-s1);color:var(--tu-on2);display:flex;align-items:center;justify-content:center;padding:0}
+${H} .tu-layer .tu-round:hover{background:var(--tu-s2)}
+.tu-layer .tu-btn,#tuQuick .tu-btn{border:0;font-family:var(--tu-font);justify-content:center;white-space:nowrap}
+.tu-layer .tu-btn.outline,#tuQuick .tu-btn.outline{border:1px solid var(--tu-line)}
+.tu-layer .tu-btn.dangertext,#tuQuick .tu-btn.dangertext{background:transparent;color:var(--tu-bad);font-weight:700}
+.tu-layer .tu-btn:hover:not(:disabled),#tuQuick .tu-btn:hover:not(:disabled){filter:brightness(.96)}
+.tu-layer .tu-btn.outline:hover:not(:disabled),#tuQuick .tu-btn.outline:hover:not(:disabled){background:var(--tu-s2);filter:none}
+.tu-note{font-size:12.5px;color:var(--tu-on3);line-height:1.45}
+.tu-chips{display:flex;flex-wrap:wrap;gap:8px}
+.tu-layer .tu-chip,#tuQuick .tu-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:9px;border:1px solid var(--tu-line);background:transparent;color:var(--tu-on);font-weight:700;font-size:13.5px;white-space:nowrap}
+.tu-layer .tu-chip span,#tuQuick .tu-chip span{font-weight:600;opacity:.7}
+.tu-layer .tu-chip:is([aria-pressed="true"],[aria-checked="true"]),#tuQuick .tu-chip:is([aria-pressed="true"],[aria-checked="true"]){border-color:var(--tu-p);background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-chip svg{flex:none}
+.tu-stepper{display:flex;align-items:center;gap:4px;height:44px;padding:0 6px;border-radius:999px;border:1px solid var(--tu-line);flex:none}
+${H} .tu-stepper button{width:34px;height:34px;min-width:34px;border-radius:50%;border:0;background:var(--tu-s1);color:var(--tu-on);font-weight:800;font-size:18px;padding:0;display:flex;align-items:center;justify-content:center;line-height:1}
+${H} .tu-stepper button:hover{background:var(--tu-s2)}
+.tu-stepper>span{min-width:92px;text-align:center;font-weight:800;font-size:15px}
+.tu-inline{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.tu-plan{font-size:14px;color:var(--tu-on2)}
+.tu-swrow{display:flex;align-items:center;gap:14px}
+.tu-swrow>div{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-swrow b{font-weight:700;font-size:14.5px}
+.tu-swrow>div>span{font-size:12.5px;color:var(--tu-on3)}
+${H} .tu-switch{width:52px;height:32px;min-width:52px;flex:none;border-radius:999px;border:2px solid var(--tu-on3);background:var(--tu-s2);padding:0;display:flex;align-items:center;justify-content:flex-start}
+.tu-switch i{width:16px;height:16px;margin:0 4px;border-radius:50%;background:var(--tu-on3);transition:width .12s,height .12s}
+${H} .tu-switch[aria-checked="true"]{border-color:var(--tu-p);background:var(--tu-p);justify-content:flex-end}
+.tu-switch[aria-checked="true"] i{width:22px;height:22px;background:var(--tu-onp)}
+.tu-seg2{display:flex;height:40px;border-radius:999px;overflow:hidden;border:1px solid var(--tu-line)}
+${H} .tu-seg2 button{padding:0 14px;border:0;border-radius:0;background:transparent;color:var(--tu-on);font-weight:700;font-size:13px;height:100%}
+${H} .tu-seg2 button+button{border-left:1px solid var(--tu-line)}
+${H} .tu-seg2 button[aria-checked="true"]{background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-brk-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tu-brk-row .tu-stepper{height:40px;padding:0 4px}
+${H} .tu-brk-row .tu-stepper button{width:32px;height:32px;min-width:32px;font-size:17px}
+.tu-brk-row .tu-stepper>span{min-width:104px;font-size:14px}
+
+/* start / new attempt dialog: 980px, fits 1440×900 and 1180×820; the body scrolls when space runs out */
+.tu-start{width:980px}
+.tu-dlg-head{padding:14px 22px 12px;display:flex;gap:14px;align-items:center;border-bottom:1px solid var(--tu-line2);flex:none}
+.tu-dlg-head>div{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-layer .tu-kicker{font-size:12px;font-weight:700;color:var(--tu-on3);letter-spacing:.04em;text-transform:uppercase}
+${H} .tu-dlg-head h2{font-size:21px!important;font-weight:800!important;letter-spacing:-.02em!important}
+.tu-sub{font-size:12.5px;color:var(--tu-on2)}
+.tu-dlg-body{flex:1;min-height:0;overflow:auto;padding:14px 22px}
+.tu-start-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px 22px;align-content:start}
+.tu-col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.tu-start section{display:flex;flex-direction:column;gap:8px;min-width:0}
+${H} .tu-start h3{font-size:13.5px!important;font-weight:800!important;letter-spacing:0!important}
+.tu-pools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+${H} .tu-pool{text-align:left;padding:9px 12px;border-radius:14px;border:1.5px solid var(--tu-line);background:transparent;color:var(--tu-on);display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-pool b{font-size:19px;font-weight:800}.tu-pool span{font-size:12px;font-weight:700;line-height:1.25}
+${H} .tu-pool[aria-checked="true"]{border-color:var(--tu-p);background:var(--tu-pc);color:var(--tu-onpc)}
+${H} .tu-pool:disabled{opacity:.45}
+.tu-carry{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tu-carry>span{font-size:13px;font-weight:700;color:var(--tu-on2);margin-right:4px}
+.tu-layer .tu-carry .tu-chip{height:30px;padding:0 10px;font-size:13px}
+.tu-brk{padding:10px 14px;border:1px solid var(--tu-line2);border-radius:16px}
+.tu-runmodes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+${H} .tu-runmode{text-align:left;padding:8px 10px;border-radius:12px;border:1.5px solid var(--tu-line);background:transparent;color:var(--tu-on);display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-runmode b{font-weight:800;font-size:14px}.tu-runmode span{font-size:11px;opacity:.85}
+${H} .tu-runmode[aria-checked="true"]{border-color:var(--tu-p);background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-blocklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;max-height:212px;overflow:auto;padding:1px}
+${H} .tu-blockpick{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:12px;border:1.5px solid var(--tu-line2);background:transparent;color:var(--tu-on);text-align:left;min-width:0}
+.tu-blockpick>i{width:20px;height:20px;flex:none;border-radius:6px;border:2px solid var(--tu-on3);color:var(--tu-onp);display:flex;align-items:center;justify-content:center}
+.tu-blockpick.one>i{border-radius:50%}
+.tu-blockpick>i svg{width:12px;height:12px;stroke-width:3.2}
+.tu-blockpick>span{display:flex;flex-direction:column;min-width:0}.tu-blockpick b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tu-blockpick small{font-size:12px;color:var(--tu-on3)}
+${H} .tu-blockpick[aria-checked="true"]{border-color:var(--tu-p);background:var(--tu-pc)}
+.tu-blockpick[aria-checked="true"]>i{border-color:var(--tu-p);background:var(--tu-p)}
+.tu-blockpick.one[aria-checked="true"]>i{box-shadow:inset 0 0 0 3px var(--tu-pc)}
+.tu-start .tu-switches{gap:0;border:1px solid var(--tu-line2);border-radius:20px;overflow:hidden}
+.tu-switches .tu-swrow{padding:8px 14px;gap:12px;border-bottom:1px solid var(--tu-line2)}
+.tu-switches .tu-swrow:last-child{border-bottom:0}
+.tu-switches .tu-swrow>div>span{font-size:11.5px}
+.tu-dlg-foot{padding:12px 22px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;border-top:1px solid var(--tu-line2);flex:none}
+.tu-dlg-foot>div{flex:1;min-width:200px;display:flex;flex-direction:column}
+.tu-dlg-foot b{font-weight:800;font-size:15px}.tu-dlg-foot span{font-size:12.5px;color:var(--tu-on3)}
+.tu-layer .tu-go{height:48px;padding:0 26px;gap:8px;font-size:15px}
+/* while it is open the dialog sits over the Library (the legacy setup stays in Quick practice, off-screen) */
+${H}[data-tu-start] #quickModePanel.mode-panel.active{display:none!important}
+${H}[data-tu-start] #libraryModePanel.tu-has-home{display:block!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+${H}[data-tu-start] .modern-hero{display:none!important}
+${H}[data-tu-start] .modern-main{padding:22px 32px 48px!important}
+${H}[data-tu-start] aside.modern-sidebar #quickTab.active{background:transparent!important;color:var(--tu-on2)!important;font-weight:600!important}
+${H}[data-tu-start] aside.modern-sidebar #libraryTab{background:var(--tu-pc)!important;color:var(--tu-onpc)!important;font-weight:700!important}
+@media (max-width:900px){
+  ${H}[data-tu-start] aside.modern-sidebar #libraryTab{background:transparent!important;color:var(--tu-on)!important;font-weight:800!important}
+  ${H}[data-tu-start] aside.modern-sidebar #libraryTab .tu-ico{background:var(--tu-pc);color:var(--tu-onpc)}
+  ${H}[data-tu-start] aside.modern-sidebar #quickTab.active .tu-ico{background:transparent;color:inherit}
+}
+
+/* Add forms dialog (board AddForms): 1000×760, tab rail on the left */
+.tu-layer .tu-add{width:1000px;height:760px;flex-direction:row;flex-wrap:wrap}
+.tu-add-nav{flex:1 1 240px;background:var(--tu-s1);padding:22px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+${H} .tu-add-nav h2{margin:0 12px 14px!important;font-size:22px!important;font-weight:800!important}
+.tu-add-nav [role="tablist"]{display:flex;flex-direction:column;gap:4px}
+${H} .tu-add-nav [role="tab"]{text-align:left;display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:16px;border:0;background:transparent;color:var(--tu-on);width:100%}
+${H} .tu-add-nav [role="tab"]:hover{background:var(--tu-s2)}
+${H} .tu-add-nav [role="tab"][aria-selected="true"]{background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-add-nav [role="tab"] b{font-weight:800;font-size:14.5px}.tu-add-nav [role="tab"] span{font-size:12.5px;opacity:.85}
+.tu-add-foot{margin-top:auto;font-size:12px;color:var(--tu-on3);padding:12px 12px 0;line-height:1.45}
+${H} .tu-add-foot .tu-link{padding:0;font-size:12px}
+.tu-add-main{flex:999 1 480px;min-width:0;min-height:0;display:flex;flex-direction:column;height:100%}
+.tu-add-top{display:flex;justify-content:flex-end;padding:14px 14px 0;flex:none}
+.tu-add-body{flex:1;min-height:0;overflow:auto;padding:0 28px 28px;display:flex;flex-direction:column;gap:16px}
+.tu-add-h{display:flex;flex-direction:column;gap:4px}
+${H} .tu-add-h h3{font-size:20px!important;font-weight:800!important}
+.tu-add-h span{font-size:13.5px;color:var(--tu-on3)}
+.tu-slotsearch{display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;border-radius:999px;background:var(--tu-s2);color:var(--tu-on3);flex:none}
+.tu-slotsearch:focus-within{outline:3px solid var(--tu-p);outline-offset:2px}
+${H} .tu-layer .tu-slotsearch input{-webkit-appearance:none!important;appearance:none!important;border:0!important;background:transparent!important;outline:none!important;flex:1!important;min-width:0!important;height:42px!important;padding:0!important;margin:0!important;box-shadow:none!important;font:14.5px var(--tu-font)!important;color:var(--tu-on)!important}
+.tu-layer .tu-add .tu-chips{gap:6px}
+.tu-layer .tu-add .tu-chip{border-radius:8px;font-size:13px}
+.tu-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.tu-slot{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid var(--tu-line2);min-width:0}
+.tu-slot.loaded{background:var(--tu-s1)}
+.tu-slot>i{width:9px;height:9px;border-radius:50%;flex:none}
+.tu-slot>span{flex:1;display:flex;flex-direction:column;min-width:0}
+.tu-slot b{font-weight:800;font-size:14.5px}.tu-slot small{font-size:12px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-layer .tu-slot .tu-btn{height:34px;padding:0 14px;font-size:13px;font-weight:700}
+.tu-layer .tu-slot .tu-btn.outline{color:var(--tu-on2)}
+.tu-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.tu-fieldin{display:flex;flex-direction:column;gap:6px;min-width:0}
+.tu-fieldin.span2{grid-column:span 2}
+.tu-fieldin>span{font-size:13px;font-weight:700;color:var(--tu-on2)}
+${H} .tu-layer .tu-fieldin :is(input,select){height:46px!important;border-radius:12px!important;border:1px solid var(--tu-line)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;padding:0 14px!important;font:15px var(--tu-font)!important;margin:0!important;box-shadow:none!important;width:100%!important;min-width:0!important}
+${H} .tu-layer .tu-fieldin select{padding:0 12px!important}
+${H} .tu-layer .tu-fieldin input::placeholder{color:var(--tu-on3)!important}
+${H} :is(.tu-layer,#tuQuick) :is(.tu-dropbox,.tu-drop){display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:26px;border-radius:20px;border:2px dashed var(--tu-line);background:var(--tu-s1);color:var(--tu-on2);text-align:center;cursor:pointer;font-family:var(--tu-font)}
+:is(.tu-dropbox,.tu-drop) b{font-weight:800;font-size:15px;color:var(--tu-on)}
+:is(.tu-dropbox,.tu-drop)>span{font-size:12.5px;line-height:1.5}
+:is(.tu-dropbox,.tu-drop):hover{border-color:var(--tu-on3)}
+.tu-dropbox:focus-within{outline:3px solid var(--tu-p);outline-offset:2px}
+.tu-dropbox.tu-busy{opacity:.6;cursor:progress}
+.tu-bulk-top{display:flex;flex-wrap:wrap;gap:14px}
+.tu-bulk-top .tu-dropbox{flex:1 1 260px;padding:22px}
+${H} .tu-layer .tu-pre{flex:1 1 220px;margin:0!important;padding:16px!important;border-radius:16px!important;border:0!important;background:var(--tu-s2)!important;font:12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace!important;color:var(--tu-on2)!important;white-space:pre;overflow:auto}
+.tu-table{border:1px solid var(--tu-line2);border-radius:18px;overflow:hidden}
+.tu-thead,.tu-trow{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:8px;align-items:center}
+.tu-thead{padding:10px 16px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--tu-on3);background:var(--tu-s1)}
+.tu-trow{padding:12px 16px;border-top:1px solid var(--tu-line2);font-size:14px}
+.tu-trow>span:first-child{display:flex;flex-direction:column;min-width:0}.tu-trow small{font-size:12px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-oktext{color:var(--tu-ok);font-weight:700}.tu-muted{color:var(--tu-on3);font-weight:700}
+${H} .tu-layer p.tu-status{margin:0!important;font-size:13.5px!important;color:var(--tu-on2)!important;line-height:1.45}
+${H} .tu-layer p.tu-status:empty{display:none!important}
+${H} .tu-layer p.tu-status.ok{color:var(--tu-ok)!important;font-weight:700}
+${H} .tu-layer p.tu-status.bad{color:var(--tu-bad)!important;font-weight:700}
+.tu-end{display:flex;justify-content:flex-end}
+.tu-layer .tu-end .tu-btn{height:46px;padding:0 24px;font-size:14.5px}
+.tu-layer .tu-add .tu-banner{background:var(--tu-s1);color:var(--tu-on)}
+/* online updates: the Add forms tab and the header popover (board FormUpdates) */
+.tu-updbody{display:flex;flex-direction:column;gap:12px}
+.tu-updmsg{font-size:13.5px;font-weight:600;color:var(--tu-on2)}
+.tu-updmsg.ok{color:var(--tu-ok)}.tu-updmsg.warn{color:var(--tu-warn)}
+.tu-updlist{border:1px solid var(--tu-line2);border-radius:20px;overflow:hidden}
+.tu-updrow{display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-bottom:1px solid var(--tu-line2)}
+.tu-updrow:last-child{border-bottom:0}
+.tu-updrow>div{display:flex;align-items:center;gap:12px}
+.tu-updrow>div>i{width:9px;height:9px;border-radius:50%;flex:none}
+.tu-updrow>div>span{flex:1;display:flex;flex-direction:column;min-width:0}
+.tu-updrow b{font-size:14.5px}.tu-updrow small{font-size:12.5px;color:var(--tu-on3)}
+.tu-updchip{font-style:normal;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.tu-updchip.new{background:var(--tu-pc);color:var(--tu-onpc)}.tu-updchip.rev{background:var(--tu-warnc);color:var(--tu-warn)}.tu-updchip.ok{background:var(--tu-okc);color:var(--tu-ok)}.tu-updchip.skip{background:var(--tu-s2);color:var(--tu-on2)}.tu-updchip.bad{background:var(--tu-badc);color:var(--tu-bad)}
+.tu-updrow .tu-updwhy{color:var(--tu-bad);padding-left:21px}
+.tu-updprog{display:flex;flex-direction:column;gap:6px}
+.tu-updprog>div{display:flex;justify-content:space-between;font-size:13px;font-weight:700}.tu-updprog>div span+span{color:var(--tu-on3)}
+.tu-updprog .tu-tile-bar{height:8px;background:var(--tu-s2)}.tu-updprog .tu-tile-bar i{background:var(--tu-p)}
+.tu-updbody .tu-actions{display:flex;gap:8px;flex-wrap:wrap}
+.tu-layer .tu-updbody .tu-actions .tu-btn{height:48px;padding:0 20px;font-size:14.5px}
+.tu-layer .tu-updbody .tu-actions .tu-grow{flex:1;font-size:15px;font-weight:800}
+#tuUpd .tu-dialog-wrap{align-items:flex-start;justify-content:flex-end;padding:96px 40px 24px}
+.tu-layer .tu-upd{width:500px;max-width:calc(100vw - 32px)}
+.tu-upd-head{padding:22px 24px 14px;display:flex;align-items:flex-start;gap:12px;flex:none}
+.tu-upd-ico{width:44px;height:44px;border-radius:14px;background:var(--tu-pc);color:var(--tu-onpc);display:flex;align-items:center;justify-content:center;flex:none}
+.tu-upd-head>div{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+${H} .tu-upd-head h2{font-size:20px!important;font-weight:800!important}
+${H} .tu-layer .tu-upd-head .tu-round{width:38px;height:38px;min-width:38px}
+.tu-upd .tu-updbody{padding:0 16px 20px;overflow:auto;min-height:0}
+.tu-upd .tu-updbody>:not(.tu-updlist){margin:0 8px}
+.tu-upd .tu-updbody>.tu-actions{margin-top:4px}
+/* the legacy Load New Form modal stays open off-screen while Add forms uses its slot and custom import */
+:root[data-tu] #modalRoot[data-tu-ghost],:root[data-tu] #modalRoot[data-tu-ghost] *{visibility:hidden!important;pointer-events:none!important}
+:root[data-tu] #modalRoot[data-tu-ghost] .modal-backdrop{left:-10000px!important;right:auto!important;width:900px!important}
+
+/* Quick practice (board QuickPractice): the legacy Quick Import panel stays in the DOM, off-screen */
+${H} #quickModePanel.tu-has-quick.active{display:block!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+${H} #quickModePanel.tu-has-quick>:not(#tuQuick){position:absolute!important;left:-10000px!important;top:0!important;width:900px!important;height:1px!important;overflow:hidden!important;visibility:hidden!important;pointer-events:none!important}
+${H}[data-tu-page="quick"] .modern-hero{display:none!important}
+${H}:not([data-tu-start]) .modern-main:has(#quickModePanel.tu-has-quick.active){padding:28px 36px 56px!important}
+${H} #tuQuick{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:20px;color:var(--tu-on);font-family:var(--tu-font)}
+.tu-qhead{display:flex;flex-direction:column;gap:4px}
+${H} #tuQuick .tu-qhead h1{font-size:32px!important;font-weight:800!important;letter-spacing:-.02em!important}
+.tu-qhead>span{font-size:14px;color:var(--tu-on3)}
+.tu-banner{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 18px;border-radius:18px;background:var(--tu-warnc);color:var(--tu-warn)}
+.tu-banner>span{flex:1 1 260px;font-size:14px;font-weight:600;line-height:1.4}
+${H} #tuQuick .tu-banner .tu-link{color:var(--tu-warn);font-weight:800;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.tu-qgrid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.tu-qcol{flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:16px}
+${H} #tuQuick .tu-drop{width:100%;padding:40px 24px;border-radius:28px;gap:10px;background:var(--tu-surface)}
+${H} #tuQuick .tu-drop.tu-drag{border-color:var(--tu-p);background:var(--tu-pc)}
+.tu-drop-ico{width:56px;height:56px;border-radius:18px;background:var(--tu-pc);color:var(--tu-onpc);display:flex;align-items:center;justify-content:center}
+#tuQuick .tu-drop b{font-size:17px}
+#tuQuick .tu-drop>span:last-child{font-size:13px;max-width:340px}
+.tu-qbank{padding:18px;display:flex;align-items:center;gap:12px}
+.tu-okico{width:44px;height:44px;border-radius:14px;background:var(--tu-okc);color:var(--tu-ok);display:flex;align-items:center;justify-content:center;flex:none}
+.tu-okico svg{width:22px;height:22px}
+.tu-qbank-text{flex:1;display:flex;flex-direction:column;min-width:0}
+.tu-qbank-text b{font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tu-qbank-text span{font-size:13px;color:var(--tu-on3)}
+#tuQuick .tu-qbank .tu-btn{height:36px;padding:0 14px;font-size:13px;font-weight:700}
+.tu-qsave{padding:18px;display:flex;flex-direction:column;gap:12px}
+${H} #tuQuick .tu-qsave h2{font-size:16px!important;font-weight:800!important}
+.tu-qsave .tu-note{font-size:13px;margin-top:-6px}
+.tu-qsave .tu-actions{display:flex;flex-wrap:wrap;gap:8px}
+#tuQuick .tu-qsave .tu-btn{height:40px;padding:0 16px;font-size:13.5px;font-weight:700}
+.tu-run{flex:1 1 480px;min-width:0;padding:20px;border-radius:28px;display:flex;flex-direction:column;gap:18px}
+${H} #tuQuick .tu-run h2{font-size:18px!important;font-weight:800!important}
+.tu-field{display:flex;flex-direction:column;gap:8px}
+.tu-field>span{font-size:13px;font-weight:700;color:var(--tu-on2)}
+#tuQuick .tu-chip{height:36px;padding:0 14px;border-radius:10px}
+#tuQuick .tu-run>.tu-chips .tu-chip{height:34px;font-size:13px}
+#tuQuick .tu-plan{font-size:13.5px}
+.tu-qblocks{border:1px solid var(--tu-line2);border-radius:18px;overflow:hidden;max-height:330px;overflow-y:auto}
+${H} #tuQuick .tu-qblocks button{width:100%;display:flex;align-items:center;gap:12px;padding:12px 16px;border:0;border-bottom:1px solid var(--tu-line2);border-radius:0;background:transparent;color:var(--tu-on);text-align:left}
+${H} #tuQuick .tu-qblocks button:last-child{border-bottom:0}
+${H} #tuQuick .tu-qblocks button[aria-checked="true"]{background:var(--tu-s1)}
+.tu-qblocks i{width:20px;height:20px;border-radius:50%;border:2px solid var(--tu-line);display:flex;align-items:center;justify-content:center;flex:none}
+.tu-qblocks [aria-checked="true"] i{border-color:var(--tu-p)}
+.tu-qblocks [aria-checked="true"] i::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--tu-p)}
+.tu-qblocks b{flex:1;font-weight:700;font-size:14.5px;min-width:0}.tu-qblocks button>span{font-size:13px;color:var(--tu-on3);white-space:nowrap}
+.tu-qstart{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+#tuQuick .tu-qstart .tu-btn{height:48px;padding:0 20px;font-size:14.5px;font-weight:800;gap:8px}
+#tuQuick .tu-qstart .tu-btn:not(.outline){padding:0 24px}
+.tu-qempty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:36px 16px;color:var(--tu-on3);border:1px dashed var(--tu-line);border-radius:20px}
+.tu-qempty b{color:var(--tu-on);font-size:15px}.tu-qempty span{font-size:13px;max-width:320px}
 
 /* narrow windows */
 @media (max-width:1000px){${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:18px 20px 40px!important}.tu-overall{max-width:none}}
@@ -576,8 +820,8 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
     });
     if(!byId('tuAddForms') && byId('loadNewFormBtn')){
       const add = document.createElement('button');
-      add.type = 'button'; add.id = 'tuAddForms'; add.innerHTML = icon(ICONS.plus, 22) + 'Add forms';
-      add.addEventListener('click', () => { const tab = byId('libraryTab'); if(tab && !tab.classList.contains('active')) tab.click(); setTimeout(() => byId('loadNewFormBtn')?.click(), 0); });
+      add.type = 'button'; add.id = 'tuAddForms'; add.innerHTML = icon(ICONS.plus, 22) + 'Add forms'; add.setAttribute('aria-haspopup', 'dialog');
+      add.addEventListener('click', () => openAdd('slot', add));
       const first = side.querySelector('.menu-tab'); side.insertBefore(add, first || null);
     }
     const theme = byId('themeToggle');
@@ -592,7 +836,7 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
   }
   function heroTitle(){
     const active = document.querySelector('#menu aside.modern-sidebar .menu-tab.active');
-    const menu = byId('menu'), page = active ? active.id.replace(/Tab$/, '') : '';
+    const menu = byId('menu'), page = menu && menu.dataset.tuStart ? 'library' : active ? active.id.replace(/Tab$/, '') : ''; // the start dialog sits over the Library
     if(menu && menu.dataset.tuPage !== page) menu.dataset.tuPage = page; // the Library page draws its own header
     const hero = document.querySelector('#menu .modern-hero'); if(!hero) return;
     const h1 = hero.querySelector('h1'), p = hero.querySelector('h1 + p, p');
@@ -826,7 +1070,7 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
     const qs = forms.reduce((n, f) => n + (Number(f.rec.totalQuestions) || 0), 0);
     setRegion('count', forms.length ? esc(plural(forms.length, 'form') + ' · ' + qs.toLocaleString() + ' questions') : '');
     const upd = byId('formUpdatesCheck');
-    setRegion('updates', upd ? `<button type="button" class="tu-iconbtn" data-tu-proxy="formUpdatesCheck" aria-label="Check for form updates" title="${esc(upd.textContent.trim() || 'Check for updates')}"${upd.disabled ? ' disabled' : ''}>${icon(ICONS.download, 19)}</button>` : '');
+    setRegion('updates', upd ? `<button type="button" class="tu-iconbtn" data-tu-updates aria-haspopup="dialog" aria-label="Check for form updates" title="Check for form updates">${icon(ICONS.download, 19)}</button>` : '');
     setRegion('more', moreHtml());
     setRegion('overall', overallHtml(forms));
     setRegion('recent', recentHtml(forms));
@@ -863,6 +1107,8 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
     const tiles = home.querySelector('[data-tu-tiles]'), more = home.querySelector('[data-tu-tabs-more]');
     if(tiles && more){ tiles.classList.add('tu-clamp'); const over = tiles.scrollHeight > tiles.clientHeight + 2; tiles.classList.toggle('tu-clamp', !homeUi.tabsOpen); more.hidden = !over; }
     if(sheetState.id) paintSheet();
+    if(addUi.open) paintAdd();
+    paintUpdates();
     heroTitle();
     if(libraryObserver) libraryObserver.takeRecords();
   }
@@ -874,6 +1120,7 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
     if(t.hasAttribute('data-tu-resume-more')){ homeUi.resumeOpen = !homeUi.resumeOpen; scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-tabs-more')){ homeUi.tabsOpen = !homeUi.tabsOpen; scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-see-all')){ store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    if(t.hasAttribute('data-tu-updates')){ openUpdates(t); return; }
     if(t.id === 'tuCustomizeTabs'){ window.__v195BSettingsActive = 'order'; window.__v195SettingsActive = 'order'; window.__tuSettingsAppearance = false; byId('settingsTab')?.click(); return; }
     const act = t.dataset.tuAct, id = t.dataset.id; if(!act || !id) return;
     if(act === 'sheet'){ openSheet(id, t); return; }
@@ -984,7 +1231,7 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
       const pool = t.dataset.tuRetest; closeSheet();
       if(!await cardAction(id, '[data-action="start"]')) return;
       for(let i = 0; i < 1200; i++){
-        const radio = document.querySelector(`input[name="v10RetestPool"][value="${CSS.escape(pool)}"]`);
+        const s = bridge().setup ? bridge().setup() : null, radio = s && document.querySelector(`input[name="${CSS.escape(s.poolInput)}"][value="${CSS.escape(pool)}"]`);
         if(radio){ if(!radio.checked){ radio.checked = true; radio.dispatchEvent(new Event('change', {bubbles:true})); } return; }
         if(byId('examScreen') && !byId('examScreen').classList.contains('hidden')) return;
         await wait(50);
@@ -995,6 +1242,476 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
       if(await cardAction(id, '[data-v9="attempts"]')) await answerPrompt(t.dataset.tuAttempt);
       setTimeout(() => { if(sheetState.id === id) loadSheetData(); }, 400);
     }
+  }
+
+  /* ---------- Start dialog and Quick practice (A23 Phase B: boards StartSetup, StartSetupiPad, QuickPractice) ----------
+     Both views are drawn from the hidden legacy setup controls and write back through them (value + change event, or a
+     click on the legacy button), so renderMenu, the linked-safe shuffle, retest pools and startTest still do the work.
+     The legacy New Attempt box is rebuilt on every renderMenu, so its inputs are driven in place rather than moved. */
+  const SIZE_LABELS = {all:'All in one', original:'Blocks from files'};
+  const POOLS = [['all', 'All questions'], ['wrongs', 'Wrongs'], ['marked', 'Marked'], ['wrongs_marked', 'Wrongs + marked']];
+  const CARRY = [['hl', 'Stem highlights'], ['st', 'Strikethroughs'], ['mk', 'Marked flags']]; // the checkbox IDs come from StepLibraryBridge.setup().carry
+  const SW_IDS = {timer:'enableTimer', shuffle:'shuffleQuestions', correct:'showCorrect', brk:'enableBreak'};
+  const BRK = {bank:{step:5, min:5, max:240}, each:{step:1, min:1, max:60}};
+  const setupUi = {brkMin:{bank:60, each:10}};
+  const check = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
+  const closeIco = icon('<path d="M6 6l12 12M18 6 6 18"/>', 20);
+  function setupModel(){
+    const sel = byId('blockSizeSelect'), sh = byId('shuffleQuestions'), start = byId('startFull');
+    const spq = Math.max(15, parseInt(byId('secondsPerQuestion')?.value, 10) || 90);
+    const blocks = Array.from(document.querySelectorAll('#blocksTable tbody tr[data-i]')).map(tr => {
+      const td = tr.querySelectorAll('td'), n = parseInt(td[2]?.textContent, 10) || 0, i = Number(tr.dataset.i);
+      const name = (td[1]?.textContent || '').trim() || 'Block ' + (i + 1);
+      // legacy names: "Custom Block 2 (41–80)", "Full Test (1–200)"; the board shows "Block 2" and "Q41–80"
+      const cm = name.match(/^Custom Block (\d+) \((\d+)\s*[–-]\s*(\d+)\)$/), fm = name.match(/^Full Test \((\d+)\s*[–-]\s*(\d+)\)$/);
+      const short = cm ? 'Block ' + cm[1] : fm ? 'Full test' : name, range = cm ? `Q${cm[2]}–${cm[3]}` : fm ? `Q${fm[1]}–${fm[2]}` : '';
+      return {i, name, short, range, n, min:Math.max(1, Math.round(n * spq / 60)), selected:tr.classList.contains('selected')};
+    });
+    return {
+      size: sel ? sel.value : '', sizes: sel ? Array.from(sel.options).map(o => [o.value, SIZE_LABELS[o.value] || o.value]) : [], spq,
+      timer: !!byId('enableTimer')?.checked, correct: !!byId('showCorrect')?.checked, shuffle: !!sh?.checked, hasShuffle: !!sh,
+      brk: !!byId('enableBreak')?.checked, brkMin: Math.max(0, parseInt(byId('breakMinutes')?.value, 10) || 0), brkMode: byId('breakMode')?.value === 'each' ? 'each' : 'bank', hasBrkMode: !!byId('breakMode'),
+      blocks, ready: !!start && !start.disabled
+    };
+  }
+  function setLegacy(id, value){
+    const el = byId(id); if(!el) return false;
+    if(el.type === 'checkbox'){ if(el.checked === !!value) return false; el.checked = !!value; }
+    else { if(String(el.value) === String(value)) return false; el.value = String(value); }
+    el.dispatchEvent(new Event('input', {bubbles:true})); el.dispatchEvent(new Event('change', {bubbles:true}));
+    return true;
+  }
+  function planText(m){
+    const b = m.blocks; if(!b.length) return '';
+    if(b.every(x => x.n === b[0].n)) return `${plural(b.length, 'block')} × ${b[0].n} Qs · ${b[0].min} min${b.length > 1 ? ' each' : ''}`;
+    return `${plural(b.length, 'block')} · ${b.reduce((n, x) => n + x.n, 0)} Qs · up to ${Math.max(...b.map(x => x.n))} per block`;
+  }
+  const switchHtml = (key, on, label) => `<button type="button" class="tu-switch" role="switch" aria-checked="${on}" aria-label="${esc(label)}" data-tu-sw="${key}"><i></i></button>`;
+  const stepper = (key, text, what) => `<div class="tu-stepper"><button type="button" data-tu-step="${key}" data-d="-1" aria-label="Less ${what}">−</button><span>${esc(text)}</span><button type="button" data-tu-step="${key}" data-d="1" aria-label="More ${what}">+</button></div>`;
+  const chip = (attr, value, label, on, role) => `<button type="button" class="tu-chip" ${role ? `role="${role}" aria-checked="${on}"` : `aria-pressed="${on}"`} data-${attr}="${esc(value)}">${role ? '' : (on ? check : '')}${esc(label)}</button>`;
+  function sizesHtml(m, keepOriginal){
+    return `<div class="tu-chips" role="radiogroup" aria-label="Block size">${m.sizes.filter(([v]) => v !== 'original' || keepOriginal).map(([v, l]) => chip('tu-size', v, l, m.size === v, 'radio')).join('')}</div>`;
+  }
+  function breakControls(m){
+    if(!m.brk) return '';
+    const mode = m.brkMode, modes = m.hasBrkMode ? `<div class="tu-seg2" role="radiogroup" aria-label="Break type">${[['bank', 'Shared break bank'], ['each', 'After each block']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${mode === v}" data-tu-brkmode="${v}">${l}</button>`).join('')}</div>` : '';
+    return `<div class="tu-brk-row">${modes}${stepper('brkmin', m.brkMin + (mode === 'bank' ? ' min total' : ' min each'), 'break time')}</div>`;
+  }
+  function breakHint(m){ return !m.brk ? 'Off: the next block starts right away' : m.brkMode === 'bank' ? 'One pool of break time for the whole sitting, like test day' : 'The same fixed break after every block'; }
+  // Setup controls shared by the start dialog and Quick practice. Returns true when it handled the click.
+  function setupAction(t){
+    const m = setupModel(), d = Number(t.dataset.d) || 0;
+    if(t.dataset.tuSw){
+      const on = t.getAttribute('aria-checked') !== 'true' && t.getAttribute('aria-pressed') !== 'true';
+      setLegacy(SW_IDS[t.dataset.tuSw], on);
+      if(t.dataset.tuSw === 'brk' && on && !m.brkMin) setLegacy('breakMinutes', setupUi.brkMin[m.brkMode]);
+      return true;
+    }
+    if(t.dataset.tuSize){ setLegacy('blockSizeSelect', t.dataset.tuSize); return true; }
+    if(t.dataset.tuStep === 'spq'){ setLegacy('secondsPerQuestion', Math.max(15, Math.min(300, m.spq + 5 * d))); return true; }
+    if(t.dataset.tuStep === 'brkmin'){ const r = BRK[m.brkMode], base = m.brkMin || setupUi.brkMin[m.brkMode]; setLegacy('breakMinutes', Math.max(r.min, Math.min(r.max, base + r.step * d))); setupUi.brkMin[m.brkMode] = Number(byId('breakMinutes')?.value) || base; return true; }
+    if(t.dataset.tuBrkmode){
+      const mode = t.dataset.tuBrkmode; if(mode === m.brkMode) return true;
+      if(m.brkMin) setupUi.brkMin[m.brkMode] = m.brkMin;
+      setLegacy('breakMode', mode); setLegacy('breakMinutes', setupUi.brkMin[mode]);
+      return true;
+    }
+    return false;
+  }
+  // Re-renders a region only when its markup changed, keeping keyboard focus and scroll position.
+  function swapHtml(box, html){
+    if(!box || box.dataset.html === html) return false;
+    const a = document.activeElement, scrollers = Array.from(box.querySelectorAll('[data-tu-scroll]')).map(s => [s.dataset.tuScroll, s.scrollTop]);
+    let key = '';
+    if(a && a !== box && box.contains(a)) key = Array.from(a.attributes).filter(x => /^data-tu|^id$|^data-d$/.test(x.name)).map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('');
+    box.innerHTML = html; box.dataset.html = html;
+    scrollers.forEach(([k, top]) => { const s = box.querySelector(`[data-tu-scroll="${k}"]`); if(s) s.scrollTop = top; });
+    if(key) box.querySelector(key)?.focus();
+    return true;
+  }
+  function trapKeys(e, el, close){
+    if(e.key === 'Escape'){ e.preventDefault(); close(); return; }
+    if(e.key !== 'Tab') return;
+    const f = Array.from(el.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')).filter(b => b.offsetParent !== null || b.type === 'file'); if(!f.length) return;
+    if(e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length - 1].focus(); }
+    else if(!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
+  }
+  function dialogLayer(id, cls, labelledBy, onClick, onClose){
+    let el = byId(id); if(el) return el;
+    el = document.createElement('div'); el.id = id; el.className = 'tu-layer'; el.hidden = true;
+    el.innerHTML = `<div class="tu-scrim" data-tu-close></div><div class="tu-dialog-wrap"><section class="tu-dialog ${cls}" role="dialog" aria-modal="true" aria-labelledby="${labelledBy}"></section></div>`;
+    (byId('menu') || document.body).appendChild(el);
+    el.addEventListener('click', onClick);
+    el.addEventListener('keydown', e => trapKeys(e, el, onClose));
+    return el;
+  }
+
+  /* start / new attempt dialog: opens over the Library whenever the legacy New Attempt setup is showing */
+  const startUi = {open:false, token:'', formId:'', run:'all', one:0, chosen:new Set(), carry:{hl:true, st:true, mk:false}, size:null, started:new Set(), ran:false, focus:false};
+  let startQueued = false;
+  function scheduleStart(){ if(startQueued) return; startQueued = true; requestAnimationFrame(() => { startQueued = false; try{ checkStart(); }catch(e){ console.warn('ThunderUI start dialog failed', e); } }); }
+  function checkStart(){
+    const menu = byId('menu'), B = bridge();
+    let setup = B && B.setup ? B.setup() : null; if(setup && !byId(setup.box)) setup = null; // the legacy box is drawn by renderMenu
+    const showing = !!setup && !!menu && !menu.classList.contains('hidden') && !!byId('quickModePanel')?.classList.contains('active');
+    const menuHidden = !menu || menu.classList.contains('hidden');
+    if(startUi.open && menuHidden){ startUi.started.add(startUi.token); startUi.ran = true; } // the menu hides when a run starts
+    // Back from a run this dialog started: the legacy menu reopens on Quick practice, so return to the Library.
+    if(startUi.ran && !menuHidden){
+      startUi.ran = false;
+      if(byId('quickModePanel')?.classList.contains('active')){ closeStartView(); byId('libraryTab')?.click(); return; }
+    }
+    if(!showing){ closeStartView(); return; }
+    const token = setup.token + ':' + setup.formId;
+    if(startUi.started.has(token)){ closeStartView(); byId('libraryTab')?.click(); return; }
+    if(!startUi.open || startUi.token !== token) openStart(token, setup);
+    paintStart();
+  }
+  function openStart(token, setup){
+    const el = dialogLayer('tuStart', 'tu-start', 'tuStartTitle', onStartClick, cancelStart);
+    Object.assign(startUi, {open:true, token, formId:setup.formId, run:'all', one:0, chosen:new Set(), carry:{hl:true, st:true, mk:false}});
+    // Default to the form's suggested block size (the New Attempt setup otherwise falls back to one block of everything).
+    const rec = bridge().form(setup.formId), sel = byId('blockSizeSelect'), want = rec && rec.suggestedBlockSize ? String(rec.suggestedBlockSize) : '';
+    startUi.size = want && sel && Array.from(sel.options).some(o => o.value === want) ? want : null;
+    el.hidden = false; byId('menu').dataset.tuStart = '1'; heroTitle();
+    startUi.focus = true; // focus moves to Close after the first paint
+  }
+  function closeStartView(){
+    if(!startUi.open) return;
+    startUi.open = false; startUi.token = '';
+    const el = byId('tuStart'); if(el){ el.hidden = true; const box = el.querySelector('.tu-start'); box.innerHTML = ''; box.dataset.html = ''; }
+    const menu = byId('menu'); if(menu) delete menu.dataset.tuStart;
+    heroTitle();
+  }
+  function cancelStart(){
+    const id = startUi.formId; closeStartView();
+    byId('libraryTab')?.click(); // leaving the Quick practice panel clears the legacy setup
+    setTimeout(() => document.querySelector(`#tuHome [data-tu-act][data-id="${CSS.escape(id)}"]`)?.focus(), 60);
+  }
+  function startPicked(m){
+    if(m.blocks.length <= 1 || startUi.run === 'all') return m.blocks;
+    if(startUi.run === 'one') return m.blocks.filter(b => b.i === startUi.one);
+    return m.blocks.filter(b => startUi.chosen.has(b.i));
+  }
+  function paintStart(){
+    const el = byId('tuStart'), B = bridge(); if(!el || el.hidden || !B) return;
+    const setup = B.setup(); if(!setup) return;
+    const m = setupModel();
+    if(startUi.size && m.size !== startUi.size && m.sizes.some(s => s[0] === startUi.size)){ setLegacy('blockSizeSelect', startUi.size); return; } // repaints after renderMenu
+    const n = m.blocks.length;
+    startUi.chosen = new Set([...startUi.chosen].filter(i => i < n)); if(startUi.one >= n) startUi.one = 0;
+    const tabsByKey = {}; libTabs().forEach(t => { tabsByKey[t.internal] = t; });
+    const rec = B.form(setup.formId), f = rec ? formInfo(rec, tabsByKey) : {title:setup.formId, tabLabel:''};
+    const kicker = [f.tabLabel, setup.formId, setup.attemptLabel].filter(Boolean).join(' · ');
+    const sub = setup.pool !== 'all' && setup.sourceLabel ? `A retest from “${esc(setup.sourceLabel)}”, saved as its own attempt. The source attempt stays untouched.`
+      : setup.sourceLabel ? `Saved as a separate attempt. “${esc(setup.sourceLabel)}” and earlier attempts stay untouched.` : 'This becomes the first attempt for this form.';
+    const c = setup.counts || {};
+    const pools = POOLS.map(([id, label]) => { const k = Number(c[id]) || 0, on = setup.pool === id; return `<button type="button" class="tu-pool" role="radio" aria-checked="${on}" data-tu-pool="${id}"${id !== 'all' && !k ? ' disabled' : ''}><b>${k}</b><span>${label}</span></button>`; }).join('');
+    const carry = setup.sourceLabel ? `<div class="tu-carry"><span>Carry over from “${esc(setup.sourceLabel)}”</span>${CARRY.map(([k, l]) => chip('tu-carry', k, l, !!startUi.carry[k])).join('')}</div>` : '';
+    const quick = B.quick ? B.quick() : null;
+    const picked = startPicked(m), qs = picked.reduce((s, b) => s + b.n, 0), mins = picked.reduce((s, b) => s + b.min, 0);
+    let runHtml = '';
+    if(n > 1){
+      const modes = [['all', 'All blocks', 'In order, one sitting'], ['one', 'One block', 'Pick a single block'], ['choose', 'Choose blocks', 'Any combination, in order']]
+        .map(([id, l, h]) => `<button type="button" class="tu-runmode" role="radio" aria-checked="${startUi.run === id}" data-tu-run="${id}"><b>${l}</b><span>${h}</span></button>`).join('');
+      const one = startUi.run === 'one';
+      const list = startUi.run === 'all' ? '' : `<div class="tu-blocklist" role="${one ? 'radiogroup' : 'group'}" aria-label="${one ? 'Block to run' : 'Blocks to run'}">${m.blocks.map(b => { const on = one ? startUi.one === b.i : startUi.chosen.has(b.i); return `<button type="button" class="tu-blockpick${one ? ' one' : ''}" role="${one ? 'radio' : 'checkbox'}" aria-checked="${on}" data-tu-block="${b.i}" title="${esc(b.name)}"><i>${on && !one ? check : ''}</i><span><b>${esc(b.short)}</b><small>${b.n} Qs · ${b.min} min</small></span></button>`; }).join('')}</div>` +
+        (startUi.run === 'choose' && !picked.length ? '<span class="tu-note">Pick one or more blocks. They run in order, with breaks between them.</span>' : '');
+      runHtml = `<section><h3>Blocks to run</h3><div class="tu-runmodes" role="radiogroup" aria-label="Blocks to run">${modes}</div>${list}</section>`;
+    } else if(n === 1){
+      runHtml = `<section><h3>Blocks to run</h3><span class="tu-note">One block · ${m.blocks[0].n} Qs · ${m.blocks[0].min} min. Choose a smaller block size to split it.</span></section>`;
+    }
+    const sw = [['timer', 'Timer', 'Block and day countdowns, like test day', m.timer], m.hasShuffle ? ['shuffle', 'Shuffle questions', 'Linked case sets always stay together and in order', m.shuffle] : null, ['correct', 'Show correct answer after each item', 'Tutor-style feedback while you work', m.correct]]
+      .filter(Boolean).map(([k, l, h, on]) => `<div class="tu-swrow"><div><b>${l}</b><span>${h}</span></div>${switchHtml(k, on, l)}</div>`).join('');
+    const label = n <= 1 ? 'Start' : picked.length === 1 ? 'Start block' : `Start ${picked.length} blocks`;
+    const summary = `${qs} questions · ${plural(picked.length, 'block')}${m.timer ? ' · ' + mins + ' min' : ' · untimed'}${m.brk && m.brkMin && picked.length > 1 ? ' + breaks' : ''}`;
+    const html = `<header class="tu-dlg-head"><div><span class="tu-kicker">${esc(kicker)}</span><h2 id="tuStartTitle">Start ${esc(f.title)}</h2><span class="tu-sub">${sub}</span></div><button type="button" class="tu-round" data-tu-close aria-label="Close">${closeIco}</button></header>` +
+      `<div class="tu-dlg-body tu-start-grid" data-tu-scroll="body"><div class="tu-col">` +
+        `<section><h3>Questions</h3><div class="tu-pools" role="radiogroup" aria-label="Question pool">${pools}</div>${carry}</section>` +
+        `<section><h3>Blocks &amp; timing</h3>${sizesHtml(m, quick && quick.sourceBlocks > 1)}<div class="tu-inline">${stepper('spq', m.spq + ' sec / Q', 'time per question')}<span class="tu-plan">${esc(planText(m))}</span></div></section>` +
+        `<section class="tu-brk"><div class="tu-swrow"><div><b>Breaks between blocks</b><span>${breakHint(m)}</span></div>${switchHtml('brk', m.brk, 'Breaks between blocks')}</div>${breakControls(m)}</section>` +
+      `</div><div class="tu-col">${runHtml}<section class="tu-switches">${sw}</section></div></div>` +
+      `<footer class="tu-dlg-foot"><div><b>${esc(summary)}</b><span>Progress saves automatically after every answer.</span></div><button type="button" class="tu-btn tu-go" data-tu-go${!m.ready || !picked.length ? ' disabled' : ''}>${icon(ICONS.play, 18)}${label}</button></footer>`;
+    swapHtml(el.querySelector('.tu-start'), html);
+    if(startUi.focus){ startUi.focus = false; el.querySelector('.tu-start [data-tu-close]')?.focus(); }
+  }
+  function applyCarry(){ const s = bridge().setup(); if(s) CARRY.forEach(([k], i) => { const el = byId(s.carry[i]); if(el) el.checked = !!startUi.carry[k]; }); }
+  function goStart(){
+    const m = setupModel(); if(!m.ready || !m.blocks.length) return;
+    const token = startUi.token, picked = startPicked(m).map(b => b.i); if(!picked.length) return;
+    if(picked.length === 1 && m.blocks.length > 1){
+      document.querySelector(`#blocksTable tbody tr[data-i="${picked[0]}"]`)?.click(); // selects it (renderMenu)
+      applyCarry(); byId('startSelected')?.click();
+    } else if(picked.length < m.blocks.length && typeof window.startChosenBlocks === 'function'){
+      applyCarry(); window.startChosenBlocks(picked);
+    } else { applyCarry(); byId('startFull')?.click(); }
+    if(byId('menu')?.classList.contains('hidden')){ startUi.started.add(token); startUi.ran = true; }
+    scheduleStart();
+  }
+  function onStartClick(e){
+    const t = e.target.closest('button, [data-tu-close]'); if(!t || t.disabled) return;
+    if(t.hasAttribute('data-tu-close')){ cancelStart(); return; }
+    if(t.dataset.tuPool){
+      const s = bridge().setup(), r = s && document.querySelector(`input[name="${CSS.escape(s.poolInput)}"][value="${CSS.escape(t.dataset.tuPool)}"]`);
+      if(r && !r.disabled && !r.checked){ r.checked = true; r.dispatchEvent(new Event('change', {bubbles:true})); }
+      return;
+    }
+    if(t.dataset.tuCarry){ startUi.carry[t.dataset.tuCarry] = !startUi.carry[t.dataset.tuCarry]; paintStart(); return; }
+    if(t.dataset.tuSize) startUi.size = t.dataset.tuSize;
+    if(setupAction(t)){ paintStart(); return; }
+    if(t.dataset.tuRun){ startUi.run = t.dataset.tuRun; paintStart(); return; }
+    if(t.dataset.tuBlock != null){
+      const i = Number(t.dataset.tuBlock);
+      if(startUi.run === 'one') startUi.one = i; else if(startUi.chosen.has(i)) startUi.chosen.delete(i); else startUi.chosen.add(i);
+      paintStart(); return;
+    }
+    if(t.hasAttribute('data-tu-go')) goStart();
+  }
+
+  /* Quick practice (replaces the Quick Import panel; the legacy panel stays in the DOM, off-screen) */
+  let quickQueued = false, quickObserver = null;
+  function scheduleQuick(){ if(quickQueued) return; quickQueued = true; requestAnimationFrame(() => { quickQueued = false; try{ paintQuick(); }catch(e){ console.warn('ThunderUI quick practice failed', e); } }); }
+  function ensureQuick(panel){
+    let q = byId('tuQuick'); if(q) return q;
+    q = document.createElement('div'); q.id = 'tuQuick';
+    panel.insertBefore(q, panel.firstChild);
+    q.addEventListener('click', onQuickClick);
+    q.addEventListener('dragover', e => { const z = e.target.closest && e.target.closest('.tu-drop'); if(!z) return; e.preventDefault(); z.classList.add('tu-drag'); });
+    q.addEventListener('dragleave', e => { e.target.closest && e.target.closest('.tu-drop')?.classList.remove('tu-drag'); });
+    q.addEventListener('drop', e => {
+      const z = e.target.closest && e.target.closest('.tu-drop'); if(!z) return;
+      e.preventDefault(); z.classList.remove('tu-drag');
+      const files = e.dataTransfer && e.dataTransfer.files, input = byId('fileInput'); if(!files || !files.length || !input) return;
+      try{ const dt = new DataTransfer(); Array.from(files).forEach(f => dt.items.add(f)); input.files = dt.files; input.dispatchEvent(new Event('change', {bubbles:true})); }
+      catch(err){ byId('dropZone')?.dispatchEvent(new DragEvent('drop', {dataTransfer:e.dataTransfer, bubbles:true, cancelable:true})); }
+    });
+    return q;
+  }
+  const visible = el => !!el && !el.disabled && !el.classList.contains('hidden') && !el.closest('.hidden');
+  function quickHtml(){
+    const B = bridge(), info = B && B.quick ? B.quick() : null, bank = info && !info.library ? info : null;
+    const m = setupModel();
+    const saveBtns = [['loadSaveReview', 'Load save & review', 'tonal'], ['exportSave', 'Export save', 'outline'], ['manualImportSave', 'Import a save file', 'outline'], ['deleteSave', 'Delete save', 'dangertext']].filter(([id]) => visible(byId(id)) && (bank || id === 'manualImportSave'));
+    const canSave = saveBtns.length > 0;
+    const banner = `<div class="tu-banner" role="note">${icon('<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/>', 22)}<span>${canSave ? 'Temporary: answers, highlights and scores here are not saved to your library. Export a save file if you need it later.' : 'Temporary: answers, highlights and scores here are not saved. Add the bank to your library to keep your progress.'}</span><button type="button" class="tu-link" data-tu-open-add>Add to library instead</button></div>`;
+    const resume = byId('resumeQuickSession'), canResume = bank && resume && !resume.disabled;
+    let left = `<button type="button" class="tu-drop" data-tu-proxy="fileInput"><span class="tu-drop-ico">${icon(ICONS.upload, 28)}</span><b>Drop JSON files or choose</b><span>blocks[], questions[] or a plain question array. Several files merge in natural filename order.</span></button>`;
+    if(bank){
+      const linked = (byId('bankStatus')?.querySelector('.v215-linked-summary')?.textContent || '');
+      const lm = linked.match(/Detected (\d+) linked set/), ltxt = lm ? plural(Number(lm[1]), 'linked set') + ' kept together' : /No linked-set/.test(linked) ? 'no linked sets' : '';
+      const title = bank.files.length > 1 ? `${bank.files[0]} + ${bank.files.length - 1} more` : (bank.files[0] || bank.title);
+      left += `<section class="tu-card tu-qbank"><span class="tu-okico">${check}</span><span class="tu-qbank-text"><b title="${esc(bank.title)}">${esc(title)}</b><span>${esc([bank.total + ' questions', plural(bank.sourceBlocks, 'source block'), ltxt].filter(Boolean).join(' · '))}</span></span>${visible(byId('clearBank')) ? '<button type="button" class="tu-btn outline small" data-tu-proxy="clearBank">Clear</button>' : ''}</section>`;
+    }
+    if(canSave){
+      const sv = bank && bank.save;
+      const note = !bank ? 'Import the same bank first, then load or import its save to review it.' : sv ? `A save from ${esc(shortDate(sv.updatedAt) || 'earlier')} matches this exact set (${sv.completed} of ${plural(sv.blocks, 'block')} completed).` : 'No save yet for this exact set.';
+      left += `<section class="tu-card tu-qsave"><h2>Save file</h2><span class="tu-note">${note}</span><div class="tu-actions">${saveBtns.map(([id, l, cls]) => `<button type="button" class="tu-btn small ${cls}" data-tu-proxy="${id}">${esc(l)}</button>`).join('')}</div></section>`;
+    }
+    let run;
+    if(bank && m.blocks.length){
+      const blocks = `<div class="tu-qblocks" role="radiogroup" aria-label="Block to run">${m.blocks.map(b => `<button type="button" role="radio" aria-checked="${b.selected}" data-tu-qblock="${b.i}" title="${esc(b.name)}"><i></i><b>${esc(b.short + (b.range ? ' · ' + b.range : ''))}</b><span>${b.n} Qs · ${b.min} min</span></button>`).join('')}</div>`;
+      const chips = [['timer', 'Timer', m.timer], m.hasShuffle ? ['shuffle', 'Shuffle', m.shuffle] : null, ['correct', 'Show correct answers', m.correct], ['brk', m.brk ? `Breaks · ${m.brkMin} min${m.brkMode === 'each' ? ' each' : ''}` : 'Breaks', m.brk]].filter(Boolean)
+        .map(([k, l, on]) => `<button type="button" class="tu-chip" aria-pressed="${on}" data-tu-sw="${k}">${on ? check : ''}${esc(l)}</button>`).join('');
+      run = `<div class="tu-field"><span>Block size</span>${sizesHtml(m, bank.sourceBlocks > 1)}</div><div class="tu-inline">${stepper('spq', m.spq + ' sec / Q', 'time per question')}<span class="tu-plan">${esc(planText(m))}</span></div>` +
+        `<div class="tu-chips">${chips}</div>${breakControls(m)}<div class="tu-field"><span>Blocks</span>${blocks}</div>` +
+        `<div class="tu-qstart">${canResume ? '<button type="button" class="tu-btn outline" data-tu-proxy="resumeQuickSession">Resume suspended test</button>' : ''}<button type="button" class="tu-btn outline" data-tu-proxy="startSelected"${byId('startSelected')?.disabled ? ' disabled' : ''}>Start selected block</button><button type="button" class="tu-btn" data-tu-proxy="startFull"${m.ready ? '' : ' disabled'}>${icon(ICONS.play, 18)}Start all blocks</button></div>`;
+    } else {
+      run = `<div class="tu-qempty">${icon(ICONS.quick, 28)}<b>No bank loaded</b><span>Drop or choose JSON files to set up blocks, timing and breaks.</span></div>`;
+    }
+    return `<header class="tu-qhead"><h1>Quick practice</h1><span>Drop any compatible JSON bank and start right away.</span></header>${banner}` +
+      `<div class="tu-qgrid"><div class="tu-qcol">${left}</div><section class="tu-card tu-run" aria-label="Run setup"><h2>Run setup</h2>${run}</section></div>`;
+  }
+  function paintQuick(){
+    const panel = byId('quickModePanel'), B = bridge(); if(!panel || !B || !B.quick) return;
+    const q = ensureQuick(panel); panel.classList.add('tu-has-quick');
+    swapHtml(q, quickHtml());
+    if(quickObserver) quickObserver.takeRecords();
+  }
+  function onQuickClick(e){
+    const t = e.target.closest('button'); if(!t || t.disabled) return;
+    if(t.hasAttribute('data-tu-open-add')){ openAdd('slot', t); return; }
+    if(t.dataset.tuQblock != null){ document.querySelector(`#blocksTable tbody tr[data-i="${CSS.escape(t.dataset.tuQblock)}"]`)?.click(); scheduleQuick(); return; }
+    if(setupAction(t)) scheduleQuick();
+  }
+
+  /* ---------- Add forms dialog (boards AddForms, FormUpdates): fixed slots, custom form, bulk ZIP, online updates ----------
+     Fixed and custom imports run through the legacy Load New Form modal, kept open off-screen; bulk import is the
+     shared bulk-import.js (its #bulk* controls now live here instead of Settings); online updates are form-updates.js. */
+  const addUi = {open:false, tab:'slot', cat:'', q:'', status:'', tone:'', pending:null, returnTo:null, custom:{name:'', id:'', subject:'Custom', tab:'Custom', block:'40', score:''}};
+  const SUBJECTS = ['Custom', 'Internal Medicine', 'OBGyn', 'Surgery', 'Pediatrics', 'Family Medicine', 'Emergency Medicine', 'Psychiatry', 'Neurology'];
+  const storageReady = () => IPAD || !!byId('dataFolderStatus')?.classList.contains('connected');
+  const hasUpdates = () => IPAD && !!window.StepFormUpdates;
+  function legacyLoadModal(){
+    if(!storageReady()) return false;
+    const root = byId('modalRoot'); if(root) root.dataset.tuGhost = '1';
+    if(!document.querySelector('#modalRoot #slotList')) byId('loadNewFormBtn')?.click();
+    return !!document.querySelector('#modalRoot #slotList');
+  }
+  function slotCat(id){ if(/^N-/i.test(id)) return 'NBME'; const m = id.match(/^C-([A-Za-z]+)-/); return m ? m[1] : 'Other'; }
+  function readSlots(){
+    if(!legacyLoadModal()) return [];
+    const B = bridge();
+    return Array.from(document.querySelectorAll('#modalRoot #slotList .slot-row')).map(r => {
+      const id = r.querySelector('button[data-fixed-slot]')?.dataset.fixedSlot || ''; if(!id) return null;
+      const meta = (r.querySelector('.slot-meta')?.textContent || ''), exp = (meta.match(/expected\s+(\d+)/i) || [])[1] || '';
+      let loaded = r.classList.contains('loaded'); try{ loaded = loaded || !!B.form(id); }catch(e){}
+      return {id, name:(r.querySelector('.slot-name')?.textContent || id).trim(), exp, loaded, cat:slotCat(id)};
+    }).filter(Boolean);
+  }
+  function setAddStatus(text, tone){ addUi.status = text || ''; addUi.tone = tone || ''; paintAdd(); }
+  function connectHtml(){ return `<div class="tu-banner">${icon(ICONS.drive, 22)}<span>Connect your DATA folder first. Forms and their progress are saved there.</span>${byId('connectDataFolderBtn') ? '<button type="button" class="tu-btn small" data-tu-proxy="connectDataFolderBtn">Connect DATA folder</button>' : ''}</div>`; }
+  function slotsHtml(){
+    if(!storageReady()) return connectHtml();
+    const slots = readSlots(); if(!slots.length) return '<span class="tu-note">The fixed form slots could not be loaded.</span>';
+    const cats = []; slots.forEach(s => { if(!cats.includes(s.cat)) cats.push(s.cat); });
+    if(!cats.includes(addUi.cat)) addUi.cat = cats[0];
+    const q = addUi.q.trim().toLowerCase();
+    const shown = q ? slots.filter(s => (s.id + ' ' + s.name + ' ' + s.cat).toLowerCase().includes(q)) : slots.filter(s => s.cat === addUi.cat);
+    const dot = c => TAB_DOTS[c === 'NBME' ? 'N-Forms' : c] || TAB_DOTS.Custom;
+    return `<div class="tu-chips" role="group" aria-label="Slot category">${cats.map(c => `<button type="button" class="tu-chip" aria-pressed="${!q && addUi.cat === c}" data-tu-slot-cat="${esc(c)}">${esc(c)} <span>${slots.filter(s => s.cat === c).length}</span></button>`).join('')}</div>` +
+      `<div class="tu-slots">${shown.map(s => `<div class="tu-slot${s.loaded ? ' loaded' : ''}"><i style="background:${dot(s.cat)}"></i><span><b>${esc(s.id)}</b><small>${esc([s.name !== s.id ? s.name : '', s.exp ? s.exp + ' Qs' : '', s.loaded ? 'loaded' : ''].filter(Boolean).join(' · '))}</small></span><button type="button" class="tu-btn small ${s.loaded ? 'outline' : ''}" data-tu-slot="${esc(s.id)}" aria-label="${s.loaded ? 'Replace' : 'Import'} ${esc(s.id)}">${s.loaded ? 'Replace' : 'Import'}</button></div>`).join('') || `<span class="tu-note">No slots match “${esc(addUi.q)}”.</span>`}</div>`;
+  }
+  function customHtml(){
+    if(!storageReady()) return connectHtml();
+    const c = addUi.custom, tabs = libTabs().filter(t => t.key !== 'All').map(t => t.label === 'NBME' ? '' : t.label).filter(Boolean);
+    const field = (k, label, attrs, span) => `<label class="tu-fieldin${span ? ' span2' : ''}"><span>${label}</span><input data-tu-cf="${k}" value="${esc(c[k])}" ${attrs}></label>`;
+    return `<div class="tu-form-grid">${field('name', 'Display name', 'placeholder="e.g. CMS Mixed Review 01" autocomplete="off"', true)}${field('id', 'Form ID', 'placeholder="e.g. CUSTOM-01" autocomplete="off"')}` +
+      `<label class="tu-fieldin"><span>Subject</span><select data-tu-cf="subject">${SUBJECTS.map(s => `<option${s === c.subject ? ' selected' : ''}>${esc(s)}</option>`).join('')}</select></label>` +
+      `${field('tab', 'Library tab', 'list="tuTabList" autocomplete="off"')}<datalist id="tuTabList">${tabs.map(t => `<option value="${esc(t)}">`).join('')}</datalist>` +
+      `${field('block', 'Suggested questions per block', 'type="number" min="1" inputmode="numeric"')}${field('score', '3-digit score (optional)', 'placeholder="—" inputmode="numeric" maxlength="3"')}</div>` +
+      `<button type="button" class="tu-dropbox" data-tu-custom-go>${icon(ICONS.upload, 28)}<b>Choose a JSON or ZIP</b><span>Images stay embedded until you choose Optimize images on the form.</span></button>`;
+  }
+  function bulkHtml(){
+    const S = window.StepBulkImport && window.StepBulkImport.state ? window.StepBulkImport.state() : {busy:false, message:'', forms:[], ready:0};
+    const rows = S.forms.map(f => `<div class="tu-trow"><span><b>${esc(f.id)}</b>${f.name && f.name !== f.id ? `<small>${esc(f.name)}</small>` : ''}</span><span>${f.total}</span><span>${f.assets}</span><span class="${f.installed ? 'tu-muted' : 'tu-oktext'}">${f.installed ? 'Installed · skipped' : 'New'}</span></div>`).join('');
+    return `<div class="tu-bulk-top"><label class="tu-dropbox${S.busy ? ' tu-busy' : ''}">${icon(ICONS.upload, 28)}<b>${S.busy ? 'Working…' : 'Choose ZIP'}</b><input id="bulkFormZip" class="tu-sr" type="file" accept=".zip,application/zip"${S.busy ? ' disabled' : ''}></label>` +
+      `<pre class="tu-pre">Forms.zip\n  UWSA2/UWSA2.json\n  UWSA2/assets/…\n  NBME14/NBME14.json\n  NBME14/assets/…</pre></div>` +
+      `<div id="bulkPreview">${rows ? `<div class="tu-table" role="table" aria-label="Forms in the ZIP"><div class="tu-thead"><span>Form</span><span>Questions</span><span>Images</span><span>Result</span></div>${rows}</div>` : ''}</div>` +
+      `<p id="bulkImportStatus" role="status" class="tu-status">${esc(S.message)}</p>` +
+      `<div class="tu-end"><button type="button" id="bulkImportCommit" class="tu-btn"${!S.ready || S.busy ? ' disabled' : ''}>${S.busy ? 'Importing…' : S.ready ? 'Import ' + plural(S.ready, 'form') : 'Import forms'}</button></div>`;
+  }
+  /* online updates: the same view in the Add forms tab and in the header popover (board FormUpdates) */
+  const UPD_CHIP = {New:'new', Revised:'rev', Installed:'ok', Skipped:'skip', Blocked:'bad'};
+  function updState(){ try{ return window.StepFormUpdates.getState(); }catch(e){ return {message:'', forms:[], busy:false, percent:null}; } }
+  function mb(n){ n = Number(n) || 0; return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+  // Returns the status line and the body (progress, list, buttons) separately: the popover shows the status under its title.
+  function updatesParts(){
+    const st = updState(), forms = st.forms || [], act = forms.filter(f => f.status === 'New' || f.status === 'Revised');
+    const list = forms.length ? `<div class="tu-updlist">${forms.map(f => { const status = f.reason && f.status !== 'Installed' ? 'Blocked' : f.status; return `<div class="tu-updrow"><div><i style="background:${TAB_DOTS[tabInternal(f.tab || '')] || TAB_DOTS.Custom}"></i><span><b>${esc(f.title || f.id)}</b><small>${esc([f.tab, (f.files || []).length ? mb(f.files.reduce((n, x) => n + (Number(x.size) || 0), 0)) : ''].filter(Boolean).join(' · '))}</small></span><em class="tu-updchip ${UPD_CHIP[status] || 'skip'}">${esc(status)}</em></div>${f.reason ? `<small class="tu-updwhy">${esc(f.reason)}</small>` : ''}</div>`; }).join('')}</div>` : '';
+    const progress = st.percent != null ? `<div class="tu-updprog"><div><span>${st.percent < 90 ? 'Downloading' : 'Checking compatibility'}</span><span>${st.percent}%</span></div><span class="tu-tile-bar"><i style="width:${st.percent}%"></i></span></div>` : '';
+    const checked = !!(st.message || forms.length), msg = st.message || 'Check for new and revised forms published for this app.';
+    const tone = /up to date|^Installed|^Imported/i.test(msg) ? 'ok' : /offline|leave the active exam|failed|error|interrupted|mismatch/i.test(msg) ? 'warn' : '';
+    return {
+      status: `<span class="tu-updmsg ${tone}" role="status" aria-live="polite">${esc(msg)}</span>`,
+      body: `${progress}${list}<div class="tu-actions">${act.length && byId('formUpdatesInstall') ? `<button type="button" class="tu-btn tu-grow" data-tu-proxy="formUpdatesInstall"${st.busy ? ' disabled' : ''}>Download &amp; install · ${act.length}</button>` : ''}<button type="button" class="tu-btn outline" data-tu-proxy="formUpdatesCheck"${st.busy ? ' disabled' : ''}>${st.busy ? 'Updating…' : checked ? 'Check again' : 'Check for updates'}</button></div>` +
+        (act.length ? '<span class="tu-note">Installs everything listed in one go. Successful installs are reported to the app administrator. Your attempts are kept when question IDs match.</span>' : '')
+    };
+  }
+  function updatesHtml(){ const u = updatesParts(); return u.status + u.body; }
+  const ADD_TABS = () => [['slot', 'Fixed slot', 'NBME N-06…16, C-IM, C-OBGyn…'], ['custom', 'Custom form', 'Any JSON or ZIP bank'], ['bulk', 'Bulk ZIP', 'Many forms in one go'], hasUpdates() ? ['online', 'Online updates', (() => { const n = (updState().forms || []).filter(f => f.status === 'New' || f.status === 'Revised').length; return n ? n + ' available' : 'Published forms'; })()] : null].filter(Boolean);
+  const ADD_HEAD = {
+    slot:['Fixed form slot', 'Pick the slot, then choose its JSON or ZIP. Loaded slots can be replaced; progress is kept when the questions match.'],
+    custom:['Custom form', 'For your own JSON banks or anything without a fixed slot.'],
+    bulk:['Bulk import from one ZIP', 'One folder per form, each with its JSON and an assets folder. Forms already in the library are skipped.'],
+    online:['Online form updates', 'New and revised forms published for this app. Revisions keep your progress when question IDs match.']
+  };
+  function addShellHtml(){
+    const tab = addUi.tab, [h, p] = ADD_HEAD[tab];
+    const body = tab === 'slot' ? (storageReady() ? `<label class="tu-search tu-slotsearch">${icon(ICONS.search, 18)}<span class="tu-sr">Search slots</span><input type="search" id="tuSlotSearch" value="${esc(addUi.q)}" placeholder="Search N-10, C-IM, Psych…" autocomplete="off"></label>` : '') + '<div data-tu-r="slots"></div>'
+      : tab === 'custom' ? customHtml() : tab === 'bulk' ? (storageReady() ? '<div data-tu-r="bulk"></div>' : connectHtml()) : '<div data-tu-r="online" class="tu-updbody"></div>';
+    return `<div class="tu-add-nav"><h2 id="tuAddTitle">Add forms</h2><div role="tablist" aria-orientation="vertical" aria-label="Ways to add" data-tu-r="nav"></div><span class="tu-add-foot">Library forms are saved permanently with progress. For a throwaway run, use <button type="button" class="tu-link" data-tu-go-quick>Quick practice</button> instead.</span></div>` +
+      `<div class="tu-add-main"><div class="tu-add-top"><button type="button" class="tu-round" data-tu-close aria-label="Close">${closeIco}</button></div><div class="tu-add-body" data-tu-scroll="add" role="tabpanel" aria-labelledby="tuAddTab-${tab}"><div class="tu-add-h"><h3>${h}</h3><span>${p}</span></div>${body}<div data-tu-r="status"></div></div></div>`;
+  }
+  function paintAdd(force){
+    const el = byId('tuAdd'); if(!el || el.hidden) return;
+    const box = el.querySelector('.tu-add');
+    if(force || box.dataset.tab !== addUi.tab){ box.innerHTML = addShellHtml(); box.dataset.tab = addUi.tab; }
+    const r = name => box.querySelector(`[data-tu-r="${name}"]`);
+    swapHtml(r('nav'), ADD_TABS().map(([id, l, h]) => `<button type="button" role="tab" id="tuAddTab-${id}" aria-selected="${addUi.tab === id}" data-tu-add-tab="${id}"><b>${l}</b><span>${esc(h)}</span></button>`).join(''));
+    swapHtml(r('status'), addUi.status ? `<p class="tu-status ${addUi.tone}" role="status">${esc(addUi.status)}</p>` : '<p class="tu-status" role="status"></p>');
+    if(r('slots')) swapHtml(r('slots'), slotsHtml());
+    if(r('bulk')) swapHtml(r('bulk'), bulkHtml());
+    if(r('online')) swapHtml(r('online'), updatesHtml());
+  }
+  function openAdd(tab, from){
+    const el = dialogLayer('tuAdd', 'tu-add', 'tuAddTitle', onAddClick, closeAdd);
+    if(!el.dataset.tuInput){ el.dataset.tuInput = '1'; el.addEventListener('input', onAddInput); el.addEventListener('change', onAddInput); }
+    Object.assign(addUi, {open:true, tab:tab || 'slot', status:'', tone:'', pending:null, returnTo:from || document.activeElement});
+    if(addUi.tab === 'online' && !hasUpdates()) addUi.tab = 'slot';
+    el.hidden = false; paintAdd(true);
+    if(addUi.tab === 'online') maybeCheckUpdates();
+    setTimeout(() => el.querySelector('.tu-add [data-tu-close]')?.focus(), 0);
+  }
+  function closeAdd(){
+    const el = byId('tuAdd'); if(!el || el.hidden) return;
+    el.hidden = true; addUi.open = false; addUi.pending = null;
+    const box = el.querySelector('.tu-add'); box.innerHTML = ''; box.dataset.tab = ''; // the #bulk* controls must not linger hidden
+    const root = byId('modalRoot');
+    if(root){ if(root.querySelector('#slotList')){ root.classList.add('hidden'); root.innerHTML = ''; } delete root.dataset.tuGhost; }
+    const back = addUi.returnTo; addUi.returnTo = null; back?.focus?.();
+  }
+  function maybeCheckUpdates(){ const st = updState(); if(!st.busy && !st.message && !(st.forms || []).length) byId('formUpdatesCheck')?.click(); }
+  function onAddInput(e){
+    const t = e.target;
+    if(t.id === 'tuSlotSearch'){ addUi.q = t.value; paintAdd(); return; }
+    if(t.dataset && t.dataset.tuCf) addUi.custom[t.dataset.tuCf] = t.value;
+  }
+  // The legacy import closes its modal on success and alerts on failure; either way it clears #slotJsonInput.
+  // Success = the catalog changed (a library repaint may reopen the off-screen modal, so its state proves nothing).
+  const catalogSig = () => { try{ return bridge().forms().map(f => [f.id, f.updatedAt, f.importedAt, f.totalQuestions, f.bankHash].join(':')).join('|'); }catch(e){ return ''; } };
+  async function watchImport(){
+    const p = addUi.pending; if(!p) return;
+    const before = catalogSig();
+    setAddStatus(`Importing ${p.label}…`, 'busy');
+    const input = byId('slotJsonInput');
+    for(let i = 0; i < 1200 && input && input.value; i++) await wait(100);
+    if(addUi.pending !== p) return;
+    addUi.pending = null;
+    await wait(150);
+    if(catalogSig() !== before) setAddStatus(`Added ${p.label} to your library.`, 'ok'); else setAddStatus('', '');
+  }
+  document.addEventListener('change', e => { if(e.target && e.target.id === 'slotJsonInput' && addUi.open && addUi.pending && e.target.files && e.target.files.length) watchImport(); }, true);
+  function onAddClick(e){
+    const t = e.target.closest('button, [data-tu-close]'); if(!t || t.disabled) return;
+    if(t.hasAttribute('data-tu-close')){ closeAdd(); return; }
+    if(t.dataset.tuAddTab){ addUi.tab = t.dataset.tuAddTab; addUi.status = ''; paintAdd(); byId('tuAddTab-' + addUi.tab)?.focus(); if(addUi.tab === 'online') maybeCheckUpdates(); return; }
+    if(t.dataset.tuSlotCat){ addUi.cat = t.dataset.tuSlotCat; addUi.q = ''; const s = byId('tuSlotSearch'); if(s) s.value = ''; paintAdd(); return; }
+    if(t.dataset.tuSlot){
+      // must stay synchronous: the legacy slot button opens the file chooser from this click
+      if(!legacyLoadModal()) return;
+      let b = document.querySelector(`#modalRoot #slotList button[data-fixed-slot="${CSS.escape(t.dataset.tuSlot)}"]`);
+      if(!b){ const s = byId('slotSearch'); if(s){ s.value = ''; s.dispatchEvent(new Event('input', {bubbles:true})); } b = document.querySelector(`#modalRoot #slotList button[data-fixed-slot="${CSS.escape(t.dataset.tuSlot)}"]`); }
+      if(!b) return;
+      addUi.pending = {label:t.dataset.tuSlot}; setAddStatus(`Choose the JSON or ZIP for ${t.dataset.tuSlot}.`, '');
+      b.click(); return;
+    }
+    if(t.hasAttribute('data-tu-custom-go')){
+      const c = addUi.custom;
+      if(c.score && !/^\d{3}$/.test(c.score.trim())){ setAddStatus('The 3-digit score must be exactly 3 digits, or left empty.', 'bad'); return; }
+      if(!legacyLoadModal()) return;
+      const map = {customName:c.name, customId:c.id, customSubject:c.subject, customBlockSize:c.block, custom3Score:c.score.trim(), customFilter:c.tab};
+      Object.keys(map).forEach(id => { const el = byId(id); if(el) el.value = map[id]; });
+      addUi.pending = {label:c.name.trim() || c.id.trim() || 'the custom form'}; setAddStatus('Choose the JSON or ZIP for ' + addUi.pending.label + '.', '');
+      byId('customImportBtn')?.click(); return;
+    }
+    if(t.hasAttribute('data-tu-go-quick')){ closeAdd(); byId('quickTab')?.click(); }
+  }
+  document.addEventListener('stepbulk:change', () => { if(addUi.open) paintAdd(); });
+
+  /* header popover for Check for updates (iPad, board FormUpdates) */
+  let updReturn = null;
+  function openUpdates(from){
+    const el = dialogLayer('tuUpd', 'tu-upd', 'tuUpdTitle', e => { const t = e.target.closest('button, [data-tu-close]'); if(t && t.hasAttribute('data-tu-close')) closeUpdates(); }, closeUpdates);
+    updReturn = from || null;
+    el.hidden = false; paintUpdates();
+    if(!updState().busy) byId('formUpdatesCheck')?.click();
+    setTimeout(() => el.querySelector('.tu-upd [data-tu-close]')?.focus(), 0);
+  }
+  function closeUpdates(){ const el = byId('tuUpd'); if(!el || el.hidden) return; el.hidden = true; el.querySelector('.tu-upd').dataset.html = ''; updReturn?.focus?.(); updReturn = null; }
+  function paintUpdates(){
+    const el = byId('tuUpd'); if(!el || el.hidden) return;
+    const u = updatesParts();
+    swapHtml(el.querySelector('.tu-upd'), `<header class="tu-upd-head"><span class="tu-upd-ico">${icon(ICONS.download, 22)}</span><div><h2 id="tuUpdTitle">Form updates</h2>${u.status}</div><button type="button" class="tu-round" data-tu-close aria-label="Close">${closeIco}</button></header><div class="tu-updbody" data-tu-scroll="upd">${u.body}</div>`);
   }
 
   /* ---------- Settings › Appearance ---------- */
@@ -1013,7 +1730,7 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
     const p = byId('settingsPanel'); if(!p) return;
     const nav = p.querySelector('.settings-nav-v195'), content = p.querySelector('.settings-content-v195');
     const on = !!window.__tuSettingsAppearance;
-    p.dataset.tuTab = on ? 'appearance' : (window.__v195BSettingsActive || window.__v195SettingsActive || 'bulk');
+    p.dataset.tuTab = on ? 'appearance' : (window.__v195BSettingsActive || window.__v195SettingsActive || 'library');
     if(!nav || !content) return;
     let btn = nav.querySelector('[data-tu-settings-tab]');
     if(!btn){ btn = document.createElement('button'); btn.type = 'button'; btn.dataset.tuSettingsTab = 'appearance'; btn.textContent = 'Appearance'; nav.insertBefore(btn, nav.firstChild); }
@@ -1237,7 +1954,14 @@ ${H} #tuSheet .tu-danger h3{color:var(--tu-bad)!important}
     if(panel){ libraryObserver = new MutationObserver(() => scheduleLibrary()); libraryObserver.observe(panel, {childList:true, subtree:true}); }
     const side = document.querySelector('#menu aside.modern-sidebar');
     if(side) new MutationObserver(() => brand()).observe(side, {childList:true});
-    const menu = byId('menu'); if(menu) new MutationObserver(() => { syncDarkFlag(); heroTitle(); }).observe(menu, {attributes:true, attributeFilter:['class']});
+    const menu = byId('menu'); if(menu) new MutationObserver(() => { syncDarkFlag(); heroTitle(); scheduleStart(); scheduleQuick(); if(menu.classList.contains('hidden')){ closeAdd(); closeUpdates(); } }).observe(menu, {attributes:true, attributeFilter:['class']}); // a run hides the menu
+    // the legacy setup (Quick practice and the start dialog's controls) repaints inside #quickModePanel
+    const quick = byId('quickModePanel');
+    if(quick){
+      quickObserver = new MutationObserver(recs => { if(recs.some(r => !(r.target.closest && r.target.closest('#tuQuick')))){ scheduleStart(); scheduleQuick(); } });
+      quickObserver.observe(quick, {childList:true, subtree:true, attributes:true, attributeFilter:['class', 'disabled']});
+    }
+    scheduleQuick();
     const sync = byId('progressSyncPanel'); if(sync) new MutationObserver(() => paintSync()).observe(sync, {childList:true});
     const status = byId('dataFolderStatus'); if(status) new MutationObserver(() => { paintSync(); paintNav(); }).observe(status, {childList:true, characterData:true, subtree:true});
     const watchCloud = () => { const c = byId('googleBackupStatus'); if(!c || c.dataset.tuWatched) return; c.dataset.tuWatched = '1'; new MutationObserver(() => paintSyncBits()).observe(c, {childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['data-tone', 'title']}); paintSyncBits(); };

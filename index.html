@@ -9,13 +9,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=6">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=6">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=7">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=7">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=6"></script>
-<script src="./js/form-updates-core.js?v=6"></script>
-<script src="./js/form-update-store.js?v=6"></script>
-<script src="./js/google-auth.js?v=6"></script>
+<script src="./js/sync-config.js?v=7"></script>
+<script src="./js/form-updates-core.js?v=7"></script>
+<script src="./js/form-update-store.js?v=7"></script>
+<script src="./js/google-auth.js?v=7"></script>
 
 <style>
 :root{
@@ -481,7 +481,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=6" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=7" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -632,8 +632,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=6"></script>
-<script src="./js/qid-migration.js?v=6"></script>
+<script src="jszip.min.js?v=7"></script>
+<script src="./js/qid-migration.js?v=7"></script>
 <script>
 
 
@@ -4255,6 +4255,7 @@ document.addEventListener('click', function(e){
         },true);
         /* A23 Phase A: read-only library bridge for the ThunderUSMLE UI layer. Getters only; every
            action still goes through the existing card controls. Keep the keys identical in the Local and iPad apps. */
+        const a23SetupTokens=new WeakMap(); let a23SetupTokenN=0; // one token per opened setup (stable across pool changes)
         window.StepLibraryBridge=Object.freeze({
           version:1,
           forms:()=>(catalog.forms||[]).slice(),
@@ -4266,7 +4267,17 @@ document.addEventListener('click', function(e){
           completedOn:f=>!!overviewTabEnabled(f),
           scoreChipOn:f=>!!tabScoreChipEnabled(f),
           attempts:async id=>{ const rec=catalogForm(id), b=await readBundle(id), a=activeAtt(b); return {activeAttemptId:a?a.attemptId:null, attempts:b.attempts.map(x=>({attemptId:x.attemptId, label:x.label, type:x.type, createdAt:x.createdAt||null, completedAt:x.completedAt||null, summary:summarizeSession(x.session, rec&&rec.totalQuestions)}))}; },
-          retestCounts:async id=>v103Counts(await v103Pools(id))
+          retestCounts:async id=>v103Counts(await v103Pools(id)),
+          /* A23 Phase B: the open New Attempt setup (start dialog) and the Quick practice bank. Local's last setup layer is
+             v10.3 (#v10RetestSetup); the iPad's is A19.3 (#a193NewAttemptSetup), so setup() names the controls to drive. */
+          setup:()=>{
+            const c=activeRunContext; if(!c||!c.formId) return null;
+            const a193=!!c.a193NewAttempt; if(!a193&&!v103IsSetup()) return null;
+            const x=(a193?c.a193Ctx:c.v10RetestCtx)||{};
+            let token=a23SetupTokens.get(x); if(!token){ token=++a23SetupTokenN; a23SetupTokens.set(x,token); }
+            return {formId:c.formId, token, attemptLabel:c.v9AttemptLabel||'', sourceLabel:x.hasPrior&&x.attempt?(x.attempt.label||''):'', pool:(a193?c.a193Pool:c.v10RetestPool)||'all', counts:Object.assign({},(a193?c.a193Counts:c.v10RetestCounts)||{}), box:a193?'a193NewAttemptSetup':'v10RetestSetup', poolInput:a193?'a193Pool':'v10RetestPool', carry:a193?['a193CarryStem','a193CarryStrike','a193CarryMarked']:['v9CarryHl','v9CarryStrike','v9CarryMarked']};
+          },
+          quick:()=>{ const b=importedBank; if(!b) return null; let save=null; try{ const s=currentBankHash&&latestSaveForBank(); if(s&&s.session) save={updatedAt:s.session.updatedAt||s.session.startedAt||null, completed:(s.session.blocks||[]).filter(x=>x&&x.blockCompleted).length, blocks:(s.session.blocks||[]).length}; }catch(e){} return {title:b.title||'', library:!!b.librarySlotId, files:(b.sourceFiles||[]).slice(), sourceBlocks:(b.blocks||[]).length, total:(b.blocks||[]).reduce((n,x)=>n+((x&&x.questions)||[]).length,0), save}; }
         });
       })();
 
@@ -4889,12 +4900,11 @@ document.addEventListener('click', function(e){
           return `<div class="v195-danger-zone"><p>Deleting a custom tab only moves its forms back to the base Custom tab. Form JSON and progress files are preserved.</p><div class="settings-list">${tabs.map(f=>{ const n=(catalog.forms||[]).filter(r=>r.filter===f).length; return `<div class="v195-custom-delete-row"><div><b>${escapeHtml(f)}</b><span>${n} form(s) will move to Custom.</span></div><button class="danger" data-v195-delete-tab="${escapeAttr(f)}">Delete tab</button></div>`; }).join('')}</div></div>`;
         }
         function v195BSettingsNav(active){
-          const tabs = [['bulk','Bulk import'],['library','Library progress'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup'],['admin','Admin']];
+          const tabs = [['library','Library progress'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup'],['admin','Admin']];
           return `<nav class="settings-nav-v195">${tabs.map(([id,label])=>`<button type="button" data-v195b-settings-tab="${id}" class="${active===id?'active':''}">${label}</button>`).join('')}</nav>`;
         }
         function v195BSettingsBody(active){
           if(active==='admin') return window.StepFormUpdates?.adminHtml() || '<section class="settings-panel-v195">Admin is loading…</section>';
-          if(active==='bulk') return window.StepBulkImport?.panelHtml() || '<section class="settings-panel-v195"><h3>Bulk import</h3></section>';
           if(active==='library') return `<section class="settings-panel-v195"><h3>Library progress & Completed</h3><p>Select exactly what contributes to the tab meters, the single Form Library progress circle, and the Completed forms filter.</p><div id="libraryTabMeterSettings" class="settings-list">${v195BLibraryTabSettingsHtml()}</div></section>`;
           if(active==='order') return `<section class="settings-panel-v195"><h3>Tab order & colors</h3><p>Use drag handles for order. Colors remain tab-level identifiers, not card status colors.</p>${v195BTabOrderColorHtml()}</section>`;
           if(active==='custom') return `<section class="settings-panel-v195"><h3>Custom tab removal</h3><p>Destructive tab management is isolated here to prevent accidental deletion from the library tab row.</p>${v195BCustomTabsHtml()}</section>`;
@@ -4905,7 +4915,7 @@ document.addEventListener('click', function(e){
         const v195BPrevRenderSettings = renderSettings;
         renderSettings = function(){
           const p=$id('settingsPanel'); if(!p) return;
-          const active = window.__v195BSettingsActive || window.__v195SettingsActive || 'bulk';
+          let active = window.__v195BSettingsActive || window.__v195SettingsActive || 'library'; if(active==='bulk') active='library'; // A23 Phase B: Bulk import lives in Add forms
           v195BSettings();
           p.innerHTML = `<div class="library-toolbar glass-panel"><div><div class="panel-kicker">Global controls</div><h2>Settings</h2><p>Library progress inclusion, Completed inclusion, tab order, colors, custom-tab deletion, Qbank defaults, and backups.</p></div></div><div class="settings-shell-v195">${v195BSettingsNav(active)}<div class="settings-content-v195">${v195BSettingsBody(active)}</div></div>`;
           readQbankProgress().then(qp=>{
@@ -10466,11 +10476,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=6"></script>
-<script src="./js/sync-storage.js?v=6"></script>
-<script src="./js/progress-sync.js?v=6"></script>
-<script src="./js/library-backup.js?v=6"></script>
-<script src="./js/qid-settings.js?v=6"></script>
+<script src="./js/sync-merge.js?v=7"></script>
+<script src="./js/sync-storage.js?v=7"></script>
+<script src="./js/progress-sync.js?v=7"></script>
+<script src="./js/library-backup.js?v=7"></script>
+<script src="./js/qid-settings.js?v=7"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10947,10 +10957,64 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=6"></script>
-<script src="./exam-notes.js?v=6"></script>
-<script src="./app-update.js?v=6"></script>
-<script src="./js/form-updates.js?v=6"></script>
+<script src="./bulk-import.js?v=7"></script>
+<script src="./exam-notes.js?v=7"></script>
+<script src="./app-update.js?v=7"></script>
+<script src="./js/form-updates.js?v=7"></script>
+<script id="a23-phase-b-start-engine">
+/* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
+   each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
+   shared break bank behave as before. Placed before the A23 position mapping so position keys see the chosen blocks. */
+(function(){
+  if(window.__a23PhaseBStart) return; window.__a23PhaseBStart=true;
+  function ensureBreakMode(){
+    if(document.getElementById('breakMode')) return;
+    const row=document.getElementById('breakMinutes')?.closest('.input-row'); if(!row) return;
+    row.insertAdjacentHTML('afterend','<div class="input-row"><label for="breakMode">Break type</label><select id="breakMode"><option value="bank" selected>Shared break bank</option><option value="each">Fixed break after each block</option></select></div>');
+  }
+  ensureBreakMode();
+  if(typeof getBreakConfigFromMenu==='function'){
+    const baseBreak=getBreakConfigFromMenu;
+    getBreakConfigFromMenu=function(){ const c=baseBreak.apply(this,arguments); c.mode=document.getElementById('breakMode')?.value==='each'?'each':'bank'; return c; };
+  }
+  // "each": every block starts with a fresh break allowance, so the break after it gets the full minutes again.
+  if(typeof startBlock==='function'){
+    const baseStart=startBlock;
+    startBlock=function(){
+      try{ const br=activeSession&&activeSession.break; if(br&&br.mode==='each'&&!reviewMode){ if(br.active&&typeof pauseBreakTimer==='function') pauseBreakTimer(); br.elapsedSeconds=0; br.active=false; br.startedAt=null; } }catch(e){}
+      return baseStart.apply(this,arguments);
+    };
+  }
+  let chosen=null;
+  if(typeof createSession==='function'){
+    const baseCreate=createSession;
+    createSession=function(which){
+      const session=baseCreate.apply(this,arguments);
+      if(!chosen||which!=='full'||!session||!Array.isArray(activeBlocks)) return session;
+      const keep=activeBlocks.map((_,p)=>p).filter(p=>chosen.includes(p));
+      if(!keep.length||keep.length===activeBlocks.length) return session;
+      activeBlocks=keep.map(p=>activeBlocks[p]);
+      activeBlockIndexes=keep.map(p=>activeBlockIndexes[p]);
+      session.blocks=keep.map(p=>session.blocks[p]);
+      session.results=[];
+      const sh=session.v215Shuffle;
+      if(sh&&sh.enabled){
+        ['blockNames','blockQuestionIndexes'].forEach(k=>{ if(Array.isArray(sh[k])) sh[k]=keep.map(p=>sh[k][p]); });
+        activeBlockIndexes=activeBlocks.map((_,i)=>i);
+        session.blocks.forEach((b,i)=>{ if(b) b.configuredIndex=i; });
+      }
+      session.activeBlockIndexes=activeBlockIndexes.slice();
+      session.chosenBlocks=keep.map(p=>p+1);
+      return session;
+    };
+  }
+  // Runs the listed blocks (0-based positions in the block table) in order, as one sitting with breaks between them.
+  window.startChosenBlocks=function(list){
+    chosen=Array.from(new Set((list||[]).map(Number).filter(n=>Number.isInteger(n)&&n>=0))).sort((a,b)=>a-b);
+    try{ return startTest('full'); } finally { chosen=null; }
+  };
+})();
+</script>
 <script>
 /* A23 position mapping: retests, new-attempt pools and highlight carry-over read saved progress through a form-ordered view, and new library sessions record each position's form question. */
 (function(){
@@ -10982,6 +11046,6 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h1,htm
 html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h4,
 html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h4{color:#9BE7C1!important}
 </style>
-<script src="./thunder-ui.js?v=6"></script>
+<script src="./thunder-ui.js?v=7"></script>
 </body>
 </html>

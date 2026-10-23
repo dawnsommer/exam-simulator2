@@ -71,7 +71,9 @@
     return plan?'<table class="bulk-preview"><thead><tr><th>Form</th><th>Questions</th><th>Assets</th><th>Status</th></tr></thead><tbody>'+plan.forms.map(f=>'<tr><td>'+esc(f.id)+'<small>'+esc(f.name)+'</small></td><td>'+f.total+'</td><td>'+f.assets.length+'</td><td>'+(ids.has(f.id.toLowerCase())?'Installed · skipped':'Ready')+'</td></tr>').join('')+'</tbody></table>':'';
   }
   api.panelHtml=()=>'<section class="settings-panel-v195"><h3>Bulk import</h3><p>Add several forms from one ZIP. Put each form’s JSON and assets folder inside its own named folder. Installed form IDs are skipped.</p><pre class="bulk-example">Forms.zip\n  UWSA2/UWSA2.json\n  UWSA2/assets/…\n  NBME14/NBME14.json\n  NBME14/assets/…</pre><label class="bulk-file">Choose ZIP<input id="bulkFormZip" type="file" accept=".zip,application/zip" '+(busy?'disabled':'')+'></label><div id="bulkPreview">'+preview()+'</div><p id="bulkImportStatus" role="status">'+esc(message)+'</p><button id="bulkImportCommit" type="button" class="primary" '+(!plan||busy||!plan.forms.some(f=>!installed().has(f.id.toLowerCase()))?'disabled':'')+'>'+(busy?'Importing…':'Import forms')+'</button></section>';
-  function refresh(){const el=document.querySelector('#settingsPanel .settings-content-v195');if(el?.querySelector('#bulkPreview'))el.innerHTML=api.panelHtml();}
+  function refresh(){const el=document.querySelector('#settingsPanel .settings-content-v195');if(el?.querySelector('#bulkPreview'))el.innerHTML=api.panelHtml();document.dispatchEvent(new CustomEvent('stepbulk:change'));}
+  // Read-only state for other views (the Add forms dialog draws its own markup around the same #bulk* controls).
+  api.state=()=>{const ids=installed();const forms=plan?plan.forms.map(f=>({id:f.id,name:f.name,total:f.total,assets:f.assets.length,installed:ids.has(f.id.toLowerCase())})):[];return {busy,message,forms,ready:forms.filter(f=>!f.installed).length};};
   document.addEventListener('change',async e=>{
     if(e.target.id!=='bulkFormZip' || !e.target.files[0] || busy)return;
     const file=e.target.files[0];busy=true;plan=null;message='Reading ZIP…';refresh();
