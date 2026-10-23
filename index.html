@@ -9,11 +9,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Step Simulator">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=1">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=4">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=4">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=1"></script>
-<script src="./js/google-auth.js?v=1"></script>
+<script src="./js/sync-config.js?v=4"></script>
+<script src="./js/form-updates-core.js?v=4"></script>
+<script src="./js/form-update-store.js?v=4"></script>
+<script src="./js/google-auth.js?v=4"></script>
 
 <style>
 :root{
@@ -479,7 +481,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=1" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=4" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -630,8 +632,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=1"></script>
-<script src="./js/qid-migration.js?v=1"></script>
+<script src="jszip.min.js?v=4"></script>
+<script src="./js/qid-migration.js?v=4"></script>
 <script>
 
 
@@ -680,6 +682,12 @@ function answerSessionId(){
 }
 // A paused exam has one frozen clock for countdowns, elapsed time, and resume snapshots.
 function examClockNow(){ return timer.paused && timer.pauseStartedAt != null ? timer.pauseStartedAt : Date.now(); }
+// A changed item can finish on its original choice after one or more revisions.
+function answerWasChanged(first, final, log){
+  if(first == null || final == null) return false;
+  return first !== final || (Array.isArray(log) && log.some(entry =>
+    entry && entry.from != null && entry.to != null && entry.from !== entry.to));
+}
 function resultsFilePrefix(){ return String(activeSession?.libraryFormName || activeSession?.title || importedBank?.title || 'exam').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'') || 'exam'; }
 
 function getSecondsPerQuestion(){
@@ -1279,7 +1287,7 @@ function renderQuestion(){
   $('#workspace').innerHTML = `<div class="question-stack ${useBelowExplanation ? 'explanation-below' : 'explanation-split'}"><div class="question-flex"><section class="question-main ${questionMainClass}">${lockedBanner}<label class="mark-line"><input id="markQuestion" class="markbox" type="checkbox" ${state.flagged[state.current]?'checked':''} ${locked?'disabled':''}> <span>Mark Question</span></label><div id="stem" class="stem" style="font-size:${16.3*textZoom}px">${noticeHtml}${q._stemHtml || escapeHtml(q.stem)}</div><div class="stem-answer-spacer" aria-hidden="true"></div>${answerBox}${inlineFeedback}<button id="proceedBtn" class="proceed">${state.current===questions.length-1?(reviewMode && blockPointer<activeBlocks.length-1?'Proceed to Next Block':'Proceed to Review'):'Proceed to Next Item'}</button></section>${rightPanel}</div>${belowExplanation}</div>`;
   const mark = $('#markQuestion'); if(mark) mark.addEventListener('change',e=>{ if(locked) return; state.flagged[state.current]=e.target.checked; persistBlockProgress(); renderStatus(); });
   $$('.answer').forEach(el=>{
-    el.addEventListener('click',()=>{ if(locked) return; const nextChoice=Number(el.dataset.choice); const prevChoice=state.answers[state.current]; if(prevChoice===nextChoice) return; if(!Array.isArray(state.firstAnswers)) state.firstAnswers=Array(questions.length).fill(null); if(!Array.isArray(state.answerChangeLog)) state.answerChangeLog=[]; if(state.firstAnswers[state.current]===null || state.firstAnswers[state.current]===undefined) state.firstAnswers[state.current]=(prevChoice===null || prevChoice===undefined) ? nextChoice : prevChoice; if(prevChoice!==null && prevChoice!==undefined){ state.answerChangeLog.push({sessionId:answerSessionId(), block:blockPointer+1, item:state.current+1, from:prevChoice, to:nextChoice, correct:q.correct, at:nowIso()}); } state.answers[state.current]=nextChoice; persistBlockProgress(); renderQuestion(); });
+    el.addEventListener('click',()=>{ if(locked || (state.revealed && state.revealed[state.current])) return; const nextChoice=Number(el.dataset.choice); const prevChoice=state.answers[state.current]; if(prevChoice===nextChoice) return; if(!Array.isArray(state.firstAnswers)) state.firstAnswers=Array(questions.length).fill(null); if(!Array.isArray(state.answerChangeLog)) state.answerChangeLog=[]; if(state.firstAnswers[state.current]===null || state.firstAnswers[state.current]===undefined) state.firstAnswers[state.current]=(prevChoice===null || prevChoice===undefined) ? nextChoice : prevChoice; if(prevChoice!==null && prevChoice!==undefined){ state.answerChangeLog.push({sessionId:answerSessionId(), block:blockPointer+1, item:state.current+1, from:prevChoice, to:nextChoice, correct:q.correct, at:nowIso()}); } state.answers[state.current]=nextChoice; persistBlockProgress(); renderQuestion(); });
     el.addEventListener('contextmenu',e=>{e.preventDefault(); if(locked) return; toggleStrike(Number(el.dataset.choice));});
   });
   const showBtn = $('#showAnsBtn'); if(showBtn) showBtn.addEventListener('click',()=>{state.revealed[state.current]=true;persistBlockProgress();renderQuestion();});
@@ -1451,7 +1459,7 @@ function renderReview(){
 }
 function buildBlockResult(){
   const correct = state.answers.reduce((sum,a,i)=>sum + (a===questions[i].correct?1:0), 0);
-  return { sessionId:answerSessionId(), blockIndex:blockPointer+1, blockName: activeBlocks[blockPointer].name, total:questions.length, correct, percent:Math.round(correct/questions.length*100), elapsedSeconds: timer.enabled ? Math.max(0, Math.round((examClockNow()-state.blockStartedAt)/1000)) : null, completedAt:nowIso(), answers: state.answers.map((a,i)=>({ block:blockPointer+1, item:i+1, chosen:a, firstChosen:(Array.isArray(state.firstAnswers)?state.firstAnswers[i]:null), firstChosenText:(Array.isArray(state.firstAnswers)&&state.firstAnswers[i]!==null&&state.firstAnswers[i]!==undefined)?questions[i].choices[state.firstAnswers[i]]:'', changed:(Array.isArray(state.firstAnswers)&&state.firstAnswers[i]!==null&&state.firstAnswers[i]!==undefined&&a!==null&&a!==undefined&&state.firstAnswers[i]!==a), chosenText:a===null?'':questions[i].choices[a], correct:questions[i].correct, correctText:questions[i].choices[questions[i].correct], isCorrect:a===questions[i].correct, flagged:state.flagged[i], struck:state.struck[i] || [], subject:questions[i].subject||questions[i].system||questions[i].topic||'', topic:questions[i].topic||questions[i].subject||'', stem:questions[i].stem||'', stemHtml:questions[i]._stemHtml||'', questionTimeSeconds:(Array.isArray(state.questionTime)?(Number(state.questionTime[i])||0):0), answerChangeLog:(Array.isArray(state.answerChangeLog)?state.answerChangeLog.filter(x=>Number(x.item)===(i+1)):[]), explanation:questions[i].explanation||'', explanationPanel:questions[i].explanationPanel||questions[i].explanation_panel||null })) };
+  return { sessionId:answerSessionId(), blockIndex:blockPointer+1, blockName: activeBlocks[blockPointer].name, total:questions.length, correct, percent:Math.round(correct/questions.length*100), elapsedSeconds: timer.enabled ? Math.max(0, Math.round((examClockNow()-state.blockStartedAt)/1000)) : null, completedAt:nowIso(), answers: state.answers.map((a,i)=>({ block:blockPointer+1, item:i+1, chosen:a, firstChosen:(Array.isArray(state.firstAnswers)?state.firstAnswers[i]:null), firstChosenText:(Array.isArray(state.firstAnswers)&&state.firstAnswers[i]!==null&&state.firstAnswers[i]!==undefined)?questions[i].choices[state.firstAnswers[i]]:'', changed:answerWasChanged(state.firstAnswers?.[i],a,Array.isArray(state.answerChangeLog)?state.answerChangeLog.filter(x=>Number(x.item)===(i+1)):[]), chosenText:a===null?'':questions[i].choices[a], correct:questions[i].correct, correctText:questions[i].choices[questions[i].correct], isCorrect:a===questions[i].correct, flagged:state.flagged[i], struck:state.struck[i] || [], subject:questions[i].subject||questions[i].system||questions[i].topic||'', topic:questions[i].topic||questions[i].subject||'', stem:questions[i].stem||'', stemHtml:questions[i]._stemHtml||'', questionTimeSeconds:(Array.isArray(state.questionTime)?(Number(state.questionTime[i])||0):0), answerChangeLog:(Array.isArray(state.answerChangeLog)?state.answerChangeLog.filter(x=>Number(x.item)===(i+1)):[]), explanation:questions[i].explanation||'', explanationPanel:questions[i].explanationPanel||questions[i].explanation_panel||null })) };
 }
 function finishBlock(autoAdvance=false){
   commitQuestionTime();
@@ -2328,9 +2336,10 @@ document.addEventListener('click', function(e){
     });
   }
   async function ipadFsPut(path, blob){
+    if(window.__STEP_FORM_UPDATE_WRITING)throw new Error('Wait for form installation to finish.');
     path=String(path||'').replace(/^\/+/, '');
     const db=await ipadOpenFsDb();
-    try{ await new Promise((resolve,reject)=>{ const tx=db.transaction(IPAD_FS_STORE,'readwrite'); tx.objectStore(IPAD_FS_STORE).put({path, blob, updatedAt:Date.now(), type:blob.type||''}); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); }); }
+    try{ if(window.__STEP_FORM_UPDATE_WRITING)throw new Error('Wait for form installation to finish.');await new Promise((resolve,reject)=>{ const tx=db.transaction(IPAD_FS_STORE,'readwrite'); const store=tx.objectStore(IPAD_FS_STORE); store.put({path, blob, updatedAt:Date.now(), type:blob.type||''}); const epoch=store.get('__stepsim_internal__/epoch');epoch.onsuccess=()=>store.put({path:'__stepsim_internal__/epoch',value:(epoch.result?.value||0)+1}); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); }); }
     finally{ db.close(); }
   }
   async function ipadFsGet(path){
@@ -2341,11 +2350,12 @@ document.addEventListener('click', function(e){
   }
   async function ipadFsExists(path){ return !!(await ipadFsGet(path)); }
   async function ipadFsDeletePrefix(path){
+    if(window.__STEP_FORM_UPDATE_WRITING)throw new Error('Wait for form installation to finish.');
     const prefix=String(path||'').replace(/^\/+|\/+$/g,'');
     const db=await ipadOpenFsDb();
     try{
       await new Promise((resolve,reject)=>{
-        const tx=db.transaction(IPAD_FS_STORE,'readwrite'); const store=tx.objectStore(IPAD_FS_STORE); const req=store.openCursor();
+        const tx=db.transaction(IPAD_FS_STORE,'readwrite'); const store=tx.objectStore(IPAD_FS_STORE); const epoch=store.get('__stepsim_internal__/epoch');epoch.onsuccess=()=>store.put({path:'__stepsim_internal__/epoch',value:(epoch.result?.value||0)+1}); const req=store.openCursor();
         req.onsuccess=()=>{ const cursor=req.result; if(!cursor) return; const k=String(cursor.key||''); if(k===prefix || k.startsWith(prefix+'/')) cursor.delete(); cursor.continue(); };
         req.onerror=()=>reject(req.error); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
       });
@@ -2353,7 +2363,7 @@ document.addEventListener('click', function(e){
   }
   async function ipadFsKeys(){
     const db=await ipadOpenFsDb();
-    try{ return await new Promise((resolve,reject)=>{ const tx=db.transaction(IPAD_FS_STORE,'readonly'); const req=tx.objectStore(IPAD_FS_STORE).getAllKeys(); req.onsuccess=()=>resolve((req.result||[]).map(String)); req.onerror=()=>reject(req.error); }); }
+    try{ return await new Promise((resolve,reject)=>{ const tx=db.transaction(IPAD_FS_STORE,'readonly'); const req=tx.objectStore(IPAD_FS_STORE).getAllKeys(); req.onsuccess=()=>resolve((req.result||[]).map(String).filter(p=>!p.startsWith('__stepsim_internal__/'))); req.onerror=()=>reject(req.error); }); }
     finally{ db.close(); }
   }
   function normalizeWriteChunk(data){
@@ -2693,6 +2703,7 @@ document.addEventListener('click', function(e){
     async function write(path,blob){const {dir,name}=await target(path,true);await writeBinary(dir,name,blob);}
     async function remove(path){try{const {dir,name}=await target(path);await dir.removeEntry(name);}catch(e){if(e.name!=='NotFoundError')throw e;}}
     return {
+      isBusy(){return importing;},
       installedIds(){return (catalog.forms||[]).map(f=>String(f.id));},
       async importNewForms(plan){
         if(importing)throw new Error('A bulk import is already running.');
@@ -2740,7 +2751,21 @@ document.addEventListener('click', function(e){
     };
   })();
 
+  window.StepFormUpdateStore = createStepFormUpdateStore({
+    open:ipadOpenFsDb, browser:()=>isBrowserLibraryHandle(dataDirHandle),
+    ready:async()=>{if(!dataDirHandle)await restoreLastDataFolder();if(!dataDirHandle)throw new Error('Library storage is not ready.');},
+    examVisible:()=>{const el=document.getElementById('examScreen');return el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none';},
+    normalize:normalizeBank, hash:sha256Hex, meta:metaFor, record:makeCatalogRecord,
+    resolveTab:(name,current)=>{const tabs=['N-Forms',...Object.keys(CFORM_COUNTS),'Custom',...(current.forms||[]).map(r=>r.filter).filter(Boolean)];const same=tabs.find(t=>t.toLowerCase()===name.toLowerCase());if(same)return same;if(name.toLowerCase()==='nbme')return 'N-Forms';const alias=Object.keys(CFORM_LABELS).find(k=>CFORM_LABELS[k].toLowerCase()===name.toLowerCase());return alias||name;} ,
+    flush:async()=>{await window.StepAppUpdateFlush?.();clearTimeout(saveWriteTimer);saveWriteTimer=null;},
+    adopt:(next,ids)=>{catalog=next;loadedFormCache.clear();revokeDataAssetObjectUrls();if(ids.includes(activeRunContext.formId)||activeRunContext.qbank){releaseActiveMemory();activeSession=null;}},
+    refresh:async()=>{await renderLibrary();await renderQbankMode();renderFilters();}
+  });
+
   async function importMetaFiles(meta, files, optimize=false){
+    if(window.__STEP_FORM_UPDATE_COMMITTING)throw new Error('Wait for form installation to finish.');
+    window.__STEP_NATIVE_IMPORT_BUSY=true;
+    try{
     if(!dataDirHandle) throw new Error('Connect / start library storage first.');
     let {bank, sourceFiles, zipAssets=0}=await buildBankFromFiles(meta, files);
     let imageAssets=zipAssets;
@@ -2752,6 +2777,7 @@ document.addEventListener('click', function(e){
     await writeFormFile(meta.id, bank); upsertCatalogForm(rec); loadedFormCache.delete(meta.id); revokeDataAssetObjectUrls(); await writeCatalog(); await renderLibrary(); await renderQbankMode();
     const storageLabel=isBrowserLibraryHandle(dataDirHandle)?'iPad Browser Library':'DATA folder';
     alert(`${rec.displayName} loaded into ${storageLabel}. ${zipAssets ? `${zipAssets} asset file(s) imported from ZIP.` : 'Embedded images preserved.'}`);
+    }finally{window.__STEP_NATIVE_IMPORT_BUSY=false;}
   }
 
   function normalizeProgressPayload(data){ const s = data && data.session ? data.session : data; return s && s.activeSession && !s.blocks ? s.activeSession : s; }
@@ -3036,7 +3062,7 @@ document.addEventListener('click', function(e){
     (allAnswers||[]).forEach(r=>{
       const first = r.firstChosen;
       const final = r.chosen;
-      if(first === null || first === undefined || final === null || final === undefined || first === final) return;
+      if(!answerWasChanged(first, final, r.answerChangeLog)) return;
       counts.changed++;
       const firstCorrect = first === r.correct;
       const finalCorrect = final === r.correct;
@@ -3045,7 +3071,7 @@ document.addEventListener('click', function(e){
       else if(!firstCorrect && !finalCorrect) counts.ii++;
       else if(firstCorrect && finalCorrect) counts.cc++;
     });
-    return `<section class="answer-change-audit"><h3>Answer Change Audit</h3><div class="answer-change-grid"><div class="answer-change-box bad"><b>${counts.ci}</b><span>Correct → Incorrect</span></div><div class="answer-change-box good"><b>${counts.ic}</b><span>Incorrect → Correct</span></div><div class="answer-change-box neutral"><b>${counts.ii}</b><span>Incorrect → Incorrect</span></div><div class="answer-change-box"><b>${counts.changed}</b><span>Total changed answers</span></div></div><div class="answer-change-note">Counts compare the first selected answer for each item with the final submitted answer. Correct → Correct changes are tracked internally but not emphasized here.</div></section>`;
+    return `<section class="answer-change-audit"><h3>Answer Change Audit</h3><div class="answer-change-grid"><div class="answer-change-box bad"><b>${counts.ci}</b><span>Correct → Incorrect</span></div><div class="answer-change-box good"><b>${counts.ic}</b><span>Incorrect → Correct</span></div><div class="answer-change-box neutral"><b>${counts.ii}</b><span>Incorrect → Incorrect</span></div><div class="answer-change-box good"><b>${counts.cc}</b><span>Correct → Correct</span></div><div class="answer-change-box"><b>${counts.changed}</b><span>Total changed answers</span></div></div><div class="answer-change-note">Each question changed at least once is counted once, comparing its first and final answers. Returning to the starting answer still counts; the initial selection alone does not. Individual changes remain in the change log.</div></section>`;
   }
 
   function recognizerForAnswer(r){ const t=String(r.topic||'').trim(); if(t) return t; const stem=String(r.stem||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim(); return stem.slice(0,70) || 'Question'; }
@@ -3762,7 +3788,7 @@ document.addEventListener('click', function(e){
       startLibraryForm=async function(id){const b=await readBundle(id), a=activeAtt(b); if(a&&sessionCanResume(a.session)){const r=await appConfirm('An incomplete attempt exists. Resume it?',{okText:'Resume existing',cancelText:'Start new attempt'}); if(r){await resumeLibraryForm(id); return} if(!await appConfirm('Start a new full attempt? Existing progress remains saved.',{okText:'Start new attempt'})) return} const type=b.attempts.length?'new_attempt':'initial'; await prepLibrary(id,{v9AttemptId:rid('attempt'),v9AttemptType:type,v9AttemptLabel:type==='initial'?'1st Attempt':`New Attempt ${b.attempts.length+1}`})};
       reviewLibraryForm=async function(id){const rec=catalogForm(id), b=await readBundle(id), a=activeAtt(b); if(!a)throw new Error('No progress save found.'); const bank=await readFormBank(id); importedBank=bank; currentBankRawText=JSON.stringify(bank,null,2); currentBankHash=rec.bankHash||await sha256Hex(currentBankRawText); activeRunContext={type:'library',formId:id,qbank:false,v9AttemptId:a.attemptId}; const s=cloneJson(a.session); s.bankHash=currentBankHash; s.libraryFormId=id; s.libraryFormName=rec.displayName||id; s.currentBlockPointer=0; if(s.blocks?.[0])s.blocks[0].current=0; loadSessionForReview(s)};
       resumeLibraryForm=async function(id){const rec=catalogForm(id), b=await readBundle(id), a=activeAtt(b), temp=await readSuspendedTemp(id); let s=temp&&sessionCanResume(temp)?temp:a?.session; if(!sessionCanResume(s))throw new Error('No resumable attempt.'); const bank=await readFormBank(id); importedBank=bank; currentBankRawText=JSON.stringify(bank,null,2); currentBankHash=rec.bankHash||await sha256Hex(currentBankRawText); activeRunContext={type:'library',formId:id,qbank:false,v9AttemptId:s.attemptId||a?.attemptId}; s.bankHash=currentBankHash; s.libraryFormId=id; s.libraryFormName=rec.displayName||id; await loadSessionForResume(s); await removeSuspendedTemp(id)};
-      async function retestRows(id,filter){const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id); if(!a)throw new Error('No selected attempt.'); const rows=[],uid=bank.formUid||catalogForm(id)?.formUid||id; (bank.blocks||[]).forEach((bl,bi)=>(bl.questions||[]).forEach((q,qi)=>{const bp=a.session.blocks?.[bi], ans=bp?.answers?.[qi], marked=!!bp?.flagged?.[qi], wrong=ans!=null&&ans!==q.correct,key=window.StepQidMigration&&StepQidMigration.validQid(q.qid)?StepQidMigration.keyFor(uid,q.qid):`${id}:${bi}:${qi}`; if((filter==='wrongs'&&wrong)||(filter==='marked'&&marked)||(filter==='wrongs_marked'&&(wrong||marked))) rows.push({formId:id,blockIndex:bi,questionIndex:qi,key,seedStemHtml:bp?.stemHtml?.[qi],seedStruck:bp?.struck?.[qi]||[],seedFlagged:marked})})); return {rows,bank,attempt:a}}
+      async function retestRows(id,filter){const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id); if(!a)throw new Error('No selected attempt.'); const rows=[],uid=bank.formUid||catalogForm(id)?.formUid||id; (bank.blocks||[]).forEach((bl,bi)=>(bl.questions||[]).forEach((q,qi)=>{const bp=__a23Aligned(a.session,bank)[bi], ans=bp?.answers?.[qi], marked=!!bp?.flagged?.[qi], wrong=ans!=null&&ans!==q.correct,key=window.StepQidMigration&&StepQidMigration.validQid(q.qid)?StepQidMigration.keyFor(uid,q.qid):`${id}:${bi}:${qi}`; if((filter==='wrongs'&&wrong)||(filter==='marked'&&marked)||(filter==='wrongs_marked'&&(wrong||marked))) rows.push({formId:id,blockIndex:bi,questionIndex:qi,key,seedStemHtml:bp?.stemHtml?.[qi],seedStruck:bp?.struck?.[qi]||[],seedFlagged:marked})})); return {rows,bank,attempt:a}}
       async function startRetest(id,filter){const labs={wrongs:'Retest Wrongs',marked:'Retest Marked',wrongs_marked:'Retest Marked + Wrongs'}, got=await retestRows(id,filter); if(!got.rows.length)throw new Error(`No ${poolLabel(filter).toLowerCase()} questions found.`); if(!await appConfirm(`${labs[filter]} will create a separate ${got.rows.length}-question attempt.`,{okText:'Open Setup'}))return; const qs=got.rows.map(r=>{const q=cloneJson(got.bank.blocks[r.blockIndex].questions[r.questionIndex]); Object.assign(q,{_qbankKey:r.key,_seedStemHtml:r.seedStemHtml,_seedExpHtml:r.seedExpHtml,_seedStemAnchors:r.seedStemAnchors,_seedExpAnchors:r.seedExpAnchors,_seedStruck:r.seedStruck,_seedFlagged:r.seedFlagged}); return q}); importedBank={title:`${displayName(catalogForm(id))} — ${labs[filter]}`,description:`${labs[filter]} from ${got.attempt.label}`,librarySlotId:id,blocks:[{name:labs[filter],questions:qs}]}; currentBankRawText=JSON.stringify({title:importedBank.title,keys:got.rows.map(r=>r.key)},null,2); currentBankHash=await sha256Hex(currentBankRawText); selectedBlockIndex=0; activeSession=null; reviewMode=false; activeRunContext={type:'library',formId:id,qbank:false,v9AttemptId:rid('attempt'),v9AttemptType:`retest_${filter}`,v9AttemptLabel:labs[filter],v9SourceAttemptId:got.attempt.attemptId,v9SourceFilter:filter,v9Retest:true}; if($('#blockSizeSelect'))$('#blockSizeSelect').value='all'; renderMenu(); setMenuMode('quick')}
       const oldRenderMenu=renderMenu; renderMenu=function(){const o=oldRenderMenu(); if(activeRunContext?.v9Retest){const setup=document.querySelector('.setup-panel .setup-grid'); if(setup&&!$id('v9RetestOptions')) setup.insertAdjacentHTML('afterend',`<div id="v9RetestOptions" class="v9-retbox"><b>${esc(activeRunContext.v9AttemptLabel)}</b><br>Saved as separate attempt; original stays untouched.<div class="v9-ret-options"><label><input id="v9CarryHl" type="checkbox" checked> Carry saved stem highlights</label><label><input id="v9CarryStrike" type="checkbox" checked> Carry saved strikethroughs</label><label><input id="v9CarryMarked" type="checkbox"> Carry marked status</label></div></div>`)} return o};
       const oldCreate=createSession; createSession=function(which){const s=oldCreate(which); if(activeRunContext?.type==='library'&&activeRunContext.formId){Object.assign(s,{attemptId:activeRunContext.v9AttemptId||s.attemptId||'attempt_1',attemptType:activeRunContext.v9AttemptType||s.attemptType||'initial',attemptLabel:activeRunContext.v9AttemptLabel||s.attemptLabel||'1st Attempt'}); if(activeRunContext.v9Retest){const hl=!!$id('v9CarryHl')?.checked, st=!!$id('v9CarryStrike')?.checked, mk=!!$id('v9CarryMarked')?.checked; let flat=[];(activeBlocks||[]).forEach(b=>(b.questions||[]).forEach(q=>flat.push(q))); let pos=0; s.blocks.forEach(bp=>{for(let i=0;i<bp.total;i++,pos++){const q=flat[pos]||{}; if(hl&&Array.isArray(q._seedStemAnchors)&&q._seedStemAnchors.length){bp.stemHighlightAnchors=bp.stemHighlightAnchors||{}; bp.stemHighlightAnchors[i]=cloneJson(q._seedStemAnchors); bp.highlightMigrationVersion=15;} if(Array.isArray(q._seedExpAnchors)&&q._seedExpAnchors.length){bp.explanationHighlightAnchors=bp.explanationHighlightAnchors||{}; bp.explanationHighlightAnchors[i]=cloneJson(q._seedExpAnchors); bp.highlightMigrationVersion=15;} if(st&&q._seedStruck?.length)bp.struck[i]=q._seedStruck.slice(); if(mk&&q._seedFlagged)bp.flagged[i]=true}})}} if(activeRunContext?.qbank){const name=($id('qbankTestName')?.value||activeRunContext.qbankTestName||`Qbank — ${poolLabel(activeRunContext.qbankPoolType)} — ${(s.qbankKeys||[]).length}Q`).trim(); Object.assign(s,{qbankTestId:activeRunContext.qbankTestId||rid('qb'),qbankTestName:name,qbankRunMode:activeRunContext.qbankRunMode||'testing',tutorMode:activeRunContext.qbankRunMode==='tutor',qbankSourceMode:activeRunContext.qbankSourceMode||'separate',qbankPoolType:activeRunContext.qbankPoolType||'unused',qbankAttemptSource:activeRunContext.qbankAttemptSource||'first',title:name})} return s};
@@ -3836,7 +3862,7 @@ document.addEventListener('click', function(e){
 
         const v10MakeFormCard=makeFormCard; makeFormCard=function(rec){const s=rec.progressSummary||{}, has=!!(s.answered||s.scoreTotal||s.completed||s.inProgress); let html=v10MakeFormCard(rec); html=html.replace(/(<button class="secondary" data-action="review"[^>]*>Review<\/button>)/, `$1<button class="secondary" data-v10="retest-setup" ${has?'':'disabled'}>Retest</button>`); html=html.replace(/<button data-v9="retest-wrongs">Retest Wrongs<\/button><button data-v9="retest-marked">Retest Marked<\/button><button data-v9="retest-both">Retest Marked \+ Wrongs<\/button>/,''); html=html.replace('v75-menu-panel','v75-menu-panel v10-more-clean'); return html};
 
-        async function retestPools(id){const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id); if(!a)throw new Error('No selected attempt.'); const pools={all:[],wrongs:[],marked:[],wrongs_marked:[]}; (bank.blocks||[]).forEach((bl,bi)=>(bl.questions||[]).forEach((q,qi)=>{const bp=a.session.blocks?.[bi]||{}, ans=bp.answers?.[qi], marked=!!bp.flagged?.[qi], wrong=ans!=null&&ans!==q.correct; const row={formId:id,blockIndex:bi,questionIndex:qi,key:questionKey(id,bi,qi),seedStemHtml:bp.stemHtml?.[qi],seedStruck:bp.struck?.[qi]||[],seedFlagged:marked}; pools.all.push(row); if(wrong)pools.wrongs.push(row); if(marked)pools.marked.push(row); if(wrong||marked)pools.wrongs_marked.push(row)})); return {pools,bank,attempt:a,bundle:b}}
+        async function retestPools(id){const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id); if(!a)throw new Error('No selected attempt.'); const pools={all:[],wrongs:[],marked:[],wrongs_marked:[]}; (bank.blocks||[]).forEach((bl,bi)=>(bl.questions||[]).forEach((q,qi)=>{const bp=__a23Aligned(a.session,bank)[bi]||{}, ans=bp.answers?.[qi], marked=!!bp.flagged?.[qi], wrong=ans!=null&&ans!==q.correct; const row={formId:id,blockIndex:bi,questionIndex:qi,key:questionKey(id,bi,qi),seedStemHtml:bp.stemHtml?.[qi],seedStruck:bp.struck?.[qi]||[],seedFlagged:marked}; pools.all.push(row); if(wrong)pools.wrongs.push(row); if(marked)pools.marked.push(row); if(wrong||marked)pools.wrongs_marked.push(row)})); return {pools,bank,attempt:a,bundle:b}}
         function buildRetestBank(id,ctx,pool){const rows=ctx.pools[pool]||[], labs={all:'Retest All',wrongs:'Retest Wrongs',marked:'Retest Marked',wrongs_marked:'Retest Marked + Wrongs'}, qs=rows.map(r=>{const q=cloneJson(ctx.bank.blocks[r.blockIndex].questions[r.questionIndex]); Object.assign(q,{_qbankKey:r.key,_seedStemHtml:r.seedStemHtml,_seedExpHtml:r.seedExpHtml,_seedStemAnchors:r.seedStemAnchors,_seedExpAnchors:r.seedExpAnchors,_seedStruck:r.seedStruck,_seedFlagged:r.seedFlagged}); return q}); importedBank={title:`${displayName(catalogForm(id))} — ${labs[pool]}`,description:`${labs[pool]} from ${ctx.attempt.label}`,librarySlotId:id,blocks:[{name:labs[pool],questions:qs}]}; currentBankRawText=JSON.stringify({title:importedBank.title,keys:rows.map(r=>r.key)},null,2); currentBankHash=''; sha256Hex(currentBankRawText).then(h=>currentBankHash=h).catch(()=>{}); activeRunContext=Object.assign(activeRunContext,{v9AttemptType:pool==='all'?'new_attempt':`retest_${pool}`,v9AttemptLabel:labs[pool],v9SourceAttemptId:ctx.attempt.attemptId,v9SourceFilter:pool,v9Retest:true,v10Retest:true,v10RetestPool:pool,v10RetestCounts:Object.fromEntries(Object.entries(ctx.pools).map(([k,v])=>[k,v.length])),v10RetestCtx:ctx}); if($('#blockSizeSelect'))$('#blockSizeSelect').value='all'}
         async function openRetestSetup(id){const ctx=await retestPools(id); buildRetestBank(id,ctx,'all'); activeSession=null; reviewMode=false; activeRunContext=Object.assign(activeRunContext,{type:'library',formId:id,qbank:false,v9AttemptId:rid('attempt')}); buildRetestBank(id,ctx,'all'); renderMenu(); setMenuMode('quick')}
         const v10RenderMenu=renderMenu; renderMenu=function(){const out=v10RenderMenu(); if(activeRunContext?.v10Retest){$id('v9RetestOptions')?.remove(); const setup=document.querySelector('.setup-panel .setup-grid'); if(setup&&!$id('v10RetestSetup')){const c=activeRunContext.v10RetestCounts||{}, p=activeRunContext.v10RetestPool||'all'; setup.insertAdjacentHTML('afterend',`<div id="v10RetestSetup" class="v10-retest-card"><h3>${esc(activeRunContext.v9AttemptLabel||'Retest Setup')}</h3><div class="v10-count-grid"><div class="v10-count"><b>${c.all||0}</b><span>All</span></div><div class="v10-count"><b>${c.wrongs||0}</b><span>Wrongs</span></div><div class="v10-count"><b>${c.marked||0}</b><span>Marked</span></div><div class="v10-count"><b>${c.wrongs_marked||0}</b><span>Wrong + Marked</span></div></div><b>Retest pool</b><div class="v10-retest-pool"><label><input name="v10RetestPool" value="all" type="radio" ${p==='all'?'checked':''}> All</label><label><input name="v10RetestPool" value="wrongs" type="radio" ${p==='wrongs'?'checked':''} ${c.wrongs?'':'disabled'}> Wrongs</label><label><input name="v10RetestPool" value="marked" type="radio" ${p==='marked'?'checked':''} ${c.marked?'':'disabled'}> Marked</label><label><input name="v10RetestPool" value="wrongs_marked" type="radio" ${p==='wrongs_marked'?'checked':''} ${c.wrongs_marked?'':'disabled'}> Wrongs + Marked</label></div><b>Carry into retest</b><div class="v10-carry"><label><input id="v9CarryHl" type="checkbox" checked> Stem highlights</label><label><input id="v9CarryStrike" type="checkbox" checked> Strikethroughs</label><label><input id="v9CarryMarked" type="checkbox"> Marked status</label></div><div class="v10-setup-note">Original attempt remains untouched. This retest saves as a separate attempt.</div></div>`)} } return out};
@@ -3891,7 +3917,7 @@ document.addEventListener('click', function(e){
           const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id);
           const pools={all:[],wrongs:[],marked:[],wrongs_marked:[]};
           (bank.blocks||[]).forEach((bl,bi)=>(bl.questions||[]).forEach((q,qi)=>{
-            const bp=a?.session?.blocks?.[bi]||{};
+            const bp=__a23Aligned(a?.session,bank)[bi]||{};
             const ans=bp.answers?.[qi];
             const marked=!!bp.flagged?.[qi];
             const wrong=ans!=null && ans!==q.correct;
@@ -4117,7 +4143,7 @@ document.addEventListener('click', function(e){
           const b=await readBundle(id), a=activeAtt(b), bank=await readFormBank(id);
           const pools={all:[],wrongs:[],marked:[],wrongs_marked:[]};
           (bank.blocks||[]).forEach((bl,bi)=>(bl.questions||[]).forEach((q,qi)=>{
-            const bp=a?.session?.blocks?.[bi]||{};
+            const bp=__a23Aligned(a?.session,bank)[bi]||{};
             const ans=bp.answers?.[qi];
             const marked=!!bp.flagged?.[qi];
             const wrong=ans!=null && ans!==q.correct;
@@ -4278,6 +4304,7 @@ document.addEventListener('click', function(e){
           return bundle;
         }
         function a193SessionMappings(id,bank,session){
+          session=__a23BankOrdered(session,bank);
           const blocks=Array.isArray(session&&session.blocks)?session.blocks:[];
           const keys=Array.isArray(session&&session.a193QuestionKeys)?session.a193QuestionKeys:(Array.isArray(session&&session.libraryQuestionKeys)?session.libraryQuestionKeys:(Array.isArray(session&&session.qbankKeys)?session.qbankKeys:[]));
           let setting=session&&session.blockSizeSetting;
@@ -4299,6 +4326,7 @@ document.addEventListener('click', function(e){
         function a193FirstArray(v){ return Array.isArray(v) ? a193Clone(v) : null; }
         function a193AnchorDirect(bank,session,bi,qi,type){
           const store=type==='stem'?A193_STEM:A193_EXP;
+          session=__a23BankOrdered(session,bank);
           try{
             const blocks=Array.isArray(session&&session.blocks)?session.blocks:[];
             const flat=a193FlatIndex(bank,bi,qi);
@@ -4629,7 +4657,7 @@ document.addEventListener('click', function(e){
           return `<div class="v195-danger-zone"><p>Deleting a custom tab only moves its forms back to the base Custom tab. Form JSON and progress files are preserved.</p><div class="settings-list">${tabs.map(f=>{ const n=(catalog.forms||[]).filter(r=>r.filter===f).length; return `<div class="v195-custom-delete-row"><div><b>${escapeHtml(f)}</b><span>${n} form(s) will move to Custom.</span></div><button class="danger" data-v195-delete-tab="${escapeAttr(f)}">Delete tab</button></div>`; }).join('')}</div></div>`;
         }
         function v195SettingsNav(active){
-          const tabs = [['library','Library meters'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup']];
+          const tabs = [['library','Library meters'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup'],['admin','Admin']];
           return `<nav class="settings-nav-v195">${tabs.map(([id,label])=>`<button type="button" data-v195-settings-tab="${id}" class="${active===id?'active':''}">${label}</button>`).join('')}</nav>`;
         }
         function v195SettingsBody(active){
@@ -4846,10 +4874,11 @@ document.addEventListener('click', function(e){
           return `<div class="v195-danger-zone"><p>Deleting a custom tab only moves its forms back to the base Custom tab. Form JSON and progress files are preserved.</p><div class="settings-list">${tabs.map(f=>{ const n=(catalog.forms||[]).filter(r=>r.filter===f).length; return `<div class="v195-custom-delete-row"><div><b>${escapeHtml(f)}</b><span>${n} form(s) will move to Custom.</span></div><button class="danger" data-v195-delete-tab="${escapeAttr(f)}">Delete tab</button></div>`; }).join('')}</div></div>`;
         }
         function v195BSettingsNav(active){
-          const tabs = [['bulk','Bulk import'],['library','Library progress'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup']];
+          const tabs = [['bulk','Bulk import'],['library','Library progress'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup'],['admin','Admin']];
           return `<nav class="settings-nav-v195">${tabs.map(([id,label])=>`<button type="button" data-v195b-settings-tab="${id}" class="${active===id?'active':''}">${label}</button>`).join('')}</nav>`;
         }
         function v195BSettingsBody(active){
+          if(active==='admin') return window.StepFormUpdates?.adminHtml() || '<section class="settings-panel-v195">Admin is loading…</section>';
           if(active==='bulk') return window.StepBulkImport?.panelHtml() || '<section class="settings-panel-v195"><h3>Bulk import</h3></section>';
           if(active==='library') return `<section class="settings-panel-v195"><h3>Library progress & Completed</h3><p>Select exactly what contributes to the tab meters, the single Form Library progress circle, and the Completed forms filter.</p><div id="libraryTabMeterSettings" class="settings-list">${v195BLibraryTabSettingsHtml()}</div></section>`;
           if(active==='order') return `<section class="settings-panel-v195"><h3>Tab order & colors</h3><p>Use drag handles for order. Colors remain tab-level identifiers, not card status colors.</p>${v195BTabOrderColorHtml()}</section>`;
@@ -6921,6 +6950,7 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     const n=Math.max(1,parseInt(setting,10)||flat.length||1), out=[]; for(let i=0;i<flat.length;i+=n) out.push({name:`Block ${out.length+1}`,questions:flat.slice(i,i+n)}); return out;
   }
   function v16SessionMappings(id,bank,session){
+    session=__a23BankOrdered(session,bank);
     const blocks=Array.isArray(session&&session.blocks)?session.blocks:[];
     let setting=session&&session.blockSizeSetting; if(!setting){ setting=(blocks.length===((bank&&bank.blocks&&bank.blocks.length)||0))?'original':'all'; }
     const cfg=v16BuildConfigured(bank,id,setting);
@@ -6956,6 +6986,7 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     return n;
   }
   function v191AnchorFallback(bank,session,bi,qi){
+    session=__a23BankOrdered(session,bank);
     const out={stem:null,exp:null};
     try{
       const blocks=Array.isArray(session&&session.blocks)?session.blocks:[];
@@ -8162,7 +8193,7 @@ details.v75-menu summary{
   }
   function v215RestoreActiveBlocksFromSession(){
     if(!activeSession || !activeSession.v215Shuffle || !activeSession.v215Shuffle.enabled) return false;
-    var order = activeSession.v215Shuffle.blockQuestionIndexes;
+    var order = (window.StepQidMigration && StepQidMigration.shuffleFlatIndexes && importedBank && StepQidMigration.shuffleFlatIndexes(activeSession, importedBank)) || activeSession.v215Shuffle.blockQuestionIndexes;
     if(!Array.isArray(order) || !order.length) return false;
     var all = v215Flatten();
     activeBlocks = order.map(function(idxs,bi){
@@ -10420,11 +10451,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=1"></script>
-<script src="./js/sync-storage.js?v=1"></script>
-<script src="./js/progress-sync.js?v=1"></script>
-<script src="./js/library-backup.js?v=1"></script>
-<script src="./js/qid-settings.js?v=1"></script>
+<script src="./js/sync-merge.js?v=4"></script>
+<script src="./js/sync-storage.js?v=4"></script>
+<script src="./js/progress-sync.js?v=4"></script>
+<script src="./js/library-backup.js?v=4"></script>
+<script src="./js/qid-settings.js?v=4"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10901,8 +10932,40 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=1"></script>
-<script src="./exam-notes.js?v=1"></script>
-<script src="./app-update.js?v=1"></script>
+<script src="./bulk-import.js?v=4"></script>
+<script src="./exam-notes.js?v=4"></script>
+<script src="./app-update.js?v=4"></script>
+<script src="./js/form-updates.js?v=4"></script>
+<script>
+/* A23 position mapping: retests, new-attempt pools and highlight carry-over read saved progress through a form-ordered view, and new library sessions record each position's form question. */
+(function(){
+  if(window.__a23PositionMapping) return; window.__a23PositionMapping=true;
+  window.__a23BankOrdered=function(session,bank){
+    try{ return window.StepQidMigration&&StepQidMigration.bankOrderedSession&&bank?StepQidMigration.bankOrderedSession(session,bank):session; }
+    catch(e){ console.warn('A23 position mapping failed',e); return session; }
+  };
+  window.__a23Aligned=function(session,bank){ const s=window.__a23BankOrdered(session,bank); return Array.isArray(s&&s.blocks)?s.blocks:[]; };
+  if(typeof createSession!=='function') return;
+  const base=createSession;
+  createSession=function(){
+    const session=base.apply(this,arguments);
+    try{
+      if(session&&!session.qbankMode&&!Array.isArray(session.qbankKeys)&&Array.isArray(activeBlocks)&&window.StepQidMigration&&StepQidMigration.positionKeyFor){
+        const formId=session.libraryFormId||importedBank?.librarySlotId||'form';
+        session.positionQuestionKeys=activeBlocks.map(b=>(b&&b.questions||[]).map(q=>StepQidMigration.positionKeyFor(formId,q)));
+        if(session.v215Shuffle&&session.v215Shuffle.enabled) session.v215Shuffle.flatIndexes=session.v215Shuffle.blockSizeSetting!=='original'||!!session.v215Shuffle.flatIndexes;
+      }
+    }catch(e){ console.warn('A23 position keys not recorded',e); }
+    return session;
+  };
+})();
+</script>
+<style id="a23-exam-dark-explanation-headings">
+/* A23: explanation headings in Exam Dark Mode were near-black on dark panels. */
+html body #examScreen.exam-dark .qbank-body h1,html body #examScreen.exam-dark .qbank-body h2,html body #examScreen.exam-dark .qbank-body h3,html body #examScreen.exam-dark .qbank-body h4,
+html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h1,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h2,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h3,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h4{color:#EAF6FB!important}
+html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h4,
+html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h4{color:#9BE7C1!important}
+</style>
 </body>
 </html>

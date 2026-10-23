@@ -1,7 +1,7 @@
 /* App-shell updates are independent of optional Google Backup and never clear user storage. */
 (function(){
   'use strict';
-  const APP_VERSION = 1;
+  const APP_VERSION = 4;
   const PREFIX = 'exam-simulator2-';
   const APP_SHELL = [
   "./",
@@ -9,20 +9,23 @@
   "offline.html",
   "privacy.html",
   "manifest.webmanifest",
-  "./app-update.js?v=1",
-  "./bulk-import.js?v=1",
-  "./exam-notes.js?v=1",
-  "./icons/icon-192.png?v=1",
-  "./icons/icon-512.png?v=1",
-  "./js/google-auth.js?v=1",
-  "./js/library-backup.js?v=1",
-  "./js/progress-sync.js?v=1",
-  "./js/qid-migration.js?v=1",
-  "./js/qid-settings.js?v=1",
-  "./js/sync-config.js?v=1",
-  "./js/sync-merge.js?v=1",
-  "./js/sync-storage.js?v=1",
-  "./jszip.min.js?v=1",
+  "./app-update.js?v=4",
+  "./bulk-import.js?v=4",
+  "./exam-notes.js?v=4",
+  "./icons/icon-192.png?v=4",
+  "./icons/icon-512.png?v=4",
+  "./js/form-update-store.js?v=4",
+  "./js/form-updates-core.js?v=4",
+  "./js/form-updates.js?v=4",
+  "./js/google-auth.js?v=4",
+  "./js/library-backup.js?v=4",
+  "./js/progress-sync.js?v=4",
+  "./js/qid-migration.js?v=4",
+  "./js/qid-settings.js?v=4",
+  "./js/sync-config.js?v=4",
+  "./js/sync-merge.js?v=4",
+  "./js/sync-storage.js?v=4",
+  "./jszip.min.js?v=4",
   "./ui_icons/calculator.png",
   "./ui_icons/endblock.png",
   "./ui_icons/lab.png",

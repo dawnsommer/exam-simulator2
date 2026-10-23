@@ -9,7 +9,7 @@ Production URL: `https://dawnsommer.github.io/exam-simulator2/`
 - IndexedDB / the simulator's existing DATA abstraction remains the runtime source of truth.
 - Google Drive `appDataFolder` stores active progress as a small V2 manifest plus immutable per-form/version payloads.
 - Form identity is stable `formUid`; immutable question identity is `qid`; `bankHash` is form-revision metadata. Qbank is an independent sync entity whose migrated references use `formUid::qid`.
-- The shared Cloudflare Worker handles OAuth/session/token refresh only.
+- The shared Cloudflare Worker handles OAuth/session/token refresh plus namespaced form-installation reporting and browser Admin grants. Exam progress still travels directly to Drive.
 - Normal Drive payload traffic remains browser ↔ Google Drive.
 - Full Form Library cloud backup is separate from progress sync and remains manual/resumable.
 - Local Progress Backup and Local Library Backup are separate portable systems. Cloud lineage is never exported in a portable progress file.
@@ -55,3 +55,7 @@ Use a disposable test form first:
 13. On disposable data, run the QID Settings migration on one device, verify ordinary sync is blocked, establish the new cloud baseline, and verify the marker clears only after library/progress alignment.
 
 See `PROGRESS_SYNC_V2_REPORT.md` for the implementation details and the regression-test results.
+
+## Form-update backend
+
+The complete additive Worker source is `backend/worker.mjs`, with D1 migration `backend/form-updates.sql`. Both reuse `AUTH_DB`. Set `EXAM2_ADMIN_PASSWORD` as a Worker secret; keep existing Google configuration. Follow `UPDATE_SETUP.md` before enabling installation reports/Admin. Backend files are excluded from the Pages artifact.

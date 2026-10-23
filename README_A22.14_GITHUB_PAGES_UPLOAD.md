@@ -12,6 +12,8 @@ Settings opens on **Bulk import**. A ZIP can contain `UWSA2/UWSA2.json`, `UWSA2/
 
 Notes is a non-modal panel at the bottom right. Typing saves the block note, clicking elsewhere leaves it open, and **Save and Close**, ×, and **Delete Note** have distinct actions. Exam Settings → **Keep notes open** controls whether changing questions hides the panel; hiding never deletes the saved note. Lock/Resume now freezes block/day countdowns, elapsed time, question time, and saved resume timing, including untimed Lock.
 
+The Answer Change Audit counts each question revised at least once, comparing its first and final choices. With A correct, A → B → A is Correct → Correct; B → A → B and B → C are Incorrect → Incorrect. The initial selection alone is not a change. Individual transitions remain logged, while the summary counts a revised question once. Existing logs can establish a return to the original answer; historical saves without logs cannot.
+
 Validation: from this folder run `node --test --test-concurrency=1 tests/*.test.cjs` and `node tools/release.mjs --check`. From the parent LOCAL folder, run the shared suite including `tests/exam-session-tools.test.cjs`. `node tests/browser-regressions.cjs` in the parent runs disposable Chrome QA when Playwright is resolvable; `PLAYWRIGHT_MODULE` and `TEST_BROWSER_PATH` can override the runtime paths. This checks offline/update/data preservation without live Drive access. Physical Safari/PWA and production Pages deployment still need a device check.
 
 ## Original A22.14 layout release notes
@@ -27,3 +29,7 @@ Changes in A22.14:
 - OPFS/IndexedDB/library/import/export/suspend-resume code was not intentionally changed.
 
 Upload the contents of this ZIP to the GitHub Pages repository root.
+
+## Form updates and Admin
+
+See [UPDATE_SETUP.md](UPDATE_SETUP.md) for the one-time Cloudflare/Pages setup and ordinary folder + TXT publishing. Use the prepared GitHub Actions workflow; it generates the pinned update manifest and excludes backend/test files from the public site. App-shell release 3 includes the updater and Settings → Admin.

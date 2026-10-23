@@ -1,11 +1,11 @@
 const test=require('node:test'), assert=require('node:assert/strict'), fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..');
 const version=Number(fs.readFileSync(path.join(root,'sw.js'),'utf8').match(/const VERSION = (\d+);/)[1]);
-function worker(){
+function worker({offline=false}={}){
  const handlers={},calls={fetch:[],opened:[],deleted:[],precache:[]},stores=new Map();
  const caches={async open(key){calls.opened.push(key);if(!stores.has(key))stores.set(key,new Map());const data=stores.get(key);return {async match(req){return data.get(typeof req==='string'?new URL(req,'https://example.test/exam-simulator2/').href:req.url)},async put(req,res){data.set(req.url,res)},async addAll(reqs){calls.precache.push(...reqs)}}},async keys(){return ['otherapp-v1','exam-simulator2-v0','exam-simulator2-v'+version]},async delete(key){calls.deleted.push(key)}};
  class RelativeRequest extends Request {constructor(url,opts){super(new URL(url,'https://example.test/exam-simulator2/sw.js'),opts)}}
- const c=vm.createContext({URL,Request:RelativeRequest,Response,caches,fetch:async(req)=>{calls.fetch.push(req.url);return new Response('network')},setTimeout,clearTimeout,self:{registration:{scope:'https://example.test/exam-simulator2/'},clients:{async claim(){}},async skipWaiting(){},addEventListener(n,fn){handlers[n]=fn}}});
+ const c=vm.createContext({URL,Request:RelativeRequest,Response,caches,fetch:async(req)=>{calls.fetch.push(req.url);if(offline)throw new Error('offline');return new Response('network')},setTimeout,clearTimeout,self:{registration:{scope:'https://example.test/exam-simulator2/'},clients:{async claim(){}},async skipWaiting(){},addEventListener(n,fn){handlers[n]=fn}}});
  vm.runInContext(fs.readFileSync(path.join(root,'sw.js'),'utf8'),c);
  return {handlers,calls,stores};
 }
@@ -33,4 +33,9 @@ test('release assets, UI version, and unversioned launch URL stay coordinated',(
  assert.equal(JSON.parse(fs.readFileSync(path.join(root,'manifest.webmanifest'),'utf8')).start_url,'./index.html');
  assert.match(app,/register\('sw.js',\{updateViaCache:'none'\}\)/);
  assert.doesNotMatch(app,/localStorage\.clear|deleteDatabase|getRegistrations/);
+});
+
+test('form-update manifests bypass app caches and fail offline rather than using stale availability',async()=>{
+ const req=new Request('https://example.test/exam-simulator2/form-updates-manifest.json');
+ for(const offline of [false,true]){const w=worker({offline});w.stores.set('exam-simulator2-v'+version,new Map([[req.url,new Response('stale update')]]));let pending;w.handlers.fetch({request:req,respondWith(p){pending=p}});if(offline)await assert.rejects(pending,/offline/);else assert.equal(await(await pending).text(),'network');assert.equal(w.calls.opened.length,0);}
 });

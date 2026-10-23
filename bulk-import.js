@@ -11,7 +11,17 @@
   async function prepare(zip,validate){
     const entries=Object.values(zip.files).filter(e=>!e.dir).map(e=>{
       safePath(e.unsafeOriginalName || e.name);
-      return {entry:e,path:safePath(e.name)};
+      return {path:e.name,readText:()=>e.async('text'),readBlob:()=>e.async('blob')};
+    });
+    return prepareEntries(entries,validate);
+  }
+  async function prepareEntries(input,validate){
+    const seen=new Set();
+    const entries=input.map(e=>{
+      const path=safePath(e.path);
+      if(!path || seen.has(path.toLowerCase()))throw new Error('Duplicate or empty entry path: '+path);
+      seen.add(path.toLowerCase());
+      return {entry:{async:type=>type==='text'?e.readText():e.readBlob()},path};
     }).filter(x=>!metadata(x.path));
     const forms=[], groups=new Map(), ids=new Set();
     for(const {entry,path} of entries){
@@ -51,7 +61,7 @@
     if(!forms.length)throw new Error('No forms found. ZIP folders such as UWSA2/UWSA2.json and UWSA2/assets/.');
     return {forms};
   }
-  const api={prepare,safePath};
+  const api={prepare,prepareEntries,safePath};
   if(typeof module==='object' && module.exports){module.exports=api;return;}
   let plan=null,busy=false,message='';
   const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
