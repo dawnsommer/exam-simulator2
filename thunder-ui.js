@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 17;
+  const TU_RELEASE = 18;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -3599,7 +3599,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
      double-click 100% ↔ fitted, Zoom In / Zoom Out / Reset, ↑ ↓ Ctrl+0 Ctrl+1 Esc. It covers the question pane and
      closes when the item changes. */
   const NB = ':root[data-tun]:not(#tun0) body', N = NB + ' #examScreen', NW = N + ' #workspace';
-  const NBK = {size:'ThunderUSMLE.nbmeTextSize', strike:'ThunderUSMLE.nbmeStrikeHidden'};
+  const NBK = {size:'ThunderUSMLE.nbmeTextSize', strike:'ThunderUSMLE.nbmeStrikeHidden', theme:'ThunderUSMLE.nbmeTheme'};
   const nsvg = (vb, body) => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${body}</svg>`)}")`;
   const NI = {
     arrowL:nsvg('0 0 16 16', '<path fill="#fff" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>'),
@@ -3618,54 +3618,391 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     zoom:nsvg('0 0 32 32', '<circle cx="13" cy="13" r="9.5" fill="none" stroke="#000" stroke-width="2.4"/><path d="M20 20l9 9" stroke="#000" stroke-width="3" stroke-linecap="round"/><path d="M8.5 13h9M13 8.5v9" stroke="#000" stroke-width="2.2"/>'),
     caretW:nsvg('0 0 16 16', '<path fill="#fff" d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>')
   };
+  /* (#examScreen stays position:relative, as in the legacy: a fixed box would be its own stacking context and put
+     Notes, which exam-notes.js mounts inside it, under the calculator, a <body> child.)
+     v3 (2026-10-25): the shell and the question pane are the reference's own rules (thunder-ui-functional.html), applied
+     to the legacy nodes. Each legacy container is reset with all:unset first, so no legacy rule leaks through; the
+     reference's SVG icons and a native radio per choice are added inside the legacy nodes by nbDecorate(). P has three
+     IDs, so it beats every legacy rule; the hide rules at the end (five IDs) keep the legacy .hidden / [hidden] /
+     inline display:none / break-screen hiding working on the nodes that were reset. */
+  // (a saved Exam Dark Mode draws as Dark Theme here: the NBME menu offers Default / Dark Theme only, decision E)
+  const P = ':root[data-tun]:not(#tun0):not(#tun1) body #examScreen', PD = P + ':is(.reverse,.exam-dark)', HX = ':not(#tun2):not(#tun3)';
+  const L = ':root[data-tun]:not(#tun0):not(#tun1) body', LD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body';
+  const O = ':root[data-tun]:not(#tun0):not(#tun1) body #overviewRoot', OD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body #overviewRoot';
+  const M = ':root[data-tun]:not(#tun0):not(#tun1) body #referenceSettingsDropdown.tun-menu', MD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body #referenceSettingsDropdown.tun-menu';
+  const NBME_SHELL = `
+:root:not([data-tun]) .tun-i,:root:not([data-tun]) .tun-radio{display:none!important}
+:root[data-tun]:not(#tun0):not(#tun1) body .tun-txt{display:none!important}
+:root[data-tun]:not(#tun0):not(#tun1) body .tun-i{display:contents}
+${P}{all:unset!important;box-sizing:border-box!important;position:relative!important;left:0!important;top:0!important;margin:0!important;width:calc(100vw / var(--tun-k,1))!important;height:calc(100vh / var(--tun-k,1))!important;height:calc(100dvh / var(--tun-k,1))!important;display:grid!important;grid-template-columns:105px minmax(0,1fr)!important;grid-template-rows:61px minmax(0,1fr) 60px!important;overflow:hidden!important;background:#fff!important;color:#000!important;font-family:"Open Sans",Verdana,sans-serif!important;font-size:16px!important;-webkit-text-size-adjust:100%;touch-action:manipulation}
+${P}.hidden{display:none!important}
+${P} .tun-i{display:contents}
+${P} .tun-txt{display:none!important}
+${P} svg.i{width:1em;height:1em;fill:currentColor;display:block}
+/* question list */
+${P} .left-status{all:unset!important;box-sizing:border-box!important;grid-column:1!important;grid-row:1 / 4!important;position:relative!important;display:block!important;min-height:0!important;background:#fff!important;color:#000!important;border-right:1px solid #000!important;overflow:hidden auto!important;padding-left:1px!important;user-select:none!important;-webkit-user-select:none!important}
+${P} .left-status .status-title{all:unset!important;box-sizing:border-box!important;display:block!important;margin:0!important;font-size:13.333px!important;font-weight:700!important;text-align:center!important;line-height:15px!important;position:absolute!important;left:1px!important;right:0!important;top:0!important}
+${P} #statusRows,${P} #statusRows .nav-status-ol{all:unset!important;box-sizing:border-box!important;display:block!important}
+${P} #statusRows .nav-status-ol{list-style:none!important;margin:38px 0 16px!important;padding:0!important}
+${P} #statusRows .status-row{all:unset!important;box-sizing:border-box!important;height:20px!important;display:flex!important;align-items:center!important;cursor:pointer!important;white-space:nowrap!important;overflow:hidden!important;font-size:16px!important;line-height:18px!important}
+${P} #statusRows .status-row:nth-child(2n){background:#d3d3d3!important}
+${P} #statusRows .status-row.current,${P} #statusRows .status-row:hover{background:#004976!important;color:#fff!important;outline:1px solid #004976!important}
+${P} #statusRows .status-row>div{all:unset!important;box-sizing:border-box!important;display:flex!important}
+${P} #statusRows .status-row .navans{width:20px!important;justify-content:center!important}
+${P} #statusRows .status-row .navans .dot{display:none!important}
+${P} #statusRows .status-row .navans svg{width:7px;height:7px;fill:currentColor;margin-top:-3px}
+${P} #statusRows .status-row.answered .navans svg{visibility:hidden}
+${P} #statusRows .status-row .navseq{display:block!important;width:27px!important;margin-left:5px!important;text-align:center!important}
+/* linked items (ours): a 2px frame around their numbers, drawn with inset shadows so the rows keep the reference's
+   geometry; no dot; white on the selected row, cyan in Dark Theme */
+${P} #statusRows .status-row.linked-set .navseq{--tun-lk:#004976;box-shadow:inset 2px 0 0 var(--tun-lk),inset -2px 0 0 var(--tun-lk)!important}
+${P} #statusRows .status-row.linked-first .navseq{box-shadow:inset 2px 0 0 var(--tun-lk),inset -2px 0 0 var(--tun-lk),inset 0 2px 0 var(--tun-lk)!important;border-radius:6px 6px 0 0!important}
+${P} #statusRows .status-row.linked-last .navseq{box-shadow:inset 2px 0 0 var(--tun-lk),inset -2px 0 0 var(--tun-lk),inset 0 -2px 0 var(--tun-lk)!important;border-radius:0 0 6px 6px!important}
+${P} #statusRows .status-row.linked-single .navseq{box-shadow:inset 0 0 0 2px var(--tun-lk)!important;border-radius:6px!important}
+${P} #statusRows .status-row.linked-set:is(.current,:hover) .navseq{--tun-lk:#fff}
+${P} #statusRows .status-row .navseq::before,${P} #statusRows .status-row .navseq::after{content:none!important;display:none!important}
+${P} #statusRows .status-row .navmark{width:20px!important;justify-content:flex-end!important}
+${P} #statusRows .status-row .navmark::before{content:none!important}
+${P} #statusRows .status-row .navmark svg{width:14px;height:14px;fill:red;stroke:#000;stroke-width:.6;transform:rotate(-21deg);visibility:hidden}
+${P} #statusRows .status-row.marked .navmark svg{visibility:visible}
+${P} #statusRows .status-row .navnotes{width:24px!important;padding-left:4px!important;font-size:0!important}
+${P} #statusRows .status-row .navnotes svg{width:13px;height:13px;visibility:hidden}
+/* top bar and footer (.bar) */
+${P} .topbar,${P} .bottombar{all:unset!important;box-sizing:border-box!important;grid-column:2!important;background:#004976!important;color:#fff!important;position:relative!important;display:flex!important;align-items:flex-start!important;min-width:0!important}
+${P} .topbar{grid-row:1!important}
+${P} .bottombar{grid-row:3!important;padding-right:5px!important}
+${P} .top-left-group,${P} .tool-row .tool{all:unset!important;display:contents!important}
+${P} #itemBox,${P} #timeBox{all:unset!important;box-sizing:border-box!important;display:block!important;margin:4px 8px!important;padding:7px 10px!important;border:1px solid #fff!important;box-shadow:0 1px 1px #000!important;line-height:normal!important;cursor:pointer!important;color:#fff!important;background:transparent!important;font-family:"Open Sans",Verdana,sans-serif!important;font-size:16px!important;text-align:left!important}
+${P} #itemBox:hover,${P} #timeBox:hover{background:#325b77!important}
+${P} #itemBox>div,${P} #itemBox span,${P} #timeBox>div,${P} #timeBox span{all:unset!important}
+${P} #itemBox>div,${P} #timeBox>div{display:block!important}
+${P} #timeBox span#blockTime,${P} #timeBox span#dayTime{display:none!important}
+${P} #timeBox{width:317px!important;padding:5px 5px 5px 10px!important;margin-right:auto!important}
+${P} #timeBox>div:first-child{font-size:17.333px!important;line-height:21px!important;white-space:nowrap!important}
+${P} #timeBox>div:nth-child(2){font-size:16px!important;line-height:19px!important;white-space:nowrap!important}
+${P} .nav-center{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:50%!important;top:0!important;transform:translateX(calc(-50% - 2px))!important;display:flex!important;align-items:flex-start!important;height:58px!important}
+${P} #prevNav,${P} #nextNav{all:unset!important;box-sizing:border-box!important;background:none!important;border:0!important;padding:9px 4px 2px!important;margin:3px 0 0!important;display:flex!important;flex-direction:column!important;align-items:center!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif!important;font-size:13.333px!important;line-height:normal!important;text-align:center!important;min-width:44px!important;cursor:pointer!important}
+${P} #prevNav:hover:not([aria-disabled="true"]),${P} #nextNav:hover:not([aria-disabled="true"]){outline:1px solid #000!important;background:#325b77!important}
+${P} #prevNav[aria-disabled="true"],${P} #nextNav[aria-disabled="true"]{opacity:.45!important;cursor:default!important}
+${P} #prevBtn,${P} #nextBtn{all:unset!important;box-sizing:border-box!important;display:block!important;width:30px!important;height:30px!important;color:#fff!important;padding:0 3px!important;font-size:0!important;cursor:inherit!important}
+${P} #prevBtn svg,${P} #nextBtn svg{width:30px;height:30px}
+${P} #prevNav .nav-label,${P} #nextNav .nav-label{all:unset!important;display:block!important;line-height:15px!important}
+${P} #centerCounter{all:unset!important;box-sizing:border-box!important;display:block!important;margin:24px 27px 0 13px!important;line-height:18px!important;color:#fff!important;font-size:16px!important;white-space:nowrap!important}
+${P} .tool-row{all:unset!important;box-sizing:border-box!important;position:absolute!important;right:2px!important;top:0!important;display:flex!important}
+${P} .tool-row button,${P} #lockBtn,${P} #endBlockBtn,${P} #suspendBtn{all:unset!important;box-sizing:border-box!important;background:none!important;border:0!important;padding:1px 6px!important;margin:1.5px 7px 0!important;height:57px!important;display:flex!important;flex-direction:column!important;align-items:center!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif!important;font-size:13.333px!important;line-height:normal!important;text-align:center!important;position:relative!important;cursor:pointer!important;white-space:nowrap!important}
+${P} .tool-row button:hover,${P} #lockBtn:hover,${P} #endBlockBtn:hover,${P} #suspendBtn:hover{outline:1px solid #000!important;background:#325b77!important}
+${P} .tool-row button:focus-visible,${P} #lockBtn:focus-visible,${P} #endBlockBtn:focus-visible,${P} #suspendBtn:focus-visible{outline:2px dotted #fff!important}
+${P} .tool-row .tool-icon,${P} #lockBtn .lock-ico,${P} #endBlockBtn .x,${P} #suspendBtn .pause-ico{all:unset!important;box-sizing:border-box!important;width:30px!important;height:30px!important;margin:5px 0 4px!important;border-radius:5px!important;background:#fff!important;border:1px solid #fff!important;padding:4px!important;color:#000!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:2px!important;font-size:0!important}
+${P} .tool-row .tool-icon svg{width:20px;height:20px}
+${P} .tool-row button>span:not(.tool-icon){all:unset!important;display:block!important;line-height:15px!important;white-space:nowrap!important;color:#fff!important}
+${P} #settingsBtn .tool-icon{width:55px!important;padding:4px 5px!important}
+${P} #settingsBtn .tool-icon .sep{font-size:13px;line-height:1;margin:0 1px}
+${P} #settingsBtn .tool-icon svg.caret{width:11px;height:11px}
+${P} #lockBtn{position:absolute!important;left:50%!important;top:0!important;margin:1.5px 0 0!important;transform:translateX(calc(-50% - 7px))!important;line-height:15px!important}
+${P} #lockBtn .lock-ico,${P} #endBlockBtn .x,${P} #suspendBtn .pause-ico{background:transparent!important;border:0!important;width:28px!important;height:28px!important;padding:4px!important}
+${P} #lockBtn .lock-ico svg{width:20px;height:20px;fill:#fff}
+${P} #endBlockBtn .x svg{width:22px;height:22px}
+${P} #suspendBtn .pause-ico svg{width:20px;height:20px;fill:#fff}
+${P} #endBlockBtn,${P} #suspendBtn{line-height:15px!important}
+/* question pane */
+${P} #workspace{grid-column:2!important;grid-row:2!important;position:relative!important;inset:auto!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;margin:0 2px 0 0!important;overflow:auto!important;-webkit-overflow-scrolling:touch;background:#fff!important;box-shadow:none!important;border:0!important}
+${P}[data-tun-view="q"] #workspace{padding:0!important}
+${P}[data-tun-view="q"] #workspace .question-stack{all:unset!important;display:block!important}
+${P}[data-tun-view="q"] #workspace .question-flex{position:relative!important;zoom:var(--tun-txt,1);padding:71px 20px 20px 30px!important;margin:0!important;font-family:"Arial Unicode MS",Arial,Helvetica,"Lucida Sans Unicode","Trebuchet MS",sans-serif!important;font-size:16px!important;line-height:1.4!important;color:#000!important;background:transparent!important;max-width:none!important;width:auto!important;height:auto!important;min-height:0!important;box-shadow:none!important;border:0!important}
+${P}[data-tun-view="q"] #workspace .question-flex:has(>.question-main.no-image:only-child){display:block!important}
+${P}[data-tun-view="q"] #workspace .question-main{position:static!important;padding:0!important;margin:0!important;width:auto!important;max-width:none!important;min-width:0!important;height:auto!important;background:transparent!important;border:0!important;box-shadow:none!important;font:inherit!important;color:inherit!important;overflow:visible!important}
+${P}[data-tun-view="q"] #workspace .question-flex:has(>.question-main.no-image:only-child)>.question-main{display:block!important}
+${P} #workspace .mark-line{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:22px!important;top:30px!important;display:flex!important;align-items:center!important;gap:0!important;padding:6px!important;cursor:pointer!important;user-select:none!important;-webkit-user-select:none!important;font-size:16px!important}
+${P} #workspace .mark-line>span:not(.tun-i){all:unset!important}
+${P} #workspace .mark-line *::before,${P} #workspace .mark-line *::after,${P} #workspace .mark-line::before,${P} #workspace .mark-line::after{content:none!important;display:none!important}
+${P} #workspace #markQuestion{all:revert!important;box-sizing:border-box!important;margin:3px 3px 3px 4px!important;width:13px!important;height:13px!important;cursor:pointer!important}
+${P} #workspace .mark-line svg{width:15px;height:15px;fill:red;margin-top:-6px}
+${P} #workspace #stem{all:unset!important;box-sizing:border-box!important;display:block!important;width:816px!important;max-width:calc(var(--tun-fw,1600px) * var(--tun-mw,.56))!important;font-size:16px!important}
+${P} #workspace .question-main:not(.no-image) #stem{width:auto!important;max-width:100%!important}
+:root[data-tun][data-tun-z]:not(#tun0):not(#tun1) body #examScreen #workspace #stem{width:auto!important}
+${P} #workspace .stem-answer-spacer{display:none!important}
+/* portrait, and windows under 1100 design px (the reference's .narrow): the stem and the choices take the full width */
+@media (max-aspect-ratio:1/1){${P} #workspace #stem,${P} #workspace .answers:not(.choice-table-active){max-width:100%!important}}
+:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace :is(#stem,.answers:not(.choice-table-active)){max-width:100%!important}
+/* stem content: the reference's item rules, with the NBME chart layout (a blank line before each section heading,
+   "•" bullets without indent, centred borderless tables) */
+${P} #stem :where(div,p,ul,ol,li,b,u,i,em,strong,span,table,thead,tbody,tr,th,td,br,sub,sup){margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;line-height:inherit!important;color:inherit!important;letter-spacing:normal!important;text-transform:none!important;min-height:0!important;border-radius:0!important}
+${P} #stem :is(div,p,ul,ol){display:block!important;width:auto!important;max-width:none!important}
+${P} #stem :where(b,strong,u,i,em,span,sub,sup){display:inline!important;float:none!important;position:static!important}
+${P} #stem :where(div,p,li,b,strong,u,i,em,span)::before{content:none}
+${P} #stem :is(b,strong,th,.chart-heading){font-weight:700!important}
+${P} #stem .chart-heading:not(:first-child),${P} #stem :is(ul,div,p)+.chart-question{margin-top:22.4px!important}
+${P} #stem :is(ul,ol){list-style:none!important}
+${P} #stem li{display:block!important}
+${P} #stem .chart-list>li::before{content:"\\2022\\00a0"!important}
+${P} #stem li::marker{content:none}
+${P} #stem table{display:table!important;margin:16px auto!important;border-collapse:collapse!important;width:auto!important}
+${P} #stem thead{display:table-header-group!important}${P} #stem tbody{display:table-row-group!important}${P} #stem tr{display:table-row!important}
+${P} #stem :is(td,th){display:table-cell!important;padding:2px 8px 1px 2px!important;vertical-align:top!important;text-align:left!important;white-space:normal!important}
+${P} #stem .stem-vitals-table :is(td,th){text-align:center!important}
+${P} #stem table tr:hover:not(.tun0){background:#d7dced!important}
+${P} #stem :is(sub,sup){font-size:12px!important;line-height:0!important}
+${P} #stem u{text-decoration:underline!important}
+${P} #workspace :is(.v15-highlight,[data-v15-highlight-id]){background:#ff0!important;color:inherit!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;cursor:pointer}
+${P} #workspace ::selection{background:#b3d4fc}
+/* answer choices */
+${P} #workspace .answers:not(.choice-table-active){all:unset!important;box-sizing:border-box!important;display:inline-block!important;margin:20px 0 15px!important;padding:10px 0!important;border:1px solid #004976!important;border-bottom-width:6px!important;min-width:0!important;max-width:calc(var(--tun-fw,1600px) * var(--tun-mw,.56))!important;vertical-align:baseline!important}
+${P} #workspace .question-main:not(.no-image) .answers{max-width:100%!important}
+${P} #workspace .answers:not(.choice-table-active) .answer{all:unset!important;box-sizing:border-box!important;display:flex!important;align-items:flex-start!important;min-height:39px!important;cursor:pointer!important;padding-right:2px!important}
+${P} #workspace .answers:not(.choice-table-active) .answer:hover{background:#d7dced!important}
+${P} #workspace .answers:not(.choice-table-active) .answer>.radio{display:none!important}
+${P} #workspace .answers:not(.choice-table-active) .tun-radio{all:revert!important;box-sizing:border-box!important;margin:9px 3px 0 5px!important;width:13px!important;height:13px!important;flex:none!important;cursor:pointer!important;pointer-events:none!important}
+${P} #workspace .answers:not(.choice-table-active) .choice-text{all:unset!important;box-sizing:border-box!important;display:block!important;margin:7px 0 10px!important;padding:0 0 0 3px!important;line-height:22px!important;flex:1!important;min-width:0!important;cursor:pointer!important}
+${P} #workspace .answers:not(.choice-table-active) .answer.struck .choice-text{text-decoration:line-through!important;opacity:.9!important}
+${P} #workspace .answers:not(.choice-table-active) .strike-symbol{all:unset!important;box-sizing:border-box!important;flex:none!important;width:32px!important;height:28px!important;margin:5px 2px 0 8px!important;border:0!important;background:transparent!important;border-radius:6px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#000!important;font-size:0!important;cursor:pointer!important}
+${P} #workspace .answers .strike-symbol svg{width:24px;height:24px;opacity:.4}
+${P} #workspace .answers .answer.struck .strike-symbol svg{opacity:1}
+${P} #workspace .answers .answer.selected .strike-symbol{pointer-events:none!important}
+${P} #workspace .answers .answer.selected .strike-symbol svg{opacity:.9}
+${P} #workspace .answers .strike-symbol:hover{background:rgba(0,0,0,.08)!important}
+:root[data-tun-nostrike]:not(#tun0):not(#tun1) body #examScreen #workspace .answers .strike-symbol${HX},${P} #workspace .answers .answer.locked-answer .strike-symbol${HX}{visibility:hidden!important}
+${P} #workspace #proceedBtn{all:unset!important;box-sizing:border-box!important;display:block!important;width:max-content!important;margin:12px 0 0 7px!important;background:#0077c8!important;color:#fff!important;border:2px outset #000!important;border-radius:5px!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;line-height:18px!important;padding:5px!important;cursor:pointer!important;text-align:center!important}
+${P} #workspace #proceedBtn:hover,${P} #workspace #proceedBtn:focus{background:linear-gradient(#004976,#5490cc)!important;color:#fff!important}
+${P} #workspace #proceedBtn:focus-visible{outline:auto!important}
+/* break screen: the legacy page covers the whole screen (reference look comes with the break screen step) */
+${P}.break-screen-active #workspace{grid-column:1 / -1!important;grid-row:1 / -1!important;margin:0!important}
+/* Color Theme › Dark Theme (#examScreen.reverse): the reference's html.dark values */
+${PD}{background:#000!important;color:#fff!important}
+${PD} .left-status{background:#000!important;color:#fff!important;border-right-color:#94eaff!important}
+${PD} #statusRows .status-row:nth-child(2n){background:#444!important}
+${PD} #statusRows .status-row.current,${PD} #statusRows .status-row:hover{background:#94eaff!important;color:#000!important;outline-color:#94eaff!important}
+${PD} #statusRows .status-row .navmark svg{stroke:#fff}
+${PD} #statusRows .status-row.linked-set .navseq{--tun-lk:#94eaff}
+${PD} #statusRows .status-row.linked-set:is(.current,:hover) .navseq{--tun-lk:#000}
+${PD} .topbar,${PD} .bottombar{background:#000!important;color:#94eaff!important}
+${PD} .topbar{border-bottom:1px solid #94eaff!important}
+${PD} .bottombar{border-top:1px solid #94eaff!important}
+${PD} #itemBox,${PD} #timeBox{border-color:#94eaff!important;color:#94eaff!important}
+${PD} #prevBtn,${PD} #nextBtn,${PD} #prevNav .nav-label,${PD} #nextNav .nav-label{color:#94eaff!important}
+${PD} #centerCounter,${PD} #lockBtn,${PD} #endBlockBtn,${PD} #suspendBtn,${PD} .tool-row button>span:not(.tool-icon){color:#94eaff!important}
+${PD} .tool-row button:hover,${PD} #lockBtn:hover,${PD} #endBlockBtn:hover,${PD} #suspendBtn:hover{outline-color:#fff!important}
+${PD} .tool-row .tool-icon{background:#000!important;border-color:#94eaff!important;color:#94eaff!important}
+${PD} #lockBtn .lock-ico,${PD} #endBlockBtn .x,${PD} #suspendBtn .pause-ico{border:1px solid #94eaff!important;background:#000!important}
+${PD} #lockBtn .lock-ico svg,${PD} #suspendBtn .pause-ico svg{fill:#94eaff}
+${PD} #workspace{background:#000!important}
+${PD}[data-tun-view="q"] #workspace .question-flex{color:#fff!important}
+${PD} #stem table tr:hover:not(.tun0){background:#222!important}
+${PD} #workspace :is(.v15-highlight,[data-v15-highlight-id]){background:#ff0!important;color:#000!important}
+${PD} #workspace ::selection{background:#3a6ea5;color:#fff}
+${PD} #workspace .answers{border-color:#fff!important}
+${PD} #workspace .answers .answer:hover{background:#222!important}
+${PD} #workspace .answers .strike-symbol{color:#fff!important}
+${PD} #workspace .answers .strike-symbol:hover{background:rgba(255,255,255,.15)!important}
+${PD} #workspace #proceedBtn{background:#6ed6dd!important;color:#000!important;border:1px solid #fff!important}
+${PD} #workspace #proceedBtn:hover,${PD} #workspace #proceedBtn:focus{background:#6ed6dd!important;color:#000!important}
+/* Settings menu (v3): the reference's #toolsMenu. Our Exam style switch first, then the reference's rows, then our
+   extras as rows and submenus in the same style. The legacy rows (layout, Keep notes open, the NBME delay, Full Screen,
+   Review Screen, Return to Main Menu) keep their nodes, IDs and data-* hooks; only their look changes. */
+${M}{all:unset!important;box-sizing:border-box!important;position:fixed!important;top:46px!important;right:20px!important;left:auto!important;bottom:auto!important;z-index:400!important;display:block!important;margin:0!important;padding:6px 0!important;background:#fff!important;color:#000!important;border:1px solid #888!important;box-shadow:0 2px 6px rgba(0,0,0,.3)!important;width:175px!important;font-family:"Open Sans",Verdana,sans-serif!important;font-size:14px!important;text-align:left!important}
+${M} *{box-sizing:border-box}
+${M} :is(.tun-mi,.tun-row,.review-layout-toggle,.notes-preference),${M}>button{all:unset!important;box-sizing:border-box!important;font-size:14px!important;height:25px!important;line-height:25px!important;padding:0 10px!important;cursor:pointer!important;position:relative!important;display:flex!important;justify-content:space-between!important;align-items:center!important;white-space:nowrap!important;color:inherit!important;width:100%!important}
+${M} :is(.tun-mi,.tun-row,.review-layout-toggle,.notes-preference):hover,${M}>button:hover,${M} .tun-mi.open{background:#e5ecf3!important}
+${M} svg.i{width:10px;height:10px;fill:currentColor;display:block;flex:none}
+${M} .tun-sub,${M} .tun-mi>.segmented-toggle{all:unset!important;box-sizing:border-box!important;position:absolute!important;display:none!important;list-style:none!important;margin:0!important;padding:6px 0!important;background:#fff!important;color:#000!important;border:1px solid #888!important;box-shadow:0 2px 6px rgba(0,0,0,.3)!important;z-index:80!important;width:150px!important;right:100%!important;top:-7px!important;font-family:"Open Sans",Verdana,sans-serif!important}
+${M} .tun-mi.open>.tun-sub,${M} .tun-mi.open>.segmented-toggle{display:block!important}
+${M} .tun-sub>button,${M} .tun-mi>.segmented-toggle>button{all:unset!important;box-sizing:border-box!important;font-size:14px!important;height:25px!important;line-height:25px!important;padding:0 10px!important;cursor:pointer!important;position:relative!important;display:flex!important;justify-content:space-between!important;align-items:center!important;white-space:nowrap!important;width:100%!important;color:inherit!important}
+${M} .tun-sub>button:hover,${M} .tun-mi>.segmented-toggle>button:hover{background:#e5ecf3!important}
+${M} .tun-sub>button.on,${M} .tun-mi>.segmented-toggle>button.active{font-weight:700!important}
+${M} .tun-sub>button.on::after,${M} .tun-mi>.segmented-toggle>button.active::after{content:"*";font-weight:700}
+${M} .review-layout-title{all:unset!important}
+${M} .notes-preference>span{all:unset!important}
+${M} .notes-preference input{all:unset!important;position:absolute!important;opacity:0!important;width:1px!important;height:1px!important;pointer-events:none!important;left:0!important;top:0!important}
+${M} .notes-preference:has(input:checked){font-weight:700!important}
+${M} .notes-preference:has(input:checked)::after{content:"*";font-weight:700}
+${M} [data-ref-action="zoomUp"],${M} [data-ref-action="zoomDown"],${M} [data-ref-action="examDarkMode"],${M} [data-ref-action="reverseColor"]{display:none!important}
+${M} .tun-sep{all:unset!important;display:block!important;height:1px!important;margin:6px 0!important;background:#c8c8c8!important}
+/* the Exam style switch: one row, two halves */
+${M} .tux-style-row{padding:0!important}
+${M} .tux-style-row .review-layout-title{display:none!important}
+${M} .tux-style-row .segmented-toggle{all:unset!important;display:flex!important;width:100%!important;height:25px!important}
+${M} .tux-style-row .segmented-toggle>button{all:unset!important;box-sizing:border-box!important;flex:1 1 0!important;height:25px!important;line-height:25px!important;padding:0 10px!important;font-size:14px!important;cursor:pointer!important;color:inherit!important;white-space:nowrap!important}
+${M} .tux-style-row .segmented-toggle>button:hover{background:#e5ecf3!important}
+${M} .tux-style-row .segmented-toggle>button[aria-checked="true"]{font-weight:700!important}
+${M} .tux-style-row .segmented-toggle>button[aria-checked="true"]::after{content:"*"}
+${M} .tux-style-row:hover{background:transparent!important}
+${M} [style*="display: none"]${HX},${M} [style*="display:none"]${HX},${M} [hidden]${HX},${M} .hidden${HX}{display:none!important}
+/* Dark Theme: the reference's html.dark #toolsMenu */
+${MD},${MD} .tun-sub,${MD} .tun-mi>.segmented-toggle{background:#000!important;color:#fff!important;border-color:#94eaff!important}
+${MD} :is(.tun-mi,.tun-row,.review-layout-toggle,.notes-preference):hover,${MD}>button:hover,${MD} .tun-mi.open,${MD} .tun-sub>button:hover,${MD} .tun-mi>.segmented-toggle>button:hover,${MD} .tux-style-row .segmented-toggle>button:hover{background:#94eaff!important;color:#000!important}
+${MD} .tux-style-row:hover{background:transparent!important;color:#fff!important}
+${MD} .tun-sep{background:#444!important}
+/* Exam Overview and Block Time Information (v3): the reference's .pop / #popOverview / #popTime on the legacy popovers in
+   #overviewRoot. Clickable block rows stay (ours). The time cells keep their legacy IDs and ticker; the reference's
+   "15 min 0 sec" spans are drawn in a mirror cell (.tun-mv) next to each, the legacy cell is hidden. */
+${O} :is(.overview-popover,.time-info-popover){all:unset!important;box-sizing:border-box!important;position:fixed!important;display:block!important;z-index:96!important;background:#d6dcec!important;color:#000!important;border:3px solid #004976!important;border-radius:5px!important;font-family:"Arial Unicode MS",Arial,Helvetica,"Lucida Sans Unicode","Trebuchet MS",sans-serif!important;font-size:16px!important;line-height:normal!important;text-align:left!important}
+${O} .overview-popover{left:110px!important;top:66px!important;width:537px!important;padding:0 20px 18px!important}
+${O} .time-info-popover{left:110px!important;bottom:67px!important;top:auto!important;width:445px!important;padding:20px 20px 0!important}
+${O} :is(.overview-popover,.time-info-popover) *{box-sizing:border-box}
+${O} .overview-close{all:unset!important;box-sizing:border-box!important;width:25px!important;height:25px!important;border:1px solid #004976!important;background:#004976!important;color:#fff!important;border-radius:5px!important;padding:1px!important;position:absolute!important;right:15px!important;top:6px!important;z-index:2!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;font-family:Arial,Helvetica,sans-serif!important}
+${O} .overview-close svg{width:20px;height:20px;fill:#fff;display:block}
+${O} .overview-close:hover{background:#fff!important}
+${O} .overview-close:hover svg{fill:#004976}
+${O} .overview-title{all:unset!important;display:block!important;font-weight:700!important;text-align:center!important}
+${O} .overview-popover .overview-title{font-size:18.667px!important;margin:13px 0 5px!important;line-height:26px!important}
+${O} .time-info-popover .time-info-title{font-size:16px!important;margin:5px 0 10px!important;line-height:22px!important}
+${O} .time-info-title{all:unset!important;display:block!important;font-weight:700!important;text-align:center!important}
+${O} :is(.overview-table,.time-info-table){all:unset!important;display:table!important;border-collapse:collapse!important;width:100%!important}
+${O} :is(.overview-table,.time-info-table)>tbody{all:unset!important;display:table-row-group!important;border-top:1px solid #aab!important}
+${O} .overview-table>tbody{border-bottom:4px double #aab!important}
+${O} :is(.overview-table,.time-info-table) tr{all:unset!important;display:table-row!important}
+${O} :is(.overview-table,.time-info-table) td{all:unset!important;box-sizing:border-box!important;display:table-cell!important;padding:1px!important;font-weight:400!important;vertical-align:middle!important}
+${O} .overview-table td{text-align:center!important;height:24px!important}
+${O} .overview-table td.overview-check{width:52px!important}
+${O} .overview-table td.overview-num{width:52px!important}
+${O} .overview-table td:nth-child(3){width:107px!important}
+${O} .overview-table td.overview-time{text-align:right!important;padding-right:21px!important;width:182px!important}
+${O} .overview-table td.overview-check svg{width:16px;height:16px;fill:currentColor;display:block}
+${O} .overview-table tr.clickable{cursor:pointer!important}
+${O} .overview-table tr.clickable:hover{background:#c3cbe2!important}
+${O} .overview-popover .zero{color:#4a4a4a}
+${O} .overview-popover .exp-muted{display:none!important}
+${O} .time-info-sub{all:unset!important;display:none!important}
+${O} .time-info-sub.tun-cap{display:block!important;text-align:center!important;line-height:22px!important}
+${O} .time-info-spacer{display:none!important}
+${O} .time-info-table{border-bottom:3px double #aab!important;margin:0 4px!important;width:calc(100% - 8px)!important}
+${O} .time-info-table.tun-tblock{margin-bottom:6px!important}
+${O} .time-info-table.tun-tday{margin-bottom:20px!important}
+${O} .time-info-table>tbody{border-bottom:3px double #aab!important}
+${O} .time-info-table td:first-child{text-align:left!important;height:24px!important}
+${O} .time-info-table td:not(:first-child){text-align:right!important}
+${O} .time-info-table td.tun-mvhost{display:none!important}
+${O} .time-info-table tr:has(#timeInfoBreakRemaining){display:none!important}
+/* Dark Theme: html.dark .pop */
+${OD} :is(.overview-popover,.time-info-popover){background:#000!important;color:#fff!important;border-color:#94eaff!important}
+${OD} .overview-close{background:#000!important;border-color:#94eaff!important}
+${OD} .overview-close svg{fill:#94eaff}
+${OD} .overview-close:hover{background:#fff!important}
+${OD} .overview-close:hover svg{fill:#004976}
+${OD} .overview-popover .zero{color:#ccc}
+${OD} .overview-table tr.clickable:hover{background:#222!important}
+/* Lab Values, Calculator, Notes (v3): the reference's #labPanel (a split panel on the right of the question pane, 30%
+   between 360 and 560 px, full width under 1100 design px), #dlgCalc and #dlgNotes, on the legacy #labPanel,
+   #floatingCalc and #examNotesPanel (their IDs, buttons and handlers stay). The dialogs sit at the reference's place
+   until they are dragged (data-tun-moved). */
+${L} #labPanel{all:unset!important;box-sizing:border-box!important;position:fixed!important;top:61px!important;right:2px!important;bottom:60px!important;left:auto!important;width:clamp(360px,calc((100vw / var(--tun-k,1) - 107px) * .3),560px)!important;display:flex!important;flex-direction:column!important;min-height:0!important;border:1px solid #000!important;background:#fff!important;color:#000!important;z-index:40!important;font-family:"Arial Unicode MS",Arial,Helvetica,"Lucida Sans Unicode","Trebuchet MS",sans-serif!important;font-size:16px!important}
+${L} #labPanel.hidden{display:none!important}
+:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #labPanel{width:calc(100vw / var(--tun-k,1) - 107px)!important}
+${L} #labPanel *{box-sizing:border-box}
+${L} #labPanel .lab-panel-head{all:unset!important;box-sizing:border-box!important;display:block!important;padding:20px 20px 0 0!important;position:relative!important;background:#fff!important;color:#000!important}
+${L} #labPanel .lab-panel-head strong{display:none!important}
+${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close){all:unset!important;box-sizing:border-box!important;width:25px!important;height:25px!important;border:1px solid #004976!important;background:#004976!important;color:#fff!important;border-radius:5px!important;padding:1px!important;position:absolute!important;right:15px!important;top:6px!important;z-index:2!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important}
+${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close) svg{width:20px;height:20px;fill:#fff;display:block}
+${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close):hover{background:#fff!important}
+${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close):hover svg{fill:#004976}
+${L} #labPanel .lab-controls{all:unset!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;padding:35px 0 0 10px!important;gap:12px!important;background:#fff!important;color:#000!important}
+${L} #labPanel #labSearch{all:revert!important;box-sizing:border-box!important;width:185px!important;font-size:13.333px!important;padding:1px 2px!important;border:2px inset #767676!important}
+${L} #labPanel .lab-controls label{all:unset!important;font-size:11.2px!important;display:flex!important;align-items:center!important;gap:6px!important;white-space:nowrap!important}
+${L} #labPanel .lab-controls label input{all:revert!important}
+${L} #labPanel .lab-muted{display:none!important}
+${L} #labPanel .lab-tabs{all:unset!important;box-sizing:border-box!important;list-style:none!important;margin:16px 0 0!important;padding:0 0 0 9px!important;display:flex!important;gap:4px!important;flex-wrap:wrap!important;background:#fff!important}
+${L} #labPanel .lab-tab{all:unset!important;box-sizing:border-box!important;font-size:11.2px!important;line-height:15.68px!important;padding:2px 5px!important;border:1px solid #bbc!important;border-bottom:0!important;border-radius:5px 5px 0 0!important;cursor:pointer!important;background:#fff!important;color:#000!important}
+${L} #labPanel .lab-tab.active{background:#d7dced!important;font-weight:700!important}
+${L} #labPanel .lab-table-wrap{all:unset!important;box-sizing:border-box!important;display:block!important;flex:1!important;min-height:0!important;overflow:auto!important;background:#d7dced!important;color:#000!important;-webkit-overflow-scrolling:touch}
+${L} #labPanel .lab-table{all:unset!important;display:table!important;width:calc(100% - 14px)!important;border-collapse:collapse!important;font-size:11.2px!important;line-height:15.68px!important}
+${L} #labPanel .lab-table :is(thead,tbody){all:unset!important;display:table-row-group!important}
+${L} #labPanel .lab-table thead{display:table-header-group!important}
+${L} #labPanel .lab-table tr{all:unset!important;display:table-row!important}
+${L} #labPanel .lab-table th{all:unset!important;display:table-cell!important;font-weight:700!important;text-align:left!important;padding:5px 5px 5px 3px!important}
+${L} #labPanel .lab-table th:nth-child(2),${L} #labPanel .lab-table th:nth-child(3){text-align:center!important}
+${L} #labPanel .lab-table td{all:unset!important;display:table-cell!important;padding:2px 2px 2px 3px!important;border-bottom:1px solid #c3c8d8!important;vertical-align:top!important}
+${L} #labPanel .lab-table tr.lab-section-row td{font-weight:700!important;padding-top:8px!important}
+${L} #labPanel .lab-table tr.tun-li td:first-child{padding-left:20px!important}
+${L} #labPanel .lab-table tr.tun-dup{display:none!important}
+${L} #labPanel .lab-table mark{background:#ff0!important;color:#000!important}
+${L} #labPanel .lab-table thead{display:none!important}
+${L} #labPanel .lab-table tr.s td{font-weight:700!important;padding-top:8px!important}
+${L} #labPanel .lab-table tr.i td:first-child{padding-left:20px!important}
+${L} #labPanel .lab-table tr.hide{display:none!important}
+${L} #labPanel .lab-table .si{display:none!important}
+${L} #labPanel .lab-table-wrap.tun-si .si{display:table-cell!important}
+/* the question pane makes room for the panel (the reference's .labOpen: stem and choices at 80 %) */
+:root[data-tun][data-tun-labs]:not([data-tun-narrow]):not(#tun0):not(#tun1) body #examScreen #workspace{margin-right:calc(clamp(360px,calc((100vw / var(--tun-k,1) - 107px) * .3),560px) + 2px)!important}
+:root[data-tun][data-tun-labs]:not(#tun0):not(#tun1) body #examScreen #workspace #stem{width:auto!important}
+/* calculator */
+${L} #floatingCalc{all:unset!important;box-sizing:border-box!important;position:fixed!important;display:block!important;width:256px!important;height:301px!important;background:#d6dcec!important;border:3px solid #004976!important;border-radius:5px!important;color:#000!important;z-index:50!important;box-shadow:0 0 3px 2px #a9a9a9!important}
+${L} #floatingCalc:not([data-tun-moved]){right:12px!important;bottom:153px!important;left:auto!important;top:auto!important}
+${L} #floatingCalc.hidden{display:none!important}
+${L} #floatingCalc *{box-sizing:border-box}
+${L} #floatingCalc .calc-head{all:unset!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:36px!important;cursor:move!important;touch-action:none!important}
+${L} #floatingCalc .calc-shell{all:unset!important;display:contents!important}
+${L} #floatingCalc .calc-display{all:unset!important;box-sizing:border-box!important;display:block!important;margin:52px 26px 4px!important;height:39px!important;background:#fff!important;color:#000!important;border:1px solid #000!important;font-family:"Segoe UI Light","Segoe UI","Helvetica Neue",Arial,sans-serif!important;font-weight:300!important;font-size:24px!important;line-height:33.6px!important;padding:2px 10px!important;text-align:right!important;overflow:hidden!important;white-space:nowrap!important}
+${L} #floatingCalc .calc-grid{all:unset!important;box-sizing:border-box!important;display:flex!important;flex-wrap:wrap!important;row-gap:4px!important;width:201.5px!important;margin:4px 0 0 26px!important}
+${L} #floatingCalc .calc-btn{all:unset!important;box-sizing:border-box!important;width:44px!important;height:27px!important;margin-right:8.5px!important;border:1px solid #004976!important;border-radius:3px!important;font-family:"Open Sans",Verdana,sans-serif!important;font-weight:700!important;font-size:13.333px!important;padding:0!important;color:#000!important;background:linear-gradient(#bbb 44%,#eee)!important;cursor:pointer!important;text-align:center!important;display:flex!important;align-items:center!important;justify-content:center!important}
+${L} #floatingCalc .calc-btn:nth-child(4n){margin-right:0!important}
+${L} #floatingCalc .calc-btn.wide{width:68px!important;margin-right:8px!important}
+${L} #floatingCalc .calc-btn.wide+.calc-btn{width:49px!important;margin-right:8px!important}
+${L} #floatingCalc .calc-btn.equals{width:68px!important;margin-right:0!important}
+${L} #floatingCalc .calc-btn.op{background:linear-gradient(#a7b7f5,#7999f8)!important}
+${L} #floatingCalc .calc-btn.memory{background:linear-gradient(#c286d6,#d4c9e8)!important}
+${L} #floatingCalc .calc-btn:is(.clear,.equals){background:linear-gradient(#d8c26d,#f7db7f)!important}
+${L} #floatingCalc .calc-btn:hover{background:linear-gradient(#c286d6,#d4c9e8)!important}
+${L} #floatingCalc .calc-btn:is(:active,:focus){height:24.3px!important}
+/* notes */
+${L} #examNotesPanel{all:unset!important;box-sizing:border-box!important;position:fixed!important;display:block!important;width:381px!important;height:191px!important;background:#d6dcec!important;border:3px solid #004976!important;border-radius:5px!important;color:#000!important;z-index:51!important;box-shadow:0 0 3px 2px #a9a9a9!important}
+${L} #examNotesPanel:not([data-tun-moved]){right:12px!important;bottom:67px!important;left:auto!important;top:auto!important}
+${L} #examNotesPanel[hidden],${L} #examNotesPanel.hidden{display:none!important}
+${L} #examNotesPanel *{box-sizing:border-box}
+${L} #examNotesPanel .notes-head{all:unset!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:36px!important;cursor:move!important;touch-action:none!important}
+${L} #examNotesPanel .notes-head>span{display:none!important}
+${L} #examNotesPanel textarea{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:10px!important;right:10px!important;top:40px!important;height:106px!important;resize:none!important;font-size:13.333px!important;padding:2px!important;border:1px solid #767676!important;font-family:monospace!important;background:#fff!important;color:#000!important;white-space:pre-wrap!important;overflow:auto!important;cursor:text!important}
+${L} #examNotesPanel textarea::placeholder{color:transparent!important}
+${L} #examNotesPanel .notes-actions{all:unset!important;display:contents!important}
+${L} #examNotesPanel .notes-actions button{all:unset!important;box-sizing:border-box!important;position:absolute!important;bottom:4px!important;width:120px!important;height:27px!important;font-family:Arial,Helvetica,sans-serif!important;font-weight:700!important;font-size:13.333px!important;background:#f0f0f0!important;color:#000!important;border:1px solid #004976!important;border-radius:5px!important;padding:5px!important;cursor:pointer!important;text-align:center!important;line-height:normal!important}
+${L} #examNotesPanel .notes-actions [data-notes="save"]{left:12px!important}
+${L} #examNotesPanel .notes-actions [data-notes="delete"]{right:12px!important}
+${L} #examNotesPanel .notes-actions button:hover{background:#d3d3d3!important}
+/* Dark Theme: html.dark #labPanel / #dlgCalc / #dlgNotes */
+${LD} #labPanel,${LD} #labPanel .lab-panel-head,${LD} #labPanel .lab-controls,${LD} #labPanel .lab-tabs{background:#000!important;color:#fff!important;border-color:#fff!important}
+${LD} #labPanel .lab-tab{background:#000!important;color:#fff!important}
+${LD} #labPanel .lab-tab.active{background:#fff!important;color:#000!important}
+${LD} #labPanel #labSearch{background:#000!important;color:#fff!important;border:1px solid #fff!important}
+${LD} #labPanel .lab-table-wrap{background:#000!important;color:#fff!important}
+${LD} #labPanel .lab-table td{border-bottom-color:#555!important}
+${LD} :is(#labPanel .lab-close){background:#000!important;border-color:#94eaff!important}
+${LD} :is(#labPanel .lab-close) svg{fill:#94eaff}
+${LD} #floatingCalc{background:#000!important;border:2px solid #fff!important;border-radius:0!important;box-shadow:none!important}
+${LD} #examNotesPanel{background:#000!important;border:2px solid #94eaff!important;border-radius:0!important}
+${LD} :is(#floatingCalc .calc-close,#examNotesPanel .notes-close){background:#000!important;border:1px solid #fff!important}
+${LD} :is(#floatingCalc .calc-close,#examNotesPanel .notes-close) svg{fill:#fff}
+${LD} :is(#floatingCalc .calc-close,#examNotesPanel .notes-close):hover{background:#fff!important}
+${LD} :is(#floatingCalc .calc-close,#examNotesPanel .notes-close):hover svg{fill:#000}
+${LD} #floatingCalc .calc-display{background:#000!important;color:#fff!important;border:1px solid #fff!important}
+${LD} #floatingCalc .calc-btn,${LD} #floatingCalc .calc-btn:is(.op,.memory,.clear,.equals){background:#000!important;color:#fff!important;border:1px solid #fff!important;height:29px!important}
+${LD} #floatingCalc .calc-btn:hover{background:#fff!important;color:#000!important}
+${LD} #floatingCalc .calc-btn.equals:hover{background:#abb850!important;color:#fff!important}
+${LD} #floatingCalc .calc-btn:focus-visible{outline:2px solid cornflowerblue!important}
+${LD} #examNotesPanel textarea{background:#000!important;color:#fff!important;border:1px solid #767676!important}
+/* the legacy hiding still wins over the resets above */
+${P} .hidden${HX},${P} [hidden]${HX},${P} [style*="display: none"]${HX},${P} [style*="display:none"]${HX}{display:none!important}
+${P}.break-screen-active>:is(.topbar,.left-status,.bottombar)${HX},${P} .bottombar.v16-review-no-lock :is(#lockBtn,#suspendBtn)${HX}{display:none!important}
+`;
+  // the reference's own icons, verbatim (thunder-ui-functional.html ICON); pause is ours (Suspend), in the same style
+  const RI = {
+    arrowL:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z\"></path></svg>",
+    arrowR:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z\"></path></svg>",
+    pencil:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z\"></path></svg>",
+    calc:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5m0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5M7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5m.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5z\"></path></svg>",
+    gear:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z\"></path></svg>",
+    caretD:"<svg class=\"i caret\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592c.86 0 1.319 1.013.753 1.658l-4.796 5.482a1 1 0 0 1-1.506 0z\"></path></svg>",
+    caretR:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z\"></path></svg>",
+    xsq:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708\"></path></svg>",
+    flag:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001\"></path></svg>",
+    dot:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><circle cx=\"8\" cy=\"8\" r=\"8\"></circle></svg>",
+    lock:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path fill-rule=\"evenodd\" d=\"M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3\"></path></svg>",
+    check:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0\"></path></svg>",
+    flask:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M5.5 1h5v1h-.75v4.1l3.9 6.6A1.5 1.5 0 0 1 12.36 15H3.64a1.5 1.5 0 0 1-1.29-2.3l3.9-6.6V2H5.5zm1.75 1v4.37L5.6 9.2h4.8L8.75 6.37V2z\"/></svg>",
+    note:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M2 1.5A1.5 1.5 0 0 1 3.5 0h9A1.5 1.5 0 0 1 14 1.5V11l-5 5H3.5A1.5 1.5 0 0 1 2 14.5zM9 15.3 13.3 11H10a1 1 0 0 0-1 1zM4.5 4h7v1h-7zm0 2.5h7v1h-7zm0 2.5h4v1h-4z\"/></svg>",
+    strike:"<svg class=\"i\" viewBox=\"0 0 26 26\" aria-hidden=\"true\"><text x=\"13\" y=\"17.5\" text-anchor=\"middle\" font-family=\"Arial,Helvetica,sans-serif\" font-size=\"14\" fill=\"currentColor\">ab</text><rect x=\"3\" y=\"12.2\" width=\"20\" height=\"1.4\" fill=\"currentColor\"/></svg>",
+    endx:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"7.4\" fill=\"#e00\" stroke=\"#fff\" stroke-width=\".9\"/><path d=\"M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6\" stroke=\"#fff\" stroke-width=\"1.4\" stroke-linecap=\"round\"/></svg>",
+    pause:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5\"/></svg>"
+  };
   const NBME_STYLES = `
 :root[data-tun-k]{zoom:var(--tun-k)}
-:root[data-tun-k] body #examScreen{width:calc(100vw / var(--tun-k))!important;height:calc(100vh / var(--tun-k))!important}
-/* question list */
-${N} .left-status{width:105px!important;border-right:1px solid #000!important;background:#fff!important}
-${N} .status-title{font:700 13.333px/15px "Open Sans",Verdana,sans-serif!important;color:#000!important}
-${N} #statusRows .status-row{border-bottom:0!important;cursor:pointer!important}
-${N} #statusRows .status-row:hover,${N} #statusRows .status-row.current,${N} #statusRows .status-row.selected{background:#004976!important;color:#fff!important;outline:1px solid #004976!important;outline-offset:0!important;box-shadow:none!important}
-${N} #statusRows .status-row:hover .navseq,${N} #statusRows .status-row.current .navseq,${N} #statusRows .status-row.selected .navseq{color:#fff!important}
-${N} #statusRows .status-row .dot{width:7px!important;height:7px!important;border:0!important;background:currentColor!important;margin-top:-3px!important}
-${N} #statusRows .status-row.answered:not(.review-correct):not(.review-wrong):not(.review-unanswered) .dot{visibility:hidden!important}
-${N} #statusRows .status-row.unanswered:not(.review-correct):not(.review-wrong):not(.review-unanswered) .dot{background:currentColor!important}
-${N} #statusRows .status-row .navmark::before{content:""!important}
-${N} #statusRows .status-row.marked .navmark::before,${N} #statusRows .status-row.flagged .navmark::before{display:block;width:14px;height:14px;background:${NI.flag} center/contain no-repeat;transform:rotate(-21deg)}
-${N} #statusRows .status-row.current .v2111-review-symbol.ok,${N} #statusRows .status-row:hover .v2111-review-symbol.ok{color:#8ff0a8!important}
-${N} #statusRows .status-row.current .v2111-review-symbol.bad,${N} #statusRows .status-row:hover .v2111-review-symbol.bad{color:#ff9a9a!important}
-${N} #statusRows .status-row.current .v2111-review-symbol.blank,${N} #statusRows .status-row:hover .v2111-review-symbol.blank{color:#9fd8ff!important}
-/* top bar */
-${N} .item-box{width:auto!important;min-width:0!important;justify-self:start;border:1px solid #fff!important;box-shadow:0 1px 1px #000!important;padding:7px 10px!important;font:16px/18px "Open Sans",Verdana,sans-serif!important;border-radius:0!important;cursor:pointer}
-${N} .item-box:hover,${N} .time-box:hover{background:#325b77!important}
-${N} .nav-control,${N} .nav-control .nav-label{font:13.333px/15px Arial,Helvetica,sans-serif!important}
-${N} .nav-control .round-btn{width:30px!important;height:30px!important;min-width:0!important;border:0!important;border-radius:50%!important;padding:0!important;color:transparent!important;font-size:0!important;background:${NI.arrowL} center/30px 30px no-repeat!important;box-shadow:none!important}
-${N} #nextNav .round-btn{background-image:${NI.arrowR}!important}
-${N} .nav-control[aria-disabled="true"]{opacity:.45!important;cursor:default!important}
-${N} .nav-control:hover:not([aria-disabled="true"]){outline:1px solid #000;background:#325b77}
-${N} .center-counter{font:16px/18px "Open Sans",Verdana,sans-serif!important}
-${N} .tool button,${N} .tool button>span:not(.tool-icon){font:13.333px/15px Arial,Helvetica,sans-serif!important}
-${N} .tool button:hover{outline:1px solid #000;background:#325b77!important}
-/* question */
-${NW} .question-main{zoom:var(--tun-txt,1)}
-${NW} .mark-line{font:16px "Arial Unicode MS",Arial,Helvetica,sans-serif!important;align-items:center}
-${NW} .mark-line>span::before{content:"";display:inline-block;width:15px;height:15px;margin:0 1px -1px 0;background:${NI.flag} center/contain no-repeat;vertical-align:baseline}
-${NW} .mark-line>span{font-size:0!important}
-${NW} .mark-line>span::after{content:"Mark Question";font-size:16px}
-${NW} .answers{display:inline-block!important;width:auto!important;min-width:0!important;max-width:100%!important;border:1px solid #004976!important;border-bottom-width:6px!important;border-radius:0!important;padding:10px 0!important;margin:20px 0 15px!important;box-shadow:none!important;background:transparent!important}
-${NW} .answers.choice-table-active{display:block!important}
-${NW} .answers .answer{min-height:39px!important;border:0!important;border-radius:0!important;padding:7px 2px 7px 5px!important;align-items:flex-start!important;box-shadow:none!important}
-${NW} .answers .answer:not(.correctChoice):not(.incorrectChoice):hover{background:#d7dced!important}
-${NW} .answers .answer.selected:not(.correctChoice):not(.incorrectChoice){background:transparent!important}
-${NW} .answers .choice-text{line-height:22px!important;padding-left:3px!important;padding-right:8px!important}
-${NW} .answers:not(.choice-table-active) .answer{display:flex!important;width:100%!important}
-${NW} .answers .strike-symbol{flex:none!important;width:32px!important;height:28px!important;margin:-3px 2px 0 auto!important;padding:0!important;font-size:0!important;color:transparent!important;border-radius:6px;background:${NI.strike} center/24px 24px no-repeat!important;opacity:.4!important;cursor:pointer!important}
-${NW} .answers .answer.struck .strike-symbol{opacity:1!important}
-${NW} .answers .strike-symbol:hover{background-color:rgba(0,0,0,.08)!important}
-${NW} .answers .answer.locked-answer .strike-symbol,:root[data-tun-nostrike] body #examScreen #workspace .answers .strike-symbol{visibility:hidden!important}
-${NW} .answers .answer.choice-table-row .strike-symbol{top:4px!important}
-${NW} .proceed,${NW} #proceedBtn{display:block!important;margin:12px 0 0 7px!important;background:#0077c8!important;color:#fff!important;border:2px outset #000!important;border-radius:5px!important;font:14px/18px Arial,Helvetica,sans-serif!important;padding:5px!important;height:auto!important;min-height:0!important;box-shadow:none!important}
-${NW} #proceedBtn:hover,${NW} #proceedBtn:focus-visible{background:linear-gradient(#004976,#5490cc)!important}
 ${NW} .show-answer-btn{background:#efefef!important;color:#000!important;border:2px outset #000!important;border-radius:5px!important;font:14px/16px Arial,Helvetica,sans-serif!important;padding:5px!important;margin:6px 0 0 5px!important;box-shadow:none!important;height:auto!important}
 ${NW} .exhibit{background:#f4f4f4!important;padding:8px!important;box-shadow:0 0 10px #575962!important;border:0!important;border-top:4px solid #0066a4!important;border-radius:0!important}
 ${NW} .exhibit-img{cursor:zoom-in!important}
@@ -3677,57 +4014,8 @@ ${NW} .exhibit-tools .exhibit-tool-icon{width:30px!important;height:30px!importa
 ${NW} #invertEx{background-image:${NI.invert}!important}
 ${NW} #contrastEx{background-image:${NI.contrast}!important}
 ${NW} #zoomEx{background-image:${NI.zoom}!important}
-/* bottom bar */
-${N} .time-box{width:auto!important;min-width:317px!important;max-width:none!important;padding:5px 10px 5px 10px!important;border:1px solid #fff!important;box-shadow:0 1px 1px #000!important;border-radius:0!important;font-family:"Open Sans",Verdana,sans-serif!important;cursor:pointer;white-space:nowrap!important;height:auto!important}
-${N} .time-box>div:first-child{font-size:17.333px!important;line-height:21px!important}
-${N} .time-box>div+div{font-size:16px!important;line-height:19px!important}
-${N} .lock,${N} .end-block,${N} .suspend-block{font:13.333px/15px Arial,Helvetica,sans-serif!important}
-${N} .bottombar:not(.review-actions):not(.v16-review-no-lock){grid-template-columns:auto minmax(8px,1fr) auto minmax(8px,1fr) minmax(64px,auto) minmax(64px,auto)!important}
-${N} .end-block,${N} .suspend-block{white-space:nowrap!important}
-${N} .lock .lock-ico{display:block;width:20px!important;height:20px!important;margin:0 auto 4px!important;font-size:0!important;color:transparent!important;background:${NI.lock} center/20px 20px no-repeat!important}
-${N} .end-block .x{display:block;width:22px!important;height:22px!important;margin:0 auto 3px!important;font-size:0!important;color:transparent!important;background:${NI.end} center/22px 22px no-repeat!important;filter:none!important}
-${N} .lock:hover,${N} .end-block:hover,${N} .suspend-block:hover{outline:1px solid #000;background:#325b77}
-/* popups: exam overview, time information */
-${NB} #overviewRoot .overview-popover,${NB} #overviewRoot .time-info-popover{background:#d6dcec!important;color:#000!important;border:3px solid #004976!important;border-radius:5px!important;box-shadow:none!important;font:16px "Arial Unicode MS",Arial,Helvetica,sans-serif!important}
-${NB} #overviewRoot .overview-title,${NB} #overviewRoot .time-info-title{font-weight:700!important;text-align:center!important}
-${NB} #overviewRoot .overview-title{font-size:18.667px!important}
-${NB} #overviewRoot .time-info-title{font-size:16px!important}
-${NB} #overviewRoot table{border-top:1px solid #aab!important;border-bottom:4px double #aab!important;border-collapse:collapse!important}
-${NB} #overviewRoot .overview-table tr.clickable{cursor:pointer}
-${NB} #overviewRoot .overview-table tr.clickable:hover{background:#c3cbe2}
 ${NB} .overview-close,${NB} #labPanel .lab-close,${NB} #floatingCalc .calc-close,${NB} #examNotesPanel .notes-close,#tunAlert .tun-x{width:25px!important;height:25px!important;min-width:0!important;padding:0!important;border:1px solid #004976!important;border-radius:5px!important;background:#004976 ${NI.x} center/20px 20px no-repeat!important;color:transparent!important;font-size:0!important;box-shadow:none!important;cursor:pointer}
 ${NB} .overview-close:hover,${NB} #labPanel .lab-close:hover,${NB} #floatingCalc .calc-close:hover,${NB} #examNotesPanel .notes-close:hover,#tunAlert .tun-x:hover{background-color:#325b77!important}
-/* lab values, calculator, notes */
-${NB} #labPanel{border:1px solid #000!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;font-family:"Arial Unicode MS",Arial,Helvetica,sans-serif!important}
-${NB} #labPanel .lab-tab{font:11.2px/15.68px "Arial Unicode MS",Arial,sans-serif!important;padding:2px 5px!important;border:1px solid #bbc!important;border-bottom:0!important;border-radius:5px 5px 0 0!important;background:#fff!important;color:#000!important;box-shadow:none!important;height:auto!important}
-${NB} #labPanel .lab-tab.active{background:#d7dced!important;font-weight:700!important}
-${NB} #labPanel .lab-table-wrap{background:#d7dced!important}
-${NB} #labPanel .lab-table{font:11.2px/15.68px "Arial Unicode MS",Arial,sans-serif!important;background:#d7dced!important}
-${NB} #labPanel .lab-table td{border-bottom:1px solid #c3c8d8!important;background:transparent!important}
-${NB} #labPanel .lab-table .lab-section-row td{font-weight:700!important}
-${NB} #floatingCalc,${NB} #examNotesPanel{background:#d6dcec!important;border:3px solid #004976!important;border-radius:5px!important;box-shadow:0 0 3px 2px #a9a9a9!important;color:#000!important}
-${NB} #floatingCalc .calc-display{background:#fff!important;border:1px solid #000!important;border-radius:0!important;font:300 24px/33.6px "Segoe UI Light","Segoe UI","Helvetica Neue",Arial,sans-serif!important}
-${NB} #floatingCalc .calc-btn{border:1px solid #004976!important;border-radius:3px!important;font:700 13.333px "Open Sans",Verdana,sans-serif!important;color:#000!important;background:linear-gradient(#bbb 44%,#eee)!important;box-shadow:none!important}
-${NB} #floatingCalc .calc-btn.op{background:linear-gradient(#a7b7f5,#7999f8)!important}
-${NB} #floatingCalc .calc-btn.memory{background:linear-gradient(#c286d6,#d4c9e8)!important}
-${NB} #floatingCalc .calc-btn.clear,${NB} #floatingCalc .calc-btn.equals{background:linear-gradient(#d8c26d,#f7db7f)!important}
-${NB} #floatingCalc .calc-btn:hover{background:linear-gradient(#c286d6,#d4c9e8)!important}
-${NB} #examNotesPanel textarea{font:13.333px monospace!important;border:1px solid #767676!important;border-radius:0!important;background:#fff!important;color:#000!important}
-${NB} #examNotesPanel .notes-actions button{width:120px;height:27px;font:700 13.333px Arial,Helvetica,sans-serif!important;background:#f0f0f0!important;color:#000!important;border:1px solid #004976!important;border-radius:5px!important;padding:5px!important;box-shadow:none!important}
-${NB} #examNotesPanel .notes-actions button:hover{background:#d3d3d3!important}
-/* Settings menu: the reference's block on top, ours under a rule */
-${NB} #referenceSettingsDropdown.tun-menu{background:#fff!important;color:#000!important;border:1px solid #888!important;border-radius:0!important;box-shadow:0 2px 6px rgba(0,0,0,.3)!important;padding:6px 0!important;min-width:0!important;width:290px!important;font-family:"Open Sans",Verdana,sans-serif!important}
-${NB} #referenceSettingsDropdown.tun-menu>button,${NB} #referenceSettingsDropdown.tun-menu .tun-mi,${NB} #referenceSettingsDropdown.tun-menu .tun-sub button{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;height:25px!important;padding:0 10px!important;margin:0!important;border:0!important;border-radius:0!important;background:#fff!important;color:#000!important;font:14px/25px "Open Sans",Verdana,sans-serif!important;text-align:left!important;cursor:pointer;position:relative;box-shadow:none!important;white-space:nowrap}
-${NB} #referenceSettingsDropdown.tun-menu>button:hover,${NB} #referenceSettingsDropdown.tun-menu .tun-mi:hover,${NB} #referenceSettingsDropdown.tun-menu .tun-mi.open,${NB} #referenceSettingsDropdown.tun-menu .tun-sub button:hover{background:#e5ecf3!important}
-${NB} #referenceSettingsDropdown.tun-menu>button.danger-item{color:#b00020!important}
-${NB} #referenceSettingsDropdown.tun-menu [data-ref-action="zoomUp"],${NB} #referenceSettingsDropdown.tun-menu [data-ref-action="zoomDown"],${NB} #referenceSettingsDropdown.tun-menu [data-ref-action="examDarkMode"],${NB} #referenceSettingsDropdown.tun-menu [data-ref-action="reverseColor"]{display:none!important}
-${NB} #referenceSettingsDropdown.tun-menu .tun-mi i{width:10px;height:10px;background:${NI.caret} center/contain no-repeat}
-${NB} #referenceSettingsDropdown.tun-menu .tun-top{padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid #c8c8c8}
-${NB} #referenceSettingsDropdown.tun-menu .tun-sub{display:none;position:absolute;right:100%;top:-7px;width:150px;padding:6px 0;background:#fff;border:1px solid #888;box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:2}
-${NB} #referenceSettingsDropdown.tun-menu .tun-mi.open>.tun-sub{display:block}
-${NB} #referenceSettingsDropdown.tun-menu .tun-sub button[aria-checked="true"]{font-weight:700!important}
-${NB} #referenceSettingsDropdown.tun-menu .tun-sub button[aria-checked="true"]::after{content:"*";font-weight:700}
-${NB} #referenceSettingsDropdown.tun-menu .review-layout-toggle,${NB} #referenceSettingsDropdown.tun-menu .notes-preference{margin:2px 10px!important}
 /* alerts: the legacy confirm dialog and ours (Lock, Help) */
 ${NB} #appDialogLayer{background:rgba(0,0,0,.4)!important;backdrop-filter:none!important}
 ${NB} #appDialogLayer .app-dialog,#tunAlert{width:min(702px,92vw)!important;max-width:none!important;background:#fff!important;color:#000!important;border:1px solid #000!important;border-radius:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important;font-family:"Open Sans",Verdana,sans-serif!important}
@@ -3777,21 +4065,6 @@ ${NW} .review-panel .review-card:hover{background:#d7dced!important}
 ${NW} .review-panel .review-card.current{background:#004976!important;color:#fff!important}
 ${NW} .review-panel .review-card b{font-weight:400}
 ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!important;font:13.333px Arial,Helvetica,sans-serif!important;border:1px solid #004976!important;border-radius:3px!important;background:#f0f0f0!important;color:#000!important;height:auto!important;box-shadow:none!important}
-/* Color Theme › Dark Theme (our Reverse Color): the reference's cyan chrome */
-${N}.reverse .topbar,${N}.reverse .bottombar{background:#000!important;color:#94eaff!important}
-${N}.reverse .topbar{border-bottom:1px solid #94eaff!important}${N}.reverse .bottombar{border-top:1px solid #94eaff!important}
-${N}.reverse .item-box,${N}.reverse .time-box{border-color:#94eaff!important;color:#94eaff!important}
-${N}.reverse .nav-control,${N}.reverse .center-counter,${N}.reverse .tool button,${N}.reverse .lock,${N}.reverse .end-block,${N}.reverse .suspend-block{color:#94eaff!important}
-${N}.reverse .nav-control .round-btn{background-image:${NI.arrowLc}!important}${N}.reverse #nextNav .round-btn{background-image:${NI.arrowRc}!important}
-${N}.reverse .left-status{background:#000!important;border-right-color:#94eaff!important}
-${N}.reverse .status-title,${N}.reverse #statusRows .status-row .navseq{color:#fff!important}
-${N}.reverse #statusRows .status-row:nth-child(even){background:#444!important}
-${N}.reverse #statusRows .status-row:hover,${N}.reverse #statusRows .status-row.current,${N}.reverse #statusRows .status-row.selected{background:#94eaff!important;color:#000!important;outline-color:#94eaff!important}
-${N}.reverse #statusRows .status-row:hover .navseq,${N}.reverse #statusRows .status-row.current .navseq,${N}.reverse #statusRows .status-row.selected .navseq{color:#000!important}
-${N}.reverse #workspace .answers{border-color:#fff!important}
-${N}.reverse #workspace .answers .answer:not(.correctChoice):not(.incorrectChoice):hover{background:#222!important}
-${N}.reverse #workspace .answers .strike-symbol{background-image:${NI.strikeW}!important}
-${N}.reverse #workspace #proceedBtn{background:#6ed6dd!important;color:#000!important;border:1px solid #fff!important}
 /* image viewer (both styles; reference viewer.js: backdrop rgba(0,0,0,.95) over the question pane) */
 :root[data-tu] #imagePreview.tuv{position:fixed;inset:auto;display:block;padding:0;background:rgba(0,0,0,.95);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;font-family:Arial,Helvetica,sans-serif;z-index:210;color:#fff;opacity:0;transition:opacity .3s}
 :root[data-tu] #imagePreview.tuv.tuv-in{opacity:1}
@@ -3830,31 +4103,218 @@ ${N}.reverse #workspace #proceedBtn{background:#6ed6dd!important;color:#000!impo
     const size = Number(store.get(NBK.size, '100')) || 100;
     setVar(root, '--tun-txt', on && size !== 100 ? String(size / 100) : null);
     setAttrIf(root, 'data-tun-nostrike', on && store.get(NBK.strike, '0') === '1' ? '1' : null);
+    // the reference sizes the stem and the choices as 56 / 66 / 80 / 98 % of the item frame (by text size)
+    setAttrIf(root, 'data-tun-z', on && size !== 100 ? String(size) : null);
+    setAttrIf(root, 'data-tun-narrow', on && innerWidth / k < 1100 ? '1' : null);
+    nbMw(on);
+    const scr = byId('examScreen');
+    if(on && scr && store.get(NBK.theme, '') === 'dark' && !scr.classList.contains('reverse')) scr.classList.add('reverse');
+    setAttrIf(root, 'data-tun-dark', on && nbTheme() === 'dark' ? '1' : null);
+    if(on){ nbDecorate(); nbFrameWidth(); }
     if(!on) closeNbAlert();
   }
-  // under the zoom (k < 1) a fixed box's px are scaled too, so positions measured on screen are divided by k
-  function nbPlaceMenu(box){
-    box.classList.add('tun-menu');
-    if(nb.k < 1){ ['top', 'right'].forEach(p => { const v = parseFloat(box.style[p]); if(!isNaN(v)) box.style[p] = (v / nb.k) + 'px'; }); }
+  // --tun-mw: 56 / 66 / 80 / 98 % by text size; 80 % (98 % at 200 %) while Lab Values is open (the reference's .labOpen)
+  function nbMw(on){
+    const root = document.documentElement, size = Number(store.get(NBK.size, '100')) || 100, labs = root.hasAttribute('data-tun-labs');
+    setVar(root, '--tun-mw', on ? String(labs ? (size === 200 ? .98 : .8) : ({125:.66, 150:.8, 200:.98}[size] || .56)) : null);
   }
-  function nbTheme(){ const scr = byId('examScreen'); if(scr && scr.classList.contains('reverse')) return 'dark'; try{ if(isExamDarkMode()) return 'examdark'; }catch(e){} return 'default'; }
+  // --tun-fw: the item frame's width in item px (the reference's setFrameWidth)
+  function nbFrameWidth(){
+    const ws = byId('workspace'); if(!ws || !nbmeOn()) return;
+    const z = Number(store.get(NBK.size, '100')) / 100 || 1;
+    setVar(document.documentElement, '--tun-fw', (ws.clientWidth / z) + 'px');
+  }
+  // the reference's icons inside the legacy nodes (kept hidden without :root[data-tun]); legacy renders replace
+  // #statusRows and #workspace often, so this runs from their observers, before the next paint
+  // the legacy glyph text (🧪, ←, &nbsp;) moves into a .tun-txt span, which only the NBME view hides
+  function nbIcon(host, html){
+    if(!host || host.querySelector(':scope > .tun-i')) return;
+    [...host.childNodes].forEach(n => { if(n.nodeType === 3 && n.nodeValue.trim() !== ''){ const t = document.createElement('span'); t.className = 'tun-txt'; host.insertBefore(t, n); t.appendChild(n); } else if(n.nodeType === 3) n.remove(); });
+    host.insertAdjacentHTML('beforeend', `<span class="tun-i" aria-hidden="true">${html}</span>`);
+  }
+  // Exam Overview / Block Time Information: the reference's close icon, its "15 min 0 sec" spans (grey "0 sec" for
+  // block lengths), "Day: 1 of 1" as the day table's caption; the legacy cells keep ticking, hidden, behind mirrors
+  function nbSecs(t){
+    const m = String(t || '').match(/(?:(\d+)\s*hr\s*)?(\d+)\s*min\s*(\d+)\s*sec/); return m ? (Number(m[1] || 0) * 3600 + Number(m[2]) * 60 + Number(m[3])) : null;
+  }
+  function nbMinSec(sec){ const m = Math.floor(sec / 60), x = sec % 60; return `<span>${m} min</span> <span class="${x ? '' : 'zero'}">${x} sec</span>`; }
+  function nbHms(sec){ const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), x = sec % 60; return (h ? `<span>${h} hr</span> ` : '') + `<span>${m} min</span> <span>${x} sec</span>`; }
+  function nbPops(){
+    const root = byId('overviewRoot'); if(!root || !nbmeOn()) return;
+    root.querySelectorAll('.overview-close').forEach(b => nbIcon(b, RI.xsq));
+    root.querySelectorAll('.overview-table td.overview-check').forEach(td => { if(/✓|✔/.test(td.textContent) && !td.querySelector('svg')){ td.textContent = ''; td.insertAdjacentHTML('beforeend', RI.check); } });
+    root.querySelectorAll('.overview-table td.overview-time').forEach(td => { if(td.querySelector('span')) return; const sec = nbSecs(td.textContent); if(sec != null) td.innerHTML = nbMinSec(sec); });
+    const tp = root.querySelector('.time-info-popover'); if(!tp) return;
+    const tables = tp.querySelectorAll('.time-info-table');
+    if(tables[0]) tables[0].classList.add('tun-tblock');
+    if(tables[1]){ tables[1].classList.add('tun-tday'); const cap = tables[1].previousElementSibling; if(cap && cap.classList.contains('time-info-sub')) cap.classList.add('tun-cap'); }
+    tables.forEach((tb, ti) => tb.querySelectorAll('tr').forEach(tr => {
+      const v = tr.children[1]; if(!v || v.classList.contains('tun-mv')) return;
+      let mv = v.nextElementSibling;
+      if(!mv || !mv.classList.contains('tun-mv')){ v.classList.add('tun-mvhost'); v.insertAdjacentHTML('afterend', '<td class="tun-mv"></td>'); mv = v.nextElementSibling; }
+      const sec = nbSecs(v.textContent), html = sec == null ? esc(v.textContent) : ti === 0 ? nbMinSec(sec) : nbHms(sec);
+      if(mv.innerHTML !== html) mv.innerHTML = html;
+    }));
+  }
+  // Lab Values / Calculator / Notes: the reference's close icon, its indented sub-rows (the legacy data indents them with
+  // leading spaces), the doubled "Serum / Reference Range" row hidden, and root data-tun-labs while the panel is open
+  function nbTools(){
+    if(!nbmeOn()) return;
+    [byId('labClose'), byId('calcClose'), document.querySelector('#examNotesPanel .notes-close')].forEach(b => nbIcon(b, RI.xsq));
+    const lab = byId('labPanel');
+    setAttrIf(document.documentElement, 'data-tun-labs', lab && !lab.classList.contains('hidden') && lab.childElementCount ? '1' : null);
+    nbMw(true);
+    if(!lab) return;
+    const head = lab.querySelector('.lab-table thead tr');
+    lab.querySelectorAll('.lab-table tbody tr').forEach((tr, i) => {
+      const first = tr.querySelector('td');
+      // (a class is only added when missing: classList.add always rewrites the attribute, which the observer sees)
+      if(first && !tr.classList.contains('tun-li') && /^[\s ]{2,}\S/.test(first.textContent)) tr.classList.add('tun-li');
+      if(i === 0 && head && !tr.classList.contains('tun-dup') && txt(tr) === txt(head)) tr.classList.add('tun-dup');
+    });
+  }
+  // the reference drags its dialogs by the 36 px strip on top, with any pointer (the legacy calculator drags with a
+  // mouse only, Notes not at all); the position is kept as right / bottom, like the legacy drag
+  function onNbDrag(e){
+    if(!nbmeOn() || !e.target.closest || e.button > 0) return;
+    const h = e.target.closest('#calcDrag, #examNotesPanel .notes-head'); if(!h || e.target.closest('button')) return;
+    const box = h.closest('#floatingCalc, #examNotesPanel'); if(!box) return;
+    e.preventDefault();
+    const r = box.getBoundingClientRect(), k = nb.k || 1, x0 = e.clientX, y0 = e.clientY;
+    const move = ev => {
+      const right = Math.max(0, Math.min(innerWidth - r.width, innerWidth - r.right - (ev.clientX - x0))), bottom = Math.max(0, Math.min(innerHeight - r.height, innerHeight - r.bottom - (ev.clientY - y0)));
+      box.setAttribute('data-tun-moved', '1'); box.style.left = 'auto'; box.style.top = 'auto';
+      box.style.setProperty('right', (right / k) + 'px', 'important'); box.style.setProperty('bottom', (bottom / k) + 'px', 'important');
+    };
+    const up = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); };
+    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  }
+  // Lab Values in NBME: the reference's own data (with SI ranges) and search. A search runs over every tab and hides
+  // the rows that do not match; "SI Reference Intervals" shows the SI column (the legacy shows an alert). The legacy
+  // panel, #labSearch, tabs and #labRows stay; only the rows are drawn from REF_LABS.
+  const REF_LABS = {"Serum":{"label":"Serum","rows":[["h","Serum","Reference Range","SI Reference"],["r","Alanine aminotransferase (ALT)","10–40 U/L","10–40 U/L"],["r","Aspartate aminotransferase (AST)","12–38 U/L","12–38 U/L"],["r","Alkaline phosphatase","25–100 U/L","25–100 U/L"],["r","Amylase","25–125 U/L","25–125 U/L"],["r","Bilirubin, Total // Direct","0.1–1.0 mg/dL // 0.0–0.3 mg/dL","2–17 µmol/L // 0–5 µmol/L"],["r","Calcium","8.4–10.2 mg/dL","2.1–2.6 mmol/L"],["s","Cholesterol","",""],["i","Total","Normal: &lt;200 mg/dL // High:&gt;240 mg/dL","&lt;5.2 mmol/L // &gt;6.2 mmol/L"],["i","HDL","40–60 mg/dL","1.0–1.6 mmol/L"],["i","LDL","&lt;160 mg/dL","&lt;4.2 mmol/L"],["r","Triglycerides","Normal: &lt;150 mg/dL // Borderline: 151–199 mg/dL","&lt;1.70 mmol/L // 1.71–2.25 mmol/L"],["r","Cortisol","0800 h: 5–23 µg/dL // 1600 h: 3–15 µg/dL","138–635 nmol/L // 82–413 nmol/L"],["r","","2000 h: &lt;50% of 0800 h","Fraction of 0800 h: &lt;0.50"],["r","Creatine kinase","Male: 25–90 U/L","25–90 U/L"],["r","","Female: 10–70 U/L","10–70 U/L"],["r","Creatinine","0.6–1.2 mg/dL","53–106 µmol/L"],["r","Urea nitrogen","7–18 mg/dL","2.5–6.4 mmol/L"],["r","Creatinine clearance","Male: 97–137 mL/min","97–137 mL/min"],["r","","Female: 88–128 mL/min","88–128 mL/min"],["s","Electrolytes, serum","",""],["i","Sodium (Na<sup>+</sup>)","136–146 mEq/L","136–146 mmol/L"],["i","Potassium (K<sup>+</sup>)","3.5–5.0 mEq/L","3.5–5.0 mmol/L"],["i","Chloride (Cl<sup>–</sup>)","95–105 mEq/L","95–105 mmol/L"],["i","Bicarbonate (HCO<sub>3</sub><sup>–</sup>)","22–28 mEq/L","22–28 mmol/L"],["i","Magnesium (Mg<sup>2+</sup>)","1.5–2.0 mg/dL","0.75–1.0 mmol/L"],["r","Ferritin","Male: 20–250 ng/mL","20–250 µg/L"],["r","","Female: 10–120 ng/mL","10–120 µg/L"],["r","Follicle-stimulating hormone","Male: 4–25 mIU/mL","4–25 U/L"],["r","","Female: premenopause 4–30 mIU/mL","4–30 U/L"],["r","","midcycle peak 10–90 mIU/mL","10–90 U/L"],["r","","postmenopause 40–250 mIU/mL","40–250 U/L"],["r","Glucose","Fasting: 70–100 mg/dL","3.8–5.6 mmol/L"],["r","","Random, non-fasting: &lt;140 mg/dL","&lt;7.77 mmol/L"],["r","Growth hormone - arginine stimulation","Fasting: &lt;5 ng/mL","&lt;5 µg/L"],["r","","Provocative stimuli: &gt;7 ng/mL","&gt;7 µg/L"],["r","Iron","Male: 65–175 µg/dL","11.6–31.3 µmol/L"],["r","","Female: 50–170 µg/dL","9.0–30.4 µmol/L"],["r","Total iron-binding capacity","250–400 µg/dL","44.8–71.6 µmol/L"],["r","Transferrin","200–360 mg/dL","2.0–3.6 g/L"],["r","Lactate dehydrogenase","45–200 U/L","45–200 U/L"],["r","Lipase","13–60 U/L","13–60 U/L"],["r","Luteinizing hormone","Male: 6–23 mIU/mL","6–23 U/L"],["r","","Female: follicular phase 5–30 mIU/mL","5–30 IU/L"],["r","","midcycle 75–150 mIU/mL","75–150 IU/L"],["r","","postmenopause 30–200 mIU/mL","30–200 IU/L"],["r","Osmolality","275–295 mOsmol/kg H<sub>2</sub>O","275–295 mOsmol/kg H<sub>2</sub>O"],["r","Intact parathyroid hormone (PTH)","10–60 pg/mL","10–60 ng/L"],["r","Phosphorus (inorganic)","3.0–4.5 mg/dL","1.0–1.5 mmol/L"],["r","Prolactin (hPRL)","Male: &lt;17 ng/mL","&lt;17 µg/L"],["r","","Female: &lt;25 ng/mL","&lt;25 µg/L"],["s","Proteins","",""],["i","Total","6.0–7.8 g/dL","60–78 g/L"],["i","Albumin","3.5–5.5 g/dL","35–55 g/L"],["i","Globulin","2.3–3.5 g/dL","23–35 g/L"],["r","Troponin I","≤0.04 ng/mL","≤0.04 µg/L"],["r","TSH","0.4–4.0 µU/mL","0.4–4.0 mIU/L"],["r","Thyroidal iodine (<sup>123</sup>I) uptake","8%–30% of administered dose/24 h","0.08–0.30/24 h"],["r","Thyroxine (T<sub>4</sub>)","5–12 µg/dL","64–155 nmol/L"],["r","Free T<sub>4</sub>","0.9–1.7 ng/dL","12.0–21.9 pmol/L"],["r","Triiodothyronine (T<sub>3</sub>) (RIA)","100–200 ng/dL","1.5–3.1 nmol/L"],["r","Triiodothyronine (T<sub>3</sub>) resin uptake","25%–35%","0.25–0.35"],["r","Uric acid","3.0–8.2 mg/dL","0.18–0.48 mmol/L"],["s","Immunoglobulins","",""],["r","IgA","76–390 mg/dL","0.76–3.90 g/L"],["r","IgE","0–380 IU/mL","0–380 kIU/L"],["r","IgG","650–1500 mg/dL","6.5–15.0 g/L"],["r","IgM","50–300 mg/dL","0.5–3.0 g/L"],["s","Gases, arterial blood (room air)","",""],["r","pH","7.35–7.45","[H+] 36–44 nmol/L"],["r","Pco<sup>2</sup>","33–45 mm Hg","4.4–5.9 kPa"],["r","Po<sup>2</sup>","75–105 mm Hg","10.0–14.0 kPa"]]},"Cerebrospinal":{"label":"Cerebrospinal","rows":[["h","Cerebrospinal Fluid","Reference Range","SI Reference"],["r","Cell count","0–5/mm<sup>3</sup>","0–5 x 10<sup>6</sup>/L"],["r","Chloride","118–132 mEq/L","118–132 mmol/L"],["r","Gamma globulin","3%–12% total proteins","0.03–0.12"],["r","Glucose","40–70 mg/dL","2.2–3.9 mmol/L"],["r","Pressure","70–180 mm H<sub>2</sub>O","70–180 mm H<sub>2</sub>O"],["r","Proteins, total","&lt;40 mg/dL","&lt;0.40 g/L"]]},"Blood":{"label":"Blood","rows":[["h","Hematologic","Reference Range","SI Reference"],["r","Erythrocyte count (RBC)","Male: 4.3–5.9 million/mm<sup>3</sup>","4.3–5.9 x 10<sup>12</sup>/L"],["r","","Female: 3.5–5.5 million/mm<sup>3</sup>","3.5–5.5 x 10<sup>12</sup>/L"],["r","Erythrocyte sedimentation rate (Westergren)","Male: 0–15 mm/h","0–15 mm/h"],["r","","Female: 0–20 mm/h","0–20 mm/h"],["r","Hematocrit","Male: 41%–53%","0.41–0.53"],["r","","Female: 36%–46%","0.36–0.46"],["r","Hemoglobin, blood","Male: 13.5–17.5 g/dL","135–175 g/L"],["r","","Female: 12.0–16.0 g/dL","120–160 g/L"],["r","Hemoglobin A1c","≤6%","≤42 mmol/mol"],["r","Leukocyte count (WBC)","4500–11,000/mm<sup>3</sup>","4.5–11.0 x 10<sup>9</sup>/L"],["r","Neutrophils, segmented","54%–62%","0.54–0.62"],["r","Neutrophils, bands","3%–5%","0.03–0.05"],["r","Eosinophils","1%–3%","0.01–0.03"],["r","Basophils","0%–0.75%","0.00–0.0075"],["r","Lymphocytes","25%–33%","0.25–0.33"],["r","Monocytes","3%–7%","0.03–0.07"],["r","CD4+ T-lymphocyte count","≥500/mm<sup>3</sup>","≥0.5 x 10<sup>9</sup>/L"],["r","Platelet count","150,000–400,000/mm<sup>3</sup>","150–400 x 10<sup>9</sup>/L"],["r","Reticulocyte count","0.5%–1.5%","0.005–0.015"],["r","D-Dimer","≤250 ng/mL","≤1.4 nmol/L"],["r","Partial thromboplastin time (aPTT) (activated)","25–40 seconds","25–40 seconds"],["r","Prothrombin time (PT)","11–15 seconds","11–15 seconds"],["r","Mean corpuscular hemoglobin (MCH)","25–35 pg/cell","0.39–0.54 fmol/cell"],["r","Mean corpuscular hemoglobin concentration (MCHC)","31%–36% Hb/cell","4.8–5.6 mmol Hb/L"],["r","Mean corpuscular volume (MCV)","80–100 µm<sup>3</sup>","80–100 fL"],["s","Volume","",""],["r","Plasma","Male: 25–43 mL/kg","0.025–0.043 L/kg"],["r","","Female: 28–45 mL/kg","0.028–0.045 L/kg"],["r","Red cell","Male: 20–36 mL/kg","0.020–0.036 L/kg"],["r","","Female: 19–31 mL/kg","0.019–0.031 L/kg"]]},"Urine":{"label":"Urine and BMI","rows":[["h","Urine","Reference Range","SI Reference"],["r","Calcium","100–300 mg/24 h","2.5–7.5 mmol/24 h"],["r","Osmolality","50–1200 mOsmol/kg H<sub>2</sub>O","50–1200 mOsmol/kg H<sub>2</sub>O"],["r","Oxalate","8–40 µg/mL","90–445 µmol/L"],["r","Proteins, total","&lt;150 mg/24 h","&lt;0.15 g/24 h"],["r","17-Hydroxycorticosteroids","Male: 3.0–10.0 mg/24 h","8.2–27.6 µmol/24 h"],["r","","Female: 2.0–8.0 mg/24 h","5.5–22.0 µmol/24 h"],["r","17-Ketosteroids, total","Male: 8–20 mg/24 h","28–70 µmol/24 h"],["r","","Female: 6–15 mg/24 h","21–52 µmol/24 h"],["r","Body Mass Index (BMI)","Adult: 19–25 kg/m<sup>2</sup>",""]]}};
+  const nbLab = {si:false};
+  function nbLabRows(){
+    const body = byId('labRows'); if(!body) return false;
+    const q = String(typeof labQuery === 'string' ? labQuery : '').trim().toLowerCase();
+    let tab = 'Serum'; try{ tab = activeLabTab; }catch(e){}
+    const key = Object.keys(REF_LABS).find(k => k === tab || REF_LABS[k].label === tab) || 'Serum';
+    const reg = q ? new RegExp('(?![^<]*>)(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi') : null;
+    const hl = t => reg ? t.replace(reg, '<mark>$1</mark>') : t;
+    body.innerHTML = (q ? Object.keys(REF_LABS) : [key]).map(k => REF_LABS[k].rows.map(([type, a, b, c]) => {
+      if(type === 'h') return `<tr class="tun-h"><th>${a}</th><th>${b}</th><th class="si">${c}</th></tr>`;
+      const hide = q && type !== 's' && !(a + ' ' + b + ' ' + c).replace(/<[^>]+>/g, '').toLowerCase().includes(q) ? ' hide' : '';
+      return `<tr class="${type}${hide}"><td>${hl(a)}</td><td>${hl(b)}</td><td class="si">${hl(c)}</td></tr>`;
+    }).join('')).join('');
+    const si = byId('siToggle'); if(si && si.checked !== nbLab.si) si.checked = nbLab.si;
+    body.closest('.lab-table-wrap')?.classList.toggle('tun-si', nbLab.si);
+    return true;
+  }
+  function wrapLabs(){
+    if(typeof renderLabRows !== 'function' || renderLabRows.__tu) return;
+    const base = renderLabRows;
+    const wrapped = function(){ if(nbmeOn() && nbLabRows()) return; return base.apply(this, arguments); };
+    wrapped.__tu = true;
+    renderLabRows = wrapped; // eslint-disable-line no-global-assign
+  }
+  function onNbLabSi(e){
+    if(!nbmeOn() || !e.target || e.target.id !== 'siToggle') return;
+    e.stopImmediatePropagation(); nbLab.si = e.target.checked; nbLabRows();
+  }
+  // the reference's clock format: block m:ss, day h:mm:ss (the legacy spans stay, hidden, and keep ticking)
+  function nbClock(t, day){
+    const m = String(t || '').trim().match(/^(\d+):(\d\d)(?::(\d\d))?$/); if(!m) return String(t || '').trim();
+    const sec = m[3] == null ? Number(m[1]) * 60 + Number(m[2]) : Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]);
+    const p2 = n => String(n).padStart(2, '0');
+    return day ? `${Math.floor(sec / 3600)}:${p2(Math.floor(sec % 3600 / 60))}:${p2(sec % 60)}` : `${Math.floor(sec / 60)}:${p2(sec % 60)}`;
+  }
+  function nbTimes(){
+    [['blockTime', false], ['dayTime', true]].forEach(([id, day]) => {
+      const el = byId(id); if(!el) return;
+      let t = el.nextElementSibling;
+      if(!t || !t.classList.contains('tun-time')){ el.insertAdjacentHTML('afterend', '<span class="tun-i tun-time"></span>'); t = el.nextElementSibling; }
+      const v = nbClock(el.textContent, day); if(t.textContent !== v) t.textContent = v;
+    });
+  }
+  function nbDecorate(){
+    const scr = byId('examScreen'); if(!scr || !nbmeOn()) return;
+    const ws = byId('workspace');
+    setAttrIf(scr, 'data-tun-view', ws && ws.querySelector(':scope > .question-stack') ? 'q' : 'other');
+    nbIcon(byId('prevBtn'), RI.arrowL); nbIcon(byId('nextBtn'), RI.arrowR);
+    nbIcon(byId('labBtn')?.querySelector('.tool-icon'), RI.flask);
+    nbIcon(byId('notesBtn')?.querySelector('.tool-icon'), RI.pencil);
+    nbIcon(byId('calcBtn')?.querySelector('.tool-icon'), RI.calc);
+    nbIcon(byId('settingsBtn')?.querySelector('.tool-icon'), RI.gear + '<span class="sep">|</span>' + RI.caretD);
+    nbIcon(byId('lockBtn')?.querySelector('.lock-ico'), RI.lock);
+    nbIcon(byId('endBlockBtn')?.querySelector('.x'), RI.endx);
+    nbIcon(byId('suspendBtn')?.querySelector('.pause-ico'), RI.pause);
+    document.querySelectorAll('#statusRows .status-row').forEach(r => {
+      if(r.querySelector('.tun-i')) return;
+      const a = r.querySelector('.navans'); if(a && a.querySelector('.dot')) nbIcon(a, RI.dot);
+      nbIcon(r.querySelector('.navmark'), RI.flag); nbIcon(r.querySelector('.navnotes'), RI.note);
+    });
+    nbTimes();
+    if(!ws) return;
+    const ml = ws.querySelector('.mark-line'), mk = byId('markQuestion');
+    if(ml && mk && !ml.querySelector('.tun-i')) mk.insertAdjacentHTML('afterend', `<span class="tun-i" aria-hidden="true">${RI.flag}</span>`);
+    ws.querySelectorAll('.answers .answer[data-choice]').forEach(a => {
+      let r = a.querySelector(':scope > .tun-radio');
+      if(!r){ a.insertAdjacentHTML('afterbegin', '<input type="radio" class="tun-radio" tabindex="-1" aria-hidden="true">'); r = a.firstElementChild; }
+      const on = a.classList.contains('selected'); if(r.checked !== on) r.checked = on;
+      nbIcon(a.querySelector('.strike-symbol'), RI.strike);
+    });
+  }
+  // the reference's #toolsMenu sits at right 20 / top 46 of the top bar; the root zoom (--tun-k) scales it like the bar
+  function nbPlaceMenu(box){
+    box.classList.add('tun-menu'); // placed by the NBME CSS (top 46, right 20)
+  }
+  function nbTheme(){ const scr = byId('examScreen'); if(scr && scr.classList.contains('reverse')) return 'dark'; try{ if(isExamDarkMode()) return 'dark'; }catch(e){} return 'default'; }
+  // Color Theme is saved, as in the reference (thunderui.prefs): Dark Theme is the legacy Reverse Color on #examScreen
+  function nbSetTheme(v){
+    const scr = byId('examScreen'), dark = v === 'dark';
+    store.set(NBK.theme, dark ? 'dark' : 'default');
+    if(scr) scr.classList.toggle('reverse', dark);
+    if(!dark){ try{ if(isExamDarkMode()) setExamDarkMode(false); }catch(e){} }
+    applyNbme();
+  }
+  // Order (2026-10-25): Exam style switch; the reference's Resize Text / Color Theme / Show/Hide Strikeout; then ours.
+  // The legacy segmented toggles (review layout, the delay's clock) become submenus; the switches become rows that show
+  // the reference's bold + "*" when on. Their nodes, IDs and data-* hooks stay.
   function nbDecorateMenu(box){
-    const size = Number(store.get(NBK.size, '100')) || 100, theme = nbTheme();
-    const sub = (key, label, items) => `<div class="tun-mi" data-tun-sub="${key}" role="menuitem" tabindex="0" aria-haspopup="true">${label}<i></i><div class="tun-sub" role="menu">${items.map(([v, l, on]) => `<button type="button" role="menuitemradio" aria-checked="${on}" data-tun-m="${key}" data-v="${v}">${l}</button>`).join('')}</div></div>`;
-    box.insertAdjacentHTML('afterbegin', `<div class="tun-top">${sub('size', 'Resize Text', [100, 125, 150, 200].map(z => [z, z + '%', z === size]))}${sub('theme', 'Color Theme', [['default', 'Default', theme === 'default'], ['dark', 'Dark Theme', theme === 'dark'], ['examdark', 'Exam Dark Mode', theme === 'examdark']])}<button type="button" class="tun-mi" data-tun-m="strike">Show/Hide Strikeout</button><button type="button" class="tun-mi" data-tun-m="help">Help</button></div>`);
-    const openSub = (el, on) => box.querySelectorAll('.tun-mi[data-tun-sub]').forEach(s => s.classList.toggle('open', on && s === el));
-    box.querySelectorAll('.tun-mi[data-tun-sub]').forEach(s => s.addEventListener('mouseenter', () => { if(matchMedia('(hover:hover)').matches) openSub(s, true); }));
-    box.querySelectorAll(':scope > :not(.tun-top), .tun-top > button').forEach(s => s.addEventListener('mouseenter', () => openSub(null, false)));
+    const size = Number(store.get(NBK.size, '100')) || 100, dark = nbTheme() === 'dark';
+    const sub = (key, label, items) => `<div class="tun-mi" data-tun-sub="${key}" role="menuitem" tabindex="0" aria-haspopup="true"><span>${label}</span>${RI.caretR}<div class="tun-sub" role="menu">${items.map(([v, l, on]) => `<button type="button" role="menuitemradio" aria-checked="${on}" class="${on ? 'on' : ''}" data-tun-m="${key}" data-v="${v}">${l}</button>`).join('')}</div></div>`;
+    box.insertAdjacentHTML('afterbegin', `<div class="tun-top">${sub('size', 'Resize Text', [100, 125, 150, 200].map(z => [z, z + '%', z === size]))}${sub('theme', 'Color Theme', [['default', 'Default', !dark], ['dark', 'Dark Theme', dark]])}<button type="button" class="tun-row" data-tun-m="strike">Show/Hide Strikeout</button></div>`);
+    const top = box.querySelector('.tun-top'), style = box.querySelector('.tux-style-row');
+    if(style){ box.insertBefore(style, box.firstChild); style.insertAdjacentHTML('afterend', '<div class="tun-sep" role="separator"></div>'); }
+    if(top.nextElementSibling) top.insertAdjacentHTML('afterend', '<div class="tun-sep" role="separator"></div>');
+    top.replaceWith(...top.childNodes);
+    const short = {layout:'Explanation Layout', clock:'Delay Clock'};
+    box.querySelectorAll('.review-layout-toggle:not(.tux-style-row)').forEach(g => {
+      const key = g.classList.contains('nav-delay-mode') ? 'clock' : 'layout', t = g.querySelector('.review-layout-title');
+      g.classList.add('tun-mi'); g.dataset.tunSub = key; g.setAttribute('role', 'menuitem'); g.setAttribute('aria-haspopup', 'true');
+      if(t){ g.title = t.textContent.trim(); t.textContent = short[key]; t.insertAdjacentHTML('afterend', RI.caretR); }
+    });
+    box.querySelectorAll('.notes-preference').forEach(l => {
+      const sp = l.querySelector('span'); if(!sp) return;
+      if(!l.title) l.title = sp.textContent.trim();
+      sp.textContent = l.querySelector('#navDelayToggle') ? 'Navigation Delay' : l.querySelector('#keepNotesOpen') ? 'Keep Notes Open' : sp.textContent;
+    });
+    const subs = () => box.querySelectorAll('[data-tun-sub]');
+    // hover opens a submenu; a click (or tap) opens it too and only a second click closes it (the reference's click
+    // toggles, which shut a submenu the hover had just opened)
+    const openSub = (el, on, byClick) => subs().forEach(x => { const o = on && x === el; x.classList.toggle('open', o); if(!o || !byClick) delete x.dataset.tunClicked; else x.dataset.tunClicked = '1'; });
+    subs().forEach(x => x.addEventListener('mouseenter', () => { if(matchMedia('(hover:hover)').matches && !x.classList.contains('open')) openSub(x, true); }));
+    [...box.children].forEach(x => { if(!x.hasAttribute('data-tun-sub')) x.addEventListener('mouseenter', () => openSub(null, false)); });
     box.addEventListener('click', e => {
-      const m = e.target.closest && e.target.closest('[data-tun-m]'), s = !m && e.target.closest && e.target.closest('[data-tun-sub]');
-      if(s){ e.preventDefault(); e.stopPropagation(); openSub(s, !s.classList.contains('open')); return; }
+      if(!e.target.closest) return;
+      const m = e.target.closest('[data-tun-m]'), s = !m && !e.target.closest('.tun-sub,.segmented-toggle') && e.target.closest('[data-tun-sub]');
+      if(s){ e.preventDefault(); e.stopPropagation(); openSub(s, !s.dataset.tunClicked, true); return; }
       if(!m) return;
       e.preventDefault(); e.stopPropagation(); box.remove();
-      const act = m.dataset.tunM, v = m.dataset.v, scr = byId('examScreen');
+      const act = m.dataset.tunM, v = m.dataset.v;
       if(act === 'size'){ store.set(NBK.size, String(v)); applyNbme(); return; }
       if(act === 'strike'){ store.set(NBK.strike, store.get(NBK.strike, '0') === '1' ? '0' : '1'); applyNbme(); return; }
-      if(act === 'help'){ nbHelp(); return; }
-      if(act === 'theme' && scr){ scr.classList.toggle('reverse', v === 'dark'); try{ if(isExamDarkMode() !== (v === 'examdark')) setExamDarkMode(v === 'examdark'); }catch(err){} }
+      if(act === 'theme') nbSetTheme(v);
     }, true);
   }
   function closeNbAlert(){ byId('tunAlert')?.remove(); byId('tunOverlay')?.remove(); }
@@ -3863,9 +4323,6 @@ ${N}.reverse #workspace #proceedBtn{background:#6ed6dd!important;color:#000!impo
     document.body.insertAdjacentHTML('beforeend', `<div id="tunOverlay"></div><div id="tunAlert" role="alertdialog" aria-modal="true" aria-labelledby="tunAlertTitle"><button type="button" class="tun-x" data-tun-a="close" aria-label="Close"></button><h1 id="tunAlertTitle"${blue ? ' class="blue"' : ''}>${esc(title)}</h1><div class="txt">${html}</div><div class="btns">${buttons.map(([a, l, c]) => `<button type="button" class="${c}" data-tun-a="${a}">${esc(l)}</button>`).join('')}</div></div>`);
     const box = byId('tunAlert'); box.querySelector('.btns button')?.focus();
     return box;
-  }
-  function nbHelp(){
-    nbAlert('Help', '<p><b>Navigation</b>: Previous / Next, the Question Status list on the left, or Alt+← / Alt+→.</p><p><b>Answer</b>: click a choice. Click the <i>ab</i> button (or right-click a choice) to strike it out.</p><p><b>Mark</b>: “Mark Question” flags the item in the list.</p><p><b>Tools</b>: Lab Values, Notes and Calculator in the top bar; text size and color theme under Settings. Click an image to open it; scroll or pinch to zoom, drag to move.</p><p><b>Item / time boxes</b>: click them for the exam overview and the time information.</p>', [['close', 'Close', 'blue']], true);
   }
   // Lock: the reference's Unauthorized Break Warning first; its red button runs the legacy Lock (pause)
   function onNbLock(e){
@@ -3916,8 +4373,24 @@ ${N}.reverse #workspace #proceedBtn{background:#6ed6dd!important;color:#000!impo
   function watchNbme(scr){
     if(nb.watched) return; nb.watched = true;
     new MutationObserver(() => applyNbme()).observe(scr, {attributes:true, attributeFilter:['class']});
+    // Lab Values / Calculator / Notes are rebuilt on open (Notes is added to <body> by exam-notes.js)
+    const toolsMo = new MutationObserver(recs => { if(nbmeOn() && recs.some(r => !(r.target.closest && r.target.closest('.tun-i')))) nbTools(); });
+    const watchTool = el => { if(el && !el.dataset.tunWatched){ el.dataset.tunWatched = '1'; toolsMo.observe(el, {childList:true, subtree:true, attributes:true, attributeFilter:['class', 'hidden', 'style']}); } };
+    ['labPanel', 'floatingCalc', 'examNotesPanel'].forEach(id => watchTool(byId(id)));
+    new MutationObserver(() => { if(byId('examNotesPanel')) watchTool(byId('examNotesPanel')); nbTools(); }).observe(document.body, {childList:true});
+    document.addEventListener('pointerdown', onNbDrag, true);
+    document.addEventListener('change', onNbLabSi, true);
+    document.addEventListener('mousedown', e => { if(nbmeOn() && e.target.closest && e.target.closest('#calcDrag') && !e.target.closest('button')) e.stopPropagation(); }, true); // the pointer drag replaces the legacy mouse drag
+    const ov = byId('overviewRoot');
+    if(ov) new MutationObserver(recs => { if(nbmeOn() && recs.some(r => !(r.target.closest && r.target.closest('.tun-mv,.tun-i')))) nbPops(); }).observe(ov, {childList:true, subtree:true, characterData:true});
     const ws = byId('workspace');
     if(ws) new MutationObserver(() => { nbDecorateReview(); viewerFollow(); }).observe(ws, {childList:true});
+    // icons and radios: after every legacy render of the list, the question or the footer, and on choice changes
+    new MutationObserver(recs => {
+      if(!nbmeOn() || recs.every(r => r.target.closest && r.target.closest('.tun-i'))) return;
+      if(recs.every(r => r.target.id === 'blockTime' || r.target.id === 'dayTime')) nbTimes(); else nbDecorate();
+    }).observe(scr, {childList:true, subtree:true, attributes:true, attributeFilter:['class']});
+    if(ws && typeof ResizeObserver === 'function') new ResizeObserver(() => nbFrameWidth()).observe(ws);
     // the legacy confirm layer is created on first use: watch for it, then watch inside it
     const watchDialog = () => { const dl = byId('appDialogLayer'); if(!dl || dl.dataset.tunWatched) return !!dl; dl.dataset.tunWatched = '1'; new MutationObserver(() => nbDecorateDialog()).observe(dl, {childList:true, subtree:true}); nbDecorateDialog(); return true; };
     if(!watchDialog()){ const mo = new MutationObserver(() => { if(watchDialog()) mo.disconnect(); }); mo.observe(document.body, {childList:true}); }
@@ -3927,7 +4400,12 @@ ${N}.reverse #workspace #proceedBtn{background:#6ed6dd!important;color:#000!impo
     document.addEventListener('click', onNbClick, true);
     document.addEventListener('click', onViewerLinks, true);
     document.addEventListener('keydown', onViewerKey, true);
-    document.addEventListener('keydown', e => { if(e.key === 'Escape' && byId('tunAlert')){ e.preventDefault(); e.stopImmediatePropagation(); closeNbAlert(); } }, true);
+    document.addEventListener('keydown', e => {
+      if(e.key !== 'Escape') return;
+      if(byId('tunAlert')){ e.preventDefault(); e.stopImmediatePropagation(); closeNbAlert(); return; }
+      const menu = byId('referenceSettingsDropdown'); // the reference closes its menu on Esc
+      if(menu && nbmeOn() && menu.classList.contains('tun-menu')){ e.preventDefault(); e.stopImmediatePropagation(); menu.remove(); }
+    }, true);
     addEventListener('resize', () => { applyNbme(); if(viewer.open && viewer.nw){ viewerPlace(); viewerFit(); viewerRender(false); } });
     applyNbme();
   }
@@ -4081,8 +4559,8 @@ ${N}.reverse #workspace #proceedBtn{background:#6ed6dd!important;color:#000!impo
   }
   function boot(){
     revealWhenDrawn();
-    if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES + NBME_STYLES; document.head.appendChild(st); }
-    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
+    if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES + NBME_STYLES + NBME_SHELL; document.head.appendChild(st); }
+    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); wrapLabs(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
     // Legacy scripts rename the tab ("Step Exam Simulator A22.x …") after boot; keep the ThunderUSMLE name.
     const titleEl = document.querySelector('head > title');
     if(titleEl) new MutationObserver(() => { if(document.title !== 'ThunderUSMLE') document.title = 'ThunderUSMLE'; }).observe(titleEl, {childList:true, characterData:true, subtree:true});
