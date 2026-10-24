@@ -2095,8 +2095,12 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       const p = byId(id); if(!p || p.dataset.tuWatched) return;
       p.dataset.tuWatched = '1';
       const view = id === 'qbankModePanel' ? 'tuQbank' : 'tuQtests';
-      const o = new MutationObserver(recs => { if(recs.some(r => !(r.target.closest && r.target.closest('#' + view)))) scheduleQbank(true); });
-      o.observe(p, {childList:true, subtree:true, attributes:true, attributeFilter:['class', 'max', 'disabled']});
+      const o = new MutationObserver(recs => {
+        if(!recs.some(r => !(r.target.closest && r.target.closest('#' + view)))) return;
+        if(openedNow(recs, p) || (p.classList.contains('active') && !p.querySelector(':scope > #' + view))){ qbUi.stale = true; paintQbank().catch(e => console.warn('ThunderUI qbank failed', e)); }
+        else scheduleQbank(true);
+      });
+      o.observe(p, {childList:true, subtree:true, attributes:true, attributeOldValue:true, attributeFilter:['class', 'max', 'disabled']});
       qbObservers.push(o);
     });
   }
@@ -2249,15 +2253,19 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const build = byId('qbankModePanel'), tests = byId('qbankTestsPanel');
     const showBuild = !!build && build.classList.contains('active') && !!byId('qbankRunMode'), showTests = !!tests && tests.classList.contains('active');
     if(!showBuild && !showTests) return;
+    const draw = () => {
+      if(showBuild) paintQbBuild(build);
+      if(showTests) paintQbHistory(tests);
+      heroTitle();
+      qbObservers.forEach(o => o.takeRecords());
+    };
     if(qbUi.stale || !qbUi.data){
+      if(qbUi.data) draw(); // the cached data first, so the view is on screen in the frame the tab opens
       const n = ++qbUi.seq; qbUi.stale = false;
       const d = await B.qbank(); if(n !== qbUi.seq) return;
       qbUi.data = d;
     }
-    if(showBuild) paintQbBuild(build);
-    if(showTests) paintQbHistory(tests);
-    heroTitle();
-    qbObservers.forEach(o => o.takeRecords());
+    draw();
   }
   function qbSetForms(ids, on){
     const inputs = qbLegacyForms().filter(i => ids.includes(i.dataset.qbankForm) && i.checked !== on); if(!inputs.length) return;
@@ -2837,19 +2845,32 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(!IPAD && !onSet && setUi.page === 'sync') setSyncPage(false);
     const onSync = !!syncPanel && syncPanel.classList.contains('active') && (IPAD || setUi.page === 'sync'), showSet = onSet && !(!IPAD && setUi.page === 'sync');
     if(!onSync && !showSet) return;
+    const draw = () => {
+      panel.classList.add('tu-has-settings');
+      if(showSet) paintSetView(panel);
+      if(onSync){ syncPanel.classList.add('tu-has-sync'); paintSyncView(syncPanel); }
+      if(setViews.tuSettings) setViews.tuSettings.hidden = !showSet;
+      if(setViews.tuSync && !IPAD) setViews.tuSync.hidden = !onSync;
+      heroTitle();
+      setObserver && setObserver.takeRecords(); syncObserver && syncObserver.takeRecords();
+    };
     if(setUi.stale || !setUi.data){
+      if(setUi.data) draw(); // the cached data first, so the view is on screen in the frame the tab opens
       const n = ++setUi.seq; setUi.stale = false;
       const [d, bk, st] = await Promise.all([B.settings(), !IPAD && onSync && B.backups ? B.backups() : null, IPAD && onSync && navigator.storage && navigator.storage.estimate ? navigator.storage.estimate().catch(() => null) : null]);
       if(n !== setUi.seq) return;
       setUi.data = d; if(bk) setUi.backups = bk; if(st) setUi.storage = st;
     }
-    panel.classList.add('tu-has-settings');
-    if(showSet) paintSetView(panel);
-    if(onSync){ syncPanel.classList.add('tu-has-sync'); paintSyncView(syncPanel); }
-    if(setViews.tuSettings) setViews.tuSettings.hidden = !showSet;
-    if(setViews.tuSync && !IPAD) setViews.tuSync.hidden = !onSync;
-    heroTitle();
-    setObserver && setObserver.takeRecords(); syncObserver && syncObserver.takeRecords();
+    draw();
+  }
+  // a panel that was just opened (or rewritten by the legacy code while open) is painted before the browser draws the
+  // frame: MutationObserver callbacks run after the click handler and before paint, a requestAnimationFrame does not
+  const openedNow = (recs, el) => el.classList.contains('active') && recs.some(r => r.target === el && (r.type === 'childList' || (r.attributeName === 'class' && !/(^|\s)active(\s|$)/.test(r.oldValue || ''))));
+  // warm the Qbank and Settings data so a first visit can draw at once (pointerdown comes ~100 ms before the click)
+  function prefetchViews(which, fresh){
+    const B = bridge(); if(!B) return;
+    if((!which || which === 'qbank') && B.qbank && (fresh || !qbUi.data)) B.qbank().then(d => { if(fresh || !qbUi.data) qbUi.data = d; }).catch(() => {});
+    if((!which || which === 'settings') && B.settings && (fresh || !setUi.data)) B.settings().then(d => { if(fresh || !setUi.data) setUi.data = d; }).catch(() => {});
   }
   function watchSettingsView(){
     const ours = recs => recs.every(r => r.target.closest && r.target.closest('.tu-setview'));
@@ -2858,14 +2879,18 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       setObserver = new MutationObserver(recs => {
         // the legacy renderSettings rewrites the panel and drops the views; put the same nodes back at once
         Object.values(setViews).forEach(v => { if(v.dataset.host === 'settingsPanel' && !p.contains(v)) ensureSetView(p, v.id); });
-        if(!ours(recs)) scheduleSettings(true);
+        if(ours(recs)) return;
+        if(openedNow(recs, p)){ setUi.stale = true; paintSettings().catch(e => console.warn('ThunderUI settings failed', e)); } else scheduleSettings(true);
       });
-      setObserver.observe(p, {childList:true, subtree:true, attributes:true, characterData:true, attributeFilter:['class', 'disabled', 'hidden']});
+      setObserver.observe(p, {childList:true, subtree:true, attributes:true, attributeOldValue:true, characterData:true, attributeFilter:['class', 'disabled', 'hidden']});
     }
     const s = IPAD ? byId('progressSyncPanel') : null;
     if(s && !syncObserver){
-      syncObserver = new MutationObserver(recs => { if(!ours(recs)) scheduleSettings(true); });
-      syncObserver.observe(s, {childList:true, subtree:true, attributes:true, characterData:true, attributeFilter:['class', 'disabled', 'hidden', 'style']});
+      syncObserver = new MutationObserver(recs => {
+        if(ours(recs)) return;
+        if(openedNow(recs, s)){ setUi.stale = true; paintSettings().catch(e => console.warn('ThunderUI settings failed', e)); } else scheduleSettings(true);
+      });
+      syncObserver.observe(s, {childList:true, subtree:true, attributes:true, attributeOldValue:true, characterData:true, attributeFilter:['class', 'disabled', 'hidden', 'style']});
     }
   }
   // Local: Backup & sync is its own sidebar page, drawn over the hidden legacy Settings › Backup tab
@@ -3441,7 +3466,13 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const panel = byId('libraryModePanel');
     if(panel){ libraryObserver = new MutationObserver(() => scheduleLibrary()); libraryObserver.observe(panel, {childList:true, subtree:true}); }
     const side = document.querySelector('#menu aside.modern-sidebar');
-    if(side) new MutationObserver(() => brand()).observe(side, {childList:true});
+    if(side){
+      new MutationObserver(() => brand()).observe(side, {childList:true});
+      side.addEventListener('pointerdown', e => { const t = e.target.closest && e.target.closest('#qbankTab,#qbankTestsTab,#settingsTab,#tuSyncTab,#progressSyncTab'); if(t) prefetchViews(/qbank/i.test(t.id) ? 'qbank' : 'settings', true); }, true);
+      // Local: any other sidebar tab leaves the Backup & sync page before the legacy handler opens its panel
+      if(!IPAD) side.addEventListener('click', e => { const t = e.target.closest && e.target.closest('button'); if(t && t.id !== 'tuSyncTab' && setUi.page === 'sync'){ setUi.page = 'settings'; byId('tuSyncTab')?.classList.remove('active'); } }, true);
+    }
+    setTimeout(() => prefetchViews(), 1500);
     const menu = byId('menu'); if(menu) new MutationObserver(() => { syncDarkFlag(); heroTitle(); scheduleStart(); scheduleQuick(); scheduleQbank(true); if(menu.classList.contains('hidden')){ closeAdd(); closeUpdates(); } }).observe(menu, {attributes:true, attributeFilter:['class']}); // a run hides the menu
     // the legacy setup (Quick practice and the start dialog's controls) repaints inside #quickModePanel
     const quick = byId('quickModePanel');
