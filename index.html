@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=14">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=14">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=15">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=15">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=14"></script>
-<script src="./js/form-updates-core.js?v=14"></script>
-<script src="./js/form-update-store.js?v=14"></script>
-<script src="./js/google-auth.js?v=14"></script>
+<script src="./js/sync-config.js?v=15"></script>
+<script src="./js/form-updates-core.js?v=15"></script>
+<script src="./js/form-update-store.js?v=15"></script>
+<script src="./js/google-auth.js?v=15"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=14" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=15" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=14"></script>
-<script src="./js/qid-migration.js?v=14"></script>
+<script src="jszip.min.js?v=15"></script>
+<script src="./js/qid-migration.js?v=15"></script>
 <script>
 
 
@@ -684,7 +684,7 @@ function answerSessionId(){
   return activeSession.sessionId || (activeSession.sessionId = 'legacy_' + (activeSession.attemptId || activeSession.startedAt || newSittingId()));
 }
 // A paused exam has one frozen clock for countdowns, elapsed time, and resume snapshots.
-function examClockNow(){ return timer.paused && timer.pauseStartedAt != null ? timer.pauseStartedAt : Date.now(); }
+function examClockNow(){ return timer.paused && timer.pauseStartedAt != null ? timer.pauseStartedAt : (window.NavDelay?.frozenAt ?? Date.now()); }
 // A changed item can finish on its original choice after one or more revisions.
 function answerWasChanged(first, final, log){
   if(first == null || final == null) return false;
@@ -1185,6 +1185,7 @@ function commitQuestionTime(){
   state.currentQuestionEnterAt = Date.now();
 }
 function goToQuestionIndex(index){
+  if(window.NavDelay?.on && NavDelay.intercept(index)) return;
   const next = Math.min(Math.max(0, Number(index)||0), questions.length-1);
   if(next === state.current){ renderQuestion(); return; }
   commitQuestionTime();
@@ -5736,7 +5737,7 @@ function showSettingsDropdown(anchor, breakOnly=false){
       ? [dropdownButton('Full Screen','fullscreen'), dropdownButton('Return to Main Menu','menu','danger-item')]
       : [dropdownButton('Increase Text Size','zoomUp'), dropdownButton('Decrease Text Size','zoomDown'), dropdownButton(isExamDarkMode()?'Exam Dark Mode: On':'Exam Dark Mode: Off','examDarkMode','exam-dark-toggle'), dropdownButton('Reverse Color','reverseColor'), dropdownButton('Full Screen','fullscreen'), dropdownButton('Review Screen','review'), dropdownButton('Return to Main Menu','menu','danger-item')];
     const layoutToggle = breakOnly ? '' : `<div class="review-layout-toggle"><div class="review-layout-title">Review explanation layout</div><div class="segmented-toggle"><button type="button" class="${getReviewExplanationLayout()==='split'?'active':''}" data-ref-action="layoutSplit">Split</button><button type="button" class="${getReviewExplanationLayout()==='below'?'active':''}" data-ref-action="layoutBelow">Below</button></div></div>`;
-    box.innerHTML = layoutToggle + (breakOnly ? '' : window.StepExamNotes?.settingHtml() || '') + items.join('');
+    box.innerHTML = layoutToggle + (breakOnly ? '' : window.StepExamNotes?.settingHtml() || '') + (breakOnly ? '' : window.NavDelay?.settingHtml() || '') + items.join('');
     document.body.appendChild(box);
     const rect = anchor.getBoundingClientRect();
     const top = Math.max(6, rect.bottom + 4);
@@ -8467,7 +8468,7 @@ mark[data-v14-highlight-id]{
 mark:hover,
 .v15-highlight:hover,
 span[data-v15-highlight-id]:hover{outline:0!important;box-shadow:none!important;border:0!important;}
-.left-status{width:104px!important;background:#fff!important;border-right:2px solid #333!important;overflow:auto!important;}
+.left-status{width:104px!important;background:#fff!important;border-right:2px solid #333!important;overflow:auto!important;overflow-x:hidden!important;}
 .topbar{left:104px!important;}
 .workspace{left:104px!important;}
 .bottombar{left:104px!important;}
@@ -10535,11 +10536,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=14"></script>
-<script src="./js/sync-storage.js?v=14"></script>
-<script src="./js/progress-sync.js?v=14"></script>
-<script src="./js/library-backup.js?v=14"></script>
-<script src="./js/qid-settings.js?v=14"></script>
+<script src="./js/sync-merge.js?v=15"></script>
+<script src="./js/sync-storage.js?v=15"></script>
+<script src="./js/progress-sync.js?v=15"></script>
+<script src="./js/library-backup.js?v=15"></script>
+<script src="./js/qid-settings.js?v=15"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11016,10 +11017,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=14"></script>
-<script src="./exam-notes.js?v=14"></script>
-<script src="./app-update.js?v=14"></script>
-<script src="./js/form-updates.js?v=14"></script>
+<script src="./bulk-import.js?v=15"></script>
+<script src="./exam-notes.js?v=15"></script>
+<script src="./app-update.js?v=15"></script>
+<script src="./js/form-updates.js?v=15"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11105,6 +11106,137 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h1,htm
 html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h4,
 html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h4{color:#9BE7C1!important}
 </style>
-<script src="./thunder-ui.js?v=14"></script>
+<style id="exam-reverse-color-styles">
+/* Reverse Color (NBME style): real colors instead of the old invert filter, so highlights stay yellow; black question area,
+   question list, top/bottom bars and the Notes, Lab Values and Calculator panels. Generated from the Exam Dark Mode rules (blue-grays made neutral).
+   Modern style keeps the filter. */
+:root:not([data-tu-exam="modern"]) #examScreen.reverse{filter:none!important;background:#000!important;color:#fff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse img,:root:not([data-tu-exam="modern"]) #examScreen.reverse svg{filter:none!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse{background:#000000!important;color:#fcfcfc!important;filter:none!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .left-status{background:#090909!important;border-color:#3a3a3a!important;color:#fcfcfc!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-title{background:#131313!important;color:#f5fbff!important;border-color:#3a3a3a!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row,:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-item{background:#131313!important;color:#f5f5f5!important;border-color:#3a3a3a!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .topbar{background:linear-gradient(110deg,#0f0f0f,#0d4f6c)!important;border-color:#4f4f4f!important;color:#f5fbff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .item-box,:root:not([data-tu-exam="modern"]) #examScreen.reverse .center-counter{background:#1b1b1b!important;color:#f5fbff!important;border-color:#7fc5df!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .tool button{color:#f5fbff!important}
+:root:not([data-tu-exam="modern"]) .reverse .tool-icon{background:#e8f6fb!important;color:#0b2435!important;border-color:#c0c0c0!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .workspace{background:#000000!important;color:#fcfcfc!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .question-main,:root:not([data-tu-exam="modern"]) #examScreen.reverse .stem,:root:not([data-tu-exam="modern"]) #examScreen.reverse .question-title,:root:not([data-tu-exam="modern"]) #examScreen.reverse .question-meta{color:#edf6fb!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answers{background:#101010!important;border-color:#505050!important;box-shadow:0 16px 30px rgba(0,0,0,.24)!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer{background:#1a1a1a!important;color:#eaf5fa!important;border-color:#505050!important}
+:root:not([data-tu-exam="modern"]) .reverse .answer:hover{background:#2d2d2d!important;color:#ffffff!important}
+:root:not([data-tu-exam="modern"]) .reverse .answer.selected{background:#0f678c!important;color:#ffffff!important;border-color:#8bddf5!important}
+:root:not([data-tu-exam="modern"]) .reverse .answer.correct{background:#14583e!important;color:#eafff3!important;border-color:#64e3a0!important}
+:root:not([data-tu-exam="modern"]) .reverse .answer.incorrect{background:#632f3a!important;color:#ffe9ed!important;border-color:#ff9aa8!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-panel,:root:not([data-tu-exam="modern"]) #examScreen.reverse .below-exp-panel{background:#101010!important;color:#fcfcfc!important;border-color:#505050!important;box-shadow:0 16px 30px rgba(0,0,0,.25)!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-tabs{background:#0a0a0a!important;border-color:#505050!important}
+:root:not([data-tu-exam="modern"]) .reverse .qbank-tab{background:#1a1a1a!important;color:#ebebeb!important;border-color:#505050!important}
+:root:not([data-tu-exam="modern"]) .reverse .qbank-tab.active{background:#3f3f3f!important;color:#ffffff!important;border-color:#8bddf5!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body,:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body p,:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body li,:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body td,:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body th{color:#fcfcfc!important}
+:root:not([data-tu-exam="modern"]) .reverse .qbank-body a{color:#8bddf5!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-section,:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-correct,:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-wrong,:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-rule,:root:not([data-tu-exam="modern"]) #examScreen.reverse .explanation-panel{background:#191919!important;color:#fcfcfc!important;border-color:#505050!important}
+:root:not([data-tu-exam="modern"]) .reverse .exp-section h1,:root:not([data-tu-exam="modern"]) .reverse .exp-section h2,:root:not([data-tu-exam="modern"]) .reverse .exp-section h3,:root:not([data-tu-exam="modern"]) .reverse .exp-section h4,:root:not([data-tu-exam="modern"]) .reverse .exp-correct h3,:root:not([data-tu-exam="modern"]) .reverse .exp-wrong>b,:root:not([data-tu-exam="modern"]) .reverse .exp-rule>b{color:#f5fbff!important}
+:root:not([data-tu-exam="modern"]) .reverse .exp-muted{color:#d5d5d5!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .locked-banner{background:#4b3a1c!important;color:#fff1bd!important;border-color:#b88b37!important}
+:root:not([data-tu-exam="modern"]) .reverse .report-card,:root:not([data-tu-exam="modern"]) .reverse .review-card,:root:not([data-tu-exam="modern"]) .reverse .break-page,:root:not([data-tu-exam="modern"]) .reverse .break-card{background:#101010!important;color:#fcfcfc!important;border-color:#505050!important}
+:root:not([data-tu-exam="modern"]) .reverse table,:root:not([data-tu-exam="modern"]) .reverse th,:root:not([data-tu-exam="modern"]) .reverse td{border-color:#505050!important;color:#fcfcfc!important}
+:root:not([data-tu-exam="modern"]) .reverse th{background:#282828!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .bottombar{background:#0a0a0a!important;color:#fcfcfc!important;border-color:#3a3a3a!important}
+:root:not([data-tu-exam="modern"]) .reverse .time-box,:root:not([data-tu-exam="modern"]) .reverse .lock,:root:not([data-tu-exam="modern"]) .reverse .end-block{color:#fcfcfc!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) .reference-settings-dropdown{background:#101010;color:#fcfcfc;border-color:#505050;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) .reference-settings-dropdown button{background:#101010;color:#fcfcfc;border-color:#3a3a3a}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) .reference-settings-dropdown button:hover{background:#2f2f2f}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) .reference-settings-dropdown .review-layout-toggle{background:#0a0a0a;border-color:#3a3a3a}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) .reference-settings-dropdown .review-layout-title{color:#d5d5d5}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) .reference-settings-dropdown .segmented-toggle{background:#1a1a1a;border-color:#505050}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) .reference-settings-dropdown .segmented-toggle button{color:#ebebeb!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) .reference-settings-dropdown .segmented-toggle button.active{background:#2ca6cf!important;color:#ffffff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .left-status{background:#050505!important;border-right-color:#4b4b4b!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-title{background:#1a1a1a!important;color:#f8fcff!important;border-bottom-color:#595959!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row,:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row:nth-child(even){background:#121212!important;color:#eaf6fb!important;border-bottom-color:#404040!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row:hover{background:#2f2f2f!important;color:#ffffff!important;box-shadow:inset 0 0 0 2px #79d7f2!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row.current{background:#087ca8!important;color:#ffffff!important;outline:2px solid #9cecff!important;outline-offset:-2px}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row.answered{background:#174936!important;color:#effff7!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row.answered.current{background:#087ca8!important;color:#ffffff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row .dot{background:#dadada!important;box-shadow:0 0 0 2px #363636!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row.answered .dot{background:#51e0a0!important;box-shadow:0 0 0 2px #1d7755!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row.flagged .num::after{color:#ffb454!important;text-shadow:0 0 4px #20170a}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .feedback.answer-meta-panel{background:#141414!important;color:#eff9fc!important;border-color:#5e5e5e!important;box-shadow:0 10px 24px rgba(0,0,0,.25)!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-meta-left b{color:#f8fdff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .time-spent-card{color:#eff9fc!important;border-left-color:#5e5e5e!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .time-spent-value{color:#8fe8ff!important;font-weight:900}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .time-spent-label{color:#d9d9d9!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer.correctChoice{background:#17613f!important;color:#effff7!important;border-color:#72e6ad!important;box-shadow:inset 4px 0 0 #a5ffd0!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer.incorrectChoice{background:#713745!important;color:#fff0f2!important;border-color:#ff9cab!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-section h1,:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-section h2,:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-section h3,:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-section h4,:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-section h5,:root:not([data-tu-exam="modern"]) #examScreen.reverse .explanation-panel h1,:root:not([data-tu-exam="modern"]) #examScreen.reverse .explanation-panel h2,:root:not([data-tu-exam="modern"]) #examScreen.reverse .explanation-panel h3,:root:not([data-tu-exam="modern"]) #examScreen.reverse .explanation-panel h4,:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body h1,:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body h2,:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body h3,:root:not([data-tu-exam="modern"]) #examScreen.reverse .qbank-body h4{color:#ffffff!important;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-section h3,:root:not([data-tu-exam="modern"]) #examScreen.reverse .explanation-panel h3{border-bottom:1px solid #616161!important;padding-bottom:5px}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-correct{background:#153d32!important;border-left-color:#64e2a2!important;color:#effff7!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-wrong{background:#4b2932!important;border-left-color:#ff9cab!important;color:#fff0f2!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .exp-rule{background:#1e1e1e!important;border-left-color:#82dfff!important;color:#eff9fc!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .modern-report,:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-card,:root:not([data-tu-exam="modern"]) #examScreen.reverse .review-card{background:#0d0d0d!important;color:#eaf6fb!important;border-color:#545454!important;box-shadow:0 18px 44px rgba(0,0,0,.32)!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .modern-report .report-hero{border-bottom-color:#424242!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .modern-report h2,:root:not([data-tu-exam="modern"]) #examScreen.reverse .modern-report h3,:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-section-title{color:#ffffff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .modern-report .report-hero p,:root:not([data-tu-exam="modern"]) #examScreen.reverse .modern-report .report-q-table th{color:#dadada!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-ring{background:conic-gradient(#57d5f2 calc(var(--p)*1%),#2b2b2b 0)!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-ring>div{background:#181818!important;border-color:#949494!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-ring b{color:#f3fdff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-ring span{color:#e2e2e2!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-tabs .report-tab{background:#1a1a1a!important;color:#f4f4f4!important;border-color:#525252!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-tabs .report-tab.active{background:#087ca8!important;color:#ffffff!important;border-color:#9cecff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-sort-controls{background:linear-gradient(135deg,#191919,#111111)!important;border-color:#525252!important;box-shadow:0 8px 20px rgba(0,0,0,.25)!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-sort-controls label{color:#ebebeb!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-sort-controls select{background:#232323!important;color:#f1fbff!important;border-color:#959595!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-q-table th{color:#e6e6e6!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-q-table td{background:#181818!important;color:#eaf6fb!important;border-color:#484848!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-q-table tr:hover td{background:#282828!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-dot.ok{background:#17613f!important;color:#effff7!important;border:1px solid #72e6ad!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-dot.bad{background:#713745!important;color:#fff0f2!important;border:1px solid #ff9cab!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-dot.blank{background:#2f2f2f!important;color:#edf7fb!important;border:1px solid #9a9a9a!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .report-actions button,:root:not([data-tu-exam="modern"]) #examScreen.reverse .menu-actions button{filter:none!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-audit{background:linear-gradient(135deg,#161616,#0d0d0d)!important;border-color:#545454!important;color:#eaf6fb!important;box-shadow:0 12px 28px rgba(0,0,0,.28)!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-audit h3{color:#ffffff!important;border-bottom:1px solid #545454!important;padding-bottom:8px}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box{background:#1d1d1d!important;border-color:#515151!important;color:#eaf6fb!important;box-shadow:0 6px 14px rgba(0,0,0,.18)!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box b{color:#f5fcff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box span{color:#e3e3e3!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box.bad{background:#4c2a36!important;border-color:#a65f70!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box.bad b{color:#ffb4bf!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box.good{background:#164637!important;border-color:#4da97b!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box.good b{color:#8df0b9!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box.neutral{background:#4a3b20!important;border-color:#a98a46!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-box.neutral b{color:#ffe39a!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .answer-change-note{color:#dadada!important}
+:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body h1,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body h2,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body h3,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body h4,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body[data-panel-mode] .exp-section h1,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body[data-panel-mode] .exp-section h2,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body[data-panel-mode] .exp-section h3,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body[data-panel-mode] .exp-section h4{color:#EAF6FB!important}
+:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body .exp-section.exp-correct h1,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body .exp-section.exp-correct h2,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body .exp-section.exp-correct h3,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body .exp-section.exp-correct h4,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body[data-panel-mode] .exp-section.exp-correct h1,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body[data-panel-mode] .exp-section.exp-correct h2,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body[data-panel-mode] .exp-section.exp-correct h3,:root:not([data-tu-exam="modern"]) body #examScreen.reverse .qbank-body[data-panel-mode] .exp-section.exp-correct h4{color:#9BE7C1!important}
+:root:not([data-tu-exam="modern"]) #examScreen#examScreen.reverse #stem#stem .patient-chart,:root:not([data-tu-exam="modern"]) #examScreen#examScreen.reverse #stem#stem .patient-chart *,:root:not([data-tu-exam="modern"]) #examScreen.reverse .status-row .num{color:#fff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse :where(.patient-chart table,.patient-chart tr,.patient-chart th,.patient-chart td){background:transparent!important;border-color:#555!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .review-panel{background:#0a0a0a!important;color:#fff!important;border-color:#333!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .review-panel h2,:root:not([data-tu-exam="modern"]) #examScreen.reverse .review-panel p,:root:not([data-tu-exam="modern"]) #examScreen.reverse .review-panel p b{color:#fff!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #examNotesPanel{background:#141414!important;color:#fff!important;border-color:#555!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #examNotesPanel *{color:inherit}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #examNotesPanel textarea{background:#000!important;color:#fff!important;border-color:#555!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #examNotesPanel button{background:#2a2a2a!important;color:#fff!important;border-color:#555!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-table-wrap,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-table,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-table td{background:#000!important;color:#fff!important;border-color:#444!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel *{color:#fff!important;border-color:#444!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-panel-head,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-controls,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-tabs{background:#0a0a0a!important;border-color:#444!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-tab,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-table th,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel input,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel select{background:#1a1a1a!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-tab.active,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-section-row td{background:#2a2a2a!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-close{background:#000!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-hit,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #labPanel .lab-hit *{background:#fff200!important;color:#000!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc{background:#111!important;color:#fff!important;border-color:#444!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-head,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-shell{background:transparent!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-display{background:#000!important;color:#fff!important;border-color:#666!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-close{background:#000!important;color:#fff!important;border-color:#666!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-btn{background:linear-gradient(#3a3a3a,#262626)!important;color:#fff!important;border-color:#666!important;box-shadow:none!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-btn.memory{background:linear-gradient(#56346a,#432853)!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-btn.op{background:linear-gradient(#2d3f6b,#223156)!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-btn.clear,:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-btn.equals{background:linear-gradient(#6b5d1c,#544815)!important}
+:root:not([data-tu-exam="modern"]) body:has(#examScreen.reverse) #floatingCalc .calc-help{color:#ccc!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse .topbar,:root:not([data-tu-exam="modern"]) #examScreen.reverse .bottombar{background:#000!important;border-color:#333!important;color:#fff!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse mark,:root:not([data-tu-exam="modern"]) #examScreen.reverse .v15-highlight,:root:not([data-tu-exam="modern"]) #examScreen.reverse [data-v15-highlight-id]{background:#fff200!important;color:#000!important}
+:root:not([data-tu-exam="modern"]) #examScreen.reverse mark *,:root:not([data-tu-exam="modern"]) #examScreen.reverse .v15-highlight *{color:#000!important}
+:root:not([data-tu-exam="modern"]) #examScreen#examScreen.reverse #stem#stem :is(mark,.v15-highlight,[data-v15-highlight-id]),:root:not([data-tu-exam="modern"]) #examScreen#examScreen.reverse #stem#stem :is(mark,.v15-highlight,[data-v15-highlight-id]) *{color:#000!important}
+</style>
+<script src="./nav-delay.js?v=15"></script>
+<script src="./thunder-ui.js?v=15"></script>
 </body>
 </html>

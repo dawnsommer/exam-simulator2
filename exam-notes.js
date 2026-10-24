@@ -2,8 +2,8 @@
 (function(){
   'use strict';
   const prefKey = location.pathname.includes('Step_Exam_') ? 'StepExamLocalKeepNotesOpen' : 'exam-simulator2:keepNotesOpen';
-  let keepOpen = true;
-  try { keepOpen = localStorage.getItem(prefKey) !== '0'; } catch(_) {}
+  let keepOpen = false;
+  try { keepOpen = localStorage.getItem(prefKey) === '1'; } catch(_) {}
   let context = '';
   const style = document.createElement('style');
   style.textContent = `

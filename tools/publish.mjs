@@ -29,7 +29,7 @@ export function buildManifest(root,commit){
 }
 export function publish(root,output,commit){
   const manifest=buildManifest(root,commit);
-  const publicFiles=['index.html','manifest.webmanifest','offline.html','privacy.html','sw.js','app-update.js','bulk-import.js','exam-notes.js','jszip.min.js','thunder-ui.js','js','icons','ui_icons'];
+  const publicFiles=['index.html','manifest.webmanifest','offline.html','privacy.html','sw.js','app-update.js','bulk-import.js','exam-notes.js','nav-delay.js','jszip.min.js','thunder-ui.js','js','icons','ui_icons'];
   const allowed=new Set([...publicFiles,'.nojekyll','form-updates-manifest.json']);
   if(path.resolve(output)===path.resolve(root)||path.resolve(root).startsWith(path.resolve(output)+path.sep))throw new Error('Choose a dedicated site output directory.');
   if(fs.existsSync(output)){

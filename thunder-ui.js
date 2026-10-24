@@ -7,7 +7,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 14;
+  const TU_RELEASE = 15;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
