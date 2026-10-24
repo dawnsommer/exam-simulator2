@@ -6,6 +6,8 @@
   'use strict';
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
+  // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
+  const TU_RELEASE = 14;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -289,6 +291,12 @@ ${H} #tuHome .tu-btn.text{background:transparent!important;color:var(--tu-p)!imp
 .tu-form-actions>.tu-grow{flex:1;min-width:0}
 ${H} #tuHome .tu-kebab{width:40px;height:40px;min-width:40px;border-radius:50%!important;border:0!important;background:transparent!important;color:var(--tu-on2)!important;display:inline-flex;align-items:center;justify-content:center;padding:0!important;box-shadow:none!important;margin:0!important}
 ${H} #tuHome .tu-kebab:hover{background:var(--tu-s2)!important}
+/* narrow cards (New attempt + Review + ⋯): tighter buttons, then let the labels shrink so ⋯ never leaves the card */
+.tu-grid>.tu-form{container-type:inline-size}
+${H} #tuHome .tu-form-actions>.tu-btn{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+${H} #tuHome .tu-form-actions>.tu-kebab{flex:none}
+@container (max-width:300px){${H} #tuHome .tu-form-actions .tu-btn{padding:0 12px!important;gap:6px}${H} #tuHome .tu-form-actions{gap:4px}}
+@container (max-width:250px){${H} #tuHome .tu-form-actions .tu-btn>svg{display:none}}
 .tu-nomatch{grid-column:1/-1;padding:36px;text-align:center;color:var(--tu-on3);background:var(--tu-surface);border:1px dashed var(--tu-line);border-radius:24px}
 /* compact list */
 .tu-grid.tu-list{grid-template-columns:minmax(0,1fr);gap:8px}
@@ -355,6 +363,7 @@ ${H} #tuSheet .tu-btn.outline{background:transparent!important;color:var(--tu-on
 ${H} #tuSheet .tu-btn.small{height:38px!important;padding:0 14px!important;font:700 13px var(--tu-font)!important}
 ${H} #tuSheet .tu-btn.danger{height:40px!important;padding:0 16px!important;font:700 13.5px var(--tu-font)!important;background:transparent!important;color:var(--tu-bad)!important;border:1px solid var(--tu-bad)!important}
 ${H} #tuSheet .tu-btn.dangerfill{height:40px!important;padding:0 16px!important;font:700 13.5px var(--tu-font)!important;background:var(--tu-bad)!important;color:var(--tu-surface)!important}
+${H} .tu-setview .tu-btn.danger{background:transparent!important;color:var(--tu-bad)!important;border:1px solid var(--tu-bad)!important;box-shadow:none!important}
 ${H} #tuSheet .tu-btn:disabled{opacity:.45!important;cursor:not-allowed}
 .tu-sheet section{display:flex;flex-direction:column;gap:10px}
 ${H} #tuSheet h3{margin:0!important;font-size:15px!important;font-weight:800!important;color:var(--tu-on)!important;letter-spacing:0!important}
@@ -818,7 +827,10 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
 @media (max-width:600px){.tu-grid{grid-template-columns:minmax(0,1fr)}${H} #tuHome .tu-search{width:100%;flex:1 1 100%}
   /* phones: title, download and ⋯ on one line (⋯ at the right edge, so its menu opens on screen), search below */
   .tu-home-head{gap:10px 8px}.tu-home-title{flex:1;min-width:0}.tu-home-tools{display:contents}${H} #tuHome .tu-search{order:10}
-  .tu-more-panel{max-width:calc(100vw - 24px)}}
+  .tu-more-panel{max-width:calc(100vw - 24px)}
+  ${H}[data-tu-page="library"] aside.modern-sidebar #tuAddForms{display:none!important}
+  ${H} #tuHome .tu-addmini{display:inline-flex!important}}
+${H} #tuHome .tu-addmini{display:none}
 
 /* Settings + Backup & sync (boards Settings, Sync): the legacy panels stay in the DOM, off-screen */
 ${H} :is(#settingsPanel.tu-has-settings,#progressSyncPanel.tu-has-sync).active{display:block!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
@@ -1596,7 +1608,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const ringPct = cls => { const r = rings.find(x => x.classList.contains(cls)); const m = r && (r.querySelector('b')?.textContent || '').match(/(\d+(?:\.\d+)?)\s*%/); return m ? Number(m[1]) : null; };
     const progress = ringPct('progress'), score = ringPct('score');
     const qline = (legacy?.querySelector('.library-question-count-v201')?.firstChild?.textContent || '').trim();
-    const [qa, qt] = qline.split('/').map(x => Number(String(x).replace(/[^\d]/g, '')) || 0);
+    // before the legacy summary is drawn the line has no "/": default both counts so the whole home paint does not throw
+    const [qa = 0, qt = 0] = qline.split('/').map(x => Number(String(x).replace(/[^\d]/g, '')) || 0);
     const fline = Array.from(legacy ? legacy.querySelectorAll('.library-overall-pill-v201') : []).map(x => x.textContent).find(t => /forms? complete/i.test(t)) || '';
     const fm = fline.match(/(\d+)\s*\/\s*(\d+)/);
     const fd = fm ? Number(fm[1]) : forms.filter(f => f.s.completed).length, ft = fm ? Number(fm[2]) : forms.length;
@@ -1665,9 +1678,11 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   function moreHtml(){
     const items = [['exportCatalogBtn', 'Save library index'], ['exportFullLibraryBackupBtn', 'Export form library ZIP'], ['importFullLibraryBackupBtn', 'Import form library ZIP'], ['exportProgressOnlyBackupBtn', 'Export progress file'], ['importProgressOnlyBackupBtn', 'Import progress file'], ['updateAppShellBtn', 'Reload latest version']].filter(([id]) => byId(id));
+    const fsOk = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled), fsOn = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if(fsOk) items.unshift(['', fsOn ? 'Exit full screen' : 'Full screen']);
     if(!items.length) return '';
-    const version = (byId('appVersionLabel')?.textContent || '').trim();
-    return `<details class="tu-more"><summary class="tu-iconbtn" aria-label="More library actions" title="More">${icon('<circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/>', 20)}</summary><div class="tu-more-panel">${items.map(([id, l]) => `<button type="button" data-tu-proxy="${id}">${l}</button>`).join('')}${version ? `<small>${esc(version)}</small>` : ''}</div></details>`;
+    const version = (byId('appVersionLabel')?.textContent || '').trim() || 'Version ' + TU_RELEASE;
+    return `<details class="tu-more"><summary class="tu-iconbtn" aria-label="More library actions" title="More">${icon('<circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/>', 20)}</summary><div class="tu-more-panel">${items.map(([id, l]) => id ? `<button type="button" data-tu-proxy="${id}">${l}</button>` : `<button type="button" data-tu-fullscreen>${l}</button>`).join('')}${version ? `<small>${esc(version)}</small>` : ''}</div></details>`;
   }
 
   let libraryQueued = false, libraryObserver = null, sawAllFilter = false;
@@ -1686,7 +1701,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const qs = forms.reduce((n, f) => n + (Number(f.rec.totalQuestions) || 0), 0);
     setRegion('count', forms.length ? esc(plural(forms.length, 'form') + ' · ' + qs.toLocaleString() + ' questions') : '');
     const upd = byId('formUpdatesCheck');
-    setRegion('updates', upd ? `<button type="button" class="tu-iconbtn" data-tu-updates aria-haspopup="dialog" aria-label="Check for form updates" title="Check for form updates">${icon(ICONS.download, 19)}</button>` : '');
+    // phones: a small Add forms button sits left of the download button instead of the floating one
+    const addMini = byId('tuAddForms') ? `<button type="button" class="tu-iconbtn tu-addmini" data-tu-addmini aria-haspopup="dialog" aria-label="Add forms" title="Add forms">${icon(ICONS.plus, 20)}</button>` : '';
+    setRegion('updates', addMini + (upd ? `<button type="button" class="tu-iconbtn" data-tu-updates aria-haspopup="dialog" aria-label="Check for form updates" title="Check for form updates">${icon(ICONS.download, 19)}</button>` : ''));
     setRegion('more', moreHtml());
     setRegion('overall', overallHtml(forms));
     setRegion('recent', recentHtml(forms));
@@ -1737,6 +1754,12 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     heroTitle();
     if(libraryObserver) libraryObserver.takeRecords();
   }
+  function toggleFullscreen(){
+    const d = document, el = d.documentElement;
+    const p = (d.fullscreenElement || d.webkitFullscreenElement) ? (d.exitFullscreen || d.webkitExitFullscreen).call(d) : (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+    if(p && p.catch) p.catch(err => console.warn('ThunderUI: full screen refused', err));
+  }
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => scheduleLibrary()));
   function onHomeClick(e){
     const t = e.target.closest('button, [data-tu-cat]'); if(!t || !byId('tuHome').contains(t)) return;
     if(t.dataset.tuGroup === 'cms'){ homeUi.cms = true; if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); return; }
@@ -1747,6 +1770,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(t.hasAttribute('data-tu-tabs-more')){ homeUi.tabsOpen = !homeUi.tabsOpen; scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-see-all')){ homeUi.cms = false; store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
     if(t.hasAttribute('data-tu-updates')){ openUpdates(t); return; }
+    if(t.hasAttribute('data-tu-addmini')){ openAdd('slot', t); return; }
+    if(t.hasAttribute('data-tu-fullscreen')){ t.closest('details')?.removeAttribute('open'); toggleFullscreen(); return; }
     if(t.id === 'tuCustomizeTabs'){ setUi.sec = 'tabs'; store.set(SET_KEY, 'tabs'); if(setUi.page === 'sync') setSyncPage(false); byId('settingsTab')?.click(); setSyncPage(false); return; }
     const act = t.dataset.tuAct, id = t.dataset.id; if(!act || !id) return;
     if(act === 'sheet'){ openSheet(id, t); return; }
@@ -2750,7 +2775,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   function advancedBody(){
     const q = qidModel();
-    if(!q.card) return `<div class="tu-sechead"><h2>Question ID migration</h2><p>Loading the migration tools…</p></div>`;
+    if(!q.card) return `<div class="tu-sechead"><h2>Question ID migration</h2><p>Loading the migration tools…</p></div>` + wipeHtml();
     const cur = !q.scanned ? 1 : !q.ok ? (setUi.qidBackup ? 3 : 2) : 5;
     const btn = (act, label, main) => q.has(act) ? `<button type="button" class="tu-btn small ${main ? '' : 'outline'}" data-tu-qid="${act}"${q.busy ? ' disabled' : ''}>${label}</button>` : '';
     const step = (n, title, meta, act, done) => {
@@ -2769,7 +2794,25 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       step(4, 'Verify library', q.ok ? 'Every form verified' : 'Checks the result', btn('verify', 'Verify', cur === 4), false) +
       step(5, 'Export full library, then progress', IPAD ? `iPad: establish the new cloud baseline${q.baseline ? ' (' + esc(q.baseline) + ')' : ''}, then export from Backup &amp; sync` : 'From Backup &amp; sync, so other devices import the same IDs', last, false) +
       `</ol>${needList}${q.msg ? `<p class="tu-qidmsg" role="status">${esc(q.msg)}</p>` : ''}` +
-      `<div class="tu-settools">${btn('restore', 'Restore pre-migration backup')}${byId('scanDataFolderBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="scanDataFolderBtn">Rebuild library index</button>' : ''}${byId('exportCatalogBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="exportCatalogBtn">Save library index</button>' : ''}</div>`;
+      `<div class="tu-settools">${btn('restore', 'Restore pre-migration backup')}${byId('scanDataFolderBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="scanDataFolderBtn">Rebuild library index</button>' : ''}${byId('exportCatalogBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="exportCatalogBtn">Save library index</button>' : ''}</div>` + wipeHtml();
+  }
+  /* Advanced › Device data: erase this app's IndexedDB (phones where Safari's own "Remove website data" does not work). */
+  function wipeHtml(){
+    const hint = IPAD ? 'Deletes the forms, progress, Qbank and sync records stored in this browser. Google Drive backups and exported files are not touched; reconnect Backup &amp; sync afterwards to restore.' : 'Forgets the DATA folder link and other records kept in this browser. Files in your DATA folder are not touched.';
+    return `<div class="tu-sechead" style="margin-top:28px"><h2>Device data</h2></div>` + setRow('Delete data on this device', hint, `<button type="button" class="tu-btn small danger" data-tu-wipe${wipeBusy ? ' disabled' : ''}>${wipeBusy ? 'Deleting…' : 'Delete data'}</button>`);
+  }
+  let wipeBusy = false;
+  async function wipeDeviceData(){
+    if(wipeBusy) return;
+    if(!confirm(IPAD ? 'Delete everything this app stores on this device (forms, progress, Qbank, sync records)?\n\nGoogle Drive backups are not touched. Export or back up first if this device has progress that is not in Google Drive.' : 'Delete the browser data of this app (DATA folder link and records)?\n\nYour DATA folder files are not touched.')) return;
+    if(IPAD && String(prompt('Type DELETE to erase this device\'s library and progress.') || '').trim().toUpperCase() !== 'DELETE') return;
+    wipeBusy = true; scheduleSettings(true);
+    let names = [];
+    try{ names = indexedDB.databases ? (await indexedDB.databases()).map(d => d.name).filter(Boolean) : []; }catch(e){}
+    // Open connections only delay a delete; it finishes when this page unloads, before the reloaded page opens anything.
+    await Promise.all(names.map(n => new Promise(res => { try{ const r = indexedDB.deleteDatabase(n); r.onsuccess = r.onerror = res; r.onblocked = () => setTimeout(res, 300); }catch(e){ res(); } })));
+    try{ sessionStorage.clear(); }catch(e){}
+    location.reload();
   }
   function adminBody(){
     const box = legacyIn('.fu-admin');
@@ -2790,7 +2833,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   function syncBuild(){ const m = txt(document.querySelector('#progressSyncPanel .sync-footer')).match(/SYNC-(V[\d.]+)/i); return m ? m[1] : ''; }
   function aboutBody(){
     const file = decodeURIComponent(location.pathname.split('/').pop() || ''), lv = (file.match(/v(\d+(?:\.\d+)+)/i) || [0, ''])[1];
-    const ver = IPAD ? ['App version ' + ((window.StepAppUpdates && window.StepAppUpdates.version) || txt(byId('appVersionLabel')).replace(/\D+/g, '') || '—'), syncBuild() ? 'sync ' + syncBuild() : ''].filter(Boolean).join(' · ') : 'Local app' + (lv ? ' · simulator ' + lv : '');
+    const shell = IPAD ? Number((window.StepAppUpdates && window.StepAppUpdates.version) || txt(byId('appVersionLabel')).replace(/\D+/g, '')) || 0 : 0;
+    const ver = ['Version ' + TU_RELEASE, IPAD ? (shell && shell !== TU_RELEASE ? 'app shell ' + shell + ' (reload to update)' : '') : 'Local app' + (lv ? ' · simulator ' + lv : ''), IPAD && syncBuild() ? 'sync ' + syncBuild() : ''].filter(Boolean).join(' · ');
     return `<div class="tu-sechead"><h2>About &amp; updates</h2></div>` + setRow('Version', esc(ver), '') +
       (IPAD && byId('updateAppShellBtn') ? setRow('Update app', 'Reloads the latest version. Your library and progress are kept.', '<button type="button" class="tu-btn small" data-tu-proxy="updateAppShellBtn">Update &amp; reload</button>') : !IPAD ? setRow('Updates', 'Replace this HTML file in your Step Simulator folder with the new version. Your DATA folder is not touched.', '') : '') +
       (IPAD ? setRow('Privacy policy', '', `<a class="tu-btn small outline" href="./privacy.html" target="_blank" rel="noopener">Open${icon(SET_ICONS.ext, 15)}</a>`) : '');
@@ -3039,6 +3083,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(t.hasAttribute('data-tu-reset')){ legacyDo('qbank', () => clickLegacy('#settingsPanel [data-v9="settings-reset-qbank"]')); return; }
     if(ds.tuQid){ if(ds.tuQid === 'backup') setUi.qidBackup = false; clickLegacy(`#qidMigrationCard [data-qid-action="${ds.tuQid}"]`); scheduleSettings(true); return; }
     if(t.hasAttribute('data-tu-gosync')){ openSyncPage(); return; }
+    if(t.hasAttribute('data-tu-wipe')){ wipeDeviceData(); return; }
     if(ds.tuAdminact) return adminAct(ds.tuAdminact, t);
     if(ds.tuColl){ setUi.open[ds.tuColl] = !setUi.open[ds.tuColl]; scheduleSettings(); return; }
     if(ds.tuMirror){ const b = document.querySelector(ds.tuMirror); if(!b || b.disabled){ console.warn('ThunderUI: legacy control missing', ds.tuMirror); return; } b.click(); scheduleSettings(true); return; }
@@ -3269,7 +3314,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
      Review incorrect: a review filter that steps Previous / Next through the incorrect items only (both styles); it writes nothing. */
   const EXAM_KEY = 'ThunderUSMLE.examStyle';
   const XI = {
-    flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>', prev:'<path d="m15 6-6 6 6 6"/>', next:'<path d="m9 6 6 6-6 6"/>',
+    flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>', home:'<path d="M4 11 12 4l8 7M6 9.5V20h4.5v-6h3v6H18V9.5"/>', prev:'<path d="m15 6-6 6 6 6"/>', next:'<path d="m9 6 6 6-6 6"/>',
     clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
     labs:'<path d="M9 3h6M10 3v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4A1.5 1.5 0 0 0 19 19l-5-10V3"/><path d="M7.5 14h9"/>',
     notes:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
@@ -3329,7 +3374,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const center = q ? `<div class="tux-center"><button type="button" class="tux-round" data-tux="prev" aria-label="Previous item"${byId('prevBtn') && byId('prevBtn').disabled && !ro ? ' disabled' : ''}>${icon(XI.prev, 18)}</button><span class="tux-count">${m.current + 1} / ${m.total}</span><button type="button" class="tux-round primary" data-tux="next" aria-label="Next item"${byId('nextBtn') && byId('nextBtn').disabled && !ro ? ' disabled' : ''}>${icon(XI.next, 18)}</button></div>` : '<span class="tux-spacer"></span>';
     const timer = q && !m.review && m.timed ? `<button type="button" class="tux-timer" data-tux="time" title="Block and day time remaining">${icon(XI.clock, 16)}<b data-tux-t="block"></b><span data-tux-t="day"></span></button>` : '';
     const tools = EXAM_TOOLS.filter(([, id]) => shown(id) || (id !== 'fullscreenBtn' && byId(id) && !byId(id).closest('.hidden'))).map(([k, id, l]) => `<button type="button" class="tux-tool" data-tux="tool" data-id="${id}" title="${l}"${id === 'notesBtn' ? ` aria-expanded="${byId(id).getAttribute('aria-expanded') === 'true'}"` : ''}>${icon(XI[k], 19)}${l}</button>`).join('');
-    return item + tags + mark + center + timer + `<div class="tux-tools" role="toolbar" aria-label="Exam tools">${tools}</div>` + `<button type="button" class="tux-more" data-tux="more" aria-label="More exam actions" aria-expanded="${examUi.more}">${icon(XI.more, 20)}</button>`;
+    // Review has no block to finish: a visible way back to the library (same path as Save & exit)
+    const exit = m.review && m.view !== 'report' && byId('endBlockBtn') ? `<button type="button" class="tux-round tux-exit" data-tux="end" title="Exit review" aria-label="Exit review and return to the library">${icon(XI.home, 19)}</button>` : '';
+    return exit + item + tags + mark + center + timer + `<div class="tux-tools" role="toolbar" aria-label="Exam tools">${tools}</div>` + `<button type="button" class="tux-more" data-tux="more" aria-label="More exam actions" aria-expanded="${examUi.more}">${icon(XI.more, 20)}</button>`;
   }
   function examNavHtml(m){
     const answered = m.items.filter(x => x.answer != null).length, ro = onlyPos(m);
@@ -3556,6 +3603,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     revealWhenDrawn();
     if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES; document.head.appendChild(st); }
     applyAccent(); applyExamStyle(); watchExam(); wrapReport(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
+    // Legacy scripts rename the tab ("Step Exam Simulator A22.x …") after boot; keep the ThunderUSMLE name.
+    const titleEl = document.querySelector('head > title');
+    if(titleEl) new MutationObserver(() => { if(document.title !== 'ThunderUSMLE') document.title = 'ThunderUSMLE'; }).observe(titleEl, {childList:true, characterData:true, subtree:true});
     const panel = byId('libraryModePanel');
     if(panel){ libraryObserver = new MutationObserver(() => scheduleLibrary()); libraryObserver.observe(panel, {childList:true, subtree:true}); }
     const side = document.querySelector('#menu aside.modern-sidebar');

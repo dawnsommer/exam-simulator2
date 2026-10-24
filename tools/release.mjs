@@ -19,10 +19,12 @@ outputs.set('index.html',replaceVersion(read('index.html')));
 for(const file of assets.filter(f=>f.endsWith('.js')&&f!=='app-update.js')){
   outputs.set(file,replaceVersion(read(file)));
 }
+// thunder-ui.js carries the release number shown in Settings › About of both apps; the Local copy (../thunder-ui.js) is kept identical.
+outputs.set('thunder-ui.js',outputs.get('thunder-ui.js').replace(/const TU_RELEASE = \d+;/,'const TU_RELEASE = '+version+';'));
 outputs.set('app-update.js',replaceVersion(read('app-update.js')).replace(/const APP_VERSION = \d+;/,'const APP_VERSION = '+version+';').replace(/const APP_SHELL = \[[\s\S]*?\];/,'const APP_SHELL = '+JSON.stringify(shell,null,2)+';'));
 outputs.set('sw.js',read('sw.js').replace(/const VERSION = \d+;/,'const VERSION = '+version+';').replace(/const SHELL = \[[\s\S]*?\];/,'const SHELL = '+JSON.stringify(shell,null,2)+';'));
 const manifest=JSON.parse(replaceVersion(read('manifest.webmanifest')));manifest.start_url='./index.html';outputs.set('manifest.webmanifest',JSON.stringify(manifest,null,2)+'\n');
 // Version every external script/style even if it did not have a query before.
 outputs.set('index.html',outputs.get('index.html').replace(/(<script\b[^>]*\bsrc=["'])([^"']+)(["'])/gi,(_,a,u,b)=>a+u.replace(/(?:\?v=[^?&#]+)?$/,'?v='+version)+b).replace(/(<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["'])([^"']+)(["'])/gi,(_,a,u,b)=>a+u.replace(/(?:\?v=[^?&#]+)?$/,'?v='+version)+b));
 if(check){const stale=[...outputs].filter(([f,s])=>read(f)!==s).map(([f])=>f);if(stale.length)throw new Error('Release files are out of sync: '+stale.join(', '));console.log('Release '+version+' verified; '+shell.length+' shell entries.');}
-else{for(const [f,s] of outputs)write(f,s);console.log('Released app version '+version+'; '+shell.length+' shell entries.');}
+else{for(const [f,s] of outputs)write(f,s);const local=path.join(root,'..','thunder-ui.js');if(fs.existsSync(local))fs.writeFileSync(local,outputs.get('thunder-ui.js'));console.log('Released app version '+version+'; '+shell.length+' shell entries.');}
