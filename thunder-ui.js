@@ -1,13 +1,14 @@
 /* ThunderUSMLE UI layer (A23 Phase 1 + Phases A–C): brand, accent colors, the Library home view (rebuilt from the canvas
    boards over StepLibraryBridge), the form details sheet, the start dialog, Quick practice, Add forms, Qbank (build + history), Settings, Backup & sync, the Score Report and the opt-in Modern exam style (Phase E). Shared by the Local and iPad apps; keep both copies identical.
    It restyles the existing screens and adds a few controls. It never removes or renames the IDs and data-* hooks
-   the other modules use. The NBME exam interface (the default) is untouched; Modern only applies under :root[data-tu-exam="modern"]. */
+   the other modules use. Modern only applies under :root[data-tu-exam="modern"]; the NBME exam's reference look (2026-10-24) only
+   under :root[data-tun]. */
 (function(){
   'use strict';
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 16;
+  const TU_RELEASE = 17;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -3331,7 +3332,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const EXAM_TOOLS = [['labs', 'labBtn', 'Labs'], ['notes', 'notesBtn', 'Notes'], ['calc', 'calcBtn', 'Calculator'], ['settings', 'settingsBtn', 'Settings'], ['full', 'fullscreenBtn', 'Full screen']];
   const examUi = {drawer:false, more:false, anchor:null, watched:false};
   let reviewOnly = null, onlyStarting = false, examQueued = false;
-  function examStyle(){ return store.get(EXAM_KEY, 'nbme') === 'modern' ? 'modern' : 'nbme'; }
+  // Nothing chosen yet: phones (under 768 px) start in Modern, wider screens in NBME. A choice is stored and always wins.
+  function examStyle(){ const s = store.get(EXAM_KEY, ''); return s === 'modern' || s === 'nbme' ? s : innerWidth < 768 ? 'modern' : 'nbme'; }
   function modernOn(){ return document.documentElement.getAttribute('data-tu-exam') === 'modern'; }
   function setExamStyle(s){
     store.set(EXAM_KEY, s === 'modern' ? 'modern' : 'nbme');
@@ -3345,6 +3347,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     // re-render the open question so its decorations are added (Modern) or dropped (NBME draws from a clean render)
     if(redraw && on !== was){ const m = examModel(); if(m && m.view === 'question'){ try{ renderQuestion(); }catch(e){} } }
     if(on) scheduleExam();
+    applyNbme();
   }
   function teardownExam(){
     ['tuxHead', 'tuxNav', 'tuxFoot', 'tuxScrim', 'tuxMore'].forEach(id => byId(id)?.remove());
@@ -3527,10 +3530,13 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   function decorateExamSettings(){
     const box = byId('referenceSettingsDropdown'); if(!box || box.dataset.tux) return;
     box.dataset.tux = '1';
+    const tun = nbmeOn();
+    if(tun) nbPlaceMenu(box);
     if(!box.querySelector('[data-ref-action="layoutSplit"]')) return; // the break screen's short menu
     const cur = examStyle();
     box.insertAdjacentHTML('afterbegin', `<div class="review-layout-toggle tux-style-row"><div class="review-layout-title">Exam style</div><div class="segmented-toggle" role="radiogroup" aria-label="Exam style">${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${cur === v}" class="${cur === v ? 'active' : ''}" data-tux-style="${v}">${l}</button>`).join('')}</div></div>`);
     box.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-tux-style]'); if(!b) return; e.preventDefault(); e.stopPropagation(); box.remove(); setExamStyle(b.dataset.tuxStyle); }, true);
+    if(tun) nbDecorateMenu(box);
     if(modernOn() && examUi.anchor && document.contains(examUi.anchor)){
       const r = examUi.anchor.getBoundingClientRect();
       box.style.top = Math.max(6, r.bottom + 6) + 'px'; box.style.right = Math.max(8, innerWidth - r.right) + 'px';
@@ -3579,7 +3585,481 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     document.addEventListener('keydown', onOnlyNav, true);
     document.addEventListener('keydown', onExamKey);
     document.addEventListener('click', e => { if(!onlyStarting && e.target.closest && e.target.closest('.review-one')) reviewOnly = null; if(examUi.more && modernOn() && e.target.closest && !e.target.closest('#tuxMore,[data-tux="more"]')){ examUi.more = false; scheduleExam(); } }, true);
-    addEventListener('resize', () => scheduleExam());
+    addEventListener('resize', () => { if(!store.get(EXAM_KEY, '') && (examStyle() === 'modern') !== modernOn()) applyExamStyle(true); scheduleExam(); });
+    watchNbme(scr);
+  }
+
+  /* ---------- NBME exam, reference look (2026-10-24: ThunderUSMLE-UI/thunder-ui-functional.html) ----------
+     The NBME style draws like the reference; what it does stays the legacy exam's (same nodes, IDs and handlers). Every
+     rule is scoped to :root[data-tun], set only while the NBME exam is on screen and the window is 768 px wide or more, so
+     phones keep the legacy layout and Modern never sees it. Under 1024×680 the page zooms to fit (--tun-k), like the
+     reference. Added: a Resize Text / Color Theme / Strikeout / Help block at the top of the exam's Settings menu, the
+     red NBME alert before Lock, an "ab" strike button per choice and the Review Screen as a table.
+     The image viewer (both styles) replaces the legacy preview: wheel and pinch zoom around the pointer, drag to move,
+     double-click 100% ↔ fitted, Zoom In / Zoom Out / Reset, ↑ ↓ Ctrl+0 Ctrl+1 Esc. It covers the question pane and
+     closes when the item changes. */
+  const NB = ':root[data-tun]:not(#tun0) body', N = NB + ' #examScreen', NW = N + ' #workspace';
+  const NBK = {size:'ThunderUSMLE.nbmeTextSize', strike:'ThunderUSMLE.nbmeStrikeHidden'};
+  const nsvg = (vb, body) => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${body}</svg>`)}")`;
+  const NI = {
+    arrowL:nsvg('0 0 16 16', '<path fill="#fff" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>'),
+    arrowR:nsvg('0 0 16 16', '<path fill="#fff" d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>'),
+    arrowLc:nsvg('0 0 16 16', '<path fill="#94eaff" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>'),
+    arrowRc:nsvg('0 0 16 16', '<path fill="#94eaff" d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>'),
+    flag:nsvg('0 0 16 16', '<path fill="red" stroke="#000" stroke-width=".6" d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464c-.6.24-2.3.9-3.686.9-.85 0-1.55-.28-2.16-.525C8.18 8.6 7.64 8.4 7 8.4c-.7 0-1.64.23-2.44.48-.4.12-.76.25-1.06.37V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.28c.23-.08.5-.17.79-.26C4.61.27 5.67 0 6.5 0c.84 0 1.52.28 2.12.52C9.29.79 9.83 1 10.5 1c.7 0 1.64-.23 2.44-.48.4-.12.75-.25 1.03-.36z"/>'),
+    lock:nsvg('0 0 16 16', '<path fill="#fff" fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>'),
+    end:nsvg('0 0 16 16', '<circle cx="8" cy="8" r="7.4" fill="#e00" stroke="#fff" stroke-width=".9"/><path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>'),
+    x:nsvg('0 0 16 16', '<path fill="#fff" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>'),
+    strike:nsvg('0 0 26 26', '<text x="13" y="17.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14">ab</text><rect x="3" y="12.2" width="20" height="1.4"/>'),
+    strikeW:nsvg('0 0 26 26', '<text x="13" y="17.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#fff">ab</text><rect x="3" y="12.2" width="20" height="1.4" fill="#fff"/>'),
+    caret:nsvg('0 0 16 16', '<path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>'),
+    invert:nsvg('0 0 32 32', '<rect x="3" y="3" width="26" height="26" rx="2" fill="none" stroke="#000" stroke-width="2.4"/><path d="M5 27 27 5v22z"/><circle cx="16" cy="16" r="6.5" fill="#fff" stroke="#000" stroke-width="2"/><path d="M11.4 20.6l9.2-9.2A6.5 6.5 0 0 1 11.4 20.6z"/>'),
+    contrast:nsvg('0 0 32 32', '<circle cx="16" cy="16" r="7" fill="none" stroke="#000" stroke-width="2"/><path d="M16 9a7 7 0 0 1 0 14z"/><g stroke="#000" stroke-width="2.2" stroke-linecap="round"><path d="M16 2v3M16 27v3M2 16h3M27 16h3M6.1 6.1l2.1 2.1M23.8 23.8l2.1 2.1M6.1 25.9l2.1-2.1M23.8 8.2l2.1-2.1"/></g>'),
+    zoom:nsvg('0 0 32 32', '<circle cx="13" cy="13" r="9.5" fill="none" stroke="#000" stroke-width="2.4"/><path d="M20 20l9 9" stroke="#000" stroke-width="3" stroke-linecap="round"/><path d="M8.5 13h9M13 8.5v9" stroke="#000" stroke-width="2.2"/>'),
+    caretW:nsvg('0 0 16 16', '<path fill="#fff" d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>')
+  };
+  const NBME_STYLES = `
+:root[data-tun-k]{zoom:var(--tun-k)}
+:root[data-tun-k] body #examScreen{width:calc(100vw / var(--tun-k))!important;height:calc(100vh / var(--tun-k))!important}
+/* question list */
+${N} .left-status{width:105px!important;border-right:1px solid #000!important;background:#fff!important}
+${N} .status-title{font:700 13.333px/15px "Open Sans",Verdana,sans-serif!important;color:#000!important}
+${N} #statusRows .status-row{border-bottom:0!important;cursor:pointer!important}
+${N} #statusRows .status-row:hover,${N} #statusRows .status-row.current,${N} #statusRows .status-row.selected{background:#004976!important;color:#fff!important;outline:1px solid #004976!important;outline-offset:0!important;box-shadow:none!important}
+${N} #statusRows .status-row:hover .navseq,${N} #statusRows .status-row.current .navseq,${N} #statusRows .status-row.selected .navseq{color:#fff!important}
+${N} #statusRows .status-row .dot{width:7px!important;height:7px!important;border:0!important;background:currentColor!important;margin-top:-3px!important}
+${N} #statusRows .status-row.answered:not(.review-correct):not(.review-wrong):not(.review-unanswered) .dot{visibility:hidden!important}
+${N} #statusRows .status-row.unanswered:not(.review-correct):not(.review-wrong):not(.review-unanswered) .dot{background:currentColor!important}
+${N} #statusRows .status-row .navmark::before{content:""!important}
+${N} #statusRows .status-row.marked .navmark::before,${N} #statusRows .status-row.flagged .navmark::before{display:block;width:14px;height:14px;background:${NI.flag} center/contain no-repeat;transform:rotate(-21deg)}
+${N} #statusRows .status-row.current .v2111-review-symbol.ok,${N} #statusRows .status-row:hover .v2111-review-symbol.ok{color:#8ff0a8!important}
+${N} #statusRows .status-row.current .v2111-review-symbol.bad,${N} #statusRows .status-row:hover .v2111-review-symbol.bad{color:#ff9a9a!important}
+${N} #statusRows .status-row.current .v2111-review-symbol.blank,${N} #statusRows .status-row:hover .v2111-review-symbol.blank{color:#9fd8ff!important}
+/* top bar */
+${N} .item-box{width:auto!important;min-width:0!important;justify-self:start;border:1px solid #fff!important;box-shadow:0 1px 1px #000!important;padding:7px 10px!important;font:16px/18px "Open Sans",Verdana,sans-serif!important;border-radius:0!important;cursor:pointer}
+${N} .item-box:hover,${N} .time-box:hover{background:#325b77!important}
+${N} .nav-control,${N} .nav-control .nav-label{font:13.333px/15px Arial,Helvetica,sans-serif!important}
+${N} .nav-control .round-btn{width:30px!important;height:30px!important;min-width:0!important;border:0!important;border-radius:50%!important;padding:0!important;color:transparent!important;font-size:0!important;background:${NI.arrowL} center/30px 30px no-repeat!important;box-shadow:none!important}
+${N} #nextNav .round-btn{background-image:${NI.arrowR}!important}
+${N} .nav-control[aria-disabled="true"]{opacity:.45!important;cursor:default!important}
+${N} .nav-control:hover:not([aria-disabled="true"]){outline:1px solid #000;background:#325b77}
+${N} .center-counter{font:16px/18px "Open Sans",Verdana,sans-serif!important}
+${N} .tool button,${N} .tool button>span:not(.tool-icon){font:13.333px/15px Arial,Helvetica,sans-serif!important}
+${N} .tool button:hover{outline:1px solid #000;background:#325b77!important}
+/* question */
+${NW} .question-main{zoom:var(--tun-txt,1)}
+${NW} .mark-line{font:16px "Arial Unicode MS",Arial,Helvetica,sans-serif!important;align-items:center}
+${NW} .mark-line>span::before{content:"";display:inline-block;width:15px;height:15px;margin:0 1px -1px 0;background:${NI.flag} center/contain no-repeat;vertical-align:baseline}
+${NW} .mark-line>span{font-size:0!important}
+${NW} .mark-line>span::after{content:"Mark Question";font-size:16px}
+${NW} .answers{display:inline-block!important;width:auto!important;min-width:0!important;max-width:100%!important;border:1px solid #004976!important;border-bottom-width:6px!important;border-radius:0!important;padding:10px 0!important;margin:20px 0 15px!important;box-shadow:none!important;background:transparent!important}
+${NW} .answers.choice-table-active{display:block!important}
+${NW} .answers .answer{min-height:39px!important;border:0!important;border-radius:0!important;padding:7px 2px 7px 5px!important;align-items:flex-start!important;box-shadow:none!important}
+${NW} .answers .answer:not(.correctChoice):not(.incorrectChoice):hover{background:#d7dced!important}
+${NW} .answers .answer.selected:not(.correctChoice):not(.incorrectChoice){background:transparent!important}
+${NW} .answers .choice-text{line-height:22px!important;padding-left:3px!important;padding-right:8px!important}
+${NW} .answers:not(.choice-table-active) .answer{display:flex!important;width:100%!important}
+${NW} .answers .strike-symbol{flex:none!important;width:32px!important;height:28px!important;margin:-3px 2px 0 auto!important;padding:0!important;font-size:0!important;color:transparent!important;border-radius:6px;background:${NI.strike} center/24px 24px no-repeat!important;opacity:.4!important;cursor:pointer!important}
+${NW} .answers .answer.struck .strike-symbol{opacity:1!important}
+${NW} .answers .strike-symbol:hover{background-color:rgba(0,0,0,.08)!important}
+${NW} .answers .answer.locked-answer .strike-symbol,:root[data-tun-nostrike] body #examScreen #workspace .answers .strike-symbol{visibility:hidden!important}
+${NW} .answers .answer.choice-table-row .strike-symbol{top:4px!important}
+${NW} .proceed,${NW} #proceedBtn{display:block!important;margin:12px 0 0 7px!important;background:#0077c8!important;color:#fff!important;border:2px outset #000!important;border-radius:5px!important;font:14px/18px Arial,Helvetica,sans-serif!important;padding:5px!important;height:auto!important;min-height:0!important;box-shadow:none!important}
+${NW} #proceedBtn:hover,${NW} #proceedBtn:focus-visible{background:linear-gradient(#004976,#5490cc)!important}
+${NW} .show-answer-btn{background:#efefef!important;color:#000!important;border:2px outset #000!important;border-radius:5px!important;font:14px/16px Arial,Helvetica,sans-serif!important;padding:5px!important;margin:6px 0 0 5px!important;box-shadow:none!important;height:auto!important}
+${NW} .exhibit{background:#f4f4f4!important;padding:8px!important;box-shadow:0 0 10px #575962!important;border:0!important;border-top:4px solid #0066a4!important;border-radius:0!important}
+${NW} .exhibit-img{cursor:zoom-in!important}
+${NW} .exhibit{position:relative!important;padding-left:78px!important}
+${NW} .exhibit-tools{left:8px!important;top:auto!important;bottom:10px!important;transform:none!important;width:63px;gap:4px!important;font:13.333px Arial,Helvetica,sans-serif!important;color:#000!important}
+${NW} .exhibit-tools>div{display:flex;flex-direction:column;align-items:center;width:56px;padding:2px 0;border-radius:3px;cursor:pointer}
+${NW} .exhibit-tools>div:hover{background:#dfe6ee}
+${NW} .exhibit-tools .exhibit-tool-icon{width:30px!important;height:30px!important;margin:4px 0!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-size:0!important;color:transparent!important;background:center/30px 30px no-repeat!important}
+${NW} #invertEx{background-image:${NI.invert}!important}
+${NW} #contrastEx{background-image:${NI.contrast}!important}
+${NW} #zoomEx{background-image:${NI.zoom}!important}
+/* bottom bar */
+${N} .time-box{width:auto!important;min-width:317px!important;max-width:none!important;padding:5px 10px 5px 10px!important;border:1px solid #fff!important;box-shadow:0 1px 1px #000!important;border-radius:0!important;font-family:"Open Sans",Verdana,sans-serif!important;cursor:pointer;white-space:nowrap!important;height:auto!important}
+${N} .time-box>div:first-child{font-size:17.333px!important;line-height:21px!important}
+${N} .time-box>div+div{font-size:16px!important;line-height:19px!important}
+${N} .lock,${N} .end-block,${N} .suspend-block{font:13.333px/15px Arial,Helvetica,sans-serif!important}
+${N} .bottombar:not(.review-actions):not(.v16-review-no-lock){grid-template-columns:auto minmax(8px,1fr) auto minmax(8px,1fr) minmax(64px,auto) minmax(64px,auto)!important}
+${N} .end-block,${N} .suspend-block{white-space:nowrap!important}
+${N} .lock .lock-ico{display:block;width:20px!important;height:20px!important;margin:0 auto 4px!important;font-size:0!important;color:transparent!important;background:${NI.lock} center/20px 20px no-repeat!important}
+${N} .end-block .x{display:block;width:22px!important;height:22px!important;margin:0 auto 3px!important;font-size:0!important;color:transparent!important;background:${NI.end} center/22px 22px no-repeat!important;filter:none!important}
+${N} .lock:hover,${N} .end-block:hover,${N} .suspend-block:hover{outline:1px solid #000;background:#325b77}
+/* popups: exam overview, time information */
+${NB} #overviewRoot .overview-popover,${NB} #overviewRoot .time-info-popover{background:#d6dcec!important;color:#000!important;border:3px solid #004976!important;border-radius:5px!important;box-shadow:none!important;font:16px "Arial Unicode MS",Arial,Helvetica,sans-serif!important}
+${NB} #overviewRoot .overview-title,${NB} #overviewRoot .time-info-title{font-weight:700!important;text-align:center!important}
+${NB} #overviewRoot .overview-title{font-size:18.667px!important}
+${NB} #overviewRoot .time-info-title{font-size:16px!important}
+${NB} #overviewRoot table{border-top:1px solid #aab!important;border-bottom:4px double #aab!important;border-collapse:collapse!important}
+${NB} #overviewRoot .overview-table tr.clickable{cursor:pointer}
+${NB} #overviewRoot .overview-table tr.clickable:hover{background:#c3cbe2}
+${NB} .overview-close,${NB} #labPanel .lab-close,${NB} #floatingCalc .calc-close,${NB} #examNotesPanel .notes-close,#tunAlert .tun-x{width:25px!important;height:25px!important;min-width:0!important;padding:0!important;border:1px solid #004976!important;border-radius:5px!important;background:#004976 ${NI.x} center/20px 20px no-repeat!important;color:transparent!important;font-size:0!important;box-shadow:none!important;cursor:pointer}
+${NB} .overview-close:hover,${NB} #labPanel .lab-close:hover,${NB} #floatingCalc .calc-close:hover,${NB} #examNotesPanel .notes-close:hover,#tunAlert .tun-x:hover{background-color:#325b77!important}
+/* lab values, calculator, notes */
+${NB} #labPanel{border:1px solid #000!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;font-family:"Arial Unicode MS",Arial,Helvetica,sans-serif!important}
+${NB} #labPanel .lab-tab{font:11.2px/15.68px "Arial Unicode MS",Arial,sans-serif!important;padding:2px 5px!important;border:1px solid #bbc!important;border-bottom:0!important;border-radius:5px 5px 0 0!important;background:#fff!important;color:#000!important;box-shadow:none!important;height:auto!important}
+${NB} #labPanel .lab-tab.active{background:#d7dced!important;font-weight:700!important}
+${NB} #labPanel .lab-table-wrap{background:#d7dced!important}
+${NB} #labPanel .lab-table{font:11.2px/15.68px "Arial Unicode MS",Arial,sans-serif!important;background:#d7dced!important}
+${NB} #labPanel .lab-table td{border-bottom:1px solid #c3c8d8!important;background:transparent!important}
+${NB} #labPanel .lab-table .lab-section-row td{font-weight:700!important}
+${NB} #floatingCalc,${NB} #examNotesPanel{background:#d6dcec!important;border:3px solid #004976!important;border-radius:5px!important;box-shadow:0 0 3px 2px #a9a9a9!important;color:#000!important}
+${NB} #floatingCalc .calc-display{background:#fff!important;border:1px solid #000!important;border-radius:0!important;font:300 24px/33.6px "Segoe UI Light","Segoe UI","Helvetica Neue",Arial,sans-serif!important}
+${NB} #floatingCalc .calc-btn{border:1px solid #004976!important;border-radius:3px!important;font:700 13.333px "Open Sans",Verdana,sans-serif!important;color:#000!important;background:linear-gradient(#bbb 44%,#eee)!important;box-shadow:none!important}
+${NB} #floatingCalc .calc-btn.op{background:linear-gradient(#a7b7f5,#7999f8)!important}
+${NB} #floatingCalc .calc-btn.memory{background:linear-gradient(#c286d6,#d4c9e8)!important}
+${NB} #floatingCalc .calc-btn.clear,${NB} #floatingCalc .calc-btn.equals{background:linear-gradient(#d8c26d,#f7db7f)!important}
+${NB} #floatingCalc .calc-btn:hover{background:linear-gradient(#c286d6,#d4c9e8)!important}
+${NB} #examNotesPanel textarea{font:13.333px monospace!important;border:1px solid #767676!important;border-radius:0!important;background:#fff!important;color:#000!important}
+${NB} #examNotesPanel .notes-actions button{width:120px;height:27px;font:700 13.333px Arial,Helvetica,sans-serif!important;background:#f0f0f0!important;color:#000!important;border:1px solid #004976!important;border-radius:5px!important;padding:5px!important;box-shadow:none!important}
+${NB} #examNotesPanel .notes-actions button:hover{background:#d3d3d3!important}
+/* Settings menu: the reference's block on top, ours under a rule */
+${NB} #referenceSettingsDropdown.tun-menu{background:#fff!important;color:#000!important;border:1px solid #888!important;border-radius:0!important;box-shadow:0 2px 6px rgba(0,0,0,.3)!important;padding:6px 0!important;min-width:0!important;width:290px!important;font-family:"Open Sans",Verdana,sans-serif!important}
+${NB} #referenceSettingsDropdown.tun-menu>button,${NB} #referenceSettingsDropdown.tun-menu .tun-mi,${NB} #referenceSettingsDropdown.tun-menu .tun-sub button{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;height:25px!important;padding:0 10px!important;margin:0!important;border:0!important;border-radius:0!important;background:#fff!important;color:#000!important;font:14px/25px "Open Sans",Verdana,sans-serif!important;text-align:left!important;cursor:pointer;position:relative;box-shadow:none!important;white-space:nowrap}
+${NB} #referenceSettingsDropdown.tun-menu>button:hover,${NB} #referenceSettingsDropdown.tun-menu .tun-mi:hover,${NB} #referenceSettingsDropdown.tun-menu .tun-mi.open,${NB} #referenceSettingsDropdown.tun-menu .tun-sub button:hover{background:#e5ecf3!important}
+${NB} #referenceSettingsDropdown.tun-menu>button.danger-item{color:#b00020!important}
+${NB} #referenceSettingsDropdown.tun-menu [data-ref-action="zoomUp"],${NB} #referenceSettingsDropdown.tun-menu [data-ref-action="zoomDown"],${NB} #referenceSettingsDropdown.tun-menu [data-ref-action="examDarkMode"],${NB} #referenceSettingsDropdown.tun-menu [data-ref-action="reverseColor"]{display:none!important}
+${NB} #referenceSettingsDropdown.tun-menu .tun-mi i{width:10px;height:10px;background:${NI.caret} center/contain no-repeat}
+${NB} #referenceSettingsDropdown.tun-menu .tun-top{padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid #c8c8c8}
+${NB} #referenceSettingsDropdown.tun-menu .tun-sub{display:none;position:absolute;right:100%;top:-7px;width:150px;padding:6px 0;background:#fff;border:1px solid #888;box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:2}
+${NB} #referenceSettingsDropdown.tun-menu .tun-mi.open>.tun-sub{display:block}
+${NB} #referenceSettingsDropdown.tun-menu .tun-sub button[aria-checked="true"]{font-weight:700!important}
+${NB} #referenceSettingsDropdown.tun-menu .tun-sub button[aria-checked="true"]::after{content:"*";font-weight:700}
+${NB} #referenceSettingsDropdown.tun-menu .review-layout-toggle,${NB} #referenceSettingsDropdown.tun-menu .notes-preference{margin:2px 10px!important}
+/* alerts: the legacy confirm dialog and ours (Lock, Help) */
+${NB} #appDialogLayer{background:rgba(0,0,0,.4)!important;backdrop-filter:none!important}
+${NB} #appDialogLayer .app-dialog,#tunAlert{width:min(702px,92vw)!important;max-width:none!important;background:#fff!important;color:#000!important;border:1px solid #000!important;border-radius:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important;font-family:"Open Sans",Verdana,sans-serif!important}
+${NB} #appDialogLayer .app-dialog-head,#tunAlert h1{margin:0 0 23px!important;padding:12px 44px!important;font:700 22px/1.3 "Open Sans",Verdana,sans-serif!important;text-align:center!important;color:#fff!important;background:linear-gradient(#ee5f5b,#bd362f)!important;border:0!important;border-bottom:1px solid #d3d3d3!important;border-radius:0!important}
+#tunAlert h1.blue{background:#0a8cbd!important}
+${NB} #appDialogLayer .app-dialog-body,#tunAlert .txt{padding:0 18px!important;text-align:center!important;font:16px/18px "Open Sans",Verdana,sans-serif!important;color:#000!important}
+${NB} #appDialogLayer .app-dialog-actions,#tunAlert .btns{display:flex!important;flex-direction:row-reverse!important;justify-content:center!important;flex-wrap:wrap!important;gap:0!important;margin:20px 0 0!important;padding:0!important;border:0!important;background:transparent!important}
+${NB} #appDialogLayer .app-dialog-actions button,#tunAlert .btns button{margin:0 15px 15px!important;padding:9.6px 32px!important;height:auto!important;min-width:0!important;font:16px Arial,Helvetica,sans-serif!important;color:#fff!important;border:2px outset #000!important;border-radius:0!important;box-shadow:none!important;background:#e07f00!important;cursor:pointer}
+${NB} #appDialogLayer .app-dialog-actions #appDialogOk,#tunAlert .btns .red{background:#d5002b!important}
+#tunAlert .btns{flex-direction:row!important}
+#tunAlert .btns .blue{background:#0a8cbd!important}
+#tunOverlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:330}
+#tunAlert{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:331}
+#tunAlert .tun-x{position:absolute;right:15px;top:7px;border-color:#fff!important}
+#tunAlert .txt p{margin:0 0 10px;text-align:left}
+/* lock (pause) cover */
+${NB} #pauseOverlay{background:#fff!important;backdrop-filter:none!important}
+${NB} #pauseOverlay .pause-card{background:transparent!important;box-shadow:none!important;border:0!important;color:#000!important;text-align:center;font-family:"Open Sans",Verdana,sans-serif!important}
+${NB} #pauseOverlay .pause-card h2{font-size:26px!important;margin:0 0 12px!important;color:#000!important}
+${NB} #pauseOverlay #resumeBtn{padding:10px 30px!important;font-size:16px!important;background:#004976!important;color:#fff!important;border:0!important;border-radius:4px!important;box-shadow:none!important;height:auto!important}
+/* break screen */
+${N} .break-page{background:#d6dcec!important}
+${N} .break-card{background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important;width:96%!important;max-width:none!important;color:#000!important;font:16px/22.4px "Arial Unicode MS",Arial,Helvetica,sans-serif!important;text-align:center}
+${N} .break-card h1{font:700 24px/33.6px "Arial Unicode MS",Arial,Helvetica,sans-serif!important;margin:16px 0!important;color:#000!important}
+${N} .break-card .break-small-btn{font:13.333px Arial,Helvetica,sans-serif!important;padding:3px 7px!important;border:2px outset #000!important;border-radius:0!important;color:#fff!important;height:auto!important;box-shadow:none!important}
+${N} .break-card .break-start{background:#004976!important}
+${N} .break-card .break-orange{background:#e17d00!important}
+${N} .break-card .break-red{color:red!important}
+${N} .break-card table{width:min(720px,calc(100% - 80px))!important;margin:0 auto 20px!important;border-collapse:collapse!important}
+${N} .break-card caption{font-weight:600;padding-bottom:5px}
+${N} .break-card tbody{border-top:1px solid #dadada!important;border-bottom:4px solid #dadada!important}
+${N} .break-card td{padding:1px!important;height:24px;text-align:right}
+${N} .break-card td:first-child{text-align:left;font-weight:700}
+${N} .break-card .break-overview td:first-child{font-weight:400;text-align:center}
+${N} .break-card .break-overview tr:nth-child(odd),${N} .break-card .break-table tr:nth-child(even){background:#dedede}
+/* Review Screen as a table */
+${NW} .review-panel{background:#fff!important;border:0!important;box-shadow:none!important;border-radius:0!important;font-family:"Arial Unicode MS",Arial,Helvetica,sans-serif!important;color:#000!important;max-width:760px!important}
+${NW} .review-panel h2{font:700 22px "Arial Unicode MS",Arial,sans-serif!important;color:#000!important}
+${NW} .review-panel .tun-rvhead,${NW} .review-panel .review-card{display:grid!important;grid-template-columns:90px 1fr 100px 100px;align-items:center;column-gap:10px;padding:0 10px!important;min-height:30px}
+${NW} .review-panel .review-card .goq{justify-self:end}
+${NW} .review-panel .tun-rm i{display:inline-block;width:14px;height:14px;margin:0 4px -2px 0;background:${NI.flag} center/contain no-repeat}
+${NW} .review-panel .tun-rvhead{font-weight:700;border-bottom:1px solid #aab;height:30px}
+${NW} .review-panel .review-grid{display:block!important;border-bottom:4px double #aab}
+${NW} .review-panel .review-card{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;font-size:16px!important;line-height:20px!important;cursor:pointer;width:auto!important;height:auto!important}
+${NW} .review-panel .review-card:nth-child(even){background:#e8e8e8!important}
+${NW} .review-panel .review-card:hover{background:#d7dced!important}
+${NW} .review-panel .review-card.current{background:#004976!important;color:#fff!important}
+${NW} .review-panel .review-card b{font-weight:400}
+${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!important;font:13.333px Arial,Helvetica,sans-serif!important;border:1px solid #004976!important;border-radius:3px!important;background:#f0f0f0!important;color:#000!important;height:auto!important;box-shadow:none!important}
+/* Color Theme › Dark Theme (our Reverse Color): the reference's cyan chrome */
+${N}.reverse .topbar,${N}.reverse .bottombar{background:#000!important;color:#94eaff!important}
+${N}.reverse .topbar{border-bottom:1px solid #94eaff!important}${N}.reverse .bottombar{border-top:1px solid #94eaff!important}
+${N}.reverse .item-box,${N}.reverse .time-box{border-color:#94eaff!important;color:#94eaff!important}
+${N}.reverse .nav-control,${N}.reverse .center-counter,${N}.reverse .tool button,${N}.reverse .lock,${N}.reverse .end-block,${N}.reverse .suspend-block{color:#94eaff!important}
+${N}.reverse .nav-control .round-btn{background-image:${NI.arrowLc}!important}${N}.reverse #nextNav .round-btn{background-image:${NI.arrowRc}!important}
+${N}.reverse .left-status{background:#000!important;border-right-color:#94eaff!important}
+${N}.reverse .status-title,${N}.reverse #statusRows .status-row .navseq{color:#fff!important}
+${N}.reverse #statusRows .status-row:nth-child(even){background:#444!important}
+${N}.reverse #statusRows .status-row:hover,${N}.reverse #statusRows .status-row.current,${N}.reverse #statusRows .status-row.selected{background:#94eaff!important;color:#000!important;outline-color:#94eaff!important}
+${N}.reverse #statusRows .status-row:hover .navseq,${N}.reverse #statusRows .status-row.current .navseq,${N}.reverse #statusRows .status-row.selected .navseq{color:#000!important}
+${N}.reverse #workspace .answers{border-color:#fff!important}
+${N}.reverse #workspace .answers .answer:not(.correctChoice):not(.incorrectChoice):hover{background:#222!important}
+${N}.reverse #workspace .answers .strike-symbol{background-image:${NI.strikeW}!important}
+${N}.reverse #workspace #proceedBtn{background:#6ed6dd!important;color:#000!important;border:1px solid #fff!important}
+/* image viewer (both styles; reference viewer.js: backdrop rgba(0,0,0,.95) over the question pane) */
+:root[data-tu] #imagePreview.tuv{position:fixed;inset:auto;display:block;padding:0;background:rgba(0,0,0,.95);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;font-family:Arial,Helvetica,sans-serif;z-index:210;color:#fff;opacity:0;transition:opacity .3s}
+:root[data-tu] #imagePreview.tuv.tuv-in{opacity:1}
+:root[data-tu] #imagePreview.tuv.hidden{display:none}
+#imagePreview.tuv .tuv-canvas{position:absolute;left:0;right:0;top:66px;bottom:0;overflow:hidden;z-index:1;touch-action:none}
+#imagePreview.tuv #previewHolder{position:absolute;left:0;top:0;display:block;max-width:none!important;max-height:none!important;cursor:grab;-webkit-user-drag:none;user-select:none;background:#fff}
+#imagePreview.tuv #previewHolder.grabbing{cursor:grabbing}
+#imagePreview.tuv #previewHolder.tuv-anim{transition:width .3s,height .3s,margin .3s}
+#imagePreview.tuv .tuv-bar{position:absolute;top:0;left:0;margin:4px 16px 0;background:#000;z-index:2;display:flex}
+#imagePreview.tuv .tuv-bar button{display:block;width:112px;min-width:0;height:auto;background:transparent;border:0;margin:0;padding:0;cursor:pointer;box-shadow:none;font-size:0;color:transparent}
+#imagePreview.tuv .tuv-bar button+button{margin-left:1px}
+#imagePreview.tuv .tuv-bar button::before{content:attr(data-t);display:block;margin:2px;padding:4px;border:1px solid #f4f4f4;border-radius:5px;color:#f4f4f4;font-size:12.8px;line-height:1;text-transform:uppercase;text-align:center}
+#imagePreview.tuv .tuv-bar button:hover::before,#imagePreview.tuv .tuv-bar button:focus-visible::before{text-decoration:underline;box-shadow:rgba(255,255,255,.85) 0 0 4px}
+#imagePreview.tuv #previewClose{position:absolute;right:16px;top:12px;width:120px;height:44px;min-width:0;margin:0;padding:0;border:0;background:transparent;color:#fff;text-transform:uppercase;cursor:pointer;overflow:hidden;z-index:2;display:flex;align-items:center;gap:4px;font:20px Arial,Helvetica,sans-serif;box-shadow:none;border-radius:0}
+#imagePreview.tuv #previewClose svg{width:44px;height:44px;flex:none}
+#imagePreview.tuv #previewClose .ic{fill:#000;stroke:#fff}
+#imagePreview.tuv #previewClose:hover,#imagePreview.tuv #previewClose:focus-visible{box-shadow:rgba(255,255,255,.85) 0 0 4px}
+#imagePreview.tuv #previewClose:hover span,#imagePreview.tuv #previewClose:focus-visible span{text-decoration:underline}
+#imagePreview.tuv #previewClose:hover .ic,#imagePreview.tuv #previewClose:focus-visible .ic{fill:#fff;stroke:#000}
+/* the % tip sits above the image and fades out */
+#imagePreview.tuv .tuv-tip{position:absolute;left:50%;top:50%;width:56px;height:22px;margin:-11px 0 0 -28px;background:rgba(0,0,0,.8);border-radius:11px;color:#fff;font-size:12px;line-height:22px;text-align:center;z-index:4;pointer-events:none;opacity:0;transition:opacity .2s}
+#imagePreview.tuv .tuv-tip.show{opacity:1}
+@media (max-width:735px){#imagePreview.tuv #previewClose{width:auto}#imagePreview.tuv #previewClose span{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+@media (max-width:414px){#imagePreview.tuv .tuv-bar button{width:88px}}
+`;
+  const nb = {k:1, lockOk:false, watched:false};
+  function nbmeOn(){ return document.documentElement.hasAttribute('data-tun'); }
+  function nbmeWanted(){ const scr = byId('examScreen'); return !!scr && !scr.classList.contains('hidden') && !modernOn() && innerWidth >= 768; }
+  function setVar(el, k, v){ if(v == null){ if(el.style.getPropertyValue(k)) el.style.removeProperty(k); } else if(el.style.getPropertyValue(k) !== v) el.style.setProperty(k, v); }
+  function applyNbme(){
+    const root = document.documentElement, on = nbmeWanted();
+    setAttrIf(root, 'data-tun', on ? '1' : null);
+    const k = on ? Math.max(.55, Math.min(1, innerWidth / 1024, innerHeight / 680)) : 1;
+    nb.k = k;
+    setVar(root, '--tun-k', k < 1 ? k.toFixed(4) : null); setAttrIf(root, 'data-tun-k', k < 1 ? '1' : null);
+    const size = Number(store.get(NBK.size, '100')) || 100;
+    setVar(root, '--tun-txt', on && size !== 100 ? String(size / 100) : null);
+    setAttrIf(root, 'data-tun-nostrike', on && store.get(NBK.strike, '0') === '1' ? '1' : null);
+    if(!on) closeNbAlert();
+  }
+  // under the zoom (k < 1) a fixed box's px are scaled too, so positions measured on screen are divided by k
+  function nbPlaceMenu(box){
+    box.classList.add('tun-menu');
+    if(nb.k < 1){ ['top', 'right'].forEach(p => { const v = parseFloat(box.style[p]); if(!isNaN(v)) box.style[p] = (v / nb.k) + 'px'; }); }
+  }
+  function nbTheme(){ const scr = byId('examScreen'); if(scr && scr.classList.contains('reverse')) return 'dark'; try{ if(isExamDarkMode()) return 'examdark'; }catch(e){} return 'default'; }
+  function nbDecorateMenu(box){
+    const size = Number(store.get(NBK.size, '100')) || 100, theme = nbTheme();
+    const sub = (key, label, items) => `<div class="tun-mi" data-tun-sub="${key}" role="menuitem" tabindex="0" aria-haspopup="true">${label}<i></i><div class="tun-sub" role="menu">${items.map(([v, l, on]) => `<button type="button" role="menuitemradio" aria-checked="${on}" data-tun-m="${key}" data-v="${v}">${l}</button>`).join('')}</div></div>`;
+    box.insertAdjacentHTML('afterbegin', `<div class="tun-top">${sub('size', 'Resize Text', [100, 125, 150, 200].map(z => [z, z + '%', z === size]))}${sub('theme', 'Color Theme', [['default', 'Default', theme === 'default'], ['dark', 'Dark Theme', theme === 'dark'], ['examdark', 'Exam Dark Mode', theme === 'examdark']])}<button type="button" class="tun-mi" data-tun-m="strike">Show/Hide Strikeout</button><button type="button" class="tun-mi" data-tun-m="help">Help</button></div>`);
+    const openSub = (el, on) => box.querySelectorAll('.tun-mi[data-tun-sub]').forEach(s => s.classList.toggle('open', on && s === el));
+    box.querySelectorAll('.tun-mi[data-tun-sub]').forEach(s => s.addEventListener('mouseenter', () => { if(matchMedia('(hover:hover)').matches) openSub(s, true); }));
+    box.querySelectorAll(':scope > :not(.tun-top), .tun-top > button').forEach(s => s.addEventListener('mouseenter', () => openSub(null, false)));
+    box.addEventListener('click', e => {
+      const m = e.target.closest && e.target.closest('[data-tun-m]'), s = !m && e.target.closest && e.target.closest('[data-tun-sub]');
+      if(s){ e.preventDefault(); e.stopPropagation(); openSub(s, !s.classList.contains('open')); return; }
+      if(!m) return;
+      e.preventDefault(); e.stopPropagation(); box.remove();
+      const act = m.dataset.tunM, v = m.dataset.v, scr = byId('examScreen');
+      if(act === 'size'){ store.set(NBK.size, String(v)); applyNbme(); return; }
+      if(act === 'strike'){ store.set(NBK.strike, store.get(NBK.strike, '0') === '1' ? '0' : '1'); applyNbme(); return; }
+      if(act === 'help'){ nbHelp(); return; }
+      if(act === 'theme' && scr){ scr.classList.toggle('reverse', v === 'dark'); try{ if(isExamDarkMode() !== (v === 'examdark')) setExamDarkMode(v === 'examdark'); }catch(err){} }
+    }, true);
+  }
+  function closeNbAlert(){ byId('tunAlert')?.remove(); byId('tunOverlay')?.remove(); }
+  function nbAlert(title, html, buttons, blue){
+    closeNbAlert();
+    document.body.insertAdjacentHTML('beforeend', `<div id="tunOverlay"></div><div id="tunAlert" role="alertdialog" aria-modal="true" aria-labelledby="tunAlertTitle"><button type="button" class="tun-x" data-tun-a="close" aria-label="Close"></button><h1 id="tunAlertTitle"${blue ? ' class="blue"' : ''}>${esc(title)}</h1><div class="txt">${html}</div><div class="btns">${buttons.map(([a, l, c]) => `<button type="button" class="${c}" data-tun-a="${a}">${esc(l)}</button>`).join('')}</div></div>`);
+    const box = byId('tunAlert'); box.querySelector('.btns button')?.focus();
+    return box;
+  }
+  function nbHelp(){
+    nbAlert('Help', '<p><b>Navigation</b>: Previous / Next, the Question Status list on the left, or Alt+← / Alt+→.</p><p><b>Answer</b>: click a choice. Click the <i>ab</i> button (or right-click a choice) to strike it out.</p><p><b>Mark</b>: “Mark Question” flags the item in the list.</p><p><b>Tools</b>: Lab Values, Notes and Calculator in the top bar; text size and color theme under Settings. Click an image to open it; scroll or pinch to zoom, drag to move.</p><p><b>Item / time boxes</b>: click them for the exam overview and the time information.</p>', [['close', 'Close', 'blue']], true);
+  }
+  // Lock: the reference's Unauthorized Break Warning first; its red button runs the legacy Lock (pause)
+  function onNbLock(e){
+    if(!nbmeOn() || nb.lockOk || !e.target.closest || !e.target.closest('#lockBtn')) return;
+    if(e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    nbAlert('Unauthorized Break Warning', 'You are about to lock the exam and take an Unauthorized Break. An Unauthorized Break may be reported as an irregularity for the exam.', [['lock', 'Unauthorized Break', 'red'], ['close', 'Return to Exam', '']]);
+  }
+  function onNbAlertClick(e){
+    const b = e.target.closest && e.target.closest('#tunAlert [data-tun-a], #tunOverlay'); if(!b) return;
+    const act = b.dataset ? b.dataset.tunA : null; closeNbAlert();
+    if(act === 'lock'){ nb.lockOk = true; try{ fire('lockBtn'); } finally { nb.lockOk = false; } }
+  }
+  // the legacy confirm says "Confirm"; the NBME alert names the action instead (End Block, …)
+  function nbDecorateDialog(){
+    if(!nbmeOn()) return;
+    const d = document.querySelector('#appDialogLayer .app-dialog'); if(!d || d.dataset.tun) return;
+    d.dataset.tun = '1';
+    const h = d.querySelector('.app-dialog-head'), ok = byId('appDialogOk');
+    if(h && ok && /^\s*confirm\s*$/i.test(txt(h)) && txt(ok)) h.textContent = txt(ok);
+  }
+  // Review Screen as a table: each legacy card (Item n<br>status lines<br>marked<br>Go to item) becomes Item | Status |
+  // Marked | button; the legacy button node (and its listener) is moved, not rebuilt
+  function nbDecorateReview(){
+    if(!nbmeOn()) return;
+    const g = document.querySelector('#workspace .review-panel .review-grid'); if(!g) return;
+    if(!(g.previousElementSibling && g.previousElementSibling.classList.contains('tun-rvhead'))) g.insertAdjacentHTML('beforebegin', '<div class="tun-rvhead" aria-hidden="true"><span>Item</span><span>Status</span><span>Marked</span><span></span></div>');
+    g.querySelectorAll('.review-card:not([data-tun])').forEach(card => {
+      card.dataset.tun = '1';
+      const btn = card.querySelector('button'), head = card.querySelector('b'), lines = [];
+      let cur = '';
+      card.childNodes.forEach(n => { if(n === head || n === btn) return; if(n.nodeName === 'BR'){ if(cur.trim()) lines.push(cur.trim()); cur = ''; } else cur += n.textContent; });
+      if(cur.trim()) lines.push(cur.trim());
+      const mi = lines.findIndex(l => /marked/i.test(l)), mark = mi >= 0 ? lines.splice(mi, 1)[0] : '';
+      const flagged = mark && !/not marked/i.test(mark);
+      const cells = `<span class="tun-rc">${esc(txt(head))}</span><span class="tun-rc">${esc(lines.join(' · '))}</span><span class="tun-rc tun-rm">${flagged ? '<i></i>Marked' : ''}</span>`;
+      const keep = btn ? btn : null;
+      card.innerHTML = cells; if(keep) card.appendChild(keep);
+    });
+  }
+  function onNbClick(e){
+    if(!e.target.closest) return;
+    const so = e.target.closest('#workspace .answers .strike-symbol');
+    if(so && nbmeOn()){ e.preventDefault(); e.stopPropagation(); const a = so.closest('.answer'); if(a) a.dispatchEvent(new MouseEvent('contextmenu', {bubbles:true, cancelable:true, button:2})); return; }
+    const card = e.target.closest('#workspace .review-panel .review-card');
+    if(card && nbmeOn() && !e.target.closest('button')){ card.querySelector('.goq')?.click(); }
+  }
+  function watchNbme(scr){
+    if(nb.watched) return; nb.watched = true;
+    new MutationObserver(() => applyNbme()).observe(scr, {attributes:true, attributeFilter:['class']});
+    const ws = byId('workspace');
+    if(ws) new MutationObserver(() => { nbDecorateReview(); viewerFollow(); }).observe(ws, {childList:true});
+    // the legacy confirm layer is created on first use: watch for it, then watch inside it
+    const watchDialog = () => { const dl = byId('appDialogLayer'); if(!dl || dl.dataset.tunWatched) return !!dl; dl.dataset.tunWatched = '1'; new MutationObserver(() => nbDecorateDialog()).observe(dl, {childList:true, subtree:true}); nbDecorateDialog(); return true; };
+    if(!watchDialog()){ const mo = new MutationObserver(() => { if(watchDialog()) mo.disconnect(); }); mo.observe(document.body, {childList:true}); }
+    document.addEventListener('click', onNbLock, true);
+    document.addEventListener('keydown', onNbLock, true);
+    document.addEventListener('click', onNbAlertClick);
+    document.addEventListener('click', onNbClick, true);
+    document.addEventListener('click', onViewerLinks, true);
+    document.addEventListener('keydown', onViewerKey, true);
+    document.addEventListener('keydown', e => { if(e.key === 'Escape' && byId('tunAlert')){ e.preventDefault(); e.stopImmediatePropagation(); closeNbAlert(); } }, true);
+    addEventListener('resize', () => { applyNbme(); if(viewer.open && viewer.nw){ viewerPlace(); viewerFit(); viewerRender(false); } });
+    applyNbme();
+  }
+
+  /* image viewer: the legacy #imagePreview root, IDs and openImagePreview()/closeImagePreview() stay; the inside is the reference's */
+  const viewer = {open:false, nw:0, nh:0, r0:1, r:1, x:0, y:0, key:null, filter:'', wheelAt:0, tipTimer:0};
+  function viewerItemKey(){ try{ return blockPointer + ':' + state.current + ':' + (reviewMode ? 1 : 0); }catch(e){ return null; } }
+  function viewerSrcOf(html){
+    const t = document.createElement('div'); t.innerHTML = html;
+    const img = t.querySelector('img'); if(img) return img.getAttribute('src');
+    const svg = t.querySelector('svg'); if(!svg) return '';
+    const vb = (svg.getAttribute('viewBox') || '0 0 900 520').split(/[\s,]+/).map(Number);
+    if(!svg.getAttribute('width')) svg.setAttribute('width', vb[2] || 900);
+    if(!svg.getAttribute('height')) svg.setAttribute('height', vb[3] || 520);
+    if(!svg.getAttribute('xmlns')) svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.outerHTML);
+  }
+  function viewerEls(){ const root = byId('imagePreview'); return root ? {root, canvas:root.querySelector('.tuv-canvas'), im:byId('previewHolder'), tip:root.querySelector('.tuv-tip')} : null; }
+  // over the question pane while an exam is on screen (as on test day), the whole window otherwise
+  function viewerPlace(){
+    const v = viewerEls(); if(!v) return;
+    const ws = byId('workspace'), scr = byId('examScreen'), k = document.documentElement.hasAttribute('data-tun-k') ? nb.k : 1;
+    let r = {left:0, top:0, width:innerWidth, height:innerHeight};
+    if(ws && scr && !scr.classList.contains('hidden')){ const b = ws.getBoundingClientRect(); if(b.width > 200 && b.height > 200) r = b; }
+    Object.assign(v.root.style, {left:(r.left / k) + 'px', top:(r.top / k) + 'px', width:(r.width / k) + 'px', height:(r.height / k) + 'px'});
+  }
+  function viewerRender(anim){
+    const v = viewerEls(); if(!v || !v.im) return;
+    v.im.classList.toggle('tuv-anim', !!anim);
+    Object.assign(v.im.style, {width:viewer.nw * viewer.r + 'px', height:viewer.nh * viewer.r + 'px', marginLeft:viewer.x + 'px', marginTop:viewer.y + 'px'});
+  }
+  function viewerFit(){
+    const v = viewerEls(); if(!v || !viewer.nw) return;
+    const W = v.canvas.clientWidth, H = v.root.clientHeight;
+    viewer.r0 = Math.min(W * 0.9 / viewer.nw, (H - 87.6) / viewer.nh);
+    viewer.r = viewer.r0; viewer.x = (W - viewer.nw * viewer.r) / 2; viewer.y = 43.8;
+  }
+  function viewerTip(){
+    const v = viewerEls(); if(!v || !v.tip) return;
+    v.tip.textContent = Math.round(viewer.r * 100) + '%'; v.tip.classList.add('show');
+    clearTimeout(viewer.tipTimer); viewer.tipTimer = setTimeout(() => { const t = viewerEls(); if(t && t.tip) t.tip.classList.remove('show'); }, 1000);
+  }
+  function viewerZoomTo(r, px, py, anim){
+    const v = viewerEls(); if(!v) return;
+    r = Math.max(0.01, Math.min(100, r));
+    if(px == null){ px = v.canvas.clientWidth / 2; py = v.canvas.clientHeight / 2; }
+    viewer.x = px - (px - viewer.x) * (r / viewer.r); viewer.y = py - (py - viewer.y) * (r / viewer.r); viewer.r = r;
+    viewerRender(anim); viewerTip();
+  }
+  function viewerZoomBy(d, px, py, anim){ viewerZoomTo(viewer.r * (d < 0 ? 1 / (1 - d) : 1 + d), px, py, anim); }
+  function viewerLocal(v, cx, cy){ const b = v.canvas.getBoundingClientRect(), s = b.width / v.canvas.offsetWidth || 1; return [(cx - b.left) / s, (cy - b.top) / s, s]; }
+  function openViewer(src, filter){
+    const root = byId('imagePreview'); if(!root || !src) return false;
+    const closeSvg = '<svg viewBox="0 0 512 512" focusable="false" aria-hidden="true"><path class="ic" d="M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z" style="stroke-miterlimit:10;stroke-width:32px"/><line class="ic" x1="320" y1="320" x2="192" y2="192" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"/><line class="ic" x1="192" y1="320" x2="320" y2="192" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"/></svg>';
+    root.className = 'image-preview-backdrop tuv'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-label', 'Image viewer');
+    root.innerHTML = `<div class="tuv-canvas"><img id="previewHolder" alt="Exhibit" draggable="false"></div><div class="tuv-bar"><button type="button" id="previewZoomIn" title="Zoom In" data-t="Zoom In">Zoom In</button><button type="button" id="previewZoomOut" title="Zoom Out" data-t="Zoom Out">Zoom Out</button><button type="button" id="previewReset" title="Reset" data-t="Reset">Reset</button></div><button type="button" id="previewClose">${closeSvg}<span>Close</span></button><div class="tuv-tip" role="status" aria-live="polite"></div>`;
+    Object.assign(viewer, {open:true, nw:0, nh:0, key:viewerItemKey(), filter:filter || ''});
+    viewerPlace();
+    const v = viewerEls(), im = v.im;
+    im.style.filter = viewer.filter;
+    im.onload = () => { viewer.nw = im.naturalWidth || 900; viewer.nh = im.naturalHeight || 520; viewerFit(); viewerRender(false); };
+    im.src = src; if(im.complete && im.naturalWidth) im.onload();
+    requestAnimationFrame(() => root.classList.add('tuv-in'));
+    byId('previewZoomIn').onclick = () => viewerZoomBy(0.1, null, null, true);
+    byId('previewZoomOut').onclick = () => viewerZoomBy(-0.1, null, null, true);
+    byId('previewReset').onclick = () => { viewerFit(); viewerRender(true); };
+    byId('previewClose').onclick = closeViewer;
+    const c = v.canvas;
+    c.addEventListener('wheel', e => {
+      e.preventDefault(); const now = Date.now(); if(now - viewer.wheelAt < 50) return; viewer.wheelAt = now; // viewer.js: one step per 50 ms
+      const [px, py] = viewerLocal(v, e.clientX, e.clientY); viewerZoomBy(e.deltaY > 0 ? -0.1 : 0.1, px, py, false);
+    }, {passive:false});
+    c.addEventListener('dblclick', e => { const [px, py] = viewerLocal(v, e.clientX, e.clientY); viewerZoomTo(Math.abs(viewer.r - 1) < 1e-3 ? viewer.r0 : 1, px, py, true); });
+    const ptrs = new Map(); let drag = null, pinch = null;
+    c.addEventListener('pointerdown', e => {
+      if(e.button > 0) return; try{ c.setPointerCapture(e.pointerId); }catch(err){} ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+      if(ptrs.size === 1){ drag = {cx:e.clientX, cy:e.clientY, x:viewer.x, y:viewer.y}; im.classList.add('grabbing'); }
+      if(ptrs.size === 2){ const [a, b] = [...ptrs.values()]; pinch = {d:Math.hypot(a[0] - b[0], a[1] - b[1]), r:viewer.r}; drag = null; }
+    });
+    c.addEventListener('pointermove', e => {
+      if(!ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+      if(pinch && ptrs.size === 2){ const [a, b] = [...ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); const [px, py] = viewerLocal(v, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); viewerZoomTo(pinch.r * d / pinch.d, px, py, false); }
+      else if(drag){ const s = viewerLocal(v, 0, 0)[2]; viewer.x = drag.x + (e.clientX - drag.cx) / s; viewer.y = drag.y + (e.clientY - drag.cy) / s; viewerRender(false); }
+    });
+    const up = e => { ptrs.delete(e.pointerId); if(ptrs.size < 2) pinch = null; if(!ptrs.size){ drag = null; im.classList.remove('grabbing'); } };
+    c.addEventListener('pointerup', up); c.addEventListener('pointercancel', up);
+    return true;
+  }
+  function closeViewer(){
+    if(!viewer.open) return; viewer.open = false; clearTimeout(viewer.tipTimer);
+    try{ closeImagePreview(); }catch(e){ const r = byId('imagePreview'); if(r){ r.classList.add('hidden'); r.innerHTML = ''; } }
+    const r = byId('imagePreview'); if(r){ r.className = 'image-preview-backdrop hidden'; r.removeAttribute('style'); }
+  }
+  // a new item (Next, Previous, the list, Proceed, another block) closes the viewer; the next opening starts fitted
+  function viewerFollow(){ if(viewer.open && viewer.key !== viewerItemKey()) closeViewer(); }
+  function wrapPreview(){
+    if(typeof openImagePreview !== 'function' || openImagePreview.__tu) return;
+    const base = openImagePreview;
+    const wrapped = function(key, filter){
+      try{ let src = ''; try{ src = viewerSrcOf(makeExhibit(key)); }catch(e){} if(openViewer(src, filter)) return; }catch(e){ console.warn('ThunderUI image viewer failed', e); }
+      return base.apply(this, arguments);
+    };
+    wrapped.__tu = true;
+    openImagePreview = wrapped; // eslint-disable-line no-global-assign
+  }
+  const exhibitFilter = () => { const el = document.querySelector('#exhibitImg'); if(!el) return ''; const f = getComputedStyle(el).filter; return f && f !== 'none' ? f : ''; };
+  // every image opens the viewer: the exhibit (and its Zoom tool, as on test day), stem images and explanation images
+  function onViewerLinks(e){
+    const t = e.target; if(!t || !t.closest) return;
+    if(t.closest('#zoomEx') && byId('exhibitImg')){
+      e.preventDefault(); e.stopImmediatePropagation();
+      try{ openImagePreview(getQuestionImage(questions[state.current]), exhibitFilter()); }catch(err){ console.warn('ThunderUI exhibit zoom failed', err); }
+      return;
+    }
+    if(t.closest('#exhibitImg')){
+      e.preventDefault(); e.stopImmediatePropagation();
+      try{ openImagePreview(getQuestionImage(questions[state.current]), exhibitFilter()); }catch(err){ console.warn('ThunderUI exhibit open failed', err); }
+      return;
+    }
+    const pic = t.closest('#workspace #stem img, #workspace .qbank-body img, #workspace .exp-image-box img, #workspace .exp-image-box svg');
+    if(!pic || String(getSelection() || '').trim()) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    openViewer(pic.tagName.toLowerCase() === 'img' ? pic.currentSrc || pic.src : viewerSrcOf(pic.outerHTML), '');
+  }
+  function onViewerKey(e){
+    if(!viewer.open) return;
+    const k = e.key, mod = e.ctrlKey || e.metaKey;
+    if(k === 'Escape'){ e.preventDefault(); e.stopImmediatePropagation(); closeViewer(); }
+    else if(k === 'ArrowUp'){ e.preventDefault(); e.stopImmediatePropagation(); viewerZoomBy(0.1, null, null, true); }
+    else if(k === 'ArrowDown'){ e.preventDefault(); e.stopImmediatePropagation(); viewerZoomBy(-0.1, null, null, true); }
+    else if(mod && k === '0'){ e.preventDefault(); e.stopImmediatePropagation(); viewerFit(); viewerRender(true); viewerTip(); }
+    else if(mod && k === '1'){ e.preventDefault(); e.stopImmediatePropagation(); viewerZoomTo(1, null, null, true); }
   }
 
   /* ---------- boot ---------- */
@@ -3601,8 +4081,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   function boot(){
     revealWhenDrawn();
-    if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES; document.head.appendChild(st); }
-    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
+    if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES + NBME_STYLES; document.head.appendChild(st); }
+    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
     // Legacy scripts rename the tab ("Step Exam Simulator A22.x …") after boot; keep the ThunderUSMLE name.
     const titleEl = document.querySelector('head > title');
     if(titleEl) new MutationObserver(() => { if(document.title !== 'ThunderUSMLE') document.title = 'ThunderUSMLE'; }).observe(titleEl, {childList:true, characterData:true, subtree:true});
@@ -3628,7 +4108,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const watchCloud = () => { const c = byId('googleBackupStatus'); if(!c || c.dataset.tuWatched) return; c.dataset.tuWatched = '1'; new MutationObserver(() => paintSyncBits()).observe(c, {childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['data-tone', 'title']}); paintSyncBits(); };
     watchCloud();
     // late modules (progress sync, form updates) add their tabs and panels after load
-    let tries = 0; const late = setInterval(() => { brand(); wrapReport(); watchCloud(); scheduleLibrary(); qbWatch(); scheduleSettings(true); if(++tries > 20) clearInterval(late); }, 500);
+    let tries = 0; const late = setInterval(() => { brand(); wrapReport(); wrapPreview(); watchCloud(); scheduleLibrary(); qbWatch(); scheduleSettings(true); if(++tries > 20) clearInterval(late); }, 500);
   }
   window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), examStyle, setExamStyle, refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); scheduleExam(); }};
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
