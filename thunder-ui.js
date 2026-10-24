@@ -2892,7 +2892,24 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
   }
 
   /* ---------- boot ---------- */
+  // The HTML head hides the page (#tuCloak) until this sets data-tu-ready, so the legacy UI never flashes on open.
+  // Shown once the first view is drawn: Home is built, an exam runs, a dialog asks something, or a panel other than the
+  // HTML's default Quick practice is open (startup switches to Library after its async scan, so Quick practice alone
+  // is not a drawn view yet; the time cap covers a start that stays there).
+  function revealWhenDrawn(){
+    const root = document.documentElement; if(root.hasAttribute('data-tu-ready')) return;
+    const start = Date.now();
+    const drawn = () => {
+      const menu = byId('menu'), lib = byId('libraryModePanel'), dlg = byId('appDialogLayer'), active = document.querySelector('#menu .mode-panel.active');
+      if(!menu || menu.classList.contains('hidden') || (dlg && !dlg.classList.contains('hidden'))) return true;
+      if(lib && lib.classList.contains('active')) return lib.classList.contains('tu-has-home') && !!byId('tuHome');
+      return !!active && active.id !== 'quickModePanel';
+    };
+    const check = () => { if(root.hasAttribute('data-tu-ready')) return; if(drawn() || Date.now() - start > 1500) root.setAttribute('data-tu-ready', '1'); else requestAnimationFrame(check); };
+    requestAnimationFrame(check);
+  }
   function boot(){
+    revealWhenDrawn();
     if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES; document.head.appendChild(st); }
     applyAccent(); wrapReport(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
     const panel = byId('libraryModePanel');
