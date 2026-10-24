@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=10">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=10">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=11">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=11">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=10"></script>
-<script src="./js/form-updates-core.js?v=10"></script>
-<script src="./js/form-update-store.js?v=10"></script>
-<script src="./js/google-auth.js?v=10"></script>
+<script src="./js/sync-config.js?v=11"></script>
+<script src="./js/form-updates-core.js?v=11"></script>
+<script src="./js/form-update-store.js?v=11"></script>
+<script src="./js/google-auth.js?v=11"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=10" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=11" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=10"></script>
-<script src="./js/qid-migration.js?v=10"></script>
+<script src="jszip.min.js?v=11"></script>
+<script src="./js/qid-migration.js?v=11"></script>
 <script>
 
 
@@ -4311,6 +4311,22 @@ document.addEventListener('click', function(e){
             const out=[];
             try{ const bd=await(await progressDir()).getDirectoryHandle('backups',{create:false}); for await(const [name,h] of bd.entries()) if(h.kind==='file'){ const f=await h.getFile(); out.push({name, size:f.size, modifiedAt:f.lastModified?new Date(f.lastModified).toISOString():null}); } }catch(e){}
             return out.sort((x,y)=>String(y.modifiedAt).localeCompare(String(x.modifiedAt)));
+          },
+          /* A23 Phase E: the exam on screen, for the Modern exam style (read-only). The Modern view mirrors the legacy exam
+             controls; this only tells it what to draw. null while no exam is open. */
+          exam:()=>{
+            const scr=document.getElementById('examScreen'), ws=document.getElementById('workspace');
+            if(!scr||scr.classList.contains('hidden')||!Array.isArray(questions)||!questions.length) return null;
+            const cur=Math.max(0,Math.min(questions.length-1,Number(state.current)||0)), q=questions[cur]||{}, m=(q&&q.metadata)||{}, s=activeSession||null;
+            const view=ws&&ws.querySelector('.question-stack')?'question':ws&&ws.querySelector('.modern-report,.report-block')?'report':ws&&ws.querySelector('.review-panel')?'review':scr.classList.contains('break-screen-active')?'break':'other';
+            const log=Array.isArray(state.answerChangeLog)?state.answerChangeLog:[];
+            return {view, review:!!(reviewMode||state.reviewMode||state.blockCompleted), tutor:!!(s&&s.tutorMode), timed:!!timer.enabled, paused:!!timer.paused,
+              title:String((s&&(s.libraryFormName||s.title))||(importedBank&&importedBank.title)||''), block:blockPointer, blocks:(activeBlocks||[]).length||1, current:cur, total:questions.length,
+              items:questions.map((x,i)=>({answer:state.answers[i]==null?null:state.answers[i], correct:x.correct, flagged:!!state.flagged[i], revealed:!!(state.revealed&&state.revealed[i])})),
+              struck:((state.struck&&state.struck[cur])||[]).slice(), seconds:Number(Array.isArray(state.questionTime)&&state.questionTime[cur])||0,
+              first:Array.isArray(state.firstAnswers)&&state.firstAnswers[cur]!=null?state.firstAnswers[cur]:null,
+              changes:log.filter(x=>x&&Number(x.item)===cur+1&&(x.block==null||Number(x.block)===blockPointer+1)).map(x=>({from:x.from, to:x.to})),
+              objective:String(m.conceptOrSourceObjective||m.educationalObjective||q.educationalObjective||q.objective||''), topic:String(m.broadTopic||q.topic||''), subject:String(m.subjectSystem||q.subject||'')};
           }
         });
       })();
@@ -10516,11 +10532,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=10"></script>
-<script src="./js/sync-storage.js?v=10"></script>
-<script src="./js/progress-sync.js?v=10"></script>
-<script src="./js/library-backup.js?v=10"></script>
-<script src="./js/qid-settings.js?v=10"></script>
+<script src="./js/sync-merge.js?v=11"></script>
+<script src="./js/sync-storage.js?v=11"></script>
+<script src="./js/progress-sync.js?v=11"></script>
+<script src="./js/library-backup.js?v=11"></script>
+<script src="./js/qid-settings.js?v=11"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10997,10 +11013,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=10"></script>
-<script src="./exam-notes.js?v=10"></script>
-<script src="./app-update.js?v=10"></script>
-<script src="./js/form-updates.js?v=10"></script>
+<script src="./bulk-import.js?v=11"></script>
+<script src="./exam-notes.js?v=11"></script>
+<script src="./app-update.js?v=11"></script>
+<script src="./js/form-updates.js?v=11"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11086,6 +11102,6 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h1,htm
 html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h4,
 html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h4{color:#9BE7C1!important}
 </style>
-<script src="./thunder-ui.js?v=10"></script>
+<script src="./thunder-ui.js?v=11"></script>
 </body>
 </html>

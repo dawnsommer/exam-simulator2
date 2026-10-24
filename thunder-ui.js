@@ -1,7 +1,7 @@
 /* ThunderUSMLE UI layer (A23 Phase 1 + Phases A–C): brand, accent colors, the Library home view (rebuilt from the canvas
-   boards over StepLibraryBridge), the form details sheet, the start dialog, Quick practice, Add forms, Qbank (build + history), Settings, Backup & sync and the Score Report. Shared by the Local and iPad apps; keep both copies identical.
+   boards over StepLibraryBridge), the form details sheet, the start dialog, Quick practice, Add forms, Qbank (build + history), Settings, Backup & sync, the Score Report and the opt-in Modern exam style (Phase E). Shared by the Local and iPad apps; keep both copies identical.
    It restyles the existing screens and adds a few controls. It never removes or renames the IDs and data-* hooks
-   the other modules use, and it does not touch the exam interface (except the Score Report shown inside it). */
+   the other modules use. The NBME exam interface (the default) is untouched; Modern only applies under :root[data-tu-exam="modern"]. */
 (function(){
   'use strict';
   if(window.ThunderUI) return;
@@ -1055,6 +1055,250 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
 .tu-report .tu-qs-foot{padding:14px 22px;border-top:1px solid var(--tu-line2);font-size:13px;color:var(--tu-on3)}
 :root[data-tu] body #examScreen .tu-report .report-actions{display:none!important}
 @media (max-width:700px){.tu-report .tu-rep-hero{padding:18px}.tu-report .tu-ring{width:120px;height:120px}.tu-report .tu-ring>div{width:94px;height:94px}.tu-report .tu-ring b{font-size:28px}}
+.tu-report .tu-revin{display:flex;align-items:center;height:44px;padding:0 4px 0 14px;border-radius:999px;border:1px solid var(--tu-line);gap:6px}
+.tu-report .tu-revin>span{font-size:13px;font-weight:700;color:var(--tu-on2)}
+:root[data-tu] body #examScreen .tu-report .tu-revin button{height:36px!important;padding:0 14px!important;border-radius:999px!important;border:0!important;background:transparent!important;color:var(--tu-on)!important;font:800 13px var(--tu-font)!important;box-shadow:none!important;margin:0!important;cursor:pointer!important;min-width:0!important;width:auto!important}
+:root[data-tu] body #examScreen .tu-report .tu-revin button[aria-checked="true"]{background:var(--tu-p)!important;color:var(--tu-onp)!important}
+#tuxToast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:300;max-width:calc(100vw - 32px);background:#161A25;color:#fff;padding:10px 18px;border-radius:999px;font:600 14px/1.3 "Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);pointer-events:none}
+`;
+  /* Modern exam style (A23 Phase E, boards ModernExam + Explanation). Every rule is scoped to :root[data-tu-exam="modern"],
+     which is only set while Modern is chosen, so the NBME exam (the default) draws exactly as before. :not(#tux0) lifts
+     the specificity over the legacy exam rules (many use !important and #examScreen). */
+  const X = ':root[data-tu][data-tu-exam="modern"]:not(#tux0) body #examScreen', W = X + ' #workspace', XB = ':root[data-tu][data-tu-exam="modern"]:not(#tux0) body';
+  const EXAM_STYLES = `
+:root[data-tu][data-tu-exam="modern"] body{--tu-bg:#F6F7FB;--tu-surface:#FFFFFF;--tu-s1:#EFF1F7;--tu-s2:#E7EAF3;--tu-s3:#DCE0EC;--tu-line:#D3D8E5;--tu-line2:#E4E7F0;--tu-on:#161A25;--tu-on2:#474E62;--tu-on3:#5F6679;--tu-ok:#17683D;--tu-okc:#D3EFDD;--tu-warn:#7D4B00;--tu-warnc:#FFE3B8;--tu-bad:#A8231B;--tu-badc:#FBDAD6;--tu-info:#1F4FA8;--tu-infoc:#E2EAFE;--tu-shadow:0 1px 2px rgba(20,26,40,.06),0 3px 10px rgba(20,26,40,.06);--tu-p:var(--tu-lp);--tu-onp:var(--tu-lonp);--tu-pc:var(--tu-lpc);--tu-onpc:var(--tu-lonpc);--tu-font:"Figtree",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;--tux-panel:clamp(380px,36vw,520px)}
+:root[data-tu][data-tu-exam="modern"] body.exam-dark-active,${X}.exam-dark{--tu-bg:#0E1118;--tu-surface:#161A23;--tu-s1:#131720;--tu-s2:#222835;--tu-s3:#2B3242;--tu-line:#3A4256;--tu-line2:#272E3D;--tu-on:#E4E7F0;--tu-on2:#B4BACB;--tu-on3:#9AA1B4;--tu-ok:#86DCA8;--tu-okc:#173A27;--tu-warn:#FFC772;--tu-warnc:#3D2C0F;--tu-bad:#FFB4AB;--tu-badc:#4A1612;--tu-info:#B3C5FF;--tu-infoc:#1E2F5C;--tu-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.28);--tu-p:var(--tu-dp);--tu-onp:var(--tu-donp);--tu-pc:var(--tu-dpc);--tu-onpc:var(--tu-donpc)}
+${X}{background:var(--tu-bg)!important;color:var(--tu-on)!important;font-family:var(--tu-font)!important;-webkit-font-smoothing:antialiased}
+${X}>.topbar,${X}>.left-status,${X}>.bottombar{visibility:hidden!important;pointer-events:none!important}
+${X} .tux,${X} .tux *{box-sizing:border-box}
+${X} .tux button,${X} #workspace .tux-strike,${X} #workspace .tux-layout button{font:inherit;color:inherit;background:none;border:0;margin:0;padding:0;box-shadow:none;min-width:0;width:auto;height:auto;cursor:pointer;text-transform:none;letter-spacing:normal;filter:none;border-radius:0;line-height:normal}
+${X} .tux button:disabled{cursor:default}
+${X} .tux :focus-visible,${W} .tux-strike:focus-visible,${W} .tux-layout button:focus-visible{outline:3px solid var(--tu-p);outline-offset:2px}
+${X} .tux-ico{display:block;flex:none}
+/* header (board: 62px) */
+${X} .tux-head{position:fixed;left:0;right:0;top:0;height:62px;z-index:40;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--tu-surface);color:var(--tu-on);border-bottom:1px solid var(--tu-line2);font-family:var(--tu-font)}
+${X} .tux-head .tux-item{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;height:44px;padding:0 12px;border-radius:12px;background:var(--tu-s1);line-height:1.15;max-width:300px;min-width:0;text-align:left}
+${X} .tux-item b{font-size:15px;font-weight:700;white-space:nowrap}
+${X} .tux-item span{font-size:12px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+${X} .tux-item .tux-caret{display:none}
+${X} .tux-item .tux-itemtxt{display:flex;flex-direction:column;align-items:flex-start;min-width:0;max-width:100%}
+${X} .tux-tag{flex:none;font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px;background:var(--tu-infoc);color:var(--tu-info);white-space:nowrap}
+${X} .tux-head .tux-mark{flex:none;display:flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--tu-line);color:var(--tu-on2);font-weight:700;font-size:13.5px}
+${X} .tux-head .tux-mark[aria-pressed="true"]{border-color:var(--tu-warn);background:var(--tu-warnc);color:var(--tu-warn)}
+${X} .tux-mark[aria-pressed="true"] svg{fill:currentColor}
+${X} .tux-head .tux-mark:disabled{opacity:.55}
+${X} .tux-center{flex:1;display:flex;justify-content:center;align-items:center;gap:8px;min-width:0}
+${X} .tux .tux-round{width:42px;height:42px;flex:none;border-radius:50%;border:1px solid var(--tu-line);background:var(--tu-surface);display:flex;align-items:center;justify-content:center;color:var(--tu-on)}
+${X} .tux .tux-round.primary{border:0;background:var(--tu-p);color:var(--tu-onp)}
+${X} .tux .tux-round:disabled{opacity:.4}
+${X} .tux-count{min-width:64px;text-align:center;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+${X} .tux-head .tux-timer{flex:none;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;background:var(--tu-s1);font-variant-numeric:tabular-nums;white-space:nowrap}
+${X} .tux-timer b{font-size:15px}${X} .tux-timer span{font-size:12px;color:var(--tu-on3)}
+${X} .tux-tools{display:flex;gap:2px;flex:none}
+${X} .tux-head .tux-tool{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:60px;height:50px;border-radius:12px;color:var(--tu-on2);font-size:11px;font-weight:700}
+${X} .tux-head .tux-tool:hover,${X} .tux-head .tux-tool[aria-expanded="true"]{background:var(--tu-s1);color:var(--tu-on)}
+${X} .tux-head .tux-more{display:none}
+${X} .tux-spacer{flex:1}
+/* question navigator (board: 212px, 5 columns) */
+${X} .tux-nav{position:fixed;left:0;top:62px;bottom:58px;width:212px;z-index:38;background:var(--tu-surface);color:var(--tu-on);border-right:1px solid var(--tu-line2);padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto;font-family:var(--tu-font)}
+${X} .tux-navhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+${X} .tux-navhead b{font-size:14px}${X} .tux-navhead span{font-size:12px;color:var(--tu-on3)}
+${X} .tux-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+${X} .tux-nav .tux-q{position:relative;height:32px;border-radius:9px;border:1.5px solid var(--tu-line);font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;color:var(--tu-on);font-variant-numeric:tabular-nums}
+${X} .tux-nav .tux-q.done{border-color:transparent;background:var(--tu-s2)}
+${X} .tux-nav .tux-q.bad{border-color:transparent;background:var(--tu-badc);color:var(--tu-bad)}
+${X} .tux-nav .tux-q[aria-current="true"]{border:2px solid var(--tu-p)}
+${X} .tux-nav .tux-q.dim{opacity:.35}
+${X} .tux-q i{position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--tu-warn);border:2px solid var(--tu-surface)}
+${X} .tux-only{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 6px;padding:8px 10px;border-radius:12px;background:var(--tu-infoc);color:var(--tu-info);font-size:12.5px;font-weight:700}
+${X} .tux-nav .tux-only button{white-space:nowrap;font-weight:800;text-decoration:underline;color:var(--tu-info)}
+${X} .tux-legend{margin-top:auto;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--tu-on3)}
+${X} .tux-legend span{display:flex;align-items:center;gap:8px}
+${X} .tux-legend i{width:14px;height:14px;border-radius:4px;flex:none}
+${X} .tux-legend i.done{background:var(--tu-s2)}${X} .tux-legend i.open{border:1.5px solid var(--tu-line)}${X} .tux-legend i.bad{background:var(--tu-badc)}${X} .tux-legend i.cur{border:2px solid var(--tu-p)}
+${X} .tux-legend i.flag{width:9px;height:9px;border-radius:50%;background:var(--tu-warn);margin:0 2.5px}
+${X} .tux-scrim{display:none}
+/* footer (board: 58px) */
+${X} .tux-foot{position:fixed;left:0;right:0;bottom:0;height:58px;z-index:40;display:flex;align-items:center;gap:8px;padding:0 16px;background:var(--tu-surface);color:var(--tu-on);border-top:1px solid var(--tu-line2);font-family:var(--tu-font)}
+${X} .tux-foot .tux-fbtn{flex:none;display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--tu-line);font-weight:700;font-size:13.5px;white-space:nowrap}
+${X} .tux-foot .tux-fbtn.ghost{border-color:transparent;color:var(--tu-on2)}
+${X} .tux-foot .tux-fbtn.tonal{border-color:transparent;background:var(--tu-pc);color:var(--tu-onpc);font-weight:800}
+${X} .tux-foot .tux-fbtn.danger{border-color:transparent;background:var(--tu-badc);color:var(--tu-bad);font-weight:800;padding:0 18px}
+${X} .tux-foot .tux-fbtn:hover{filter:brightness(.97)}
+${X} .tux-note{flex:1;min-width:0;text-align:center;font-size:13px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+${X} .tux-pnav{display:none}
+/* phone "more" menu */
+${X} .tux-morepop{position:fixed;right:8px;top:60px;z-index:70;min-width:220px;max-width:calc(100vw - 16px);background:var(--tu-surface);color:var(--tu-on);border:1px solid var(--tu-line2);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.22);padding:6px;font-family:var(--tu-font)}
+${X} .tux-morepop[hidden]{display:none}
+${X} .tux-morepop button{display:flex;align-items:center;gap:12px;width:100%;height:46px;padding:0 12px;border-radius:12px;font-weight:700;font-size:15px;color:var(--tu-on)}
+${X} .tux-morepop button:hover{background:var(--tu-s1)}
+${X} .tux-morepop button.danger{color:var(--tu-bad)}
+${X} .tux-morepop hr{border:0;border-top:1px solid var(--tu-line2);margin:4px 6px}
+/* workspace and the legacy question, restyled in place (IDs, data-* hooks and text stay) */
+${X}:not(.break-screen-active) #workspace{position:absolute!important;left:212px!important;right:0!important;top:62px!important;bottom:58px!important;padding:22px 28px 40px!important;background:var(--tu-bg)!important;color:var(--tu-on)!important;overflow:auto!important;font-family:var(--tu-font)}
+${X}[data-tux-view="report"]:not(.break-screen-active) #workspace{left:0!important;bottom:0!important;padding:0!important}
+${X}[data-tux-view="other"]:not(.break-screen-active) #workspace{left:0!important}
+${X}[data-tux-split]:not(.break-screen-active) #workspace{right:var(--tux-panel)!important}
+${X}.break-screen-active .tux-head,${X}.break-screen-active .tux-nav,${X}.break-screen-active .tux-foot,${X}[data-tux-view="report"] .tux-nav,${X}[data-tux-view="report"] .tux-foot,${X}[data-tux-view="other"] .tux-nav{display:none!important}
+${W} .question-stack,${W} .question-flex{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;background:none!important;border:0!important;gap:0!important}
+${W} .question-main{max-width:780px!important;width:auto!important;margin:0 auto!important;padding:0!important;display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:16px!important;border:0!important;background:none!important;box-shadow:none!important;float:none!important;position:relative!important;min-height:0!important;min-width:0!important;color:var(--tu-on)!important}
+${W} .question-main>*{flex:1 1 100%;min-width:0;margin-left:0!important;margin-right:0!important}
+${W} .question-main>.mark-line{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;margin:0!important;padding:0!important}
+${W} .question-main>.stem-answer-spacer,${W} .question-main>.locked-banner{display:none!important}
+${W} #stem{background:var(--tu-surface)!important;color:var(--tu-on)!important;border:1px solid var(--tu-line2)!important;border-radius:22px!important;padding:22px 24px!important;box-shadow:var(--tu-shadow)!important;line-height:1.65!important;margin:0!important;max-width:none!important;width:auto!important;font-family:var(--tu-font)!important}
+${W} #stem :is(table){background:var(--tu-s1)!important;border-radius:14px!important;border-collapse:separate!important;color:var(--tu-on)!important}
+${W} #stem :is(td,th){background:transparent!important;color:inherit!important}
+${W} #stem,${W} #stem :is(p,li,ul,ol,div,span,b,i,u,em,strong,td,th,tr,table,a,sub,sup){color:var(--tu-on)!important}
+${W} #stem :is(td,th,table){border-color:var(--tu-line)!important}
+${W} :is(#stem,.qbank-body) .v15-highlight,${W} :is(#stem,.qbank-body) .v15-highlight *{color:#161A25!important}
+${W} #stem :is(img,table,svg){max-width:100%!important}
+${W} #stem *{min-width:0!important}
+${W} .answers{display:flex!important;flex-direction:column!important;gap:8px!important;margin:0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;width:auto!important}
+${W} .answers .answer{position:relative!important;display:flex!important;align-items:center!important;gap:12px!important;min-height:52px!important;margin:0 48px 0 0!important;padding:8px 14px!important;border-radius:16px!important;border:1.5px solid var(--tu-line2)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;box-shadow:none!important;font:500 15.5px/1.45 var(--tu-font)!important;cursor:pointer;outline:0!important;text-decoration:none!important;opacity:1!important;width:auto!important}
+${W} .answers .answer:hover{border-color:var(--tu-line)!important}
+${W} .answers .answer .radio{width:30px!important;height:30px!important;flex:none!important;border-radius:50%!important;border:2px solid var(--tu-line)!important;background:transparent!important;color:var(--tu-on2)!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0!important;box-shadow:none!important;position:static!important;font:800 13.5px var(--tu-font)!important}
+${W} .answers .answer .radio::before{content:attr(data-tux-letter);display:block!important;position:static!important;background:none!important;width:auto!important;height:auto!important;border:0!important;color:inherit!important;transform:none!important}
+${W} .answers .answer .radio::after{display:none!important}
+${W} .answers .answer .choice-text{flex:1 1 auto!important;min-width:0;color:inherit!important;background:none!important;padding:0!important;margin:0!important;font:inherit!important}
+${W} .answers .answer .tux-pre,${W} .answers .answer .strike-symbol{display:none!important}
+${W} .answers .answer.selected{border-color:var(--tu-p)!important;background:var(--tu-pc)!important}
+${W} .answers .answer.selected .radio{border-color:var(--tu-p)!important;background:var(--tu-p)!important;color:var(--tu-onp)!important}
+${W} .answers .answer:is(.struck,.strike,.striked,.struckout){opacity:1!important}
+${W} .answers .answer:is(.struck,.strike,.striked,.struckout) .choice-text{text-decoration:line-through!important;opacity:.55}
+${W} .answers .answer:is(.struck,.strike,.striked,.struckout) .radio{opacity:.55}
+${W} .answers .answer.correctChoice{border-color:var(--tu-ok)!important;background:var(--tu-okc)!important}
+${W} .answers .answer.incorrectChoice{border-color:var(--tu-bad)!important;background:var(--tu-badc)!important}
+${W} .answers .answer.correctChoice .radio{border-color:var(--tu-ok)!important;color:var(--tu-ok)!important}
+${W} .answers .answer.correctChoice.selected .radio{border-color:var(--tu-ok)!important;background:var(--tu-ok)!important;color:var(--tu-okc)!important}
+${W} .answers .answer.incorrectChoice .radio{border-color:var(--tu-bad)!important;background:var(--tu-bad)!important;color:var(--tu-badc)!important}
+${W} .answers .answer.correctChoice::after,${W} .answers .answer.incorrectChoice::after{content:"Correct";flex:none;font:800 12px var(--tu-font);padding:4px 10px;border-radius:999px;background:var(--tu-surface);color:var(--tu-ok);position:static;display:block;border:0;width:auto;height:auto}
+${W} .answers .answer.incorrectChoice::after{content:"Your answer";color:var(--tu-bad)}
+${W} .answers .tux-strike{position:absolute!important;right:-48px;top:50%;transform:translateY(-50%);width:40px!important;height:40px!important;border-radius:12px!important;display:flex!important;align-items:center;justify-content:center;color:var(--tu-on3)!important}
+${W} .answers .tux-strike[aria-pressed="true"]{background:var(--tu-s2)!important;color:var(--tu-on)!important}
+${W} .answers .tux-strike:hover{background:var(--tu-s1)!important}
+${W} .answers #showAnsBtn,${W} .answers .show-answer-btn{align-self:flex-start;height:40px!important;padding:0 18px!important;border-radius:999px!important;border:0!important;background:var(--tu-pc)!important;color:var(--tu-onpc)!important;font:800 13.5px var(--tu-font)!important;box-shadow:none!important;margin:4px 0 0!important}
+${W} .question-main>.tux-hint{flex:1 1 0;font-size:12.5px;color:var(--tu-on3);min-width:180px}
+${W} #proceedBtn{flex:none!important;height:46px!important;padding:0 24px!important;border-radius:999px!important;border:0!important;background:var(--tu-p)!important;color:var(--tu-onp)!important;font:800 14.5px var(--tu-font)!important;box-shadow:none!important;margin:0!important;width:auto!important;min-width:0!important;cursor:pointer;float:none!important;position:static!important}
+${W} #proceedBtn:disabled{background:var(--tu-s2)!important;color:var(--tu-on3)!important;cursor:default}
+${W} .last-item-disabled-note{flex:1 1 100%;text-align:right;font-size:12.5px;color:var(--tu-on3)!important;margin:0!important;background:none!important;border:0!important}
+${W} .answer-meta-panel{display:flex!important;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px!important;border-radius:14px!important;background:var(--tu-s1)!important;border:0!important;color:var(--tu-on)!important;box-shadow:none!important;margin:0!important;font-size:13.5px!important}
+${W} .answer-meta-panel *{color:inherit!important;background:none!important;border-color:var(--tu-line)!important}
+${W} .question-stack:has(.tux-exsum) .answer-meta-panel{display:none!important}
+/* explanation / exhibit panel: a right column when split on a wide screen, a card under the question otherwise */
+${W} .right-panel-wrap{position:static!important;width:auto!important;max-width:780px!important;margin:18px auto 0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;min-width:0!important;float:none!important;height:auto!important;max-height:none!important}
+${X}[data-tux-split] #workspace .right-panel-wrap{position:fixed!important;right:0!important;top:62px!important;bottom:58px!important;left:auto!important;width:var(--tux-panel)!important;max-width:none!important;margin:0!important;z-index:36;background:var(--tu-surface)!important;border-left:1px solid var(--tu-line2)!important}
+${W} .qbank-panel{max-width:780px;margin:18px auto 0!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;border-radius:22px!important;box-shadow:var(--tu-shadow)!important;overflow:hidden!important;color:var(--tu-on)!important;padding:0!important;height:auto!important;max-height:none!important;font-family:var(--tu-font)!important}
+${W} .right-panel-wrap .qbank-panel{margin:0!important;max-width:none}
+${X}[data-tux-split] #workspace .right-panel-wrap .qbank-panel{height:100%!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:auto!important;display:flex!important;flex-direction:column!important}
+${W} .qbank-tabs{display:flex!important;align-items:center!important;gap:6px!important;padding:10px 14px!important;margin:0!important;border:0!important;border-bottom:1px solid var(--tu-line2)!important;background:var(--tu-surface)!important;position:sticky;top:0;z-index:2;flex:none}
+${W} .qbank-tabs .qbank-tab{height:36px!important;padding:0 14px!important;border-radius:10px!important;border:0!important;background:transparent!important;color:var(--tu-on2)!important;font:700 13.5px var(--tu-font)!important;box-shadow:none!important;margin:0!important;top:0!important}
+${W} .qbank-tabs .qbank-tab.active{background:var(--tu-pc)!important;color:var(--tu-onpc)!important;font-weight:800!important}
+${W} .tux-layout{margin-left:auto;display:flex;align-items:center;gap:2px;font-size:12.5px;color:var(--tu-on3)}
+${W} .tux-layout button{height:30px!important;padding:0 10px!important;border-radius:8px!important;font:700 12.5px var(--tu-font)!important;color:var(--tu-on3)!important}
+${W} .tux-layout button[aria-checked="true"]{background:var(--tu-s1)!important;color:var(--tu-on)!important}
+${W} .tux-exsum{padding:16px 18px 0;display:flex;flex-direction:column;gap:12px;font-size:14.5px;line-height:1.55;color:var(--tu-on)}
+${W} .tux-exrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;color:var(--tu-on2)}
+${W} .tux-exrow b{color:var(--tu-on)}
+${W} .tux-pill{height:30px;padding:0 12px;border-radius:999px;background:var(--tu-s2);color:var(--tu-on2);font-weight:800;font-size:13px;display:flex;align-items:center}
+${W} .tux-pill.ok{background:var(--tu-okc);color:var(--tu-ok)}${W} .tux-pill.bad{background:var(--tu-badc);color:var(--tu-bad)}
+${W} .tux-exchg{padding:9px 12px;border-radius:12px;background:var(--tu-s1);font-size:13px;color:var(--tu-on2)}
+${W} .tux-exchg b{color:var(--tu-on)}
+${W} .tux-exobj{padding:12px 14px;border-radius:14px;background:var(--tu-infoc)}
+${W} .tux-exobj span,${W} .qbank-body .exp-correct>h3,${W} .qbank-body .exp-rule>b:first-child,${W} .qbank-body [data-tux-kind="trap"]>h3{display:block;font:800 11.5px var(--tu-font)!important;letter-spacing:.06em!important;text-transform:uppercase!important;margin:0 0 4px!important;padding:0!important;border:0!important;background:none!important}
+${W} .tux-exobj span{color:var(--tu-info)}${W} .tux-exobj p{margin:0}
+${W} .qbank-body{padding:12px 18px 24px!important;margin:0!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px!important;font:400 14.5px/1.55 var(--tu-font)!important;color:var(--tu-on)!important;background:transparent!important;border:0!important;overflow:visible!important;max-height:none!important;height:auto!important;flex:none}
+${W} .qbank-body>*{grid-column:1/-1;margin:0!important;min-width:0}
+${W} .qbank-body>.exp-rule,${W} .qbank-body>.exp-rule+[data-tux-kind="trap"]{grid-column:auto}
+${W} .qbank-body :is(p,div,span,li,ul,ol,td,th,b,strong,em,i,u,a,h4,h5){color:inherit!important}
+${W} .qbank-body .exp-section{padding:0!important;border:0!important;background:none!important;box-shadow:none!important;border-radius:0!important}
+${W} .qbank-body .exp-section>h3{margin:0 0 6px!important;font:800 13.5px var(--tu-font)!important;color:var(--tu-on)!important;letter-spacing:0;text-transform:none;border:0!important;padding:0!important;background:none!important}
+${W} .qbank-body .exp-section.exp-correct{padding:12px 14px!important;border-radius:14px!important;background:var(--tu-okc)!important;border:0!important}
+${W} .qbank-body .exp-section.exp-correct>h3{color:var(--tu-ok)!important}
+${W} .qbank-body .exp-section.exp-correct>div>b{color:var(--tu-ok)!important}
+${W} .qbank-body .exp-wrong{padding:9px 12px!important;border-radius:12px!important;border:1px solid var(--tu-line2)!important;margin:0 0 6px!important;background:transparent!important}
+${W} .qbank-body .exp-wrong[data-tux-yours]{border-color:var(--tu-bad)!important;background:var(--tu-badc)!important}
+${W} .qbank-body .exp-wrong[data-tux-yours]>b:first-child::after{content:"YOUR ANSWER";margin-left:8px;font-size:11.5px;font-weight:800;color:var(--tu-bad)}
+${W} .qbank-body .exp-rule{padding:10px 12px!important;border-radius:12px!important;background:var(--tu-s1)!important;border:0!important}
+${W} .qbank-body .exp-rule>b:first-child{color:var(--tu-info)!important}
+${W} .qbank-body [data-tux-kind="trap"]{padding:10px 12px!important;border-radius:12px!important;background:var(--tu-warnc)!important}
+${W} .qbank-body [data-tux-kind="trap"]>h3{color:var(--tu-warn)!important}
+${W} .qbank-body .exp-pre{white-space:pre-wrap!important;font:inherit!important;background:none!important;border:0!important;padding:0!important;color:inherit!important}
+${W} .qbank-body .exp-placeholder{color:var(--tu-on3)!important}
+${W} .qbank-body[data-panel-mode="exhibit"],${W} .qbank-body:not([data-panel-mode="explanation"]){display:block!important}
+${W} .qbank-body img{max-width:100%;height:auto;border-radius:12px}
+/* Review Block grid */
+${W} .review-panel{max-width:980px;margin:0 auto!important;padding:22px 24px!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;border:1px solid var(--tu-line2)!important;border-radius:22px!important;box-shadow:var(--tu-shadow)!important;font-family:var(--tu-font)!important}
+${W} .review-panel h2{margin:0 0 6px!important;font:800 24px var(--tu-font)!important;color:var(--tu-on)!important}
+${W} .review-panel p{color:var(--tu-on2)!important}
+${W} .review-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:10px!important;margin:14px 0 18px!important}
+${W} .review-card{border:1.5px solid var(--tu-line2)!important;border-radius:14px!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;padding:12px!important;box-shadow:none!important;font-size:13.5px!important;line-height:1.5!important;min-height:0!important}
+${W} .review-card.current{border-color:var(--tu-p)!important;background:var(--tu-pc)!important;color:var(--tu-onpc)!important}
+${W} .review-panel button{height:38px!important;padding:0 16px!important;border-radius:999px!important;border:1px solid var(--tu-line)!important;background:transparent!important;color:var(--tu-on)!important;font:700 13.5px var(--tu-font)!important;box-shadow:none!important;margin:8px 6px 0 0!important;cursor:pointer}
+${W} .review-panel button.primary{border:0!important;background:var(--tu-p)!important;color:var(--tu-onp)!important;font-weight:800!important}
+/* overlays that sit over the exam */
+${XB} .lab-panel{top:62px!important;bottom:58px!important;z-index:45!important;border-left:1px solid var(--tu-line2)!important;box-shadow:-10px 0 28px rgba(0,0,0,.14)!important}
+${XB} #examNotesPanel{bottom:70px!important;z-index:46!important;border-radius:16px!important}
+${XB} .floating-calc{bottom:70px!important}
+${XB} #referenceSettingsDropdown{max-width:calc(100vw - 16px);max-height:calc(100vh - 80px);overflow:auto}
+/* tablets in portrait: navigator narrows */
+@media (max-width:1099px) and (min-width:760px) and (min-height:521px){
+${X} .tux-nav{width:184px;padding:12px}
+${X}:not(.break-screen-active) #workspace{left:184px!important;padding:18px 20px 32px!important}
+${X} .tux-head{gap:8px;padding:0 12px}
+${X} .tux-head .tux-tool{width:44px;height:44px;font-size:0;gap:0}
+${X} .tux-head .tux-mark{width:40px;padding:0;justify-content:center}
+${X} .tux-head .tux-mark span,${X} .tux-head .tux-tag,${X} .tux-timer span{display:none}
+${X} .tux-head .tux-item{max-width:190px}
+${X} .tux-count{min-width:48px}
+${W} .answers .answer{margin-right:44px!important}
+}
+/* phones (and short landscape screens): compact header, navigator in a drawer, Previous / Next in the footer */
+@media (max-width:759px),(max-height:520px){
+${X} .tux-head{height:56px;gap:8px;padding:0 8px 0 10px}
+${X} .tux-tools,${X} .tux-center,${X} .tux-timer span,${X} .tux-head .tux-mark span,${X} .tux-head .tux-tag{display:none!important}
+${X} .tux-head .tux-item{flex:1 1 auto;max-width:none;height:44px;flex-direction:row;align-items:center;gap:8px;padding:0 10px}
+${X} .tux-item .tux-itemtxt{display:flex;flex-direction:column;min-width:0}
+${X} .tux-item .tux-caret{display:block;margin-left:auto;color:var(--tu-on3)}
+${X} .tux-head .tux-mark{width:44px;height:44px;padding:0;justify-content:center}
+${X} .tux-head .tux-timer{height:44px;padding:0 10px;gap:6px}
+${X} .tux-timer b{font-size:14px}
+${X} .tux-head .tux-more{display:flex;width:44px;height:44px;border-radius:50%;align-items:center;justify-content:center;flex:none;color:var(--tu-on)}
+${X} .tux-head .tux-more[aria-expanded="true"]{background:var(--tu-s1)}
+${X} .tux-nav{top:0;bottom:0;width:min(300px,86vw);z-index:66;transform:translateX(-104%);transition:transform .2s ease;box-shadow:8px 0 30px rgba(0,0,0,.25);padding:16px 14px calc(16px + env(safe-area-inset-bottom))}
+${X}[data-tux-drawer] .tux-nav{transform:none}
+${X} .tux-scrim{position:fixed;inset:0;z-index:65;background:rgba(10,12,18,.45)}
+${X}[data-tux-drawer] .tux-scrim{display:block}
+${X} .tux-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+${X} .tux-nav .tux-q{height:40px}
+${X}:not(.break-screen-active) #workspace{left:0!important;right:0!important;top:56px!important;bottom:calc(64px + env(safe-area-inset-bottom))!important;padding:12px 12px 28px!important}
+${X}[data-tux-view="report"]:not(.break-screen-active) #workspace{bottom:0!important}
+${X} .tux-foot{height:calc(64px + env(safe-area-inset-bottom));padding:0 10px env(safe-area-inset-bottom);gap:8px}
+${X} .tux-foot>:not(.tux-pnav){display:none!important}
+${X} .tux-foot .tux-pnav{display:flex;flex:1;gap:8px;align-items:center}
+${X} .tux-pnav .tux-round{width:48px;height:48px}
+${X} .tux-foot .tux-pnav .tux-go{flex:1;height:48px;border-radius:999px;background:var(--tu-p);color:var(--tu-onp);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;gap:6px}
+${X} .tux-foot .tux-pnav .tux-go:disabled{background:var(--tu-s2);color:var(--tu-on3)}
+${X} .tux-pnav .tux-pcount{min-width:58px;text-align:center;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums;color:var(--tu-on2)}
+${W} #stem{padding:16px!important;border-radius:18px!important;line-height:1.6!important}
+${W} .question-main{gap:12px!important}
+${W} .answers .answer{margin-right:0!important;padding:8px 6px 8px 10px!important;gap:10px!important;font-size:15px!important}
+${W} .answers .tux-strike{position:static!important;transform:none;width:38px!important;height:38px!important;flex:none}
+${W} .question-main>.tux-hint,${W} .tux-layout{display:none!important}
+${X}:not([data-tux-tutor]) #workspace #proceedBtn{display:none!important}
+${X}[data-tux-tutor] #workspace #proceedBtn{flex:1 1 100%!important}
+${W} .qbank-body{grid-template-columns:minmax(0,1fr);padding:10px 14px 18px!important}
+${W} .qbank-body>.exp-rule,${W} .qbank-body>.exp-rule+[data-tux-kind="trap"]{grid-column:1/-1}
+${W} .tux-exsum{padding:14px 14px 0}
+${W} .qbank-panel,${W} .right-panel-wrap{margin-top:14px!important}
+${W} .qbank-panel{border-radius:18px!important}
+${W} .review-panel{padding:16px!important;border-radius:18px!important}
+${W} .review-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))!important}
+${XB} .lab-panel{left:0!important;right:0!important;width:auto!important;min-width:0!important;top:56px!important;bottom:calc(64px + env(safe-area-inset-bottom))!important;border-left:0!important}
+${XB} #examNotesPanel{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;bottom:calc(72px + env(safe-area-inset-bottom))!important}
+${XB} .floating-calc{right:50%!important;transform:translateX(50%);bottom:calc(72px + env(safe-area-inset-bottom))!important}
+${XB} #referenceSettingsDropdown{left:auto!important}
+${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)!important}
+}
 `;
 
   /* ---------- accent, brand and favicon ---------- */
@@ -2348,6 +2592,7 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
     return `<div class="tu-sechead"><h2>Appearance</h2></div>` +
       setRow('Theme', 'Library, Qbank and Settings', `<div class="tu-setseg" role="radiogroup" aria-label="Theme">${seg('light', 'Light', 'sun')}${seg('dark', 'Dark', 'moon')}${seg('system', 'Match device')}</div>`) +
       setRow('Accent color', 'Buttons, selection, progress rings and the app icon. Crimson is the default.' + (IPAD ? ' The Home Screen icon updates when you add the app to the Home Screen again.' : ''), `<div class="tu-swatches" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(swatch).join('')}</div>`) +
+      setRow('Exam style', 'NBME looks like test day (default). Modern applies the new design to answering, review and explanations, and fits phones. Also in the exam’s Settings menu and on the Score Report.', `<div class="tu-setseg" role="radiogroup" aria-label="Exam style">${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${examStyle() === v}" data-tu-examstyle="${v}">${l}</button>`).join('')}</div>`) +
       setRow('Card density', 'Comfortable cards, or a compact list for big libraries', `<label class="tu-setselect"><span class="tu-sr">Card density</span><select data-tu-density><option value="grid"${view === 'grid' ? ' selected' : ''}>Comfortable</option><option value="list"${view === 'list' ? ' selected' : ''}>Compact</option></select></label>`);
   }
   function tabsBody(){
@@ -2659,6 +2904,7 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
     const ds = t.dataset;
     if(ds.tuSec){ goSection(ds.tuSec); return; }
     if(ds.tuTheme){ setTheme(ds.tuTheme); return; }
+    if(ds.tuExamstyle){ setExamStyle(ds.tuExamstyle); return; }
     if(ds.tuFlag && ds.key){
       const f = TAB_FLAGS.find(([k]) => k === ds.tuFlag), on = t.getAttribute('aria-checked') !== 'true';
       t.setAttribute('aria-checked', String(on)); t.innerHTML = on ? icon(SET_ICONS.tick, 14) : '';
@@ -2787,6 +3033,7 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
   function topicOf(a, q){ const m = (q && q.metadata) || {}; return String(a.topic || m.broadTopic || m.conceptOrSourceObjective || ''); }
   function enhanceReport(){
     const ws = byId('workspace'), rep = ws && ws.querySelector('.modern-report'); if(!rep || rep.dataset.tu) return;
+    reviewOnly = null;
     let results = [];
     try{ results = getCompletedResults(); }catch(e){}
     let blocks = results.length ? results : ((typeof activeSession !== 'undefined' && activeSession && activeSession.blocks) || []).map(b => b && b.result).filter(Boolean);
@@ -2812,7 +3059,7 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
     const firstWrong = rows.find(x => x.a.chosen !== x.a.correct);
     // build the new layout and move the existing controls (with their listeners) into it
     const wrap = document.createElement('div'); wrap.className = 'tu-rep-wrap';
-    wrap.innerHTML = `<section class="tu-card tu-rep-hero"><div class="tu-rep-copy"><span class="tu-kicker">Score report</span><h1 class="tu-rep-title">${esc(title)}</h1><span class="tu-rep-meta">${esc(meta)}</span><div class="tu-rep-actions" data-tu-slot="review"><button type="button" class="tu-btn" data-tu-review="all">Review all</button>${wrong + blank ? `<button type="button" class="tu-btn tonal" data-tu-review="incorrect">Review incorrect (${wrong + blank})</button>` : ''}</div><div class="tu-rep-actions secondary-row" data-tu-slot="files"></div></div>` +
+    wrap.innerHTML = `<section class="tu-card tu-rep-hero"><div class="tu-rep-copy"><span class="tu-kicker">Score report</span><h1 class="tu-rep-title">${esc(title)}</h1><span class="tu-rep-meta">${esc(meta)}</span><div class="tu-rep-actions" data-tu-slot="review"><button type="button" class="tu-btn" data-tu-review="all">Review all</button>${wrong + blank ? `<button type="button" class="tu-btn tonal" data-tu-review="incorrect">Review incorrect (${wrong + blank})</button>` : ''}<div class="tu-revin" role="radiogroup" aria-label="Review in"><span>Review in</span>${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${examStyle() === v}" data-tu-revin="${v}">${l}</button>`).join('')}</div></div><div class="tu-rep-actions secondary-row" data-tu-slot="files"></div></div>` +
       `<div class="tu-rep-score"><div class="tu-ring" style="--v:${percent}" role="img" aria-label="Score ${percent} percent, ${correct} of ${total} correct"><div><b>${percent}%</b><span>${correct} / ${total}</span></div></div><div class="tu-legend"><span><i style="background:var(--tu-ok)"></i><b>${correct}</b> correct</span><span><i style="background:var(--tu-bad)"></i><b>${wrong}</b> incorrect</span><span><i style="background:var(--tu-on3)"></i><b>${blank}</b> unanswered</span><span><i style="background:var(--tu-warn)"></i><b>${marked}</b> marked</span>${total ? `<span>${Math.round(secs / total)} s average per question</span>` : ''}</div></div></section>` +
       `<div class="tu-rep-row" data-tu-slot="row"><section class="tu-card tu-subjects" aria-label="By subject"><h2 class="tu-h">By subject</h2>${subjectsHtml}</section></div>` +
       `<section class="tu-card tu-qs" aria-label="Questions"><div class="tu-qs-head" data-tu-slot="qhead"><div class="tu-qs-tools" data-tu-slot="tools"><div class="tu-chips" role="group" aria-label="Show"></div></div></div><div data-tu-slot="blocks"></div><div class="tu-qs-foot" aria-live="polite"></div></section>`;
@@ -2870,11 +3117,15 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
     chips.addEventListener('click', e => { const c = e.target.closest('[data-tu-filter]'); if(!c) return; chips.querySelectorAll('[data-tu-filter]').forEach(b => b.setAttribute('aria-pressed', String(b === c))); applyFilter(); });
     wrap.querySelectorAll('.report-tab').forEach(t => t.addEventListener('click', () => setTimeout(applyFilter, 0)));
     wrap.addEventListener('click', e => {
+      const rv = e.target.closest('[data-tu-revin]'); if(rv){ setExamStyle(rv.dataset.tuRevin); return; }
       const r = e.target.closest('[data-tu-review]'); if(!r) return;
-      const target = r.dataset.tuReview === 'incorrect' && firstWrong ? firstWrong : rows[0];
+      // Review incorrect opens the first incorrect (or unanswered) item and keeps Previous / Next on those items only
+      const only = r.dataset.tuReview === 'incorrect' && firstWrong;
+      const target = only ? firstWrong : rows[0];
       if(!target) return;
       const btn = wrap.querySelector(`.review-one[data-b="${target.b}"][data-q="${(Number(target.a.item) || 1) - 1}"]`);
-      btn?.click();
+      startOnly(only ? rows.filter(x => x.a.chosen !== x.a.correct).map(x => ({b:x.b, q:(Number(x.a.item) || 1) - 1})) : [], 'incorrect');
+      onlyStarting = true; try{ btn?.click(); }finally{ onlyStarting = false; }
     });
     rep.querySelector('.report-hero')?.remove();
     rep.querySelector('.report-actions')?.remove();
@@ -2889,6 +3140,281 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
     const wrapped = function(){ const out = base.apply(this, arguments); try{ enhanceReport(); }catch(e){ console.warn('ThunderUI score report failed', e); } return out; };
     wrapped.__tu = true;
     renderFinalReport = wrapped; // eslint-disable-line no-global-assign
+  }
+
+  /* ---------- Modern exam style (A23 Phase E: boards ModernExam, Explanation; CurrentExam is the NBME reference) ----------
+     NBME, the legacy exam interface, stays the default and draws exactly as before: Modern sets :root[data-tu-exam="modern"]
+     and only then mounts its chrome (#tuxHead, #tuxNav, #tuxFoot) and decorates the question. New view, same engine: the
+     chrome clicks the hidden legacy controls (#prevNav, #nextNav, #markQuestion, #labBtn, …) and the question, answers and
+     explanation stay the legacy nodes, restyled, so highlights, strikes, notes and saves keep working. The style is stored
+     once (ThunderUSMLE.examStyle) and switched from Settings › Appearance, the exam's Settings menu and the Score Report.
+     Review incorrect: a review filter that steps Previous / Next through the incorrect items only (both styles); it writes nothing. */
+  const EXAM_KEY = 'ThunderUSMLE.examStyle';
+  const XI = {
+    flag:'<path d="M5 21V4h11l-2 4 2 4H5"/>', prev:'<path d="m15 6-6 6 6 6"/>', next:'<path d="m9 6 6 6-6 6"/>',
+    clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
+    labs:'<path d="M9 3h6M10 3v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4A1.5 1.5 0 0 0 19 19l-5-10V3"/><path d="M7.5 14h9"/>',
+    notes:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+    calc:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
+    settings:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+    full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+    strike:'<path d="M4 12h16M16 6.5C15.2 5 13.8 4 12 4c-2.5 0-4.5 1.4-4.5 3.5 0 1.2.6 2.1 1.7 2.8M8 17.5c.8 1.5 2.2 2.5 4 2.5 2.5 0 4.5-1.4 4.5-3.5"/>',
+    lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    pause:'<path d="M9 5v14M15 5v14"/>', grid:'<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>',
+    report:'<path d="M5 20V10M12 20V4M19 20v-7"/>', end:'<path d="M6 6l12 12M18 6 6 18"/>',
+    more:'<circle cx="5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.7" fill="currentColor" stroke="none"/>',
+    down:'<path d="m6 9 6 6 6-6"/>'
+  };
+  const EXAM_TOOLS = [['labs', 'labBtn', 'Labs'], ['notes', 'notesBtn', 'Notes'], ['calc', 'calcBtn', 'Calculator'], ['settings', 'settingsBtn', 'Settings'], ['full', 'fullscreenBtn', 'Full screen']];
+  const examUi = {drawer:false, more:false, anchor:null, watched:false};
+  let reviewOnly = null, onlyStarting = false, examQueued = false;
+  function examStyle(){ return store.get(EXAM_KEY, 'nbme') === 'modern' ? 'modern' : 'nbme'; }
+  function modernOn(){ return document.documentElement.getAttribute('data-tu-exam') === 'modern'; }
+  function setExamStyle(s){
+    store.set(EXAM_KEY, s === 'modern' ? 'modern' : 'nbme');
+    applyExamStyle(true); scheduleSettings(); paintReviewIn();
+  }
+  function setAttrIf(el, k, v){ if(!el) return; if(v == null){ if(el.hasAttribute(k)) el.removeAttribute(k); } else if(el.getAttribute(k) !== v) el.setAttribute(k, v); }
+  function applyExamStyle(redraw){
+    const on = examStyle() === 'modern', was = modernOn();
+    setAttrIf(document.documentElement, 'data-tu-exam', on ? 'modern' : null);
+    if(!on) teardownExam();
+    // re-render the open question so its decorations are added (Modern) or dropped (NBME draws from a clean render)
+    if(redraw && on !== was){ const m = examModel(); if(m && m.view === 'question'){ try{ renderQuestion(); }catch(e){} } }
+    if(on) scheduleExam();
+  }
+  function teardownExam(){
+    ['tuxHead', 'tuxNav', 'tuxFoot', 'tuxScrim', 'tuxMore'].forEach(id => byId(id)?.remove());
+    const scr = byId('examScreen');
+    if(scr) ['data-tux-view', 'data-tux-split', 'data-tux-drawer', 'data-tux-tutor'].forEach(a => scr.removeAttribute(a));
+    examUi.drawer = false; examUi.more = false;
+  }
+  function examModel(){ try{ const b = bridge(); return b && typeof b.exam === 'function' ? b.exam() : null; }catch(e){ return null; } }
+  function scheduleExam(){ if(examQueued || !modernOn()) return; examQueued = true; requestAnimationFrame(() => { examQueued = false; try{ paintExam(); }catch(e){ console.warn('ThunderUI modern exam failed', e); } }); }
+  function shown(id){ const el = byId(id); return !!el && !el.hidden && !el.classList.contains('hidden') && !(el.closest && el.closest('.hidden')); }
+  function phoneLayout(){ return innerWidth < 760 || innerHeight <= 520; }
+  function endLabel(){ return /save/i.test(txt(byId('endBlockBtn'))) ? 'Save & exit' : 'End block'; }
+  function ensureExamChrome(scr){
+    if(byId('tuxHead') && byId('tuxHead').parentNode === scr && byId('tuxFoot')) return;
+    ['tuxHead', 'tuxNav', 'tuxFoot', 'tuxScrim', 'tuxMore'].forEach(id => byId(id)?.remove());
+    scr.insertAdjacentHTML('beforeend', '<header id="tuxHead" class="tux tux-head"></header><aside id="tuxNav" class="tux tux-nav" aria-label="Question navigator"></aside><footer id="tuxFoot" class="tux tux-foot"></footer><div id="tuxScrim" class="tux-scrim" data-tux="drawer"></div><div id="tuxMore" class="tux tux-morepop" role="menu" aria-label="More exam actions" hidden></div>');
+  }
+  function onlyPos(m){ if(!reviewOnly) return null; const i = reviewOnly.items.findIndex(x => x.b === m.block && x.q === m.current); return {i, n:reviewOnly.items.length}; }
+  function examHeadHtml(m){
+    const q = m.view === 'question' || m.view === 'review', it = m.items[m.current] || {};
+    const flagged = !!it.flagged, ro = onlyPos(m);
+    const item = m.view === 'report'
+      ? `<div class="tux-item"><span class="tux-itemtxt"><b>Score report</b><span>${esc(m.title || '')}</span></span></div>`
+      : `<button type="button" class="tux-item" data-tux="overview" title="Exam overview" aria-label="Item ${m.current + 1} of ${m.total}, block ${m.block + 1} of ${m.blocks}. Questions"><span class="tux-itemtxt"><b>Item ${m.current + 1} of ${m.total}</b><span>Block ${m.block + 1} of ${m.blocks}${m.title ? ' · ' + esc(m.title) : ''}</span></span><span class="tux-caret">${icon(XI.down, 18)}</span></button>`;
+    const tags = (m.review && q ? '<span class="tux-tag">Review</span>' : '') + (ro && q ? `<span class="tux-tag">${esc(reviewOnly.label[0].toUpperCase() + reviewOnly.label.slice(1))} only</span>` : '');
+    const mark = q ? `<button type="button" class="tux-mark" data-tux="mark" aria-pressed="${flagged}"${m.review || !byId('markQuestion') || byId('markQuestion').disabled ? ' disabled' : ''} aria-label="${flagged ? 'Marked' : 'Mark'}">${icon(XI.flag, 16)}<span>${flagged ? 'Marked' : 'Mark'}</span></button>` : '';
+    const center = q ? `<div class="tux-center"><button type="button" class="tux-round" data-tux="prev" aria-label="Previous item"${byId('prevBtn') && byId('prevBtn').disabled && !ro ? ' disabled' : ''}>${icon(XI.prev, 18)}</button><span class="tux-count">${m.current + 1} / ${m.total}</span><button type="button" class="tux-round primary" data-tux="next" aria-label="Next item"${byId('nextBtn') && byId('nextBtn').disabled && !ro ? ' disabled' : ''}>${icon(XI.next, 18)}</button></div>` : '<span class="tux-spacer"></span>';
+    const timer = q && !m.review && m.timed ? `<button type="button" class="tux-timer" data-tux="time" title="Block and day time remaining">${icon(XI.clock, 16)}<b data-tux-t="block"></b><span data-tux-t="day"></span></button>` : '';
+    const tools = EXAM_TOOLS.filter(([, id]) => shown(id) || (id !== 'fullscreenBtn' && byId(id) && !byId(id).closest('.hidden'))).map(([k, id, l]) => `<button type="button" class="tux-tool" data-tux="tool" data-id="${id}" title="${l}"${id === 'notesBtn' ? ` aria-expanded="${byId(id).getAttribute('aria-expanded') === 'true'}"` : ''}>${icon(XI[k], 19)}${l}</button>`).join('');
+    return item + tags + mark + center + timer + `<div class="tux-tools" role="toolbar" aria-label="Exam tools">${tools}</div>` + `<button type="button" class="tux-more" data-tux="more" aria-label="More exam actions" aria-expanded="${examUi.more}">${icon(XI.more, 20)}</button>`;
+  }
+  function examNavHtml(m){
+    const answered = m.items.filter(x => x.answer != null).length, ro = onlyPos(m);
+    const keep = i => !reviewOnly || reviewOnly.items.some(x => x.b === m.block && x.q === i);
+    const cells = m.items.map((x, i) => {
+      const done = x.answer != null, bad = m.review && x.answer !== x.correct;
+      const cls = ['tux-q', done ? 'done' : '', bad ? 'bad' : '', keep(i) ? '' : 'dim'].filter(Boolean).join(' ');
+      const st = m.review ? (x.answer == null ? 'unanswered' : x.answer === x.correct ? 'correct' : 'incorrect') : (done ? 'answered' : 'not answered');
+      return `<button type="button" class="${cls}" data-tux-go="${i}" aria-current="${i === m.current}" aria-label="Item ${i + 1}, ${st}${x.flagged ? ', marked' : ''}">${i + 1}${x.flagged ? '<i></i>' : ''}</button>`;
+    }).join('');
+    const only = ro ? `<div class="tux-only"><span>${esc(reviewOnly.label[0].toUpperCase() + reviewOnly.label.slice(1))} only${ro.i >= 0 ? ` · ${ro.i + 1} of ${ro.n}` : ` · ${ro.n}`}</span><button type="button" data-tux="only-off">Show all</button></div>` : '';
+    const legend = m.review
+      ? '<span><i class="done"></i>Correct</span><span><i class="bad"></i>Incorrect or unanswered</span><span><i class="flag"></i>Marked</span><span><i class="cur"></i>Current</span>'
+      : '<span><i class="done"></i>Answered</span><span><i class="open"></i>Not answered</span><span><i class="flag"></i>Marked</span><span><i class="cur"></i>Current</span>';
+    return `<div class="tux-navhead"><b>Questions</b><span>${answered} / ${m.total} answered</span></div>${only}<div class="tux-grid">${cells}</div><div class="tux-legend">${legend}</div>`;
+  }
+  function examFootHtml(m){
+    const q = m.view === 'question' || m.view === 'review', marked = m.items.filter(x => x.flagged).length, answered = m.items.filter(x => x.answer != null).length;
+    const pct = m.total ? Math.round(m.items.filter(x => x.answer != null && x.answer === x.correct).length / m.total * 100) : 0;
+    const note = m.review ? `Block ${m.block + 1} review · ${pct}%` : `${answered} of ${m.total} answered · ${marked} marked`;
+    const ro = onlyPos(m), last = byId('nextBtn') && byId('nextBtn').disabled && !ro;
+    const parts = [];
+    if(shown('lockBtn') && !m.review) parts.push(`<button type="button" class="tux-fbtn" data-tux="lock">${icon(XI.lock, 16)}Lock</button>`);
+    if(shown('suspendBtn')) parts.push('<button type="button" class="tux-fbtn" data-tux="suspend">Suspend</button>');
+    if(q) parts.push('<button type="button" class="tux-fbtn ghost" data-tux="review">Review screen</button>');
+    parts.push(`<span class="tux-note">${esc(note)}</span>`);
+    if(shown('reviewScoreReportBtn')) parts.push('<button type="button" class="tux-fbtn tonal" data-tux="report">Score report</button>');
+    if(byId('endBlockBtn')) parts.push(`<button type="button" class="tux-fbtn danger" data-tux="end">${endLabel()}</button>`);
+    const pnav = q ? `<div class="tux-pnav"><button type="button" class="tux-round" data-tux="prev" aria-label="Previous item"${byId('prevBtn') && byId('prevBtn').disabled && !ro ? ' disabled' : ''}>${icon(XI.prev, 20)}</button><span class="tux-pcount">${m.current + 1} / ${m.total}</span><button type="button" class="tux-go" data-tux="next"${last ? ' disabled' : ''}>${last ? 'Last item' : 'Next item'}${icon(XI.next, 18)}</button></div>` : '';
+    return parts.join('') + pnav;
+  }
+  function examMoreHtml(m){
+    const row = (act, label, ico, extra, cls) => `<button type="button" role="menuitem" class="${cls || ''}" data-tux="${act}"${extra || ''}>${icon(ico, 20)}${label}</button>`;
+    const tools = EXAM_TOOLS.filter(([, id]) => shown(id) || (id !== 'fullscreenBtn' && byId(id) && !byId(id).closest('.hidden'))).map(([k, id, l]) => row('tool', l, XI[k], ` data-id="${id}"`)).join('');
+    const acts = [];
+    if(m.view === 'question' || m.view === 'review') acts.push(row('review', 'Review screen', XI.grid));
+    if(shown('lockBtn') && !m.review) acts.push(row('lock', 'Lock', XI.lock));
+    if(shown('suspendBtn')) acts.push(row('suspend', 'Suspend', XI.pause));
+    if(shown('reviewScoreReportBtn')) acts.push(row('report', 'Score report', XI.report));
+    if(byId('endBlockBtn') && m.view !== 'report') acts.push(row('end', endLabel(), XI.end, '', 'danger'));
+    return tools + (acts.length ? '<hr>' + acts.join('') : '');
+  }
+  function examSummaryHtml(m){
+    const it = m.items[m.current] || {}, a = it.answer, c = it.correct;
+    const st = a == null ? ['', 'Unanswered'] : a === c ? ['ok', 'Correct'] : ['bad', 'Incorrect'];
+    const parts = [a == null ? 'Not answered' : `You chose <b>${LET[a] || '?'}</b>`, `correct is <b>${LET[c] || '?'}</b>`];
+    if(m.seconds) parts.push(fmtTime(m.seconds));
+    let chg = '';
+    if(m.changes.length){
+      const seq = [m.changes[0].from].concat(m.changes.map(x => x.to)).map(x => LET[x] || '?'), f = m.changes[0].from, l = m.changes[m.changes.length - 1].to;
+      chg = `<div class="tux-exchg">You changed this answer: <b>${seq.join(' → ')}</b> (${f === c ? 'correct' : 'incorrect'} → ${l === c ? 'correct' : 'incorrect'})</div>`;
+    }
+    const obj = m.objective ? `<section class="tux-exobj"><span>Educational objective</span><p>${esc(m.objective)}</p></section>` : '';
+    return `<div class="tux-exsum" aria-label="Your answer"><div class="tux-exrow"><span class="tux-pill ${st[0]}">${st[1]}</span><span>${parts.join(' · ')}</span></div>${chg}${obj}</div>`;
+  }
+  function layoutToggleHtml(){
+    let l = 'split'; try{ l = getReviewExplanationLayout() === 'below' ? 'below' : 'split'; }catch(e){}
+    return `<span class="tux-layout" role="radiogroup" aria-label="Explanation layout">${[['split', 'Split'], ['below', 'Below']].map(([v, t]) => `<button type="button" role="radio" aria-checked="${l === v}" data-tux-layout="${v}">${t}</button>`).join('')}</span>`;
+  }
+  // Decorations inside the legacy question (Modern only; the next renderQuestion drops them): choice letters, a strike
+  // button per choice, a hint, the explanation summary and markers the CSS needs. Text inside the highlight containers
+  // (#stem, .qbank-body) is never changed, so saved highlights re-attach.
+  function decorateQuestion(m){
+    const ws = byId('workspace'); if(!ws) return;
+    const it = m.items[m.current] || {};
+    ws.querySelectorAll('.answers .answer[data-choice]').forEach(a => {
+      if(a.dataset.tuxDone) return; a.dataset.tuxDone = '1';
+      const i = Number(a.dataset.choice), r = a.querySelector('.radio'); if(r) r.setAttribute('data-tux-letter', LET[i] || '');
+      const ct = a.querySelector('.choice-text'), tn = ct && ct.firstChild;
+      if(tn && tn.nodeType === 3){ const mm = tn.nodeValue.match(/^\s*[A-Z][.)]\s+/); if(mm){ const pre = document.createElement('span'); pre.className = 'tux-pre'; pre.textContent = mm[0]; tn.nodeValue = tn.nodeValue.slice(mm[0].length); ct.insertBefore(pre, tn); } }
+      if(m.review || it.revealed) return;
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'tux-strike'; b.title = 'Strike out (right-click also works)';
+      b.setAttribute('aria-label', 'Strike out choice ' + (LET[i] || '')); b.setAttribute('aria-pressed', String(m.struck.includes(i)));
+      b.innerHTML = icon(XI.strike, 18);
+      b.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); a.dispatchEvent(new MouseEvent('contextmenu', {bubbles:true, cancelable:true, button:2})); });
+      a.appendChild(b);
+    });
+    const main = ws.querySelector('.question-main'), go = byId('proceedBtn');
+    if(main && go && go.parentNode === main && !main.querySelector('.tux-hint')){
+      const h = document.createElement('span'); h.className = 'tux-hint';
+      h.textContent = m.review ? 'Answers are locked in review. Highlights still work.' : 'Select text to highlight · strike a choice with its button or a right-click';
+      main.insertBefore(h, go);
+    }
+    ws.querySelectorAll('.qbank-panel').forEach(p => {
+      const tabs = p.querySelector('.qbank-tabs'), body = p.querySelector('.qbank-body');
+      if(tabs && !tabs.querySelector('.tux-layout') && !phoneLayout() && (m.review || it.revealed)) tabs.insertAdjacentHTML('beforeend', layoutToggleHtml());
+      if(body && !p.querySelector('.tux-exsum') && (m.review || it.revealed)) body.insertAdjacentHTML('beforebegin', examSummaryHtml(m));
+      if(!body) return;
+      body.querySelectorAll('.exp-section:not([data-tux-kind])').forEach(s => { const h = txt(s.querySelector(':scope>h3')).toLowerCase(); s.setAttribute('data-tux-kind', /trap/.test(h) ? 'trap' : /why|wrong|other/.test(h) ? 'wrong' : /correct/.test(h) ? 'correct' : 'exp'); });
+      if(it.answer != null && it.answer !== it.correct) body.querySelectorAll('.exp-wrong:not([data-tux-yours])').forEach(w => { const l = txt(w.querySelector('b')).replace(/^choice\s+/i, '').trim().charAt(0).toUpperCase(); if(l && l === LET[it.answer]) w.setAttribute('data-tux-yours', ''); });
+    });
+  }
+  function paintExamTimer(){
+    const b = document.querySelector('#tuxHead [data-tux-t="block"]'), d = document.querySelector('#tuxHead [data-tux-t="day"]'); if(!b) return;
+    const clean = s => String(s || '').trim().replace(/^00:(?=\d\d:\d\d$)/, '');
+    const bt = clean(txt(byId('blockTime'))), dt = 'day ' + clean(txt(byId('dayTime')));
+    if(b.textContent !== bt) b.textContent = bt; if(d && d.textContent !== dt) d.textContent = dt;
+  }
+  function paintExam(){
+    const scr = byId('examScreen'); if(!scr || !modernOn()) return;
+    const m = examModel();
+    if(!m){ if(examUi.drawer || examUi.more){ examUi.drawer = examUi.more = false; } return; }
+    ensureExamChrome(scr);
+    const split = m.view === 'question' && !phoneLayout() && innerWidth >= 1100 && !!scr.querySelector('#workspace .explanation-split .right-panel-wrap');
+    if(!phoneLayout()) examUi.drawer = false;
+    setAttrIf(scr, 'data-tux-view', m.view === 'review' ? 'question' : m.view);
+    setAttrIf(scr, 'data-tux-split', split ? '1' : null);
+    setAttrIf(scr, 'data-tux-tutor', m.tutor && !m.review ? '1' : null);
+    setAttrIf(scr, 'data-tux-drawer', examUi.drawer ? '1' : null);
+    swapHtml(byId('tuxHead'), examHeadHtml(m));
+    swapHtml(byId('tuxNav'), examNavHtml(m));
+    swapHtml(byId('tuxFoot'), examFootHtml(m));
+    const more = byId('tuxMore'); swapHtml(more, examUi.more ? examMoreHtml(m) : ''); more.hidden = !examUi.more;
+    paintExamTimer();
+    if(m.view === 'question') decorateQuestion(m);
+  }
+  function closeExamPops(){ if(examUi.drawer || examUi.more){ examUi.drawer = false; examUi.more = false; scheduleExam(); } }
+  function fire(id){ const el = byId(id); if(!el) return false; el.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window})); return true; }
+  function onExamClick(e){
+    const lay = e.target.closest && e.target.closest('[data-tux-layout]');
+    if(lay){ e.preventDefault(); try{ setReviewExplanationLayout(lay.dataset.tuxLayout); }catch(err){} return; }
+    const go = e.target.closest && e.target.closest('#tuxNav [data-tux-go]');
+    if(go){ const i = Number(go.dataset.tuxGo); examUi.drawer = false; const row = document.querySelector(`#statusRows [data-i="${i}"]`); if(row) row.click(); else { try{ goToQuestionIndex(i); }catch(err){} } scheduleExam(); return; }
+    const t = e.target.closest && e.target.closest('.tux [data-tux], .tux-scrim[data-tux]'); if(!t || t.disabled) return;
+    const act = t.dataset.tux, inMore = !!t.closest('#tuxMore');
+    if(inMore) examUi.more = false;
+    if(act === 'overview'){ if(phoneLayout()){ examUi.drawer = !examUi.drawer; examUi.more = false; scheduleExam(); } else fire('itemBox'); return; }
+    if(act === 'drawer'){ examUi.drawer = false; scheduleExam(); return; }
+    if(act === 'more'){ examUi.more = !examUi.more; examUi.drawer = false; scheduleExam(); return; }
+    if(act === 'mark'){ const mk = byId('markQuestion'); if(mk && !mk.disabled) mk.click(); return; }
+    if(act === 'prev'){ fire('prevNav'); return; }
+    if(act === 'next'){ fire('nextNav'); return; }
+    if(act === 'time'){ fire('timeBox'); return; }
+    if(act === 'only-off'){ reviewOnly = null; scheduleExam(); return; }
+    if(act === 'tool'){ examUi.anchor = inMore ? byId('tuxHead').querySelector('[data-tux="more"]') : t; scheduleExam(); fire(t.dataset.id); return; }
+    if(act === 'lock'){ fire('lockBtn'); scheduleExam(); return; }
+    if(act === 'suspend'){ fire('suspendBtn'); scheduleExam(); return; }
+    if(act === 'review'){ scheduleExam(); try{ renderReview(); }catch(err){} return; }
+    if(act === 'report'){ fire('reviewScoreReportBtn'); scheduleExam(); return; }
+    if(act === 'end'){ fire('endBlockBtn'); scheduleExam(); return; }
+  }
+  function onExamKey(e){
+    if(e.key === 'Escape' && (examUi.drawer || examUi.more) && modernOn()){ e.preventDefault(); closeExamPops(); }
+  }
+  // The exam's own Settings menu (#referenceSettingsDropdown, rebuilt on every open): an Exam style row in the menu's own
+  // style, in both styles. In Modern the menu opens under the button that asked for it.
+  function decorateExamSettings(){
+    const box = byId('referenceSettingsDropdown'); if(!box || box.dataset.tux) return;
+    box.dataset.tux = '1';
+    if(!box.querySelector('[data-ref-action="layoutSplit"]')) return; // the break screen's short menu
+    const cur = examStyle();
+    box.insertAdjacentHTML('afterbegin', `<div class="review-layout-toggle tux-style-row"><div class="review-layout-title">Exam style</div><div class="segmented-toggle" role="radiogroup" aria-label="Exam style">${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${cur === v}" class="${cur === v ? 'active' : ''}" data-tux-style="${v}">${l}</button>`).join('')}</div></div>`);
+    box.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-tux-style]'); if(!b) return; e.preventDefault(); e.stopPropagation(); box.remove(); setExamStyle(b.dataset.tuxStyle); }, true);
+    if(modernOn() && examUi.anchor && document.contains(examUi.anchor)){
+      const r = examUi.anchor.getBoundingClientRect();
+      box.style.top = Math.max(6, r.bottom + 6) + 'px'; box.style.right = Math.max(8, innerWidth - r.right) + 'px';
+    }
+    examUi.anchor = null;
+  }
+  // Review incorrect: Previous / Next (the legacy arrows, Proceed and the Modern buttons, which click them) step through
+  // the chosen items only, across blocks, the way the report's own Review buttons open an item. Nothing is saved.
+  function onlyKey(b, q){ return b * 100000 + q; }
+  function startOnly(items, label){ reviewOnly = items.length ? {label, items:items.slice().sort((x, y) => onlyKey(x.b, x.q) - onlyKey(y.b, y.q))} : null; }
+  function examToast(text){
+    let t = byId('tuxToast');
+    if(!t){ t = document.createElement('div'); t.id = 'tuxToast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+    t.textContent = text; clearTimeout(examToast.timer); examToast.timer = setTimeout(() => t.remove(), 2600);
+  }
+  function goExamItem(b, q, m){
+    if(b === m.block){ goToQuestionIndex(q); return; }
+    try{ commitQuestionTime(); }catch(e){} try{ persistBlockProgress(); }catch(e){}
+    if(typeof activeSession !== 'undefined' && activeSession) activeSession.currentBlockPointer = b;
+    startBlock(b); goToQuestionIndex(q);
+  }
+  function onOnlyNav(e){
+    if(!reviewOnly || !e.target || !e.target.closest) return;
+    if(e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+    const t = e.target.closest('#nextNav,#prevNav,#proceedBtn'); if(!t) return;
+    const m = examModel(); if(!m || !m.review || m.view !== 'question') return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    const cur = onlyKey(m.block, m.current), list = reviewOnly.items, back = t.id === 'prevNav';
+    const it = back ? list.slice().reverse().find(x => onlyKey(x.b, x.q) < cur) : list.find(x => onlyKey(x.b, x.q) > cur);
+    if(!it){ examToast(back ? `This is the first ${reviewOnly.label} item.` : `That was the last ${reviewOnly.label} item.`); return; }
+    try{ goExamItem(it.b, it.q, m); }catch(err){ console.warn('ThunderUI review filter failed', err); }
+  }
+  function paintReviewIn(){ const s = examStyle(); document.querySelectorAll('[data-tu-revin]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.tuRevin === s))); }
+  function watchExam(){
+    const scr = byId('examScreen'); if(!scr || examUi.watched) return;
+    examUi.watched = true;
+    new MutationObserver(recs => {
+      if(scr.classList.contains('hidden')){ reviewOnly = null; if(examUi.drawer || examUi.more){ examUi.drawer = examUi.more = false; } }
+      if(!modernOn()) return;
+      if(recs.every(r => r.target.closest && r.target.closest('.tux'))) return;
+      scheduleExam();
+    }).observe(scr, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['class', 'disabled', 'aria-expanded', 'hidden']});
+    scr.addEventListener('click', onExamClick);
+    new MutationObserver(() => decorateExamSettings()).observe(document.body, {childList:true});
+    document.addEventListener('click', onOnlyNav, true);
+    document.addEventListener('keydown', onOnlyNav, true);
+    document.addEventListener('keydown', onExamKey);
+    document.addEventListener('click', e => { if(!onlyStarting && e.target.closest && e.target.closest('.review-one')) reviewOnly = null; if(examUi.more && modernOn() && e.target.closest && !e.target.closest('#tuxMore,[data-tux="more"]')){ examUi.more = false; scheduleExam(); } }, true);
+    addEventListener('resize', () => scheduleExam());
   }
 
   /* ---------- boot ---------- */
@@ -2910,8 +3436,8 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
   }
   function boot(){
     revealWhenDrawn();
-    if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES; document.head.appendChild(st); }
-    applyAccent(); wrapReport(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
+    if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES; document.head.appendChild(st); }
+    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
     const panel = byId('libraryModePanel');
     if(panel){ libraryObserver = new MutationObserver(() => scheduleLibrary()); libraryObserver.observe(panel, {childList:true, subtree:true}); }
     const side = document.querySelector('#menu aside.modern-sidebar');
@@ -2930,6 +3456,6 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
     // late modules (progress sync, form updates) add their tabs and panels after load
     let tries = 0; const late = setInterval(() => { brand(); wrapReport(); watchCloud(); scheduleLibrary(); qbWatch(); scheduleSettings(true); if(++tries > 20) clearInterval(late); }, 500);
   }
-  window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); }};
+  window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), examStyle, setExamStyle, refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); scheduleExam(); }};
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
