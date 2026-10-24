@@ -9,13 +9,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=8">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=8">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=9">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=9">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=8"></script>
-<script src="./js/form-updates-core.js?v=8"></script>
-<script src="./js/form-update-store.js?v=8"></script>
-<script src="./js/google-auth.js?v=8"></script>
+<script src="./js/sync-config.js?v=9"></script>
+<script src="./js/form-updates-core.js?v=9"></script>
+<script src="./js/form-update-store.js?v=9"></script>
+<script src="./js/google-auth.js?v=9"></script>
 
 <style>
 :root{
@@ -481,7 +481,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=8" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=9" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -632,8 +632,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=8"></script>
-<script src="./js/qid-migration.js?v=8"></script>
+<script src="jszip.min.js?v=9"></script>
+<script src="./js/qid-migration.js?v=9"></script>
 <script>
 
 
@@ -2251,6 +2251,7 @@ document.addEventListener('click', function(e){
 (function applyDataOnlyLocalLibraryPatch(){
   if(window.__dataOnlyLibraryPatchApplied) return;
   window.__dataOnlyLibraryPatchApplied = true;
+  let a23TabSettings = null; // A23 Phase D: set by the v19.5B settings layer below, read by StepLibraryBridge.settings()
 
   const CFORM_COUNTS = { 'IM':10, 'OBGyn':10, 'Surg':8, 'Peds':9, 'FM':5, 'EM':3, 'Psych':8, 'Neuro':9 };
   const CFORM_LABELS = { 'IM':'Internal Medicine', 'OBGyn':'OBGyn', 'Surg':'Surgery', 'Peds':'Pediatrics', 'FM':'Family Medicine', 'EM':'Emergency Medicine', 'Psych':'Psychiatry', 'Neuro':'Neurology' };
@@ -4296,6 +4297,17 @@ document.addEventListener('click', function(e){
             const forms=(catalog.forms||[]).map(f=>{ const idx=Array.isArray(f.questionIndex)?f.questionIndex:[]; return {id:f.id, questions:idx.length, total:Number(f.totalQuestions)||idx.length, used:idx.filter(r=>r&&used[r.key]).length}; }); // questions = pool rows
             const tests=(qp.sessions||[]).filter(t=>t&&t.session).map(t=>({id:t.qbankTestId, name:t.name||'', mode:t.mode==='tutor'?'tutor':'testing', done:t.status==='completed', total:Number(t.total)||0, blocks:((t.session&&t.session.blocks)||[]).length, percent:t.summary&&t.summary.percent!=null?Number(t.summary.percent):null, sourceMode:t.sourceMode||'', poolType:t.poolType||'', attemptSource:t.attemptSource||'', formIds:(t.formIds||[]).slice(), createdAt:t.createdAt||null, updatedAt:t.updatedAt||null, completedAt:t.completedAt||null}));
             return {used:Object.keys(used).length, forms, tests};
+          },
+          /* A23 Phase D: Settings (library tab rows in the user's order, future custom-tab defaults, Qbank settings) and the
+             recovery copies in DATA/progress/backups. Read-only; the Settings and Backup & sync views change them through the legacy controls. */
+          settings:async()=>{
+            const qp=await readQbankProgress(), s=(qp&&qp.settings)||{}, t=a23TabSettings?a23TabSettings():{tabs:[], future:{meter:true, overall:true, completed:true}};
+            return {tabs:t.tabs, future:t.future, qbank:{linkToLibrary:!!s.linkToLibrary, libraryReadOnly:s.libraryReadOnly!==false, defaultMode:s.defaultMode==='tutor'?'tutor':'testing', defaultSecondsPerQuestion:+s.defaultSecondsPerQuestion||90, defaultBlockSize:+s.defaultBlockSize||40, defaultAttemptSource:s.defaultAttemptSource||'first'}};
+          },
+          backups:async()=>{
+            const out=[];
+            try{ const bd=await(await progressDir()).getDirectoryHandle('backups',{create:false}); for await(const [name,h] of bd.entries()) if(h.kind==='file'){ const f=await h.getFile(); out.push({name, size:f.size, modifiedAt:f.lastModified?new Date(f.lastModified).toISOString():null}); } }catch(e){}
+            return out.sort((x,y)=>String(y.modifiedAt).localeCompare(String(x.modifiedAt)));
           }
         });
       })();
@@ -4931,6 +4943,12 @@ document.addEventListener('click', function(e){
           if(active==='safety') return `<section class="settings-panel-v195"><h3>Safety & defaults</h3><p>Protection defaults and defaults for new Qbank tests.</p><div class="settings-split-v195"><div class="settings-card-v195"><h4>Library Safety</h4><div class="settings-list"><div class="settings-row v195-row"><div><label>Protect 1st attempts</label><span>Extra confirmation before destructive changes.</span></div><input id="setProtectFirst" type="checkbox" checked></div><div class="settings-row v195-row"><div><label>Confirm before deleting attempts</label><span>Always confirm progress deletion.</span></div><input id="setConfirmDelete" type="checkbox" checked></div></div></div><div class="settings-card-v195"><h4>Interface Defaults</h4><div class="settings-list"><div class="settings-row v195-row"><div><label>Default Qbank mode</label></div><select id="setDefaultMode"><option value="testing">Testing</option><option value="tutor">Tutor</option></select></div><div class="settings-row v195-row"><div><label>Default seconds/question</label></div><input id="setDefaultSpq" type="number" min="15" step="5" value="90"></div><div class="settings-row v195-row"><div><label>Default Qbank block size</label></div><input id="setDefaultBlock" type="number" min="1" value="40"></div><div class="settings-row v195-row"><div><label>Default linked attempt source</label></div><select id="setAttemptSource"><option value="first">1st attempts only</option><option value="latest_completed">Latest completed</option><option value="active">Active selected</option><option value="completed_qbank">Completed Qbank tests</option><option value="latest_qbank">Latest Qbank test</option><option value="all_qbank">All Qbank tests</option></select></div></div></div></div></section>`;
           return `<section class="settings-panel-v195"><h3>Progress Backup</h3><p>Manually save or restore portable progress only. Library source files and Google sync lineage are excluded. Backups are written inside <b>DATA/progress/backups/</b> and also downloaded for safety.</p><div class="settings-actions"><button class="primary" data-v101="backup-full-progress">Save Full Progress Backup</button><button class="secondary" data-v101="import-full-progress">Import Full Progress Backup</button></div></section>`;
         }
+        a23TabSettings=()=>{ // A23 Phase D: read-only view of the rows this layer draws (Overview has no switches, so it is left out)
+          const s=v195BSettings(), all=v195BAllTabs(), order=(s.tabOrder||[]).filter(f=>all.includes(f));
+          all.forEach(f=>{ if(!order.includes(f)) order.push(f); });
+          return {tabs:order.filter(f=>f!=='Overview').map(f=>({key:f, label:v195BLabel(f), builtIn:v195BIsBuiltIn(f), meter:!!tabMeterEnabled(f), overall:v195BOverallEnabled(f), overallSettable:v195BIsActualFormTab(f), completed:!!overviewTabEnabled(f), chip:!!tabScoreChipEnabled(f), color:(s.tabColors||{})[f]||'', forms:(catalog.forms||[]).filter(r=>getFormTabKey(r)===f).length})),
+            future:{meter:s.customFutureMeters!==false, overall:s.customFutureOverall!==false, completed:s.customFutureOverview!==false}};
+        };
         const v195BPrevRenderSettings = renderSettings;
         renderSettings = function(){
           const p=$id('settingsPanel'); if(!p) return;
@@ -10495,11 +10513,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=8"></script>
-<script src="./js/sync-storage.js?v=8"></script>
-<script src="./js/progress-sync.js?v=8"></script>
-<script src="./js/library-backup.js?v=8"></script>
-<script src="./js/qid-settings.js?v=8"></script>
+<script src="./js/sync-merge.js?v=9"></script>
+<script src="./js/sync-storage.js?v=9"></script>
+<script src="./js/progress-sync.js?v=9"></script>
+<script src="./js/library-backup.js?v=9"></script>
+<script src="./js/qid-settings.js?v=9"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -10976,10 +10994,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=8"></script>
-<script src="./exam-notes.js?v=8"></script>
-<script src="./app-update.js?v=8"></script>
-<script src="./js/form-updates.js?v=8"></script>
+<script src="./bulk-import.js?v=9"></script>
+<script src="./exam-notes.js?v=9"></script>
+<script src="./app-update.js?v=9"></script>
+<script src="./js/form-updates.js?v=9"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11065,6 +11083,6 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h1,htm
 html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h4,
 html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h4{color:#9BE7C1!important}
 </style>
-<script src="./thunder-ui.js?v=8"></script>
+<script src="./thunder-ui.js?v=9"></script>
 </body>
 </html>

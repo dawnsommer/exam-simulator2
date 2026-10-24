@@ -1,5 +1,5 @@
 /* ThunderUSMLE UI layer (A23 Phase 1 + Phases A–C): brand, accent colors, the Library home view (rebuilt from the canvas
-   boards over StepLibraryBridge), the form details sheet, the start dialog, Quick practice, Add forms, Qbank (build + history), Settings › Appearance, the iPad Backup & sync order and the Score Report. Shared by the Local and iPad apps; keep both copies identical.
+   boards over StepLibraryBridge), the form details sheet, the start dialog, Quick practice, Add forms, Qbank (build + history), Settings, Backup & sync and the Score Report. Shared by the Local and iPad apps; keep both copies identical.
    It restyles the existing screens and adds a few controls. It never removes or renames the IDs and data-* hooks
    the other modules use, and it does not touch the exam interface (except the Score Report shown inside it). */
 (function(){
@@ -270,7 +270,7 @@ ${H} #tuHome .tu-kebab:hover{background:var(--tu-s2)!important}
 /* sidebar: board order, storage / Google Drive card */
 ${H} aside.modern-sidebar #tuAddForms{order:1}
 ${H} aside.modern-sidebar #libraryTab{order:2}${H} aside.modern-sidebar #qbankTab{order:3}${H} aside.modern-sidebar #qbankTestsTab{order:4}
-${H} aside.modern-sidebar #quickTab{order:5}${H} aside.modern-sidebar #progressSyncTab{order:6}${H} aside.modern-sidebar #settingsTab{order:7}
+${H} aside.modern-sidebar #quickTab{order:5}${H} aside.modern-sidebar :is(#progressSyncTab,#tuSyncTab){order:6}${H} aside.modern-sidebar #settingsTab{order:7}
 ${H} aside.modern-sidebar #tuNavCard{order:8;margin-top:auto}
 ${H} aside.modern-sidebar #themeToggle{order:9;margin-top:6px!important}
 ${H} aside.modern-sidebar>:not(.brand-block):not(.menu-tab):not(#tuAddForms):not(#tuNavCard):not(#themeToggle){order:10}
@@ -776,46 +776,205 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
 @media (max-width:900px){.tu-tile>em{display:inline}}
 @media (max-width:600px){.tu-grid{grid-template-columns:minmax(0,1fr)}${H} #tuHome .tu-search{width:100%;flex:1 1 100%}}
 
-/* Settings › Appearance */
-:root[data-tu] body #menu #settingsPanel .settings-nav-v195 button{border-radius:999px!important;color:var(--tu-on2)!important;font-weight:600!important;background:transparent!important;border:0!important;box-shadow:none!important}
-:root[data-tu] body #menu #settingsPanel .settings-nav-v195 button:hover{background:var(--tu-s2)!important;color:var(--tu-on)!important}
-:root[data-tu] body #menu #settingsPanel .settings-nav-v195 button.active{background:var(--tu-pc)!important;color:var(--tu-onpc)!important;font-weight:700!important}
-:root[data-tu] body #menu #settingsPanel:not([data-tu-tab="backup"]) #qidMigrationCard{display:none!important}
-.tu-settings-list{display:flex;flex-direction:column}
-.tu-setting{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:16px 0;border-top:1px solid var(--tu-line2)}
-.tu-setting:first-child{border-top:0}
-.tu-setting>div:first-child{flex:1 1 260px;display:flex;flex-direction:column;gap:3px}
-.tu-setting b{font-size:15px;color:var(--tu-on)}
-.tu-setting span{font-size:13px;color:var(--tu-on3);line-height:1.45}
+/* Settings + Backup & sync (boards Settings, Sync): the legacy panels stay in the DOM, off-screen */
+${H} :is(#settingsPanel.tu-has-settings,#progressSyncPanel.tu-has-sync).active{display:block!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+${H} :is(#settingsPanel.tu-has-settings,#progressSyncPanel.tu-has-sync)>:not(.tu-setview){position:absolute!important;left:-10000px!important;top:0!important;width:900px!important;height:1px!important;overflow:hidden!important;visibility:hidden!important;pointer-events:none!important}
+${H}:is([data-tu-page="settings"],[data-tu-page="progressSync"],[data-tu-page="tuSync"]) .modern-hero{display:none!important}
+${H} .modern-main:has(:is(#settingsPanel.tu-has-settings,#progressSyncPanel.tu-has-sync).active){padding:28px 36px 56px!important}
+${H} .tu-setview{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px;color:var(--tu-on);font-family:var(--tu-font);font-variant-numeric:tabular-nums}
+${H} .tu-setview[hidden]{display:none!important}
+${H} #tuSync{max-width:1000px}
+${H} .tu-setview :is(h1,h2,h3){margin:0!important;color:var(--tu-on)!important;font-family:var(--tu-font)!important;letter-spacing:-.01em!important;line-height:1.2!important;background:none!important;-webkit-text-fill-color:currentColor!important;text-shadow:none!important}
+${H} .tu-setview button{font-family:var(--tu-font)!important;margin:0;box-shadow:none;cursor:pointer}
+${H} .tu-setview button:disabled{cursor:not-allowed}
+${H} .tu-setview .tu-btn{border:0;justify-content:center;white-space:nowrap;text-decoration:none}
+${H} .tu-setview .tu-btn.outline{border:1px solid var(--tu-line);background:transparent;color:var(--tu-on)}
+${H} .tu-setview .tu-btn.text{background:transparent}
+${H} .tu-setview .tu-btn:hover:not(:disabled){filter:brightness(.96)}
+${H} .tu-setview .tu-btn.outline:hover:not(:disabled),${H} .tu-setview .tu-btn.text:hover:not(:disabled){background:var(--tu-s2);filter:none}
+${H} .tu-setview .tu-danger{color:var(--tu-bad)!important}
+.tu-setview .tu-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tu-sethead{display:flex;flex-direction:column;gap:4px}
+${H} .tu-sethead h1{font-size:32px!important;font-weight:800!important;letter-spacing:-.02em!important}
+.tu-sethead>span{font-size:14px}
+.tu-setgrid{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;align-items:start}
+.tu-setnav{display:flex;flex-direction:column;gap:4px;position:sticky;top:16px}
+${H} .tu-setnav button{display:flex;align-items:center;justify-content:space-between;gap:8px;height:48px;padding:0 18px;border:0;border-radius:999px;background:transparent;color:var(--tu-on);font-weight:700;font-size:14.5px;text-align:left;white-space:nowrap}
+${H} .tu-setnav button:hover{background:var(--tu-s2)}
+${H} .tu-setnav button[aria-current="page"]{background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-setnav small{font-size:11px;font-weight:800}
+.tu-setbody{min-width:0;overflow:hidden;border-radius:28px;padding-bottom:6px}
+.tu-sechead{padding:18px 22px 14px;display:flex;flex-direction:column;gap:5px}
+${H} .tu-sechead h2{font-size:19px!important;font-weight:800!important}
+${H} .tu-setview .tu-sechead p{margin:0!important;font-size:13px!important;line-height:1.5!important}
+.tu-sechead p b{color:var(--tu-on);font-weight:700}
+.tu-setrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding:14px 22px;border-top:1px solid var(--tu-line2)}
+.tu-setrow>div:first-child{flex:1 1 260px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.tu-setrow>div:first-child>b{font-size:15px;font-weight:700}
+.tu-setrow>div:first-child>span{font-size:13px;line-height:1.45}
+.tu-setctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tu-setctl:empty{display:none}
+.tu-setseg{display:flex;height:40px;border:1px solid var(--tu-line);border-radius:999px;overflow:hidden;flex:none}
+${H} .tu-setseg button{display:flex;align-items:center;gap:6px;padding:0 16px;border:0;border-radius:0;background:transparent;color:var(--tu-on);font-weight:700;font-size:13.5px;height:100%}
+${H} .tu-setseg button+button{border-left:1px solid var(--tu-line)}
+${H} .tu-setseg button[aria-checked="true"]{background:var(--tu-pc);color:var(--tu-onpc)}
+${H} .tu-setview :is(.tu-setselect select,.tu-setnum,.tu-setfield input){height:42px;border-radius:12px!important;border:1px solid var(--tu-line)!important;background-color:var(--tu-surface)!important;color:var(--tu-on)!important;padding:0 12px;font-size:15px;font-weight:600;margin:0;box-shadow:none!important}
+${H} .tu-setview .tu-setnum{width:110px;font-weight:700}
+.tu-setfield{display:flex;flex-direction:column;gap:6px;min-width:0}
+.tu-setfield>span{font-size:12.5px;font-weight:700}
 .tu-swatches{display:flex;gap:8px;flex-wrap:wrap}
-.tu-swatch{display:flex;align-items:center;gap:9px;height:44px;padding:0 16px 0 10px;border-radius:999px;border:2px solid var(--tu-line);background:var(--tu-surface);color:var(--tu-on);font-weight:800;font-size:14px;cursor:pointer}
-.tu-swatch[aria-checked="true"]{border-color:var(--tu-on)}
+${H} .tu-swatch{display:flex;align-items:center;gap:9px;height:44px;padding:0 16px 0 9px;border-radius:999px;border:2px solid var(--tu-line);background:var(--tu-surface);color:var(--tu-on);font-weight:800;font-size:14px}
+${H} .tu-swatch[aria-checked="true"]{border-color:var(--tu-p)}
 .tu-swatch svg{width:26px;height:26px}
-
-/* iPad Backup & sync */
-:root[data-tu] body #menu #progressSyncPanel .sync-layout{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-sync="storage"]{order:1;grid-column:1/-1}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-sync]{grid-column:1/-1!important}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-sync="progress"]{order:2}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-sync="library"]{order:3}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-sync="recovery"]{order:4}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-sync="history"]{order:5}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-sync="advanced"]{order:6;grid-column:1/-1}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-sync="move"]{order:7;grid-column:1/-1}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-collapsible]>h3{display:flex;align-items:center;gap:10px;cursor:pointer;margin:0!important;user-select:none}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-collapsible]>h3::after{content:"";margin-left:auto;width:18px;height:18px;background:var(--tu-on2);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;transition:transform .15s}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-collapsible].tu-open>h3::after{transform:rotate(180deg)}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-collapsible]:not(.tu-open)>:not(h3){display:none!important}
-:root[data-tu] body #menu #progressSyncPanel .sync-layout>[data-tu-collapsible]:not(.tu-open){padding-top:16px!important;padding-bottom:16px!important}
-.tu-sync-card{padding:20px 22px!important;display:flex;flex-direction:column;gap:12px}
-.tu-sync-card h3{margin:0!important;font-size:17px!important}
-.tu-sync-card p{margin:0!important;font-size:13.5px!important;color:var(--tu-on3)!important}
-.tu-sync-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:12px 14px;border-radius:16px;background:var(--tu-s1)}
-.tu-sync-row>div:first-child{flex:1 1 220px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.tu-sync-row b{font-size:14.5px;color:var(--tu-on)}.tu-sync-row span{font-size:12.5px;color:var(--tu-on3)}
-.tu-sync-row .tu-actions{display:flex;gap:8px;flex-wrap:wrap}
-.tu-dot{width:10px;height:10px;border-radius:50%;background:var(--tu-on3);display:inline-block;margin-right:8px;vertical-align:middle}
-.tu-dot.ok{background:var(--tu-ok)}
+.tu-lockchip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:var(--tu-s2);font-weight:800;font-size:12.5px;flex:none}
+.tu-futbox{background:var(--tu-s1);border-top:1px solid var(--tu-line2)}
+.tu-futbox .tu-setrow{padding:11px 22px 11px 38px}
+/* library tabs table */
+.tu-tabtable{container-type:inline-size;border-top:1px solid var(--tu-line2)}
+.tu-tabrow{display:grid;grid-template-columns:36px 48px minmax(120px,1fr) repeat(4,minmax(64px,88px)) 44px;align-items:center;column-gap:6px;padding:5px 14px;border-top:1px solid var(--tu-line2);position:relative;background:var(--tu-surface)}
+.tu-tabtable>.tu-tabrow:first-child{border-top:0}
+.tu-tabhead{background:var(--tu-s1);font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding-top:9px;padding-bottom:9px}
+.tu-tabhead span:nth-child(n+4):nth-child(-n+7){text-align:center}
+.tu-tabcell{display:flex;justify-content:center;align-items:center;gap:6px}
+.tu-tablbl{display:none;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+${H} .tu-check{width:24px;height:24px;min-width:24px;border-radius:7px;border:2px solid var(--tu-on3);background:transparent;color:var(--tu-onp);display:flex;align-items:center;justify-content:center;padding:0}
+${H} .tu-check[aria-checked="true"]{background:var(--tu-p);border-color:var(--tu-p)}
+${H} .tu-check:disabled{opacity:.3}
+${H} .tu-drag{width:32px;height:40px;border:0;background:transparent;color:var(--tu-on3);cursor:grab;touch-action:none;display:flex;align-items:center;justify-content:center;border-radius:8px;padding:0}
+${H} .tu-drag:hover{background:var(--tu-s2)}
+${H} .tu-colorbtn{width:34px;height:34px;border-radius:10px;border:1px solid var(--tu-line);background:var(--tu-surface);padding:5px}
+.tu-colorbtn i{display:block;width:100%;height:100%;border-radius:6px}
+.tu-tabname{display:flex;flex-direction:column;gap:1px;min-width:0}
+.tu-tabname b{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-tabname small{font-size:12px}
+.tu-tabdel{display:flex;justify-content:flex-end}
+.tu-colorpop{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 8px 90px}
+${H} .tu-colorpop button{display:flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:9px;border:1px solid var(--tu-line);background:transparent;color:var(--tu-on);font-weight:700;font-size:12.5px}
+${H} .tu-colorpop button[aria-checked="true"]{border-color:var(--tu-p);background:var(--tu-pc);color:var(--tu-onpc)}
+.tu-colorpop i{width:14px;height:14px;border-radius:4px}
+.tu-tabrow.tu-dragging{z-index:2;box-shadow:var(--tu-shadow);opacity:.95}
+.tu-tabrow.tu-dropbefore{box-shadow:inset 0 3px 0 var(--tu-p)}.tu-tabrow.tu-dropafter{box-shadow:inset 0 -3px 0 var(--tu-p)}
+.tu-tabfoot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:14px 22px;border-top:1px solid var(--tu-line2);font-size:13px}
+.tu-tabfoot b{color:var(--tu-on)}
+@container (max-width:600px){
+  .tu-tabhead{display:none}
+  .tu-tabrow{grid-template-columns:32px 44px repeat(4,minmax(0,1fr)) 40px;row-gap:8px;padding:10px 12px}
+  .tu-tabname{grid-column:3/7}
+  .tu-tabcell{grid-row:2;flex-direction:column;gap:4px}
+  .tu-tabrow>.tu-tabcell:nth-child(4){grid-column:3}.tu-tabrow>.tu-tabcell:nth-child(5){grid-column:4}.tu-tabrow>.tu-tabcell:nth-child(6){grid-column:5}.tu-tabrow>.tu-tabcell:nth-child(7){grid-column:6}
+  .tu-tabdel{grid-column:7;grid-row:1}
+  .tu-tablbl{display:block}
+  .tu-colorpop{padding-left:0}
+}
+/* QID migration checklist */
+.tu-qidsteps{list-style:none;margin:0;padding:0 22px;display:flex;flex-direction:column;gap:8px}
+.tu-qidstep{display:flex;align-items:center;gap:14px;padding:10px 12px 10px 14px;border-radius:16px;background:var(--tu-s1);min-height:54px}
+.tu-qidstep.later{opacity:.66}
+.tu-qidnum{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:var(--tu-s3);flex:none}
+.tu-qidtext{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-qidtext b{font-size:14.5px;font-weight:700}
+.tu-qidtext small{font-size:12.5px;line-height:1.4}
+.tu-qidtext em{font-style:normal;font-weight:700}
+.tu-qidtext em.ok{color:var(--tu-ok)}.tu-qidtext em.warn{color:var(--tu-warn)}
+.tu-qidact{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.tu-qidneed{margin:10px 22px 0;padding:10px 14px;border-radius:14px;background:var(--tu-warnc);color:var(--tu-warn);font-size:12.5px;display:flex;flex-wrap:wrap;gap:4px 14px}
+${H} .tu-setview .tu-qidmsg{margin:12px 22px 0!important;font-size:13px!important;line-height:1.45}
+.tu-settools{display:flex;flex-wrap:wrap;gap:8px;padding:14px 22px 10px;border-top:1px solid var(--tu-line2);margin-top:14px}
+/* admin */
+.tu-adminhead{flex-direction:row!important;justify-content:space-between;align-items:flex-start;gap:12px}
+.tu-adminhead>div{display:flex;flex-direction:column;gap:5px}
+.tu-adminform{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;padding:12px 22px;border-top:1px solid var(--tu-line2)}
+.tu-adminform .tu-setfield{flex:1 1 220px}
+.tu-adminfilters .tu-setfield{flex:1 1 150px}
+.tu-adminform+.tu-note{padding:0 22px 6px;margin:0}
+.tu-admintable{margin:4px 22px 0;border:1px solid var(--tu-line2);border-radius:16px;overflow:hidden}
+.tu-adminrow{display:grid;grid-template-columns:1.2fr 1.2fr .8fr;gap:10px;padding:10px 14px;border-top:1px solid var(--tu-line2);font-size:13px}
+.tu-adminrow:first-child{border-top:0}
+.tu-adminth{background:var(--tu-s1);font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.tu-adminrow>span{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
+.tu-adminrow small{font-size:12px}
+/* Backup & sync */
+.tu-synccard{padding:18px 20px;display:flex;flex-direction:column;gap:14px;border-radius:24px;min-width:0}
+.tu-synchead{display:flex;align-items:center;gap:14px}
+.tu-settile{width:44px;height:44px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center}
+.tu-syncttl{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.tu-syncttl>div{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+${H} .tu-syncttl h2{font-size:17px!important;font-weight:800!important}
+.tu-syncttl>span{font-size:13px;line-height:1.4}
+.tu-statchip{font-style:normal;height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:800;display:inline-flex;align-items:center}
+.tu-statchip.ok{background:var(--tu-okc);color:var(--tu-ok)}.tu-statchip.warn{background:var(--tu-warnc);color:var(--tu-warn)}
+.tu-meter{display:block;height:6px;border-radius:999px;background:var(--tu-s3);overflow:hidden;max-width:360px;margin-top:5px}
+.tu-meter i{display:block;height:100%;background:var(--tu-p);border-radius:inherit;transition:width .2s}
+.tu-xfer .tu-meter{max-width:none;margin:0}
+.tu-synchead>.tu-actions{flex:none}
+.tu-syncgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
+.tu-cardacts{margin-top:auto}
+.tu-cardacts:empty{display:none}
+.tu-decide{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:12px 14px;border-radius:16px;background:var(--tu-warnc);color:var(--tu-warn)}
+.tu-decide>div:first-child{flex:1 1 220px;display:flex;flex-direction:column;gap:2px;min-width:0;font-size:12.5px}
+.tu-decide b{font-size:13.5px}
+${H} .tu-setview .tu-btn.tu-warnbtn{background:var(--tu-warn);color:var(--tu-warnc)}
+${H} .tu-setview .tu-decide .tu-btn.outline{border-color:currentColor;color:var(--tu-warn)}
+.tu-xfer{background:var(--tu-s1);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.tu-xferhead,.tu-xferfoot{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:12.5px;min-width:0}
+.tu-xferhead b{color:var(--tu-on);font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tu-xferhead span{flex:none;font-weight:700}
+.tu-synccoll{border-radius:24px;overflow:hidden}
+${H} .tu-collhead{width:100%;display:flex;align-items:center;gap:12px;padding:16px 20px;border:0;border-radius:0;background:transparent;color:var(--tu-on);text-align:left}
+${H} .tu-collhead:hover{background:var(--tu-s1)}
+.tu-collhead>span{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-collhead b{font-size:15.5px;font-weight:800}
+.tu-collhead small{font-size:13px}
+.tu-collhead .tu-ico{transition:transform .15s}
+.tu-collhead[aria-expanded="true"] .tu-ico{transform:rotate(180deg)}
+.tu-collbody{padding:0 20px 18px;display:flex;flex-direction:column;gap:8px}
+.tu-histrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 14px;border-radius:14px;background:var(--tu-s1)}
+.tu-histrow>span:first-child{flex:1 1 240px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-histrow b{font-size:14px;font-weight:700;overflow-wrap:anywhere}
+.tu-histrow small{font-size:12.5px}
+.tu-metrics{display:flex;flex-wrap:wrap;gap:8px}
+.tu-metrics>span{display:flex;flex-direction:column;gap:1px;padding:8px 12px;border-radius:12px;background:var(--tu-s1);min-width:90px}
+.tu-metrics small{font-size:11.5px;font-weight:700}
+.tu-metrics b{font-size:16px;font-weight:800}
+${H} .tu-setview .tu-diag{margin:0!important;font-size:12.5px!important;white-space:pre-wrap;background:var(--tu-s1);padding:10px 12px;border-radius:12px;max-height:240px;overflow:auto}
+.tu-dangerzone{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border:1px solid var(--tu-line);border-radius:16px}
+.tu-dangerzone>b{font-size:13px;color:var(--tu-bad)}
+#tuSync .tu-sechead{padding:0}
+.tu-moves{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tu-movetile{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:12px 14px;border-radius:16px;background:var(--tu-s1)}
+.tu-movenum{width:28px;height:28px;border-radius:50%;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none}
+.tu-movetile>span:nth-child(2){flex:1 1 140px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-movetile b{font-size:14.5px;font-weight:700}
+.tu-movetile small{font-size:12.5px}
+.tu-setview .tu-note a,.tu-setview .tu-sechead a{color:var(--tu-p)}
+/* legacy dark rules force every span and label in #menu to fixed colors; take them back inside these views */
+${H} .tu-setview :is(span,label){color:inherit!important}
+${H} .tu-setview :is(.tu-sethead>span,.tu-setrow>div:first-child>span,.tu-setnav small,.tu-tabname small,.tu-tabhead,.tu-tablbl,.tu-qidtext small,.tu-syncttl>span,.tu-collhead small,.tu-histrow small,.tu-movetile small,.tu-xferhead,.tu-xferfoot,.tu-metrics small,.tu-tabfoot,.tu-adminth,.tu-adminrow small,.tu-setfield>span,.tu-sechead p,.tu-note,.tu-qidmsg){color:var(--tu-on3)!important}
+${H} .tu-setview .tu-setnav button[aria-current="page"] small{color:var(--tu-onpc)!important}
+${H} .tu-setview .tu-lockchip{color:var(--tu-on2)!important}
+${H} .tu-setview .tu-lockchip.open{background:var(--tu-okc);color:var(--tu-ok)!important}
+${H} .tu-setview .tu-settile{background:var(--tu-pc);color:var(--tu-onpc)!important}
+${H} .tu-setview .tu-settile.ok{background:var(--tu-okc);color:var(--tu-ok)!important}
+${H} .tu-setview .tu-settile.warn{background:var(--tu-warnc);color:var(--tu-warn)!important}
+${H} .tu-setview .tu-settile.bad{background:var(--tu-badc);color:var(--tu-bad)!important}
+${H} .tu-setview .tu-synctone[data-tone="good"]{color:var(--tu-ok)!important}
+${H} .tu-setview .tu-synctone:is([data-tone="pending"],[data-tone="conflict"]){color:var(--tu-warn)!important}
+${H} .tu-setview .tu-synctone[data-tone="error"]{color:var(--tu-bad)!important}
+${H} .tu-setview .tu-movenum{background:var(--tu-pc);color:var(--tu-onpc)!important}
+${H} .tu-setview .tu-qidnum{color:var(--tu-on2)!important}
+${H} .tu-setview .tu-qidstep.done .tu-qidnum{background:var(--tu-okc);color:var(--tu-ok)!important}
+${H} .tu-setview .tu-qidstep.now .tu-qidnum{background:var(--tu-pc);color:var(--tu-onpc)!important}
+${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
+@media (max-width:1000px){.tu-setgrid{grid-template-columns:190px minmax(0,1fr)}}
+@media (max-width:900px){
+  ${H} .modern-main:has(:is(#settingsPanel.tu-has-settings,#progressSyncPanel.tu-has-sync).active){padding:24px 24px 120px!important;overflow:visible!important}
+  ${H} .tu-sethead h1{font-size:30px!important}
+  .tu-setgrid{grid-template-columns:minmax(0,1fr);gap:14px}
+  .tu-setnav{flex-direction:row;position:static;overflow-x:auto;gap:6px;padding-bottom:2px;scrollbar-width:none}
+  ${H} .tu-setnav button{height:40px;padding:0 14px;flex:none;border:1px solid var(--tu-line)}
+  ${H} .tu-setnav button[aria-current="page"]{border-color:transparent}
+}
+@media (max-width:720px){.tu-syncgrid,.tu-moves{grid-template-columns:minmax(0,1fr)}}
 
 /* Score Report (shown inside the exam screen) */
 :root[data-tu] body #examScreen #workspace .tu-report{font-family:var(--tu-font);color:var(--tu-on);background:var(--tu-bg);max-width:none;margin:0;padding:24px 28px 40px;border:0;box-shadow:none;border-radius:0;min-height:100%;box-sizing:border-box;font-variant-numeric:tabular-nums}
@@ -922,7 +1081,7 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
   function setAccent(a){
     if(!ACCENTS[a]) return;
     store.set(KEYS.accent, a); applyAccent();
-    if(document.querySelector('[data-tu-appearance]')) paintAppearance();
+    scheduleSettings();
   }
   function syncDarkFlag(){
     const menu = byId('menu');
@@ -931,7 +1090,7 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
   }
 
   const TAB_LABELS = {quickTab:['Quick practice','quick'], libraryTab:['Library','library'], qbankTab:['Qbank','qbank'], qbankTestsTab:['Qbank tests','tests'], progressSyncTab:['Backup & sync','sync'], settingsTab:['Settings','settings']};
-  const TITLES = {quickTab:'Quick practice', libraryTab:'Library', qbankTab:'Qbank', qbankTestsTab:'Qbank tests', progressSyncTab:'Backup & sync', settingsTab:'Settings'};
+  const TITLES = {quickTab:'Quick practice', libraryTab:'Library', qbankTab:'Qbank', qbankTestsTab:'Qbank tests', progressSyncTab:'Backup & sync', tuSyncTab:'Backup & sync', settingsTab:'Settings'};
   function brand(){
     if(document.title !== 'ThunderUSMLE') document.title = 'ThunderUSMLE';
     const side = document.querySelector('#menu aside.modern-sidebar'); if(!side) return;
@@ -947,6 +1106,7 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
       if(dot) tab.appendChild(dot);
       tab.dataset.tuBrand = '1';
     });
+    ensureSyncTab();
     if(!byId('tuAddForms') && byId('loadNewFormBtn')){
       const add = document.createElement('button');
       add.type = 'button'; add.id = 'tuAddForms'; add.innerHTML = icon(ICONS.plus, 22) + 'Add forms'; add.setAttribute('aria-haspopup', 'dialog');
@@ -1063,7 +1223,7 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
     const tone = el.dataset.tone || 'offline';
     return {label: hit[1], action: hit[2], detail, tone, dot: {good:'ok', busy:'busy', pending:'warn', conflict:'warn', error:'bad'}[tone] || '', busy: tone === 'busy'};
   }
-  function openSync(){ byId('progressSyncTab')?.click(); }
+  function openSync(){ openSyncPage(); }
 
   /* sidebar card: DATA folder (Local) or Google Drive (iPad) */
   function paintNav(){
@@ -1250,7 +1410,7 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
     if(t.hasAttribute('data-tu-tabs-more')){ homeUi.tabsOpen = !homeUi.tabsOpen; scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-see-all')){ store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
     if(t.hasAttribute('data-tu-updates')){ openUpdates(t); return; }
-    if(t.id === 'tuCustomizeTabs'){ window.__v195BSettingsActive = 'order'; window.__v195SettingsActive = 'order'; window.__tuSettingsAppearance = false; byId('settingsTab')?.click(); return; }
+    if(t.id === 'tuCustomizeTabs'){ setUi.sec = 'tabs'; store.set(SET_KEY, 'tabs'); if(setUi.page === 'sync') setSyncPage(false); byId('settingsTab')?.click(); setSyncPage(false); return; }
     const act = t.dataset.tuAct, id = t.dataset.id; if(!act || !id) return;
     if(act === 'sheet'){ openSheet(id, t); return; }
     cardAction(id, `[data-action="${act}"]`);
@@ -2084,108 +2244,523 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
     swapHtml(el.querySelector('.tu-upd'), `<header class="tu-upd-head"><span class="tu-upd-ico">${icon(ICONS.download, 22)}</span><div><h2 id="tuUpdTitle">Form updates</h2>${u.status}</div><button type="button" class="tu-round" data-tu-close aria-label="Close">${closeIco}</button></header><div class="tu-updbody" data-tu-scroll="upd">${u.body}</div>`);
   }
 
-  /* ---------- Settings › Appearance ---------- */
-  function appearanceHtml(){
-    const dark = !!byId('menu')?.classList.contains('theme-dark');
-    const accent = currentAccent(), view = store.get(KEYS.view, 'grid') === 'list' ? 'list' : 'grid';
+  /* ---------- Settings + Backup & sync (boards Settings, Sync, SyncStates) ----------
+     New view, same engine: #tuSettings is drawn from StepLibraryBridge.settings() and the hidden legacy controls; every
+     change sets or clicks the legacy control (switching the hidden legacy Settings tab first when the control lives on
+     another tab), so the legacy saves, confirms and protections still run. The legacy panels stay in the DOM, off-screen.
+     iPad: #tuSync sits over #progressSyncPanel. Local: Backup & sync is its own sidebar page (#tuSyncTab) drawn over the
+     legacy Settings › Backup tab, whose buttons it proxies. */
+  const SET_KEY = 'ThunderUSMLE.settingsSection', THEME_MODE = 'ThunderUSMLE.themeMode';
+  const SET_SECTIONS = [['appearance', 'Appearance'], ['tabs', 'Library tabs'], ['qbank', 'Qbank'], ['safety', 'Safety'], ['advanced', 'Advanced'], ['admin', 'Admin'], ['about', 'About & updates']];
+  const SET_LEGACY = {tabs:'library', qbank:'qbank', safety:'safety', admin:'admin'}; // the hidden legacy tab that holds each section's controls
+  const SET_READY = {
+    library:'[data-lib-meter]', order:'[data-v195-drag-tab]', custom:'.settings-panel-v195', qbank:'#setLinkQbank', safety:'#setDefaultMode', admin:'.fu-admin',
+    backup: IPAD ? '[data-v101]' : '[data-local-compat]'
+  };
+  const SET_ICONS = {
+    folder:'<path d="M3 7.5a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    grip:'<circle cx="9" cy="6" r="1.3" fill="currentColor"/><circle cx="15" cy="6" r="1.3" fill="currentColor"/><circle cx="9" cy="12" r="1.3" fill="currentColor"/><circle cx="15" cy="12" r="1.3" fill="currentColor"/><circle cx="9" cy="18" r="1.3" fill="currentColor"/><circle cx="15" cy="18" r="1.3" fill="currentColor"/>',
+    trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    tick:'<path d="m5 12 5 5 9-10"/>', ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'
+  };
+  // the legacy "Order & colors" choices (select[data-v195-tab-color])
+  const TAB_COLORS = [['', 'Default'], ['#0076b6', 'Blue'], ['#00a6a6', 'Teal'], ['#16a05d', 'Green'], ['#d9a300', 'Yellow'], ['#f28c28', 'Orange'], ['#d64242', 'Red'], ['#c2185b', 'Pink'], ['#7b5cff', 'Purple'], ['#8a5a2b', 'Brown'], ['#6b7280', 'Gray'], ['#334155', 'Slate'], ['#111827', 'Black']];
+  const ATTEMPT_SOURCES = [['first', '1st attempts only'], ['latest_completed', 'Latest completed'], ['active', 'Active selected'], ['completed_qbank', 'Completed Qbank tests'], ['latest_qbank', 'Latest Qbank test'], ['all_qbank', 'All Qbank tests']];
+  const TAB_FLAGS = [['meter', 'Meter', 'data-lib-meter'], ['overall', 'Overall', 'data-lib-overall'], ['completed', 'Completed', 'data-lib-overview'], ['chip', '3-digit', 'data-lib-scorechip']];
+  const setUi = {sec: store.get(SET_KEY, 'appearance'), page:'settings', data:null, backups:null, storage:null, stale:true, seq:0, future:false, defaults:false, color:'', open:{}, focus:'', switching:false, qidBackup:false};
+  let setQueued = false, setObserver = null, syncObserver = null, themeAuto = false;
+  const setViews = {};
+
+  const legacyActive = () => window.__v195BSettingsActive || window.__v195SettingsActive || 'library';
+  const legacyReady = name => legacyActive() === name && !!document.querySelector(`#settingsPanel .settings-content-v195 ${SET_READY[name] || '*'}`);
+  // switches the hidden legacy Settings tab and waits for its controls (their values are filled by an async read)
+  async function legacySetTab(name){
+    if(legacyReady(name)) return true;
+    const b = document.querySelector(`#settingsPanel [data-v195b-settings-tab="${name}"]`); if(!b) return false;
+    setUi.switching = true;
+    try{
+      b.click();
+      for(let i = 0; i < 60 && !legacyReady(name); i++) await wait(25);
+      await wait(120);
+    }finally{ setUi.switching = false; }
+    return legacyReady(name);
+  }
+  async function legacyDo(tab, fn){
+    if(!legacyReady(tab) && !await legacySetTab(tab)){ console.warn('ThunderUI: legacy settings tab missing', tab); return false; }
+    // the legacy saves read their files first, so look again once they have landed
+    try{ return fn(); }finally{ scheduleSettings(true); setTimeout(() => scheduleSettings(true), 400); setTimeout(() => scheduleSettings(true), 1300); }
+  }
+  const legacyIn = sel => document.querySelector('#settingsPanel .settings-content-v195 ' + sel);
+  function clickLegacy(sel){ const b = document.querySelector(sel); if(!b || b.disabled){ console.warn('ThunderUI: legacy control missing', sel); return false; } b.click(); return true; }
+  function setLegacyEl(el, value){
+    if(!el) return false;
+    if(el.type === 'checkbox'){ if(el.checked === !!value) return false; el.checked = !!value; }
+    else { if(String(el.value) === String(value)) return false; el.value = String(value); }
+    el.dispatchEvent(new Event('input', {bubbles:true})); el.dispatchEvent(new Event('change', {bubbles:true}));
+    return true;
+  }
+  // a legacy button found again by its tag, id and data-* attributes (the legacy lists re-render often)
+  function legacySel(b, scope){
+    const parts = [b.id ? '#' + CSS.escape(b.id) : b.tagName.toLowerCase()];
+    Array.from(b.attributes).filter(a => /^data-/.test(a.name) && !/^data-(tu|html)/.test(a.name)).forEach(a => parts.push(`[${a.name}="${CSS.escape(a.value)}"]`));
+    return (scope ? scope + ' ' : '') + parts.join('');
+  }
+  function mirrorBtn(b, cls, label, scope){
+    if(!b) return '';
+    return `<button type="button" class="tu-btn ${cls}" data-tu-mirror="${esc(legacySel(b, scope))}"${b.disabled ? ' disabled' : ''}>${esc(label || b.textContent.trim())}</button>`;
+  }
+  const shownEl = el => !!el && !el.hidden && !el.closest('[hidden]');
+  const bytes = n => (Number(n) || 0) >= 1073741824 ? ((Number(n) || 0) / 1073741824).toFixed(1) + ' GB' : mb(n);
+  const txt = el => (el && el.textContent || '').replace(/\s+/g, ' ').trim();
+  const swRow = (title, hint, attr, on, extra) => `<div class="tu-setrow"><div><b>${title}</b><span>${hint}</span></div><div class="tu-setctl">${extra || ''}<button type="button" class="tu-switch" role="switch" aria-checked="${!!on}" aria-label="${esc(title)}" ${attr}><i></i></button></div></div>`;
+  const setRow = (title, hint, ctl) => `<div class="tu-setrow"><div><b>${title}</b>${hint ? `<span>${hint}</span>` : ''}</div><div class="tu-setctl">${ctl}</div></div>`;
+  const setTile = (ico, tone) => `<span class="tu-settile ${tone || ''}">${icon(ico, 22)}</span>`;
+
+  /* theme: Light, Dark or Match device (the legacy toggle stays the only writer of the theme) */
+  const darkMq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  const isDark = () => !!byId('menu')?.classList.contains('theme-dark');
+  function themeMode(){ return store.get(THEME_MODE, '') === 'system' ? 'system' : isDark() ? 'dark' : 'light'; }
+  function toggleTheme(){ themeAuto = true; try{ byId('themeToggle')?.click(); }finally{ themeAuto = false; } setTimeout(() => { brand(); scheduleSettings(); }, 0); }
+  function applySystemTheme(){ if(store.get(THEME_MODE, '') === 'system' && darkMq && darkMq.matches !== isDark()) toggleTheme(); }
+  function setTheme(mode){
+    store.set(THEME_MODE, mode === 'system' ? 'system' : 'manual');
+    const want = mode === 'system' ? !!(darkMq && darkMq.matches) : mode === 'dark';
+    if(want !== isDark()) toggleTheme(); else scheduleSettings();
+  }
+  if(darkMq){ if(darkMq.addEventListener) darkMq.addEventListener('change', applySystemTheme); else if(darkMq.addListener) darkMq.addListener(applySystemTheme); }
+
+  function sections(){ return SET_SECTIONS.filter(([id]) => id !== 'admin' || (IPAD && !!document.querySelector('#settingsPanel [data-v195b-settings-tab="admin"]'))); }
+  function tabRows(){
+    const d = setUi.data || {tabs:[]}, pills = {}; libTabs().forEach(t => { pills[t.internal] = t; });
+    return d.tabs.map(t => {
+      const p = pills[t.key], color = t.color || (p && p.color) || TAB_DOTS[t.key] || TAB_DOTS.Custom;
+      const name = t.key === 'All' ? 'All forms' : t.key === 'N-Forms' ? 'NBME' : (p && p.label) || t.label || t.key;
+      const kind = t.key === 'All' ? 'Every loaded form' : t.builtIn ? 'Built-in' : 'Custom tab · ' + plural(t.forms, 'form');
+      return Object.assign({}, t, {name, kind, shown: color, custom: !t.builtIn});
+    });
+  }
+
+  /* section bodies */
+  function appearanceBody(){
+    const mode = themeMode(), accent = currentAccent(), view = store.get(KEYS.view, 'grid') === 'list' ? 'list' : 'grid';
+    const seg = (v, l, ico) => `<button type="button" role="radio" aria-checked="${mode === v}" data-tu-theme="${v}">${ico ? icon(ICONS[ico], 16) : ''}${l}</button>`;
     const swatch = id => `<button type="button" class="tu-swatch" role="radio" aria-checked="${accent === id}" data-tu-pick="${id}"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="${ACCENTS[id].brand}"/><path d="${BOLT}" fill="#fff"/></svg>${ACCENTS[id].label}</button>`;
-    return `<section class="settings-panel-v195" data-tu-appearance><h3>Appearance</h3><p>How ThunderUSMLE looks on this ${IPAD ? 'iPad' : 'computer'}. Your exam screens are not changed.</p><div class="tu-settings-list">` +
-      `<div class="tu-setting"><div><b>Theme</b><span>Library, Qbank and Settings</span></div><div class="tu-seg" role="radiogroup" aria-label="Theme"><button type="button" role="radio" aria-checked="${!dark}" data-tu-theme="light">${icon(ICONS.sun, 16)}Light</button><button type="button" role="radio" aria-checked="${dark}" data-tu-theme="dark">${icon(ICONS.moon, 16)}Dark</button></div></div>` +
-      `<div class="tu-setting"><div><b>Accent color</b><span>Buttons, selection, progress rings and the app icon. Crimson is the default.${IPAD ? ' The Home Screen icon updates when you add the app to the Home Screen again.' : ''}</span></div><div class="tu-swatches" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(swatch).join('')}</div></div>` +
-      `<div class="tu-setting"><div><b>Form cards</b><span>Comfortable cards, or a compact list for big libraries</span></div><div class="tu-seg" role="radiogroup" aria-label="Form cards"><button type="button" role="radio" aria-checked="${view === 'grid'}" data-tu-cards="grid">${icon(ICONS.grid, 16)}Cards</button><button type="button" role="radio" aria-checked="${view === 'list'}" data-tu-cards="list">${icon(ICONS.list, 16)}List</button></div></div>` +
-      `</div></section>`;
+    return `<div class="tu-sechead"><h2>Appearance</h2></div>` +
+      setRow('Theme', 'Library, Qbank and Settings', `<div class="tu-setseg" role="radiogroup" aria-label="Theme">${seg('light', 'Light', 'sun')}${seg('dark', 'Dark', 'moon')}${seg('system', 'Match device')}</div>`) +
+      setRow('Accent color', 'Buttons, selection, progress rings and the app icon. Crimson is the default.' + (IPAD ? ' The Home Screen icon updates when you add the app to the Home Screen again.' : ''), `<div class="tu-swatches" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(swatch).join('')}</div>`) +
+      setRow('Card density', 'Comfortable cards, or a compact list for big libraries', `<label class="tu-setselect"><span class="tu-sr">Card density</span><select data-tu-density><option value="grid"${view === 'grid' ? ' selected' : ''}>Comfortable</option><option value="list"${view === 'list' ? ' selected' : ''}>Compact</option></select></label>`);
   }
-  function paintAppearance(){ const box = document.querySelector('#settingsPanel [data-tu-appearance]'); if(box) box.outerHTML = appearanceHtml(); }
-  function decorateSettings(){
-    const p = byId('settingsPanel'); if(!p) return;
-    const nav = p.querySelector('.settings-nav-v195'), content = p.querySelector('.settings-content-v195');
-    const on = !!window.__tuSettingsAppearance;
-    p.dataset.tuTab = on ? 'appearance' : (window.__v195BSettingsActive || window.__v195SettingsActive || 'library');
-    if(!nav || !content) return;
-    let btn = nav.querySelector('[data-tu-settings-tab]');
-    if(!btn){ btn = document.createElement('button'); btn.type = 'button'; btn.dataset.tuSettingsTab = 'appearance'; btn.textContent = 'Appearance'; nav.insertBefore(btn, nav.firstChild); }
-    btn.classList.toggle('active', on);
-    if(on){
-      if(content.querySelector('[data-tu-appearance]') && btn.classList.contains('active') && p.dataset.tuShown === '1') return;
-      p.dataset.tuShown = '1';
-      nav.querySelectorAll('[data-v195b-settings-tab],[data-v195-settings-tab]').forEach(b => b.classList.remove('active'));
-      if(!content.querySelector('[data-tu-appearance]')) content.innerHTML = appearanceHtml();
-    } else delete p.dataset.tuShown;
+  function tabsBody(){
+    const d = setUi.data || {tabs:[], future:{}}, rows = tabRows(), f = d.future || {};
+    const box = (r, k, label) => {
+      const dis = k === 'overall' && !r.overallSettable;
+      return `<span class="tu-tabcell"><span class="tu-tablbl">${label}</span><button type="button" class="tu-check" role="checkbox" aria-checked="${!!r[k]}" aria-label="${label} for ${esc(r.name)}" data-tu-flag="${k}" data-key="${esc(r.key)}"${dis ? ' disabled title="All forms is a filter, not a form group"' : ''}>${r[k] ? icon(SET_ICONS.tick, 14) : ''}</button></span>`;
+    };
+    const body = rows.map((r, i) => {
+      const colorName = (TAB_COLORS.find(([v]) => v && v === r.color) || [0, r.color ? 'Custom' : 'Default'])[1];
+      const pop = setUi.color === r.key ? `<div class="tu-colorpop" role="radiogroup" aria-label="Color for ${esc(r.name)}">${TAB_COLORS.map(([v, l]) => `<button type="button" role="radio" aria-checked="${(r.color || '') === v}" data-tu-setcolor="${esc(v)}" data-key="${esc(r.key)}" title="${l}"><i style="background:${v || esc(TAB_DOTS[r.key] || TAB_DOTS.Custom)}"></i>${l}</button>`).join('')}</div>` : '';
+      return `<div class="tu-tabrow" data-key="${esc(r.key)}"><button type="button" class="tu-drag" data-tu-drag="${esc(r.key)}" data-i="${i}" aria-label="Move ${esc(r.name)}. Drag, or use the up and down arrow keys" title="Drag to reorder">${icon(SET_ICONS.grip, 18)}</button>` +
+        `<button type="button" class="tu-colorbtn" data-tu-colorbtn="${esc(r.key)}" aria-expanded="${setUi.color === r.key}" aria-label="Color for ${esc(r.name)}: ${colorName}" title="Color: ${colorName}"><i style="background:${esc(r.shown)}"></i></button>` +
+        `<span class="tu-tabname"><b>${esc(r.name)}</b><small>${esc(r.kind)}</small></span>${TAB_FLAGS.map(([k, l]) => box(r, k, l)).join('')}` +
+        `<span class="tu-tabdel">${r.custom ? `<button type="button" class="tu-qticon bad" data-tu-deltab="${esc(r.key)}" aria-label="Delete the ${esc(r.name)} tab" title="Delete tab (its forms move to Custom)">${icon(SET_ICONS.trash, 18)}</button>` : ''}</span>${pop}</div>`;
+    }).join('');
+    const on = [['meter', 'Meter'], ['overall', 'Overall'], ['completed', 'Completed']].filter(([k]) => f[k] !== false).map(([, l]) => l);
+    const futureText = on.length ? `start with ${on.length > 1 ? on.slice(0, -1).join(', ') + ' and ' + on[on.length - 1] : on[0]} on.` : 'start with everything off.';
+    const future = setUi.future ? `<div class="tu-futbox">${swRow('Meter', 'Show the tab’s progress bar', 'data-tu-futsw="setLibFutureCustomMeters"', f.meter !== false)}${swRow('Overall', 'Count the tab in the main progress ring', 'data-tu-futsw="setLibFutureCustomOverall"', f.overall !== false)}${swRow('Completed', 'List its completed forms under Completed', 'data-tu-futsw="setLibFutureCustomOverview"', f.completed !== false)}</div>` : '';
+    return `<div class="tu-sechead"><h2>Library tabs</h2><p>Drag to reorder. <b>Meter</b> shows the tab’s progress bar, <b>Overall</b> counts it in the main progress ring, <b>Completed</b> lists its forms under Completed, <b>3-digit</b> shows score chips on its cards.</p></div>` +
+      `<div class="tu-tabtable" data-tu-tabtable><div class="tu-tabrow tu-tabhead" aria-hidden="true"><span></span><span>Color</span><span>Tab</span>${TAB_FLAGS.map(([, l]) => `<span>${l}</span>`).join('')}<span></span></div>${body || '<div class="tu-qtempty">No library tabs yet.</div>'}</div>` +
+      `<div class="tu-tabfoot"><span><b>New custom tabs</b> ${futureText}</span><button type="button" class="tu-btn outline small" data-tu-future aria-expanded="${setUi.future}">Change defaults</button></div>${future}`;
   }
-  let settingsObserver = null;
-  function watchSettings(){
-    const p = byId('settingsPanel'); if(!p || settingsObserver) return;
-    settingsObserver = new MutationObserver(() => { try{ decorateSettings(); }catch(e){ console.warn('ThunderUI settings failed', e); } settingsObserver.takeRecords(); });
-    settingsObserver.observe(p, {childList:true});
-    decorateSettings(); settingsObserver.takeRecords();
+  function qbankBody(){
+    const q = (setUi.data && setUi.data.qbank) || {}, src = (ATTEMPT_SOURCES.find(([v]) => v === q.defaultAttemptSource) || ATTEMPT_SOURCES[0])[1];
+    const summary = [q.defaultMode === 'tutor' ? 'Tutor' : 'Testing', (q.defaultSecondsPerQuestion || 90) + ' s', plural(q.defaultBlockSize || 40, 'question') + ' per block', src].join(' · ');
+    const edit = setUi.defaults ? `<div class="tu-futbox tu-defbox">` +
+      setRow('Mode', '', `<div class="tu-setseg" role="radiogroup" aria-label="Default mode"><button type="button" role="radio" aria-checked="${q.defaultMode !== 'tutor'}" data-tu-defmode="testing">Testing</button><button type="button" role="radio" aria-checked="${q.defaultMode === 'tutor'}" data-tu-defmode="tutor">Tutor</button></div>`) +
+      setRow('Seconds per question', '', `<input type="number" min="15" step="5" inputmode="numeric" class="tu-setnum" aria-label="Default seconds per question" data-tu-setin="setDefaultSpq">`) +
+      setRow('Questions per block', '', `<input type="number" min="1" inputmode="numeric" class="tu-setnum" aria-label="Default questions per block" data-tu-setin="setDefaultBlock">`) +
+      setRow('Linked attempt source', 'Used when a test counts progress from Form Library attempts', `<label class="tu-setselect"><span class="tu-sr">Linked attempt source</span><select data-tu-setsel="setAttemptSource">${ATTEMPT_SOURCES.map(([v, l]) => `<option value="${v}"${v === (q.defaultAttemptSource || 'first') ? ' selected' : ''}>${l}</option>`).join('')}</select></label>`) + '</div>' : '';
+    return `<div class="tu-sechead"><h2>Qbank</h2></div>` +
+      swRow('Default to Form Library attempts', 'New Qbank tests start with “Form Library attempts” as the source', 'data-tu-setsw="setLinkQbank" data-tab="qbank"', q.linkToLibrary) +
+      setRow('Library is read-only for Qbank', 'Always on: Qbank reads form attempts but never writes to them', `<span class="tu-lockchip">${icon(SET_ICONS.lock, 15)}Locked on</span>`) +
+      setRow('Defaults for new tests', esc(summary), `<button type="button" class="tu-btn outline small" data-tu-defaults aria-expanded="${setUi.defaults}">${setUi.defaults ? 'Done' : 'Edit'}</button>`) + edit +
+      setRow('Reset Qbank history', 'Clears used-question history and the Qbank test list. Form progress is untouched.', `<button type="button" class="tu-btn outline small tu-danger" data-tu-reset>Reset…</button>`);
   }
+  function safetyBody(){
+    const v = id => { const el = legacyIn('#' + id); return el ? el.checked : true; };
+    return `<div class="tu-sechead"><h2>Safety</h2></div>` +
+      swRow('Protect 1st attempts', 'Extra confirmation before any change to a first attempt', 'data-tu-setsw="setProtectFirst" data-tab="safety"', v('setProtectFirst')) +
+      swRow('Confirm before deleting attempts', 'Always ask before progress is removed', 'data-tu-setsw="setConfirmDelete" data-tab="safety"', v('setConfirmDelete'));
+  }
+  function qidModel(){
+    const card = byId('qidMigrationCard'), sum = txt(card && card.querySelector('.qid-summary'));
+    const msg = txt(card && card.querySelector('.qid-message'));
+    const m = sum.match(/(\d+)\s*\/\s*(\d+)/), migrated = m ? +m[1] : 0, total = m ? +m[2] : 0;
+    const qb = (sum.match(/Qbank:\s*([A-Z ]+?)(?:\s·|$)/) || [0, ''])[1].trim();
+    const rows = card ? Array.from(card.querySelectorAll('.qid-table-wrap tbody tr')).map(tr => Array.from(tr.cells).map(txt)) : [];
+    const need = rows.filter(c => c.length > 7 && !/^MIGRATED$/i.test(c[7]) && c[0] !== 'Qbank / history');
+    if(/recovery created|Recovery:/i.test(msg)) setUi.qidBackup = true;
+    return {card, scanned: !!m, migrated, total, ok: !!m && migrated === total && (!qb || qb === 'MIGRATED'), qb, msg, need, baseline: (sum.match(/Cloud baseline:\s*(\w+)/) || [0, ''])[1],
+      busy: !!card && Array.from(card.querySelectorAll('[data-qid-action]')).some(b => b.disabled), has: a => !!(card && card.querySelector(`[data-qid-action="${a}"]`))};
+  }
+  function advancedBody(){
+    const q = qidModel();
+    if(!q.card) return `<div class="tu-sechead"><h2>Question ID migration</h2><p>Loading the migration tools…</p></div>`;
+    const cur = !q.scanned ? 1 : !q.ok ? (setUi.qidBackup ? 3 : 2) : 5;
+    const btn = (act, label, main) => q.has(act) ? `<button type="button" class="tu-btn small ${main ? '' : 'outline'}" data-tu-qid="${act}"${q.busy ? ' disabled' : ''}>${label}</button>` : '';
+    const step = (n, title, meta, act, done) => {
+      const state = done ? 'done' : n === cur ? 'now' : 'later';
+      return `<li class="tu-qidstep ${state}"><span class="tu-qidnum">${done ? icon(SET_ICONS.tick, 14) : n}</span><span class="tu-qidtext"><b>${title}</b>${meta ? `<small>${meta}</small>` : ''}</span><span class="tu-qidact">${act}</span></li>`;
+    };
+    const scanMeta = q.scanned ? `<em class="${q.ok ? 'ok' : 'warn'}">${q.migrated} ready · ${q.total - q.migrated} need IDs${q.qb && q.qb !== 'MIGRATED' ? ' · Qbank ' + esc(q.qb.toLowerCase()) : ''}</em>` : 'Checks every form for question IDs';
+    const needList = q.need.length ? `<div class="tu-qidneed"><b>Need IDs</b>${q.need.slice(0, 8).map(c => `<span>${esc(c[0])} · ${esc(c[7].toLowerCase())}</span>`).join('')}${q.need.length > 8 ? `<span>and ${q.need.length - 8} more</span>` : ''}</div>` : '';
+    const notNeeded = q.ok ? 'Not needed: every form has IDs' : '';
+    const last = IPAD ? `${btn('baseline', 'Establish cloud baseline', cur === 5)}<button type="button" class="tu-btn small outline" data-tu-gosync>Backup &amp; sync</button>` : `<button type="button" class="tu-btn small${cur === 5 ? '' : ' outline'}" data-tu-gosync>Open Backup &amp; sync</button>`;
+    return `<div class="tu-sechead"><h2>Question ID migration</h2><p>Run once on your main device, then copy the library and progress to other devices. Never migrate on two devices separately.</p></div>` +
+      `<ol class="tu-qidsteps">` +
+      step(1, 'Scan forms', scanMeta, btn('scan', q.scanned ? 'Rescan' : 'Scan', cur === 1), q.scanned) +
+      step(2, 'Create recovery backup', notNeeded || 'A copy of the library and progress, saved before anything changes', btn('backup', 'Create', cur === 2), q.ok || setUi.qidBackup) +
+      step(3, 'Migrate missing IDs', notNeeded || 'Adds IDs to the forms that need them', btn('migrate', 'Migrate', cur === 3), q.ok) +
+      step(4, 'Verify library', q.ok ? 'Every form verified' : 'Checks the result', btn('verify', 'Verify', cur === 4), false) +
+      step(5, 'Export full library, then progress', IPAD ? `iPad: establish the new cloud baseline${q.baseline ? ' (' + esc(q.baseline) + ')' : ''}, then export from Backup &amp; sync` : 'From Backup &amp; sync, so other devices import the same IDs', last, false) +
+      `</ol>${needList}${q.msg ? `<p class="tu-qidmsg" role="status">${esc(q.msg)}</p>` : ''}` +
+      `<div class="tu-settools">${btn('restore', 'Restore pre-migration backup')}${byId('scanDataFolderBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="scanDataFolderBtn">Rebuild library index</button>' : ''}${byId('exportCatalogBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="exportCatalogBtn">Save library index</button>' : ''}</div>`;
+  }
+  function adminBody(){
+    const box = legacyIn('.fu-admin');
+    if(!box) return `<div class="tu-sechead"><h2>Form installations</h2><p>Loading…</p></div>`;
+    const unlocked = !!box.querySelector('[data-fu="lock"]'), status = txt(box.querySelector('#fuAdminStatus'));
+    const busy = !!box.querySelector('#fuAdminUnlock button[disabled], #fuAdminFilters button[disabled]');
+    const rows = Array.from(box.querySelectorAll('.fu-admin-table tbody tr')).map(tr => Array.from(tr.cells).map(td => [txt(td.querySelector('b')) || txt(td.firstChild), txt(td.querySelector('small'))]));
+    const empty = txt(box.querySelector('.fu-empty'));
+    const head = `<div class="tu-sechead tu-adminhead"><div><h2>Form installations</h2><p>See which devices installed which online forms. iPad app only.</p></div><span class="tu-lockchip${unlocked ? ' open' : ''}">${icon(SET_ICONS.lock, 15)}${unlocked ? 'Unlocked' : 'Locked'}</span></div>`;
+    const device = `<div class="tu-adminform"><label class="tu-setfield"><span>This device’s name</span><input type="text" maxlength="80" placeholder="e.g. iPad Pro" data-tu-admin="device" autocomplete="off"></label><button type="button" class="tu-btn small outline" data-tu-adminact="device">Save name</button></div>`;
+    const body = !unlocked
+      ? `<div class="tu-adminform"><label class="tu-setfield"><span>Admin password</span><input type="password" autocomplete="current-password" data-tu-admin="password"></label><button type="button" class="tu-btn small" data-tu-adminact="unlock"${busy ? ' disabled' : ''}>Unlock</button></div><p class="tu-note">Stays unlocked in this browser until you lock it.</p>`
+      : `<div class="tu-adminform tu-adminfilters"><label class="tu-setfield"><span>Search</span><input type="search" placeholder="User, device or form" data-tu-admin="fuAdminSearch"></label><label class="tu-setfield"><span>Form ID</span><input type="text" data-tu-admin="fuAdminForm"></label><label class="tu-setfield"><span>Revision</span><input type="text" data-tu-admin="fuAdminRevision"></label><button type="button" class="tu-btn small outline" data-tu-adminact="filter"${busy ? ' disabled' : ''}>Refresh</button></div>` +
+        `<div class="tu-admintable"><div class="tu-adminrow tu-adminth" aria-hidden="true"><span>Form</span><span>User / device</span><span>Installed</span></div>${rows.map(c => `<div class="tu-adminrow">${c.map(([a, b]) => `<span><b>${esc(a)}</b>${b ? `<small>${esc(b)}</small>` : ''}</span>`).join('')}</div>`).join('') || `<div class="tu-qtempty">${esc(empty || 'No installations to show.')}</div>`}</div>` +
+        `<div class="tu-settools">${box.querySelector('[data-fu="more"]') ? `<button type="button" class="tu-btn small outline" data-tu-adminact="more"${busy ? ' disabled' : ''}>Load more</button>` : ''}<button type="button" class="tu-btn small outline" data-tu-adminact="lock">Lock admin</button></div>`;
+    return head + device + body + (status ? `<p class="tu-qidmsg" role="status">${esc(status)}</p>` : '');
+  }
+  function syncBuild(){ const m = txt(document.querySelector('#progressSyncPanel .sync-footer')).match(/SYNC-(V[\d.]+)/i); return m ? m[1] : ''; }
+  function aboutBody(){
+    const file = decodeURIComponent(location.pathname.split('/').pop() || ''), lv = (file.match(/v(\d+(?:\.\d+)+)/i) || [0, ''])[1];
+    const ver = IPAD ? ['App version ' + ((window.StepAppUpdates && window.StepAppUpdates.version) || txt(byId('appVersionLabel')).replace(/\D+/g, '') || '—'), syncBuild() ? 'sync ' + syncBuild() : ''].filter(Boolean).join(' · ') : 'Local app' + (lv ? ' · simulator ' + lv : '');
+    return `<div class="tu-sechead"><h2>About &amp; updates</h2></div>` + setRow('Version', esc(ver), '') +
+      (IPAD && byId('updateAppShellBtn') ? setRow('Update app', 'Reloads the latest version. Your library and progress are kept.', '<button type="button" class="tu-btn small" data-tu-proxy="updateAppShellBtn">Update &amp; reload</button>') : !IPAD ? setRow('Updates', 'Replace this HTML file in your Step Simulator folder with the new version. Your DATA folder is not touched.', '') : '') +
+      (IPAD ? setRow('Privacy policy', '', `<a class="tu-btn small outline" href="./privacy.html" target="_blank" rel="noopener">Open${icon(SET_ICONS.ext, 15)}</a>`) : '');
+  }
+  const SET_BODIES = {appearance:appearanceBody, tabs:tabsBody, qbank:qbankBody, safety:safetyBody, advanced:advancedBody, admin:adminBody, about:aboutBody};
+
+  /* Backup & sync page */
+  function storageHtml(){
+    const status = byId('dataFolderStatus'), ok = !!status && status.classList.contains('connected');
+    let n = 0; try{ n = bridge().forms().length; }catch(e){}
+    const st = setUi.storage, pct = st && st.quota ? Math.min(100, Math.max(1, Math.round(st.usage / st.quota * 100))) : 0;
+    const folder = (txt(status).match(/\(([^)]+)\)/) || [0, 'DATA'])[1];
+    const meta = IPAD ? [plural(n, 'form'), st && st.quota ? `${bytes(st.usage)} of ${bytes(st.quota)} browser storage` : 'stored in this browser'].join(' · ') : ok ? `${folder} · ${plural(n, 'form')} · saved to disk automatically` : 'Connect your DATA folder to load your forms and progress.';
+    const btns = (ok && byId('scanDataFolderBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="scanDataFolderBtn">Rescan</button>' : '') +
+      (byId('connectDataFolderBtn') && (!IPAD || !ok) ? `<button type="button" class="tu-btn small ${ok ? 'outline' : ''}" data-tu-proxy="connectDataFolderBtn">${IPAD ? 'Start storage' : ok ? 'Change folder' : 'Connect DATA folder'}</button>` : '');
+    return `<div class="tu-synchead">${setTile(SET_ICONS.folder, ok ? 'ok' : 'warn')}<div class="tu-syncttl"><div><h2>${IPAD ? 'Library on this iPad' : 'DATA folder'}</h2><em class="tu-statchip ${ok ? 'ok' : 'warn'}">${ok ? 'Connected' : 'Not connected'}</em></div><span>${esc(meta)}</span>${IPAD && pct ? `<span class="tu-meter" aria-hidden="true"><i style="width:${pct}%"></i></span>` : ''}</div><div class="tu-actions">${btns}</div></div>`;
+  }
+  const SYNC_LABELS = {connect:'Connect Google Drive', backup:'Sync now', 'restore-cloud':'Restore from Drive', disconnect:'Disconnect', check:'Reconnect'};
+  function progressHtml(){
+    const P = byId('progressSyncPanel'), sv = syncView() || {label:'Off', detail:'', tone:'offline'};
+    const acts = P ? Array.from(P.querySelectorAll('#stepSyncActions button')) : [];
+    const connected = acts.some(b => b.dataset.stepSyncAction === 'disconnect');
+    const conn = acts.find(b => b.dataset.stepSyncAction === (connected ? 'disconnect' : 'connect')) || acts.find(b => b.dataset.stepSyncAction === 'check');
+    const last = txt(byId('stepSyncLastText')), detail = txt(byId('stepSyncDetailText')) || sv.detail;
+    const sub = [sv.label, detail && detail !== sv.label ? detail : '', last && last !== 'Never' ? 'last backup ' + last : connected ? '' : ''].filter(Boolean).join(' · ');
+    const tr = byId('stepProgressTransfer'), trHtml = shownEl(tr) ? `<div class="tu-xfer"><div class="tu-xferhead"><b>${esc(txt(byId('stepTransferTitle')))}</b><span>${esc(txt(byId('stepTransferPct')))}</span></div><span class="tu-meter"><i style="width:${esc((byId('stepTransferBar') || {style:{}}).style.width || '0%')}"></i></span><div class="tu-xferfoot"><span>${esc(txt(byId('stepTransferForm')))} · ${esc(txt(byId('stepTransferBytes')))}</span></div></div>` : '';
+    const decisions = P ? Array.from(P.querySelectorAll('#stepSyncDecisionNotice .sync-decision-row')).map(r => {
+      const h = txt(r.querySelector('h4')), cmp = Array.from(r.querySelectorAll('.sync-compare > div')).map(txt);
+      return `<div class="tu-banner tu-decide" role="group" aria-label="${esc(h)}"><div><b>${esc(h)}</b><span>Nothing is overwritten until you choose.${cmp.length ? ' ' + esc(cmp.join(' · ')) : ''}</span></div><div class="tu-actions">${Array.from(r.querySelectorAll('button')).map(b => mirrorBtn(b, b.classList.contains('primary') ? 'small tu-warnbtn' : 'small outline', null, '#stepSyncDecisionNotice')).join('')}</div></div>`;
+    }).join('') : '';
+    const btns = acts.filter(b => b !== conn || !connected).filter(b => b.dataset.stepSyncAction !== 'disconnect').map((b, i) => mirrorBtn(b, i ? 'small outline' : 'small', SYNC_LABELS[b.dataset.stepSyncAction] || null, '#stepSyncActions')).join('') +
+      (connected && conn ? mirrorBtn(conn, 'small text', 'Disconnect', '#stepSyncActions') : '');
+    const sw = conn ? `<button type="button" class="tu-switch" role="switch" aria-checked="${connected}" aria-label="Google Drive progress sync" data-tu-mirror="${esc(legacySel(conn, '#stepSyncActions'))}"${conn.disabled ? ' disabled' : ''}><i></i></button>` : '';
+    return `<div class="tu-synchead">${setTile(ICONS.sync, sv.tone === 'good' ? 'ok' : sv.tone === 'error' ? 'bad' : '')}<div class="tu-syncttl"><h2>Google Drive progress sync</h2><span class="tu-synctone" data-tone="${esc(sv.tone)}">${esc(sub || 'Off')}</span></div>${sw}</div>${decisions}${trHtml}<div class="tu-actions tu-cardacts">${btns}</div>`;
+  }
+  function libraryCardHtml(){
+    const card = byId('libraryBackupCard'); if(!card) return '';
+    const msg = card.querySelector('#libraryBackupMessage'), pct = txt(byId('libraryTransferPct')), running = pct && pct !== 'Idle';
+    const ctl = ['libraryTransferPause', 'libraryTransferResume', 'libraryTransferCancel'].map(id => byId(id)).filter(b => b && !b.hidden).map(b => mirrorBtn(b, b.id === 'libraryTransferCancel' ? 'small text tu-danger' : 'small outline')).join('');
+    const xfer = running ? `<div class="tu-xfer"><div class="tu-xferhead"><b>${esc(txt(byId('libraryTransferCurrent')))}</b><span>${esc([txt(byId('libraryTransferSpeed')), txt(byId('libraryTransferEta'))].filter(x => x && x !== '—').join(' · ~') || pct)}</span></div><span class="tu-meter"><i style="width:${esc(byId('libraryTransferBar')?.style.width || '0%')}"></i></span><div class="tu-xferfoot"><span>${esc(pct)} · ${esc(txt(byId('libraryTransferBytes')))}</span><div class="tu-actions">${ctl}</div></div></div>` : '';
+    const sub = [txt(msg && msg.querySelector('b')), txt(msg && msg.querySelector('span'))].filter(Boolean).join(' · ') || 'Forms and images only';
+    const b = a => card.querySelector(`[data-library-action="${a}"]`);
+    return `<div class="tu-synchead">${setTile(ICONS.library)}<div class="tu-syncttl"><h2>Full library in Google Drive</h2><span>${esc(sub)}</span></div></div>${xfer}<div class="tu-actions tu-cardacts">${mirrorBtn(b('backup'), 'small tonal', 'Back up library', '#libraryBackupCard')}${mirrorBtn(b('restore'), 'small outline', 'Download library', '#libraryBackupCard')}</div>`;
+  }
+  function collHtml(key, title, sub, body){
+    const open = !!setUi.open[key];
+    return `<button type="button" class="tu-collhead" aria-expanded="${open}" data-tu-coll="${key}"><span><b>${title}</b><small>${esc(sub)}</small></span>${icon(ICONS.chevron, 20)}</button>${open ? `<div class="tu-collbody">${body}</div>` : ''}`;
+  }
+  function rowsFrom(sel, scope){
+    return Array.from(document.querySelectorAll(scope + ' ' + sel)).map(r => `<div class="tu-histrow"><span><b>${esc(txt(r.querySelector('h4')))}</b><small>${esc(txt(r.querySelector(':scope > div:not(.sync-row-actions)')))}</small></span><span class="tu-actions">${Array.from(r.querySelectorAll('button')).map(b => mirrorBtn(b, 'small outline', b.textContent.trim().replace(/^Restore Previous$/, 'Restore').replace(/^Delete Recovery$/, 'Delete').replace(/^Undo Last Cloud Restore$/, 'Undo restore'), scope)).join('')}</span></div>`).join('');
+  }
+  function historyHtml(){
+    const P = byId('progressSyncPanel'); if(!P) return '';
+    const hist = Array.from(P.querySelectorAll('#stepSyncHistory .sync-history-row')), daily = hist.filter(r => /^Daily/i.test(txt(r.querySelector('h4')))).length, rec = P.querySelectorAll('#stepSyncRecovery .sync-recovery-row').length;
+    const sub = [plural(daily, 'daily snapshot'), plural(hist.length - daily, 'manual snapshot'), plural(rec, 'previous version')].join(' · ');
+    const snap = P.querySelector('[data-step-sync-action="manual-snapshot"]');
+    const body = (rowsFrom('.sync-history-row', '#stepSyncHistory') || '<div class="tu-histrow"><span><b>No snapshots yet</b><small>A daily snapshot is kept automatically once Google Drive is connected</small></span></div>') +
+      rowsFrom('.sync-recovery-row', '#stepSyncRecovery') +
+      `<div class="tu-histrow"><span><b>Full progress backup file</b><small>Saved on this iPad in progress/backups and downloaded</small></span><span class="tu-actions"><button type="button" class="tu-btn small outline" data-tu-v101="backup-full-progress">Save</button><button type="button" class="tu-btn small outline" data-tu-v101="import-full-progress">Import</button></span></div>` +
+      (snap ? `<div class="tu-histrow"><span><b>New manual snapshot</b><small>Kept until you delete it</small></span><span class="tu-actions">${mirrorBtn(snap, 'small', 'Create', '#progressSyncPanel')}</span></div>` : '');
+    return collHtml('hist', 'History &amp; recovery', sub, body);
+  }
+  function advancedSyncHtml(){
+    const P = byId('progressSyncPanel'); if(!P) return '';
+    const a = act => P.querySelector(`[data-step-sync-action="${act}"]`), lib = byId('libraryBackupCard'), clear = lib && lib.querySelector('[data-library-action="clear-extra"]');
+    const metrics = Array.from(P.querySelectorAll('#stepSyncInventory .sync-metric')).map(m => `<span><small>${esc(txt(m.querySelector('span')))}</small><b>${esc(txt(m.querySelector('b')))}</b></span>`).join('');
+    const diag = txt(byId('stepSyncDiagnostics'));
+    const body = `<div class="tu-actions">${mirrorBtn(a('check'), 'small outline', 'Check cloud manifest', '#progressSyncPanel')}${mirrorBtn(a('diagnose'), 'small outline', 'Diagnose sync', '#progressSyncPanel')}${mirrorBtn(a('validate'), 'small outline', 'Validate local progress', '#progressSyncPanel')}</div>` +
+      (metrics ? `<div class="tu-metrics">${metrics}</div>` : '') + (diag ? `<p class="tu-diag">${esc(diag.slice(0, 1200))}</p>` : '') +
+      `<div class="tu-dangerzone"><b>Cloud reset</b><div class="tu-actions">${mirrorBtn(clear, 'small outline tu-danger', 'Clear extra cloud library data', '#libraryBackupCard')}${mirrorBtn(a('replace-cloud-progress'), 'small outline tu-danger', 'Replace cloud with this iPad', '#progressSyncPanel')}${mirrorBtn(a('clear-cloud-progress'), 'small outline tu-danger', 'Clear cloud progress', '#progressSyncPanel')}</div></div>` +
+      `<p class="tu-note">Progress sync and history are separate from the full library backup. <a href="./privacy.html" target="_blank" rel="noopener">Privacy policy</a>${syncBuild() ? ' · sync ' + esc(syncBuild()) : ''}</p>`;
+    return collHtml('adv', 'Advanced sync tools', 'Diagnostics and cloud reset. Rarely needed.', body);
+  }
+  function recoveryLocalHtml(){
+    const list = setUi.backups || [];
+    const body = list.length ? list.slice(0, 25).map(f => `<div class="tu-histrow"><span><b>${esc(f.name)}</b><small>${esc([f.modifiedAt ? new Date(f.modifiedAt).toLocaleString() : '', mb(f.size)].filter(Boolean).join(' · '))}</small></span></div>`).join('') + (list.length > 25 ? `<p class="tu-note">and ${list.length - 25} older copies</p>` : '') + '<p class="tu-note">To restore one, choose Import below and pick the file from DATA/progress/backups.</p>'
+      : '<div class="tu-histrow"><span><b>No recovery copies yet</b><small>One is written before every import and export</small></span></div>';
+    return collHtml('rec', 'Recovery copies in DATA/progress/backups', 'Written automatically before every import and export' + (list.length ? ' · ' + plural(list.length, 'copy').replace('copys', 'copies') : ''), body);
+  }
+  function moveHtml(){
+    const pair = (n, title, sub, exp, imp) => `<div class="tu-movetile"><span class="tu-movenum">${n}</span><span><b>${title}</b><small>${sub}</small></span><span class="tu-actions">${exp}${imp}</span></div>`;
+    const ip = (id, label) => byId(id) ? `<button type="button" class="tu-btn small outline" data-tu-proxy="${id}">${label}</button>` : '';
+    const lc = (act, label) => `<button type="button" class="tu-btn small outline" data-tu-compat="${act}">${label}</button>`;
+    const lib = IPAD ? [ip('exportFullLibraryBackupBtn', 'Export'), ip('importFullLibraryBackupBtn', 'Import')] : [lc('export-library', 'Export'), lc('import-library', 'Import')];
+    const prog = IPAD ? [ip('exportProgressOnlyBackupBtn', 'Export'), ip('importProgressOnlyBackupBtn', 'Import')] : [lc('export-progress', 'Export'), lc('import-progress', 'Import')];
+    const note = IPAD ? 'For moving to the Local app or a new device: import the library first, then the progress. Imports never inherit cloud history.' : 'Works with the iPad app: import the library first, then the progress. A copy of each export is also kept in DATA/progress/backups.';
+    return `<div class="tu-sechead"><h2>Move between devices</h2><p>${note}</p></div><div class="tu-moves">${pair(1, 'Form library ZIP', 'Forms, images, tab setup', ...lib)}${pair(2, 'Progress ZIP', 'Attempts, Qbank, 3-digit scores', ...prog)}</div>`;
+  }
+
+  /* mounting and painting */
+  function ensureSetView(panel, id){
+    let v = setViews[id];
+    if(!v){
+      v = document.createElement('div'); v.id = id; v.className = 'tu-setview';
+      v.innerHTML = id === 'tuSettings'
+        ? `<header class="tu-sethead"><h1>Settings</h1><span>Applies to the library and Qbank. Exam-screen options stay in the exam’s own Settings menu.</span></header><div class="tu-setgrid"><nav class="tu-setnav" aria-label="Settings sections" data-tu-r="nav"></nav><section class="tu-card tu-setbody" data-tu-r="body"></section></div>`
+        : `<header class="tu-sethead"><h1>Backup &amp; sync</h1><span>Your progress is saved on this device first. Everything else is an extra copy.</span></header><section class="tu-card tu-synccard" aria-label="Storage" data-tu-r="storage"></section>` +
+          (IPAD ? `<div class="tu-syncgrid"><section class="tu-card tu-synccard" aria-label="Google Drive progress sync" data-tu-r="progress"></section><section class="tu-card tu-synccard" aria-label="Full library in Google Drive" data-tu-r="library"></section></div><section class="tu-card tu-synccoll" aria-label="History and recovery" data-tu-r="hist"></section><section class="tu-card tu-synccoll" aria-label="Advanced sync tools" data-tu-r="adv"></section>`
+            : `<section class="tu-card tu-synccoll" aria-label="Recovery copies" data-tu-r="rec"></section>`) +
+          `<section class="tu-card tu-synccard" aria-label="Move between devices" data-tu-r="move"></section>`;
+      v.addEventListener('click', onSetClick);
+      v.addEventListener('change', onSetChange);
+      v.addEventListener('keydown', onSetKey);
+      v.addEventListener('pointerdown', onDragStart);
+      v.addEventListener('focusin', e => { const a = e.target; setUi.focus = a && a.attributes ? Array.from(a.attributes).filter(x => /^data-tu|^data-key$/.test(x.name)).map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('') : ''; });
+      setViews[id] = v;
+    }
+    v.dataset.host = panel.id;
+    if(v.parentNode !== panel){ panel.insertBefore(v, panel.firstChild); if(setUi.focus && document.activeElement === document.body) v.querySelector(setUi.focus)?.focus({preventScroll:true}); }
+    return v;
+  }
+  const setRegion_ = (v, name) => v.querySelector(`[data-tu-r="${name}"]`);
+  // number/text inputs are filled after each render (not in the markup), so typing never triggers a re-render
+  function setSyncInputs(v){
+    v.querySelectorAll('[data-tu-setin]').forEach(el => { if(el === document.activeElement) return; const src = legacyIn('#' + el.dataset.tuSetin); const q = (setUi.data && setUi.data.qbank) || {}; const val = src ? src.value : el.dataset.tuSetin === 'setDefaultSpq' ? q.defaultSecondsPerQuestion : q.defaultBlockSize; if(val != null && el.value !== String(val)) el.value = String(val); });
+    v.querySelectorAll('[data-tu-admin]').forEach(el => { const k = el.dataset.tuAdmin; if(el === document.activeElement || k === 'password') return; const src = legacyIn(k === 'device' ? '#fuDeviceLabel' : '#' + k); if(src && el.value !== src.value) el.value = src.value; });
+  }
+  function paintSetView(panel){
+    const v = ensureSetView(panel, 'tuSettings'), secs = sections();
+    if(!secs.some(([id]) => id === setUi.sec)) setUi.sec = 'appearance';
+    swapHtml(setRegion_(v, 'nav'), secs.map(([id, l]) => `<button type="button" data-tu-sec="${id}" aria-current="${setUi.sec === id ? 'page' : 'false'}">${esc(l)}${id === 'admin' ? '<small>iPad</small>' : ''}</button>`).join(''));
+    swapHtml(setRegion_(v, 'body'), SET_BODIES[setUi.sec]());
+    setSyncInputs(v);
+    const want = SET_LEGACY[setUi.sec];
+    if(want && !setUi.switching && !legacyReady(want) && !(setUi.sec === 'tabs' && ['order', 'custom'].includes(legacyActive()))) legacySetTab(want).then(() => scheduleSettings(true));
+  }
+  function paintSyncView(panel){
+    const v = ensureSetView(panel, 'tuSync');
+    swapHtml(setRegion_(v, 'storage'), storageHtml());
+    if(IPAD){ swapHtml(setRegion_(v, 'progress'), progressHtml()); swapHtml(setRegion_(v, 'library'), libraryCardHtml()); swapHtml(setRegion_(v, 'hist'), historyHtml()); swapHtml(setRegion_(v, 'adv'), advancedSyncHtml()); }
+    else swapHtml(setRegion_(v, 'rec'), recoveryLocalHtml());
+    swapHtml(setRegion_(v, 'move'), moveHtml());
+    // keep the hidden legacy Backup tab drawn, so its buttons (and the file pickers they open) answer at once
+    if(!setUi.switching && !legacyReady('backup') && !(IPAD && byId('settingsPanel')?.classList.contains('active'))) legacySetTab('backup');
+  }
+  function scheduleSettings(fresh){
+    if(fresh) setUi.stale = true;
+    if(setQueued) return; setQueued = true;
+    requestAnimationFrame(() => { setQueued = false; paintSettings().catch(e => console.warn('ThunderUI settings failed', e)); });
+  }
+  async function paintSettings(){
+    const B = bridge(), panel = byId('settingsPanel'); if(!B || !B.settings || !panel) return;
+    watchSettingsView();
+    const syncPanel = IPAD ? byId('progressSyncPanel') : panel, onSet = panel.classList.contains('active');
+    if(!IPAD && !onSet && setUi.page === 'sync') setSyncPage(false);
+    const onSync = !!syncPanel && syncPanel.classList.contains('active') && (IPAD || setUi.page === 'sync'), showSet = onSet && !(!IPAD && setUi.page === 'sync');
+    if(!onSync && !showSet) return;
+    if(setUi.stale || !setUi.data){
+      const n = ++setUi.seq; setUi.stale = false;
+      const [d, bk, st] = await Promise.all([B.settings(), !IPAD && onSync && B.backups ? B.backups() : null, IPAD && onSync && navigator.storage && navigator.storage.estimate ? navigator.storage.estimate().catch(() => null) : null]);
+      if(n !== setUi.seq) return;
+      setUi.data = d; if(bk) setUi.backups = bk; if(st) setUi.storage = st;
+    }
+    panel.classList.add('tu-has-settings');
+    if(showSet) paintSetView(panel);
+    if(onSync){ syncPanel.classList.add('tu-has-sync'); paintSyncView(syncPanel); }
+    if(setViews.tuSettings) setViews.tuSettings.hidden = !showSet;
+    if(setViews.tuSync && !IPAD) setViews.tuSync.hidden = !onSync;
+    heroTitle();
+    setObserver && setObserver.takeRecords(); syncObserver && syncObserver.takeRecords();
+  }
+  function watchSettingsView(){
+    const ours = recs => recs.every(r => r.target.closest && r.target.closest('.tu-setview'));
+    const p = byId('settingsPanel');
+    if(p && !setObserver){
+      setObserver = new MutationObserver(recs => {
+        // the legacy renderSettings rewrites the panel and drops the views; put the same nodes back at once
+        Object.values(setViews).forEach(v => { if(v.dataset.host === 'settingsPanel' && !p.contains(v)) ensureSetView(p, v.id); });
+        if(!ours(recs)) scheduleSettings(true);
+      });
+      setObserver.observe(p, {childList:true, subtree:true, attributes:true, characterData:true, attributeFilter:['class', 'disabled', 'hidden']});
+    }
+    const s = IPAD ? byId('progressSyncPanel') : null;
+    if(s && !syncObserver){
+      syncObserver = new MutationObserver(recs => { if(!ours(recs)) scheduleSettings(true); });
+      syncObserver.observe(s, {childList:true, subtree:true, attributes:true, characterData:true, attributeFilter:['class', 'disabled', 'hidden', 'style']});
+    }
+  }
+  // Local: Backup & sync is its own sidebar page, drawn over the hidden legacy Settings › Backup tab
+  function setSyncPage(on){
+    setUi.page = on ? 'sync' : 'settings';
+    const tab = byId('tuSyncTab'), st = byId('settingsTab');
+    if(tab) tab.classList.toggle('active', on && !!byId('settingsPanel')?.classList.contains('active'));
+    if(st && on) st.classList.remove('active');
+    if(st && !on && byId('settingsPanel')?.classList.contains('active')) st.classList.add('active');
+    heroTitle(); scheduleSettings(true);
+  }
+  function openSyncPage(){
+    if(IPAD){ byId('progressSyncTab')?.click(); return; }
+    setUi.page = 'sync';
+    if(!byId('settingsPanel')?.classList.contains('active')) byId('settingsTab')?.click();
+    setSyncPage(true);
+    legacySetTab('backup').then(() => scheduleSettings(true));
+  }
+  function ensureSyncTab(){
+    if(IPAD || byId('tuSyncTab')) return;
+    const st = byId('settingsTab'); if(!st) return;
+    const b = document.createElement('button'); b.type = 'button'; b.id = 'tuSyncTab'; b.className = 'menu-tab';
+    b.innerHTML = icon(ICONS.sync, 22) + '<span class="tu-tab-label">Backup &amp; sync</span>';
+    b.addEventListener('click', e => { e.preventDefault(); openSyncPage(); });
+    st.parentNode.insertBefore(b, st);
+  }
+
+  /* actions */
+  function goSection(id){
+    setUi.sec = id; setUi.color = ''; store.set(SET_KEY, id);
+    scheduleSettings(true);
+    const want = SET_LEGACY[id]; if(want && !legacyReady(want)) legacySetTab(want).then(() => scheduleSettings(true));
+  }
+  function onSetClick(e){
+    const t = e.target.closest('button,a'); if(!t || t.disabled || t.tagName === 'A') return;
+    const ds = t.dataset;
+    if(ds.tuSec){ goSection(ds.tuSec); return; }
+    if(ds.tuTheme){ setTheme(ds.tuTheme); return; }
+    if(ds.tuFlag && ds.key){
+      const f = TAB_FLAGS.find(([k]) => k === ds.tuFlag), on = t.getAttribute('aria-checked') !== 'true';
+      t.setAttribute('aria-checked', String(on)); t.innerHTML = on ? icon(SET_ICONS.tick, 14) : '';
+      legacyDo('library', () => setLegacyEl(legacyIn(`[${f[2]}="${CSS.escape(ds.key)}"]`), on)); return;
+    }
+    if(ds.tuColorbtn){ setUi.color = setUi.color === ds.tuColorbtn ? '' : ds.tuColorbtn; scheduleSettings(); return; }
+    if(ds.tuSetcolor != null && ds.key){ const key = ds.key, val = ds.tuSetcolor; setUi.color = ''; legacyDo('order', () => setLegacyEl(legacyIn(`select[data-v195-tab-color="${CSS.escape(key)}"]`), val)); return; }
+    if(ds.tuDeltab){ const key = ds.tuDeltab; legacyDo('custom', () => clickLegacy(`#settingsPanel [data-v195-delete-tab="${CSS.escape(key)}"]`)); return; }
+    if(t.hasAttribute('data-tu-future')){ setUi.future = !setUi.future; scheduleSettings(); return; }
+    if(ds.tuFutsw){ const id = ds.tuFutsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on)); legacyDo('library', () => setLegacyEl(legacyIn('#' + id), on)); return; }
+    if(ds.tuSetsw){ const id = ds.tuSetsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on)); legacyDo(ds.tab, () => setLegacyEl(legacyIn('#' + id), on)); return; }
+    if(t.hasAttribute('data-tu-defaults')){ setUi.defaults = !setUi.defaults; scheduleSettings(); if(setUi.defaults) legacySetTab('safety').then(() => scheduleSettings(true)); return; }
+    if(ds.tuDefmode){ const v = ds.tuDefmode; legacyDo('safety', () => { setLegacyEl(legacyIn('#setDefaultMode'), v); setLegacy('qbankRunMode', v); }); return; }
+    if(t.hasAttribute('data-tu-reset')){ legacyDo('qbank', () => clickLegacy('#settingsPanel [data-v9="settings-reset-qbank"]')); return; }
+    if(ds.tuQid){ if(ds.tuQid === 'backup') setUi.qidBackup = false; clickLegacy(`#qidMigrationCard [data-qid-action="${ds.tuQid}"]`); scheduleSettings(true); return; }
+    if(t.hasAttribute('data-tu-gosync')){ openSyncPage(); return; }
+    if(ds.tuAdminact) return adminAct(ds.tuAdminact, t);
+    if(ds.tuColl){ setUi.open[ds.tuColl] = !setUi.open[ds.tuColl]; scheduleSettings(); return; }
+    if(ds.tuMirror){ const b = document.querySelector(ds.tuMirror); if(!b || b.disabled){ console.warn('ThunderUI: legacy control missing', ds.tuMirror); return; } b.click(); scheduleSettings(true); return; }
+    if(ds.tuV101){ const a = ds.tuV101; legacyDo('backup', () => clickLegacy(`#settingsPanel [data-v101="${a}"]`)); return; }
+    if(ds.tuCompat){ const a = ds.tuCompat; legacyDo('backup', () => clickLegacy(`#settingsPanel [data-local-compat="${a}"]`)); return; }
+  }
+  function adminAct(act){
+    const v = setViews.tuSettings, val = k => (v && v.querySelector(`[data-tu-admin="${k}"]`) || {}).value || '';
+    legacyDo('admin', () => {
+      if(act === 'device'){ const el = legacyIn('#fuDeviceLabel'); if(el) el.value = val('device'); return clickLegacy('#settingsPanel [data-fu="device"]'); }
+      if(act === 'unlock'){
+        const pw = v && v.querySelector('[data-tu-admin="password"]'), el = legacyIn('#fuAdminPassword'), form = legacyIn('#fuAdminUnlock');
+        if(!pw || !pw.value || !el || !form) return false;
+        el.value = pw.value; pw.value = ''; form.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true})); return true;
+      }
+      if(act === 'filter'){ ['fuAdminSearch', 'fuAdminForm', 'fuAdminRevision'].forEach(k => { const el = legacyIn('#' + k); if(el) el.value = val(k); }); const f = legacyIn('#fuAdminFilters'); if(f) f.dispatchEvent(new Event('submit', {bubbles:true, cancelable:true})); return true; }
+      if(act === 'more') return clickLegacy('#settingsPanel [data-fu="more"]');
+      if(act === 'lock') return clickLegacy('#settingsPanel [data-fu="lock"]');
+    });
+  }
+  function onSetChange(e){
+    const t = e.target;
+    if(t.hasAttribute('data-tu-density')){ store.set(KEYS.view, t.value === 'list' ? 'list' : 'grid'); scheduleLibrary(); scheduleSettings(); return; }
+    if(t.dataset.tuSetsel){ const id = t.dataset.tuSetsel, val = t.value; legacyDo('safety', () => setLegacyEl(legacyIn('#' + id), val)); return; }
+    if(t.dataset.tuSetin){
+      const id = t.dataset.tuSetin, min = id === 'setDefaultSpq' ? 15 : 1, n = Math.max(min, parseInt(t.value, 10) || min); t.value = String(n);
+      legacyDo('safety', () => { setLegacyEl(legacyIn('#' + id), n); if(id === 'setDefaultBlock') setLegacy('qbankBlockSize', n); });
+    }
+  }
+  function onSetKey(e){
+    const t = e.target;
+    if(e.key === 'Enter' && t.dataset && t.dataset.tuAdmin){ e.preventDefault(); adminAct(t.dataset.tuAdmin === 'password' ? 'unlock' : t.dataset.tuAdmin === 'device' ? 'device' : 'filter'); return; }
+    if(e.key === 'Enter' && t.dataset && t.dataset.tuSetin){ t.blur(); return; }
+    if(t.dataset && t.dataset.tuDrag && (e.key === 'ArrowUp' || e.key === 'ArrowDown')){
+      e.preventDefault();
+      const rows = tabRows(), i = rows.findIndex(r => r.key === t.dataset.tuDrag), j = i + (e.key === 'ArrowUp' ? -1 : 1);
+      if(i < 0 || j < 0 || j >= rows.length) return;
+      setUi.focus = `[data-tu-drag="${CSS.escape(t.dataset.tuDrag)}"]`;
+      moveTab(rows[i].key, rows[j].key, j > i);
+    }
+  }
+  // reorder through the legacy drag-and-drop handlers on the hidden "Order & colors" rows
+  function moveTab(key, target, after){
+    legacyDo('order', () => {
+      const h = legacyIn(`[data-v195-drag-tab="${CSS.escape(key)}"]`), row = legacyIn(`[data-v195-drop-tab="${CSS.escape(target)}"]`);
+      if(!h || !row) return false;
+      const r = row.getBoundingClientRect(), y = after ? r.bottom - 1 : r.top + 1;
+      h.dispatchEvent(new MouseEvent('dragstart', {bubbles:true, cancelable:true}));
+      row.dispatchEvent(new MouseEvent('dragover', {bubbles:true, cancelable:true, clientY:y}));
+      row.dispatchEvent(new MouseEvent('drop', {bubbles:true, cancelable:true, clientY:y}));
+      h.dispatchEvent(new MouseEvent('dragend', {bubbles:true}));
+      return true;
+    });
+  }
+  function onDragStart(e){
+    const h = e.target.closest && e.target.closest('[data-tu-drag]'); if(!h || e.button > 0) return;
+    const table = h.closest('[data-tu-tabtable]'), row = h.closest('.tu-tabrow'); if(!table || !row) return;
+    e.preventDefault();
+    const rows = Array.from(table.querySelectorAll('.tu-tabrow[data-key]')), start = e.clientY;
+    let target = null, after = false;
+    row.classList.add('tu-dragging'); try{ h.setPointerCapture(e.pointerId); }catch(err){}
+    const move = ev => {
+      row.style.transform = `translateY(${ev.clientY - start}px)`;
+      rows.forEach(r => r.classList.remove('tu-dropbefore', 'tu-dropafter'));
+      target = rows.find(r => { const b = r.getBoundingClientRect(); return r !== row && ev.clientY >= b.top && ev.clientY <= b.bottom; }) || null;
+      if(target){ const b = target.getBoundingClientRect(); after = ev.clientY > b.top + b.height / 2; target.classList.add(after ? 'tu-dropafter' : 'tu-dropbefore'); }
+    };
+    const up = () => {
+      h.removeEventListener('pointermove', move); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up);
+      row.classList.remove('tu-dragging'); row.style.transform = ''; rows.forEach(r => r.classList.remove('tu-dropbefore', 'tu-dropafter'));
+      if(target) moveTab(row.dataset.key, target.dataset.key, after);
+    };
+    h.addEventListener('pointermove', move); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+  }
+
   window.addEventListener('click', e => {
     const t = e.target && e.target.closest ? e.target : null; if(!t) return;
-    if(t.closest('[data-tu-settings-tab]')){ e.preventDefault(); e.stopPropagation(); window.__tuSettingsAppearance = true; decorateSettings(); return; }
-    if(t.closest('[data-v195b-settings-tab],[data-v195-settings-tab]')) window.__tuSettingsAppearance = false;
-    const acc = t.closest("[data-tu-pick]"); if(acc){ setAccent(acc.dataset.tuPick); return; }
-    const th = t.closest('[data-tu-theme]');
-    if(th){ const dark = !!byId('menu')?.classList.contains('theme-dark'); if((th.dataset.tuTheme === 'dark') !== dark) byId('themeToggle')?.click(); setTimeout(() => { brand(); paintAppearance(); }, 0); return; }
-    const cv = t.closest('[data-tu-cards]'); if(cv){ store.set(KEYS.view, cv.dataset.tuCards); paintAppearance(); scheduleLibrary(); return; }
-    if(t.closest('#themeToggle')) setTimeout(brand, 0);
-    if(t.closest('#menu aside.modern-sidebar .menu-tab')) setTimeout(() => { heroTitle(); paintSync(); }, 0);
+    const acc = t.closest('[data-tu-pick]'); if(acc){ setAccent(acc.dataset.tuPick); return; }
+    if(t.closest('#themeToggle')){ if(!themeAuto) store.set(THEME_MODE, 'manual'); setTimeout(() => { brand(); scheduleSettings(); }, 0); }
+    const tab = t.closest('#menu aside.modern-sidebar .menu-tab');
+    if(tab && tab.id !== 'tuSyncTab' && tab.id !== 'themeToggle' && setUi.page === 'sync' && !IPAD) setTimeout(() => setSyncPage(false), 0);
+    if(tab) setTimeout(() => { heroTitle(); scheduleSettings(true); }, 0);
   }, true);
-
-  /* ---------- iPad Backup & sync ---------- */
-  function proxyButton(id, label, cls){ return byId(id) ? `<button type="button" class="tu-btn ${cls || 'outline small'}" data-tu-proxy="${id}">${label}</button>` : ''; }
-  function paintSync(){
-    const panel = byId('progressSyncPanel'), layout = panel && panel.querySelector('.sync-layout'); if(!layout) return;
-    const hero = panel.querySelector('.sync-hero');
-    if(hero && !hero.dataset.tu){ const p = hero.querySelector('p'); if(p) p.textContent = 'Progress is saved on this iPad first, then backed up to your Google Drive. When two devices disagree, nothing is overwritten until you choose.'; const h = hero.querySelector('h2'); if(h) h.textContent = 'Google Drive backup'; hero.dataset.tu = '1'; }
-    Array.from(layout.children).forEach(sec => {
-      if(sec.dataset.tuSync) return;
-      const h = (sec.querySelector(':scope > h3')?.textContent || '').trim();
-      let kind = '';
-      if(sec.id === 'libraryBackupCard') kind = 'library';
-      else if(/^Current Progress Sync/i.test(h)) kind = 'progress';
-      else if(/^Recovery/i.test(h)) kind = 'recovery';
-      else if(/History/i.test(h)) kind = 'history';
-      else if(/Advanced|Inventory|Diagnos/i.test(h) || sec.querySelector('.sync-maintenance')) kind = 'advanced';
-      if(!kind) return;
-      sec.dataset.tuSync = kind;
-      if(kind === 'progress'){ const t = sec.querySelector(':scope > h3'); if(t) t.textContent = 'Google Drive progress sync'; }
-      if(kind === 'recovery' || kind === 'history' || kind === 'advanced'){
-        sec.dataset.tuCollapsible = '1';
-        const t = sec.querySelector(':scope > h3');
-        if(t){
-          if(kind === 'recovery') t.textContent = 'Recovery';
-          if(kind === 'history') t.textContent = 'Backup history';
-          if(kind === 'advanced') t.textContent = 'Advanced sync tools';
-          t.setAttribute('role', 'button'); t.tabIndex = 0; t.setAttribute('aria-expanded', 'false');
-        }
-      }
-    });
-    if(!layout.querySelector('[data-tu-sync="storage"]')){
-      const s = document.createElement('section'); s.className = 'sync-card tu-sync-card'; s.dataset.tuSync = 'storage';
-      layout.insertBefore(s, layout.firstChild);
-    }
-    const storage = layout.querySelector('[data-tu-sync="storage"]');
-    const status = byId('dataFolderStatus'), connected = !!status && status.classList.contains('connected');
-    const sHtml = `<h3>Library on this iPad</h3><div class="tu-sync-row"><div><b><span class="tu-dot ${connected ? 'ok' : ''}"></span>${esc(status ? status.textContent.replace(/^iPad Browser Library:\s*/i, 'Storage ') : 'Storage')}</b><span>Forms, images and progress are stored in this browser on this iPad. Back them up below.</span></div><div class="tu-actions">${proxyButton('scanDataFolderBtn', 'Rescan')}${connected ? '' : proxyButton('connectDataFolderBtn', 'Start storage', '')}</div></div>`;
-    if(storage.innerHTML !== sHtml) storage.innerHTML = sHtml;
-    if(!layout.querySelector('[data-tu-sync="move"]')){
-      const m = document.createElement('section'); m.className = 'sync-card tu-sync-card'; m.dataset.tuSync = 'move';
-      m.innerHTML = `<h3>Move between devices</h3><p>Files you can save and open on another iPad or the Local app.</p>` +
-        (byId('exportFullLibraryBackupBtn') || byId('importFullLibraryBackupBtn') ? `<div class="tu-sync-row"><div><b>Form library ZIP</b><span>All forms and images, without progress</span></div><div class="tu-actions">${proxyButton('exportFullLibraryBackupBtn', icon(ICONS.download, 16) + 'Export')}${proxyButton('importFullLibraryBackupBtn', icon(ICONS.upload, 16) + 'Import')}</div></div>` : '') +
-        (byId('exportProgressOnlyBackupBtn') || byId('importProgressOnlyBackupBtn') ? `<div class="tu-sync-row"><div><b>Progress file</b><span>Attempts, answers, marks and notes for every form</span></div><div class="tu-actions">${proxyButton('exportProgressOnlyBackupBtn', icon(ICONS.download, 16) + 'Export')}${proxyButton('importProgressOnlyBackupBtn', icon(ICONS.upload, 16) + 'Import')}</div></div>` : '');
-      layout.appendChild(m);
-    }
-  }
   document.addEventListener('click', e => {
     const proxy = e.target.closest && e.target.closest('[data-tu-proxy]');
-    if(proxy){ e.preventDefault(); byId(proxy.dataset.tuProxy)?.click(); setTimeout(paintSync, 300); return; }
-    const head = e.target.closest && e.target.closest('#progressSyncPanel [data-tu-collapsible] > h3');
-    if(head){ const sec = head.parentElement; sec.classList.toggle('tu-open'); head.setAttribute('aria-expanded', String(sec.classList.contains('tu-open'))); }
-  });
-  document.addEventListener('keydown', e => {
-    if(e.key !== 'Enter' && e.key !== ' ') return;
-    const head = e.target.closest && e.target.closest('#progressSyncPanel [data-tu-collapsible] > h3');
-    if(head){ e.preventDefault(); head.click(); }
+    if(proxy){ e.preventDefault(); byId(proxy.dataset.tuProxy)?.click(); setTimeout(() => scheduleSettings(true), 300); }
   });
 
   /* ---------- Score Report ---------- */
@@ -2319,7 +2894,7 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
   /* ---------- boot ---------- */
   function boot(){
     if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES; document.head.appendChild(st); }
-    applyAccent(); watchSettings(); wrapReport(); brand(); scheduleLibrary(); paintSync();
+    applyAccent(); wrapReport(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
     const panel = byId('libraryModePanel');
     if(panel){ libraryObserver = new MutationObserver(() => scheduleLibrary()); libraryObserver.observe(panel, {childList:true, subtree:true}); }
     const side = document.querySelector('#menu aside.modern-sidebar');
@@ -2332,13 +2907,12 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
       quickObserver.observe(quick, {childList:true, subtree:true, attributes:true, attributeFilter:['class', 'disabled']});
     }
     scheduleQuick(); scheduleQbank(true);
-    const sync = byId('progressSyncPanel'); if(sync) new MutationObserver(() => paintSync()).observe(sync, {childList:true});
-    const status = byId('dataFolderStatus'); if(status) new MutationObserver(() => { paintSync(); paintNav(); }).observe(status, {childList:true, characterData:true, subtree:true});
+    const status = byId('dataFolderStatus'); if(status) new MutationObserver(() => { scheduleSettings(true); paintNav(); }).observe(status, {childList:true, characterData:true, subtree:true});
     const watchCloud = () => { const c = byId('googleBackupStatus'); if(!c || c.dataset.tuWatched) return; c.dataset.tuWatched = '1'; new MutationObserver(() => paintSyncBits()).observe(c, {childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['data-tone', 'title']}); paintSyncBits(); };
     watchCloud();
     // late modules (progress sync, form updates) add their tabs and panels after load
-    let tries = 0; const late = setInterval(() => { brand(); paintSync(); watchSettings(); wrapReport(); watchCloud(); scheduleLibrary(); qbWatch(); if(byId('progressSyncPanel') && !sync && !late.__obs){ late.__obs = true; new MutationObserver(() => paintSync()).observe(byId('progressSyncPanel'), {childList:true}); } if(++tries > 20) clearInterval(late); }, 500);
+    let tries = 0; const late = setInterval(() => { brand(); wrapReport(); watchCloud(); scheduleLibrary(); qbWatch(); scheduleSettings(true); if(++tries > 20) clearInterval(late); }, 500);
   }
-  window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), refresh:() => { brand(); scheduleLibrary(); paintSync(); }};
+  window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); }};
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
