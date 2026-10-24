@@ -36,6 +36,9 @@
     list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
     play:'<path d="M7 5v14l11-7z" fill="currentColor" stroke="none"/>',
     chevron:'<path d="m6 9 6 6 6-6"/>',
+    check:'<circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.2 2.4 2.4 4.6-4.9"/>',
+    clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    pause:'<circle cx="12" cy="12" r="8.5"/><path d="M10 9v6M14 9v6"/>',
     download:'<path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/>',
     upload:'<path d="M12 16V5m0 0-4 4m4-4 4 4M5 20h14"/>',
     drive:'<path d="M3 7.5a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
@@ -171,33 +174,42 @@ ${H} #tuHome .tu-more-panel button{display:flex;align-items:center;gap:10px;widt
 ${H} #tuHome .tu-more-panel button:hover{background:var(--tu-s2)!important}
 .tu-more-panel small{padding:8px 12px 4px;color:var(--tu-on3);font-size:12px}
 .tu-card{background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:24px;box-shadow:var(--tu-shadow)}
-.tu-home-top{display:flex;flex-wrap:wrap;gap:16px;align-items:stretch}
-.tu-overall{flex:1 1 340px;max-width:460px;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+/* top row: Categories | Recently completed | Overall performance. Overall has a fixed size; the other two take its height. */
+.tu-home-top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 300px;grid-template-rows:292px;grid-template-areas:"cats recent overall";gap:16px}
+.tu-home-top>.tu-cats{grid-area:cats}.tu-home-top>.tu-recent{grid-area:recent}.tu-home-top>.tu-overall{grid-area:overall}
+.tu-overall{padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0;overflow:hidden}
+.tu-ov-note{font-size:11.5px;font-weight:600;color:var(--tu-on3);text-align:center}
 .tu-sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 ${H} #tuHome .tu-sec-head h2{font-size:16px!important;font-weight:800!important;letter-spacing:0!important}
 .tu-sec-head>span{font-size:12px;font-weight:700;color:var(--tu-on3)}
-.tu-rings{display:flex;gap:18px;align-items:center;justify-content:space-around}
-.tu-ring112{width:112px;height:112px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--v)*1%),var(--tu-s2) 0);display:flex;align-items:center;justify-content:center}
+.tu-rings{flex:1;min-height:0;display:flex;gap:12px;align-items:center;justify-content:space-around}
+.tu-ring112{flex:none;width:112px;height:112px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--v)*1%),var(--tu-s2) 0);display:flex;align-items:center;justify-content:center}
 .tu-ring112>div{width:88px;height:88px;border-radius:50%;background:var(--tu-surface);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .tu-ring112 b{font-size:25px;font-weight:800;line-height:1.1}
 .tu-ring112 span{font-size:10.5px;color:var(--tu-on3);font-weight:700;letter-spacing:.04em}
-.tu-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:auto}
+.tu-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .tu-pair>div{background:var(--tu-s1);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column}
 .tu-pair b{font-size:16px;font-weight:800}.tu-pair b small{font-weight:600;color:var(--tu-on3);font-size:13px}
 .tu-pair span{font-size:12px;color:var(--tu-on3);font-weight:600}
-.tu-recent{flex:999 1 360px;min-width:0;padding:16px 18px;display:flex;flex-direction:column;gap:4px}
-.tu-recent .tu-sec-head{padding-bottom:6px}
-${H} #tuHome .tu-recent-row{display:flex;align-items:center;gap:12px;min-height:44px;width:100%;padding:6px 10px!important;margin:0!important;border-radius:12px!important;border:0!important;background:transparent!important;color:var(--tu-on)!important;text-align:left;box-shadow:none!important;height:auto!important}
+.tu-recent{min-width:0;padding:16px 18px;display:flex;flex-direction:column;gap:8px;overflow:hidden;container-type:inline-size}
+.tu-recent-list{flex:1;min-height:0;display:grid;grid-template-rows:repeat(6,minmax(0,1fr));gap:2px}
+${H} #tuHome .tu-recent-row{display:flex;align-items:center;gap:10px;min-height:0;height:100%;width:100%;padding:0 8px!important;margin:0!important;border-radius:12px!important;border:0!important;background:transparent!important;color:var(--tu-on)!important;text-align:left;box-shadow:none!important;height:auto!important}
 ${H} #tuHome .tu-recent-row:hover{background:var(--tu-s1)!important}
 .tu-recent-row>i{width:9px;height:9px;border-radius:50%;flex:none}
 .tu-recent-row>b{flex:1;min-width:0;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tu-recent-row>span{font-size:12.5px;color:var(--tu-on3);white-space:nowrap}
-.tu-recent-row>strong{width:46px;text-align:right;font-size:15px;font-weight:800}
+.tu-recent-row>strong{width:44px;text-align:right;font-size:14.5px;font-weight:800;flex:none}
+@container (max-width:250px){.tu-recent-row>span{display:none}}
 .tu-empty-note{color:var(--tu-on3);font-size:13.5px;padding:8px 10px}
-.tu-cats{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.tu-cats{padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0;overflow:hidden;container-type:inline-size}
+.tu-recent .tu-sec-head h2,.tu-recent .tu-link{white-space:nowrap}
+@container (max-width:250px){.tu-recent .tu-sec-head h2{font-size:15px!important}}
+.tu-cats-body{flex:1;min-height:0;display:flex;flex-direction:column}
+/* tiles share the card's height: --cols/--rows are set from the tile count, so 13-15 tiles still fit (dense) */
+.tu-cats .tu-tiles{flex:1;min-height:0;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));grid-template-rows:repeat(var(--rows,2),minmax(0,1fr));overflow:auto}
+.tu-cats .tu-tiles.tu-scroll{grid-template-rows:none;grid-auto-rows:30px}
 .tu-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.tu-tiles.tu-clamp{max-height:142px;overflow:hidden}
-${H} #tuHome .tu-tile{text-align:left;display:flex;flex-direction:column;gap:6px;padding:9px 12px!important;margin:0!important;height:auto!important;min-height:0!important;border-radius:14px!important;border:1.5px solid var(--tu-line2)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;box-shadow:none!important}
+${H} #tuHome .tu-tile{text-align:left;display:flex;flex-direction:column;justify-content:space-between;gap:6px;padding:9px 12px!important;margin:0!important;height:auto!important;min-height:0!important;border-radius:14px!important;border:1.5px solid var(--tu-line2)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;box-shadow:none!important}
 ${H} #tuHome .tu-tile:hover{border-color:var(--tu-line)!important}
 ${H} #tuHome .tu-tile[aria-pressed="true"]{background:var(--tu-pc)!important;border-color:var(--tu-p)!important;color:var(--tu-onpc)!important}
 .tu-tile-top{display:flex;align-items:center;gap:7px;width:100%}
@@ -206,7 +218,21 @@ ${H} #tuHome .tu-tile[aria-pressed="true"]{background:var(--tu-pc)!important;bor
 .tu-tile-top span{font-size:12.5px;font-weight:700;opacity:.85}
 .tu-tile-bar{width:100%;height:4px;border-radius:99px;background:var(--tu-s3);overflow:hidden}.tu-tile-bar i{display:block;height:100%;border-radius:99px}
 .tu-tile>small{font-size:11.5px;opacity:.8}
+.tu-cats .tu-tiles.tu-dense{gap:5px 8px}
+${H} #tuHome .tu-tiles.tu-dense .tu-tile{justify-content:center;gap:3px;padding:2px 10px!important;border-radius:10px!important}
+.tu-tiles.tu-dense .tu-tile-bar{height:3px}
+.tu-tiles.tu-dense .tu-tile>small{display:none}
+.tu-tiles.tu-dense .tu-tile-top b{font-size:13px}.tu-tiles.tu-dense .tu-tile-top span{font-size:12px}
 .tu-tiles-more{align-self:center}
+.tu-tile-caret{flex:none;opacity:.7;transition:transform .15s}
+.tu-tile[aria-expanded="true"] .tu-tile-caret{transform:rotate(180deg)}
+/* CMS forms pane: the eight shelf subjects in one line under the top row */
+.tu-cms{padding:14px 18px 16px;display:flex;flex-direction:column;gap:10px}
+.tu-cms[hidden]{display:none}
+.tu-cms .tu-sec-head>span{font-weight:600}
+.tu-cms .tu-tiles{grid-template-columns:repeat(8,minmax(0,1fr))}
+.tu-cms .tu-tile-top{flex-wrap:wrap;row-gap:2px}
+.tu-cms .tu-tile-top span{flex-basis:100%;font-size:16px!important;font-weight:800!important;opacity:1!important}
 .tu-resume{overflow:hidden;border-radius:22px}
 .tu-resume-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:12px 14px 12px 16px}
 .tu-resume-row+.tu-resume-row{border-top:1px solid var(--tu-line2);padding:10px 14px 10px 70px}
@@ -225,18 +251,25 @@ ${H} #tuHome .tu-status button:last-child{border-right:0!important}
 .tu-shown{font-size:13.5px;color:var(--tu-on3)}
 .tu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
 .tu-form{padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0;container-type:inline-size}
-.tu-when-meta{display:none}
-@container (max-width:420px){.tu-form-actions .tu-when{visibility:hidden}.tu-when-meta{display:inline}}
-.tu-form-tag{display:flex;align-items:center;gap:8px}
+.tu-form-head{display:flex;align-items:flex-start;gap:10px;min-width:0}
+.tu-form-hl{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.tu-form-hr{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.tu-form-tag{display:flex;align-items:center;gap:8px;min-height:24px}
 .tu-form-tag>i{width:9px;height:9px;border-radius:50%;flex:none}
 .tu-form-tag>span:not(.tu-st){font-size:12.5px;font-weight:700;color:var(--tu-on3);flex:1;min-width:0;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tu-st{font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap}
 .tu-st.done{background:var(--tu-okc);color:var(--tu-ok)}.tu-st.progress{background:var(--tu-pc);color:var(--tu-onpc)}.tu-st.suspended{background:var(--tu-warnc);color:var(--tu-warn)}.tu-st.new{background:var(--tu-s2);color:var(--tu-on2)}
 .tu-form-name{display:flex;flex-direction:column;gap:3px;min-width:0}
-.tu-form-name>span{display:flex;align-items:center;gap:8px;min-width:0}
 .tu-form-name b{font-size:18px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tu-three{font-size:12px;font-weight:800;padding:3px 8px;border-radius:8px;border:1px solid var(--tu-line);color:var(--tu-on2);flex:none}
-.tu-form-name small{font-size:13px;color:var(--tu-on3)}
+.tu-three{display:flex;flex-direction:column;align-items:center;min-width:60px;padding:5px 10px 4px;border-radius:12px;background:var(--tu-pc);color:var(--tu-onpc);line-height:1.1;flex:none}
+.tu-three b{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.tu-three small{font-size:9.5px;font-weight:800;letter-spacing:.08em;opacity:.8}
+.tu-three.none{background:transparent;border:1.5px dashed var(--tu-line);color:var(--tu-on3);padding:3px 9px 2px}
+.tu-form-name small{font-size:13px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-form-date{display:flex;align-items:center;gap:6px;min-width:0;margin-top:-4px;font-size:12.5px;font-weight:700;color:var(--tu-on3)}
+.tu-form-date>span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-form-date>svg{flex:none}
+.tu-form-date.done{color:var(--tu-ok)}.tu-form-date.suspended{color:var(--tu-warn)}
 .tu-form-stats{display:flex;align-items:center;gap:14px}
 .tu-ring58{width:58px;height:58px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--v)*1%),var(--tu-s2) 0);display:flex;align-items:center;justify-content:center;flex:none}
 .tu-ring58>b{width:46px;height:46px;border-radius:50%;background:var(--tu-surface);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
@@ -253,19 +286,20 @@ ${H} #tuHome .tu-btn.tonal{background:var(--tu-pc)!important;color:var(--tu-onpc
 ${H} #tuHome .tu-btn.quiet{background:var(--tu-s2)!important;color:var(--tu-on)!important}
 ${H} #tuHome .tu-btn.outline{background:transparent!important;color:var(--tu-on)!important;border:1px solid var(--tu-line)!important}
 ${H} #tuHome .tu-btn.text{background:transparent!important;color:var(--tu-p)!important}
-.tu-when{flex:1;min-width:0;font-size:12px;color:var(--tu-on3);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-form-actions>.tu-grow{flex:1;min-width:0}
 ${H} #tuHome .tu-kebab{width:40px;height:40px;min-width:40px;border-radius:50%!important;border:0!important;background:transparent!important;color:var(--tu-on2)!important;display:inline-flex;align-items:center;justify-content:center;padding:0!important;box-shadow:none!important;margin:0!important}
 ${H} #tuHome .tu-kebab:hover{background:var(--tu-s2)!important}
 .tu-nomatch{grid-column:1/-1;padding:36px;text-align:center;color:var(--tu-on3);background:var(--tu-surface);border:1px dashed var(--tu-line);border-radius:24px}
 /* compact list */
 .tu-grid.tu-list{grid-template-columns:minmax(0,1fr);gap:8px}
-.tu-list .tu-form{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(250px,1fr) auto;grid-template-areas:"name stats actions" "tag stats actions";align-items:center;gap:2px 20px;padding:12px 16px;border-radius:18px}
-.tu-list .tu-form-tag{grid-area:tag}.tu-list .tu-form-tag>span:not(.tu-st){flex:none}.tu-list .tu-when-meta{display:none}.tu-list .tu-form-actions .tu-when{visibility:visible}.tu-list .tu-form-name{grid-area:name}.tu-list .tu-form-stats{grid-area:stats}.tu-list .tu-form-actions{grid-area:actions}
+.tu-list .tu-form{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(250px,1fr) auto;grid-template-areas:"head stats actions" "date stats actions";align-items:center;gap:4px 20px;padding:12px 16px;border-radius:18px}
+.tu-list .tu-form-head{grid-area:head;align-items:center}.tu-list .tu-form-hl{flex-direction:column-reverse;gap:2px}
+.tu-list .tu-form-hr{flex-direction:row;align-items:center}.tu-list .tu-three{flex-direction:row;align-items:baseline;gap:6px;padding:3px 9px;min-width:0}.tu-list .tu-three b{font-size:14px}
+.tu-list .tu-form-date{grid-area:date;margin:0}.tu-list .tu-form-stats{grid-area:stats}.tu-list .tu-form-actions{grid-area:actions}
 .tu-list .tu-bar5,.tu-list .tu-form-name small{display:none}
 .tu-list .tu-form-name b{font-size:15.5px}
 .tu-list .tu-ring58{width:44px;height:44px}.tu-list .tu-ring58>b{width:34px;height:34px;font-size:12px}
-.tu-list .tu-when{flex:none}
-@media (max-width:1100px){.tu-list .tu-form{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name actions" "tag actions" "stats stats"}}
+@media (max-width:1250px){.tu-list .tu-form{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"head actions" "date actions" "stats stats"}.tu-list .tu-form-stats{max-width:460px}}
 
 /* sidebar: board order, storage / Google Drive card */
 ${H} aside.modern-sidebar #tuAddForms{order:1}
@@ -727,7 +761,8 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
 }
 
 /* narrow windows */
-@media (max-width:1000px){${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:18px 20px 40px!important}.tu-overall{max-width:none}}
+@media (max-width:1300px){.tu-home-top{grid-template-columns:minmax(0,1.2fr) minmax(0,.95fr) 240px;grid-template-rows:276px}.tu-overall{padding:14px 16px}.tu-overall .tu-rings{gap:8px}.tu-ring112{width:96px;height:96px}.tu-ring112>div{width:76px;height:76px}.tu-ring112 b{font-size:21px}.tu-ring112 span{font-size:9.5px}.tu-pair>div{padding:8px 10px}.tu-pair b{font-size:15px}}
+@media (max-width:1000px){${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:18px 20px 40px!important}}
 @media (max-width:560px){.tu-sheet-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.tu-retests{grid-template-columns:minmax(0,1fr)}.tu-sheet{top:0;right:0;bottom:0;max-width:100%;border-radius:0}}
 
 /* iPad portrait (board iPadPortrait): bottom navigation, Add forms button, sync strip, compact home */
@@ -752,10 +787,16 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
   .tu-syncstrip{display:flex;align-items:center;gap:10px;min-height:40px;width:100%;padding:4px 6px 4px 14px!important;border-radius:14px!important;text-align:left;font:13px var(--tu-font)!important;cursor:pointer}
   .tu-syncstrip>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tu-syncstrip>em{font-style:normal;height:30px;padding:0 12px;border-radius:999px;background:var(--tu-surface);color:var(--tu-on);display:flex;align-items:center;font-weight:800;font-size:12.5px;flex:none}
-  .tu-home-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-  .tu-overall{display:contents}
-  .tu-overall>:not(.tu-mini3){display:none!important}
+  .tu-home-top{display:flex;flex-direction:column;gap:12px}
+  .tu-overall{order:-1;flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px 18px;padding:12px 16px;border-radius:20px}
+  .tu-overall .tu-sec-head,.tu-ov-note{display:none}
+  .tu-rings{flex:none;gap:12px}
+  .tu-ring112{width:76px;height:76px}.tu-ring112>div{width:60px;height:60px}.tu-ring112 b{font-size:16.5px}.tu-ring112 span{font-size:8.5px;letter-spacing:.02em}
+  .tu-pair{flex:1 1 260px}
   .tu-recent{display:none!important}
+  .tu-cats-body{flex:none}
+  .tu-cats .tu-tiles,.tu-cms .tu-tiles{grid-template-columns:none;grid-template-rows:none;overflow:visible}
+  .tu-cms{padding:12px 14px;gap:8px;border-radius:18px}
   .tu-cats{background:transparent;border:0;box-shadow:none;padding:0}
   .tu-cats .tu-sec-head{display:none}
   .tu-tiles{display:flex;flex-wrap:wrap;gap:6px}
@@ -764,17 +805,20 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
   .tu-tile-top{gap:7px;width:auto}
   .tu-tile-top b{font-weight:700}
   .tu-tile>em{font-style:normal;font-weight:600;opacity:.7;font-size:14px}
-  .tu-tiles.tu-clamp{max-height:78px}
+  .tu-tiles.tu-clamp{max-height:78px;overflow:hidden}
+  .tu-cms .tu-tile-top{flex-wrap:nowrap}
+  .tu-cms .tu-tiles{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.tu-cms .tu-tiles>.tu-tile{flex:none}
   .tu-resume-bar{display:none}
   .tu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .tu-form{padding:16px;gap:12px}
   .tu-forms-bar .tu-shown{display:none}
 }
-.tu-mini3{display:none}
-@media (max-width:900px){.tu-mini3{display:flex;flex-direction:column;background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:20px;padding:14px 16px}.tu-mini3 b{font-size:22px;font-weight:800}.tu-mini3 span{font-size:12.5px;color:var(--tu-on3);font-weight:600}}
 .tu-tile>em{display:none}
 @media (max-width:900px){.tu-tile>em{display:inline}}
-@media (max-width:600px){.tu-grid{grid-template-columns:minmax(0,1fr)}${H} #tuHome .tu-search{width:100%;flex:1 1 100%}}
+@media (max-width:600px){.tu-grid{grid-template-columns:minmax(0,1fr)}${H} #tuHome .tu-search{width:100%;flex:1 1 100%}
+  /* phones: title, download and ⋯ on one line (⋯ at the right edge, so its menu opens on screen), search below */
+  .tu-home-head{gap:10px 8px}.tu-home-title{flex:1;min-width:0}.tu-home-tools{display:contents}${H} #tuHome .tu-search{order:10}
+  .tu-more-panel{max-width:calc(100vw - 24px)}}
 
 /* Settings + Backup & sync (boards Settings, Sync): the legacy panels stay in the DOM, off-screen */
 ${H} :is(#settingsPanel.tu-has-settings,#progressSyncPanel.tu-has-sync).active{display:block!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
@@ -1076,7 +1120,9 @@ ${X} .tux button:disabled{cursor:default}
 ${X} .tux :focus-visible,${W} .tux-strike:focus-visible,${W} .tux-layout button:focus-visible{outline:3px solid var(--tu-p);outline-offset:2px}
 ${X} .tux-ico{display:block;flex:none}
 /* header (board: 62px) */
-${X} .tux-head{position:fixed;left:0;right:0;top:0;height:62px;z-index:40;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--tu-surface);color:var(--tu-on);border-bottom:1px solid var(--tu-line2);font-family:var(--tu-font)}
+/* the iPad app draws under the iPhone status bar (viewport-fit=cover): every bar anchored to the top moves down by the safe area */
+${XB}{--tux-st:env(safe-area-inset-top,0px)}
+${X} .tux-head{position:fixed;left:0;right:0;top:0;height:calc(62px + var(--tux-st));padding-top:var(--tux-st)!important;box-sizing:border-box;z-index:40;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--tu-surface);color:var(--tu-on);border-bottom:1px solid var(--tu-line2);font-family:var(--tu-font)}
 ${X} .tux-head .tux-item{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;height:44px;padding:0 12px;border-radius:12px;background:var(--tu-s1);line-height:1.15;max-width:300px;min-width:0;text-align:left}
 ${X} .tux-item b{font-size:15px;font-weight:700;white-space:nowrap}
 ${X} .tux-item span{font-size:12px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
@@ -1100,7 +1146,7 @@ ${X} .tux-head .tux-tool:hover,${X} .tux-head .tux-tool[aria-expanded="true"]{ba
 ${X} .tux-head .tux-more{display:none}
 ${X} .tux-spacer{flex:1}
 /* question navigator (board: 212px, 5 columns) */
-${X} .tux-nav{position:fixed;left:0;top:62px;bottom:58px;width:212px;z-index:38;background:var(--tu-surface);color:var(--tu-on);border-right:1px solid var(--tu-line2);padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto;font-family:var(--tu-font)}
+${X} .tux-nav{position:fixed;left:0;top:calc(62px + var(--tux-st));bottom:58px;width:212px;z-index:38;background:var(--tu-surface);color:var(--tu-on);border-right:1px solid var(--tu-line2);padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto;font-family:var(--tu-font)}
 ${X} .tux-navhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 ${X} .tux-navhead b{font-size:14px}${X} .tux-navhead span{font-size:12px;color:var(--tu-on3)}
 ${X} .tux-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
@@ -1128,14 +1174,14 @@ ${X} .tux-foot .tux-fbtn:hover{filter:brightness(.97)}
 ${X} .tux-note{flex:1;min-width:0;text-align:center;font-size:13px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 ${X} .tux-pnav{display:none}
 /* phone "more" menu */
-${X} .tux-morepop{position:fixed;right:8px;top:60px;z-index:70;min-width:220px;max-width:calc(100vw - 16px);background:var(--tu-surface);color:var(--tu-on);border:1px solid var(--tu-line2);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.22);padding:6px;font-family:var(--tu-font)}
+${X} .tux-morepop{position:fixed;right:8px;top:calc(60px + var(--tux-st));z-index:70;min-width:220px;max-width:calc(100vw - 16px);background:var(--tu-surface);color:var(--tu-on);border:1px solid var(--tu-line2);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.22);padding:6px;font-family:var(--tu-font)}
 ${X} .tux-morepop[hidden]{display:none}
 ${X} .tux-morepop button{display:flex;align-items:center;gap:12px;width:100%;height:46px;padding:0 12px;border-radius:12px;font-weight:700;font-size:15px;color:var(--tu-on)}
 ${X} .tux-morepop button:hover{background:var(--tu-s1)}
 ${X} .tux-morepop button.danger{color:var(--tu-bad)}
 ${X} .tux-morepop hr{border:0;border-top:1px solid var(--tu-line2);margin:4px 6px}
 /* workspace and the legacy question, restyled in place (IDs, data-* hooks and text stay) */
-${X}:not(.break-screen-active) #workspace{position:absolute!important;left:212px!important;right:0!important;top:62px!important;bottom:58px!important;padding:22px 28px 40px!important;background:var(--tu-bg)!important;color:var(--tu-on)!important;overflow:auto!important;font-family:var(--tu-font)}
+${X}:not(.break-screen-active) #workspace{position:absolute!important;left:212px!important;right:0!important;top:calc(62px + var(--tux-st))!important;bottom:58px!important;padding:22px 28px 40px!important;background:var(--tu-bg)!important;color:var(--tu-on)!important;overflow:auto!important;font-family:var(--tu-font)}
 ${X}[data-tux-view="report"]:not(.break-screen-active) #workspace{left:0!important;bottom:0!important;padding:0!important}
 ${X}[data-tux-view="other"]:not(.break-screen-active) #workspace{left:0!important}
 ${X}[data-tux-split]:not(.break-screen-active) #workspace{right:var(--tux-panel)!important}
@@ -1186,8 +1232,10 @@ ${W} .answer-meta-panel *{color:inherit!important;background:none!important;bord
 ${W} .question-stack:has(.tux-exsum) .answer-meta-panel{display:none!important}
 /* explanation / exhibit panel: a right column when split on a wide screen, a card under the question otherwise */
 ${W} .right-panel-wrap{position:static!important;width:auto!important;max-width:780px!important;margin:18px auto 0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;min-width:0!important;float:none!important;height:auto!important;max-height:none!important}
-${X}[data-tux-split] #workspace .right-panel-wrap{position:fixed!important;right:0!important;top:62px!important;bottom:58px!important;left:auto!important;width:var(--tux-panel)!important;max-width:none!important;margin:0!important;z-index:36;background:var(--tu-surface)!important;border-left:1px solid var(--tu-line2)!important}
-${W} .qbank-panel{max-width:780px;margin:18px auto 0!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;border-radius:22px!important;box-shadow:var(--tu-shadow)!important;overflow:hidden!important;color:var(--tu-on)!important;padding:0!important;height:auto!important;max-height:none!important;font-family:var(--tu-font)!important}
+/* the iPad's viewport-fit layer gives .workspace translateZ(0), which would anchor the fixed panel to the question column */
+${X}[data-tux-split] #workspace{transform:none!important}
+${X}[data-tux-split] #workspace .right-panel-wrap{position:fixed!important;right:0!important;top:calc(62px + var(--tux-st))!important;bottom:58px!important;left:auto!important;width:var(--tux-panel)!important;max-width:none!important;margin:0!important;z-index:36;background:var(--tu-surface)!important;border-left:1px solid var(--tu-line2)!important}
+${W} .qbank-panel{min-height:0!important;max-width:780px;margin:18px auto 0!important;background:var(--tu-surface)!important;border:1px solid var(--tu-line2)!important;border-radius:22px!important;box-shadow:var(--tu-shadow)!important;overflow:hidden!important;color:var(--tu-on)!important;padding:0!important;height:auto!important;max-height:none!important;font-family:var(--tu-font)!important}
 ${W} .right-panel-wrap .qbank-panel{margin:0!important;max-width:none}
 ${X}[data-tux-split] #workspace .right-panel-wrap .qbank-panel{height:100%!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:auto!important;display:flex!important;flex-direction:column!important}
 ${W} .qbank-tabs{display:flex!important;align-items:center!important;gap:6px!important;padding:10px 14px!important;margin:0!important;border:0!important;border-bottom:1px solid var(--tu-line2)!important;background:var(--tu-surface)!important;position:sticky;top:0;z-index:2;flex:none}
@@ -1226,6 +1274,19 @@ ${W} .qbank-body .exp-pre{white-space:pre-wrap!important;font:inherit!important;
 ${W} .qbank-body .exp-placeholder{color:var(--tu-on3)!important}
 ${W} .qbank-body[data-panel-mode="exhibit"],${W} .qbank-body:not([data-panel-mode="explanation"]){display:block!important}
 ${W} .qbank-body img{max-width:100%;height:auto;border-radius:12px}
+${W} .exhibit-in-panel{display:block!important;padding:0!important;background:transparent!important}
+${W} .exhibit-in-panel .exhibit{width:100%!important;display:flex!important;flex-direction:column;gap:10px;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important}
+${W} .exhibit-tools{position:static!important;transform:none!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap;gap:6px!important;align-items:center!important;color:var(--tu-on2)!important;font:700 12.5px var(--tu-font)!important}
+${W} .exhibit-tools>div{position:relative;display:flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 6px;border-radius:999px;background:var(--tu-s1);cursor:pointer}
+${W} .exhibit-tools>div:hover{background:var(--tu-s2)}
+${W} .exhibit-tool-icon{width:24px!important;height:24px!important;border:0!important;background:transparent!important;color:var(--tu-on)!important;font-size:16px!important;line-height:1!important}
+${W} .exhibit-tool-icon::after{content:"";position:absolute;inset:0;border-radius:999px} /* the whole pill clicks the tool */
+${W} .exhibit:has(.exhibit-img.invert) .exhibit-tools>div:has(#invertEx),${W} .exhibit:has(.exhibit-img.contrast) .exhibit-tools>div:has(#contrastEx),${W} .exhibit:has(.exhibit-img.zoomed) .exhibit-tools>div:has(#zoomEx){background:var(--tu-pc);color:var(--tu-onpc)!important}
+${W} .exhibit-img{min-height:0!important;padding:8px;border:1px solid var(--tu-line2)!important;border-radius:16px;background:var(--tu-s1)!important;box-shadow:none!important}
+${W} .exhibit-img:hover{border-color:var(--tu-line)!important}
+${W} .exhibit-img img{max-height:min(64vh,620px)!important;margin:0 auto;border-radius:10px}
+${W} .exhibit-img svg{min-height:200px!important}
+${W} .exhibit-in-panel .drive-link{font-size:13px}
 /* Review Block grid */
 ${W} .review-panel{max-width:980px;margin:0 auto!important;padding:22px 24px!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;border:1px solid var(--tu-line2)!important;border-radius:22px!important;box-shadow:var(--tu-shadow)!important;font-family:var(--tu-font)!important}
 ${W} .review-panel h2{margin:0 0 6px!important;font:800 24px var(--tu-font)!important;color:var(--tu-on)!important}
@@ -1236,7 +1297,7 @@ ${W} .review-card.current{border-color:var(--tu-p)!important;background:var(--tu
 ${W} .review-panel button{height:38px!important;padding:0 16px!important;border-radius:999px!important;border:1px solid var(--tu-line)!important;background:transparent!important;color:var(--tu-on)!important;font:700 13.5px var(--tu-font)!important;box-shadow:none!important;margin:8px 6px 0 0!important;cursor:pointer}
 ${W} .review-panel button.primary{border:0!important;background:var(--tu-p)!important;color:var(--tu-onp)!important;font-weight:800!important}
 /* overlays that sit over the exam */
-${XB} .lab-panel{top:62px!important;bottom:58px!important;z-index:45!important;border-left:1px solid var(--tu-line2)!important;box-shadow:-10px 0 28px rgba(0,0,0,.14)!important}
+${XB} .lab-panel{top:calc(62px + var(--tux-st))!important;bottom:58px!important;z-index:45!important;border-left:1px solid var(--tu-line2)!important;box-shadow:-10px 0 28px rgba(0,0,0,.14)!important}
 ${XB} #examNotesPanel{bottom:70px!important;z-index:46!important;border-radius:16px!important}
 ${XB} .floating-calc{bottom:70px!important}
 ${XB} #referenceSettingsDropdown{max-width:calc(100vw - 16px);max-height:calc(100vh - 80px);overflow:auto}
@@ -1254,7 +1315,7 @@ ${W} .answers .answer{margin-right:44px!important}
 }
 /* phones (and short landscape screens): compact header, navigator in a drawer, Previous / Next in the footer */
 @media (max-width:759px),(max-height:520px){
-${X} .tux-head{height:56px;gap:8px;padding:0 8px 0 10px}
+${X} .tux-head{height:calc(56px + var(--tux-st));gap:8px;padding:0 8px 0 10px}
 ${X} .tux-tools,${X} .tux-center,${X} .tux-timer span,${X} .tux-head .tux-mark span,${X} .tux-head .tux-tag{display:none!important}
 ${X} .tux-head .tux-item{flex:1 1 auto;max-width:none;height:44px;flex-direction:row;align-items:center;gap:8px;padding:0 10px}
 ${X} .tux-item .tux-itemtxt{display:flex;flex-direction:column;min-width:0}
@@ -1264,13 +1325,13 @@ ${X} .tux-head .tux-timer{height:44px;padding:0 10px;gap:6px}
 ${X} .tux-timer b{font-size:14px}
 ${X} .tux-head .tux-more{display:flex;width:44px;height:44px;border-radius:50%;align-items:center;justify-content:center;flex:none;color:var(--tu-on)}
 ${X} .tux-head .tux-more[aria-expanded="true"]{background:var(--tu-s1)}
-${X} .tux-nav{top:0;bottom:0;width:min(300px,86vw);z-index:66;transform:translateX(-104%);transition:transform .2s ease;box-shadow:8px 0 30px rgba(0,0,0,.25);padding:16px 14px calc(16px + env(safe-area-inset-bottom))}
+${X} .tux-nav{top:0;bottom:0;width:min(300px,86vw);z-index:66;transform:translateX(-104%);transition:transform .2s ease;box-shadow:8px 0 30px rgba(0,0,0,.25);padding:calc(16px + var(--tux-st)) 14px calc(16px + env(safe-area-inset-bottom))}
 ${X}[data-tux-drawer] .tux-nav{transform:none}
 ${X} .tux-scrim{position:fixed;inset:0;z-index:65;background:rgba(10,12,18,.45)}
 ${X}[data-tux-drawer] .tux-scrim{display:block}
 ${X} .tux-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
 ${X} .tux-nav .tux-q{height:40px}
-${X}:not(.break-screen-active) #workspace{left:0!important;right:0!important;top:56px!important;bottom:calc(64px + env(safe-area-inset-bottom))!important;padding:12px 12px 28px!important}
+${X}:not(.break-screen-active) #workspace{left:0!important;right:0!important;top:calc(56px + var(--tux-st))!important;bottom:calc(64px + env(safe-area-inset-bottom))!important;padding:12px 12px 28px!important}
 ${X}[data-tux-view="report"]:not(.break-screen-active) #workspace{bottom:0!important}
 ${X} .tux-foot{height:calc(64px + env(safe-area-inset-bottom));padding:0 10px env(safe-area-inset-bottom);gap:8px}
 ${X} .tux-foot>:not(.tux-pnav){display:none!important}
@@ -1293,7 +1354,7 @@ ${W} .qbank-panel,${W} .right-panel-wrap{margin-top:14px!important}
 ${W} .qbank-panel{border-radius:18px!important}
 ${W} .review-panel{padding:16px!important;border-radius:18px!important}
 ${W} .review-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))!important}
-${XB} .lab-panel{left:0!important;right:0!important;width:auto!important;min-width:0!important;top:56px!important;bottom:calc(64px + env(safe-area-inset-bottom))!important;border-left:0!important}
+${XB} .lab-panel{left:0!important;right:0!important;width:auto!important;min-width:0!important;top:calc(56px + var(--tux-st))!important;bottom:calc(64px + env(safe-area-inset-bottom))!important;border-left:0!important}
 ${XB} #examNotesPanel{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;bottom:calc(72px + env(safe-area-inset-bottom))!important}
 ${XB} .floating-calc{right:50%!important;transform:translateX(50%);bottom:calc(72px + env(safe-area-inset-bottom))!important}
 ${XB} #referenceSettingsDropdown{left:auto!important}
@@ -1382,7 +1443,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
      The view is rendered from StepLibraryBridge (read-only) and from the legacy dashboard numbers. Every button
      clicks the matching control of the hidden legacy card or panel, so prompts, protections and saves still run. */
   const bridge = () => window.StepLibraryBridge || null;
-  const TAB_DOTS = {'N-Forms':'#3B6FE0', IM:'#0F8B8D', OBGyn:'#C2417A', Surg:'#D9661F', Peds:'#7B5CD6', FM:'#3C9A4A', EM:'#D23F3F', Psych:'#5A67D8', Neuro:'#B7862A', Custom:'#7A8194', All:'#6B7280'};
+  const TAB_DOTS = {'N-Forms':'#3B6FE0', IM:'#0F8B8D', OBGyn:'#C2417A', Surg:'#D9661F', Peds:'#7B5CD6', FM:'#3C9A4A', EM:'#D23F3F', Psych:'#5A67D8', Neuro:'#B7862A', UWSA:'#0E7490', F120:'#9A3412', Custom:'#7A8194', All:'#6B7280', CMS:'#2C7A7B'};
+  // the eight CMS shelf tabs, grouped as one "CMS forms" category on Home
+  const CMS_TABS = ['IM', 'OBGyn', 'Surg', 'Peds', 'FM', 'EM', 'Psych', 'Neuro'];
   const LEGACY_TAB_COLORS = ['#d9e3ea', '#38bdf8'];
   const STATUSES = [['all','All'],['progress','In progress'],['done','Completed'],['new','Not started']];
   const ST_LABEL = {done:'Completed', progress:'In progress', suspended:'Suspended', new:'Not started'};
@@ -1412,13 +1475,13 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const st = s.completed ? 'done' : s.canResume ? (s.suspended ? 'suspended' : 'progress') : (s.answered || s.inProgress) ? 'progress' : 'new';
     let tabKey = 'Custom'; try{ tabKey = B.tabKey(rec) || 'Custom'; }catch(e){}
     const tab = tabsByKey[tabKey] || {label: tabKey === 'N-Forms' ? 'NBME' : tabKey, color: TAB_DOTS[tabKey] || TAB_DOTS.Custom};
-    let chip = false; try{ chip = rec.type === 'N' && B.scoreChipOn(tabKey); }catch(e){}
+    let chip = false; try{ chip = B.scoreChipOn(tabKey); }catch(e){ chip = rec.type === 'N'; }
     const blocks = s.blockCount || blockCountOf(rec), attempts = Number(s.attemptCount) || (s.answered || s.completed ? 1 : 0);
     const score = s.completed && s.scorePct != null ? Number(s.scorePct) : null;
     return {
       id: rec.id, rec, s, st, tabKey, tabLabel: tab.label, color: tab.color,
       title: rec.displayName || rec.id, tag: (tab.label + ' · ' + rec.id).toUpperCase(),
-      three: chip && rec.threeDigitScore ? String(rec.threeDigitScore) : '',
+      chip, three: chip && rec.threeDigitScore ? String(rec.threeDigitScore) : '',
       blockCount: blocks, attemptsText: attempts ? plural(attempts, 'attempt') : 'no attempts',
       meta: [(Number(rec.totalQuestions) || 0) + ' Qs', plural(blocks, 'block'), attempts ? plural(attempts, 'attempt') : 'no attempts'].join(' · '),
       score, answered: Math.max(0, Math.min(100, Number(s.progressPct) || 0)), blocks: (s.completedBlocks || 0) + '/' + blocks, marked: Number(s.marked) || 0,
@@ -1495,7 +1558,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
 
   /* view state */
-  const homeUi = {resumeOpen:false, tabsOpen:false};
+  const homeUi = {resumeOpen:false, tabsOpen:false, cms:false};
   const regionCache = new Map();
   function setRegion(name, html){
     const el = document.querySelector(`#tuHome [data-tu-r="${name}"]`); if(!el) return;
@@ -1514,8 +1577,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       `<div class="tu-seg tu-view" role="group" aria-label="View"><button type="button" data-tu-view="grid" aria-label="Grid view" title="Grid view">${icon(ICONS.grid, 16)}</button><button type="button" data-tu-view="list" aria-label="List view" title="List view">${icon(ICONS.list, 16)}</button></div>` +
       `<span data-tu-r="more" style="display:contents"></span></div></header>` +
       `<div data-tu-r="strip" style="display:contents"></div>` +
-      `<div class="tu-home-top"><section class="tu-card tu-overall" aria-label="Overall performance" data-tu-r="overall"></section><section class="tu-card tu-recent" aria-label="Recently completed" data-tu-r="recent"></section></div>` +
-      `<section class="tu-card tu-cats" aria-label="Categories"><div class="tu-sec-head"><h2>Categories</h2><button type="button" class="tu-link" id="tuCustomizeTabs">Customize tabs</button></div><div data-tu-r="cats" style="display:contents"></div></section>` +
+      `<div class="tu-home-top"><section class="tu-card tu-cats" aria-label="Categories"><div class="tu-sec-head"><h2>Categories</h2><button type="button" class="tu-link" id="tuCustomizeTabs">Customize tabs</button></div><div class="tu-cats-body" data-tu-r="cats"></div></section>` +
+      `<section class="tu-card tu-recent" aria-label="Recently completed" data-tu-r="recent"></section><section class="tu-card tu-overall" aria-label="Overall performance" data-tu-r="overall"></section></div>` +
+      `<section class="tu-card tu-cms" aria-label="CMS forms" data-tu-r="cms" hidden></section>` +
       `<section class="tu-card tu-resume" aria-label="Resume" data-tu-r="resume" hidden></section>` +
       `<section class="tu-forms" aria-label="Forms"><div class="tu-forms-bar"><div class="tu-seg tu-status" role="group" aria-label="Status" data-tu-r="status"></div><span class="tu-shown" data-tu-r="shown" aria-live="polite"></span></div><div class="tu-grid" data-tu-r="cards"></div></section>`;
     panel.insertBefore(home, panel.firstChild);
@@ -1537,28 +1601,42 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const fm = fline.match(/(\d+)\s*\/\s*(\d+)/);
     const fd = fm ? Number(fm[1]) : forms.filter(f => f.s.completed).length, ft = fm ? Number(fm[2]) : forms.length;
     const ring = (v, c, label) => `<div class="tu-ring112" style="--v:${v == null ? 0 : v};--c:${c}" role="img" aria-label="${label} ${v == null ? 'not available' : v + ' percent'}"><div><b>${v == null ? '—' : v + '%'}</b><span>${label.toUpperCase()}</span></div></div>`;
-    return `<div class="tu-sec-head"><h2>Overall performance</h2><span>Included tabs only</span></div><div class="tu-rings">${ring(progress, 'var(--tu-p)', 'Progress')}${ring(score, 'var(--tu-ok)', 'Avg score')}</div>` +
-      `<div class="tu-pair"><div><b>${qa.toLocaleString()} <small>/ ${qt.toLocaleString()}</small></b><span>Questions answered</span></div><div><b>${fd} <small>/ ${ft}</small></b><span>Forms complete</span></div></div>` +
-      `<div class="tu-mini3"><b>${progress == null ? '—' : progress + '%'}</b><span>Overall progress</span></div><div class="tu-mini3"><b>${score == null ? '—' : score + '%'}</b><span>Average score</span></div><div class="tu-mini3"><b>${fd} / ${ft}</b><span>Forms done</span></div>`;
+    return `<div class="tu-sec-head"><h2>Overall performance</h2></div><div class="tu-rings">${ring(progress, 'var(--tu-p)', 'Progress')}${ring(score, 'var(--tu-ok)', 'Avg score')}</div>` +
+      `<div class="tu-pair"><div><b>${qa.toLocaleString()} <small>/ ${qt.toLocaleString()}</small></b><span>Questions answered</span></div><div><b>${fd} <small>/ ${ft}</small></b><span>Forms complete</span></div></div><span class="tu-ov-note">Included tabs only</span>`;
   }
   function recentHtml(forms){
     const B = bridge();
     const done = forms.filter(f => f.s.completed && (() => { try{ return B.completedOn(f.tabKey); }catch(e){ return true; } })())
-      .sort((a, b) => String(b.completedAt).localeCompare(String(a.completedAt))).slice(0, 5);
+      .sort((a, b) => String(b.completedAt).localeCompare(String(a.completedAt))).slice(0, 6);
     const rows = done.map(f => `<button type="button" class="tu-recent-row" data-tu-act="review" data-id="${esc(f.id)}" title="Open the score report for ${esc(f.title)}"><i style="background:${esc(f.color)}"></i><b>${esc(f.title)}</b><span>${esc([shortDate(f.completedAt), f.three].filter(Boolean).join(' · '))}</span><strong>${f.score == null ? '—' : f.score + '%'}</strong></button>`).join('');
-    return `<div class="tu-sec-head"><h2>Recently completed</h2>${done.length ? '<button type="button" class="tu-link" data-tu-see-all>See all</button>' : ''}</div>${rows || '<span class="tu-empty-note">Completed forms will appear here.</span>'}`;
+    return `<div class="tu-sec-head"><h2>Recently completed</h2>${done.length ? '<button type="button" class="tu-link" data-tu-see-all>See all</button>' : ''}</div>${rows ? `<div class="tu-recent-list">${rows}</div>` : '<span class="tu-empty-note">Completed forms will appear here.</span>'}`;
+  }
+  function tabForms(B, forms, internal){ try{ const ids = new Set(B.recs(internal).map(r => r.id)); return forms.filter(f => ids.has(f.id)); }catch(e){ return []; } }
+  function cmsForms(B, forms, tabs){ const ids = new Set(); tabs.filter(t => CMS_TABS.includes(t.internal)).forEach(t => tabForms(B, forms, t.internal).forEach(f => ids.add(f.id))); return forms.filter(f => ids.has(f.id)); }
+  function tileHtml(attrs, label, color, recs, meter, on, caret){
+    const done = recs.filter(f => f.s.completed), scoreTotal = done.reduce((n, f) => n + (Number(f.s.scoreTotal) || 0), 0), scoreCorrect = done.reduce((n, f) => n + (Number(f.s.scoreCorrect) || 0), 0);
+    const score = scoreTotal ? Math.round(scoreCorrect / scoreTotal * 100) + '%' : '—', pctDone = recs.length ? Math.round(done.length / recs.length * 100) : 0;
+    return `<button type="button" class="tu-tile" ${attrs} aria-pressed="${on}" title="${esc(label + (meter ? ' · ' + score : '') + ' · ' + done.length + ' of ' + recs.length + ' done')}"><span class="tu-tile-top"><i style="background:${esc(color)}"></i><b>${esc(label)}</b>${meter ? `<span>${score}</span>` : ''}${caret ? icon(ICONS.chevron, 14).replace('<svg', '<svg class="tu-tile-caret"') : ''}</span>${meter ? `<span class="tu-tile-bar"><i style="width:${pctDone}%;background:${esc(color)}"></i></span>` : ''}<small>${done.length} of ${recs.length} done</small><em>${recs.length}</em></button>`;
   }
   function catsHtml(tabs, forms, cat){
-    const B = bridge();
+    const B = bridge(); let cmsDone = false;
     const tiles = tabs.map(t => {
-      let recs = forms; if(t.key !== 'All'){ try{ const ids = new Set(B.recs(t.internal).map(r => r.id)); recs = forms.filter(f => ids.has(f.id)); }catch(e){ recs = []; } }
-      const done = recs.filter(f => f.s.completed), scoreTotal = done.reduce((n, f) => n + (Number(f.s.scoreTotal) || 0), 0), scoreCorrect = done.reduce((n, f) => n + (Number(f.s.scoreCorrect) || 0), 0);
-      const score = scoreTotal ? Math.round(scoreCorrect / scoreTotal * 100) + '%' : '—', pctDone = recs.length ? Math.round(done.length / recs.length * 100) : 0;
+      if(CMS_TABS.includes(t.internal)){
+        if(cmsDone) return ''; cmsDone = true;
+        const cms = tabs.filter(x => CMS_TABS.includes(x.internal));
+        let meter = false; cms.forEach(x => { try{ meter = meter || B.meterOn(x.internal); }catch(e){ meter = true; } });
+        return tileHtml(`data-tu-group="cms" aria-expanded="${homeUi.cms}" aria-controls="tuCmsPane"`, 'CMS forms', TAB_DOTS.CMS, cmsForms(B, forms, tabs), meter, homeUi.cms, true);
+      }
       let meter = true; if(t.key !== 'All'){ try{ meter = B.meterOn(t.internal); }catch(e){} }
-      const on = cat === t.key;
-      return `<button type="button" class="tu-tile" data-tu-cat="${esc(t.key)}" aria-pressed="${on}"><span class="tu-tile-top"><i style="background:${esc(t.color)}"></i><b>${esc(t.label)}</b>${meter ? `<span>${score}</span>` : ''}</span>${meter ? `<span class="tu-tile-bar"><i style="width:${pctDone}%;background:${esc(t.color)}"></i></span>` : ''}<small>${done.length} of ${recs.length} done</small><em>${recs.length}</em></button>`;
+      return tileHtml(`data-tu-cat="${esc(t.key)}"`, t.label, t.color, t.key === 'All' ? forms : tabForms(B, forms, t.internal), meter, !homeUi.cms && cat === t.key, false);
     }).join('');
     return `<div class="tu-tiles${homeUi.tabsOpen ? '' : ' tu-clamp'}" data-tu-tiles>${tiles}</div><button type="button" class="tu-link tu-tiles-more" data-tu-tabs-more hidden aria-expanded="${homeUi.tabsOpen}">${homeUi.tabsOpen ? 'Show fewer tabs' : 'Show all tabs'}</button>`;
+  }
+  function cmsHtml(tabs, forms, cat){
+    const B = bridge(), cms = tabs.filter(t => CMS_TABS.includes(t.internal)); if(!homeUi.cms || !cms.length) return '';
+    const all = cmsForms(B, forms, tabs), done = all.filter(f => f.s.completed).length;
+    const tiles = cms.map(t => { let meter = true; try{ meter = B.meterOn(t.internal); }catch(e){} return tileHtml(`data-tu-cat="${esc(t.key)}"`, t.label, t.color, tabForms(B, forms, t.internal), meter, cat === t.key, false); }).join('');
+    return `<div class="tu-sec-head"><h2>CMS forms</h2><span>${done} of ${plural(all.length, 'form')} done${CMS_TABS.includes(tabInternal(cat)) ? '' : ' · pick a subject to filter'}</span></div><div class="tu-tiles">${tiles}</div>`;
   }
   function resumeHtml(forms){
     const list = forms.filter(f => f.canResume).sort((a, b) => String(b.activity).localeCompare(String(a.activity)));
@@ -1576,11 +1654,14 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const ring = f.st === 'done' ? 'var(--tu-ok)' : 'var(--tu-p)';
     const primary = f.canResume ? `<button type="button" class="tu-btn" data-tu-act="resume" data-id="${esc(f.id)}">${icon(ICONS.play, 16)}Resume</button>`
       : `<button type="button" class="tu-btn" data-tu-act="start" data-id="${esc(f.id)}">${icon(ICONS.play, 16)}${f.startLabel}</button>`;
-    return `<article class="tu-card tu-form" data-tu-form="${esc(f.id)}"><div class="tu-form-tag"><i style="background:${esc(f.color)}"></i><span>${esc(f.tag)}</span><span class="tu-st ${f.st}">${ST_LABEL[f.st]}</span></div>` +
-      `<div class="tu-form-name"><span><b title="${esc(f.title)}">${esc(f.title)}</b>${f.three ? `<span class="tu-three" title="3-digit score">${esc(f.three)}</span>` : ''}</span><small>${esc(f.meta)}${f.completedAt ? `<span class="tu-when-meta"> · Completed ${esc(shortDate(f.completedAt))}</span>` : ''}</small></div>` +
+    const three = f.three ? `<span class="tu-three" title="3-digit score"><b>${esc(f.three)}</b><small>3-DIGIT</small></span>` : (f.chip && f.st === 'done' ? '<span class="tu-three none" title="No 3-digit score yet. Add it from the form’s details (⋮)."><b>—</b><small>3-DIGIT</small></span>' : '');
+    const when = f.st === 'done' ? [ICONS.check, 'Completed ' + (shortDate(f.completedAt) || '—')] : f.st === 'suspended' ? [ICONS.pause, 'Suspended ' + shortDate(f.activity)] : f.st === 'progress' ? [ICONS.clock, 'Last active ' + shortDate(f.activity)] : [ICONS.clock, 'Not attempted yet'];
+    return `<article class="tu-card tu-form" data-tu-form="${esc(f.id)}"><div class="tu-form-head"><div class="tu-form-hl"><div class="tu-form-tag"><i style="background:${esc(f.color)}"></i><span>${esc(f.tag)}</span></div>` +
+      `<div class="tu-form-name"><b title="${esc(f.title)}">${esc(f.title)}</b><small title="${esc(f.meta)}">${esc(f.meta)}</small></div></div><div class="tu-form-hr"><span class="tu-st ${f.st}">${ST_LABEL[f.st]}</span>${three}</div></div>` +
+      `<div class="tu-form-date ${f.st}">${icon(when[0], 15)}<span>${esc(when[1].trim())}</span></div>` +
       `<div class="tu-form-stats"><div class="tu-ring58" style="--v:${f.score == null ? 0 : f.score};--c:${ring}" role="img" aria-label="Score ${f.score == null ? 'not available' : f.score + ' percent'}"><b>${f.score == null ? '—' : f.score + '%'}</b></div><div class="tu-three-stats"><div><b>${f.answered}%</b><span>Answered</span></div><div><b>${f.blocks}</b><span>Blocks</span></div><div><b>${f.marked}</b><span>Marked</span></div></div></div>` +
       `<div class="tu-bar5" aria-hidden="true"><i style="width:${f.answered}%;background:${esc(f.color)}"></i></div>` +
-      `<div class="tu-form-actions">${primary}${f.canReview ? `<button type="button" class="tu-btn quiet" data-tu-act="review" data-id="${esc(f.id)}">Review</button>` : ''}<span class="tu-when">${f.completedAt ? 'Completed ' + esc(shortDate(f.completedAt)) : ''}</span><button type="button" class="tu-kebab" data-tu-act="sheet" data-id="${esc(f.id)}" aria-label="Details and more actions for ${esc(f.title)}" aria-haspopup="dialog">${kebab}</button></div></article>`;
+      `<div class="tu-form-actions">${primary}${f.canReview ? `<button type="button" class="tu-btn quiet" data-tu-act="review" data-id="${esc(f.id)}">Review</button>` : ''}<span class="tu-grow"></span><button type="button" class="tu-kebab" data-tu-act="sheet" data-id="${esc(f.id)}" aria-label="Details and more actions for ${esc(f.title)}" aria-haspopup="dialog">${kebab}</button></div></article>`;
   }
   function moreHtml(){
     const items = [['exportCatalogBtn', 'Save library index'], ['exportFullLibraryBackupBtn', 'Export form library ZIP'], ['importFullLibraryBackupBtn', 'Import form library ZIP'], ['exportProgressOnlyBackupBtn', 'Export progress file'], ['importProgressOnlyBackupBtn', 'Import progress file'], ['updateAppShellBtn', 'Reload latest version']].filter(([id]) => byId(id));
@@ -1600,6 +1681,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const tabs = libTabs(), tabsByKey = {}; tabs.forEach(t => { tabsByKey[t.internal] = t; });
     const forms = B.forms().map(r => formInfo(r, tabsByKey));
     let cat = B.filter(); if(cat === 'Overview' || !tabs.some(t => t.key === cat)) cat = 'All';
+    if(CMS_TABS.includes(tabInternal(cat))) homeUi.cms = true; else if(cat !== 'All') homeUi.cms = false;
+    if(homeUi.cms && !tabs.some(t => CMS_TABS.includes(t.internal))) homeUi.cms = false;
     const qs = forms.reduce((n, f) => n + (Number(f.rec.totalQuestions) || 0), 0);
     setRegion('count', forms.length ? esc(plural(forms.length, 'form') + ' · ' + qs.toLocaleString() + ' questions') : '');
     const upd = byId('formUpdatesCheck');
@@ -1608,10 +1691,12 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     setRegion('overall', overallHtml(forms));
     setRegion('recent', recentHtml(forms));
     setRegion('cats', catsHtml(tabs, forms, cat));
+    const cmsEl = home.querySelector('[data-tu-r="cms"]'), ch = cmsHtml(tabs, forms, cat); setRegion('cms', ch); cmsEl.hidden = !ch; cmsEl.id = 'tuCmsPane';
     const r = home.querySelector('[data-tu-r="resume"]'), rh = resumeHtml(forms); setRegion('resume', rh); r.hidden = !rh;
     // forms in the selected tab, then search, status and sort
     let inCat = forms;
     if(cat !== 'All'){ try{ const ids = new Set(B.recs(tabInternal(cat)).map(x => x.id)); inCat = forms.filter(f => ids.has(f.id)); }catch(e){} }
+    else if(homeUi.cms) inCat = cmsForms(B, forms, tabs);
     const q = (byId('tuSearch')?.value || '').trim().toLowerCase();
     if(q) inCat = inCat.filter(f => (f.title + ' ' + f.id + ' ' + f.tabLabel + ' ' + (f.rec.subject || '')).toLowerCase().includes(q));
     let status = store.get(KEYS.status, 'all'); if(!STATUSES.some(s => s[0] === status)) status = 'all';
@@ -1628,7 +1713,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       if(sort === 'status') return rank[a.st] - rank[b.st] || d;
       return d;
     });
-    const tabLabel = cat === 'All' ? '' : ' in ' + ((tabs.find(t => t.key === cat) || {}).label || cat);
+    const tabLabel = cat === 'All' ? (homeUi.cms ? ' in CMS forms' : '') : ' in ' + ((tabs.find(t => t.key === cat) || {}).label || cat);
     setRegion('shown', forms.length ? `Showing ${shown.length} of ${plural(inCat.length, 'form')}${tabLabel}` : '');
     const empty = !forms.length ? `<div class="tu-nomatch">No forms yet. Use <b>Add forms</b> to load your first form.</div>` : `<div class="tu-nomatch">${q ? 'No forms match “' + esc(q) + '”.' : 'No forms with this status' + esc(tabLabel) + '.'}</div>`;
     setRegion('cards', shown.length ? shown.map(cardHtml).join('') : empty);
@@ -1638,7 +1723,14 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     paintSyncBits();
     // "Show all tabs" only when the tiles overflow the collapsed height
     const tiles = home.querySelector('[data-tu-tiles]'), more = home.querySelector('[data-tu-tabs-more]');
-    if(tiles && more){ tiles.classList.add('tu-clamp'); const over = tiles.scrollHeight > tiles.clientHeight + 2; tiles.classList.toggle('tu-clamp', !homeUi.tabsOpen); more.hidden = !over; }
+    const chips = matchMedia('(max-width:900px)').matches; // iPad portrait: category chips
+    if(tiles){
+      // wide: the tiles fill the Categories card; 2-3 columns, rows shrink as tabs are added (13-15 fit), then the grid scrolls
+      const n = tiles.children.length, wide = tiles.clientWidth >= 380, cols = n <= 6 && !wide ? 1 : 2, rows = Math.max(1, Math.ceil(n / cols));
+      tiles.style.setProperty('--cols', cols); tiles.style.setProperty('--rows', rows);
+      tiles.classList.toggle('tu-dense', rows > 3); tiles.classList.toggle('tu-scroll', rows > 7); // 2 x 7 = 14 tiles fit
+    }
+    if(tiles && more){ tiles.classList.add('tu-clamp'); const over = chips && tiles.scrollHeight > tiles.clientHeight + 2; tiles.classList.toggle('tu-clamp', chips && !homeUi.tabsOpen); more.hidden = !over; }
     if(sheetState.id) paintSheet();
     if(addUi.open) paintAdd();
     paintUpdates();
@@ -1647,12 +1739,13 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   function onHomeClick(e){
     const t = e.target.closest('button, [data-tu-cat]'); if(!t || !byId('tuHome').contains(t)) return;
-    if(t.dataset.tuCat){ document.querySelector(`#libraryFilters .filter-pill[data-filter="${CSS.escape(t.dataset.tuCat)}"]`)?.click(); scheduleLibrary(); return; }
+    if(t.dataset.tuGroup === 'cms'){ homeUi.cms = true; if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); return; }
+    if(t.dataset.tuCat){ homeUi.cms = CMS_TABS.includes(tabInternal(t.dataset.tuCat)); document.querySelector(`#libraryFilters .filter-pill[data-filter="${CSS.escape(t.dataset.tuCat)}"]`)?.click(); scheduleLibrary(); return; }
     if(t.dataset.tuStatus){ store.set(KEYS.status, t.dataset.tuStatus); scheduleLibrary(); return; }
     if(t.dataset.tuView){ store.set(KEYS.view, t.dataset.tuView); scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-resume-more')){ homeUi.resumeOpen = !homeUi.resumeOpen; scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-tabs-more')){ homeUi.tabsOpen = !homeUi.tabsOpen; scheduleLibrary(); return; }
-    if(t.hasAttribute('data-tu-see-all')){ store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    if(t.hasAttribute('data-tu-see-all')){ homeUi.cms = false; store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
     if(t.hasAttribute('data-tu-updates')){ openUpdates(t); return; }
     if(t.id === 'tuCustomizeTabs'){ setUi.sec = 'tabs'; store.set(SET_KEY, 'tabs'); if(setUi.page === 'sync') setSyncPage(false); byId('settingsTab')?.click(); setSyncPage(false); return; }
     const act = t.dataset.tuAct, id = t.dataset.id; if(!act || !id) return;
@@ -2329,7 +2422,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(!document.querySelector('#modalRoot #slotList')) byId('loadNewFormBtn')?.click();
     return !!document.querySelector('#modalRoot #slotList');
   }
-  function slotCat(id){ if(/^N-/i.test(id)) return 'NBME'; const m = id.match(/^C-([A-Za-z]+)-/); return m ? m[1] : 'Other'; }
+  function slotCat(id){ if(/^N-/i.test(id)) return 'NBME'; if(/^UWSA/i.test(id)) return 'UWSA'; if(/^F120/i.test(id)) return 'F120'; const m = id.match(/^C-([A-Za-z]+)-/); return m ? m[1] : 'Other'; }
   function readSlots(){
     if(!legacyLoadModal()) return [];
     const B = bridge();
@@ -2390,7 +2483,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     };
   }
   function updatesHtml(){ const u = updatesParts(); return u.status + u.body; }
-  const ADD_TABS = () => [['slot', 'Fixed slot', 'NBME N-06…16, C-IM, C-OBGyn…'], ['custom', 'Custom form', 'Any JSON or ZIP bank'], ['bulk', 'Bulk ZIP', 'Many forms in one go'], hasUpdates() ? ['online', 'Online updates', (() => { const n = (updState().forms || []).filter(f => f.status === 'New' || f.status === 'Revised').length; return n ? n + ' available' : 'Published forms'; })()] : null].filter(Boolean);
+  const ADD_TABS = () => [['slot', 'Fixed slot', 'NBME, CMS, UWSA, Free 120'], ['custom', 'Custom form', 'Any JSON or ZIP bank'], ['bulk', 'Bulk ZIP', 'Many forms in one go'], hasUpdates() ? ['online', 'Online updates', (() => { const n = (updState().forms || []).filter(f => f.status === 'New' || f.status === 'Revised').length; return n ? n + ' available' : 'Published forms'; })()] : null].filter(Boolean);
   const ADD_HEAD = {
     slot:['Fixed form slot', 'Pick the slot, then choose its JSON or ZIP. Loaded slots can be replaced; progress is kept when the questions match.'],
     custom:['Custom form', 'For your own JSON banks or anything without a fixed slot.'],

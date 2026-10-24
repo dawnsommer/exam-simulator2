@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=12">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=12">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=13">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=13">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=12"></script>
-<script src="./js/form-updates-core.js?v=12"></script>
-<script src="./js/form-update-store.js?v=12"></script>
-<script src="./js/google-auth.js?v=12"></script>
+<script src="./js/sync-config.js?v=13"></script>
+<script src="./js/form-updates-core.js?v=13"></script>
+<script src="./js/form-update-store.js?v=13"></script>
+<script src="./js/google-auth.js?v=13"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=12" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=13" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=12"></script>
-<script src="./js/qid-migration.js?v=12"></script>
+<script src="jszip.min.js?v=13"></script>
+<script src="./js/qid-migration.js?v=13"></script>
 <script>
 
 
@@ -2256,8 +2256,9 @@ document.addEventListener('click', function(e){
   window.__dataOnlyLibraryPatchApplied = true;
   let a23TabSettings = null; // A23 Phase D: set by the v19.5B settings layer below, read by StepLibraryBridge.settings()
 
-  const CFORM_COUNTS = { 'IM':10, 'OBGyn':10, 'Surg':8, 'Peds':9, 'FM':5, 'EM':3, 'Psych':8, 'Neuro':9 };
-  const CFORM_LABELS = { 'IM':'Internal Medicine', 'OBGyn':'OBGyn', 'Surg':'Surgery', 'Peds':'Pediatrics', 'FM':'Family Medicine', 'EM':'Emergency Medicine', 'Psych':'Psychiatry', 'Neuro':'Neurology' };
+  const CFORM_COUNTS = { 'IM':10, 'OBGyn':10, 'Surg':8, 'Peds':9, 'FM':5, 'EM':3, 'Psych':8, 'Neuro':9, 'UWSA':3, 'F120':1 };
+  const SA_SLOTS = { 'UWSA':{ids:['UWSA1','UWSA2','UWSA3'], questions:160}, 'F120':{ids:['F120'], questions:120} }; // self-assessment tabs: fixed slot IDs, blocks of 40
+  const CFORM_LABELS = { 'IM':'Internal Medicine', 'OBGyn':'OBGyn', 'Surg':'Surgery', 'Peds':'Pediatrics', 'FM':'Family Medicine', 'EM':'Emergency Medicine', 'Psych':'Psychiatry', 'Neuro':'Neurology', 'UWSA':'UWorld Self-Assessment', 'F120':'Free 120' };
   let dataDirHandle = null;
   let catalog = { fileType:'StepExamSimulatorV75Catalog', updatedAt:null, forms:[] };
   let activeLibraryFilter = 'Overview';
@@ -2274,7 +2275,8 @@ document.addEventListener('click', function(e){
   function makeSlots(){
     const slots=[];
     for(let n=6;n<=16;n++) slots.push({id:`N-${pad2(n)}`, type:'N', group:'N-Forms', filter:'N-Forms', subject:'NBME', defaultName:`N-${pad2(n)}`, expectedQuestions:200, suggestedBlockSize:'50'});
-    Object.keys(CFORM_COUNTS).forEach(code=>{ for(let n=1;n<=CFORM_COUNTS[code];n++) slots.push({id:`C-${code}-${pad2(n)}`, type:'C', group:CFORM_LABELS[code], filter:code, subject:CFORM_LABELS[code], defaultName:`C-${code}-${pad2(n)}`, expectedQuestions:50, suggestedBlockSize:'50'}); });
+    Object.keys(CFORM_COUNTS).filter(code=>!SA_SLOTS[code]).forEach(code=>{ for(let n=1;n<=CFORM_COUNTS[code];n++) slots.push({id:`C-${code}-${pad2(n)}`, type:'C', group:CFORM_LABELS[code], filter:code, subject:CFORM_LABELS[code], defaultName:`C-${code}-${pad2(n)}`, expectedQuestions:50, suggestedBlockSize:'50'}); });
+    Object.keys(SA_SLOTS).forEach(code=>SA_SLOTS[code].ids.forEach(id=>slots.push({id, type:'SA', group:CFORM_LABELS[code], filter:code, subject:CFORM_LABELS[code], defaultName:id, expectedQuestions:SA_SLOTS[code].questions, suggestedBlockSize:'40'})));
     return slots;
   }
   const SLOTS = makeSlots();
@@ -2824,6 +2826,7 @@ document.addEventListener('click', function(e){
     if(!rec) return 'Custom';
     if(rec.type === 'N') return 'N-Forms';
     if(rec.filter && rec.filter !== 'Custom') return rec.filter;
+    const slot=slotById(rec.id); if(slot && slot.type==='SA') return slot.filter; // UWSA/F120 forms imported as Custom before their slots existed
     if(rec.custom) return rec.filter || 'Custom';
     return rec.filter || 'Custom';
   }
@@ -2863,7 +2866,7 @@ document.addEventListener('click', function(e){
     return Object.prototype.hasOwnProperty.call(s.overviewTabs,f) ? !!s.overviewTabs[f] : defaultOverviewTabEnabled(f);
   }
   function defaultScoreChipEnabled(f){
-    return f === 'N-Forms';
+    return f === 'N-Forms' || f === 'UWSA' || f === 'F120';
   }
   function tabScoreChipEnabled(f){
     const s=librarySettings();
@@ -10532,11 +10535,11 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=12"></script>
-<script src="./js/sync-storage.js?v=12"></script>
-<script src="./js/progress-sync.js?v=12"></script>
-<script src="./js/library-backup.js?v=12"></script>
-<script src="./js/qid-settings.js?v=12"></script>
+<script src="./js/sync-merge.js?v=13"></script>
+<script src="./js/sync-storage.js?v=13"></script>
+<script src="./js/progress-sync.js?v=13"></script>
+<script src="./js/library-backup.js?v=13"></script>
+<script src="./js/qid-settings.js?v=13"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11013,10 +11016,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=12"></script>
-<script src="./exam-notes.js?v=12"></script>
-<script src="./app-update.js?v=12"></script>
-<script src="./js/form-updates.js?v=12"></script>
+<script src="./bulk-import.js?v=13"></script>
+<script src="./exam-notes.js?v=13"></script>
+<script src="./app-update.js?v=13"></script>
+<script src="./js/form-updates.js?v=13"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11102,6 +11105,6 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section h1,htm
 html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body .exp-section.exp-correct h4,
 html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h1,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h2,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h3,html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-correct h4{color:#9BE7C1!important}
 </style>
-<script src="./thunder-ui.js?v=12"></script>
+<script src="./thunder-ui.js?v=13"></script>
 </body>
 </html>
