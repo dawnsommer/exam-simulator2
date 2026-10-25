@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 19;
+  const TU_RELEASE = 20;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -3532,7 +3532,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     box.dataset.tux = '1';
     const tun = nbmeOn();
     if(tun) nbPlaceMenu(box);
-    if(!box.querySelector('[data-ref-action="layoutSplit"]')) return; // the break screen's short menu
+    if(!box.querySelector('[data-ref-action="layoutSplit"]')){ if(tun) nbDecorateMenu(box); return; } // the break screen's short menu
     const cur = examStyle();
     box.insertAdjacentHTML('afterbegin', `<div class="review-layout-toggle tux-style-row"><div class="review-layout-title">Exam style</div><div class="segmented-toggle" role="radiogroup" aria-label="Exam style">${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${cur === v}" class="${cur === v ? 'active' : ''}" data-tux-style="${v}">${l}</button>`).join('')}</div></div>`);
     box.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-tux-style]'); if(!b) return; e.preventDefault(); e.stopPropagation(); box.remove(); setExamStyle(b.dataset.tuxStyle); }, true);
@@ -3765,8 +3765,55 @@ ${P} #workspace .answers .strike-symbol:hover{background:rgba(0,0,0,.08)!importa
 ${P} #workspace #proceedBtn{all:unset!important;box-sizing:border-box!important;display:block!important;width:max-content!important;margin:12px 0 0 7px!important;background:#0077c8!important;color:#fff!important;border:2px outset #000!important;border-radius:5px!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;line-height:18px!important;padding:5px!important;cursor:pointer!important;text-align:center!important}
 ${P} #workspace #proceedBtn:hover,${P} #workspace #proceedBtn:focus{background:linear-gradient(#004976,#5490cc)!important;color:#fff!important}
 ${P} #workspace #proceedBtn:focus-visible{outline:auto!important}
-/* break screen: the legacy page covers the whole screen (reference look comes with the break screen step) */
-${P}.break-screen-active #workspace{grid-column:1 / -1!important;grid-row:1 / -1!important;margin:0!important}
+/* break screen: the reference's #breakScreen on the legacy .break-page: the #topRight Settings box, the white .bpanel
+   (96 %, top 71) holding the 800-wide .bwrap as a grid (the two buttons in one row, like .bbtns), the three tables with
+   the time values as mirror cells (td.tun-mv; the legacy cells keep ticking, hidden). nbBreak() runs the reference's
+   30 s "You have ended the block" wait (data-tun-brk="wait"), then the Authorized Break ("break"). */
+${P}.break-screen-active #workspace{grid-column:1 / -1!important;grid-row:1 / -1!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#d6dcec!important}
+${P} .break-page{all:unset!important;box-sizing:border-box!important;display:block!important;position:relative!important;height:100%!important}
+${P} #breakSettings{all:unset!important;box-sizing:border-box!important;position:absolute!important;right:2px!important;top:0!important;width:81px!important;height:59px!important;padding:2.5px 0 0!important;background:#004976!important;display:flex!important;flex-direction:column!important;align-items:center!important;color:#fff!important;font:13.333px Arial,Helvetica,sans-serif!important;cursor:pointer!important;white-space:nowrap!important}
+${P} #breakSettings:hover{background:#004976 linear-gradient(#325b77,#325b77) no-repeat 7px 1.5px / 67px 57px!important}
+${P} #breakSettings:focus-visible{outline:2px dotted #fff!important;outline-offset:-4px!important}
+${P} #breakSettings .gear{all:unset!important;box-sizing:border-box!important;width:55px!important;height:30px!important;margin:5px 0 4px!important;padding:4px 5px!important;border-radius:5px!important;background:#fff!important;border:1px solid #fff!important;color:#000!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:2px!important;font-size:0!important}
+${P} #breakSettings .gear svg{width:20px;height:20px}
+${P} #breakSettings .gear .sep{font-size:13px;line-height:1;margin:0 1px}
+${P} #breakSettings .gear svg.caret{width:11px;height:11px}
+${P} #breakSettings .tun-lbl{display:block;line-height:15px}
+${P} .break-card{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:0!important;right:0!important;width:96%!important;margin:0 auto!important;top:71px!important;bottom:11px!important;overflow:auto!important;background:#fff!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto auto minmax(0,1fr)!important;align-content:start!important;padding:0 0 20px!important;font:16px/22.4px "Arial Unicode MS",Arial,Helvetica,"Lucida Sans Unicode","Trebuchet MS",sans-serif!important;color:#000!important;text-align:center!important}
+${P} .break-card :is(.tun-bmsg,.tun-bwarn){box-sizing:border-box;width:min(800px,100%);justify-self:center}
+${P} .break-card h1{all:unset!important;display:block!important;box-sizing:border-box!important;width:min(800px,100%)!important;justify-self:center!important;grid-column:1 / -1!important;grid-row:1!important;margin:16.08px 0!important;font-size:24px!important;font-weight:700!important;line-height:33.6px!important}
+${P} .break-card .tun-bmsg{grid-column:1 / -1;grid-row:2;padding:10px 5px}
+${P} .break-card .break-small-btn{all:unset!important;box-sizing:border-box!important;grid-row:3!important;align-self:start!important;margin:0 0 10px!important;padding:3px 7px!important;border:2px outset #000!important;font:13.333px Arial,Helvetica,sans-serif!important;line-height:normal!important;color:#fff!important;cursor:pointer!important;white-space:nowrap!important}
+${P} .break-card .break-small-btn:focus-visible{outline:-webkit-focus-ring-color auto 1px!important}
+${P} #startNextFromBreak{grid-column:2!important;background:#004976!important}
+${P} #startNextFromBreak:is(:hover,:focus){background:linear-gradient(#004976,#5490cc)!important}
+${P} #stayOnBreak{grid-column:3!important;margin-left:4px!important;background:#e17d00!important}
+${P} .break-card .tun-bwarn{grid-column:1 / -1;grid-row:4;padding:10px 5px;color:red}
+${P} .break-card :is(.break-red,.break-paused-note),${P} .break-card[data-tun-brk="wait"] .tun-bmsg,${P} .break-card:not([data-tun-brk="wait"]) :is(#stayOnBreak,.tun-bwarn){display:none!important}
+${P} .break-card table{all:unset!important;box-sizing:border-box!important;display:table!important;grid-column:1 / -1!important;justify-self:center!important;width:calc(min(800px,100%) - 80px)!important;margin:0 0 20px!important;border-collapse:collapse!important}
+${P} .break-card table:nth-of-type(1){grid-row:5!important}
+${P} .break-card table:nth-of-type(2){grid-row:6!important}
+${P} .break-card table:nth-of-type(3){grid-row:7!important}
+${P} .break-card caption{all:unset!important;display:table-caption!important;padding:0 0 5px!important;font-weight:600!important;text-align:center!important}
+${P} .break-card tbody{all:unset!important;display:table-row-group!important;border-top:1px solid #dadada!important;border-bottom:4px solid #dadada!important}
+${P} .break-card tr{all:unset!important;display:table-row!important}
+${P} .break-card td{all:unset!important;box-sizing:border-box!important;display:table-cell!important;padding:1px!important;text-align:right!important;vertical-align:middle!important}
+${P} .break-card .break-table td:first-child{text-align:left!important;font-weight:700!important;height:24px!important}
+${P} .break-card td:has(+ td.tun-mv){display:none!important}
+${P} .break-card .tun-ts{display:inline-table;width:53px}
+${P} .break-card table:nth-of-type(2) tr:nth-child(2n),${P} .break-card .break-overview tr:nth-child(2n+1){background:#dedede!important}
+${P} .break-card .break-overview td{height:27px!important}
+${P} .break-card .break-overview td:is(.check,.num){width:52px!important}
+${P} .break-card .break-overview td:nth-child(3){width:207px!important}
+${P} .break-card .break-overview td.items{width:150px!important}
+${P} .break-card .break-overview td.check svg{width:20px;height:20px;display:inline-block;vertical-align:-3px}
+${PD}.break-screen-active #workspace{background:#000!important}
+${PD} #breakSettings,${PD} #breakSettings:hover{background-color:transparent!important;color:#94eaff!important}
+${PD} #breakSettings .gear{background:#000!important;border-color:#94eaff!important;color:#94eaff!important}
+${PD} .break-card{background:#000!important;outline:1px solid #94eaff!important;color:#fff!important}
+${PD} :is(#startNextFromBreak,#stayOnBreak),${PD} #startNextFromBreak:is(:hover,:focus){background:#000!important;color:#fff!important;border:1px solid #fff!important}
+${PD} .break-card table:nth-of-type(2) tr:nth-child(2n),${PD} .break-card .break-overview tr:nth-child(2n+1){background:#000!important}
+${PD} .break-card .break-overview td.check svg{fill:#fff}
 /* Color Theme › Dark Theme (#examScreen.reverse): the reference's html.dark values */
 ${PD}{background:#000!important;color:#fff!important}
 ${PD} .left-status{background:#000!important;color:#fff!important;border-right-color:#94eaff!important}
@@ -4047,21 +4094,6 @@ ${NW} #contrastEx{background-image:${NI.contrast}!important}
 ${NW} #zoomEx{background-image:${NI.zoom}!important}
 ${NB} .overview-close,${NB} #labPanel .lab-close,${NB} #floatingCalc .calc-close,${NB} #examNotesPanel .notes-close{width:25px!important;height:25px!important;min-width:0!important;padding:0!important;border:1px solid #004976!important;border-radius:5px!important;background:#004976 ${NI.x} center/20px 20px no-repeat!important;color:transparent!important;font-size:0!important;box-shadow:none!important;cursor:pointer}
 ${NB} .overview-close:hover,${NB} #labPanel .lab-close:hover,${NB} #floatingCalc .calc-close:hover,${NB} #examNotesPanel .notes-close:hover{background-color:#325b77!important}
-/* break screen */
-${N} .break-page{background:#d6dcec!important}
-${N} .break-card{background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important;width:96%!important;max-width:none!important;color:#000!important;font:16px/22.4px "Arial Unicode MS",Arial,Helvetica,sans-serif!important;text-align:center}
-${N} .break-card h1{font:700 24px/33.6px "Arial Unicode MS",Arial,Helvetica,sans-serif!important;margin:16px 0!important;color:#000!important}
-${N} .break-card .break-small-btn{font:13.333px Arial,Helvetica,sans-serif!important;padding:3px 7px!important;border:2px outset #000!important;border-radius:0!important;color:#fff!important;height:auto!important;box-shadow:none!important}
-${N} .break-card .break-start{background:#004976!important}
-${N} .break-card .break-orange{background:#e17d00!important}
-${N} .break-card .break-red{color:red!important}
-${N} .break-card table{width:min(720px,calc(100% - 80px))!important;margin:0 auto 20px!important;border-collapse:collapse!important}
-${N} .break-card caption{font-weight:600;padding-bottom:5px}
-${N} .break-card tbody{border-top:1px solid #dadada!important;border-bottom:4px solid #dadada!important}
-${N} .break-card td{padding:1px!important;height:24px;text-align:right}
-${N} .break-card td:first-child{text-align:left;font-weight:700}
-${N} .break-card .break-overview td:first-child{font-weight:400;text-align:center}
-${N} .break-card .break-overview tr:nth-child(odd),${N} .break-card .break-table tr:nth-child(even){background:#dedede}
 /* Review Screen as a table */
 ${NW} .review-panel{background:#fff!important;border:0!important;box-shadow:none!important;border-radius:0!important;font-family:"Arial Unicode MS",Arial,Helvetica,sans-serif!important;color:#000!important;max-width:760px!important}
 ${NW} .review-panel h2{font:700 22px "Arial Unicode MS",Arial,sans-serif!important;color:#000!important}
@@ -4265,6 +4297,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       nbIcon(r.querySelector('.navmark'), RI.flag); nbIcon(r.querySelector('.navnotes'), RI.note);
     });
     nbTimes();
+    nbBreak();
     if(!ws) return;
     const ml = ws.querySelector('.mark-line'), mk = byId('markQuestion');
     if(ml && mk && !ml.querySelector('.tun-i')) mk.insertAdjacentHTML('afterend', `<span class="tun-i" aria-hidden="true">${RI.flag}</span>`);
@@ -4378,6 +4411,56 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     nbText(o.querySelector('p'), 'Unauthorized break in progress. The block timer is paused.');
     nbText(byId('resumeBtn'), 'Return to Exam');
   }
+  // Break screen: the reference's "You have ended the block" first, with a 30 s countdown that starts the Authorized
+  // Break by itself; Take a Break starts it at once. The Authorized Break shows Start Next Block only. The break timer
+  // is still the legacy one (it runs from the end of the block, as in the reference).
+  const BRK_WAIT = 30;
+  function nbBreak(){
+    const card = document.querySelector('#workspace .break-page .break-card');
+    if(!card){ if(nb.brkCard){ clearInterval(nb.brkTimer); nb.brkTimer = null; nb.brkCard = null; } return; }
+    if(nb.brkCard !== card){
+      nb.brkCard = card; nb.brkEnd = Date.now() + BRK_WAIT * 1000;
+      clearInterval(nb.brkTimer); nb.brkTimer = setInterval(nbBreakTick, 250);
+      nbBreakMode(card, 'wait');
+    }
+    const h = card.querySelector('h1');
+    nbText(h, card.getAttribute('data-tun-brk') === 'wait' ? 'You have ended the block' : 'Authorized Break');
+    if(h && !card.querySelector('.tun-bmsg')) h.insertAdjacentHTML('afterend', '<span class="tun-i"><div class="tun-bmsg">Click the button when you are ready to start the next block.</div></span>');
+    const stay = byId('stayOnBreak');
+    if(stay && !card.querySelector('.tun-bwarn')) stay.insertAdjacentHTML('afterend', `<span class="tun-i"><div class="tun-bwarn" role="status">If you do not make a selection in <span class="tun-ws">${nbSecWord(nbBreakLeft())}</span> the system will initiate an Authorized Break.</div></span>`);
+    const set = byId('breakSettings');
+    if(set && !set.querySelector('.tun-i')){
+      nbIcon(set.querySelector('.gear'), RI.gear + '<span class="sep">|</span>' + RI.caretD);
+      [...set.childNodes].forEach(n => { if(n.nodeType === 3 && n.nodeValue.trim()){ const l = document.createElement('span'); l.className = 'tun-lbl'; set.insertBefore(l, n); l.appendChild(n); } });
+    }
+    card.querySelectorAll('.break-overview td.check').forEach(td => { if(td.textContent.trim()) nbIcon(td, RI.check); });
+    // time cells as the reference's "15 min" "0 sec" spans, in a mirror cell after the (hidden, ticking) legacy one
+    card.querySelectorAll('.break-table tr > td:nth-child(2), .break-overview td.time').forEach(td => {
+      const src = td.textContent.replace(/\s+/g, ' ').trim(), m = src.match(/^(?:(\d+) hr )?(\d+) min (\d+) sec$/);
+      let mv = td.nextElementSibling && td.nextElementSibling.classList.contains('tun-mv') ? td.nextElementSibling : null;
+      if(!m){ if(mv) mv.remove(); return; }
+      if(!mv){ td.insertAdjacentHTML('afterend', '<td class="tun-i tun-mv"></td>'); mv = td.nextElementSibling; }
+      if(mv.dataset.src === src) return;
+      mv.dataset.src = src;
+      mv.innerHTML = (m[1] ? `<span class="tun-ts">${m[1]} hr</span> ` : '') + `<span class="tun-ts">${m[2]} min</span> <span class="tun-ts">${m[3]} sec</span>`;
+    });
+  }
+  function nbBreakLeft(){ return Math.max(0, Math.ceil(((nb.brkEnd || 0) - Date.now()) / 1000)); }
+  function nbSecWord(n){ return `${n} second${n === 1 ? '' : 's'}`; }
+  function nbBreakMode(card, mode){
+    setAttrIf(card, 'data-tun-brk', mode);
+    const t = card.querySelector('h1 > .tun-i');
+    if(t) t.textContent = mode === 'wait' ? 'You have ended the block' : 'Authorized Break';
+  }
+  function nbBreakTick(){
+    const card = nb.brkCard;
+    if(!card || !document.contains(card)){ clearInterval(nb.brkTimer); nb.brkTimer = null; nb.brkCard = null; return; }
+    if(card.getAttribute('data-tun-brk') !== 'wait') return;
+    const left = nbBreakLeft();
+    if(left <= 0){ nbBreakMode(card, 'break'); return; }
+    const w = card.querySelector('.tun-ws'), v = nbSecWord(left);
+    if(w && w.textContent !== v) w.textContent = v;
+  }
   // Review Screen as a table: each legacy card (Item n<br>status lines<br>marked<br>Go to item) becomes Item | Status |
   // Marked | button; the legacy button node (and its listener) is moved, not rebuilt
   function nbDecorateReview(){
@@ -4399,6 +4482,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   }
   function onNbClick(e){
     if(!e.target.closest) return;
+    if(e.target.closest('#stayOnBreak') && nbmeOn() && nb.brkCard) nbBreakMode(nb.brkCard, 'break');
     const so = e.target.closest('#workspace .answers .strike-symbol');
     if(so && nbmeOn()){ e.preventDefault(); e.stopPropagation(); const a = so.closest('.answer'); if(a) a.dispatchEvent(new MouseEvent('contextmenu', {bubbles:true, cancelable:true, button:2})); return; }
     const card = e.target.closest('#workspace .review-panel .review-card');
