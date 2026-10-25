@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 18;
+  const TU_RELEASE = 19;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -3629,6 +3629,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const P = ':root[data-tun]:not(#tun0):not(#tun1) body #examScreen', PD = P + ':is(.reverse,.exam-dark)', HX = ':not(#tun2):not(#tun3)';
   const L = ':root[data-tun]:not(#tun0):not(#tun1) body', LD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body';
   const O = ':root[data-tun]:not(#tun0):not(#tun1) body #overviewRoot', OD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body #overviewRoot';
+  const A = ':root[data-tun]:not(#tun0):not(#tun1) body :is(#appDialogLayer,#tunOverlay)', AD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body :is(#appDialogLayer,#tunOverlay)';
   const M = ':root[data-tun]:not(#tun0):not(#tun1) body #referenceSettingsDropdown.tun-menu', MD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body #referenceSettingsDropdown.tun-menu';
   const NBME_SHELL = `
 :root:not([data-tun]) .tun-i,:root:not([data-tun]) .tun-radio{display:none!important}
@@ -3977,8 +3978,38 @@ ${LD} #floatingCalc .calc-btn:hover{background:#fff!important;color:#000!importa
 ${LD} #floatingCalc .calc-btn.equals:hover{background:#abb850!important;color:#fff!important}
 ${LD} #floatingCalc .calc-btn:focus-visible{outline:2px solid cornflowerblue!important}
 ${LD} #examNotesPanel textarea{background:#000!important;color:#fff!important;border:1px solid #767676!important}
+/* alerts: the reference's #overlay + .alert (top 22 %, 702 wide) on the legacy confirm (#appDialogLayer: End Block, Suspend, …)
+   and on ours (#tunOverlay > #tunAlert: Lock). Like the reference's, they are not scaled with the exam (zoom 1 / --tun-k). */
+${A}{all:unset!important;position:fixed!important;inset:0!important;z-index:10000!important;display:block!important;background:rgba(0,0,0,.4)!important;zoom:calc(1 / var(--tun-k,1))!important}
+${A} :is(.app-dialog,#tunAlert){all:unset!important;box-sizing:border-box!important;position:absolute!important;left:50%!important;top:22%!important;transform:translateX(-50%)!important;width:min(702px,92%)!important;display:block!important;background:#fff!important;border:1px solid #000!important;color:#000!important;font:16px "Open Sans",Verdana,sans-serif!important}
+${A} :is(.app-dialog-head,#tunAlert h1){all:unset!important;display:block!important;margin:0 0 23px!important;padding:12px!important;font:700 22px "Open Sans",Verdana,sans-serif!important;text-align:center!important;color:#fff!important;background:linear-gradient(#ee5f5b,#bd362f)!important;border-bottom:1px solid #d3d3d3!important}
+${A} :is(.app-dialog-body,#tunAlert .txt){all:unset!important;display:block!important;padding:0 18px!important;text-align:center!important;font:16px/18px "Open Sans",Verdana,sans-serif!important;white-space:pre-line!important}
+${A} :is(.app-dialog-actions,#tunAlert .btns){all:unset!important;display:flex!important;justify-content:center!important;flex-wrap:wrap!important;margin-top:20px!important}
+${A} .app-dialog-actions:not(#tun4){flex-direction:row-reverse!important}
+${A} :is(.app-dialog-actions,#tunAlert .btns) button{all:unset!important;box-sizing:border-box!important;margin:0 15px 15px!important;padding:9.6px 32px!important;font:16px Arial,Helvetica,sans-serif!important;color:#fff!important;border:2px outset #000!important;background:#e07f00!important;cursor:pointer!important;text-align:center!important}
+${A} :is(#appDialogOk,#tunAlert .btns .red){background:#d5002b!important}
+${A} :is(.app-dialog-actions,#tunAlert .btns) button:focus-visible{outline:-webkit-focus-ring-color auto 1px!important}
+${A} .tun-x{all:unset!important;box-sizing:border-box!important;position:absolute!important;right:15px!important;top:7px!important;z-index:2!important;width:25px!important;height:25px!important;padding:1px!important;border:1px solid #004976!important;border-radius:5px!important;background:#004976!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important}
+${A} .tun-x svg{width:20px;height:20px;fill:#fff;display:block}
+${A} .tun-x:hover{background:#fff!important}
+${A} .tun-x:hover svg{fill:#004976}
+${A} .tun-x:focus-visible{outline:-webkit-focus-ring-color auto 1px!important}
+/* lock cover: the reference's #coverLock (.cover) on the legacy #pauseOverlay; title, text and button are mirrors (decision D) */
+${L} #pauseOverlay{all:unset!important;box-sizing:border-box!important;position:fixed!important;inset:0!important;z-index:250!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;padding:20px!important;background:#fff!important;color:#000!important;text-align:center!important;font:16px "Open Sans",Verdana,sans-serif!important;zoom:calc(1 / var(--tun-k,1))!important}
+${L} #pauseOverlay .pause-card{all:unset!important;display:contents!important}
+${L} #pauseOverlay h2{all:unset!important;display:block!important;margin:0 0 12px!important;font:700 26px "Open Sans",Verdana,sans-serif!important}
+${L} #pauseOverlay p{all:unset!important;display:block!important;margin:4px 0 18px!important}
+${L} #pauseOverlay #resumeBtn{all:unset!important;box-sizing:border-box!important;margin:4px!important;padding:10px 30px!important;font:16px Arial,Helvetica,sans-serif!important;background:#004976!important;color:#fff!important;border-radius:4px!important;cursor:pointer!important}
+${L} #pauseOverlay #resumeBtn:focus-visible{outline:-webkit-focus-ring-color auto 1px!important}
+/* Dark Theme: html.dark .alert / .closeX (no hover change) / .cover */
+${AD} :is(.app-dialog,#tunAlert){background:#000!important;color:#fff!important;border-color:#fff!important}
+${AD} :is(.app-dialog-head,#tunAlert h1){border-bottom-color:#fff!important}
+${AD} .tun-x,${AD} .tun-x:hover{background:#000!important;border-color:#94eaff!important}
+${AD} .tun-x svg,${AD} .tun-x:hover svg{fill:#94eaff}
+${LD} #pauseOverlay{background:#000!important;color:#fff!important}
+${LD} #pauseOverlay #resumeBtn{background:#94eaff!important;color:#000!important}
 /* the legacy hiding still wins over the resets above */
-${P} .hidden${HX},${P} [hidden]${HX},${P} [style*="display: none"]${HX},${P} [style*="display:none"]${HX}{display:none!important}
+${A}:is(.hidden,[hidden])${HX},${L} #pauseOverlay.hidden${HX},${P} .hidden${HX},${P} [hidden]${HX},${P} [style*="display: none"]${HX},${P} [style*="display:none"]${HX}{display:none!important}
 ${P}.break-screen-active>:is(.topbar,.left-status,.bottombar)${HX},${P} .bottombar.v16-review-no-lock :is(#lockBtn,#suspendBtn)${HX}{display:none!important}
 `;
   // the reference's own icons, verbatim (thunder-ui-functional.html ICON); pause is ours (Suspend), in the same style
@@ -4014,28 +4045,8 @@ ${NW} .exhibit-tools .exhibit-tool-icon{width:30px!important;height:30px!importa
 ${NW} #invertEx{background-image:${NI.invert}!important}
 ${NW} #contrastEx{background-image:${NI.contrast}!important}
 ${NW} #zoomEx{background-image:${NI.zoom}!important}
-${NB} .overview-close,${NB} #labPanel .lab-close,${NB} #floatingCalc .calc-close,${NB} #examNotesPanel .notes-close,#tunAlert .tun-x{width:25px!important;height:25px!important;min-width:0!important;padding:0!important;border:1px solid #004976!important;border-radius:5px!important;background:#004976 ${NI.x} center/20px 20px no-repeat!important;color:transparent!important;font-size:0!important;box-shadow:none!important;cursor:pointer}
-${NB} .overview-close:hover,${NB} #labPanel .lab-close:hover,${NB} #floatingCalc .calc-close:hover,${NB} #examNotesPanel .notes-close:hover,#tunAlert .tun-x:hover{background-color:#325b77!important}
-/* alerts: the legacy confirm dialog and ours (Lock, Help) */
-${NB} #appDialogLayer{background:rgba(0,0,0,.4)!important;backdrop-filter:none!important}
-${NB} #appDialogLayer .app-dialog,#tunAlert{width:min(702px,92vw)!important;max-width:none!important;background:#fff!important;color:#000!important;border:1px solid #000!important;border-radius:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important;font-family:"Open Sans",Verdana,sans-serif!important}
-${NB} #appDialogLayer .app-dialog-head,#tunAlert h1{margin:0 0 23px!important;padding:12px 44px!important;font:700 22px/1.3 "Open Sans",Verdana,sans-serif!important;text-align:center!important;color:#fff!important;background:linear-gradient(#ee5f5b,#bd362f)!important;border:0!important;border-bottom:1px solid #d3d3d3!important;border-radius:0!important}
-#tunAlert h1.blue{background:#0a8cbd!important}
-${NB} #appDialogLayer .app-dialog-body,#tunAlert .txt{padding:0 18px!important;text-align:center!important;font:16px/18px "Open Sans",Verdana,sans-serif!important;color:#000!important}
-${NB} #appDialogLayer .app-dialog-actions,#tunAlert .btns{display:flex!important;flex-direction:row-reverse!important;justify-content:center!important;flex-wrap:wrap!important;gap:0!important;margin:20px 0 0!important;padding:0!important;border:0!important;background:transparent!important}
-${NB} #appDialogLayer .app-dialog-actions button,#tunAlert .btns button{margin:0 15px 15px!important;padding:9.6px 32px!important;height:auto!important;min-width:0!important;font:16px Arial,Helvetica,sans-serif!important;color:#fff!important;border:2px outset #000!important;border-radius:0!important;box-shadow:none!important;background:#e07f00!important;cursor:pointer}
-${NB} #appDialogLayer .app-dialog-actions #appDialogOk,#tunAlert .btns .red{background:#d5002b!important}
-#tunAlert .btns{flex-direction:row!important}
-#tunAlert .btns .blue{background:#0a8cbd!important}
-#tunOverlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:330}
-#tunAlert{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:331}
-#tunAlert .tun-x{position:absolute;right:15px;top:7px;border-color:#fff!important}
-#tunAlert .txt p{margin:0 0 10px;text-align:left}
-/* lock (pause) cover */
-${NB} #pauseOverlay{background:#fff!important;backdrop-filter:none!important}
-${NB} #pauseOverlay .pause-card{background:transparent!important;box-shadow:none!important;border:0!important;color:#000!important;text-align:center;font-family:"Open Sans",Verdana,sans-serif!important}
-${NB} #pauseOverlay .pause-card h2{font-size:26px!important;margin:0 0 12px!important;color:#000!important}
-${NB} #pauseOverlay #resumeBtn{padding:10px 30px!important;font-size:16px!important;background:#004976!important;color:#fff!important;border:0!important;border-radius:4px!important;box-shadow:none!important;height:auto!important}
+${NB} .overview-close,${NB} #labPanel .lab-close,${NB} #floatingCalc .calc-close,${NB} #examNotesPanel .notes-close{width:25px!important;height:25px!important;min-width:0!important;padding:0!important;border:1px solid #004976!important;border-radius:5px!important;background:#004976 ${NI.x} center/20px 20px no-repeat!important;color:transparent!important;font-size:0!important;box-shadow:none!important;cursor:pointer}
+${NB} .overview-close:hover,${NB} #labPanel .lab-close:hover,${NB} #floatingCalc .calc-close:hover,${NB} #examNotesPanel .notes-close:hover{background-color:#325b77!important}
 /* break screen */
 ${N} .break-page{background:#d6dcec!important}
 ${N} .break-card{background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important;width:96%!important;max-width:none!important;color:#000!important;font:16px/22.4px "Arial Unicode MS",Arial,Helvetica,sans-serif!important;text-align:center}
@@ -4110,7 +4121,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     const scr = byId('examScreen');
     if(on && scr && store.get(NBK.theme, '') === 'dark' && !scr.classList.contains('reverse')) scr.classList.add('reverse');
     setAttrIf(root, 'data-tun-dark', on && nbTheme() === 'dark' ? '1' : null);
-    if(on){ nbDecorate(); nbFrameWidth(); }
+    if(on){ nbDecorate(); nbFrameWidth(); nbLockCover(); }
     if(!on) closeNbAlert();
   }
   // --tun-mw: 56 / 66 / 80 / 98 % by text size; 80 % (98 % at 200 %) while Lab Values is open (the reference's .labOpen)
@@ -4320,7 +4331,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   function closeNbAlert(){ byId('tunAlert')?.remove(); byId('tunOverlay')?.remove(); }
   function nbAlert(title, html, buttons, blue){
     closeNbAlert();
-    document.body.insertAdjacentHTML('beforeend', `<div id="tunOverlay"></div><div id="tunAlert" role="alertdialog" aria-modal="true" aria-labelledby="tunAlertTitle"><button type="button" class="tun-x" data-tun-a="close" aria-label="Close"></button><h1 id="tunAlertTitle"${blue ? ' class="blue"' : ''}>${esc(title)}</h1><div class="txt">${html}</div><div class="btns">${buttons.map(([a, l, c]) => `<button type="button" class="${c}" data-tun-a="${a}">${esc(l)}</button>`).join('')}</div></div>`);
+    document.body.insertAdjacentHTML('beforeend', `<div id="tunOverlay"><div id="tunAlert" role="alertdialog" aria-modal="true" aria-labelledby="tunAlertTitle"><button type="button" class="tun-x" data-tun-a="close" aria-label="Close">${RI.xsq}</button><h1 id="tunAlertTitle"${blue ? ' class="blue"' : ''}>${esc(title)}</h1><div class="txt">${html}</div><div class="btns">${buttons.map(([a, l, c]) => `<button type="button" class="${c}" data-tun-a="${a}">${esc(l)}</button>`).join('')}</div></div></div>`);
     const box = byId('tunAlert'); box.querySelector('.btns button')?.focus();
     return box;
   }
@@ -4332,17 +4343,40 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     nbAlert('Unauthorized Break Warning', 'You are about to lock the exam and take an Unauthorized Break. An Unauthorized Break may be reported as an irregularity for the exam.', [['lock', 'Unauthorized Break', 'red'], ['close', 'Return to Exam', '']]);
   }
   function onNbAlertClick(e){
-    const b = e.target.closest && e.target.closest('#tunAlert [data-tun-a], #tunOverlay'); if(!b) return;
+    if(!e.target.closest) return;
+    // the legacy confirm's × (ours): Cancel, or OK on a one-button notice
+    if(e.target.closest('#appDialogLayer [data-tun-x]')){ (byId('appDialogCancel') || byId('appDialogOk'))?.click(); return; }
+    const b = e.target.closest('#tunAlert [data-tun-a]') || (e.target.id === 'tunOverlay' ? e.target : null); if(!b) return;
     const act = b.dataset ? b.dataset.tunA : null; closeNbAlert();
     if(act === 'lock'){ nb.lockOk = true; try{ fire('lockBtn'); } finally { nb.lockOk = false; } }
   }
-  // the legacy confirm says "Confirm"; the NBME alert names the action instead (End Block, …)
+  // the legacy confirm says "Confirm"; the NBME alert names the action instead (End Block, …) and gets the reference's ×.
+  // End Block: the reference's text (with the unanswered count) and "Return to Block", as mirrors of the legacy text
   function nbDecorateDialog(){
     if(!nbmeOn()) return;
     const d = document.querySelector('#appDialogLayer .app-dialog'); if(!d || d.dataset.tun) return;
     d.dataset.tun = '1';
-    const h = d.querySelector('.app-dialog-head'), ok = byId('appDialogOk');
+    const h = d.querySelector('.app-dialog-head'), body = d.querySelector('.app-dialog-body'), ok = byId('appDialogOk'), cancel = byId('appDialogCancel');
     if(h && ok && /^\s*confirm\s*$/i.test(txt(h)) && txt(ok)) h.textContent = txt(ok);
+    d.insertAdjacentHTML('afterbegin', `<span class="tun-i"><button type="button" class="tun-x" data-tun-x aria-label="Close">${RI.xsq}</button></span>`);
+    if(ok && /^end block$/i.test(txt(ok)) && body && !body.querySelector('input')){
+      const m = examModel(), un = m && m.items ? m.items.filter(x => x.answer == null).length : 0;
+      nbText(body, (un ? `You have ${un} unanswered item${un > 1 ? 's' : ''} in this block. ` : '') + 'Once you end this block you will not be able to return to it. Are you sure you want to end the block?');
+      if(cancel) nbText(cancel, 'Return to Block');
+    }
+  }
+  // NBME wording over a legacy node: its text moves into .tun-txt (hidden only in NBME), the new text is a .tun-i span
+  function nbText(host, text){
+    if(!host || host.querySelector(':scope > .tun-i')) return;
+    [...host.childNodes].forEach(n => { if(n.nodeType === 3 && n.nodeValue.trim() !== ''){ const t = document.createElement('span'); t.className = 'tun-txt'; host.insertBefore(t, n); t.appendChild(n); } else if(n.nodeType === 3) n.remove(); });
+    const s = document.createElement('span'); s.className = 'tun-i'; s.textContent = text; host.appendChild(s);
+  }
+  // Lock cover (decision D): the reference's title and button, with text that says the timer is paused
+  function nbLockCover(){
+    const o = byId('pauseOverlay'); if(!o) return;
+    nbText(o.querySelector('h2'), 'Exam Locked');
+    nbText(o.querySelector('p'), 'Unauthorized break in progress. The block timer is paused.');
+    nbText(byId('resumeBtn'), 'Return to Exam');
   }
   // Review Screen as a table: each legacy card (Item n<br>status lines<br>marked<br>Go to item) becomes Item | Status |
   // Marked | button; the legacy button node (and its listener) is moved, not rebuilt
