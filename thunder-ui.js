@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 21;
+  const TU_RELEASE = 22;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -1039,6 +1039,11 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
 .tu-report .tu-rep-wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 .tu-report .tu-card{background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:24px;box-shadow:var(--tu-shadow);color:var(--tu-on)}
 .tu-report .tu-rep-hero{padding:24px 28px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;border-radius:28px}
+.tu-report .tu-rep-top{display:flex;align-items:center}
+.tu-report .tu-rep-home{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 20px 0 15px;margin:0;border:0;border-radius:999px;background:var(--tu-p);color:var(--tu-onp);font:700 15px/1 var(--tu-font);letter-spacing:.01em;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.08);transition:transform .12s ease,box-shadow .12s ease}
+.tu-report .tu-rep-home:hover{transform:translateY(-1px);box-shadow:0 2px 4px rgba(0,0,0,.14),0 8px 18px rgba(0,0,0,.12)}
+.tu-report .tu-rep-home:focus-visible{outline:3px solid var(--tu-p);outline-offset:3px}
+.tu-report .tu-rep-home svg{flex:none}
 .tu-report .tu-rep-copy{flex:1 1 420px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tu-report .tu-kicker{font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tu-on3)}
 .tu-report h1.tu-rep-title{margin:0;font-size:30px;font-weight:800;letter-spacing:-.02em;color:var(--tu-on);line-height:1.15}
@@ -1124,7 +1129,7 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
   const X = ':root[data-tu][data-tu-exam="modern"]:not(#tux0) body #examScreen', W = X + ' #workspace', XB = ':root[data-tu][data-tu-exam="modern"]:not(#tux0) body';
   const EXAM_STYLES = `
 :root[data-tu][data-tu-exam="modern"] body{--tu-bg:#F6F7FB;--tu-surface:#FFFFFF;--tu-s1:#EFF1F7;--tu-s2:#E7EAF3;--tu-s3:#DCE0EC;--tu-line:#D3D8E5;--tu-line2:#E4E7F0;--tu-on:#161A25;--tu-on2:#474E62;--tu-on3:#5F6679;--tu-ok:#17683D;--tu-okc:#D3EFDD;--tu-warn:#7D4B00;--tu-warnc:#FFE3B8;--tu-bad:#A8231B;--tu-badc:#FBDAD6;--tu-info:#1F4FA8;--tu-infoc:#E2EAFE;--tu-shadow:0 1px 2px rgba(20,26,40,.06),0 3px 10px rgba(20,26,40,.06);--tu-p:var(--tu-lp);--tu-onp:var(--tu-lonp);--tu-pc:var(--tu-lpc);--tu-onpc:var(--tu-lonpc);--tu-font:"Figtree",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;--tux-panel:clamp(380px,36vw,520px)}
-:root[data-tu][data-tu-exam="modern"] body.exam-dark-active,${X}.exam-dark{--tu-bg:#0E1118;--tu-surface:#161A23;--tu-s1:#131720;--tu-s2:#222835;--tu-s3:#2B3242;--tu-line:#3A4256;--tu-line2:#272E3D;--tu-on:#E4E7F0;--tu-on2:#B4BACB;--tu-on3:#9AA1B4;--tu-ok:#86DCA8;--tu-okc:#173A27;--tu-warn:#FFC772;--tu-warnc:#3D2C0F;--tu-bad:#FFB4AB;--tu-badc:#4A1612;--tu-info:#B3C5FF;--tu-infoc:#1E2F5C;--tu-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.28);--tu-p:var(--tu-dp);--tu-onp:var(--tu-donp);--tu-pc:var(--tu-dpc);--tu-onpc:var(--tu-donpc)}
+:root[data-tu][data-tu-exam="modern"] body.exam-dark-active,${X}.exam-dark,${X}.reverse{--tu-bg:#0E1118;--tu-surface:#161A23;--tu-s1:#131720;--tu-s2:#222835;--tu-s3:#2B3242;--tu-line:#3A4256;--tu-line2:#272E3D;--tu-on:#E4E7F0;--tu-on2:#B4BACB;--tu-on3:#9AA1B4;--tu-ok:#86DCA8;--tu-okc:#173A27;--tu-warn:#FFC772;--tu-warnc:#3D2C0F;--tu-bad:#FFB4AB;--tu-badc:#4A1612;--tu-info:#B3C5FF;--tu-infoc:#1E2F5C;--tu-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.28);--tu-p:var(--tu-dp);--tu-onp:var(--tu-donp);--tu-pc:var(--tu-dpc);--tu-onpc:var(--tu-donpc)}
 ${X}{background:var(--tu-bg)!important;color:var(--tu-on)!important;font-family:var(--tu-font)!important;-webkit-font-smoothing:antialiased}
 ${X}>.topbar,${X}>.left-status,${X}>.bottombar{visibility:hidden!important;pointer-events:none!important}
 ${X} .tux,${X} .tux *{box-sizing:border-box}
@@ -1315,6 +1320,41 @@ ${XB} .lab-panel{top:calc(62px + var(--tux-st))!important;bottom:58px!important;
 ${XB} #examNotesPanel{bottom:70px!important;z-index:46!important;border-radius:16px!important}
 ${XB} .floating-calc{bottom:70px!important}
 ${XB} #referenceSettingsDropdown{max-width:calc(100vw - 16px);max-height:calc(100vh - 80px);overflow:auto}
+/* bug fix 2026-10-25: the same Settings menu as NBME (nbDecorateMenu: same rows, labels, order, submenus) in the
+   Modern look; the prefs are NBME's saved values */
+${XB} #referenceSettingsDropdown :is([data-ref-action="zoomUp"],[data-ref-action="zoomDown"],[data-ref-action="examDarkMode"],[data-ref-action="reverseColor"]){display:none!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu{overflow:visible!important;padding:6px!important;min-width:232px!important;border-radius:14px!important;background:var(--tu-surface,#fff)!important;color:var(--tu-on,#161a25)!important;border:1px solid var(--tu-line2,#e3e6ee)!important;box-shadow:0 12px 32px rgba(0,0,0,.16)!important;font:500 14px/1.2 var(--tu-font)!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu :is(.tun-mi,.tun-row,.review-layout-toggle,.notes-preference),${XB} #referenceSettingsDropdown.tux-nbmenu>button{all:unset!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;width:100%!important;min-height:36px!important;padding:0 12px!important;border-radius:9px!important;font:500 14px/1.2 var(--tu-font)!important;color:inherit!important;cursor:pointer!important;position:relative!important;white-space:nowrap!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu :is(.tun-mi,.tun-row,.review-layout-toggle,.notes-preference):hover,${XB} #referenceSettingsDropdown.tux-nbmenu>button:hover,${XB} #referenceSettingsDropdown.tux-nbmenu .tun-mi.open{background:var(--tu-s2,#eef0f5)!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu>button.danger-item{color:var(--tu-bad,#b3261e)!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu svg.i{width:10px;height:10px;fill:currentColor;display:block;flex:none;opacity:.6}
+${XB} #referenceSettingsDropdown.tux-nbmenu :is(.review-layout-title,.notes-preference>span){all:unset!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .notes-preference input{all:unset!important;position:absolute!important;opacity:0!important;width:1px!important;height:1px!important;pointer-events:none!important;left:0!important;top:0!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .notes-preference:has(input:checked),${XB} #referenceSettingsDropdown.tux-nbmenu .tun-sub>button.on,${XB} #referenceSettingsDropdown.tux-nbmenu .tun-mi>.segmented-toggle>button.active{font-weight:700!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .notes-preference:has(input:checked)::after,${XB} #referenceSettingsDropdown.tux-nbmenu .tun-sub>button.on::after,${XB} #referenceSettingsDropdown.tux-nbmenu .tun-mi>.segmented-toggle>button.active::after{content:"\\2713";font-weight:800;color:var(--tu-p)}
+${XB} #referenceSettingsDropdown.tux-nbmenu :is(.tun-sub,.tun-mi>.segmented-toggle){all:unset!important;box-sizing:border-box!important;position:absolute!important;display:none!important;right:calc(100% + 6px)!important;top:-6px!important;min-width:150px!important;padding:6px!important;background:var(--tu-surface,#fff)!important;color:var(--tu-on,#161a25)!important;border:1px solid var(--tu-line2,#e3e6ee)!important;border-radius:12px!important;box-shadow:0 12px 32px rgba(0,0,0,.16)!important;z-index:2!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .tun-mi.open>:is(.tun-sub,.segmented-toggle){display:block!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu :is(.tun-sub,.tun-mi>.segmented-toggle)>button{all:unset!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;width:100%!important;height:34px!important;padding:0 12px!important;border-radius:8px!important;font:500 14px var(--tu-font)!important;color:inherit!important;cursor:pointer!important;white-space:nowrap!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu :is(.tun-sub,.tun-mi>.segmented-toggle)>button:hover{background:var(--tu-s2,#eef0f5)!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .tun-sep{all:unset!important;display:block!important;height:1px!important;margin:6px 4px!important;background:var(--tu-line2,#e3e6ee)!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .tux-style-row{padding:2px!important;min-height:0!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .tux-style-row:hover{background:transparent!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .tux-style-row .review-layout-title{display:none!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .tux-style-row .segmented-toggle{all:unset!important;box-sizing:border-box!important;display:flex!important;width:100%!important;padding:3px!important;border-radius:10px!important;background:var(--tu-s2,#eef0f5)!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .tux-style-row .segmented-toggle>button{all:unset!important;box-sizing:border-box!important;flex:1 1 0!important;text-align:center!important;height:30px!important;line-height:30px!important;border-radius:8px!important;font:600 13.5px var(--tu-font)!important;cursor:pointer!important;color:var(--tu-on2,#4a5060)!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu .tux-style-row .segmented-toggle>button[aria-checked="true"]{background:var(--tu-surface,#fff)!important;color:var(--tu-on,#161a25)!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important}
+${XB} #referenceSettingsDropdown.tux-nbmenu :is([data-ref-action="zoomUp"],[data-ref-action="zoomDown"],[data-ref-action="examDarkMode"],[data-ref-action="reverseColor"],[style*="display: none"],[style*="display:none"],[hidden],.hidden){display:none!important}
+${X}[data-tux-txt] #workspace :is(#stem,.answers,.qbank-body){zoom:var(--tux-txt)}
+${X}[data-tux-nostrike] #workspace .answers .tux-strike{display:none!important}
+/* Reverse Color was the legacy invert filter (it turned highlights blue); Modern draws its dark palette instead */
+${X}.reverse,${X}.reverse :is(img,svg){filter:none!important}
+/* highlights: soft amber, readable in both themes */
+${W} :is(#stem,.qbank-body) :is(.v15-highlight,[data-v15-highlight-id],mark){background:#fde68a!important;color:#1f2430!important;border:0!important;border-radius:3px!important;box-shadow:none!important;padding:0 1px!important}
+${W} :is(#stem,.qbank-body) :is(.v15-highlight,[data-v15-highlight-id],mark) *{color:#1f2430!important}
+${W} :is(#stem,.qbank-body) :is(.v15-highlight,[data-v15-highlight-id]):hover{background:#fcd34d!important}
+${X}:is(.exam-dark,.reverse) #workspace :is(#stem,.qbank-body) :is(.v15-highlight,[data-v15-highlight-id],mark){background:rgba(250,204,21,.24)!important;color:#fff3c4!important;box-shadow:inset 0 -2px 0 rgba(250,204,21,.75)!important}
+${X}:is(.exam-dark,.reverse) #workspace :is(#stem,.qbank-body) :is(.v15-highlight,[data-v15-highlight-id],mark) *{color:#fff3c4!important}
+${X}:is(.exam-dark,.reverse) #workspace :is(#stem,.qbank-body) :is(.v15-highlight,[data-v15-highlight-id]):hover{background:rgba(250,204,21,.36)!important}
 /* tablets in portrait: navigator narrows */
 @media (max-width:1099px) and (min-width:760px) and (min-height:521px){
 ${X} .tux-nav{width:184px;padding:12px}
@@ -3224,7 +3264,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const firstWrong = rows.find(x => x.a.chosen !== x.a.correct);
     // build the new layout and move the existing controls (with their listeners) into it
     const wrap = document.createElement('div'); wrap.className = 'tu-rep-wrap';
-    wrap.innerHTML = `<section class="tu-card tu-rep-hero"><div class="tu-rep-copy"><span class="tu-kicker">Score report</span><h1 class="tu-rep-title">${esc(title)}</h1><span class="tu-rep-meta">${esc(meta)}</span><div class="tu-rep-actions" data-tu-slot="review"><button type="button" class="tu-btn" data-tu-review="all">Review all</button>${wrong + blank ? `<button type="button" class="tu-btn tonal" data-tu-review="incorrect">Review incorrect (${wrong + blank})</button>` : ''}<div class="tu-revin" role="radiogroup" aria-label="Review in"><span>Review in</span>${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${examStyle() === v}" data-tu-revin="${v}">${l}</button>`).join('')}</div></div><div class="tu-rep-actions secondary-row" data-tu-slot="files"></div></div>` +
+    wrap.innerHTML = `<div class="tu-rep-top"><button type="button" class="tu-rep-home" data-tu-rep-home title="Save and go to Home">${icon(XI.home, 18)}<span>Home</span></button></div><section class="tu-card tu-rep-hero"><div class="tu-rep-copy"><span class="tu-kicker">Score report</span><h1 class="tu-rep-title">${esc(title)}</h1><span class="tu-rep-meta">${esc(meta)}</span><div class="tu-rep-actions" data-tu-slot="review"><button type="button" class="tu-btn" data-tu-review="all">Review all</button>${wrong + blank ? `<button type="button" class="tu-btn tonal" data-tu-review="incorrect">Review incorrect (${wrong + blank})</button>` : ''}<div class="tu-revin" role="radiogroup" aria-label="Review in"><span>Review in</span>${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${examStyle() === v}" data-tu-revin="${v}">${l}</button>`).join('')}</div></div><div class="tu-rep-actions secondary-row" data-tu-slot="files"></div></div>` +
       `<div class="tu-rep-score"><div class="tu-ring" style="--v:${percent}" role="img" aria-label="Score ${percent} percent, ${correct} of ${total} correct"><div><b>${percent}%</b><span>${correct} / ${total}</span></div></div><div class="tu-legend"><span><i style="background:var(--tu-ok)"></i><b>${correct}</b> correct</span><span><i style="background:var(--tu-bad)"></i><b>${wrong}</b> incorrect</span><span><i style="background:var(--tu-on3)"></i><b>${blank}</b> unanswered</span><span><i style="background:var(--tu-warn)"></i><b>${marked}</b> marked</span>${total ? `<span>${Math.round(secs / total)} s average per question</span>` : ''}</div></div></section>` +
       `<div class="tu-rep-row" data-tu-slot="row"><section class="tu-card tu-subjects" aria-label="By subject"><h2 class="tu-h">By subject</h2>${subjectsHtml}</section></div>` +
       `<section class="tu-card tu-qs" aria-label="Questions"><div class="tu-qs-head" data-tu-slot="qhead"><div class="tu-qs-tools" data-tu-slot="tools"><div class="tu-chips" role="group" aria-label="Show"></div></div></div><div data-tu-slot="blocks"></div><div class="tu-qs-foot" aria-live="polite"></div></section>`;
@@ -3283,6 +3323,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     wrap.querySelectorAll('.report-tab').forEach(t => t.addEventListener('click', () => setTimeout(applyFilter, 0)));
     wrap.addEventListener('click', e => {
       const rv = e.target.closest('[data-tu-revin]'); if(rv){ setExamStyle(rv.dataset.tuRevin); return; }
+      // Home: the legacy Save & back to library (saves, leaves the exam), then the Home view
+      if(e.target.closest('[data-tu-rep-home]')){ byId('reportSaveMenu')?.click(); byId('libraryTab')?.click(); return; }
       const r = e.target.closest('[data-tu-review]'); if(!r) return;
       // Review incorrect opens the first incorrect (or unanswered) item and keeps Previous / Next on those items only
       const only = r.dataset.tuReview === 'incorrect' && firstWrong;
@@ -3528,16 +3570,27 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   // The exam's own Settings menu (#referenceSettingsDropdown, rebuilt on every open): an Exam style row in the menu's own
   // style, in both styles. In Modern the menu opens under the button that asked for it.
+  // Modern side of the shared prefs: text size, hidden strike buttons, and Dark Theme as Modern's dark palette (a
+  // .reverse left by NBME, or the legacy Reverse Color, would invert the page)
+  function tuxPrefs(){
+    const scr = byId('examScreen'), on = modernOn(), size = Number(store.get(NBK.size, '100')) || 100; if(!scr) return;
+    setAttrIf(scr, 'data-tux-txt', on && size !== 100 ? '1' : null); setVar(scr, '--tux-txt', on && size !== 100 ? String(size / 100) : null);
+    setAttrIf(scr, 'data-tux-nostrike', on && store.get(NBK.strike, '0') === '1' ? '1' : null);
+    if(!on) return;
+    const rev = scr.classList.contains('reverse');
+    if(rev) scr.classList.remove('reverse');
+    if(rev || store.get(NBK.theme, '') === 'dark'){ try{ if(!isExamDarkMode()) setExamDarkMode(true); }catch(e){} }
+  }
   function decorateExamSettings(){
     const box = byId('referenceSettingsDropdown'); if(!box || box.dataset.tux) return;
     box.dataset.tux = '1';
     const tun = nbmeOn();
     if(tun) nbPlaceMenu(box);
-    if(!box.querySelector('[data-ref-action="layoutSplit"]')){ if(tun) nbDecorateMenu(box); return; } // the break screen's short menu
+    if(!box.querySelector('[data-ref-action="layoutSplit"]')){ if(tun || modernOn()){ if(!tun) box.classList.add('tux-nbmenu'); nbDecorateMenu(box); } return; } // the break screen's short menu
     const cur = examStyle();
     box.insertAdjacentHTML('afterbegin', `<div class="review-layout-toggle tux-style-row"><div class="review-layout-title">Exam style</div><div class="segmented-toggle" role="radiogroup" aria-label="Exam style">${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${cur === v}" class="${cur === v ? 'active' : ''}" data-tux-style="${v}">${l}</button>`).join('')}</div></div>`);
     box.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-tux-style]'); if(!b) return; e.preventDefault(); e.stopPropagation(); box.remove(); setExamStyle(b.dataset.tuxStyle); }, true);
-    if(tun) nbDecorateMenu(box);
+    if(tun || modernOn()){ if(!tun) box.classList.add('tux-nbmenu'); nbDecorateMenu(box); }
     if(modernOn() && examUi.anchor && document.contains(examUi.anchor)){
       const r = examUi.anchor.getBoundingClientRect();
       box.style.top = Math.max(6, r.bottom + 6) + 'px'; box.style.right = Math.max(8, innerWidth - r.right) + 'px';
@@ -3695,21 +3748,38 @@ ${P} #prevBtn svg,${P} #nextBtn svg{width:30px;height:30px}
 ${P} #prevNav .nav-label,${P} #nextNav .nav-label{all:unset!important;display:block!important;line-height:15px!important}
 ${P} #centerCounter{all:unset!important;box-sizing:border-box!important;display:block!important;margin:24px 27px 0 13px!important;line-height:18px!important;color:#fff!important;font-size:16px!important;white-space:nowrap!important}
 ${P} .tool-row{all:unset!important;box-sizing:border-box!important;position:absolute!important;right:2px!important;top:0!important;display:flex!important}
-${P} .tool-row button,${P} #lockBtn,${P} #endBlockBtn,${P} #suspendBtn{all:unset!important;box-sizing:border-box!important;background:none!important;border:0!important;padding:1px 6px!important;margin:1.5px 7px 0!important;height:57px!important;display:flex!important;flex-direction:column!important;align-items:center!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif!important;font-size:13.333px!important;line-height:normal!important;text-align:center!important;position:relative!important;cursor:pointer!important;white-space:nowrap!important}
-${P} .tool-row button:hover,${P} #lockBtn:hover,${P} #endBlockBtn:hover,${P} #suspendBtn:hover{outline:1px solid #000!important;background:#325b77!important}
+${P} .tool-row button,${P} #lockBtn,${P} #endBlockBtn,${P} #suspendBtn,${P} #reviewScoreReportBtn{all:unset!important;box-sizing:border-box!important;background:none!important;border:0!important;padding:1px 6px!important;margin:1.5px 7px 0!important;height:57px!important;display:flex!important;flex-direction:column!important;align-items:center!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif!important;font-size:13.333px!important;line-height:normal!important;text-align:center!important;position:relative!important;cursor:pointer!important;white-space:nowrap!important}
+${P} .tool-row button:hover,${P} #lockBtn:hover,${P} #endBlockBtn:hover,${P} #suspendBtn:hover,${P} #reviewScoreReportBtn:hover{outline:1px solid #000!important;background:#325b77!important}
 ${P} .tool-row button:focus-visible,${P} #lockBtn:focus-visible,${P} #endBlockBtn:focus-visible,${P} #suspendBtn:focus-visible{outline:2px dotted #fff!important}
-${P} .tool-row .tool-icon,${P} #lockBtn .lock-ico,${P} #endBlockBtn .x,${P} #suspendBtn .pause-ico{all:unset!important;box-sizing:border-box!important;width:30px!important;height:30px!important;margin:5px 0 4px!important;border-radius:5px!important;background:#fff!important;border:1px solid #fff!important;padding:4px!important;color:#000!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:2px!important;font-size:0!important}
+${P} .tool-row .tool-icon,${P} #lockBtn .lock-ico,${P} #endBlockBtn .x,${P} #suspendBtn .pause-ico,${P} #reviewScoreReportBtn .x{all:unset!important;box-sizing:border-box!important;width:30px!important;height:30px!important;margin:5px 0 4px!important;border-radius:5px!important;background:#fff!important;border:1px solid #fff!important;padding:4px!important;color:#000!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:2px!important;font-size:0!important}
 ${P} .tool-row .tool-icon svg{width:20px;height:20px}
 ${P} .tool-row button>span:not(.tool-icon){all:unset!important;display:block!important;line-height:15px!important;white-space:nowrap!important;color:#fff!important}
 ${P} #settingsBtn .tool-icon{width:55px!important;padding:4px 5px!important}
 ${P} #settingsBtn .tool-icon .sep{font-size:13px;line-height:1;margin:0 1px}
 ${P} #settingsBtn .tool-icon svg.caret{width:11px;height:11px}
 ${P} #lockBtn{position:absolute!important;left:50%!important;top:0!important;margin:1.5px 0 0!important;transform:translateX(calc(-50% - 7px))!important;line-height:15px!important}
-${P} #lockBtn .lock-ico,${P} #endBlockBtn .x,${P} #suspendBtn .pause-ico{background:transparent!important;border:0!important;width:28px!important;height:28px!important;padding:4px!important}
+${P} #lockBtn .lock-ico,${P} #endBlockBtn .x,${P} #suspendBtn .pause-ico,${P} #reviewScoreReportBtn .x{background:transparent!important;border:0!important;width:28px!important;height:28px!important;padding:4px!important}
 ${P} #lockBtn .lock-ico svg{width:20px;height:20px;fill:#fff}
 ${P} #endBlockBtn .x svg{width:22px;height:22px}
 ${P} #suspendBtn .pause-ico svg{width:20px;height:20px;fill:#fff}
-${P} #endBlockBtn,${P} #suspendBtn{line-height:15px!important}
+${P} #endBlockBtn,${P} #suspendBtn,${P} #reviewScoreReportBtn{line-height:15px!important}
+${P} #reviewScoreReportBtn{justify-self:end!important;outline-offset:0!important}
+${P} #reviewScoreReportBtn:focus-visible{outline:2px dotted #fff!important}
+${P} #reviewScoreReportBtn .x svg{width:20px;height:20px;fill:#fff}
+/* review footer: Prev Block / Next Block in Lock's place, drawn like the top bar's #prevNav / #nextNav */
+${P} .bottombar.review-actions #lockBtn${HX}{display:none!important}
+${P} .bottombar .tun-blknav{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:50%!important;top:0!important;transform:translateX(-50%)!important;display:flex!important;align-items:flex-start!important;height:58px!important}
+${P} .tun-blknav .tun-bcount{all:unset!important;box-sizing:border-box!important;display:block!important;margin:24px 20px 0!important;line-height:18px!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif!important;font-size:16px!important;white-space:nowrap!important}
+${PD} .tun-blknav .tun-bcount{color:#94eaff!important}
+${P} .tun-blknav .tun-bn{all:unset!important;box-sizing:border-box!important;padding:9px 6px 2px!important;margin:3px 0 0!important;display:flex!important;flex-direction:column!important;align-items:center!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif!important;font-size:13.333px!important;line-height:normal!important;text-align:center!important;cursor:pointer!important;white-space:nowrap!important}
+${P} .tun-blknav .tun-bn:hover:not([aria-disabled="true"]){outline:1px solid #000!important;background:#325b77!important}
+${P} .tun-blknav .tun-bn:focus-visible{outline:2px dotted #fff!important}
+${P} .tun-blknav .tun-bn[aria-disabled="true"]{opacity:.45!important;cursor:default!important}
+${P} .tun-blknav .tun-i{display:block!important;width:30px!important;height:30px!important;padding:0 3px!important}
+${P} .tun-blknav .tun-i svg{width:30px;height:30px;fill:currentColor;display:block}
+${P} .tun-blknav .nav-label{all:unset!important;display:block!important;line-height:15px!important}
+${PD} .tun-blknav .tun-bn{color:#94eaff!important}
+${PD} .tun-blknav .tun-bn:hover:not([aria-disabled="true"]){outline-color:#fff!important}
 /* question pane */
 ${P} #workspace{grid-column:2!important;grid-row:2!important;position:relative!important;inset:auto!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;margin:0 2px 0 0!important;overflow:auto!important;-webkit-overflow-scrolling:touch;background:#fff!important;box-shadow:none!important;border:0!important}
 ${P}[data-tun-view="q"] #workspace{padding:0!important}
@@ -3718,6 +3788,9 @@ ${P}[data-tun-view="q"] #workspace .question-flex{position:relative!important;zo
 ${P}[data-tun-view="q"] #workspace .question-flex:has(>.question-main.no-image:only-child){display:block!important}
 ${P}[data-tun-view="q"] #workspace .question-main{position:static!important;padding:0!important;margin:0!important;width:auto!important;max-width:none!important;min-width:0!important;height:auto!important;background:transparent!important;border:0!important;box-shadow:none!important;font:inherit!important;color:inherit!important;overflow:visible!important}
 ${P}[data-tun-view="q"] #workspace .question-flex:has(>.question-main.no-image:only-child)>.question-main{display:block!important}
+/* v2 calibration (screen 9): the stem starts 70 px down in items without an image; image items and the review split
+   panel (data-tun-ex) keep 71, as calibrated on screens 7-8 (v2's #item.gal is not applied) */
+${P}[data-tun-view="q"] #workspace .question-flex:not([data-tun-ex]){padding-top:70px!important}
 ${P} #workspace .mark-line{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:22px!important;top:30px!important;display:flex!important;align-items:center!important;gap:0!important;padding:6px!important;cursor:pointer!important;user-select:none!important;-webkit-user-select:none!important;font-size:16px!important}
 ${P} #workspace .mark-line>span:not(.tun-i){all:unset!important}
 ${P} #workspace .mark-line *::before,${P} #workspace .mark-line *::after,${P} #workspace .mark-line::before,${P} #workspace .mark-line::after{content:none!important;display:none!important}
@@ -3727,47 +3800,105 @@ ${P} #workspace #stem{all:unset!important;box-sizing:border-box!important;displa
 ${P} #workspace .question-main:not(.no-image) #stem{width:auto!important;max-width:100%!important}
 :root[data-tun][data-tun-z]:not(#tun0):not(#tun1) body #examScreen #workspace #stem{width:auto!important}
 ${P} #workspace .stem-answer-spacer{display:none!important}
-/* portrait, and windows under 1100 design px (the reference's .narrow): the stem and the choices take the full width */
-@media (max-aspect-ratio:1/1){${P} #workspace #stem,${P} #workspace .answers:not(.choice-table-active){max-width:100%!important}}
-:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace :is(#stem,.answers:not(.choice-table-active)){max-width:100%!important}
+/* portrait, and windows under 1100 design px (the reference's .narrow): the stem and the choices take the full width
+   (a choice table too, decision 2026-10-25: v2 keeps it at 56 %, which wraps every cell at 820 x 1180) */
+@media (max-aspect-ratio:1/1){${P} #workspace #stem{max-width:100%!important}}
+:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace :is(#stem,.answers){max-width:100%!important}
 /* stem content: the reference's item rules, with the NBME chart layout (a blank line before each section heading,
    "•" bullets without indent, centred borderless tables) */
-${P} #stem :where(div,p,ul,ol,li,b,u,i,em,strong,span,table,thead,tbody,tr,th,td,br,sub,sup){margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;line-height:inherit!important;color:inherit!important;letter-spacing:normal!important;text-transform:none!important;min-height:0!important;border-radius:0!important}
+${P} #stem :where(div,p,ul,ol,li,b,u,i,em,strong,span,table,thead,tbody,tr,th,td,br,sub,sup){margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;line-height:inherit!important;color:inherit!important;letter-spacing:normal!important;text-transform:none!important;min-height:0!important;border-radius:0!important;text-underline-offset:auto!important}
 ${P} #stem :is(div,p,ul,ol){display:block!important;width:auto!important;max-width:none!important}
 ${P} #stem :where(b,strong,u,i,em,span,sub,sup){display:inline!important;float:none!important;position:static!important}
 ${P} #stem :where(div,p,li,b,strong,u,i,em,span)::before{content:none}
 ${P} #stem :is(b,strong,th,.chart-heading){font-weight:700!important}
+/* the old HOPI layers underline the headings and the "Question:" label themselves, on top of the item's own <u> (a
+   second, thinner line); in NBME the underline comes from the markup, as in the reference. A heading without a <u>
+   keeps one plain underline */
+${P} #stem :is(.chart-heading,.chart-main-heading,.chart-subheading,.chart-label,.chart-question,[class*="hopi-"]){text-decoration:none!important}
+${P} #stem :is(.chart-heading,.chart-main-heading):not(:has(u)){text-decoration:underline!important}
+/* a later HOPI layer rewrites the item's <u><b>Question:</b></u> as a plain .hopi-question-label span: bold and
+   underlined like the original markup */
+${P} #stem .hopi-question-label:not(u *){font-weight:700!important;text-decoration:underline!important}
 ${P} #stem .chart-heading:not(:first-child),${P} #stem :is(ul,div,p)+.chart-question{margin-top:22.4px!important}
 ${P} #stem :is(ul,ol){list-style:none!important}
 ${P} #stem li{display:block!important}
 ${P} #stem .chart-list>li::before{content:"\\2022\\00a0"!important}
 ${P} #stem li::marker{content:none}
-${P} #stem table{display:table!important;margin:16px auto!important;border-collapse:collapse!important;width:auto!important}
+${P} #stem table{display:table!important;box-sizing:border-box!important;margin:16px auto!important;padding:0!important;border-collapse:collapse!important;width:auto;min-width:0!important;max-width:none!important}
 ${P} #stem thead{display:table-header-group!important}${P} #stem tbody{display:table-row-group!important}${P} #stem tr{display:table-row!important}
-${P} #stem :is(td,th){display:table-cell!important;padding:2px 8px 1px 2px!important;vertical-align:top!important;text-align:left!important;white-space:normal!important}
+/* cells: v2's .stem td rules (content-box, 2px .5em 1px 2px); the legacy lab-table min-widths (360 / 220 / 120 px) no
+   longer leak in. Table width, text-align and vertical-align are not forced, so an NBME-style stem's inline styles
+   (style="width:717px", text-align:center) apply, as in the reference */
+${P} #stem :is(td,th){display:table-cell!important;box-sizing:content-box!important;padding:2px .5em 1px 2px!important;white-space:normal!important;min-width:max-content!important;max-width:none!important}
+${P} #stem :where(td,th){text-align:left;vertical-align:top}
 ${P} #stem .stem-vitals-table :is(td,th){text-align:center!important}
+/* NBME-style stems: v2's rules for centred and left tables */
+${P} #stem table[align=center]{margin:1em auto!important}
+${P} #stem table[align=center] td{width:fit-content!important}
+${P} #stem table[align=left]{display:block!important;clear:both!important;float:none!important;margin:0!important;padding:0!important}
+${P} #stem table[align=left]:first-of-type{padding:21px 0!important}
+${P} #stem table[align=left] td,${P} #stem table[align=left] td span{white-space:nowrap!important}
+/* lab group rows (decision 2026-10-25, NBME style): the label ("Serum") sits in the first column as plain text (the cell
+   becomes a block, so the table gives it an anonymous one-column cell) and the tests under it are indented by two
+   spaces (2 x 0.27783em, the width of NBME's &nbsp;&nbsp;) */
+${P} #stem .stem-lab-table tr>th[colspan]:only-child{display:block!important;font-weight:400!important;text-align:left!important;min-width:0!important}
+${P} #stem .stem-lab-table tr:has(>th[colspan]:only-child)~tr>td:first-child{padding-left:calc(2px + .55566em)!important}
 ${P} #stem table tr:hover:not(.tun0){background:#d7dced!important}
 ${P} #stem :is(sub,sup){font-size:12px!important;line-height:0!important}
 ${P} #stem u{text-decoration:underline!important}
 ${P} #workspace :is(.v15-highlight,[data-v15-highlight-id]){background:#ff0!important;color:inherit!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;cursor:pointer}
 ${P} #workspace ::selection{background:#b3d4fc}
-/* answer choices */
-${P} #workspace .answers:not(.choice-table-active){all:unset!important;box-sizing:border-box!important;display:inline-block!important;margin:20px 0 15px!important;padding:10px 0!important;border:1px solid #004976!important;border-bottom-width:6px!important;min-width:0!important;max-width:calc(var(--tun-fw,1600px) * var(--tun-mw,.56))!important;vertical-align:baseline!important}
+/* answer choices (v2 calibration, screen 9): the reference's option row (.opt = .mk | .label-box (label | .sow)) on the
+   flat legacy row. The text starts right after the radio and takes 90 % of the row after it, the strike cell 3rem
+   (the button 32 x 19 at 8 / 9 inside); both shrink as in the reference's flex layout, so the box is 21 + text + 48
+   wide and rows are 7 + 22.4 + 10. "A." is the reference's "A" + " " + "." with -5px margins: the first letter (A and
+   its dot) floats with letter-spacing (space - 5px = -0.5547px, set to -34.75/64 px so the text after the dot lands on
+   the same 1/64 px as the reference's separately rounded items) and a 5px margin, so the dot and the text sit where
+   the reference puts them, and a struck choice strikes and fades (90 %) only the text after it, as v2 does. CSS only:
+   the legacy text node is not touched (highlights stay anchored). The box limits its content box, as v2's */
+${P} #workspace .answers{all:unset!important;box-sizing:content-box!important;display:inline-block!important;margin:20px 0 15px!important;padding:10px 0!important;border:1px solid #004976!important;border-bottom-width:6px!important;min-width:0!important;max-width:min(814px,calc(var(--tun-fw,1600px) * var(--tun-mw,.56)))!important;vertical-align:baseline!important}
+:root[data-tun]:is([data-tun-z],[data-tun-labs]):not(#tun0):not(#tun1) body #examScreen #workspace .answers{max-width:calc(var(--tun-fw,1600px) * var(--tun-mw,.56))!important}
+@media (max-aspect-ratio:1/1){${P} #workspace .answers{max-width:100%!important}}
 ${P} #workspace .question-main:not(.no-image) .answers{max-width:100%!important}
-${P} #workspace .answers:not(.choice-table-active) .answer{all:unset!important;box-sizing:border-box!important;display:flex!important;align-items:flex-start!important;min-height:39px!important;cursor:pointer!important;padding-right:2px!important}
+${P} #workspace .answers .answer .radio{display:none!important}
+${P} #workspace .answers:not(.choice-table-active) .answer{all:unset!important;box-sizing:content-box!important;display:flex!important;align-items:flex-start!important;min-height:0!important;cursor:pointer!important;padding:0!important}
 ${P} #workspace .answers:not(.choice-table-active) .answer:hover{background:#d7dced!important}
-${P} #workspace .answers:not(.choice-table-active) .answer>.radio{display:none!important}
 ${P} #workspace .answers:not(.choice-table-active) .tun-radio{all:revert!important;box-sizing:border-box!important;margin:9px 3px 0 5px!important;width:13px!important;height:13px!important;flex:none!important;cursor:pointer!important;pointer-events:none!important}
-${P} #workspace .answers:not(.choice-table-active) .choice-text{all:unset!important;box-sizing:border-box!important;display:block!important;margin:7px 0 10px!important;padding:0 0 0 3px!important;line-height:22px!important;flex:1!important;min-width:0!important;cursor:pointer!important}
-${P} #workspace .answers:not(.choice-table-active) .answer.struck .choice-text{text-decoration:line-through!important;opacity:.9!important}
-${P} #workspace .answers:not(.choice-table-active) .strike-symbol{all:unset!important;box-sizing:border-box!important;flex:none!important;width:32px!important;height:28px!important;margin:5px 2px 0 8px!important;border:0!important;background:transparent!important;border-radius:6px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#000!important;font-size:0!important;cursor:pointer!important}
-${P} #workspace .answers .strike-symbol svg{width:24px;height:24px;opacity:.4}
+${P} #workspace .answers:not(.choice-table-active) .choice-text{all:unset!important;box-sizing:content-box!important;display:block!important;flex:1 1 calc((100% - 21px) * .9)!important;margin:7px 0 10px!important;padding:0!important;line-height:22.4px!important;min-width:0!important;cursor:pointer!important}
+${P} #workspace .answers:not(.choice-table-active) .choice-text::first-letter{float:left!important;letter-spacing:-.54296875px!important;margin:0 5px 0 0!important;line-height:22.4px!important}
+${P} #workspace .answers:not(.choice-table-active) .answer.struck .choice-text{text-decoration:line-through!important;color:rgba(0,0,0,.9)!important;text-decoration-color:#1a1a1a!important}
+${P} #workspace .answers:not(.choice-table-active) .answer.struck .choice-text::first-letter{color:#000!important}
+${P} #workspace .answers:not(.choice-table-active) .strike-symbol{all:unset!important;box-sizing:border-box!important;position:relative!important;flex:0 1 48px!important;width:48px!important;min-width:40px!important;height:28px!important;padding:0!important;color:#000!important;font-size:0!important;cursor:pointer!important}
+${P} #workspace .answers .strike-symbol svg{display:block;width:24px;height:24px;opacity:.4}
+${P} #workspace .answers:not(.choice-table-active) .strike-symbol svg{margin:6.5px 0 0 12px}
+${P} #workspace .answers .strike-symbol::before{content:""!important;position:absolute!important;left:8px!important;top:9px!important;width:32px!important;height:19px!important;border-radius:6px!important;pointer-events:none!important}
 ${P} #workspace .answers .answer.struck .strike-symbol svg{opacity:1}
 ${P} #workspace .answers .answer.selected .strike-symbol{pointer-events:none!important}
 ${P} #workspace .answers .answer.selected .strike-symbol svg{opacity:.9}
-${P} #workspace .answers .strike-symbol:hover{background:rgba(0,0,0,.08)!important}
+${P} #workspace .answers .strike-symbol:hover::before{background:rgba(0,0,0,.08)!important}
+/* choice-table answers (screen 9): the reference's its-mtable on the legacy rows. The box as above (top-aligned); a
+   table with a 45 px selector column (radio at 6 px, "A." at 21.4 px: the reference's input + " " + label with -5px
+   margins), centred 16 px cells with 6.4 px sides (the reference's .4rem; our root font is not 16 px), 22.4 px header
+   and 36 px option rows, and a 42 px strike column
+   (button at 9 / 10). Our radio sits in the letter cell. A struck row fades to 50 % without a line: the reference's
+   line-through cannot reach its inline-block cell text, so v2 shows none */
+${P} #workspace .answers.choice-table-active{vertical-align:top!important;overflow:visible!important}
+${P} #workspace .choice-table-active .choice-table-wrap{all:unset!important;box-sizing:content-box!important;display:table!important;border-collapse:collapse!important}
+${P} #workspace .choice-table-active .choice-table-head{all:unset!important;box-sizing:content-box!important;display:table-row!important}
+${P} #workspace .choice-table-active .choice-table-head>div{all:unset!important;box-sizing:content-box!important;display:table-cell!important;padding:0 6.4px!important;text-align:center!important;vertical-align:middle!important;line-height:22.4px!important;font-weight:700!important}
+${P} #workspace .choice-table-active .choice-table-head>div:first-child{width:45px!important;min-width:44.3px!important;padding:0!important}
+${P} #workspace .choice-table-active .choice-table-row{all:unset!important;box-sizing:content-box!important;display:table-row!important;height:36px!important;cursor:pointer!important}
+${P} #workspace .choice-table-active .choice-table-row:hover{background:#d7dced!important}
+${P} #workspace .choice-table-active .choice-cell{all:unset!important;box-sizing:content-box!important;display:table-cell!important;padding:0 6.4px!important;text-align:center!important;vertical-align:middle!important;line-height:22.4px!important;cursor:pointer!important}
+${P} #workspace .choice-table-active .choice-letter-cell{padding:0!important;min-width:44.3px!important;text-align:left!important;letter-spacing:-.54296875px!important}
+${P} #workspace .choice-table-active .choice-letter-cell>span:not(.radio){all:unset!important}
+${P} #workspace .choice-table-active .tun-radio{all:revert!important;box-sizing:border-box!important;margin:3px 2.453125px 0 6px!important;width:13px!important;height:13px!important;vertical-align:-1px!important;cursor:pointer!important;pointer-events:none!important}
+${P} #workspace .choice-table-active .strike-symbol{all:unset!important;box-sizing:border-box!important;display:table-cell!important;position:relative!important;width:42px!important;vertical-align:top!important;padding:7.5px 0 0 13px!important;color:#000!important;font-size:0!important;cursor:pointer!important}
+${P} #workspace .choice-table-active .strike-symbol::before{left:9px!important;top:10px!important}
+${P} #workspace .choice-table-active .choice-table-row.struck .choice-cell{color:rgba(0,0,0,.5)!important}
 :root[data-tun-nostrike]:not(#tun0):not(#tun1) body #examScreen #workspace .answers .strike-symbol${HX},${P} #workspace .answers .answer.locked-answer .strike-symbol${HX}{visibility:hidden!important}
-${P} #workspace #proceedBtn{all:unset!important;box-sizing:border-box!important;display:block!important;width:max-content!important;margin:12px 0 0 7px!important;background:#0077c8!important;color:#fff!important;border:2px outset #000!important;border-radius:5px!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;line-height:18px!important;padding:5px!important;cursor:pointer!important;text-align:center!important}
+/* Proceed: v2's line-height 16 (145.5 x 30; decision 2026-10-25) */
+${P} #workspace #proceedBtn{all:unset!important;box-sizing:border-box!important;display:block!important;width:max-content!important;margin:12px 0 0 7px!important;background:#0077c8!important;color:#fff!important;border:2px outset #000!important;border-radius:5px!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;line-height:16px!important;padding:5px!important;cursor:pointer!important;text-align:center!important}
 ${P} #workspace #proceedBtn:hover,${P} #workspace #proceedBtn:focus{background:linear-gradient(#004976,#5490cc)!important;color:#fff!important}
 ${P} #workspace #proceedBtn:focus-visible{outline:auto!important}
 /* exhibit (v3): the reference's 46 / 54 grid (.itemGrid.hasEx) and .exhibit card on the legacy panel while it shows the
@@ -3862,8 +3993,18 @@ ${RVB} .exp-section:has(.exp-image){display:none!important}
 ${RVB} ::selection{background:#b3d4fc}
 /* explanation images: a tab of reference cards with a caption */
 ${RV} .tun-rvimgs .tun-rvcap{display:block;padding:6px 10px 8px 0;font:14px/1.35 Arial,Helvetica,sans-serif;color:#000}
-/* the choices: the reference's .opt.correct .otext */
+/* the choices: the reference's .opt.correct .otext; in a choice table every cell but the strike cell
+   (.its-mtable .correct td.its-mcol); a struck correct choice keeps its letter white and fades the rest (screen 9) */
 ${RV} .answers .answer.correctChoice .choice-text{background:#037c03!important;color:#fff!important}
+${RV} .answers .answer.correctChoice.struck .choice-text{color:rgba(255,255,255,.9)!important;text-decoration-color:#e6f2e6!important}
+${RV} .answers .answer.correctChoice.struck .choice-text::first-letter{color:#fff!important}
+${RV} .answers .choice-table-row.correctChoice .choice-cell{background:#037c03!important;outline:1px solid #037c03!important;color:#fff!important}
+${RV} .answers .choice-table-row.correctChoice.struck .choice-cell{color:rgba(255,255,255,.5)!important}
+/* bug fix 2026-10-25: your incorrect pick gets a light rose tint (the correct one stays the reference green) */
+${RV} .answers .answer.incorrectChoice .choice-text{background:#fde8e8!important;color:#9b1c1c!important;box-shadow:inset 0 0 0 1px #f6c4c4!important}
+${RV} .answers .choice-table-row.incorrectChoice .choice-cell:not(.choice-strike-cell){background:#fde8e8!important;color:#9b1c1c!important}
+${RVD} .answers .answer.incorrectChoice .choice-text{background:#3a1215!important;color:#ffb4b4!important;box-shadow:inset 0 0 0 1px #7a2a2f!important}
+${RVD} .answers .choice-table-row.incorrectChoice .choice-cell:not(.choice-strike-cell){background:#3a1215!important;color:#ffb4b4!important}
 /* portrait: the panel goes full width under Proceed and grows with its text */
 @media (max-aspect-ratio:1/1){${RV}>.right-panel-wrap{position:static!important;padding-top:39px!important;margin-top:10px!important}${RV}>.right-panel-wrap:not(:has(.qbank-tabs>:nth-child(2))){padding-top:0!important}${RV} .qbank-panel:has(>.qbank-body[data-panel-mode="explanation"]):not([data-tun-rvmode="images"]){max-height:none!important}${RV} .qbank-body[data-panel-mode="explanation"]{overflow:visible!important}}
 :root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-rv]>.right-panel-wrap{position:static!important;padding-top:39px!important;margin-top:10px!important}:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-rv]>.right-panel-wrap:not(:has(.qbank-tabs>:nth-child(2))){padding-top:0!important}:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-rv] .qbank-panel:has(>.qbank-body[data-panel-mode="explanation"]):not([data-tun-rvmode="images"]){max-height:none!important}:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-rv] .qbank-body[data-panel-mode="explanation"]{overflow:visible!important}
@@ -3996,10 +4137,10 @@ ${PD} .topbar{border-bottom:1px solid #94eaff!important}
 ${PD} .bottombar{border-top:1px solid #94eaff!important}
 ${PD} #itemBox,${PD} #timeBox{border-color:#94eaff!important;color:#94eaff!important}
 ${PD} #prevBtn,${PD} #nextBtn,${PD} #prevNav .nav-label,${PD} #nextNav .nav-label{color:#94eaff!important}
-${PD} #centerCounter,${PD} #lockBtn,${PD} #endBlockBtn,${PD} #suspendBtn,${PD} .tool-row button>span:not(.tool-icon){color:#94eaff!important}
-${PD} .tool-row button:hover,${PD} #lockBtn:hover,${PD} #endBlockBtn:hover,${PD} #suspendBtn:hover{outline-color:#fff!important}
+${PD} #centerCounter,${PD} #lockBtn,${PD} #endBlockBtn,${PD} #suspendBtn,${PD} #reviewScoreReportBtn,${PD} .tool-row button>span:not(.tool-icon){color:#94eaff!important}
+${PD} .tool-row button:hover,${PD} #lockBtn:hover,${PD} #endBlockBtn:hover,${PD} #suspendBtn:hover,${PD} #reviewScoreReportBtn:hover{outline-color:#fff!important}
 ${PD} .tool-row .tool-icon{background:#000!important;border-color:#94eaff!important;color:#94eaff!important}
-${PD} #lockBtn .lock-ico,${PD} #endBlockBtn .x,${PD} #suspendBtn .pause-ico{border:1px solid #94eaff!important;background:#000!important}
+${PD} #lockBtn .lock-ico,${PD} #endBlockBtn .x,${PD} #suspendBtn .pause-ico,${PD} #reviewScoreReportBtn .x{border:1px solid #94eaff!important;background:#000!important}
 ${PD} #lockBtn .lock-ico svg,${PD} #suspendBtn .pause-ico svg{fill:#94eaff}
 ${PD} #workspace{background:#000!important}
 ${PD}[data-tun-view="q"] #workspace .question-flex{color:#fff!important}
@@ -4009,7 +4150,10 @@ ${PD} #workspace ::selection{background:#3a6ea5;color:#fff}
 ${PD} #workspace .answers{border-color:#fff!important}
 ${PD} #workspace .answers .answer:hover{background:#222!important}
 ${PD} #workspace .answers .strike-symbol{color:#fff!important}
-${PD} #workspace .answers .strike-symbol:hover{background:rgba(255,255,255,.15)!important}
+${PD} #workspace .answers .strike-symbol:hover::before{background:rgba(255,255,255,.15)!important}
+${PD} #workspace .answers:not(.choice-table-active) .answer.struck .choice-text{color:rgba(255,255,255,.9)!important;text-decoration-color:#e6e6e6!important}
+${PD} #workspace .answers:not(.choice-table-active) .answer.struck .choice-text::first-letter{color:#fff!important}
+${PD} #workspace .choice-table-active .choice-table-row.struck .choice-cell{color:rgba(255,255,255,.5)!important}
 ${PD} #workspace #proceedBtn{background:#6ed6dd!important;color:#000!important;border:1px solid #fff!important}
 ${PD} #workspace #proceedBtn:hover,${PD} #workspace #proceedBtn:focus{background:#6ed6dd!important;color:#000!important}
 /* Settings menu (v3): the reference's #toolsMenu. Our Exam style switch first, then the reference's rows, then our
@@ -4109,6 +4253,7 @@ ${L} #labPanel .lab-panel-head{all:unset!important;box-sizing:border-box!importa
 ${L} #labPanel .lab-panel-head strong{display:none!important}
 ${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close){all:unset!important;box-sizing:border-box!important;width:25px!important;height:25px!important;border:1px solid #004976!important;background:#004976!important;color:#fff!important;border-radius:5px!important;padding:1px!important;position:absolute!important;right:15px!important;top:6px!important;z-index:2!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important}
 ${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close) svg{width:20px;height:20px;fill:#fff;display:block}
+${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close) :is(.tun-i,.tun-txt,svg,path){pointer-events:none!important}
 ${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close):hover{background:#fff!important}
 ${L} :is(#labPanel .lab-close,#floatingCalc .calc-close,#examNotesPanel .notes-close):hover svg{fill:#004976}
 ${L} #labPanel .lab-controls{all:unset!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;padding:35px 0 0 10px!important;gap:12px!important;background:#fff!important;color:#000!important}
@@ -4229,6 +4374,8 @@ ${A}:is(.hidden,[hidden])${HX},${L} #pauseOverlay.hidden${HX},${P} .hidden${HX},
 ${P}.break-screen-active>:is(.topbar,.left-status,.bottombar)${HX},${P} .bottombar.v16-review-no-lock :is(#lockBtn,#suspendBtn)${HX}{display:none!important}
 `;
   // the reference's own icons, verbatim (thunder-ui-functional.html ICON); pause is ours (Suspend), in the same style
+  // the review footer's Score Report (bug fix 2026-10-25): a bar chart in the footer icons' 16-unit grid
+  const NB_REPORT_ICO = '<svg class="i" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z"/></svg>';
   const RI = {
     arrowL:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z\"></path></svg>",
     arrowR:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z\"></path></svg>",
@@ -4328,17 +4475,18 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     setAttrIf(root, 'data-tun-dark', on && nbTheme() === 'dark' ? '1' : null);
     if(on){ nbDecorate(); nbFrameWidth(); nbLockCover(); }
     if(!on) closeNbAlert();
+    tuxPrefs();
   }
   // --tun-mw: 56 / 66 / 80 / 98 % by text size; 80 % (98 % at 200 %) while Lab Values is open (the reference's .labOpen)
   function nbMw(on){
     const root = document.documentElement, size = Number(store.get(NBK.size, '100')) || 100, labs = root.hasAttribute('data-tun-labs');
     setVar(root, '--tun-mw', on ? String(labs ? (size === 200 ? .98 : .8) : ({125:.66, 150:.8, 200:.98}[size] || .56)) : null);
   }
-  // --tun-fw: the item frame's width in item px (the reference's setFrameWidth)
+  // --tun-fw: the item frame's width in item px, less v2's 5 px (the reference's setFrameWidth)
   function nbFrameWidth(){
     const ws = byId('workspace'); if(!ws || !nbmeOn()) return;
     const z = Number(store.get(NBK.size, '100')) / 100 || 1;
-    setVar(document.documentElement, '--tun-fw', (ws.clientWidth / z) + 'px');
+    setVar(document.documentElement, '--tun-fw', ((ws.clientWidth - 5) / z) + 'px');
   }
   // the reference's icons inside the legacy nodes (kept hidden without :root[data-tun]); legacy renders replace
   // #statusRows and #workspace often, so this runs from their observers, before the next paint
@@ -4452,6 +4600,31 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       const v = nbClock(el.textContent, day); if(t.textContent !== v) t.textContent = v;
     });
   }
+  // review footer (user request 2026-10-25): Lock does nothing in review, so the footer's centre holds Prev Block /
+  // Next Block, drawn like the top bar's Previous / Next; each opens that block at its first item
+  function nbBlockNav(){
+    const bar = document.querySelector('#examScreen > .bottombar'); if(!bar) return;
+    let nav = byId('tunBlockNav');
+    if(!bar.classList.contains('review-actions')){ nav?.remove(); return; }
+    if(!nav){
+      const btn = ([d, a, ic, l]) => `<div class="tun-bn" role="button" tabindex="0" data-tun-blk="${d}" aria-label="${a}"><span class="tun-i" aria-hidden="true">${ic}</span><span class="nav-label">${l}</span></div>`;
+      bar.insertAdjacentHTML('beforeend', `<div id="tunBlockNav" class="tun-blknav">${btn(['-1', 'Previous block', RI.arrowL, 'Prev Block'])}<span class="tun-bcount" aria-live="polite"></span>${btn(['1', 'Next block', RI.arrowR, 'Next Block'])}</div>`);
+      nav = byId('tunBlockNav');
+      const go = e => { const b = e.target.closest && e.target.closest('[data-tun-blk]'); if(!b || b.getAttribute('aria-disabled') === 'true') return; if(e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); nbGoBlock(Number(b.dataset.tunBlk)); };
+      nav.addEventListener('click', go); nav.addEventListener('keydown', go);
+    }
+    let ptr = 0, n = 1; try{ ptr = blockPointer; n = activeBlocks.length; }catch(e){}
+    const cnt = nav.querySelector('.tun-bcount'), ct = (ptr + 1) + ' / ' + n; if(cnt && cnt.textContent !== ct){ cnt.textContent = ct; cnt.setAttribute('aria-label', 'Block ' + (ptr + 1) + ' of ' + n); }
+    nav.querySelectorAll('[data-tun-blk]').forEach(b => { const p = ptr + Number(b.dataset.tunBlk), off = p < 0 || p >= n ? 'true' : 'false'; if(b.getAttribute('aria-disabled') !== off) b.setAttribute('aria-disabled', off); });
+  }
+  function nbGoBlock(d){
+    try{
+      const p = blockPointer + d; if(!reviewMode || p < 0 || p >= activeBlocks.length) return;
+      try{ commitQuestionTime(); persistBlockProgress(); }catch(e){}
+      startBlock(p);
+      if(state.current !== 0) goToQuestionIndex(0);
+    }catch(e){ console.warn('ThunderUI block navigation failed', e); }
+  }
   function nbDecorate(){
     const scr = byId('examScreen'); if(!scr || !nbmeOn()) return;
     const ws = byId('workspace');
@@ -4464,6 +4637,8 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     nbIcon(byId('lockBtn')?.querySelector('.lock-ico'), RI.lock);
     nbIcon(byId('endBlockBtn')?.querySelector('.x'), RI.endx);
     nbIcon(byId('suspendBtn')?.querySelector('.pause-ico'), RI.pause);
+    nbIcon(byId('reviewScoreReportBtn')?.querySelector('.x'), NB_REPORT_ICO);
+    nbBlockNav();
     document.querySelectorAll('#statusRows .status-row').forEach(r => {
       if(r.querySelector('.tun-i')) return;
       const a = r.querySelector('.navans'); if(a && a.querySelector('.dot')) nbIcon(a, RI.dot);
@@ -4478,8 +4653,9 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     const ml = ws.querySelector('.mark-line'), mk = byId('markQuestion');
     if(ml && mk && !ml.querySelector('.tun-i')) mk.insertAdjacentHTML('afterend', `<span class="tun-i" aria-hidden="true">${RI.flag}</span>`);
     ws.querySelectorAll('.answers .answer[data-choice]').forEach(a => {
-      let r = a.querySelector(':scope > .tun-radio');
-      if(!r){ a.insertAdjacentHTML('afterbegin', '<input type="radio" class="tun-radio" tabindex="-1" aria-hidden="true">'); r = a.firstElementChild; }
+      // a choice-table row keeps its radio in the letter cell (the reference's selector cell), not as a cell of its own
+      let r = a.querySelector('.tun-radio');
+      if(!r){ const host = a.querySelector(':scope > .choice-letter-cell') || a; host.insertAdjacentHTML('afterbegin', '<input type="radio" class="tun-radio" tabindex="-1" aria-hidden="true">'); r = host.firstElementChild; }
       const on = a.classList.contains('selected'); if(r.checked !== on) r.checked = on;
       nbIcon(a.querySelector('.strike-symbol'), RI.strike);
     });
@@ -4821,6 +4997,21 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     add(first || list[0]); list.slice(1).forEach(add);
     return out;
   }
+  // review mode (bug fix 2026-10-25): moving on to the next block (Next / Proceed after its last item, Next Block) opens
+  // that block at its first item, not at the item the exam left it on. A Score Report row's own goToQuestionIndex still wins
+  function wrapStartBlock(){
+    if(typeof startBlock !== 'function' || startBlock.__tu) return;
+    const base = startBlock;
+    const wrapped = function(ptr){
+      let fwd = false;
+      try{ fwd = !!reviewMode && Number(ptr) === blockPointer + 1 && !!byId('examScreen') && !byId('examScreen').classList.contains('hidden'); }catch(e){}
+      const r = base.apply(this, arguments);
+      try{ if(fwd && state.current !== 0 && questions.length) goToQuestionIndex(0); }catch(e){ console.warn('ThunderUI review block start failed', e); }
+      return r;
+    };
+    wrapped.__tu = true;
+    startBlock = wrapped; // eslint-disable-line no-global-assign
+  }
   function wrapExhibits(){
     if(typeof getQuestionImage !== 'function' || getQuestionImage.__tu) return;
     exhibitBase = getQuestionImage;
@@ -5019,7 +5210,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   function boot(){
     revealWhenDrawn();
     if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES + NBME_STYLES + NBME_SHELL; document.head.appendChild(st); }
-    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); wrapExhibits(); wrapLabs();
+    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); wrapExhibits(); wrapLabs(); wrapStartBlock();
     const wsx = byId('workspace'); if(wsx) new MutationObserver(() => exhibitExtras()).observe(wsx, {childList:true});
     document.addEventListener('click', onExhibitClick, true);
     document.addEventListener('input', onExhibitInput, true); document.addEventListener('change', onExhibitInput, true); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
