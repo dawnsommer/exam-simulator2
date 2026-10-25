@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 22;
+  const TU_RELEASE = 23;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -3832,6 +3832,8 @@ ${P} #stem thead{display:table-header-group!important}${P} #stem tbody{display:t
 ${P} #stem :is(td,th){display:table-cell!important;box-sizing:content-box!important;padding:2px .5em 1px 2px!important;white-space:normal!important;min-width:max-content!important;max-width:none!important}
 ${P} #stem :where(td,th){text-align:left;vertical-align:top}
 ${P} #stem .stem-vitals-table :is(td,th){text-align:center!important}
+/* v3 (patient-chart-Q1): centred cells never wrap */
+${P} #stem table[align=center] td[style*="text-align:center"],${P} #stem .stem-vitals-table :is(td,th){white-space:nowrap!important}
 /* NBME-style stems: v2's rules for centred and left tables */
 ${P} #stem table[align=center]{margin:1em auto!important}
 ${P} #stem table[align=center] td{width:fit-content!important}
@@ -3843,8 +3845,14 @@ ${P} #stem table[align=left] td,${P} #stem table[align=left] td span{white-space
    spaces (2 x 0.27783em, the width of NBME's &nbsp;&nbsp;) */
 ${P} #stem .stem-lab-table tr>th[colspan]:only-child{display:block!important;font-weight:400!important;text-align:left!important;min-width:0!important}
 ${P} #stem .stem-lab-table tr:has(>th[colspan]:only-child)~tr>td:first-child{padding-left:calc(2px + .55566em)!important}
+/* v3: "Medications:" + its list = the sample's <table align=left> block: 21 px padding above and below, cells 2 / 1 px,
+   so the label is 23 px lower and 2 px in, the list 3 px under it, and the next subheading 22 px lower */
+${P} #stem .chart-subheading[data-tun-med]{margin-top:23px!important;padding-left:2px!important}
+${P} #stem .chart-list[data-tun-med]{margin-top:3px!important;margin-bottom:22px!important;padding-left:2px!important}
 ${P} #stem table tr:hover:not(.tun0){background:#d7dced!important}
-${P} #stem :is(sub,sup){font-size:12px!important;line-height:0!important}
+/* v3: sub/sup 75 % and shifted by .5em from the baseline (no UA vertical-align sub/super) */
+${P} #stem :is(sub,sup){font-size:75%!important;line-height:0!important;vertical-align:baseline!important;position:relative!important}
+${P} #stem sub{bottom:-.5em!important}${P} #stem sup{top:-.5em!important}
 ${P} #stem u{text-decoration:underline!important}
 ${P} #workspace :is(.v15-highlight,[data-v15-highlight-id]){background:#ff0!important;color:inherit!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;cursor:pointer}
 ${P} #workspace ::selection{background:#b3d4fc}
@@ -4660,6 +4668,13 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       nbIcon(a.querySelector('.strike-symbol'), RI.strike);
     });
     nbExhibit(ws);
+    // v3 (patient-chart-Q1): the sample draws "Medications:" and its list as a left-aligned table block, with its own
+    // gaps; ours is a plain subheading + list, so the pair gets a hook for the CSS (attributes only, the text is untouched)
+    ws.querySelectorAll('#stem .chart-subheading').forEach(h => {
+      const med = /^medications\s*[:：]?$/i.test(h.textContent.replace(/\s+/g, ' ').trim()), l = h.nextElementSibling;
+      setAttrIf(h, 'data-tun-med', med ? '' : null);
+      setAttrIf(l && l.classList.contains('chart-list') ? l : null, 'data-tun-med', med ? '' : null);
+    });
   }
   // the reference's #toolsMenu sits at right 20 / top 46 of the top bar; the root zoom (--tun-k) scales it like the bar
   function nbPlaceMenu(box){
