@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 20;
+  const TU_RELEASE = 21;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -56,7 +56,7 @@
 :root[data-tu-accent="blue"]{--tu-brand:#2F5BD3;--tu-brand-deep:#1C3A93;--tu-lp:#2F5BD3;--tu-lonp:#FFFFFF;--tu-lpc:#DCE4FF;--tu-lonpc:#0F2A78;--tu-dp:#B3C5FF;--tu-donp:#0F2A78;--tu-dpc:#273F94;--tu-donpc:#DCE4FF}
 :root[data-tu-accent="teal"]{--tu-brand:#00676C;--tu-brand-deep:#00403F;--tu-lp:#00676C;--tu-lonp:#FFFFFF;--tu-lpc:#C6ECEE;--tu-lonpc:#002022;--tu-dp:#80D4D9;--tu-donp:#003739;--tu-dpc:#00494D;--tu-donpc:#C6ECEE}
 :root[data-tu] #menu,:root[data-tu] #appDialogLayer,:root[data-tu] #examScreen .tu-report{--tu-bg:#F6F7FB;--tu-surface:#FFFFFF;--tu-s1:#EFF1F7;--tu-s2:#E7EAF3;--tu-s3:#DCE0EC;--tu-line:#D3D8E5;--tu-line2:#E4E7F0;--tu-on:#161A25;--tu-on2:#474E62;--tu-on3:#5F6679;--tu-ok:#17683D;--tu-okc:#D3EFDD;--tu-warn:#7D4B00;--tu-warnc:#FFE3B8;--tu-bad:#A8231B;--tu-badc:#FBDAD6;--tu-shadow:0 1px 2px rgba(20,26,40,.06),0 3px 10px rgba(20,26,40,.06);--tu-p:var(--tu-lp);--tu-onp:var(--tu-lonp);--tu-pc:var(--tu-lpc);--tu-onpc:var(--tu-lonpc);--tu-font:"Figtree",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif}
-:root[data-tu] #menu.theme-dark,:root[data-tu] #examScreen.exam-dark .tu-report,:root[data-tu][data-tu-dark] #appDialogLayer{--tu-bg:#0E1118;--tu-surface:#161A23;--tu-s1:#131720;--tu-s2:#222835;--tu-s3:#2B3242;--tu-line:#3A4256;--tu-line2:#272E3D;--tu-on:#E4E7F0;--tu-on2:#B4BACB;--tu-on3:#9AA1B4;--tu-ok:#86DCA8;--tu-okc:#173A27;--tu-warn:#FFC772;--tu-warnc:#3D2C0F;--tu-bad:#FFB4AB;--tu-badc:#4A1612;--tu-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.28);--tu-p:var(--tu-dp);--tu-onp:var(--tu-donp);--tu-pc:var(--tu-dpc);--tu-onpc:var(--tu-donpc)}
+:root[data-tu] #menu.theme-dark,:root[data-tu] #examScreen:is(.exam-dark,.reverse) .tu-report,:root[data-tu][data-tu-dark] #appDialogLayer{--tu-bg:#0E1118;--tu-surface:#161A23;--tu-s1:#131720;--tu-s2:#222835;--tu-s3:#2B3242;--tu-line:#3A4256;--tu-line2:#272E3D;--tu-on:#E4E7F0;--tu-on2:#B4BACB;--tu-on3:#9AA1B4;--tu-ok:#86DCA8;--tu-okc:#173A27;--tu-warn:#FFC772;--tu-warnc:#3D2C0F;--tu-bad:#FFB4AB;--tu-badc:#4A1612;--tu-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.28);--tu-p:var(--tu-dp);--tu-onp:var(--tu-donp);--tu-pc:var(--tu-dpc);--tu-onpc:var(--tu-donpc)}
 .tu-logo-tile{fill:var(--tu-brand)}.tu-logo-deep{fill:var(--tu-brand-deep)}.tu-ico{flex:none;display:block}
 .tu-sr{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}
 
@@ -1288,13 +1288,14 @@ ${W} .qbank-body .exp-placeholder{color:var(--tu-on3)!important}
 ${W} .qbank-body[data-panel-mode="exhibit"],${W} .qbank-body:not([data-panel-mode="explanation"]){display:block!important}
 ${W} .qbank-body img{max-width:100%;height:auto;border-radius:12px}
 ${W} .exhibit-in-panel{display:block!important;padding:0!important;background:transparent!important}
+${W} .exhibit-in-panel+.exhibit-in-panel{margin-top:16px!important} /* more images (q.exhibits): one card each */
 ${W} .exhibit-in-panel .exhibit{width:100%!important;display:flex!important;flex-direction:column;gap:10px;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important}
 ${W} .exhibit-tools{position:static!important;transform:none!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap;gap:6px!important;align-items:center!important;color:var(--tu-on2)!important;font:700 12.5px var(--tu-font)!important}
 ${W} .exhibit-tools>div{position:relative;display:flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 6px;border-radius:999px;background:var(--tu-s1);cursor:pointer}
 ${W} .exhibit-tools>div:hover{background:var(--tu-s2)}
 ${W} .exhibit-tool-icon{width:24px!important;height:24px!important;border:0!important;background:transparent!important;color:var(--tu-on)!important;font-size:16px!important;line-height:1!important}
 ${W} .exhibit-tool-icon::after{content:"";position:absolute;inset:0;border-radius:999px} /* the whole pill clicks the tool */
-${W} .exhibit:has(.exhibit-img.invert) .exhibit-tools>div:has(#invertEx),${W} .exhibit:has(.exhibit-img.contrast) .exhibit-tools>div:has(#contrastEx),${W} .exhibit:has(.exhibit-img.zoomed) .exhibit-tools>div:has(#zoomEx){background:var(--tu-pc);color:var(--tu-onpc)!important}
+${W} .exhibit:has(.exhibit-img.invert) .exhibit-tools>div:has(#invertEx,[data-tun-tool="invert"]),${W} .exhibit:has(.exhibit-img.contrast) .exhibit-tools>div:has(#contrastEx,[data-tun-tool="contrast"]),${W} .exhibit:has(.exhibit-img.zoomed) .exhibit-tools>div:has(#zoomEx){background:var(--tu-pc);color:var(--tu-onpc)!important}
 ${W} .exhibit-img{min-height:0!important;padding:8px;border:1px solid var(--tu-line2)!important;border-radius:16px;background:var(--tu-s1)!important;box-shadow:none!important}
 ${W} .exhibit-img:hover{border-color:var(--tu-line)!important}
 ${W} .exhibit-img img{max-height:min(64vh,620px)!important;margin:0 auto;border-radius:10px}
@@ -3602,6 +3603,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const NBK = {size:'ThunderUSMLE.nbmeTextSize', strike:'ThunderUSMLE.nbmeStrikeHidden', theme:'ThunderUSMLE.nbmeTheme'};
   const nsvg = (vb, body) => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${body}</svg>`)}")`;
   const NI = {
+    rvOk:nsvg('0 0 16 16', '<circle cx="8" cy="8" r="8" fill="#037c03"/><path d="M4.4 8.3l2.4 2.4 4.8-4.9" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'),
+    rvBad:nsvg('0 0 16 16', '<circle cx="8" cy="8" r="8" fill="#e00"/><path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/>'),
     arrowL:nsvg('0 0 16 16', '<path fill="#fff" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>'),
     arrowR:nsvg('0 0 16 16', '<path fill="#fff" d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>'),
     arrowLc:nsvg('0 0 16 16', '<path fill="#94eaff" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>'),
@@ -3631,6 +3634,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const O = ':root[data-tun]:not(#tun0):not(#tun1) body #overviewRoot', OD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body #overviewRoot';
   const A = ':root[data-tun]:not(#tun0):not(#tun1) body :is(#appDialogLayer,#tunOverlay)', AD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body :is(#appDialogLayer,#tunOverlay)';
   const M = ':root[data-tun]:not(#tun0):not(#tun1) body #referenceSettingsDropdown.tun-menu', MD = ':root[data-tun][data-tun-dark]:not(#tun0):not(#tun1) body #referenceSettingsDropdown.tun-menu';
+  // the review scope: the question block, and the Below layout's explanation (a sibling after it)
+  const RV = P + ' #workspace :is(.question-flex,.below-exp-wrap)[data-tun-rv]', RVD = PD + ' #workspace :is(.question-flex,.below-exp-wrap)[data-tun-rv]', RVB = RV + ' .qbank-body[data-panel-mode="explanation"]', RVBD = RVD + ' .qbank-body[data-panel-mode="explanation"]';
   const NBME_SHELL = `
 :root:not([data-tun]) .tun-i,:root:not([data-tun]) .tun-radio{display:none!important}
 :root[data-tun]:not(#tun0):not(#tun1) body .tun-txt{display:none!important}
@@ -3765,6 +3770,170 @@ ${P} #workspace .answers .strike-symbol:hover{background:rgba(0,0,0,.08)!importa
 ${P} #workspace #proceedBtn{all:unset!important;box-sizing:border-box!important;display:block!important;width:max-content!important;margin:12px 0 0 7px!important;background:#0077c8!important;color:#fff!important;border:2px outset #000!important;border-radius:5px!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;line-height:18px!important;padding:5px!important;cursor:pointer!important;text-align:center!important}
 ${P} #workspace #proceedBtn:hover,${P} #workspace #proceedBtn:focus{background:linear-gradient(#004976,#5490cc)!important;color:#fff!important}
 ${P} #workspace #proceedBtn:focus-visible{outline:auto!important}
+/* exhibit (v3): the reference's 46 / 54 grid (.itemGrid.hasEx) and .exhibit card on the legacy panel while it shows the
+   exhibit only (data-tun-ex on .question-flex): .exhibit-in-panel = .exhibit, .exhibit = .mg-inner, .exhibit-img =
+   .mg-view, .exhibit-tools = .mg-tools, a tool = .mgb; the tab box is not drawn. More images (q.exhibits) stack as
+   more cards. Portrait and narrow windows stack the column under the question, as the reference does */
+${P} #workspace .question-flex[data-tun-ex]{display:grid!important;grid-template-columns:minmax(0,46%) minmax(0,1fr)!important;column-gap:13px!important;align-items:start!important}
+${P} #workspace .question-flex[data-tun-ex]>.question-main{grid-column:1!important}
+${P} #workspace .question-flex[data-tun-ex]>:not(.question-main):not(.right-panel-wrap){grid-column:1 / -1!important}
+${P} #workspace .question-flex[data-tun-ex]>.right-panel-wrap{all:unset!important;box-sizing:border-box!important;display:block!important;grid-column:2!important;min-width:0!important}
+@media (max-aspect-ratio:1/1){${P} #workspace .question-flex[data-tun-ex]{display:block!important}${P} #workspace .question-flex[data-tun-ex] .exhibit-in-panel:first-child{margin-top:10px!important}}
+:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-ex]{display:block!important}
+:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-ex] .exhibit-in-panel:first-child{margin-top:10px!important}
+${P} #workspace .question-flex[data-tun-ex]>.right-panel-wrap>.qbank-panel,${P} #workspace .question-flex[data-tun-ex]>.right-panel-wrap .qbank-body{all:unset!important;box-sizing:border-box!important;display:block!important}
+${P} #workspace .question-flex[data-tun-ex]:not([data-tun-rv])>.right-panel-wrap .qbank-tabs{display:none!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-in-panel{all:unset!important;box-sizing:border-box!important;display:block!important;position:relative!important;margin:40px 0 0 2px!important;padding:8px!important;background:#f4f4f4!important;border-top:4px solid #0066a4!important;box-shadow:0 0 10px #575962!important;color:#000!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-in-panel+.exhibit-in-panel{margin-top:10px!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-in-panel>.exhibit{all:unset!important;box-sizing:border-box!important;display:block!important;position:relative!important;min-height:200px!important;padding:5px 0 0 70px!important;background:#fff!important;border:1px solid rgba(0,0,0,.2)!important;border-radius:3px!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-img{all:unset!important;box-sizing:border-box!important;display:block!important;position:relative!important;overflow:auto!important;max-height:calc(100dvh / var(--tun-k,1) - 261px)!important;touch-action:pan-x pan-y!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-img>:is(img,svg){all:unset!important;box-sizing:border-box!important;display:block!important;width:100%!important;height:auto!important;cursor:zoom-in!important;user-select:none!important;-webkit-user-select:none!important;-webkit-user-drag:none!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-img.invert{filter:invert(1)!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-img.contrast{filter:contrast(var(--tun-con,150%))!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-img.invert.contrast{filter:invert(1) contrast(var(--tun-con,150%))!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit .drive-link{all:unset!important;display:block!important;padding:4px 8px 6px 0!important;font-size:13px!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit .drive-link a{color:#0066a4!important;text-decoration:underline!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-tools{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:0!important;bottom:0!important;width:63px!important;padding:8px 0 4px!important;display:flex!important;flex-direction:column!important;align-items:center!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-tools>div{all:unset!important;box-sizing:border-box!important;width:56px!important;height:56px!important;padding:2px 0 0!important;display:flex!important;flex-direction:column!important;align-items:center!important;border-radius:3px!important;color:#000!important;font:13.333px Arial,Helvetica,sans-serif!important;line-height:normal!important;cursor:pointer!important;user-select:none!important;-webkit-user-select:none!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-tools>div:hover,${P} #workspace .question-flex[data-tun-ex] .exhibit:has(>.exhibit-img.invert) .exhibit-tools>div:has([data-tun-tool="invert"]),${P} #workspace .question-flex[data-tun-ex] .exhibit:has(>.tun-mgpop.show) .exhibit-tools>div:has([data-tun-tool="contrast"]){background:#dfe6ee!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-tools .exhibit-tool-icon{all:unset!important;display:contents!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-tools svg.i{width:30px;height:30px;margin:4px 0}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-tools>div>div:last-child{all:unset!important;display:block!important}
+/* review (v3, screen 8: the approved mockup of 2026-10-25): the exam's 46 / 54 grid and card stay (data-tun-ex is set too);
+   data-tun-rv adds a tab bar for 2+ panes (Explanation first, Exhibit, Explanation Image(s)), the explanation card (the
+   exhibit card's frame around a white box: header, scrolling text, images row), the correct choice shaded #037c03, an
+   answer change that flipped the result, the Review Mode chip as an info box, readable ✓ / ✗ in the question list */
+${RV}>.right-panel-wrap{position:sticky!important;top:8px!important;align-self:start!important;padding-top:40px!important}
+${RV} .exhibit-in-panel:first-child{margin-top:0!important}
+${RV}>.right-panel-wrap>.qbank-panel{position:relative!important;display:block!important;margin-left:2px!important}
+${RV}>.right-panel-wrap>.qbank-panel .exhibit-in-panel{margin-left:0!important}
+${RV} .answer-meta-panel,${RV} .locked-banner{display:none!important}
+/* tabs: only when there are 2+ panes; Explanation first */
+${RV} .qbank-tabs{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:0!important;bottom:100%!important;display:flex!important;gap:4px!important;align-items:flex-end!important}
+${RV} .qbank-tabs:not(:has(>:nth-child(2))){display:none!important}
+${RV} .qbank-tabs .qbank-tab{all:unset!important;box-sizing:border-box!important;height:29px!important;padding:0 14px!important;display:flex!important;align-items:center!important;font:14px Arial,Helvetica,sans-serif!important;color:#000!important;background:#fff!important;border:1px solid #bbc!important;border-bottom:0!important;border-radius:5px 5px 0 0!important;cursor:pointer!important;white-space:nowrap!important}
+${RV} .qbank-tabs [data-panel-tab="explanation"]{order:1!important}${RV} .qbank-tabs [data-panel-tab="exhibit"]{order:2!important}${RV} .qbank-tabs [data-tun-rvtab]{order:3!important}
+${RV} .qbank-tabs .qbank-tab:hover{background:#dfe6ee!important}
+${RV} .qbank-panel:not([data-tun-rvmode="images"]) .qbank-tabs .qbank-tab.active,${RV} .qbank-panel[data-tun-rvmode="images"] .qbank-tabs [data-tun-rvtab]{background:#0066a4!important;color:#fff!important;border-color:#0066a4!important;font-weight:700!important}
+${RV} .qbank-panel[data-tun-rvmode="images"]>:is(.qbank-body,.tun-rvexhead,.tun-rvfoot){display:none!important}
+${RV} .qbank-panel:has(>.qbank-body[data-panel-mode="explanation"]):not([data-tun-rvmode="images"])>.qbank-tabs{bottom:calc(100% + 4px)!important}
+${RV} .qbank-panel:not([data-tun-rvmode="images"])>.tun-rvimgs{display:none!important}
+/* the explanation card: the exhibit card's frame (#f4f4f4, 4 px #0066a4 bar, shadow) around a white box; the header and
+   the images row stay put, the text scrolls */
+${RV} .qbank-panel:has(>.qbank-body[data-panel-mode="explanation"]):not([data-tun-rvmode="images"]){display:flex!important;flex-direction:column!important;max-height:calc(100dvh / var(--tun-k,1) - 242px)!important;padding:8px!important;background:#f4f4f4!important;border-top:4px solid #0066a4!important;box-shadow:0 0 10px #575962!important;color:#000!important}
+${RV} .tun-rvexhead,${RV} .tun-rvfoot{flex:none;box-sizing:border-box;background:#fff;border:1px solid rgba(0,0,0,.2);padding:8px 14px;font:14px/1.35 Arial,Helvetica,sans-serif;color:#000;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+${RV} .tun-rvexhead{border-radius:3px 3px 0 0;border-bottom-color:#dadada}
+${RV} .tun-rvfoot{border-radius:0 0 3px 3px;border-top-color:#dadada}
+${RV} .tun-rvexhead b,${RV} .tun-rvfoot b{font-weight:700}
+${RV} .tun-rvyours{display:inline-flex;align-items:center;gap:5px}
+${RV} .tun-rvyours i{width:15px;height:15px;flex:none;background:center/15px no-repeat}
+${RV} .tun-rvyours.bad i{background-image:${NI.rvBad}}${RV} .tun-rvyours.ok i{background-image:${NI.rvOk}}
+${RV} .tun-rvyours.bad span{color:#c00}
+${RV} .tun-rvthumbs{display:flex;gap:6px;align-items:center;margin-left:auto}
+${RV} .tun-rvthumbs button{all:unset;box-sizing:border-box;height:40px;border:1px solid #bbc;background:#fff;cursor:zoom-in;display:block;padding:0}
+${RV} .tun-rvthumbs button:hover{outline:2px solid #0066a4}
+${RV} .tun-rvthumbs img{display:block;height:38px;width:auto}
+${RV} .tun-rvfoot .tun-rvthumbs{margin-left:0}
+${RV} .tun-rvfoot button{cursor:pointer}
+${RV} .qbank-body[data-panel-mode="explanation"]{all:unset!important;box-sizing:border-box!important;display:block!important;flex:1 1 auto!important;min-height:0!important;overflow:auto!important;background:#fff!important;border-left:1px solid rgba(0,0,0,.2)!important;border-right:1px solid rgba(0,0,0,.2)!important;padding:14px 18px 18px!important;font-size:16px!important;line-height:1.4!important}
+/* the explanation text: the stem's type (16 / 1.4, follows Resize Text), plain sections */
+${RVB},${RVB} *{font-family:"Arial Unicode MS",Arial,Helvetica,"Lucida Sans Unicode","Trebuchet MS",sans-serif!important;color:#000!important;letter-spacing:normal!important;text-shadow:none!important;text-transform:none!important}
+${RVB} :is(.exp-section,.exp-correct,.exp-wrong,.exp-rule,.exp-pre){all:unset!important;display:block!important;box-sizing:border-box!important}
+${RVB} .exp-pre{white-space:pre-wrap!important}
+${RVB}>:not(#m8a)+:not(#m8a){margin-top:22.4px!important}
+${RVB} :is(h3,b,strong){font-family:Arial,Helvetica,sans-serif!important}
+${RVB} :is(.exp-wrong,.exp-rule) .exp-pre{display:inline!important}
+${RVB} h3{all:unset!important;display:block!important;font-weight:700!important;font-family:Arial,Helvetica,sans-serif!important;font-size:16px!important;line-height:22.4px!important;margin:0 0 8px!important;padding:0 0 3px!important;border-bottom:1px solid #dadada!important}
+${RVB} .exp-correct>h3{padding-left:25px!important;background:${NI.rvOk} 0 2px/18px 18px no-repeat!important}
+${RVB} .exp-correct>div{margin-top:8px!important}
+${RVB} .exp-correct>div:first-of-type>b{display:inline!important;background:#037c03!important;color:#fff!important;padding:1px 4px!important;font-weight:400!important}
+${RVB} .exp-wrong{margin:0 0 12px!important}
+${RVB} .exp-wrong:last-child{margin-bottom:0!important}
+${RVB} .exp-wrong>b:first-child,${RVB} .exp-rule>b:first-child{font-weight:700!important}
+${RVB} .exp-wrong[data-tun-yours]{border-left:3px solid #e00!important;padding-left:10px!important;margin-left:-13px!important}
+${RVB} .exp-wrong[data-tun-yours]>b:first-child::after{content:"Your answer";display:inline-block;margin:0 2px 0 8px;padding:0 0 0 19px;font:700 12.5px/18px Arial,Helvetica,sans-serif;color:#c00;background:${NI.rvBad} 0 50%/15px 15px no-repeat;vertical-align:1px}
+${RVB} :is(.exp-rule,.exp-rule+.exp-section){padding:9px 12px!important;border:1px solid #c8c8c8!important;background:#f4f4f4!important}
+${RVB} .exp-rule+.exp-section{margin-top:10px!important}
+${RVB} .exp-rule+.exp-section>h3{display:inline!important;border:0!important;padding:0!important;margin:0!important}
+${RVB} .exp-rule+.exp-section>h3::after{content:":"}
+${RVB} .exp-rule+.exp-section>div{display:inline!important;margin-left:4px!important}
+${RVB} .exp-rule+.exp-section .exp-pre{display:inline!important}
+${RVB} .exp-section:has(.exp-image){display:none!important}
+${RVB} ::selection{background:#b3d4fc}
+/* explanation images: a tab of reference cards with a caption */
+${RV} .tun-rvimgs .tun-rvcap{display:block;padding:6px 10px 8px 0;font:14px/1.35 Arial,Helvetica,sans-serif;color:#000}
+/* the choices: the reference's .opt.correct .otext */
+${RV} .answers .answer.correctChoice .choice-text{background:#037c03!important;color:#fff!important}
+/* portrait: the panel goes full width under Proceed and grows with its text */
+@media (max-aspect-ratio:1/1){${RV}>.right-panel-wrap{position:static!important;padding-top:39px!important;margin-top:10px!important}${RV}>.right-panel-wrap:not(:has(.qbank-tabs>:nth-child(2))){padding-top:0!important}${RV} .qbank-panel:has(>.qbank-body[data-panel-mode="explanation"]):not([data-tun-rvmode="images"]){max-height:none!important}${RV} .qbank-body[data-panel-mode="explanation"]{overflow:visible!important}}
+:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-rv]>.right-panel-wrap{position:static!important;padding-top:39px!important;margin-top:10px!important}:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-rv]>.right-panel-wrap:not(:has(.qbank-tabs>:nth-child(2))){padding-top:0!important}:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-rv] .qbank-panel:has(>.qbank-body[data-panel-mode="explanation"]):not([data-tun-rvmode="images"]){max-height:none!important}:root[data-tun][data-tun-narrow]:not(#tun0):not(#tun1) body #examScreen #workspace .question-flex[data-tun-rv] .qbank-body[data-panel-mode="explanation"]{overflow:visible!important}
+/* the Review Mode chip: an info box like Item / Block */
+${P} #reviewModeLabel:not(.hidden){all:unset!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;align-self:flex-start!important;height:var(--tun-ih,auto)!important;margin:4px 0!important;padding:0 12px!important;border:1px solid #fff!important;box-shadow:0 1px 1px #000!important;color:#fff!important;font:700 16px Arial,Helvetica,sans-serif!important;white-space:nowrap!important}
+/* Dark Theme: black panels, white text, cyan outlines and selection (the reference's html.dark accents); the exhibit card stays light */
+${RVD} .qbank-tabs .qbank-tab{background:#000!important;color:#fff!important;border-color:#fff!important}
+${RVD} .qbank-tabs .qbank-tab:hover{background:#222!important}
+${RVD} .qbank-panel:not([data-tun-rvmode="images"]) .qbank-tabs .qbank-tab.active,${RVD} .qbank-panel[data-tun-rvmode="images"] .qbank-tabs [data-tun-rvtab]{background:#94eaff!important;color:#000!important;border-color:#94eaff!important}
+${RVD} .qbank-panel:has(>.qbank-body[data-panel-mode="explanation"]):not([data-tun-rvmode="images"]){background:#000!important;border-top-color:#94eaff!important;box-shadow:none!important;outline:1px solid #94eaff!important;color:#fff!important}
+${RVD} :is(.tun-rvexhead,.tun-rvfoot){background:#000;color:#fff;border-color:#555}
+${RVD} .tun-rvyours.bad span{color:#ff6b6b}
+${RVD} .tun-rvthumbs button{border-color:#94eaff;background:#000}
+${RVD} .qbank-body[data-panel-mode="explanation"]{background:#000!important;border-color:#555!important}
+${RVBD},${RVBD} *{color:#fff!important}
+${RVBD} h3{border-bottom-color:#555!important}
+${RVBD} .exp-correct>div:first-of-type>b{color:#fff!important}
+${RVBD} .exp-wrong[data-tun-yours]{border-left-color:#ff5050!important}
+${RVBD} .exp-wrong[data-tun-yours]>b:first-child::after{color:#ff6b6b}
+${RVBD} :is(.exp-rule,.exp-rule+.exp-section){background:#000!important;border-color:#767676!important}
+${RVBD} ::selection{background:#3a6ea5}
+${PD} #reviewModeLabel:not(.hidden){border-color:#94eaff!important;color:#94eaff!important}
+/* question list ✓ / ✗ in review: readable on every row (navy current row, Dark Theme grey and cyan rows) */
+${P} #statusRows .status-row:is(.current,:hover) .v2111-review-symbol.ok{color:#7dfc9f!important}
+${P} #statusRows .status-row:is(.current,:hover) .v2111-review-symbol.bad{color:#ff9a9a!important}
+${PD} #statusRows .v2111-review-symbol.ok{color:#3ddc84!important}
+${PD} #statusRows .v2111-review-symbol.bad{color:#ff5a5a!important}
+${PD} #statusRows .status-row:is(.current,:hover) .v2111-review-symbol.ok{color:#006b2a!important}
+${PD} #statusRows .status-row:is(.current,:hover) .v2111-review-symbol.bad{color:#c00000!important}
+/* answer change that flipped the result: a chip in the explanation header, a note beside the first answer (outside the box) */
+${RV} .tun-rvchg{display:inline-flex;align-items:center;gap:4px;padding:1px 9px;border-radius:10px;font-size:13px;line-height:18px;border:1px solid}
+${RV} .tun-rvchg.ci{background:#fdecec;color:#a00;border-color:#f0b4b4}
+${RV} .tun-rvchg.ic{background:#e9f5e9;color:#035e03;border-color:#a8d5a8}
+${RV} .tun-rvchg i{width:14px;height:14px;flex:none;background:center/14px no-repeat}
+${RV} .tun-rvchg i.ok{background-image:${NI.rvOk}}${RV} .tun-rvchg i.bad{background-image:${NI.rvBad}}
+${RV} .answers .answer[data-tun-first]{position:relative!important}
+${RV} .answers .answer[data-tun-first]::after{content:"\\2190\\00a0 your first answer"!important;position:absolute!important;left:100%!important;top:9px!important;margin-left:14px!important;white-space:nowrap!important;font:italic 13px/18px Arial,Helvetica,sans-serif!important;color:#555!important;pointer-events:none!important;display:block!important;background:none!important;border:0!important;width:auto!important;height:auto!important}
+${RVD} .tun-rvchg.ci{background:#000;color:#ff7a7a;border-color:#ff5a5a}
+${RVD} .tun-rvchg.ic{background:#000;color:#5fe08a;border-color:#3ddc84}
+${RVD} .answers .answer[data-tun-first]::after{color:#bbb!important}
+/* Review Screen in Dark Theme (screen 8): the reference's html.dark .pop (black, white text, cyan outline), the selected
+   row cyan with black text, buttons black with a white border; Score Report = our light primary in the Proceed cyan */
+${PD} #workspace .review-panel{background:#000!important;color:#fff!important;outline:1px solid #94eaff!important}
+${PD} #workspace .review-panel :is(h2,p,p b,.tun-rvhead,.tun-rvhead span){color:#fff!important}
+${PD} #workspace .review-panel .tun-rvhead{border-bottom-color:#94eaff!important}
+${PD} #workspace .review-panel .review-grid{border-bottom-color:#94eaff!important}
+${PD} #workspace .review-panel .review-card{background:#000!important;color:#fff!important}
+${PD} #workspace .review-panel .review-card:nth-child(even){background:#222!important}
+${PD} #workspace .review-panel .review-card:hover{background:#333!important}
+${PD} #workspace .review-panel .review-card.current{background:#94eaff!important;color:#000!important}
+${PD} #workspace .review-panel .review-card .tun-rc{color:inherit!important}
+${PD} #workspace .review-panel .review-card .goq{background:#000!important;color:#fff!important;border-color:#fff!important}
+${PD} #workspace .review-panel .review-card.current .goq{border-color:#000!important}
+${PD} #workspace .review-panel button:not(.goq){background:#000!important;color:#fff!important;border:1px solid #fff!important;box-shadow:none!important}
+${PD} #workspace .review-panel button.primary{background:#6ed6dd!important;color:#000!important}
+/* Explanation Layout › Below: the same card under the question block (the flex's 30 / 20 px edges, its text size), full
+   width, growing with its text; the exhibit keeps the exam card in the right column */
+${P} #workspace .question-stack>.below-exp-wrap[data-tun-rv]{all:unset!important;box-sizing:border-box!important;display:block!important;position:relative!important;margin:10px 20px 24px 32px!important;zoom:var(--tun-txt,1);font-family:"Arial Unicode MS",Arial,Helvetica,"Lucida Sans Unicode","Trebuchet MS",sans-serif!important;font-size:16px!important;line-height:1.4!important;color:#000!important}
+${P} #workspace .question-stack>.below-exp-wrap[data-tun-rv]:has(.qbank-tabs>:nth-child(2)){padding-top:33px!important}
+${P} #workspace .below-exp-wrap[data-tun-rv]>.below-exp-panel{all:unset!important;box-sizing:border-box!important;display:block!important;position:relative!important}
+${P} #workspace .below-exp-wrap[data-tun-rv] .qbank-panel:has(>.qbank-body[data-panel-mode="explanation"]):not([data-tun-rvmode="images"]){max-height:none!important}
+${P} #workspace .below-exp-wrap[data-tun-rv] .qbank-body[data-panel-mode="explanation"]{overflow:visible!important}
+${PD} #workspace .question-stack>.below-exp-wrap[data-tun-rv]{color:#fff!important}
+/* the reference's Contrast popup (.mgpop): On/Off, a 50–250 % slider, Reset */
+${P} #workspace .tun-mgpop{display:none!important}
+${P} #workspace .question-flex[data-tun-ex] .tun-mgpop.show{display:block!important;box-sizing:border-box!important;position:absolute!important;left:66px!important;bottom:8px!important;z-index:5!important;min-width:210px!important;padding:10px 12px!important;background:#fff!important;border:1px solid #888!important;border-radius:4px!important;box-shadow:0 2px 8px rgba(0,0,0,.25)!important;color:#000!important;font-size:13px!important;line-height:1.4!important}
+${P} #workspace .tun-mgpop label{all:unset!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;gap:8px!important;margin:0 0 6px!important}
+${P} #workspace .tun-mgpop input{all:revert!important;box-sizing:border-box!important}
+${P} #workspace .tun-mgpop input[type=range]{width:150px!important}
+${P} #workspace .tun-mgpop button{all:revert!important;box-sizing:border-box!important;padding:2px 10px!important;font:12px Arial,Helvetica,sans-serif!important}
 /* break screen: the reference's #breakScreen on the legacy .break-page: the #topRight Settings box, the white .bpanel
    (96 %, top 71) holding the 800-wide .bwrap as a grid (the two buttons in one row, like .bbtns), the three tables with
    the time values as mirror cells (td.tun-mv; the legacy cells keep ticking, hidden). nbBreak() runs the reference's
@@ -4077,7 +4246,10 @@ ${P}.break-screen-active>:is(.topbar,.left-status,.bottombar)${HX},${P} .bottomb
     note:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M2 1.5A1.5 1.5 0 0 1 3.5 0h9A1.5 1.5 0 0 1 14 1.5V11l-5 5H3.5A1.5 1.5 0 0 1 2 14.5zM9 15.3 13.3 11H10a1 1 0 0 0-1 1zM4.5 4h7v1h-7zm0 2.5h7v1h-7zm0 2.5h4v1h-4z\"/></svg>",
     strike:"<svg class=\"i\" viewBox=\"0 0 26 26\" aria-hidden=\"true\"><text x=\"13\" y=\"17.5\" text-anchor=\"middle\" font-family=\"Arial,Helvetica,sans-serif\" font-size=\"14\" fill=\"currentColor\">ab</text><rect x=\"3\" y=\"12.2\" width=\"20\" height=\"1.4\" fill=\"currentColor\"/></svg>",
     endx:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"7.4\" fill=\"#e00\" stroke=\"#fff\" stroke-width=\".9\"/><path d=\"M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6\" stroke=\"#fff\" stroke-width=\"1.4\" stroke-linecap=\"round\"/></svg>",
-    pause:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5\"/></svg>"
+    pause:"<svg class=\"i\" viewBox=\"0 0 16 16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5\"/></svg>",
+    exInvert:"<svg class=\"i\" viewBox=\"0 0 32 32\" aria-hidden=\"true\" focusable=\"false\"><rect x=\"3\" y=\"3\" width=\"26\" height=\"26\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\"/><path d=\"M5 27 27 5v22z\"/><circle cx=\"16\" cy=\"16\" r=\"6.5\" fill=\"#fff\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M11.4 20.6l9.2-9.2A6.5 6.5 0 0 1 11.4 20.6z\"/></svg>",
+    exContrast:"<svg class=\"i\" viewBox=\"0 0 32 32\" aria-hidden=\"true\" focusable=\"false\"><circle cx=\"16\" cy=\"16\" r=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M16 9a7 7 0 0 1 0 14z\"/><g stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"><path d=\"M16 2v3M16 27v3M2 16h3M27 16h3M6.1 6.1l2.1 2.1M23.8 23.8l2.1 2.1M6.1 25.9l2.1-2.1M23.8 8.2l2.1-2.1\"/></g></svg>",
+    exZoom:"<svg class=\"i\" viewBox=\"0 0 32 32\" aria-hidden=\"true\" focusable=\"false\"><circle cx=\"13\" cy=\"13\" r=\"9.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\"/><path d=\"M20 20l9 9\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M8.5 13h9M13 8.5v9\" stroke=\"currentColor\" stroke-width=\"2.2\"/></svg>"
   };
   const NBME_STYLES = `
 :root[data-tun-k]{zoom:var(--tun-k)}
@@ -4089,9 +4261,9 @@ ${NW} .exhibit-tools{left:8px!important;top:auto!important;bottom:10px!important
 ${NW} .exhibit-tools>div{display:flex;flex-direction:column;align-items:center;width:56px;padding:2px 0;border-radius:3px;cursor:pointer}
 ${NW} .exhibit-tools>div:hover{background:#dfe6ee}
 ${NW} .exhibit-tools .exhibit-tool-icon{width:30px!important;height:30px!important;margin:4px 0!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-size:0!important;color:transparent!important;background:center/30px 30px no-repeat!important}
-${NW} #invertEx{background-image:${NI.invert}!important}
-${NW} #contrastEx{background-image:${NI.contrast}!important}
-${NW} #zoomEx{background-image:${NI.zoom}!important}
+${NW} :is(#invertEx,[data-tun-tool="invert"]){background-image:${NI.invert}!important}
+${NW} :is(#contrastEx,[data-tun-tool="contrast"]){background-image:${NI.contrast}!important}
+${NW} :is(#zoomEx,[data-tun-tool="zoom"]){background-image:${NI.zoom}!important}
 ${NB} .overview-close,${NB} #labPanel .lab-close,${NB} #floatingCalc .calc-close,${NB} #examNotesPanel .notes-close{width:25px!important;height:25px!important;min-width:0!important;padding:0!important;border:1px solid #004976!important;border-radius:5px!important;background:#004976 ${NI.x} center/20px 20px no-repeat!important;color:transparent!important;font-size:0!important;box-shadow:none!important;cursor:pointer}
 ${NB} .overview-close:hover,${NB} #labPanel .lab-close:hover,${NB} #floatingCalc .calc-close:hover,${NB} #examNotesPanel .notes-close:hover{background-color:#325b77!important}
 /* Review Screen as a table */
@@ -4119,6 +4291,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
 #imagePreview.tuv .tuv-bar{position:absolute;top:0;left:0;margin:4px 16px 0;background:#000;z-index:2;display:flex}
 #imagePreview.tuv .tuv-bar button{display:block;width:112px;min-width:0;height:auto;background:transparent;border:0;margin:0;padding:0;cursor:pointer;box-shadow:none;font-size:0;color:transparent}
 #imagePreview.tuv .tuv-bar button+button{margin-left:1px}
+#imagePreview.tuv :is(.tuv-bar button,.tuv-bar button::before,#previewClose,#previewClose span){font-family:Arial,Helvetica,sans-serif!important}
 #imagePreview.tuv .tuv-bar button::before{content:attr(data-t);display:block;margin:2px;padding:4px;border:1px solid #f4f4f4;border-radius:5px;color:#f4f4f4;font-size:12.8px;line-height:1;text-transform:uppercase;text-align:center}
 #imagePreview.tuv .tuv-bar button:hover::before,#imagePreview.tuv .tuv-bar button:focus-visible::before{text-decoration:underline;box-shadow:rgba(255,255,255,.85) 0 0 4px}
 #imagePreview.tuv #previewClose{position:absolute;right:16px;top:12px;width:120px;height:44px;min-width:0;margin:0;padding:0;border:0;background:transparent;color:#fff;text-transform:uppercase;cursor:pointer;overflow:hidden;z-index:2;display:flex;align-items:center;gap:4px;font:20px Arial,Helvetica,sans-serif;box-shadow:none;border-radius:0}
@@ -4127,8 +4300,8 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
 #imagePreview.tuv #previewClose:hover,#imagePreview.tuv #previewClose:focus-visible{box-shadow:rgba(255,255,255,.85) 0 0 4px}
 #imagePreview.tuv #previewClose:hover span,#imagePreview.tuv #previewClose:focus-visible span{text-decoration:underline}
 #imagePreview.tuv #previewClose:hover .ic,#imagePreview.tuv #previewClose:focus-visible .ic{fill:#fff;stroke:#000}
-/* the % tip sits above the image and fades out */
-#imagePreview.tuv .tuv-tip{position:absolute;left:50%;top:50%;width:56px;height:22px;margin:-11px 0 0 -28px;background:rgba(0,0,0,.8);border-radius:11px;color:#fff;font-size:12px;line-height:22px;text-align:center;z-index:4;pointer-events:none;opacity:0;transition:opacity .2s}
+/* the % tip sits behind the image (decision 2026-10-25) and fades out */
+#imagePreview.tuv .tuv-tip{position:absolute;left:50%;top:50%;width:56px;height:22px;margin:-11px 0 0 -28px;background:rgba(0,0,0,.8);border-radius:11px;color:#fff;font-size:12px;line-height:22px;text-align:center;z-index:0;pointer-events:none;opacity:0;transition:opacity .2s}
 #imagePreview.tuv .tuv-tip.show{opacity:1}
 @media (max-width:735px){#imagePreview.tuv #previewClose{width:auto}#imagePreview.tuv #previewClose span{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
 @media (max-width:414px){#imagePreview.tuv .tuv-bar button{width:88px}}
@@ -4298,6 +4471,9 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     });
     nbTimes();
     nbBreak();
+    // the Review Mode chip is as tall as the Item / Block box (two lines of its font)
+    const chip = byId('reviewModeLabel'), ib = byId('itemBox');
+    if(chip && ib && !chip.classList.contains('hidden') && ib.offsetHeight) setVar(chip, '--tun-ih', ib.offsetHeight + 'px');
     if(!ws) return;
     const ml = ws.querySelector('.mark-line'), mk = byId('markQuestion');
     if(ml && mk && !ml.querySelector('.tun-i')) mk.insertAdjacentHTML('afterend', `<span class="tun-i" aria-hidden="true">${RI.flag}</span>`);
@@ -4307,6 +4483,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       const on = a.classList.contains('selected'); if(r.checked !== on) r.checked = on;
       nbIcon(a.querySelector('.strike-symbol'), RI.strike);
     });
+    nbExhibit(ws);
   }
   // the reference's #toolsMenu sits at right 20 / top 46 of the top bar; the root zoom (--tun-k) scales it like the bar
   function nbPlaceMenu(box){
@@ -4516,6 +4693,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     document.addEventListener('keydown', onNbLock, true);
     document.addEventListener('click', onNbAlertClick);
     document.addEventListener('click', onNbClick, true);
+    document.addEventListener('click', onNbReviewClick, true);
     document.addEventListener('click', onViewerLinks, true);
     document.addEventListener('keydown', onViewerKey, true);
     document.addEventListener('keydown', e => {
@@ -4593,7 +4771,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     byId('previewClose').onclick = closeViewer;
     const c = v.canvas;
     c.addEventListener('wheel', e => {
-      e.preventDefault(); const now = Date.now(); if(now - viewer.wheelAt < 50) return; viewer.wheelAt = now; // viewer.js: one step per 50 ms
+      e.preventDefault(); const now = performance.now(); if(now - viewer.wheelAt < 50) return; viewer.wheelAt = now; // viewer.js: one step per 50 ms
       const [px, py] = viewerLocal(v, e.clientX, e.clientY); viewerZoomBy(e.deltaY > 0 ? -0.1 : 0.1, px, py, false);
     }, {passive:false});
     c.addEventListener('dblclick', e => { const [px, py] = viewerLocal(v, e.clientX, e.clientY); viewerZoomTo(Math.abs(viewer.r - 1) < 1e-3 ? viewer.r0 : 1, px, py, true); });
@@ -4630,6 +4808,168 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     openImagePreview = wrapped; // eslint-disable-line no-global-assign
   }
   const exhibitFilter = () => { const el = document.querySelector('#exhibitImg'); if(!el) return ''; const f = getComputedStyle(el).filter; return f && f !== 'none' ? f : ''; };
+  /* exhibits: q.exhibits lists all of the question's images in order (sources or {type:"image", src}); the imported forms
+     already carry it, with the first entry a copy of q.image. The legacy panel draws the first card (q.image, else the
+     first entry: getQuestionImage falls back to it); entries 2+ are drawn here as more cards under it, with their own
+     Invert / Contrast / Zoom (class hooks, no IDs: #exhibitImg and the tool IDs stay on the first card) */
+  let exhibitBase = null;
+  function exhibitSrcs(q){
+    const out = [], add = v => { const s = v && typeof v === 'object' ? (v.src || v.image || v.url || '') : v; if(s && typeof s === 'string' && !out.includes(s)) out.push(s); };
+    if(!q) return out;
+    const list = (Array.isArray(q.exhibits) ? q.exhibits : q.exhibits ? [q.exhibits] : []).filter(v => !(v && typeof v === 'object' && v.type && v.type !== 'image'));
+    let first = ''; try{ first = exhibitBase ? exhibitBase(q) : ''; }catch(e){}
+    add(first || list[0]); list.slice(1).forEach(add);
+    return out;
+  }
+  function wrapExhibits(){
+    if(typeof getQuestionImage !== 'function' || getQuestionImage.__tu) return;
+    exhibitBase = getQuestionImage;
+    const wrapped = function(q){ const s = exhibitBase.apply(this, arguments); return s || exhibitSrcs(q)[0] || ''; };
+    wrapped.__tu = true;
+    getQuestionImage = wrapped; // eslint-disable-line no-global-assign
+  }
+  // per item: the extra cards' invert / contrast, the open Contrast popup; the first card keeps the legacy exhibitState
+  // (block-wide), its contrast value lives here for the block
+  const exv = {key:null, cards:{}, pop:null, blk:null, val0:150};
+  function exhibitCard(i){
+    const k = viewerItemKey(); if(exv.key !== k){ exv.key = k; exv.cards = {}; exv.pop = null; }
+    let b = null; try{ b = blockPointer; }catch(e){} if(exv.blk !== b){ exv.blk = b; exv.val0 = 150; }
+    if(i === 0){ let st = {}; try{ st = exhibitState || {}; }catch(e){} return {invert:!!st.invert, con:!!st.contrast, val:exv.val0}; }
+    return exv.cards[i] || (exv.cards[i] = {invert:false, con:false, val:150});
+  }
+  function exhibitSet(i, k, v){
+    exhibitCard(i);
+    if(i === 0){ if(k === 'val') exv.val0 = v; else { try{ exhibitState[k === 'con' ? 'contrast' : k] = v; }catch(e){} } }
+    else exv.cards[i][k] = v;
+  }
+  const EX_TOOLS = [['invert', '◒', 'Invert'], ['contrast', '☀', 'Contrast'], ['zoom', '⊕', 'Zoom']];
+  function exhibitExtras(){
+    const ws = byId('workspace'), first = byId('exhibitImg'); if(!ws) return;
+    ws.querySelectorAll('#invertEx,#contrastEx,#zoomEx').forEach(n => setAttrIf(n, 'data-tun-tool', n.id.replace('Ex', '')));
+    const card = first && first.closest('.exhibit-in-panel'); if(!card || card.parentNode.querySelector(':scope > .tun-exx')) return;
+    let q = null; try{ q = questions[state.current]; }catch(e){} const srcs = exhibitSrcs(q); if(srcs.length < 2) return;
+    const html = srcs.slice(1).map((src, n) => {
+      const i = n + 1, st = exhibitCard(i);
+      let pic = ''; try{ pic = makeExhibit(src); }catch(e){}
+      return `<div class="exhibit-in-panel tun-exx" data-tun-exi="${i}"><div class="exhibit"><div class="exhibit-tools">${EX_TOOLS.map(([t, g, l]) => `<div><div class="exhibit-tool-icon" data-tun-tool="${t}">${g}</div><div>${l}</div></div>`).join('')}</div><div class="exhibit-img${st.invert ? ' invert' : ''}${st.con ? ' contrast' : ''}" data-tun-exi="${i}" title="Click to preview image">${pic}</div></div></div>`;
+    }).join('');
+    card.insertAdjacentHTML('afterend', html);
+  }
+  // card ids: 0 = the legacy first card, 1, 2… = more exhibits, "e0", "e1"… = the explanation images (review)
+  function exhibitId(v){ return /^e\d+$/.test(String(v)) ? String(v) : Number(v) || 0; }
+  function exhibitIndex(card){ return card && card.classList.contains('tun-exx') ? exhibitId(card.dataset.tunExi) : 0; }
+  function exhibitSrcAt(i){
+    let q = null; try{ q = questions[state.current]; }catch(e){}
+    if(typeof i === 'string'){ const im = reviewImages(q)[Number(i.slice(1))]; return im ? im.src : ''; }
+    return i === 0 ? getQuestionImage(q) : exhibitSrcs(q)[i] || '';
+  }
+  function reviewImages(q){ try{ return q && typeof collectExplanationImages === 'function' ? collectExplanationImages(q) : []; }catch(e){ return []; } }
+  // NBME: the reference card while the panel shows the exhibit only; its icons, the Contrast popup, the slider value
+  function nbExhibit(ws){
+    const fx = ws.querySelector(':scope > .question-stack > .question-flex') || ws.querySelector('.question-flex');
+    const rp = fx && fx.querySelector(':scope > .right-panel-wrap');
+    // review / an answer shown (the panel has an explanation): the same grid and card, plus the review panel (nbReview)
+    const below = ws.querySelector(':scope > .question-stack > .below-exp-wrap');
+    const side = !!(rp && rp.querySelector('[data-panel-mode="explanation"],[data-panel-tab="explanation"]')), rv = side || !!below;
+    const on = !!(rp && (side || rp.querySelector('.exhibit-in-panel')));
+    if(fx){ setAttrIf(fx, 'data-tun-ex', on ? '1' : null); setAttrIf(fx, 'data-tun-rv', rv ? '1' : null); }
+    if(below) setAttrIf(below, 'data-tun-rv', '1');
+    exhibitExtras();
+    if(side) nbReview(ws, fx, rp); else if(below) nbReview(ws, fx, below);
+    const ico = {invert:RI.exInvert, contrast:RI.exContrast, zoom:RI.exZoom};
+    ws.querySelectorAll('.exhibit-tools .exhibit-tool-icon[data-tun-tool]').forEach(n => nbIcon(n, ico[n.dataset.tunTool] || ''));
+    ws.querySelectorAll('.exhibit-in-panel > .exhibit').forEach(ex => {
+      const card = ex.parentNode, i = exhibitIndex(card), st = exhibitCard(i), box = ex.querySelector(':scope > .exhibit-img');
+      if(box){ if(box.classList.contains('contrast') !== st.con) box.classList.toggle('contrast', st.con); setVar(box, '--tun-con', st.val + '%'); }
+      let pop = ex.querySelector(':scope > .tun-mgpop');
+      if(!pop){
+        ex.insertAdjacentHTML('beforeend', `<div class="tun-mgpop" data-tun-exi="${i}"><label><input type="checkbox" data-tun-c="on"> On/Off</label><label>Contrast <input type="range" min="50" max="250" value="150" data-tun-c="val"></label><button type="button" data-tun-c="reset">Reset</button></div>`);
+        pop = ex.lastElementChild;
+      }
+      const show = exv.pop === i, c = pop.querySelector('[data-tun-c="on"]'), r = pop.querySelector('[data-tun-c="val"]');
+      if(pop.classList.contains('show') !== show) pop.classList.toggle('show', show);
+      if(c.checked !== st.con) c.checked = st.con;
+      if(Number(r.value) !== st.val) r.value = String(st.val);
+    });
+  }
+  /* review (screen 8, the approved mockup): a tab bar only for 2+ panes (Explanation first, Exhibit, Explanation Image(s)),
+     the explanation card's header (your answer, an answer change that flipped the result, time spent, exhibit thumbnails)
+     and images row, the explanation images as reference cards. Attributes and siblings only: the explanation body's text
+     is never touched (the highlights are anchored to it) */
+  const rvv = {key:null, tab:null};
+  function nbReview(ws, fx, rp){
+    let q = null; try{ q = questions[state.current]; }catch(e){}
+    const panel = rp.querySelector(':scope > .qbank-panel'), tabs = panel && panel.querySelector(':scope > .qbank-tabs'), body = panel && panel.querySelector(':scope > .qbank-body');
+    if(!q || !panel || !tabs) return;
+    const k = viewerItemKey(); if(rvv.key !== k){ rvv.key = k; rvv.tab = null; }
+    const imgs = reviewImages(q);
+    if(imgs.length && !tabs.querySelector('[data-tun-rvtab]')) tabs.insertAdjacentHTML('beforeend', `<button class="qbank-tab" type="button" data-tun-rvtab="images">Explanation Image${imgs.length > 1 ? 's' : ''}</button>`);
+    setAttrIf(panel, 'data-tun-rvmode', rvv.tab === 'images' && imgs.length ? 'images' : null);
+    if(imgs.length && !panel.querySelector(':scope > .tun-rvimgs')) panel.insertAdjacentHTML('beforeend', `<div class="tun-rvimgs">${imgs.map((im, n) => {
+      const i = 'e' + n, st = exhibitCard(i); let pic = ''; try{ pic = makeExhibit(im.src); }catch(e){}
+      return `<div class="exhibit-in-panel tun-exx tun-eximg" data-tun-exi="${i}"><div class="exhibit"><div class="exhibit-tools">${EX_TOOLS.map(([t, g, l]) => `<div><div class="exhibit-tool-icon" data-tun-tool="${t}">${g}</div><div>${l}</div></div>`).join('')}</div><div class="exhibit-img${st.invert ? ' invert' : ''}${st.con ? ' contrast' : ''}" data-tun-exi="${i}" title="Click to preview image">${pic}</div>${im.caption ? `<div class="tun-rvcap">${esc(im.caption)}</div>` : ''}</div></div>`;
+    }).join('')}</div>`);
+    // an answer change that flipped the result (correct → incorrect or incorrect → correct): the legacy firstAnswers / answers
+    const cur = state.current, cc = q.correct, LT = 'ABCDEFGHIJ';
+    const first = Array.isArray(state.firstAnswers) ? state.firstAnswers[cur] : null, fin = Array.isArray(state.answers) ? state.answers[cur] : null;
+    const flip = first != null && fin != null && first !== fin && ((first === cc) !== (fin === cc)) ? (first === cc ? 'ci' : 'ic') : null;
+    ws.querySelectorAll('.answers .answer[data-choice]').forEach(a => { const y = !!flip && Number(a.dataset.choice) === first; if(a.hasAttribute('data-tun-first') !== y) a.toggleAttribute('data-tun-first', y); });
+    if(!body || body.getAttribute('data-panel-mode') !== 'explanation') return;
+    const sel = ws.querySelector('.answers .answer.selected'), good = !!sel && sel.classList.contains('correctChoice');
+    if(!panel.querySelector(':scope > .tun-rvexhead')){
+      const yours = sel ? (sel.querySelector('.choice-text')?.textContent || '').trim() : '', t = (ws.querySelector('.time-spent-value')?.textContent || '').trim(), ex = exhibitSrcs(q);
+      const chg = flip ? `<span class="tun-rvchg ${flip}" title="${flip === 'ci' ? 'You changed a correct answer to an incorrect one' : 'You changed an incorrect answer to the correct one'}"><b>Changed:</b> ${LT[first]} <i class="${flip === 'ci' ? 'ok' : 'bad'}"></i> → ${LT[fin]} <i class="${flip === 'ci' ? 'bad' : 'ok'}"></i></span>` : '';
+      body.insertAdjacentHTML('beforebegin', `<div class="tun-rvexhead"><span class="tun-rvyours ${sel ? (good ? 'ok' : 'bad') : ''}"><b>Your answer:</b> <i></i><span>${sel ? esc(yours) + (good ? ' (correct)' : '') : 'Omitted'}</span></span>${chg}${t ? `<span><b>Time spent:</b> ${esc(t)}</span>` : ''}${ex.length ? `<span class="tun-rvthumbs" title="Exhibit">${ex.map(s => `<button type="button" data-tun-open="${esc(s)}" aria-label="Open the exhibit"><img alt="" src="${esc(s)}"></button>`).join('')}</span>` : ''}</div>`);
+      if(imgs.length) body.insertAdjacentHTML('afterend', `<div class="tun-rvfoot"><b>Explanation image${imgs.length > 1 ? 's' : ''}:</b><span class="tun-rvthumbs">${imgs.map(im => `<button type="button" data-tun-goto="images" aria-label="Show the explanation images"><img alt="" src="${esc(im.src)}"></button>`).join('')}</span><span>${esc(imgs[0].caption || '')}</span></div>`);
+    }
+    const letter = sel ? LT[Number(sel.dataset.choice)] : null;
+    body.querySelectorAll('.exp-wrong').forEach(w => { const b = w.querySelector(':scope > b'), m = b && b.textContent.match(/([A-J])\s*:?\s*$/), y = !!(m && m[1] === letter && !good); if(w.hasAttribute('data-tun-yours') !== y) w.toggleAttribute('data-tun-yours', y); });
+  }
+  function onNbReviewClick(e){
+    const t = e.target; if(!t || !t.closest || !nbmeOn()) return;
+    if(t.closest('#workspace [data-tun-rvtab],#workspace [data-tun-goto]')){ e.preventDefault(); e.stopImmediatePropagation(); rvv.tab = 'images'; nbDecorate(); return; }
+    if(t.closest('#workspace .qbank-tab[data-panel-tab]')) rvv.tab = null;
+    if(t.closest('#workspace .below-exp-panel .qbank-tab:not([data-tun-rvtab])') && rvv.tab){ rvv.tab = null; nbDecorate(); return; }
+    const op = t.closest('#workspace [data-tun-open]');
+    if(op){ e.preventDefault(); e.stopImmediatePropagation(); try{ openImagePreview(op.dataset.tunOpen, ''); }catch(err){ console.warn('ThunderUI exhibit open failed', err); } }
+  }
+  function exhibitFilterOf(card){ const el = card && card.querySelector('.exhibit-img'); if(!el) return ''; const f = getComputedStyle(el).filter; return f && f !== 'none' ? f : ''; }
+  // a tool anywhere on its button (the reference's 56×56 .mgb); NBME Contrast opens the popup. Outside NBME the first
+  // card keeps the legacy handlers; the extra cards toggle their classes
+  function onExhibitClick(e){
+    const t = e.target; if(!t || !t.closest) return;
+    const reset = t.closest('#workspace .tun-mgpop [data-tun-c="reset"]');
+    if(reset){ const i = exhibitId(reset.closest('.tun-mgpop').dataset.tunExi); exhibitSet(i, 'con', false); exhibitSet(i, 'val', 150); exhibitRefresh(i); return; }
+    const btn = t.closest('#workspace .exhibit-tools > div'); if(!btn) return;
+    const icon = btn.querySelector('.exhibit-tool-icon[data-tun-tool]'), card = btn.closest('.exhibit-in-panel'); if(!icon || !card) return;
+    const tool = icon.dataset.tunTool, i = exhibitIndex(card), nbme = nbmeOn() && !!card.closest('.question-flex[data-tun-ex]');
+    if(i === 0 && !nbme){ if(!icon.contains(t)){ e.preventDefault(); icon.click(); } return; }
+    if(i === 0 && tool === 'invert'){ if(!icon.contains(t)){ e.preventDefault(); icon.click(); } return; }
+    e.preventDefault(); e.stopImmediatePropagation();
+    if(tool === 'zoom'){ try{ openImagePreview(exhibitSrcAt(i), exhibitFilterOf(card)); }catch(err){ console.warn('ThunderUI exhibit zoom failed', err); } return; }
+    if(tool === 'contrast' && nbme){ exv.pop = exv.pop === i ? null : i; exhibitRefresh(i); return; }
+    const st = exhibitCard(i); exhibitSet(i, tool === 'invert' ? 'invert' : 'con', tool === 'invert' ? !st.invert : !st.con); exhibitRefresh(i);
+  }
+  function exhibitRefresh(i){
+    const ws = byId('workspace'); if(!ws) return;
+    const card = i === 0 ? byId('exhibitImg')?.closest('.exhibit-in-panel') : ws.querySelector(`.tun-exx[data-tun-exi="${i}"]`);
+    const box = card && card.querySelector('.exhibit-img'), st = exhibitCard(i);
+    if(box){ if(box.classList.contains('invert') !== st.invert && i !== 0) box.classList.toggle('invert', st.invert); if(box.classList.contains('contrast') !== st.con) box.classList.toggle('contrast', st.con); setVar(box, '--tun-con', st.val + '%'); }
+    if(nbmeOn()) nbExhibit(ws);
+  }
+  function onExhibitInput(e){
+    const t = e.target, pop = t && t.closest && t.closest('#workspace .tun-mgpop'); if(!pop) return;
+    const i = exhibitId(pop.dataset.tunExi);
+    if(t.dataset.tunC === 'on') exhibitSet(i, 'con', !!t.checked);
+    else if(t.dataset.tunC === 'val'){ exhibitSet(i, 'val', Number(t.value) || 150); exhibitSet(i, 'con', true); }
+    exhibitRefresh(i);
+  }
+  // the extra cards' images open the viewer with their own filter (from onViewerLinks)
+  function onExhibitExtraOpen(e){
+    const t = e.target, box = t && t.closest && t.closest('#workspace .tun-exx .exhibit-img'); if(!box) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    try{ openImagePreview(exhibitSrcAt(exhibitId(box.dataset.tunExi)), exhibitFilterOf(box.closest('.exhibit-in-panel'))); }catch(err){ console.warn('ThunderUI exhibit open failed', err); }
+  }
   // every image opens the viewer: the exhibit (and its Zoom tool, as on test day), stem images and explanation images
   function onViewerLinks(e){
     const t = e.target; if(!t || !t.closest) return;
@@ -4643,6 +4983,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       try{ openImagePreview(getQuestionImage(questions[state.current]), exhibitFilter()); }catch(err){ console.warn('ThunderUI exhibit open failed', err); }
       return;
     }
+    if(t.closest('#workspace .tun-exx .exhibit-img')){ onExhibitExtraOpen(e); return; }
     const pic = t.closest('#workspace #stem img, #workspace .qbank-body img, #workspace .exp-image-box img, #workspace .exp-image-box svg');
     if(!pic || String(getSelection() || '').trim()) return;
     e.preventDefault(); e.stopImmediatePropagation();
@@ -4678,7 +5019,10 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   function boot(){
     revealWhenDrawn();
     if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES + NBME_STYLES + NBME_SHELL; document.head.appendChild(st); }
-    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); wrapLabs(); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
+    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); wrapExhibits(); wrapLabs();
+    const wsx = byId('workspace'); if(wsx) new MutationObserver(() => exhibitExtras()).observe(wsx, {childList:true});
+    document.addEventListener('click', onExhibitClick, true);
+    document.addEventListener('input', onExhibitInput, true); document.addEventListener('change', onExhibitInput, true); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
     // Legacy scripts rename the tab ("Step Exam Simulator A22.x …") after boot; keep the ThunderUSMLE name.
     const titleEl = document.querySelector('head > title');
     if(titleEl) new MutationObserver(() => { if(document.title !== 'ThunderUSMLE') document.title = 'ThunderUSMLE'; }).observe(titleEl, {childList:true, characterData:true, subtree:true});
