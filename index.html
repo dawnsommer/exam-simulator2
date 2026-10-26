@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=30">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=30">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=31">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=31">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=30"></script>
-<script src="./js/form-updates-core.js?v=30"></script>
-<script src="./js/form-update-store.js?v=30"></script>
-<script src="./js/google-auth.js?v=30"></script>
+<script src="./js/sync-config.js?v=31"></script>
+<script src="./js/form-updates-core.js?v=31"></script>
+<script src="./js/form-update-store.js?v=31"></script>
+<script src="./js/google-auth.js?v=31"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=30" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=31" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=30"></script>
-<script src="./js/qid-migration.js?v=30"></script>
+<script src="jszip.min.js?v=31"></script>
+<script src="./js/qid-migration.js?v=31"></script>
 <script>
 
 
@@ -2271,6 +2271,8 @@ document.addEventListener('click', function(e){
   let saveWriteTimer = null;
   let loadedFormCache = new Map();
   let activeRunContext = { type:'quick', formId:'', qbank:false };
+  /* the suspended / finished attempt stays in memory after the exam screen closes; flushActive and the autosave would write it back, so a deleted progress file reappeared (suspended again) at the next sync */
+  function forgetActiveSession(id){ try{ const el=document.getElementById('examScreen'), open=!!(el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none'); if(activeSession&&!open&&!activeSession.qbankMode&&String(activeSession.libraryFormId||'')===String(id)){ activeSession=null; return true; } }catch(_e){} return false; }
   let qbankRuntime = { pendingKeys:[], pendingFormIds:[] };
   let reportCardActive = false;
   const BASE_FILTERS = ['Overview','All','N-Forms'].concat(Object.keys(CFORM_COUNTS), ['Custom']);
@@ -2952,7 +2954,7 @@ document.addEventListener('click', function(e){
   }
   async function renameForm(id){ const rec=catalogForm(id); if(!rec) return; const next=await appPrompt('Rename this form:', rec.displayName||id, {title:'Rename Form'}); if(next===null) return; rec.displayName=next.trim()||rec.defaultName||id; upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); renderQbankMode(); }
   async function setThreeDigitScore(id){ const rec=catalogForm(id); if(!rec) return; const next=await appPrompt('Enter converted 3-digit score:', rec.threeDigitScore||'', {title:'Set 3-digit score'}); if(next===null) return; const clean=next.trim(); if(clean && !/^\d{3}$/.test(clean)) return alert('Enter exactly 3 digits, e.g. 245.'); rec.threeDigitScore=clean; rec.updatedAt=nowIso(); upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); }
-  async function deleteProgress(id){ const rec=catalogForm(id); if(!rec) return; const ok=await appConfirm(`Delete current progress for ${rec.displayName||id}? The form JSON stays loaded in DATA/forms.`, {okText:'Delete Progress', danger:true}); if(!ok) return; await removeFile(await progressDir(), `${id}_progress_save.json`); await removeFile(await progressDir(), `${id}_suspended_test.json`); rec.progressSummary=null; upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); renderQbankMode(); }
+  async function deleteProgress(id){ const rec=catalogForm(id); if(!rec) return; const ok=await appConfirm(`Delete current progress for ${rec.displayName||id}? The form JSON stays loaded in DATA/forms.`, {okText:'Delete Progress', danger:true}); if(!ok) return; forgetActiveSession(id); await removeFile(await progressDir(), `${id}_progress_save.json`); await removeFile(await progressDir(), `${id}_suspended_test.json`); rec.progressSummary=null; upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); renderQbankMode(); }
   async function deleteForm(id){ const rec=catalogForm(id); if(!rec) return; if(!await appConfirm(`Remove ${rec.displayName||id} from DATA catalog and delete its form/progress files?`, {okText:'Remove Form', danger:true})) return; await removeFile(await formsDir(), `${id}.json`); await removeFile(await progressDir(), `${id}_progress_save.json`); try{ window.dispatchEvent(new CustomEvent('stepsim:progress-write',{detail:{filename:`${id}_progress_save.json`,operation:'delete',formId:id,bankHash:rec.bankHash||''}})); }catch(_e){} removeCatalogForm(id); loadedFormCache.delete(id); await writeCatalog(); renderLibrary(); renderQbankMode(); }
   async function optimizeExistingForm(id){
     const rec=catalogForm(id); if(!rec) return;
@@ -5598,7 +5600,7 @@ document.addEventListener('click', function(e){
       const obj=JSON.parse(String(text)); if(obj && obj.bankHash && rec.bankHash && obj.bankHash!==rec.bankHash) throw new Error(`Suspended progress bank hash mismatch for ${id}.`);
       await writeText(await progressDir(),`${id}_suspended_test.json`,JSON.stringify(obj,null,2)); return true;
     },
-    async deleteFormProgress(id){ await this.ensureReady(); await removeFile(await progressDir(),`${id}_progress_save.json`); await removeFile(await progressDir(),`${id}_suspended_test.json`); const rec=catalogForm(id); if(rec){rec.progressSummary=null; upsertCatalogForm(rec); await writeCatalog();} try{await renderLibrary();}catch(e){} return true; },
+    async deleteFormProgress(id){ await this.ensureReady(); forgetActiveSession(id); await removeFile(await progressDir(),`${id}_progress_save.json`); await removeFile(await progressDir(),`${id}_suspended_test.json`); const rec=catalogForm(id); if(rec){rec.progressSummary=null; upsertCatalogForm(rec); await writeCatalog();} try{await renderLibrary();}catch(e){} return true; },
     async writeQbankText(text){
       await this.ensureReady(); if(text==null){ await removeFile(await progressDir(),'QBANK_MODE_progress.json'); return true; }
       const incoming=JSON.parse(String(text)); if(!incoming || typeof incoming!=='object') throw new Error('Invalid Qbank progress payload.');
@@ -10614,18 +10616,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=30"></script>
-<script src="./js/sync-storage.js?v=30"></script>
-<script src="./js/progress-sync.js?v=30"></script>
-<script src="./js/library-backup.js?v=30"></script>
-<script src="./js/qid-settings.js?v=30"></script>
-<script src="./js/sync3-core.js?v=30"></script>
-<script src="./js/sync3-bridge.js?v=30"></script>
-<script src="./js/sync3-store.js?v=30"></script>
-<script src="./js/sync3-drive.js?v=30"></script>
-<script src="./js/sync3-sync.js?v=30"></script>
-<script src="./js/sync3-migrate.js?v=30"></script>
-<script src="./js/sync3-boot.js?v=30"></script>
+<script src="./js/sync-merge.js?v=31"></script>
+<script src="./js/sync-storage.js?v=31"></script>
+<script src="./js/progress-sync.js?v=31"></script>
+<script src="./js/library-backup.js?v=31"></script>
+<script src="./js/qid-settings.js?v=31"></script>
+<script src="./js/sync3-core.js?v=31"></script>
+<script src="./js/sync3-bridge.js?v=31"></script>
+<script src="./js/sync3-store.js?v=31"></script>
+<script src="./js/sync3-drive.js?v=31"></script>
+<script src="./js/sync3-sync.js?v=31"></script>
+<script src="./js/sync3-migrate.js?v=31"></script>
+<script src="./js/sync3-boot.js?v=31"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11104,10 +11106,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=30"></script>
-<script src="./exam-notes.js?v=30"></script>
-<script src="./app-update.js?v=30"></script>
-<script src="./js/form-updates.js?v=30"></script>
+<script src="./bulk-import.js?v=31"></script>
+<script src="./exam-notes.js?v=31"></script>
+<script src="./app-update.js?v=31"></script>
+<script src="./js/form-updates.js?v=31"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11514,8 +11516,8 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=30"></script>
-<script src="./nav-delay.js?v=30"></script>
-<script src="./thunder-ui.js?v=30"></script>
+<script src="./item-code.js?v=31"></script>
+<script src="./nav-delay.js?v=31"></script>
+<script src="./thunder-ui.js?v=31"></script>
 </body>
 </html>

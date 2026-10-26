@@ -377,3 +377,17 @@ test('the user\'s own Delete progress resets the form even when this device has 
   assert.deepEqual(atts(B, 'f1'), [], 'and on the other device');
   assert.deepEqual(await A.store.getRaw('explicitReset', {}), {}, 'the mark is used up by one scan');
 });
+
+test('Delete progress on a SUSPENDED form (progress file + suspended test file): gone on every device and it does not come back as suspended', async () => {
+  const { w, A, B } = await pair();
+  const susp = d => { const a = d.app.forms.f1.progress.bundle.attempts[0]; a.session.suspended = true; a.session.resumeAvailable = true; a.session.currentBlockPointer = 0; a.session.resumeState = { current: 2 }; const b = a.session.blocks[0]; b.answers[0] = 1; b.firstAnswers[0] = 1; b.current = 2; b.blockRemainingSeconds = 900; d.app.forms.f1.suspended = { session: a.session }; };
+  susp(A); await A.scan(); await A.sync(); w.advance(1); await B.sync();
+  assert.equal(B.app.forms.f1.progress.bundle.attempts[0].session.suspended, true, 'B holds the suspended attempt');
+  /* what deleteProgress leaves behind: both files removed, the user's own delete event marks the form */
+  A.setProgress('f1', null); A.app.forms.f1.suspended = null; await A.store.setRaw('explicitReset', { f1: 1 });
+  await A.scan(); await A.sync(); w.advance(5); await B.sync(); await A.sync(); w.advance(5); await B.sync(); await A.sync();
+  assert.deepEqual(atts(A, 'f1'), [], 'gone here, and not applied back as a suspended attempt');
+  assert.deepEqual(atts(B, 'f1'), [], 'gone on the other device');
+  assert.equal(A.app.forms.f1.progress, null);
+  await echoFree(A, B);
+});

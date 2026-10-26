@@ -147,3 +147,21 @@ test('removing the temporary suspended file (resume/finish) is not a delete', as
   assert.equal(currentEntry(a, key).deleted, false);
   same(a.state.progress, progressRevision(1));
 });
+
+test('Delete progress on a suspended form fires the progress delete and then the suspended-file deletes: the tombstone stays and nothing is restored', async () => {
+  const drive = new MockDriveBackend();
+  const a = await buildDevice({ drive, deviceId: 'A' });
+  const { key } = await seedCloud(a, progressRevision(1));
+  assert.deepEqual(states(await a.runtime.sync.checkCloud({})), ['ALIGNED']);
+  a.state.progress = null; a.state.suspended = null;
+  const susp = () => a.events.dispatchWindow({ type: 'stepsim:progress-write', detail: { filename: 'N-11_suspended_test.json', operation: 'delete' } });
+  /* deleteProgress() removes the progress file, the suspended file, then removeSuspendedTemp() again: three events a few ms apart that settle at the same time */
+  const events = [remove(a)]; await sleep(3); events.push(susp()); await sleep(3); events.push(susp()); await Promise.all(events);
+  await idle(a);
+  assert.equal((await a.meta.get('formSyncMetaV2'))[key].dirty, false, 'the delete was not pushed: a later suspended-file event overwrote the delete mark, the form stayed "Cloud Newer"');
+  assert.equal(currentEntry(a, key).deleted, true, 'the cloud copy was not removed');
+  assert.deepEqual(states(await a.runtime.sync.checkCloud({})), ['ALIGNED']);
+  assert.equal(a.state.progress, null, 'deleted progress was downloaded again');
+  assert.equal(a.state.suspended, null, 'the suspended test came back');
+  assert.equal(currentEntry(a, key).deleted, true);
+});

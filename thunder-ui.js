@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 30;
+  const TU_RELEASE = 31;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -5173,7 +5173,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     wrapped.__tu = true;
     getQuestionImage = wrapped; // eslint-disable-line no-global-assign
   }
-  /* audio / video exhibits (MEDIA_JSON_SPEC.md): media objects ({type:"audio"|"video", src, mime?, poster?}) in q.exhibits and
+  /* audio / video exhibits (MEDIA_JSON_SPEC.md): media objects ({type:"audio"|"video", src, mime?, poster?}; the form builder writes {kind, src}) in q.exhibits and
      in the explanation images play in a .tun-media player inside the same cards. makeExhibit() is wrapped, so every path that
      draws an exhibit (the legacy #exhibitImg, the extra cards, Modern's explanation images, the NBME review cards) gets it.
      No tools on a media card, no viewer; playback resumes across re-renders and pauses when the item changes or is covered */
@@ -5186,7 +5186,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     for(const l of lists){
       for(const o of (Array.isArray(l) ? l : l ? [l] : [])){
         if(!o || typeof o !== 'object' || (o.src || o.url || o.image || o.path) !== src) continue;
-        if(/^(audio|video)$/i.test(o.type || '') || /^(audio|video)\//i.test(o.mime || '')) return o;
+        if(/^(audio|video)$/i.test(o.type || o.kind || '') || /^(audio|video)\//i.test(o.mime || '')) return o;
       }
     }
     return null;
@@ -5194,7 +5194,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   function avKind(src, q){
     if(!src || typeof src !== 'string') return '';
     const o = avObj(src, q);
-    if(o){ const t = String(o.type || '').toLowerCase(), m = String(o.mime || '').toLowerCase(); return /^(audio|video)$/.test(t) ? t : m.startsWith('audio/') ? 'audio' : 'video'; }
+    if(o){ const t = String(o.type || o.kind || '').toLowerCase(), m = String(o.mime || '').toLowerCase(); return /^(audio|video)$/.test(t) ? t : m.startsWith('audio/') ? 'audio' : 'video'; }
     const d = src.match(/^data:(audio|video)\//i); if(d) return d[1].toLowerCase();
     const e = src.split(/[?#]/)[0].match(/\.([a-z0-9]+)$/i);
     return e && AV_EXT[e[1].toLowerCase()] || '';
