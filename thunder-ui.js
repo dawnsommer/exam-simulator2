@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 27;
+  const TU_RELEASE = 28;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -1310,6 +1310,17 @@ ${W} .exhibit-img{min-height:0!important;padding:8px;border:1px solid var(--tu-l
 ${W} .exhibit-img:hover{border-color:var(--tu-line)!important}
 ${W} .exhibit-img img{max-height:min(64vh,620px)!important;margin:0 auto;border-radius:10px}
 ${W} .exhibit-img svg{min-height:200px!important}
+/* audio / video exhibits: no tools on a media card, the player fills the box; the explanation label reads "Explanation Media" (CSS only) */
+${W} [data-tun-media] .exhibit-tools{display:none!important}
+${W} .exhibit-img:has(.tun-media){cursor:default}
+${W} .tun-media video{display:block;max-width:100%;max-height:min(64vh,620px);margin:0 auto;border-radius:10px}
+${W} .tun-media audio{display:block;width:100%;min-width:260px}
+${W} .qbank-body .exp-section>h3[data-tun-avh]{font-size:0!important}
+${W} .qbank-body .exp-section>h3[data-tun-avh]::after{content:"Explanation Media";font:800 13.5px var(--tu-font)}
+${W} [data-tun-flash]{outline:2px solid #0066a4;outline-offset:2px;transition:outline-color .4s}
+${X}:is(.exam-dark,.reverse) #workspace [data-tun-flash]{outline-color:#94eaff}
+${X}:is(.exam-dark,.reverse) #workspace .tun-media :is(audio,video){color-scheme:dark}
+${W} [data-tun-flash="out"]{outline-color:transparent!important}
 ${W} .exhibit-in-panel .drive-link{font-size:13px}
 /* Review Block grid */
 ${W} .review-panel{max-width:980px;margin:0 auto!important;padding:22px 24px!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;border:1px solid var(--tu-line2)!important;border-radius:22px!important;box-shadow:var(--tu-shadow)!important;font-family:var(--tu-font)!important}
@@ -4066,6 +4077,17 @@ ${RVB} .exp-section:has(.exp-image){display:none!important}
 ${RVB} ::selection{background:#b3d4fc}
 /* explanation images: a tab of reference cards with a caption */
 ${RV} .tun-rvimgs .tun-rvcap{display:block;padding:6px 10px 8px 0;font:14px/1.35 Arial,Helvetica,sans-serif;color:#000}
+/* audio / video: a media card has no tools, so its box loses the 70 px tool column; the review tiles show ▶ / ♪; a jump flashes the card */
+${P} #workspace .question-flex[data-tun-ex] [data-tun-media] .exhibit-tools,${RV} [data-tun-media] .exhibit-tools{display:none!important}
+${P} #workspace .question-flex[data-tun-ex] .exhibit-in-panel[data-tun-media]>.exhibit,${RV} .exhibit-in-panel[data-tun-media]>.exhibit{padding-left:5px!important}
+${P} #workspace .exhibit-img:has(.tun-media){cursor:default!important}
+${P} #workspace .tun-media video{display:block;max-width:100%;max-height:calc(100dvh / var(--tun-k,1) - 261px)}
+${P} #workspace .tun-media audio{display:block;width:100%;min-width:260px}
+${RV} .tun-rvthumbs .tun-avthumb{width:56px;display:flex;align-items:center;justify-content:center;font:20px/1 Arial,Helvetica,sans-serif;color:#0066a4;cursor:pointer}
+${RVD} .tun-rvthumbs .tun-avthumb{color:#94eaff}
+${P} #workspace [data-tun-flash]{outline:2px solid #0066a4;outline-offset:2px;transition:outline-color .4s}
+${PD} #workspace [data-tun-flash]{outline-color:#94eaff}
+${P} #workspace [data-tun-flash="out"]{outline-color:transparent!important}
 /* the choices: the reference's .opt.correct .otext; in a choice table every cell but the strike cell
    (.its-mtable .correct td.its-mcol); a struck correct choice keeps its letter white and fades the rest (screen 9) */
 ${RV} .answers .answer.correctChoice .choice-text{background:#037c03!important;color:#fff!important}
@@ -4944,7 +4966,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     const ov = byId('overviewRoot');
     if(ov) new MutationObserver(recs => { if(nbmeOn() && recs.some(r => !(r.target.closest && r.target.closest('.tun-mv,.tun-i')))) nbPops(); }).observe(ov, {childList:true, subtree:true, characterData:true});
     const ws = byId('workspace');
-    if(ws) new MutationObserver(() => { nbDecorateReview(); viewerFollow(); }).observe(ws, {childList:true});
+    if(ws) new MutationObserver(() => { nbDecorateReview(); viewerFollow(); avFollow(); avRestore(); }).observe(ws, {childList:true});
     // icons and radios: after every legacy render of the list, the question or the footer, and on choice changes
     new MutationObserver(recs => {
       if(!nbmeOn() || recs.every(r => r.target.closest && r.target.closest('.tun-i'))) return;
@@ -5066,6 +5088,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     if(typeof openImagePreview !== 'function' || openImagePreview.__tu) return;
     const base = openImagePreview;
     const wrapped = function(key, filter){
+      try{ if(avKind(key, questions[state.current])) return; }catch(e){}
       try{ let src = ''; try{ src = viewerSrcOf(makeExhibit(key)); }catch(e){} if(openViewer(src, filter)) return; }catch(e){ console.warn('ThunderUI image viewer failed', e); }
       return base.apply(this, arguments);
     };
@@ -5081,7 +5104,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   function exhibitSrcs(q){
     const out = [], add = v => { const s = v && typeof v === 'object' ? (v.src || v.image || v.url || '') : v; if(s && typeof s === 'string' && !out.includes(s)) out.push(s); };
     if(!q) return out;
-    const list = (Array.isArray(q.exhibits) ? q.exhibits : q.exhibits ? [q.exhibits] : []).filter(v => !(v && typeof v === 'object' && v.type && v.type !== 'image'));
+    const list = (Array.isArray(q.exhibits) ? q.exhibits : q.exhibits ? [q.exhibits] : []).filter(v => !(v && typeof v === 'object' && v.type && !/^(image|audio|video)$/.test(v.type)));
     let first = ''; try{ first = exhibitBase ? exhibitBase(q) : ''; }catch(e){}
     add(first || list[0]); list.slice(1).forEach(add);
     return out;
@@ -5108,6 +5131,168 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     wrapped.__tu = true;
     getQuestionImage = wrapped; // eslint-disable-line no-global-assign
   }
+  /* audio / video exhibits (MEDIA_JSON_SPEC.md): media objects ({type:"audio"|"video", src, mime?, poster?}) in q.exhibits and
+     in the explanation images play in a .tun-media player inside the same cards. makeExhibit() is wrapped, so every path that
+     draws an exhibit (the legacy #exhibitImg, the extra cards, Modern's explanation images, the NBME review cards) gets it.
+     No tools on a media card, no viewer; playback resumes across re-renders and pauses when the item changes or is covered */
+  const AV_EXT = {mp3:'audio', m4a:'audio', aac:'audio', wav:'audio', oga:'audio', ogg:'audio', opus:'audio', flac:'audio', mp4:'video', m4v:'video', mov:'video', webm:'video', ogv:'video'};
+  // the typed media object for a source: DATA assets are blob: URLs with no extension, so the type comes from the JSON object
+  function avObj(src, q){
+    if(!q || !src || typeof src !== 'string') return null;
+    const ep = q.explanationPanel || q.explanation_panel || q.rationalePanel || {};
+    const lists = [q.exhibits, ep.images, ep.photos, ep.figures, q.explanationImages, q.explanation_images, q.images, q.photos, q.figures];
+    for(const l of lists){
+      for(const o of (Array.isArray(l) ? l : l ? [l] : [])){
+        if(!o || typeof o !== 'object' || (o.src || o.url || o.image || o.path) !== src) continue;
+        if(/^(audio|video)$/i.test(o.type || '') || /^(audio|video)\//i.test(o.mime || '')) return o;
+      }
+    }
+    return null;
+  }
+  function avKind(src, q){
+    if(!src || typeof src !== 'string') return '';
+    const o = avObj(src, q);
+    if(o){ const t = String(o.type || '').toLowerCase(), m = String(o.mime || '').toLowerCase(); return /^(audio|video)$/.test(t) ? t : m.startsWith('audio/') ? 'audio' : 'video'; }
+    const d = src.match(/^data:(audio|video)\//i); if(d) return d[1].toLowerCase();
+    const e = src.split(/[?#]/)[0].match(/\.([a-z0-9]+)$/i);
+    return e && AV_EXT[e[1].toLowerCase()] || '';
+  }
+  // the MIME of an untyped blob: the object's mime, else the first bytes; the kind decides what the bytes do not
+  function avMime(bytes, kind, obj){
+    if(obj && /^(audio|video)\//i.test(obj.mime || '')) return obj.mime;
+    const b = bytes || [], at = (i, s) => [...s].every((c, n) => b[i + n] === c.charCodeAt(0));
+    if(at(0, 'ID3') || (b[0] === 0xFF && (b[1] & 0xE0) === 0xE0)) return 'audio/mpeg';
+    if(at(0, 'RIFF') && at(8, 'WAVE')) return 'audio/wav';
+    if(at(4, 'ftyp')) return kind === 'audio' ? 'audio/mp4' : 'video/mp4';
+    if(at(0, 'OggS')) return 'audio/ogg';
+    if(b[0] === 0x1A && b[1] === 0x45 && b[2] === 0xDF && b[3] === 0xA3) return 'video/webm';
+    return kind === 'audio' ? 'audio/mpeg' : 'video/mp4';
+  }
+  function wrapMedia(){
+    if(typeof makeExhibit !== 'function' || makeExhibit.__tu) return;
+    const base = makeExhibit;
+    const wrapped = function(key){
+      let q = null, kind = ''; try{ q = questions[state.current]; kind = avKind(key, q); }catch(e){}
+      if(!kind) return base.apply(this, arguments);
+      const o = avObj(key, q), src = escapeAttr(key);
+      return `<div class="tun-media" data-tun-media="${kind}">${kind === 'audio' ? `<audio controls preload="metadata" src="${src}"></audio>` : `<video controls playsinline preload="metadata"${o && o.poster ? ` poster="${escapeAttr(o.poster)}"` : ''} src="${src}"></video>`}</div>`;
+    };
+    wrapped.__tu = true;
+    makeExhibit = wrapped; // eslint-disable-line no-global-assign
+  }
+  // attributes only: media cards (no tools), the Modern explanation entries (ids for the jumps) and the section label
+  function avMarkCards(ws){
+    ws = ws || byId('workspace'); if(!ws) return;
+    ws.querySelectorAll('.exhibit-in-panel').forEach(c => { const m = !!c.querySelector('.tun-media'); if(c.hasAttribute('data-tun-media') !== m) c.toggleAttribute('data-tun-media', m); if(m) c.querySelectorAll('.exhibit-img[title]').forEach(b => b.removeAttribute('title')); });
+    ws.querySelectorAll('.exp-image').forEach((c, n) => setAttrIf(c, 'data-tun-exi', 'e' + n));
+    ws.querySelectorAll('.exp-section > h3').forEach(h => { const y = !!h.parentNode.querySelector('.tun-media'); if(h.hasAttribute('data-tun-avh') !== y) h.toggleAttribute('data-tun-avh', y); });
+  }
+  // a review preview tile for media: ▶ video, ♪ audio; it jumps to the card (image tiles keep the viewer)
+  const avThumb = (kind, id) => kind ? `<button type="button" class="tun-avthumb" data-tun-jump="${id}" aria-label="Show the ${kind}">${kind === 'video' ? '▶' : '♪'}</button>` : '';
+  /* playback: per item, by source. Media events do not bubble, so the listeners capture on the document. A re-render replaces
+     the elements: the new one gets the saved time and, if it was playing just before, plays on. A source that is a blob: URL
+     with no MIME type (the iPad store drops it) is replaced by a typed copy of the same data (Safari will not play it otherwise) */
+  const avs = {key:null, m:{}}; let avBlobs = {};
+  function avState(){
+    const k = viewerItemKey();
+    if(avs.key !== k){ avs.key = k; avs.m = {}; Object.values(avBlobs).forEach(u => { if(u) try{ URL.revokeObjectURL(u); }catch(e){} }); avBlobs = {}; }
+    return avs.m;
+  }
+  const avKey = el => el.getAttribute('data-tun-avsrc') || el.getAttribute('src');
+  const avEls = () => [...document.querySelectorAll('.tun-media audio,.tun-media video')];
+  function onAvEvent(e){
+    const el = e.target; if(!el || !el.closest || !el.closest('.tun-media')) return;
+    const m = avState(), k = avKey(el); if(!k) return;
+    const s = m[k] || (m[k] = {t:0, playing:false, at:0});
+    if(e.type === 'play'){ avEls().forEach(o => { if(o !== el && !o.paused) o.pause(); }); s.playing = true; }
+    else if(e.type === 'pause'){ if(el.isConnected) s.playing = false; }
+    s.t = el.currentTime || 0; s.at = Date.now();
+  }
+  function avRestore(){
+    const m = avState(), todo = [...document.querySelectorAll('#workspace .tun-media :is(audio,video):not([data-tun-avr])')];
+    todo.forEach(el => {
+      el.setAttribute('data-tun-avr', '1');
+      const src = el.getAttribute('src'), s = m[src];
+      const back = () => { if(!s) return; try{ if(s.t) el.currentTime = s.t; }catch(e){} if(s.playing && Date.now() - s.at < 2000) el.play().catch(() => {}); };
+      if(!/^blob:/i.test(src || '')){ back(); return; }
+      if(src in avBlobs){ if(avBlobs[src]){ el.setAttribute('data-tun-avsrc', src); el.src = avBlobs[src]; } back(); return; }
+      let q = null; try{ q = questions[state.current]; }catch(e){}
+      const kind = el.tagName.toLowerCase(), obj = avObj(src, q);
+      fetch(src).then(r => r.blob()).then(async b => {
+        let url = '';
+        if(!b.type){ const bytes = new Uint8Array(await b.slice(0, 12).arrayBuffer()); url = URL.createObjectURL(new Blob([b], {type:avMime(bytes, kind, obj)})); }
+        if(avs.key !== viewerItemKey()){ if(url) URL.revokeObjectURL(url); return; }
+        avBlobs[src] = url;
+        if(!el.isConnected) return;
+        if(url){ el.setAttribute('data-tun-avsrc', src); el.src = url; }
+        back();
+      }).catch(() => { avBlobs[src] = ''; back(); });
+    });
+  }
+  function avPauseAll(){ avEls().forEach(el => { if(!el.paused) el.pause(); }); }
+  // a new item: stop everything and forget the positions
+  function avFollow(){ if(avs.key !== viewerItemKey()){ avPauseAll(); avState(); } }
+  // the exam screen hidden, the page in the background, a player that is not shown or has something over it (lock cover, pause or End Block dialog, the viewer)
+  function avGuard(){
+    const on = avEls().filter(el => !el.paused); if(!on.length) return;
+    const scr = byId('examScreen'), gone = document.hidden || !scr || scr.classList.contains('hidden');
+    on.forEach(el => {
+      let cover = false;
+      if(!gone && el.offsetParent){
+        const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+        if(x >= 0 && y >= 0 && x <= innerWidth && y <= innerHeight){ const top = document.elementFromPoint(x, y); cover = !!top && top.closest('.tun-media') !== el.closest('.tun-media'); }
+      }
+      if(gone || !el.offsetParent || cover) el.pause();
+    });
+  }
+  /* jumps: a link or a preview tile for media shown in the app goes to its card (highlight + focus, never play). Card ids are
+     exhibitId()'s: 0, 1, 2… for the question's exhibits, "e0", "e1"… for the explanation entries. A card that is not shown
+     (another tab) is brought up through the legacy tab buttons or rvv.tab, then looked for again once */
+  function avCard(id){
+    const ws = byId('workspace'); if(!ws) return null;
+    if(typeof id === 'string') return ws.querySelector(`.tun-exx.tun-eximg[data-tun-exi="${id}"]`) || ws.querySelector(`.exp-image[data-tun-exi="${id}"]`);
+    return id === 0 ? byId('exhibitImg')?.closest('.exhibit-in-panel') || null : ws.querySelector(`.tun-exx[data-tun-exi="${id}"]`);
+  }
+  let avFlash = [0, 0];
+  function avJump(id, again){
+    const ws = byId('workspace'); if(!ws) return;
+    avMarkCards(ws);
+    const card = avCard(id);
+    if(!card || !card.offsetParent){
+      if(again) return;
+      const tab = k => { const t = ws.querySelector(`.qbank-tab[data-panel-tab="${k}"]`); if(t && !t.classList.contains('active')) t.click(); };
+      if(nbmeOn()){ if(typeof id === 'string'){ rvv.tab = 'images'; nbDecorate(); } else { rvv.tab = null; nbDecorate(); tab('exhibit'); } }
+      else tab(typeof id === 'string' ? 'explanation' : 'exhibit');
+      requestAnimationFrame(() => requestAnimationFrame(() => avJump(id, true)));
+      return;
+    }
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    card.scrollIntoView({block:'center', behavior:calm ? 'auto' : 'smooth'});
+    document.querySelectorAll('[data-tun-flash]').forEach(n => n.removeAttribute('data-tun-flash'));
+    card.setAttribute('data-tun-flash', '1'); clearTimeout(avFlash[0]); clearTimeout(avFlash[1]);
+    avFlash = [setTimeout(() => card.setAttribute('data-tun-flash', 'out'), 800), setTimeout(() => card.removeAttribute('data-tun-flash'), 1200)];
+    const el = card.querySelector('audio,video'); if(el) el.focus({preventScroll:true});
+  }
+  // the card a legacy "Open linked …" link jumps to, or null (the browser keeps the link, or nothing happens)
+  function avFirstId(q){
+    const ex = exhibitSrcs(q), i = ex.findIndex(s => avKind(s, q)); if(i >= 0) return i;
+    const j = reviewImages(q).findIndex(im => avKind(im.src, q)); return j >= 0 ? 'e' + j : null;
+  }
+  function avLinkTarget(a, q){
+    const ent = a.closest('[data-tun-exi^="e"]'); if(ent) return ent.dataset.tunExi;
+    const card = a.closest('.exhibit-in-panel'); if(!card) return null;
+    const href = a.getAttribute('href') || '';
+    if(q && href && [q.murmurLink, q.audioLink, q.soundLink].includes(href)) return avFirstId(q);
+    return exhibitIndex(card);
+  }
+  function onAvLink(e){
+    const a = e.target && e.target.closest && e.target.closest('#workspace .drive-link a'); if(!a) return;
+    let q = null; try{ q = questions[state.current]; }catch(err){}
+    avMarkCards();
+    const id = avLinkTarget(a, q);
+    if(id != null){ e.preventDefault(); e.stopImmediatePropagation(); if(e.type === 'click') avJump(id); return; }
+    if(!/^https?:/i.test(a.getAttribute('href') || '')) e.preventDefault();
+  }
   // per item: the extra cards' invert / contrast, the open Contrast popup; the first card keeps the legacy exhibitState
   // (block-wide), its contrast value lives here for the block
   const exv = {key:null, cards:{}, pop:null, blk:null, val0:150};
@@ -5125,6 +5310,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   const EX_TOOLS = [['invert', '◒', 'Invert'], ['contrast', '☀', 'Contrast'], ['zoom', '⊕', 'Zoom']];
   function exhibitExtras(){
     const ws = byId('workspace'), first = byId('exhibitImg'); if(!ws) return;
+    avMarkCards(ws);
     ws.querySelectorAll('#invertEx,#contrastEx,#zoomEx').forEach(n => setAttrIf(n, 'data-tun-tool', n.id.replace('Ex', '')));
     const card = first && first.closest('.exhibit-in-panel'); if(!card || card.parentNode.querySelector(':scope > .tun-exx')) return;
     let q = null; try{ q = questions[state.current]; }catch(e){} const srcs = exhibitSrcs(q); if(srcs.length < 2) return;
@@ -5134,6 +5320,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       return `<div class="exhibit-in-panel tun-exx" data-tun-exi="${i}"><div class="exhibit"><div class="exhibit-tools">${EX_TOOLS.map(([t, g, l]) => `<div><div class="exhibit-tool-icon" data-tun-tool="${t}">${g}</div><div>${l}</div></div>`).join('')}</div><div class="exhibit-img${st.invert ? ' invert' : ''}${st.con ? ' contrast' : ''}" data-tun-exi="${i}" title="Click to preview image">${pic}</div></div></div>`;
     }).join('');
     card.insertAdjacentHTML('afterend', html);
+    avMarkCards(ws);
   }
   // card ids: 0 = the legacy first card, 1, 2… = more exhibits, "e0", "e1"… = the explanation images (review)
   function exhibitId(v){ return /^e\d+$/.test(String(v)) ? String(v) : Number(v) || 0; }
@@ -5156,6 +5343,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     if(below) setAttrIf(below, 'data-tun-rv', '1');
     exhibitExtras();
     if(side) nbReview(ws, fx, rp); else if(below) nbReview(ws, fx, below);
+    avMarkCards(ws); avRestore();
     const ico = {invert:RI.exInvert, contrast:RI.exContrast, zoom:RI.exZoom};
     ws.querySelectorAll('.exhibit-tools .exhibit-tool-icon[data-tun-tool]').forEach(n => nbIcon(n, ico[n.dataset.tunTool] || ''));
     ws.querySelectorAll('.exhibit-in-panel > .exhibit').forEach(ex => {
@@ -5183,7 +5371,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     if(!q || !panel || !tabs) return;
     const k = viewerItemKey(); if(rvv.key !== k){ rvv.key = k; rvv.tab = null; }
     const imgs = reviewImages(q);
-    if(imgs.length && !tabs.querySelector('[data-tun-rvtab]')) tabs.insertAdjacentHTML('beforeend', `<button class="qbank-tab" type="button" data-tun-rvtab="images">Explanation Image${imgs.length > 1 ? 's' : ''}</button>`);
+    if(imgs.length && !tabs.querySelector('[data-tun-rvtab]')) tabs.insertAdjacentHTML('beforeend', `<button class="qbank-tab" type="button" data-tun-rvtab="images">${imgs.some(im => avKind(im.src, q)) ? 'Explanation Media' : 'Explanation Image' + (imgs.length > 1 ? 's' : '')}</button>`);
     setAttrIf(panel, 'data-tun-rvmode', rvv.tab === 'images' && imgs.length ? 'images' : null);
     if(imgs.length && !panel.querySelector(':scope > .tun-rvimgs')) panel.insertAdjacentHTML('beforeend', `<div class="tun-rvimgs">${imgs.map((im, n) => {
       const i = 'e' + n, st = exhibitCard(i); let pic = ''; try{ pic = makeExhibit(im.src); }catch(e){}
@@ -5199,14 +5387,16 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     if(!panel.querySelector(':scope > .tun-rvexhead')){
       const yours = sel ? (sel.querySelector('.choice-text')?.textContent || '').trim() : '', t = (ws.querySelector('.time-spent-value')?.textContent || '').trim(), ex = exhibitSrcs(q);
       const chg = flip ? `<span class="tun-rvchg ${flip}" title="${flip === 'ci' ? 'You changed a correct answer to an incorrect one' : 'You changed an incorrect answer to the correct one'}"><b>Changed:</b> ${LT[first]} <i class="${flip === 'ci' ? 'ok' : 'bad'}"></i> → ${LT[fin]} <i class="${flip === 'ci' ? 'bad' : 'ok'}"></i></span>` : '';
-      body.insertAdjacentHTML('beforebegin', `<div class="tun-rvexhead"><span class="tun-rvyours ${sel ? (good ? 'ok' : 'bad') : ''}"><b>Your answer:</b> <i></i><span>${sel ? esc(yours) + (good ? ' (correct)' : '') : 'Omitted'}</span></span>${chg}${t ? `<span><b>Time spent:</b> ${esc(t)}</span>` : ''}${ex.length ? `<span class="tun-rvthumbs" title="Exhibit">${ex.map(s => `<button type="button" data-tun-open="${esc(s)}" aria-label="Open the exhibit"><img alt="" src="${esc(s)}"></button>`).join('')}</span>` : ''}</div>`);
-      if(imgs.length) body.insertAdjacentHTML('afterend', `<div class="tun-rvfoot"><b>Explanation image${imgs.length > 1 ? 's' : ''}:</b><span class="tun-rvthumbs">${imgs.map(im => `<button type="button" data-tun-goto="images" aria-label="Show the explanation images"><img alt="" src="${esc(im.src)}"></button>`).join('')}</span><span>${esc(imgs[0].caption || '')}</span></div>`);
+      body.insertAdjacentHTML('beforebegin', `<div class="tun-rvexhead"><span class="tun-rvyours ${sel ? (good ? 'ok' : 'bad') : ''}"><b>Your answer:</b> <i></i><span>${sel ? esc(yours) + (good ? ' (correct)' : '') : 'Omitted'}</span></span>${chg}${t ? `<span><b>Time spent:</b> ${esc(t)}</span>` : ''}${ex.length ? `<span class="tun-rvthumbs" title="Exhibit">${ex.map((s, n) => avThumb(avKind(s, q), n) || `<button type="button" data-tun-open="${esc(s)}" aria-label="Open the exhibit"><img alt="" src="${esc(s)}"></button>`).join('')}</span>` : ''}</div>`);
+      if(imgs.length) body.insertAdjacentHTML('afterend', `<div class="tun-rvfoot"><b>Explanation image${imgs.length > 1 ? 's' : ''}:</b><span class="tun-rvthumbs">${imgs.map((im, n) => avThumb(avKind(im.src, q), 'e' + n) || `<button type="button" data-tun-goto="images" aria-label="Show the explanation images"><img alt="" src="${esc(im.src)}"></button>`).join('')}</span><span>${esc(imgs[0].caption || '')}</span></div>`);
     }
     const letter = sel ? LT[Number(sel.dataset.choice)] : null;
     body.querySelectorAll('.exp-wrong').forEach(w => { const b = w.querySelector(':scope > b'), m = b && b.textContent.match(/([A-J])\s*:?\s*$/), y = !!(m && m[1] === letter && !good); if(w.hasAttribute('data-tun-yours') !== y) w.toggleAttribute('data-tun-yours', y); });
   }
   function onNbReviewClick(e){
     const t = e.target; if(!t || !t.closest || !nbmeOn()) return;
+    const jmp = t.closest('#workspace [data-tun-jump]');
+    if(jmp){ e.preventDefault(); e.stopImmediatePropagation(); avJump(exhibitId(jmp.dataset.tunJump)); return; }
     if(t.closest('#workspace [data-tun-rvtab],#workspace [data-tun-goto]')){ e.preventDefault(); e.stopImmediatePropagation(); rvv.tab = 'images'; nbDecorate(); return; }
     if(t.closest('#workspace .qbank-tab[data-panel-tab]')) rvv.tab = null;
     if(t.closest('#workspace .below-exp-panel .qbank-tab:not([data-tun-rvtab])') && rvv.tab){ rvv.tab = null; nbDecorate(); return; }
@@ -5247,12 +5437,14 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   // the extra cards' images open the viewer with their own filter (from onViewerLinks)
   function onExhibitExtraOpen(e){
     const t = e.target, box = t && t.closest && t.closest('#workspace .tun-exx .exhibit-img'); if(!box) return;
+    if(t.closest('.tun-media')) return;
     e.preventDefault(); e.stopImmediatePropagation();
     try{ openImagePreview(exhibitSrcAt(exhibitId(box.dataset.tunExi)), exhibitFilterOf(box.closest('.exhibit-in-panel'))); }catch(err){ console.warn('ThunderUI exhibit open failed', err); }
   }
   // every image opens the viewer: the exhibit (and its Zoom tool, as on test day), stem images and explanation images
   function onViewerLinks(e){
     const t = e.target; if(!t || !t.closest) return;
+    if(t.closest('.tun-media')) return;
     if(t.closest('#zoomEx') && byId('exhibitImg')){
       e.preventDefault(); e.stopImmediatePropagation();
       try{ openImagePreview(getQuestionImage(questions[state.current]), exhibitFilter()); }catch(err){ console.warn('ThunderUI exhibit zoom failed', err); }
@@ -5299,9 +5491,11 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   function boot(){
     revealWhenDrawn();
     if(!byId('thunder-ui-css')){ const st = document.createElement('style'); st.id = 'thunder-ui-css'; st.textContent = STYLES + EXAM_STYLES + NBME_STYLES + NBME_SHELL; document.head.appendChild(st); }
-    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); wrapExhibits(); wrapLabs(); wrapStartBlock();
-    const wsx = byId('workspace'); if(wsx) new MutationObserver(() => exhibitExtras()).observe(wsx, {childList:true});
+    applyAccent(); applyExamStyle(); watchExam(); wrapReport(); wrapPreview(); wrapExhibits(); wrapMedia(); wrapLabs(); wrapStartBlock();
+    const wsx = byId('workspace'); if(wsx) new MutationObserver(() => { exhibitExtras(); avRestore(); }).observe(wsx, {childList:true});
     document.addEventListener('click', onExhibitClick, true);
+    document.addEventListener('click', onAvLink, true); document.addEventListener('auxclick', onAvLink, true);
+    ['play', 'pause', 'timeupdate'].forEach(n => document.addEventListener(n, onAvEvent, true)); setInterval(avGuard, 400);
     document.addEventListener('input', onExhibitInput, true); document.addEventListener('change', onExhibitInput, true); brand(); scheduleLibrary(); applySystemTheme(); scheduleSettings(true);
     // Legacy scripts rename the tab ("Step Exam Simulator A22.x …") after boot; keep the ThunderUSMLE name.
     const titleEl = document.querySelector('head > title');
@@ -5328,7 +5522,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     const watchCloud = () => { const c = byId('googleBackupStatus'); if(!c || c.dataset.tuWatched) return; c.dataset.tuWatched = '1'; new MutationObserver(() => paintSyncBits()).observe(c, {childList:true, characterData:true, subtree:true, attributes:true, attributeFilter:['data-tone', 'title']}); paintSyncBits(); };
     watchCloud();
     // late modules (progress sync, form updates) add their tabs and panels after load
-    let tries = 0; const late = setInterval(() => { brand(); wrapReport(); wrapPreview(); watchCloud(); scheduleLibrary(); qbWatch(); scheduleSettings(true); if(++tries > 20) clearInterval(late); }, 500);
+    let tries = 0; const late = setInterval(() => { brand(); wrapReport(); wrapPreview(); wrapMedia(); watchCloud(); scheduleLibrary(); qbWatch(); scheduleSettings(true); if(++tries > 20) clearInterval(late); }, 500);
   }
   window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), examStyle, setExamStyle, refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); scheduleExam(); }};
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
