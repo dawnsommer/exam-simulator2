@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 31;
+  const TU_RELEASE = 32;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -2208,7 +2208,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const canSave = saveBtns.length > 0;
     const banner = `<div class="tu-banner" role="note">${icon('<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/>', 22)}<span>${canSave ? 'Temporary: answers, highlights and scores here are not saved to your library. Export a save file if you need it later.' : 'Temporary: answers, highlights and scores here are not saved. Add the bank to your library to keep your progress.'}</span><button type="button" class="tu-link" data-tu-open-add>Add to library instead</button></div>`;
     const resume = byId('resumeQuickSession'), canResume = bank && resume && !resume.disabled;
-    let left = `<button type="button" class="tu-drop" data-tu-proxy="fileInput"><span class="tu-drop-ico">${icon(ICONS.upload, 28)}</span><b>Drop JSON files or choose</b><span>blocks[], questions[] or a plain question array. Several files merge in natural filename order.</span></button>`;
+    let left = `<button type="button" class="tu-drop" data-tu-proxy="fileInput"><span class="tu-drop-ico">${icon(ICONS.upload, 28)}</span><b>Drop JSON or ZIP files or choose</b><span>blocks[], questions[] or a plain question array; a ZIP can carry its images, audio and video. Several files merge in natural filename order.</span></button>`;
     if(bank){
       const linked = (byId('bankStatus')?.querySelector('.v215-linked-summary')?.textContent || '');
       const lm = linked.match(/Detected (\d+) linked set/), ltxt = lm ? plural(Number(lm[1]), 'linked set') + ' kept together' : /No linked-set/.test(linked) ? 'no linked sets' : '';
@@ -2229,9 +2229,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
         `<div class="tu-chips">${chips}</div>${breakControls(m)}<div class="tu-field"><span>Blocks</span>${blocks}</div>` +
         `<div class="tu-qstart">${canResume ? '<button type="button" class="tu-btn outline" data-tu-proxy="resumeQuickSession">Resume suspended test</button>' : ''}<button type="button" class="tu-btn outline" data-tu-proxy="startSelected"${byId('startSelected')?.disabled ? ' disabled' : ''}>Start selected block</button><button type="button" class="tu-btn" data-tu-proxy="startFull"${m.ready ? '' : ' disabled'}>${icon(ICONS.play, 18)}Start all blocks</button></div>`;
     } else {
-      run = `<div class="tu-qempty">${icon(ICONS.quick, 28)}<b>No bank loaded</b><span>Drop or choose JSON files to set up blocks, timing and breaks.</span></div>`;
+      run = `<div class="tu-qempty">${icon(ICONS.quick, 28)}<b>No bank loaded</b><span>Drop or choose JSON or ZIP files to set up blocks, timing and breaks.</span></div>`;
     }
-    return `<header class="tu-qhead"><h1>Quick practice</h1><span>Drop any compatible JSON bank and start right away.</span></header>${banner}` +
+    return `<header class="tu-qhead"><h1>Quick practice</h1><span>Drop any compatible JSON or ZIP bank and start right away.</span></header>${banner}` +
       `<div class="tu-qgrid"><div class="tu-qcol">${left}</div><section class="tu-card tu-run" aria-label="Run setup"><h2>Run setup</h2>${run}</section></div>`;
   }
   function paintQuick(){
@@ -2246,6 +2246,62 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(t.dataset.tuQblock != null){ document.querySelector(`#blocksTable tbody tr[data-i="${CSS.escape(t.dataset.tuQblock)}"]`)?.click(); scheduleQuick(); return; }
     if(setupAction(t)) scheduleQuick();
   }
+
+  /* Quick practice also takes ZIP banks. Their JSON files are read from the archive and their images / audio / video become
+     blob: URLs for this session only; nothing is written to the library. The bank hash still comes from the JSON text. */
+  const QZ_ASSET_RX = /\.(png|jpe?g|gif|webp|svg|mp3|m4a|aac|wav|oga|ogg|opus|flac|mp4|m4v|mov|webm|ogv)$/i;
+  const QZ_MIME = {png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', gif:'image/gif', webp:'image/webp', svg:'image/svg+xml', mp3:'audio/mpeg', m4a:'audio/mp4', aac:'audio/aac', wav:'audio/wav', oga:'audio/ogg', ogg:'audio/ogg', opus:'audio/ogg', flac:'audio/flac', mp4:'video/mp4', m4v:'video/mp4', mov:'video/quicktime', webm:'video/webm', ogv:'video/ogg'};
+  const QZ_SKIP_JSON = /(^|\/)(catalog|manifest|package-lock|audit_report|answer_key)[^/]*\.json$/i;
+  let qzUrls = [];
+  const qzNorm = p => { let v = String(p || '').split('#')[0].split('?')[0].replace(/\\/g, '/').replace(/^(\.\/)+/, ''); try{ v = decodeURIComponent(v); }catch(e){} return v; };
+  const qzJunk = p => p.split('/').some(x => x === '__MACOSX' || x === '.DS_Store' || x.startsWith('._'));
+  async function qzExpand(list){
+    const files = [], assets = [];
+    for(const f of list){
+      if(!/\.zip$/i.test(f.name || '')){ files.push(f); continue; }
+      if(!window.JSZip) throw new Error('ZIP support is unavailable. Reload once online so jszip.min.js is cached.');
+      const zip = await window.JSZip.loadAsync(await f.arrayBuffer()); let found = 0;
+      for(const e of Object.values(zip.files || {})){
+        if(e.dir || qzJunk(e.name)) continue;
+        if(/\.json$/i.test(e.name)){ if(QZ_SKIP_JSON.test(e.name)) continue; files.push(new File([await e.async('uint8array')], e.name.split('/').pop(), {type:'application/json'})); found++; }
+        else if(QZ_ASSET_RX.test(e.name)){ const ext = e.name.split('.').pop().toLowerCase(); assets.push({path:qzNorm(e.name), blob:new Blob([await e.async('uint8array')], {type:QZ_MIME[ext] || 'application/octet-stream'})}); }
+      }
+      if(!found) throw new Error(`No question-bank JSON was found inside ${f.name}.`);
+    }
+    return {files, assets};
+  }
+  function qzRewrite(bank, assets){
+    const urls = [], map = {}, base = {};
+    assets.forEach(a => {
+      const url = URL.createObjectURL(a.blob); urls.push(url);
+      const parts = a.path.split('/'), i = parts.lastIndexOf('assets'), rel = i >= 0 && i < parts.length - 1 ? parts.slice(i + 1).join('/') : a.path;
+      [a.path, rel, 'assets/' + rel].forEach(k => { map[k] = url; });
+      const b = parts[parts.length - 1]; base[b] = base[b] && base[b] !== url ? null : url;
+    });
+    const ref = v => { const k = qzNorm(v); return map[k] || map[k.replace(/^assets\//, '')] || base[k.split('/').pop()] || null; };
+    const str = v => {
+      if(/^(data:|blob:|https?:)/i.test(v)) return v;
+      const whole = ref(v); if(whole) return whole;
+      return v.replace(/(\b(?:src|href|poster)\s*=\s*)(["'])([^"']+)\2/gi, (m, a, q, p) => { const u = ref(p); return u ? a + q + u + q : m; })
+              .replace(/url\(\s*(["']?)([^)"']+)\1\s*\)/gi, (m, q, p) => { const u = ref(p); return u ? `url(${q}${u}${q})` : m; });
+    };
+    (function walk(o){
+      if(Array.isArray(o)) o.forEach((x, i) => { o[i] = typeof x === 'string' ? str(x) : (walk(x), x); });
+      else if(o && typeof o === 'object') Object.keys(o).forEach(k => { o[k] = typeof o[k] === 'string' ? str(o[k]) : (walk(o[k]), o[k]); });
+    })(bank);
+    qzUrls.forEach(u => URL.revokeObjectURL(u)); qzUrls = urls;
+  }
+  if(typeof importFromFiles === 'function'){
+    const qzPrev = importFromFiles;
+    importFromFiles = async function(fileList){
+      const list = Array.from(fileList || []);
+      if(!list.some(f => /\.zip$/i.test(f.name || ''))) return qzPrev(fileList);
+      const {files, assets} = await qzExpand(list);
+      await qzPrev(files);
+      if(assets.length && typeof importedBank !== 'undefined' && importedBank){ qzRewrite(importedBank, assets); if(typeof renderMenu === 'function') renderMenu(); }
+    };
+  }
+  document.addEventListener('DOMContentLoaded', () => { const i = byId('fileInput'); if(i) i.accept = '.json,application/json,.zip,application/zip'; });
 
   /* ---------- Qbank (boards Qbank, QbankHistory) ----------
      #tuQbank (build a test) and #tuQtests (history) sit in the legacy Qbank panels, which stay in the DOM off-screen.
