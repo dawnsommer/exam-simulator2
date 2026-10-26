@@ -366,3 +366,14 @@ test('"Delete progress" for a form this device does not have: every device that 
   assert.equal(Sync.attemptIdsOf(C.view(await B.store.known()).units, 'fz').length, 0, 'nothing waits on B any more');
   await echoFree(A, B);
 });
+
+test('the user\'s own Delete progress resets the form even when this device has no "seen" record of its attempts (it used to come back with the next sync)', async () => {
+  const { w, A, B } = await pair();
+  await A.store.setRaw('seenLocal', {});                       // e.g. attempts that arrived from the V2 legacy copy / an older install: never marked as shown here
+  A.setProgress('f1', null); await A.scan(); await A.sync(); await B.sync();
+  assert.deepEqual(atts(A, 'f1'), ['a1'], 'a missing file alone (no delete event) still never deletes what this device has not shown: the attempt is applied back');
+  A.setProgress('f1', null); await A.store.setRaw('explicitReset', { f1: 1 }); await A.scan(); await A.sync(); w.advance(5); await B.sync(); await A.sync();
+  assert.deepEqual(atts(A, 'f1'), [], 'explicit delete: gone here');
+  assert.deepEqual(atts(B, 'f1'), [], 'and on the other device');
+  assert.deepEqual(await A.store.getRaw('explicitReset', {}), {}, 'the mark is used up by one scan');
+});

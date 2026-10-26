@@ -27,7 +27,7 @@
   const attFormOf=known=>{const m={};for(const [k,u] of Object.entries(known)){const p=Core.parseKey(k);if(p.fam==='A'&&p.field==='')m[p.att]=String(u.v&&u.v.formUid||'');}return m;};
 
   /* units of the current extract vs known: returns the units that need a stamp (value, defaults for cleared values, log entries) */
-  function diffForm({uid,extract,known,dev,bootstrapped,visible,seen}){
+  function diffForm({uid,extract,known,dev,bootstrapped,visible,seen,explicitReset}){
     /* compare with what is VISIBLE: hidden units (deleted attempt, reset, a completed block's other answers) are not what the app shows */
     const vis=visible||Core.view(known).units;
     const attForm=attFormOf(known),next=new Map(extract.units.map(u=>[u.k,u]));
@@ -62,7 +62,8 @@
       /* only attempts that are visible AND that this device has shown before can be deleted here: a wiped or re-installed device never deletes what it has not seen */
       const alive=Object.keys(vis).map(Core.parseKey).filter(p=>p.fam==='A'&&p.field===''&&String(vis[K.att(p.att)].v.formUid)===uid).map(p=>p.att);
       const gone=alive.filter(a=>!attemptsNow.has(a)&&(!seen||seen[a]));
-      if(gone.length&&gone.length===alive.length&&!attemptsNow.size)tombs.push({k:K.form(uid,'reset'),v:{at:null}});
+      /* the user's own Delete progress (explicitReset, set by the delete event) resets the whole form even for attempts this device never showed (cloud / legacy copies); a missing file alone never does */
+      if(alive.length&&!attemptsNow.size&&(explicitReset||(gone.length&&gone.length===alive.length)))tombs.push({k:K.form(uid,'reset'),v:{at:null}});
       else gone.forEach(a=>tombs.push({k:K.attField(a,'del'),v:{del:true}}));
     }
     if(!bootstrapped){held.push(...tombs);return {changes:out,tombstones:[],held};}
@@ -76,11 +77,13 @@
       const local=await source.readForms(),fallback=new Set(await store.getRaw('fallbackForms',[]));      // forms still on V2 (per-form fallback): not V3's
       for(const uid of fallback)delete local.forms[uid];
       const visible=Core.view(known,{now:now()}).units,seenAll=await store.getRaw('seenLocal',{}),seenF=await store.getRaw('seenForms',{});
+      const explicitAll=await store.getRaw('explicitReset',{});let explicitChanged=false;
       if(!only)for(const uid of Object.keys(local.forms))seenF[uid]=1;else if(local.forms[only])seenF[only]=1;
       const touched=new Set(),dirtyScopes=new Set(),af=attFormOf(known),mark=k=>{const hp=Core.parseKey(k);if(hp.fam==='A'&&hp.field===''&&known[k]&&known[k].v)af[hp.att]=String(known[k].v.formUid||'');const sc=scopeOf(k,af);dirtyScopes.add(sc.scope==='form'?'form:'+sc.uid:sc.scope);};
       for(const [uid,f] of Object.entries(local.forms)){
         if(only&&only!==uid)continue;
-        const d=diffForm({uid,extract:f.extract,known,dev,bootstrapped:boot,visible,seen:seenAll[uid]||{}});
+        const d=diffForm({uid,extract:f.extract,known,dev,bootstrapped:boot,visible,seen:seenAll[uid]||{},explicitReset:!!explicitAll[uid]});
+        if(explicitAll[uid]){delete explicitAll[uid];explicitChanged=true;}
         if(f.extract.attempts.length){seenAll[uid]=seenAll[uid]||{};for(const a of f.extract.attempts)seenAll[uid][a]=1;}
         const list=[...d.changes,...d.tombstones],logN=list.reduce((n,u)=>n+(u.logAppend?u.v.length:0),0);
         if(list.length){
@@ -116,7 +119,7 @@
         report.settings.changed=n;report.totals.changed+=n;
       }
       for(const sc of dirtyScopes){if(sc.startsWith('form:'))await store.markDirty('form',sc.slice(5));else await store.markDirty(sc);}
-      await store.setKnown(known);await store.setRaw('seenLocal',seenAll);await store.setRaw('seenForms',seenF);
+      if(explicitChanged)await store.setRaw('explicitReset',explicitAll);await store.setKnown(known);await store.setRaw('seenLocal',seenAll);await store.setRaw('seenForms',seenF);
       return report;
     }
     return {scan,diffForm};

@@ -57,6 +57,12 @@
   const writtenDuringUpgrade=new Set();
   window.addEventListener('stepsim:progress-write',e=>{const d=e&&e.detail||{};if(state.migrating&&d.formId)writtenDuringUpgrade.add(String(d.formId));if(state.migrating&&/^QBANK_MODE/i.test(String(d.filename||'')))writtenDuringUpgrade.add(Core.QBANK_UID);scheduleScan(d.filename);});
   let uidByFormId=new Map();
+  /* the user's own Delete progress (not a sync apply): remembered until the next scan, which then resets the form on every device */
+  window.addEventListener('stepsim:progress-write',e=>{
+    const d=e&&e.detail||{},m=/^(.+)_progress_save\.json$/.exec(String(d.filename||''));
+    if(d.operation!=='delete'||!m||window.__STEP_SYNC_APPLYING_REMOTE||window.__STEP_SYNC_IMPORTING_PROGRESS)return;
+    (async()=>{try{if(!uidByFormId.has(m[1]))await refreshUidMap();const uid=uidByFormId.get(m[1])||m[1],o=await store.getRaw('explicitReset',{});o[uid]=Date.now();await store.setRaw('explicitReset',o);}catch(err){console.warn('Sync V3 delete mark failed',err);}})();
+  });
   async function refreshUidMap(){try{const cat=await window.StepExamSyncBridge.catalog();uidByFormId=new Map((cat.forms||[]).map(r=>[String(r.id),String(r.formUid||r.id)]));}catch(e){}}
   const changedDuring=()=>new Set([...writtenDuringUpgrade].map(id=>id===Core.QBANK_UID?id:(uidByFormId.get(id)||id)));
 
