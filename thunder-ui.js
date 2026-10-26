@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 28;
+  const TU_RELEASE = 29;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -3921,6 +3921,12 @@ ${P} #stem table[align=left] td,${P} #stem table[align=left] td span{white-space
    spaces (2 x 0.27783em, the width of NBME's &nbsp;&nbsp;) */
 ${P} #stem .stem-lab-table tr>th[colspan]:only-child{display:block!important;font-weight:400!important;text-align:left!important;min-width:0!important}
 ${P} #stem .stem-lab-table tr:has(>:is(th,td)[colspan]:only-child)~tr:not(:has(>[colspan]))>td:first-child{padding-left:calc(2px + .55566em)!important}
+/* the "response options are the same" notice of a shared-options set (outside a linked-set page, which draws its own bar): the
+   abstract banner's box (black 2px frame, #ecf2f9), plain text with the bold count, a blank line below */
+${P} #workspace .stem-warning{box-sizing:border-box!important;width:100%!important;border:2px solid #000!important;background:#ecf2f9!important;padding:1px 3px!important;margin:0 0 22.4px!important;font-size:16px!important;line-height:22.4px!important;color:#000!important}
+${P} #workspace .stem-warning>b{font-weight:400!important}
+${P} #workspace .stem-warning .sw-n{font-weight:700!important;font-family:Arial,Helvetica,"Arial Unicode MS",sans-serif!important}
+${PD} #workspace .stem-warning{background:#1a2733!important;border-color:#fff!important;color:#fff!important}
 /* v3: "Medications:" + its list = the sample's <table align=left> block: 21 px padding above and below, cells 2 / 1 px,
    so the label is 23 px lower and 2 px in, the list 3 px under it, and the next subheading 22 px lower */
 ${P} #stem .chart-subheading[data-tun-med]{margin-top:23px!important;padding-left:2px!important}
@@ -3969,7 +3975,7 @@ ${P} #workspace .answers .strike-symbol:hover::before{background:rgba(0,0,0,.08)
 ${P} #workspace .answers.choice-table-active{vertical-align:top!important;overflow:visible!important}
 ${P} #workspace .choice-table-active .choice-table-wrap{all:unset!important;box-sizing:content-box!important;display:table!important;border-collapse:collapse!important}
 ${P} #workspace .choice-table-active .choice-table-head{all:unset!important;box-sizing:content-box!important;display:table-row!important}
-${P} #workspace .choice-table-active .choice-table-head>div{all:unset!important;box-sizing:content-box!important;display:table-cell!important;padding:0 6.4px!important;text-align:center!important;vertical-align:middle!important;line-height:22.4px!important;font-weight:700!important}
+${P} #workspace .choice-table-active .choice-table-head>div{all:unset!important;box-sizing:content-box!important;display:table-cell!important;padding:0 6.4px!important;text-align:center!important;vertical-align:middle!important;line-height:22.4px!important;font-weight:700!important;font-family:Arial,Helvetica,"Arial Unicode MS",sans-serif!important}
 ${P} #workspace .choice-table-active .choice-table-head>div:first-child{width:45px!important;min-width:44.3px!important;padding:0!important}
 ${P} #workspace .choice-table-active .choice-table-row{all:unset!important;box-sizing:content-box!important;display:table-row!important;height:36px!important;cursor:pointer!important}
 ${P} #workspace .choice-table-active .choice-table-row:hover{background:#d7dced!important}
@@ -4720,6 +4726,41 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       if(state.current !== 0) goToQuestionIndex(0);
     }catch(e){ console.warn('ThunderUI block navigation failed', e); }
   }
+  /* a builder form's stem tables (tags and attributes only, no text node changes). A lab table has label / value rows and group
+     rows (one text-only cell spanning both columns): the group cell becomes a <th> and the table the app's .stem-lab-table, so the
+     group-row rules (NBME) and the lab table look (legacy / Modern) apply as they do to a hand-built form. A one-row table that
+     repeats the answer table's headings is hidden: the headings sit above the options */
+  function stemTables(){
+    const stem = byId('stem'); if(!stem) return;
+    let q = null; try{ q = questions[state.current]; }catch(e){}
+    const plain = s => String(s || '').replace(/<[^>]*>/g, '').replace(/\s+/g, '').toLowerCase();
+    const heads = q && q.choiceTable && Array.isArray(q.choiceTable.headers) ? q.choiceTable.headers.map(plain) : null;
+    stem.querySelectorAll('table').forEach(t => {
+      if(t.classList.contains('stem-lab-table') && t.tHead && t.tHead.rows.length === 1 && t.tBodies[0]){
+        const hr = t.tHead.rows[0], cs = [...hr.cells];
+        if(cs.length > 1 && cs[0].textContent.trim() && cs.slice(1).every(c => !c.textContent.trim())){
+          cs.slice(1).forEach(c => c.remove()); cs[0].colSpan = 2; t.tBodies[0].insertBefore(hr, t.tBodies[0].firstChild); t.tHead.remove(); // a lone group heading belongs with its rows
+        }
+        return;
+      }
+      if(t.className) return;
+      const rows = [...t.rows], txt = c => c.textContent.replace(/\s+/g, '');
+      if(heads && rows.length === 1){
+        const cells = [...rows[0].cells].map(txt).filter(Boolean).map(x => x.toLowerCase());
+        if(cells.length === heads.length && cells.every((x, i) => x === heads[i])){ t.classList.add('tun-dup-head'); t.style.display = 'none'; }
+        return;
+      }
+      const group = rows.filter(r => r.cells.length === 1 && r.cells[0].colSpan > 1 && txt(r.cells[0]));
+      if(!group.length || rows.some(r => r.cells.length > 2) || !rows.some(r => r.cells.length === 2 && txt(r.cells[0]) && txt(r.cells[1]))) return;
+      t.classList.add('stem-lab-table');
+      group.forEach(r => {
+        const c = r.cells[0]; if(c.tagName !== 'TD') return;
+        const h = document.createElement('th'); [...c.attributes].forEach(a => h.setAttribute(a.name, a.value));
+        while(c.firstChild) h.appendChild(c.firstChild);
+        c.replaceWith(h);
+      });
+    });
+  }
   function nbDecorate(){
     const scr = byId('examScreen'); if(!scr || !nbmeOn()) return;
     const ws = byId('workspace');
@@ -4967,6 +5008,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     if(ov) new MutationObserver(recs => { if(nbmeOn() && recs.some(r => !(r.target.closest && r.target.closest('.tun-mv,.tun-i')))) nbPops(); }).observe(ov, {childList:true, subtree:true, characterData:true});
     const ws = byId('workspace');
     if(ws) new MutationObserver(() => { nbDecorateReview(); viewerFollow(); avFollow(); avRestore(); }).observe(ws, {childList:true});
+    if(ws){ new MutationObserver(() => stemTables()).observe(ws, {childList:true}); stemTables(); }
     // icons and radios: after every legacy render of the list, the question or the footer, and on choice changes
     new MutationObserver(recs => {
       if(!nbmeOn() || recs.every(r => r.target.closest && r.target.closest('.tun-i'))) return;

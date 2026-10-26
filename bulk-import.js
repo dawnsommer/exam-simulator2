@@ -45,7 +45,7 @@
       for(const item of entries.filter(x=>x.path.startsWith(assetPrefix))){
         const rel=item.path.slice(assetPrefix.length), dest='assets/'+id+'/'+rel;
         assets.push({path:dest,blob:await item.entry.async('blob')});
-        for(const key of [item.path,'./'+item.path,'assets/'+rel,'./assets/'+rel,name+'/assets/'+rel,'DATA/assets/'+id+'/'+rel])refs.set(key,'DATA/'+dest);
+        for(const key of [item.path,'./'+item.path,'assets/'+rel,'./assets/'+rel,name+'/assets/'+rel,'DATA/assets/'+id+'/'+rel,'DATA/assets/'+rel])refs.set(key,'DATA/'+dest);
       }
       function reference(v){return refs.get(v) || refs.get(v.replace(/^\.\//,'')) || v;}
       function rewrite(v){

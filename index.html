@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=28">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=28">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=29">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=29">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=28"></script>
-<script src="./js/form-updates-core.js?v=28"></script>
-<script src="./js/form-update-store.js?v=28"></script>
-<script src="./js/google-auth.js?v=28"></script>
+<script src="./js/sync-config.js?v=29"></script>
+<script src="./js/form-updates-core.js?v=29"></script>
+<script src="./js/form-update-store.js?v=29"></script>
+<script src="./js/google-auth.js?v=29"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=28" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=29" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=28"></script>
-<script src="./js/qid-migration.js?v=28"></script>
+<script src="jszip.min.js?v=29"></script>
+<script src="./js/qid-migration.js?v=29"></script>
 <script>
 
 
@@ -1211,13 +1211,17 @@ function makeChoiceTableCells(row){
   if(Array.isArray(row.values)) return row.values.map(x=>String(x ?? ''));
   return [];
 }
+// a column heading keeps only <sub>/<sup> (PaO<sub>2</sub>); a wrapping <strong>/<b> is dropped (the heading cell is bold), the rest is text
+function choiceHeadHtml(h){
+  return escapeHtml(h).replace(/&lt;(\/?)(sub|sup)&gt;/gi,'<$1$2>').replace(/&lt;\/?(?:strong|b|em|i|span)&gt;/gi,'');
+}
 function makeAnswerChoicesHtml(q, reveal, locked){
   const ct = q.choiceTable || q.choice_table || null;
   const headers = ct && Array.isArray(ct.headers) ? ct.headers.map(h=>String(h ?? '')) : [];
   const rows = ct && Array.isArray(ct.rows) ? ct.rows : [];
   if(headers.length && rows.length){
     const colCount = Math.max(1, headers.length);
-    const headerHtml = `<div class="choice-table-head" style="--ct-cols:${colCount}"><div></div>${headers.map(h=>`<div>${escapeHtml(h)}</div>`).join('')}</div>`;
+    const headerHtml = `<div class="choice-table-head" style="--ct-cols:${colCount}"><div></div>${headers.map(h=>`<div>${choiceHeadHtml(h)}</div>`).join('')}</div>`;
     const rowHtml = rows.map((row,idx)=>{
       const letterRaw = row && typeof row === 'object' && !Array.isArray(row) ? (row.letter || row.key || letters[idx]) : letters[idx];
       const letter = String(letterRaw || letters[idx]).trim().toUpperCase().charAt(0);
@@ -1285,7 +1289,7 @@ function renderQuestion(){
   const rightPanel = makeRightPanel(q, sidePanelReveal, hasImage, expLayout);
   // Below mode explanation must use q._explanationHtml and data-panel-mode so explanation highlights persist.
   const belowExplanation = useBelowExplanation ? `<section class="below-exp-wrap"><div class="qbank-panel below-exp-panel"><div class="qbank-tabs"><button class="qbank-tab active" type="button">Explanation</button></div><div class="qbank-body" data-panel-mode="explanation">${q._explanationHtml || makeExplanationPanel(q)}</div></div></section>` : '';
-  const noticeHtml = q.setNotice && !(q._stemHtml || '').includes('stem-warning') ? `<div class="stem-warning"><b>${escapeHtml(q.setNotice)}</b>${q.setInstruction ? '<br>'+escapeHtml(q.setInstruction) : ''}</div>` : '';
+  const noticeHtml = q.setNotice && !(q._stemHtml || '').includes('stem-warning') ? `<div class="stem-warning"><b>${escapeHtml(q.setNotice).replace(/(\d+)/,'<span class="sw-n">$1</span>')}</b>${q.setInstruction ? '<br>'+escapeHtml(q.setInstruction) : ''}</div>` : '';
   const lockedBanner = locked ? `<div class="locked-banner"><b>Review mode:</b> saved answers, highlights, strikethroughs, and correct/incorrect status are displayed. Answer choices are locked.</div>` : '';
   const questionMainClass = (hasImage || (reveal && !useBelowExplanation)) ? '' : 'no-image';
   $('#workspace').innerHTML = `<div class="question-stack ${useBelowExplanation ? 'explanation-below' : 'explanation-split'}"><div class="question-flex"><section class="question-main ${questionMainClass}">${lockedBanner}<label class="mark-line"><input id="markQuestion" class="markbox" type="checkbox" ${state.flagged[state.current]?'checked':''} ${locked?'disabled':''}> <span>Mark Question</span></label><div id="stem" class="stem" style="font-size:${16.3*textZoom}px">${noticeHtml}${q._stemHtml || escapeHtml(q.stem)}</div><div class="stem-answer-spacer" aria-hidden="true"></div>${answerBox}${inlineFeedback}<button id="proceedBtn" class="proceed">${state.current===questions.length-1?(reviewMode && blockPointer<activeBlocks.length-1?'Proceed to Next Block':'Proceed to Review'):'Proceed to Next Item'}</button></section>${rightPanel}</div>${belowExplanation}</div>`;
@@ -2557,7 +2561,7 @@ document.addEventListener('click', function(e){
   async function readFormBank(id){
     if(loadedFormCache.has(id)) return cloneJson(loadedFormCache.get(id));
     const dir=await formsDir(); const txt=await readText(dir, `${id}.json`); let bank=normalizeBank(JSON.parse(txt)); const rec=catalogForm(id); if(rec){ bank.title=rec.displayName||rec.id; bank.librarySlotId=id; }
-    bank = await hydrateAssetUrlsInBank(bank);
+    bank = await hydrateAssetUrlsInBank(bank, id);
     loadedFormCache.set(id, bank);
     return cloneJson(bank);
   }
@@ -2603,10 +2607,14 @@ document.addEventListener('click', function(e){
       return src.startsWith('DATA/') ? src : ('DATA/'+src.replace(/^DATA\//,''));
     }
   }
-  async function hydrateAssetUrlsInBank(bank){
+  async function hydrateAssetUrlsInBank(bank, formId){
     async function walk(v){
       if(typeof v==='string'){
-        return dataAssetParts(v) ? await getDataAssetObjectUrl(v) : v;
+        if(dataAssetParts(v)) return await getDataAssetObjectUrl(v);
+        // a builder form names its files DATA/assets/<file>; they live in this form's folder, assets/<form id>/<file>
+        const flat=formId && /^(?:\.\/)?(?:DATA\/)?assets\/([^\/]+)$/.exec(v);
+        if(flat){ const url=await getDataAssetObjectUrl('DATA/assets/'+formId+'/'+flat[1]); return /^blob:/.test(url) ? url : v; }
+        return v;
       }
       if(Array.isArray(v)){
         for(let i=0;i<v.length;i++) v[i]=await walk(v[i]);
@@ -8146,6 +8154,31 @@ details.v75-menu summary{
     if(arr.some(function(x){return !x;})) return '';
     return v215Hash(JSON.stringify(arr)) + ':' + arr.length;
   }
+  /* A builder form carries the set's passage inside every member's stemHtml (no abstractStimulusHtml / sharedStimulusHtml), so the
+     linked-set pages never opened. Abstract sets (an .abstract-box in each stem) and sequential sets (the vignette paragraphs
+     every member starts with, notice or layout saying "sequential") get the stimulus the pages read; each item keeps only its own
+     part, the builder's warning bar goes and the page draws the set banner. Explicit stimulus fields win; nothing is guessed */
+  function v215DeriveStimulus(out, sets){
+    function members(s){ return s.indexes.map(function(i){ return out[i]; }); }
+    function parse(q){ var d = document.createElement('div'); d.innerHTML = q.stemHtml || ''; d.querySelectorAll(':scope > .stem-warning').forEach(function(w){ w.remove(); }); return d; }
+    sets.forEach(function(s){
+      var m = members(s);
+      if(m.length < 2 || m.some(function(q){ return q.abstractStimulusHtml || q.sharedStimulusHtml || !q.stemHtml; })) return;
+      var docs = m.map(parse), text = m.map(function(q){ return (q.setNotice || '') + ' ' + ((q.metadata && q.metadata.layoutClass) || ''); }).join(' ');
+      var box = docs.map(function(d){ return d.querySelector(':scope > .abstract-box'); });
+      if(box.every(Boolean) && box.every(function(b){ return b.outerHTML === box[0].outerHTML; })){
+        var passage = box[0].outerHTML;
+        m.forEach(function(q, k){ box[k].remove(); q.stemHtml = docs[k].innerHTML; q.abstractStimulusHtml = passage; q._linkedSetType = 'abstract'; q.setNotice = 'Please refer to the abstract on the left to answer the next ' + m.length + ' items.'; q.setInstruction = ''; delete q.setNoticeHtml; });
+        return;
+      }
+      if(!/sequential/i.test(text)) return;
+      var kids = docs.map(function(d){ return Array.prototype.slice.call(d.children).map(function(c){ return c.outerHTML; }); }), n = 0;
+      while(n < kids[0].length - 1 && kids.every(function(k){ return k.length - 1 > n && k[n] === kids[0][n]; })) n++;
+      if(!n) return;
+      var vignette = kids[0].slice(0, n).join('');
+      m.forEach(function(q, k){ for(var j = 0; j < n; j++) docs[k].removeChild(docs[k].firstElementChild); q.stemHtml = docs[k].innerHTML; q.sharedStimulusHtml = vignette; q._linkedSetType = 'sequential'; q.setNotice = ''; q.setInstruction = ''; delete q.setNoticeHtml; });
+    });
+  }
   function v215AnnotateQuestions(list){
     var out = (list || []).map(function(q,i){
       var clone = Object.assign({}, q || {});
@@ -8202,6 +8235,7 @@ details.v75-menu summary{
         sets.push({id:linkedId, key:key, type:type, total:total, indexes:run.map(function(x){return x.i;})});
       });
     });
+    v215DeriveStimulus(out, sets);
     return {questions:out, sets:sets};
   }
   function v215Units(list){
@@ -10580,18 +10614,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=28"></script>
-<script src="./js/sync-storage.js?v=28"></script>
-<script src="./js/progress-sync.js?v=28"></script>
-<script src="./js/library-backup.js?v=28"></script>
-<script src="./js/qid-settings.js?v=28"></script>
-<script src="./js/sync3-core.js?v=28"></script>
-<script src="./js/sync3-bridge.js?v=28"></script>
-<script src="./js/sync3-store.js?v=28"></script>
-<script src="./js/sync3-drive.js?v=28"></script>
-<script src="./js/sync3-sync.js?v=28"></script>
-<script src="./js/sync3-migrate.js?v=28"></script>
-<script src="./js/sync3-boot.js?v=28"></script>
+<script src="./js/sync-merge.js?v=29"></script>
+<script src="./js/sync-storage.js?v=29"></script>
+<script src="./js/progress-sync.js?v=29"></script>
+<script src="./js/library-backup.js?v=29"></script>
+<script src="./js/qid-settings.js?v=29"></script>
+<script src="./js/sync3-core.js?v=29"></script>
+<script src="./js/sync3-bridge.js?v=29"></script>
+<script src="./js/sync3-store.js?v=29"></script>
+<script src="./js/sync3-drive.js?v=29"></script>
+<script src="./js/sync3-sync.js?v=29"></script>
+<script src="./js/sync3-migrate.js?v=29"></script>
+<script src="./js/sync3-boot.js?v=29"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11070,10 +11104,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=28"></script>
-<script src="./exam-notes.js?v=28"></script>
-<script src="./app-update.js?v=28"></script>
-<script src="./js/form-updates.js?v=28"></script>
+<script src="./bulk-import.js?v=29"></script>
+<script src="./exam-notes.js?v=29"></script>
+<script src="./app-update.js?v=29"></script>
+<script src="./js/form-updates.js?v=29"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11480,8 +11514,8 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=28"></script>
-<script src="./nav-delay.js?v=28"></script>
-<script src="./thunder-ui.js?v=28"></script>
+<script src="./item-code.js?v=29"></script>
+<script src="./nav-delay.js?v=29"></script>
+<script src="./thunder-ui.js?v=29"></script>
 </body>
 </html>
