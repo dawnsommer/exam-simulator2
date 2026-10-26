@@ -287,3 +287,5 @@ Keep newest entries first.
 - 2026-10-26: DEPLOYED as iPad release 27 (commit 9c92d25, Publish workflow success). Live smoke OK: App version 27, live thunder-ui.js and index.html byte-equal to the repo. Contents: linked-set pages, item code pill, sync timing (2 h cycles), form slots (see the entries above). tools/all.sh 12/12 passed before release.mjs re-stamped 26 -> 27; the sync timing change has not had a real-Drive check.
 
 - 2026-10-26: audio / video exhibits (`MEDIA_AV_PLAN.md`, `MEDIA_JSON_SPEC.md`): `thunder-ui.js` only, not deployed; see the last section of `NBME_V2_HANDOFF.md`. Probe `tools/headless/v3-probe10.js`; fixture `DATA/assets/media-test/tone.wav`.
+
+- 2026-10-26: DEPLOYED as iPad release 28 (commit 989c533, Publish workflow success). Live smoke OK: App version 28, live thunder-ui.js and sw.js byte-equal to the repo. Contents: audio / video exhibits (see `NBME_V2_HANDOFF.md`). tools/all.sh 12/12 passed before release (scratchpad harness with CKNotes4 overlaid, since it left the project DATA).
