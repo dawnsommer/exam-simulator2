@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 24;
+  const TU_RELEASE = 27;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -3432,7 +3432,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const tools = EXAM_TOOLS.filter(([, id]) => shown(id) || (id !== 'fullscreenBtn' && byId(id) && !byId(id).closest('.hidden'))).map(([k, id, l]) => `<button type="button" class="tux-tool" data-tux="tool" data-id="${id}" title="${l}"${id === 'notesBtn' ? ` aria-expanded="${byId(id).getAttribute('aria-expanded') === 'true'}"` : ''}>${icon(XI[k], 19)}${l}</button>`).join('');
     // Review has no block to finish: a visible way back to the library (same path as Save & exit)
     const exit = m.review && m.view !== 'report' && byId('endBlockBtn') ? `<button type="button" class="tux-round tux-exit" data-tux="end" title="Exit review" aria-label="Exit review and return to the library">${icon(XI.home, 19)}</button>` : '';
-    return exit + item + tags + mark + center + timer + `<div class="tux-tools" role="toolbar" aria-label="Exam tools">${tools}</div>` + `<button type="button" class="tux-more" data-tux="more" aria-label="More exam actions" aria-expanded="${examUi.more}">${icon(XI.more, 20)}</button>`;
+    const code = q && window.ItemCode ? ItemCode.pillHtml(true) : '';
+    return exit + item + code + tags + mark + center + timer + `<div class="tux-tools" role="toolbar" aria-label="Exam tools">${tools}</div>` + `<button type="button" class="tux-more" data-tux="more" aria-label="More exam actions" aria-expanded="${examUi.more}">${icon(XI.more, 20)}</button>`;
   }
   function examNavHtml(m){
     const answered = m.items.filter(x => x.answer != null).length, ro = onlyPos(m);
@@ -3801,6 +3802,60 @@ ${P}[data-tun-view="q"] #workspace .question-flex:has(>.question-main.no-image:o
 /* v2 calibration (screen 9): the stem starts 70 px down in items without an image; image items and the review split
    panel (data-tun-ex) keep 71, as calibrated on screens 7-8 (v2's #item.gal is not applied) */
 ${P}[data-tun-view="q"] #workspace .question-flex:not([data-tun-ex]){padding-top:70px!important}
+/* linked-set pages: abstract (calibrated to design/abstract-calibration, 1728x1117: frames 805 + 6 + 805, item content 750 wide
+   at x 30, dotted focus box 765 wide at x 20; the passage pane scrolls on its own; portrait stacks the two panes) */
+${P}[data-tun-view="q"] #workspace[data-lset="abstract"]{display:flex!important;flex-direction:row!important;overflow:hidden!important}
+${P} #workspace[data-lset="abstract"] .lset-passage{all:unset!important;box-sizing:border-box!important;display:block!important;flex:0 0 calc(50% - 3px)!important;min-width:0!important;margin-right:6px!important;padding:20px!important;overflow:auto!important;-webkit-overflow-scrolling:touch;font:16px/1.4 Arial,Helvetica,sans-serif!important;color:#000!important;background:#fff!important}
+${P} #workspace[data-lset="abstract"] .lset-passage p{margin:0!important;padding:0 0 6.67px!important}
+${P} #workspace[data-lset="abstract"] .lset-passage table{border-collapse:separate;border-spacing:2px}
+${P}[data-tun-view="q"] #workspace[data-lset="abstract"] .question-stack{all:unset!important;box-sizing:border-box!important;display:block!important;flex:1 1 0!important;min-width:0!important;overflow:auto!important;scrollbar-gutter:stable!important;-webkit-overflow-scrolling:touch}
+${P}[data-tun-view="q"] #workspace[data-lset="abstract"] .question-flex{margin:20px 8px 20px 20px!important;padding:45px 5px 10px 10px!important;outline:2px dotted #000!important;width:auto!important}
+${P}[data-tun-view="q"] #workspace[data-lset="abstract"][data-lset-pos="next"] .question-flex{padding-top:42px!important}
+${P} #workspace[data-lset="abstract"] .mark-line{left:0!important;top:0!important}
+${P} #workspace[data-lset] .stem-warning{display:none!important}
+${P} #workspace[data-lset="abstract"] #stem{width:auto!important;max-width:100%!important}
+${P} #workspace[data-lset] .lset-head{display:block!important;font-size:16px!important;line-height:22.4px!important;color:#000!important}
+${P} #workspace[data-lset] .lset-head p{margin:0!important;padding:0!important}
+${P} #workspace[data-lset] .lset-head instruction{display:block!important}
+${P} #workspace[data-lset] .lset-box{width:100%!important;border:2px solid #000!important;background:#ecf2f9!important;border-collapse:separate!important;border-spacing:2px!important}
+${P} #workspace[data-lset] .lset-box td{padding:1px!important}
+${P} #workspace[data-lset] .lset-num{font-weight:400!important;margin-bottom:1px!important}
+${PD}[data-tun-view="q"] #workspace[data-lset="abstract"] .question-flex{outline-color:#fff!important}
+${PD} #workspace[data-lset] .lset-passage,${PD} #workspace[data-lset] .lset-head{color:#fff!important;background:transparent!important}
+${PD} #workspace[data-lset] .lset-box{background:#1a2733!important;border-color:#fff!important}
+@media (max-aspect-ratio:1/1){${P}[data-tun-view="q"] #workspace[data-lset="abstract"]{flex-direction:column!important}${P} #workspace[data-lset="abstract"] .lset-passage{flex:0 0 38%!important;margin:0 0 6px!important;border-bottom:1px solid #bfbfbf!important;padding:12px 14px!important}${P}[data-tun-view="q"] #workspace[data-lset="abstract"] .question-flex{margin:12px 12px 12px 14px!important}}
+/* linked-set page, sequential (calibrated to design/linked-sets: one column, banner at 64, items 816 wide at x 22) */
+${P}[data-tun-view="q"] #workspace[data-lset="sequential"] .question-flex{padding:64px 20px 20px 22px!important}
+${P} #workspace[data-lset="sequential"] .mark-line{left:20px!important;top:20px!important}
+${P} #workspace[data-lset="sequential"][data-lset-pos="next"] .mark-line{top:6px!important}
+${P} #workspace[data-lset="sequential"] .lset-box{width:808px!important;max-width:100%!important;margin-left:2px!important;box-sizing:border-box!important}
+${P} #workspace[data-lset="sequential"] .lset-intro{display:block!important;width:800px!important;max-width:100%!important;margin-left:2px!important}
+${P} #workspace[data-lset="sequential"] .lset-end .lset-box{width:816px!important;margin:0!important}
+${P} #workspace[data-lset="sequential"] .lset-end{margin-top:12px!important}
+${P} #workspace[data-lset="sequential"][data-lset-locked] :is(.mark-line,#proceedBtn){display:none!important}
+${P} #workspace[data-lset="sequential"] .answers.lset-locked{cursor:default!important}
+${P} #workspace[data-lset="sequential"] .answers.lset-locked .answer{cursor:default!important}
+${P} #workspace[data-lset="sequential"] .answers.lset-locked .answer:hover{background:transparent!important}
+${P} #workspace[data-lset="sequential"] .answers.lset-locked .strike-symbol{display:none!important}
+${PD} #workspace[data-lset="sequential"] .lset-intro{color:#fff!important}
+${P}[data-tun-view="q"] #workspace[data-lset="sequential"][data-lset-pos="next"] .question-flex{padding-top:42px!important}
+${P} #workspace[data-lset] .lset-item{display:block!important;box-sizing:border-box!important;position:relative!important;font:16px/1.4 Arial,Helvetica,sans-serif!important;color:#000!important}
+${P} #workspace[data-lset="abstract"] .lset-item{margin:20px 8px 0 20px!important;padding:42px 5px 10px 10px!important}
+${P} #workspace[data-lset="abstract"] .lset-item[data-lset-first]{padding-top:45px!important}
+${P} #workspace[data-lset="sequential"] .lset-item{padding:42px 20px 10px 22px!important}
+${P} #workspace[data-lset="sequential"] .lset-item[data-lset-first]{padding-top:64px!important}
+${P} #workspace[data-lset] .lset-item .lset-stem{display:block!important;font-size:16px!important}
+${P} #workspace[data-lset="sequential"] .lset-item .lset-stem{width:816px!important;max-width:100%!important}
+${P} #workspace[data-lset] .lset-hr{display:block!important;border:1px inset gray!important;margin:8px 0!important;height:0!important}
+${P} #workspace[data-lset="abstract"] .lset-hr{margin:8px 8px 8px 20px!important}
+${P} #statusRows .status-row.lset-locked{color:#8a8a8a!important;cursor:default!important}
+${P} #statusRows .status-row.lset-locked .navans svg{fill:#8a8a8a!important}
+${P} #statusRows .status-row.lset-locked:hover{background:#fff!important;color:#8a8a8a!important;outline:none!important}
+${P} #statusRows .status-row.lset-locked:nth-child(2n):hover{background:#d3d3d3!important}
+${PD} #workspace[data-lset] .lset-item{color:#fff!important}
+${PD} #statusRows .status-row.lset-locked{color:#5f8f99!important}
+${PD} #statusRows .status-row.lset-locked .navans svg{fill:#5f8f99!important}
+${PD} #statusRows .status-row.lset-locked:hover{background:#000!important;color:#5f8f99!important}
 ${P} #workspace .mark-line{all:unset!important;box-sizing:border-box!important;position:absolute!important;left:22px!important;top:30px!important;display:flex!important;align-items:center!important;gap:0!important;padding:6px!important;cursor:pointer!important;user-select:none!important;-webkit-user-select:none!important;font-size:16px!important}
 ${P} #workspace .mark-line>span:not(.tun-i){all:unset!important}
 ${P} #workspace .mark-line *::before,${P} #workspace .mark-line *::after,${P} #workspace .mark-line::before,${P} #workspace .mark-line::after{content:none!important;display:none!important}
@@ -3854,7 +3909,7 @@ ${P} #stem table[align=left] td,${P} #stem table[align=left] td span{white-space
    becomes a block, so the table gives it an anonymous one-column cell) and the tests under it are indented by two
    spaces (2 x 0.27783em, the width of NBME's &nbsp;&nbsp;) */
 ${P} #stem .stem-lab-table tr>th[colspan]:only-child{display:block!important;font-weight:400!important;text-align:left!important;min-width:0!important}
-${P} #stem .stem-lab-table tr:has(>th[colspan]:only-child)~tr>td:first-child{padding-left:calc(2px + .55566em)!important}
+${P} #stem .stem-lab-table tr:has(>:is(th,td)[colspan]:only-child)~tr:not(:has(>[colspan]))>td:first-child{padding-left:calc(2px + .55566em)!important}
 /* v3: "Medications:" + its list = the sample's <table align=left> block: 21 px padding above and below, cells 2 / 1 px,
    so the label is 23 px lower and 2 px in, the list 3 px under it, and the next subheading 22 px lower */
 ${P} #stem .chart-subheading[data-tun-med]{margin-top:23px!important;padding-left:2px!important}
@@ -4678,6 +4733,15 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       nbIcon(a.querySelector('.strike-symbol'), RI.strike);
     });
     nbExhibit(ws);
+    // N-16 import: some patient charts name their parts chart-subhead / chart-vitals and use bare <ul> lists. They get the
+    // reference's classes (chart-subheading, stem-vitals-table, chart-list) so the calibration below applies; text untouched
+    ws.querySelectorAll('#stem .patient-chart').forEach(c => {
+      if(!c.querySelector('.chart-subhead, table.chart-vitals')) return;
+      // only the parts still missing the class: the exam screen's observer also watches class changes, so a blind add would loop
+      c.querySelectorAll('.chart-subhead:not(.chart-subheading)').forEach(h => h.classList.add('chart-subheading'));
+      c.querySelectorAll('table.chart-vitals:not(.stem-vitals-table)').forEach(t => t.classList.add('stem-vitals-table'));
+      c.querySelectorAll('ul:not(.chart-list)').forEach(u => u.classList.add('chart-list'));
+    });
     // v3 (patient-chart-Q1): the sample draws "Medications:" and its list as a left-aligned table block, with its own
     // gaps; ours is a plain subheading + list, so the pair gets a hook for the CSS (attributes only, the text is untouched)
     ws.querySelectorAll('#stem .chart-subheading').forEach(h => {
@@ -4719,7 +4783,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     box.querySelectorAll('.notes-preference').forEach(l => {
       const sp = l.querySelector('span'); if(!sp) return;
       if(!l.title) l.title = sp.textContent.trim();
-      sp.textContent = l.querySelector('#navDelayToggle') ? 'Navigation Delay' : l.querySelector('#keepNotesOpen') ? 'Keep Notes Open' : sp.textContent;
+      sp.textContent = l.querySelector('#navDelayToggle') ? 'Navigation Delay' : l.querySelector('#keepNotesOpen') ? 'Keep Notes Open' : l.querySelector('#itemCodeToggle') ? 'Item Code' : sp.textContent;
     });
     const subs = () => box.querySelectorAll('[data-tun-sub]');
     // hover opens a submenu; a click (or tap) opens it too and only a second click closes it (the reference's click

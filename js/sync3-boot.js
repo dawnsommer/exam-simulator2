@@ -8,7 +8,7 @@
   const need=['StepSync3Core','StepSync3Bridge','StepSync3Store','StepSync3Drive','StepSync3Sync','StepSync3Migrate'];
   if(need.some(n=>!window[n])||!window.StepProgressSync){console.warn('Sync V3 modules are incomplete; skipped.');return;}
   const Core=window.StepSync3Core,Bridge=window.StepSync3Bridge,Store=window.StepSync3Store,Drive=window.StepSync3Drive,Sync=window.StepSync3Sync,Mig=window.StepSync3Migrate,R=window.StepProgressSync,K=Core.K;
-  const AUTO_EVERY_MS=6*3600*1000,CYCLE_EVERY_MS=3*60000,BEAT_MS=60000;
+  const AUTO_EVERY_MS=6*3600*1000,TIMED_EVERY_MS=2*3600*1000,TIMED_CHECK_MS=15*60000,BEAT_MS=60000;
   const isPhone=Math.min((screen&&screen.width)||innerWidth,(screen&&screen.height)||innerHeight)<768;
 
   const store=Store.create({screen:{width:(screen&&screen.width)||innerWidth,height:(screen&&screen.height)||innerHeight},name:/iPad/i.test(navigator.userAgent)?'iPad':/iPhone/i.test(navigator.userAgent)?'iPhone':'This device'});
@@ -66,6 +66,8 @@
   async function runCycle({reason='timer',push=true,pull=true,force=false}={}){
     if(!state.live||state.migrating||!online())return null;
     if(!force&&!(await cycle.due()))return null;
+    /* timed and tab-switch cycles run at most every TIMED_EVERY_MS; saved progress and new forms sync at once (reason 'progress') */
+    if(!force&&(reason==='timer'||reason==='visible')){const last=(await store.getRaw('cycleState',{})).last;if(last&&Date.now()-Date.parse(last)<TIMED_EVERY_MS)return null;}
     if(window.__STEP_SYNC_APPLYING_REMOTE||window.__STEP_FORM_UPDATE_COMMITTING){scheduleCycle(3000,reason);return null;}
     if(!(await connected()))return null;
     try{
@@ -80,8 +82,13 @@
     state.status=await cycle.statusLine();render();publishLive();return state.lastCycle;
   }
   window.addEventListener('online',()=>runCycle({reason:'online',force:true}));
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')runCycle({reason:'hidden',pull:false,force:true});else runCycle({reason:'visible'});});
-  setInterval(()=>{if(document.visibilityState==='visible')runCycle({reason:'timer'});},CYCLE_EVERY_MS);
+  document.addEventListener('visibilitychange',async()=>{
+    if(document.visibilityState!=='hidden'){runCycle({reason:'visible'});return;}
+    /* leaving the tab pushes only when something is unsaved (a scan waiting, or changes marked dirty); iOS may suspend the page before the 4 s progress cycle */
+    const d=await store.dirty();
+    if(pendingAll||pendingOnly.size||Object.keys(d.forms).length||d.lib||d.set)runCycle({reason:'hidden',pull:false,force:true});
+  });
+  setInterval(()=>{if(document.visibilityState==='visible')runCycle({reason:'timer'});},TIMED_CHECK_MS);
   window.addEventListener('stepsim:three-digit-score',()=>{scheduleScan(null);});
 
   /* ---------------- leases (section 6) ---------------- */

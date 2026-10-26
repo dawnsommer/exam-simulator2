@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=24">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=24">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=27">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=27">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=24"></script>
-<script src="./js/form-updates-core.js?v=24"></script>
-<script src="./js/form-update-store.js?v=24"></script>
-<script src="./js/google-auth.js?v=24"></script>
+<script src="./js/sync-config.js?v=27"></script>
+<script src="./js/form-updates-core.js?v=27"></script>
+<script src="./js/form-update-store.js?v=27"></script>
+<script src="./js/google-auth.js?v=27"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=24" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=27" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=24"></script>
-<script src="./js/qid-migration.js?v=24"></script>
+<script src="jszip.min.js?v=27"></script>
+<script src="./js/qid-migration.js?v=27"></script>
 <script>
 
 
@@ -2257,8 +2257,8 @@ document.addEventListener('click', function(e){
   window.__dataOnlyLibraryPatchApplied = true;
   let a23TabSettings = null; // A23 Phase D: set by the v19.5B settings layer below, read by StepLibraryBridge.settings()
 
-  const CFORM_COUNTS = { 'IM':10, 'OBGyn':10, 'Surg':8, 'Peds':9, 'FM':5, 'EM':3, 'Psych':8, 'Neuro':9, 'UWSA':3, 'F120':1 };
-  const SA_SLOTS = { 'UWSA':{ids:['UWSA1','UWSA2','UWSA3'], questions:160}, 'F120':{ids:['F120'], questions:120} }; // self-assessment tabs: fixed slot IDs, blocks of 40
+  const CFORM_COUNTS = { 'IM':10, 'OBGyn':10, 'Surg':8, 'Peds':9, 'FM':7, 'EM':4, 'Psych':8, 'Neuro':11, 'UWSA':3, 'F120':1 };
+  const SA_SLOTS = { 'UWSA':{ids:['UWSA1','UWSA2','UWSA3'], questions:160}, 'F120':{ids:['F120-2019','F120-2021','F120-2023'], questions:120} }; // self-assessment tabs: fixed slot IDs, blocks of 40
   const CFORM_LABELS = { 'IM':'Internal Medicine', 'OBGyn':'OBGyn', 'Surg':'Surgery', 'Peds':'Pediatrics', 'FM':'Family Medicine', 'EM':'Emergency Medicine', 'Psych':'Psychiatry', 'Neuro':'Neurology', 'UWSA':'UWorld Self-Assessment', 'F120':'Free 120' };
   let dataDirHandle = null;
   let catalog = { fileType:'StepExamSimulatorV75Catalog', updatedAt:null, forms:[] };
@@ -2278,9 +2278,12 @@ document.addEventListener('click', function(e){
     for(let n=6;n<=16;n++) slots.push({id:`N-${pad2(n)}`, type:'N', group:'N-Forms', filter:'N-Forms', subject:'NBME', defaultName:`N-${pad2(n)}`, expectedQuestions:200, suggestedBlockSize:'50'});
     Object.keys(CFORM_COUNTS).filter(code=>!SA_SLOTS[code]).forEach(code=>{ for(let n=1;n<=CFORM_COUNTS[code];n++) slots.push({id:`C-${code}-${pad2(n)}`, type:'C', group:CFORM_LABELS[code], filter:code, subject:CFORM_LABELS[code], defaultName:`C-${code}-${pad2(n)}`, expectedQuestions:50, suggestedBlockSize:'50'}); });
     Object.keys(SA_SLOTS).forEach(code=>SA_SLOTS[code].ids.forEach(id=>slots.push({id, type:'SA', group:CFORM_LABELS[code], filter:code, subject:CFORM_LABELS[code], defaultName:id, expectedQuestions:SA_SLOTS[code].questions, suggestedBlockSize:'40'})));
+    /* slots added from the Load New Form screen (catalog.extraSlots: {id, code, expectedQuestions}) */
+    (catalog.extraSlots||[]).forEach(x=>{ if(!CFORM_COUNTS[x.code]||slots.some(s=>s.id===x.id)) return; const sa=SA_SLOTS[x.code]; slots.push({id:x.id, type:sa?'SA':'C', group:CFORM_LABELS[x.code], filter:x.code, subject:CFORM_LABELS[x.code], defaultName:x.id, expectedQuestions:Number(x.expectedQuestions)||(sa?sa.questions:50), suggestedBlockSize:sa?'40':'50', extra:true}); });
     return slots;
   }
-  const SLOTS = makeSlots();
+  let SLOTS = makeSlots();
+  function rebuildSlots(){ SLOTS = makeSlots(); }
   function slotById(id){ return SLOTS.find(s=>s.id===id) || null; }
   function metaFor(id){ const s=slotById(id); return s || {id, type:'Custom', group:'Custom', filter:'Custom', subject:'Custom', defaultName:id, expectedQuestions:0, suggestedBlockSize:'40'}; }
   function catalogForm(id){ return (catalog.forms||[]).find(f=>f.id===id) || null; }
@@ -2288,7 +2291,7 @@ document.addEventListener('click', function(e){
   function removeCatalogForm(id){ catalog.forms = (catalog.forms||[]).filter(f=>f.id!==id); }
   function displayName(recOrId){ const rec=typeof recOrId==='string'?catalogForm(recOrId):recOrId; if(rec) return rec.displayName || rec.defaultName || rec.id; const m=metaFor(recOrId); return m.defaultName || recOrId; }
   function isLoaded(id){ return !!catalogForm(id); }
-  function ensureCatalogShape(){ if(!catalog || typeof catalog!=='object') catalog={forms:[]}; if(!Array.isArray(catalog.forms)) catalog.forms=[]; catalog.fileType=catalog.fileType||'StepExamSimulatorV75Catalog'; }
+  function ensureCatalogShape(){ if(!catalog || typeof catalog!=='object') catalog={forms:[]}; if(!Array.isArray(catalog.forms)) catalog.forms=[]; if(!Array.isArray(catalog.extraSlots)) catalog.extraSlots=[]; catalog.fileType=catalog.fileType||'StepExamSimulatorV75Catalog'; }
   function fmtDate(s){ try{return s?new Date(s).toLocaleDateString():'—';}catch(e){return '—';} }
   function pct(n,d){ return d?Math.round((Number(n)||0)/(Number(d)||1)*100):0; }
 
@@ -2509,7 +2512,7 @@ document.addEventListener('click', function(e){
   async function removeFile(dir, filename){ let removed=false; try{ await dir.removeEntry(filename); removed=true; }catch(e){} try{ if(removed && /(?:_progress_save|_suspended_test|QBANK_MODE_progress)\.json$/i.test(String(filename||''))) window.dispatchEvent(new CustomEvent('stepsim:progress-write',{detail:{filename:String(filename),operation:'delete'}})); }catch(_e){} }
   async function writeBinary(dir, filename, blob){ const fh=await dir.getFileHandle(filename,{create:true}); const w=await fh.createWritable(); await w.write(blob); await w.close(); }
   async function writeCatalog(){ if(!dataDirHandle) return; ensureCatalogShape(); catalog.updatedAt=nowIso(); await writeText(dataDirHandle,'catalog.json',JSON.stringify(catalog,null,2)); try{ window.dispatchEvent(new CustomEvent('stepsim:catalog-write')); }catch(_e){} }
-  async function loadCatalog(){ ensureCatalogShape(); if(!dataDirHandle) return; try{ catalog=JSON.parse(await readText(dataDirHandle,'catalog.json')); ensureCatalogShape(); }catch(e){ catalog={fileType:'StepExamSimulatorV75Catalog', updatedAt:nowIso(), forms:[]}; await writeCatalog(); } }
+  async function loadCatalog(){ ensureCatalogShape(); if(!dataDirHandle) return; try{ catalog=JSON.parse(await readText(dataDirHandle,'catalog.json')); ensureCatalogShape(); }catch(e){ catalog={fileType:'StepExamSimulatorV75Catalog', updatedAt:nowIso(), forms:[]}; await writeCatalog(); } rebuildSlots(); }
   async function formsDir(){ return await getSubdir('forms'); }
   async function progressDir(){ return await getSubdir('progress'); }
   async function assetsDir(formId){ const a=await getSubdir('assets'); return await a.getDirectoryHandle(formId,{create:true}); }
@@ -2969,15 +2972,18 @@ document.addEventListener('click', function(e){
 
   function showLoadFormModal(){
     if(!dataDirHandle){ alert('Connect the DATA folder first.'); return; }
-    openModal('Load New Form', `<div class="load-modal"><div class="load-form-layout"><div class="load-card"><h3>Fixed N/C Form Slot</h3><p>Select a predefined form slot. Already loaded slots are dimmed, but can be replaced if needed.</p><input id="slotSearch" class="slot-search" placeholder="Search N-10, C-IM, Psych..."><div id="slotList" class="slot-list"></div></div><div class="load-card"><h3>Unknown / Custom Form</h3><p>Use this for new JSONs/ZIPs made by ChatGPT or any form that does not fit a fixed slot.</p><div class="unknown-grid"><label class="full">Display name<input id="customName" placeholder="e.g. CMS Mixed Review 01"></label><label>Custom ID<input id="customId" placeholder="e.g. CUSTOM-01"></label><label>Subject<select id="customSubject"><option>Custom</option><option>Internal Medicine</option><option>OBGyn</option><option>Surgery</option><option>Pediatrics</option><option>Family Medicine</option><option>Emergency Medicine</option><option>Psychiatry</option><option>Neurology</option></select></label><label>Suggested Qs/block<input id="customBlockSize" type="number" min="1" value="40"></label><label>N-form 3-digit score, optional<input id="custom3Score" placeholder="optional"></label><label class="full">Library tab / pane<input id="customFilter" placeholder="Custom, or a new tab name" value="Custom"></label><div class="full optimizer-note"><b>Default import:</b> choose either JSON or a ZIP containing JSON + assets/. ZIP assets are stored separately for iPad-safe image loading.</div></div><div class="unknown-actions"><button id="customImportBtn" class="primary" type="button">Import Custom JSON/ZIP</button></div><div class="optimizer-note"><b>Optional optimizer:</b> first import keeps embedded images unchanged. If you run <b>Optimize Images</b> later, the simulator creates a timestamped backup in <code>DATA/forms/backups/</code>, extracts base64 images into <code>DATA/assets/FormID/</code>, then rewrites the form JSON to point to those local image files. Existing JSON schema remains compatible.</div></div></div></div>`);
+    const fixedSlotCodeOptions=Object.keys(CFORM_COUNTS).map(c=>`<option value="${c}">${CFORM_LABELS[c]}</option>`).join('');
+    openModal('Load New Form', `<div class="load-modal"><div class="load-form-layout"><div class="load-card"><h3>Fixed N/C Form Slot</h3><p>Select a predefined form slot. Already loaded slots are dimmed, but can be replaced if needed.</p><input id="slotSearch" class="slot-search" placeholder="Search N-10, C-IM, Psych..."><div id="slotList" class="slot-list"></div><div class="slot-add"><h4>Add a fixed slot</h4><p>For a newly released form: pick its tab and type its slot ID exactly as the file should be named.</p><div class="unknown-grid"><label>Slot ID<input id="fixedSlotId" placeholder="e.g. C-FM-08"></label><label>Tab<select id="fixedSlotCode">${fixedSlotCodeOptions}</select></label><label>Expected Qs<input id="fixedSlotQs" type="number" min="1" value="50"></label><div class="unknown-actions"><button id="fixedSlotAdd" class="secondary" type="button">Add fixed slot</button></div></div></div></div><div class="load-card"><h3>Unknown / Custom Form</h3><p>Use this for new JSONs/ZIPs made by ChatGPT or any form that does not fit a fixed slot.</p><div class="unknown-grid"><label class="full">Display name<input id="customName" placeholder="e.g. CMS Mixed Review 01"></label><label>Custom ID<input id="customId" placeholder="e.g. CUSTOM-01"></label><label>Subject<select id="customSubject"><option>Custom</option><option>Internal Medicine</option><option>OBGyn</option><option>Surgery</option><option>Pediatrics</option><option>Family Medicine</option><option>Emergency Medicine</option><option>Psychiatry</option><option>Neurology</option></select></label><label>Suggested Qs/block<input id="customBlockSize" type="number" min="1" value="40"></label><label>N-form 3-digit score, optional<input id="custom3Score" placeholder="optional"></label><label class="full">Library tab / pane<input id="customFilter" placeholder="Custom, or a new tab name" value="Custom"></label><div class="full optimizer-note"><b>Default import:</b> choose either JSON or a ZIP containing JSON + assets/. ZIP assets are stored separately for iPad-safe image loading.</div></div><div class="unknown-actions"><button id="customImportBtn" class="primary" type="button">Import Custom JSON/ZIP</button></div><div class="optimizer-note"><b>Optional optimizer:</b> first import keeps embedded images unchanged. If you run <b>Optimize Images</b> later, the simulator creates a timestamped backup in <code>DATA/forms/backups/</code>, extracts base64 images into <code>DATA/assets/FormID/</code>, then rewrites the form JSON to point to those local image files. Existing JSON schema remains compatible.</div></div></div></div>`);
     const root=$('#modalRoot'); root.classList.add('load-modal');
     function renderSlotList(q=''){
       const list=$('#slotList'); if(!list) return; const needle=q.toLowerCase();
       const slots=SLOTS.filter(s=>!needle || `${s.id} ${s.subject} ${s.group}`.toLowerCase().includes(needle));
-      list.innerHTML=slots.map(s=>`<div class="slot-row ${isLoaded(s.id)?'loaded':''}"><div><div class="slot-name">${escapeHtml(s.defaultName)}</div><div class="slot-meta">${escapeHtml(s.subject)} · expected ${s.expectedQuestions} Qs ${isLoaded(s.id)?'· already loaded':''}</div></div><button class="secondary" data-fixed-slot="${escapeAttr(s.id)}">${isLoaded(s.id)?'Replace':'Import'}</button></div>`).join('');
+      list.innerHTML=slots.map(s=>`<div class="slot-row ${isLoaded(s.id)?'loaded':''}"><div><div class="slot-name">${escapeHtml(s.defaultName)}</div><div class="slot-meta">${escapeHtml(s.subject)} · expected ${s.expectedQuestions} Qs ${isLoaded(s.id)?'· already loaded':''}</div></div><button class="secondary" data-fixed-slot="${escapeAttr(s.id)}">${isLoaded(s.id)?'Replace':'Import'}</button>${s.extra&&!isLoaded(s.id)?`<button class="secondary" data-remove-slot="${escapeAttr(s.id)}">Remove</button>`:''}</div>`).join('');
       list.querySelectorAll('button[data-fixed-slot]').forEach(b=>b.addEventListener('click',()=>{ const id=b.dataset.fixedSlot; const s=slotById(id); pendingImport={type:'form', meta:{...s, id:s.id, displayName:s.defaultName, defaultName:s.defaultName, threeDigitScore:''}, optimize:false}; $('#slotJsonInput').value=''; $('#slotJsonInput').click(); }));
     }
     renderSlotList(); $('#slotSearch')?.addEventListener('input',e=>renderSlotList(e.target.value));
+    $('#slotList')?.addEventListener('click',async e=>{ const b=e.target.closest?.('button[data-remove-slot]'); if(!b) return; catalog.extraSlots=(catalog.extraSlots||[]).filter(x=>x.id!==b.dataset.removeSlot); rebuildSlots(); try{ await writeCatalog(); }catch(err){ alert('Could not save the catalog: '+err.message); } renderSlotList($('#slotSearch')?.value||''); });
+    $('#fixedSlotAdd')?.addEventListener('click',async()=>{ const id=String($('#fixedSlotId')?.value||'').trim(); const code=$('#fixedSlotCode')?.value; const qs=Math.max(1,Number($('#fixedSlotQs')?.value)||50); if(!/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(id)) return alert('Slot ID: letters, numbers, - or _ only (e.g. C-FM-08).'); if(SLOTS.some(s=>s.id===id)) return alert(`${id} already exists as a fixed slot.`); catalog.extraSlots=(catalog.extraSlots||[]).concat([{id, code, expectedQuestions:qs}]); rebuildSlots(); try{ await writeCatalog(); }catch(err){ alert('Could not save the catalog: '+err.message); } $('#fixedSlotId').value=''; renderSlotList($('#slotSearch')?.value||''); });
     $('#customImportBtn')?.addEventListener('click',()=>{ const name=$('#customName')?.value.trim()||'Custom Form'; const id=fileStem($('#customId')?.value.trim()||name); const sc=$('#custom3Score')?.value.trim()||''; if(sc && !/^\d{3}$/.test(sc)) return alert('3-digit score must be exactly 3 digits.'); const tab=($('#customFilter')?.value.trim()||'Custom'); pendingImport={type:'form', meta:{id, type:'Custom', group:tab, filter:tab, subject:$('#customSubject')?.value||'Custom', defaultName:name, displayName:name, expectedQuestions:0, suggestedBlockSize:String($('#customBlockSize')?.value||'40'), threeDigitScore:sc, custom:true}, optimize:false}; $('#slotJsonInput').value=''; $('#slotJsonInput').click(); });
   }
 
@@ -5775,7 +5781,7 @@ function showSettingsDropdown(anchor, breakOnly=false){
       ? [dropdownButton('Full Screen','fullscreen'), dropdownButton('Return to Main Menu','menu','danger-item')]
       : [dropdownButton('Increase Text Size','zoomUp'), dropdownButton('Decrease Text Size','zoomDown'), dropdownButton(isExamDarkMode()?'Exam Dark Mode: On':'Exam Dark Mode: Off','examDarkMode','exam-dark-toggle'), dropdownButton('Reverse Color','reverseColor'), dropdownButton('Full Screen','fullscreen'), dropdownButton('Review Screen','review'), dropdownButton('Return to Main Menu','menu','danger-item')];
     const layoutToggle = breakOnly ? '' : `<div class="review-layout-toggle"><div class="review-layout-title">Review explanation layout</div><div class="segmented-toggle"><button type="button" class="${getReviewExplanationLayout()==='split'?'active':''}" data-ref-action="layoutSplit">Split</button><button type="button" class="${getReviewExplanationLayout()==='below'?'active':''}" data-ref-action="layoutBelow">Below</button></div></div>`;
-    box.innerHTML = layoutToggle + (breakOnly ? '' : window.StepExamNotes?.settingHtml() || '') + (breakOnly ? '' : window.NavDelay?.settingHtml() || '') + items.join('');
+    box.innerHTML = layoutToggle + (breakOnly ? '' : window.StepExamNotes?.settingHtml() || '') + (breakOnly ? '' : window.NavDelay?.settingHtml() || '') + (breakOnly ? '' : window.ItemCode?.settingHtml() || '') + items.join('');
     document.body.appendChild(box);
     const rect = anchor.getBoundingClientRect();
     const top = Math.max(6, rect.bottom + 4);
@@ -10574,18 +10580,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=24"></script>
-<script src="./js/sync-storage.js?v=24"></script>
-<script src="./js/progress-sync.js?v=24"></script>
-<script src="./js/library-backup.js?v=24"></script>
-<script src="./js/qid-settings.js?v=24"></script>
-<script src="./js/sync3-core.js?v=24"></script>
-<script src="./js/sync3-bridge.js?v=24"></script>
-<script src="./js/sync3-store.js?v=24"></script>
-<script src="./js/sync3-drive.js?v=24"></script>
-<script src="./js/sync3-sync.js?v=24"></script>
-<script src="./js/sync3-migrate.js?v=24"></script>
-<script src="./js/sync3-boot.js?v=24"></script>
+<script src="./js/sync-merge.js?v=27"></script>
+<script src="./js/sync-storage.js?v=27"></script>
+<script src="./js/progress-sync.js?v=27"></script>
+<script src="./js/library-backup.js?v=27"></script>
+<script src="./js/qid-settings.js?v=27"></script>
+<script src="./js/sync3-core.js?v=27"></script>
+<script src="./js/sync3-bridge.js?v=27"></script>
+<script src="./js/sync3-store.js?v=27"></script>
+<script src="./js/sync3-drive.js?v=27"></script>
+<script src="./js/sync3-sync.js?v=27"></script>
+<script src="./js/sync3-migrate.js?v=27"></script>
+<script src="./js/sync3-boot.js?v=27"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11064,10 +11070,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=24"></script>
-<script src="./exam-notes.js?v=24"></script>
-<script src="./app-update.js?v=24"></script>
-<script src="./js/form-updates.js?v=24"></script>
+<script src="./bulk-import.js?v=27"></script>
+<script src="./exam-notes.js?v=27"></script>
+<script src="./app-update.js?v=27"></script>
+<script src="./js/form-updates.js?v=27"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11284,7 +11290,198 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
 :root:not([data-tu-exam="modern"]) #examScreen.reverse mark *,:root:not([data-tu-exam="modern"]) #examScreen.reverse .v15-highlight *{color:#000!important}
 :root:not([data-tu-exam="modern"]) #examScreen#examScreen.reverse #stem#stem :is(mark,.v15-highlight,[data-v15-highlight-id]),:root:not([data-tu-exam="modern"]) #examScreen#examScreen.reverse #stem#stem :is(mark,.v15-highlight,[data-v15-highlight-id]) *{color:#000!important}
 </style>
-<script src="./nav-delay.js?v=24"></script>
-<script src="./thunder-ui.js?v=24"></script>
+<script>
+/* Linked-set pages. Abstract: a passage pane beside a scrolling stack of the set's items, answered in any order. Sequential
+   (same vignette, answered in order): one scrolling page, vignette and banner above item 1. In both, the current item is the
+   real, interactive item (rendered by renderQuestion, untouched); the other items of the set are display-only blocks above
+   and below it, and a click on one makes it current and scrolls it to the top. Sequential rules: an item is locked (greyed in
+   the list, Next disabled, block hidden) until every earlier item has an answer; once a later item is opened by any route the
+   earlier answers are frozen (saved in the block progress, bp.seqLocked); the Proceed to Next Item button asks first (Lock
+   Answer), Next and the list do not (the banner warns). Review mode keeps the single-item page. */
+(function(){
+  var lsetBaseRender = renderQuestion, lsetBaseGo = goToQuestionIndex, lsetBaseStatus = renderStatus;
+  var lsetShown = -1, lsetAlign = null;
+  var LSET_SEQ_NOTICE = 'The following vignette applies to the next 2 items. The items in the set must be answered in sequential order. Once you click Proceed to Next Item, you will not be able to add or change an answer.';
+  function lsetEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function lsetBox(html, id){ return '<table' + (id ? ' id="box-g"' : '') + ' class="lset-box"><tbody><tr><td>' + html + '</td></tr></tbody></table>'; }
+  function lsetBanner(text, bold, ids){
+    var h = lsetEsc(text).replace(/(\d+)/, '<b>$1</b>');
+    if(bold) h = h.replace(bold, '<b>' + bold + '</b>');
+    // abstract: banner, spacer, spacer, item number; sequential: banner, spacer, vignette
+    return '<instruction>' + lsetBox(h, ids) + '<p>&nbsp;</p></instruction>' + (bold ? '' : '<p>&nbsp;</p>');
+  }
+  function lsetKind(i){
+    var q = questions[i], t = q && q._linkedSetType;
+    if(t === 'abstract' && q.abstractStimulusHtml) return t;
+    if(t === 'sequential' && q.sharedStimulusHtml) return t;
+    return '';
+  }
+  function lsetMembers(i){
+    var q = questions[i], a = i, b = i;
+    if(!q || !q._linkedSetId) return [i];
+    while(a > 0 && questions[a - 1]._linkedSetId === q._linkedSetId) a--;
+    while(b < questions.length - 1 && questions[b + 1]._linkedSetId === q._linkedSetId) b++;
+    var r = []; for(var j = a; j <= b; j++) r.push(j);
+    return r;
+  }
+  function lsetBp(){ try{ return hydrateBlockProgress(blockPointer); }catch(e){ return null; } }
+  function lsetAnswered(j){ return state.answers[j] !== null && state.answers[j] !== undefined; }
+  /* greyed: a sequential item whose earlier items are not all answered */
+  function lsetSeqLocked(i){
+    if(lsetKind(i) !== 'sequential' || isLocked()) return false;
+    var m = lsetMembers(i);
+    for(var k = 0; k < m.indexOf(i); k++){ if(!lsetAnswered(m[k])) return true; }
+    return false;
+  }
+  /* frozen: a later item of the sequential set has been opened (or answered) */
+  function lsetFrozen(i){
+    if(lsetKind(i) !== 'sequential' || isLocked()) return false;
+    var bp = lsetBp(), m = lsetMembers(i);
+    if(bp && bp.seqLocked && bp.seqLocked[i]) return true;
+    for(var k = m.indexOf(i) + 1; k < m.length; k++){ if(lsetAnswered(m[k])) return true; }
+    return false;
+  }
+  function lsetFreezeBefore(target){
+    var bp = lsetBp(); if(!bp) return;
+    bp.seqLocked = bp.seqLocked || {};
+    lsetMembers(target).forEach(function(m){ if(m < target) bp.seqLocked[m] = true; });
+  }
+  function lsetHead(q, kind, pos, total, ids, vignette){
+    var h = '';
+    if(pos === 1 && q.setNotice && kind === 'abstract') h += lsetBanner(q.setNotice, '', ids);
+    if(kind === 'sequential'){
+      if(pos === 1) h += lsetBanner(q.setNotice || LSET_SEQ_NOTICE.replace('2', total), 'Proceed to Next Item', ids);
+      if(vignette) h += '<div class="IntroContent lset-intro">' + q.sharedStimulusHtml + '</div><p>&nbsp;</p>';
+    }
+    return h + '<div' + (ids ? ' id="item-number"' : '') + ' class="lset-num">Item ' + pos + ' of ' + total + '</div>';
+  }
+  function lsetPreview(m, kind, total){
+    var q = questions[m], keep = state.current, pos = q._linkedSetIndex || 1, ch;
+    state.current = m;
+    try{ ch = makeAnswerChoicesHtml(q, false, false); }finally{ state.current = keep; }
+    var end = kind === 'sequential' && pos === total ? '<div class="lset-end">' + lsetBox('End of Set') + '</div>' : '';
+    return '<section class="lset-item lset-prev" data-lset-i="' + m + '"' + (pos === 1 ? ' data-lset-first="1"' : '') + '>' +
+      lsetHead(q, kind, pos, total, false, pos === 1) +
+      '<div class="lset-stem stem">' + (q._stemHtml || buildStemHtml(q)) + '</div><div class="answers">' + ch + '</div>' + end + '</section>';
+  }
+  function lsetPreviewClick(e){
+    var b = e.currentTarget, m = +b.getAttribute('data-lset-i'), a = e.target.closest && e.target.closest('.answer');
+    if(e.type === 'contextmenu') e.preventDefault();
+    if(window.getSelection && String(getSelection()).length) return;
+    goToQuestionIndex(m);
+    if(a && state.current === m){
+      var real = document.querySelector('#workspace .question-flex .answers .answer[data-choice="' + a.getAttribute('data-choice') + '"]');
+      if(real) real.dispatchEvent(new MouseEvent(e.type, {bubbles:true, cancelable:true, button:e.type === 'contextmenu' ? 2 : 0}));
+    }
+  }
+  function lsetScroller(ws){ return ws.getAttribute('data-lset') === 'abstract' ? ws.querySelector(':scope > .question-stack') : ws; }
+  function lsetDecorate(was, oldTop){
+    var ws = document.getElementById('workspace'), q = questions && questions[state.current], kind = lsetKind(state.current);
+    if(!ws) return;
+    ['data-lset','data-lset-pos','data-lset-locked'].forEach(function(a){ ws.removeAttribute(a); });
+    if(!kind) return;
+    var stem = ws.querySelector('#stem'), stack = ws.querySelector(':scope > .question-stack'), flex = stack && stack.querySelector(':scope > .question-flex');
+    if(!stem || !flex) return;
+    var pos = q._linkedSetIndex || 1, total = q._linkedSetTotal || 1, stacked = !isLocked();
+    ws.setAttribute('data-lset', kind);
+    ws.setAttribute('data-lset-pos', pos === 1 ? 'first' : 'next');
+    if(kind === 'abstract'){
+      var pass = document.createElement('section');
+      pass.className = 'lset-passage'; pass.setAttribute('aria-label', 'Abstract'); pass.tabIndex = 0;
+      pass.innerHTML = q.abstractStimulusHtml;
+      ws.insertBefore(pass, stack);
+    }
+    var head = document.createElement('div');
+    head.className = 'lset-head';
+    head.innerHTML = lsetHead(q, kind, pos, total, true, pos === 1 || !stacked);
+    stem.parentNode.insertBefore(head, stem);
+    if(kind === 'sequential'){
+      if(!isLocked() && lsetFrozen(state.current)){
+        ws.setAttribute('data-lset-locked', '1');
+        var ans = ws.querySelector('.answers');
+        if(ans){
+          ans.classList.add('lset-locked');
+          ['click','contextmenu'].forEach(function(ev){ ans.addEventListener(ev, function(e){ e.stopPropagation(); e.preventDefault(); }, true); });
+        }
+      }
+      var pb = ws.querySelector('#proceedBtn');
+      if(pos === total && pb) pb.insertAdjacentHTML('afterend', '<div class="lset-end">' + lsetBox('End of Set') + '</div>');
+      var nb = document.getElementById('nextBtn');
+      if(nb && stacked && state.current + 1 < questions.length && lsetSeqLocked(state.current + 1)){
+        nb.disabled = true;
+        var nn = document.getElementById('nextNav'); if(nn) nn.setAttribute('aria-disabled', 'true');
+      }
+    }
+    if(stacked){
+      var before = '', after = '';
+      lsetMembers(state.current).forEach(function(m){
+        if(m === state.current || lsetSeqLocked(m)) return;
+        if(m < state.current) before += lsetPreview(m, kind, total) + '<hr class="lset-hr">';
+        else after += '<hr class="lset-hr">' + lsetPreview(m, kind, total);
+      });
+      if(before) flex.insertAdjacentHTML('beforebegin', before);
+      if(after) flex.insertAdjacentHTML('afterend', after);
+      stack.querySelectorAll('.lset-prev').forEach(function(b){ ['click','contextmenu'].forEach(function(ev){ b.addEventListener(ev, lsetPreviewClick); }); });
+      var sc = lsetScroller(ws);
+      if(sc){
+        var align = function(){
+          if(lsetShown !== state.current || !flex.isConnected) return;
+          if(was === state.current) sc.scrollTop = oldTop;
+          else if(pos === 1) sc.scrollTop = 0;
+          else sc.scrollTop += flex.getBoundingClientRect().top - sc.getBoundingClientRect().top - 20;
+        };
+        // the shell decorates the new blocks a moment later (radios, icons) and they grow: align again
+        lsetAlign = align; align();
+        requestAnimationFrame(align); setTimeout(align, 80); setTimeout(align, 300);
+      }
+    }
+  }
+  function lsetRows(){
+    document.querySelectorAll('#statusRows .status-row[data-i]').forEach(function(r){ r.classList.toggle('lset-locked', lsetSeqLocked(+r.getAttribute('data-i'))); });
+  }
+  renderStatus = function(){
+    var out = lsetBaseStatus.apply(this, arguments);
+    try{ lsetRows(); }catch(e){}
+    return out;
+  };
+  renderQuestion = function(){
+    var ws = document.getElementById('workspace'), old = ws && lsetScroller(ws), top = old ? old.scrollTop : 0;
+    var oldPass = ws && ws.querySelector('.lset-passage'), pt = oldPass ? oldPass.scrollTop : 0, pl = oldPass ? oldPass.scrollLeft : 0;
+    var prevSet = oldPass && questions[lsetShown] ? questions[lsetShown]._linkedSetId : null;
+    var out = lsetBaseRender.apply(this, arguments);
+    try{
+      lsetDecorate(lsetShown, top);
+      var np = document.querySelector('#workspace .lset-passage');
+      if(np && prevSet && prevSet === questions[state.current]._linkedSetId){ np.scrollTop = pt; np.scrollLeft = pl; }
+      lsetShown = state.current;
+    }catch(e){}
+    return out;
+  };
+  goToQuestionIndex = function(index){
+    var target = Math.min(Math.max(0, Number(index) || 0), questions.length - 1);
+    if(target !== state.current && !isLocked()){
+      var tq = questions[target], cq = questions[state.current];
+      if(lsetSeqLocked(target)) return;
+      var sameSeq = lsetKind(state.current) === 'sequential' && tq && cq && cq._linkedSetId === tq._linkedSetId && target > state.current;
+      if(sameSeq){
+        var src = window.event && window.event.target;
+        if(src && src.closest && src.closest('#proceedBtn') && !lsetFrozen(state.current)){
+          appDialog({title:'Lock Answer', message:'You will not be able to change this answer if you proceed to the next item.', okText:'Proceed', cancelText:'Cancel', confirm:true}).then(function(ok){
+            if(!ok) return;
+            lsetFreezeBefore(target);
+            lsetBaseGo(target);
+          });
+          return;
+        }
+        lsetFreezeBefore(target);
+      }
+    }
+    return lsetBaseGo.apply(this, arguments);
+  };
+})();
+</script>
+<script src="./item-code.js?v=27"></script>
+<script src="./nav-delay.js?v=27"></script>
+<script src="./thunder-ui.js?v=27"></script>
 </body>
 </html>
