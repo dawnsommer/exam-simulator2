@@ -12,14 +12,16 @@
   async function readLocal({flush=true,yieldBetween=false}={}){
     const b=bridge();await b.ensureReady();if(flush)await b.flushActive();
     const cat=await b.catalog(),deviceId=await R.meta.deviceId(),forms={};let i=0;
+    const scope=R.v2Scope?R.v2Scope():null;      // Sync V3 per-form fallback: only the forms that still sync through V2
     for(const rec of (cat.forms||[])){
+      if(scope&&!scope.forms.includes(String(rec.formUid||rec.id)))continue;
       const progress=parseMaybe(await b.readFormProgressText(rec.id),`${rec.id} progress`);
       const suspended=parseMaybe(await b.readFormSuspendedText(rec.id),`${rec.id} suspended progress`);
       const score=String(rec.threeDigitScore||'');
       if(progress||suspended||score){const formUid=String(rec.formUid||rec.id),key=B.entityKey(formUid);forms[key]={key,kind:'form',formId:String(rec.id),formUid,bankHash:String(rec.bankHash||''),qidSchemaVersion:Number(rec.qidSchemaVersion||0),questionCount:Number(rec.totalQuestions||rec.questionIndex?.length||0),legacyBankHashes:Array.isArray(rec.legacyBankHashes)?rec.legacyBankHashes.slice():[],progress:progress||null,suspended:suspended||null,threeDigitScore:score,modifiedAt:deriveModified(progress,suspended,rec),deviceId};}
       if(yieldBetween&&++i%2===0)await yieldNow();
     }
-    const qtxt=await b.readQbankText();let qbank=null;
+    const qtxt=scope&&!scope.qbank?null:await b.readQbankText();let qbank=null;
     if(qtxt){const q=parseMaybe(qtxt,'Qbank progress');if(q){delete q.settings;delete q.lastSelectedFormIds;qbank={key:B.qbankKey,kind:'qbank',progress:q,modifiedAt:deriveModified(q,null,null),deviceId};}}
     return {forms,qbank,deviceId,catalog:cat,runtime:b.runtime(),capturedAt:U.iso()};
   }

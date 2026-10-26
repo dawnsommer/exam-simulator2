@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=23">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=23">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=24">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=24">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=23"></script>
-<script src="./js/form-updates-core.js?v=23"></script>
-<script src="./js/form-update-store.js?v=23"></script>
-<script src="./js/google-auth.js?v=23"></script>
+<script src="./js/sync-config.js?v=24"></script>
+<script src="./js/form-updates-core.js?v=24"></script>
+<script src="./js/form-update-store.js?v=24"></script>
+<script src="./js/google-auth.js?v=24"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=23" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=24" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=23"></script>
-<script src="./js/qid-migration.js?v=23"></script>
+<script src="jszip.min.js?v=24"></script>
+<script src="./js/qid-migration.js?v=24"></script>
 <script>
 
 
@@ -5595,6 +5595,44 @@ document.addEventListener('click', function(e){
       await writeText(await progressDir(),'QBANK_MODE_progress.json',JSON.stringify(incoming,null,2)); try{await renderQbankMode();}catch(e){} return true;
     },
     async setThreeDigitScore(id,value){ await this.ensureReady(); const rec=catalogForm(id); if(!rec) throw new Error(`Form ${id} is not loaded locally.`); const nextScore=value==null?'':String(value); const scoreChanged=String(rec.threeDigitScore||'')!==nextScore; rec.threeDigitScore=nextScore; if(scoreChanged && !window.__STEP_SYNC_APPLYING_REMOTE) rec.updatedAt=nowIso(); upsertCatalogForm(rec); await writeCatalog(); if(scoreChanged && !window.__STEP_SYNC_APPLYING_REMOTE){ try{window.dispatchEvent(new CustomEvent('stepsim:three-digit-score',{detail:{formId:String(id),bankHash:String(rec.bankHash||''),value:nextScore}}));}catch(_e){} } try{await renderLibrary();}catch(e){} return true; },
+    /* Sync V3 (Release B): the form's own question objects (texts for rebuilt block results) and display-field writes */
+    async questionsForQids(id,qids){
+      await this.ensureReady(); const bank=await readFormBank(id), map=new Map();
+      (bank.blocks||[]).forEach(b=>(b.questions||[]).forEach(q=>{ if(q&&q.qid) map.set(String(q.qid),{choices:(q.choices||[]).map(c=>typeof c==='string'?c:(c&&(c.text||c.label))||String(c)),correct:q.correct,stem:String(q.stem||''),_stemHtml:(function(){try{return buildStemHtml(q);}catch(e){return '';}})(),subject:q.subject||q.system||q.topic||'',topic:q.topic||q.subject||'',explanation:q.explanation||'',explanationPanel:q.explanationPanel||q.explanation_panel||null}); }));
+      return (qids||[]).map(x=>map.get(String(x))||null);
+    },
+    summarizeSession(session,total){ try{ return typeof summarizeSession==='function' ? summarizeSession(session,total) : null; }catch(e){ return null; } },
+    /* Sync V3: library tab settings (3-digit score chips, tab meters, overview tabs) from another device */
+    async setLibrarySettings(next){
+      await this.ensureReady(); if(!next || typeof next!=='object' || Array.isArray(next)) return false;
+      const cur=librarySettings(); if(JSON.stringify(cur)===JSON.stringify(next)) return false;
+      catalog.librarySettings=JSON.parse(JSON.stringify(next)); librarySettings(); await writeCatalog();
+      try{ await renderLibrary(); }catch(e){} try{ renderFilters(); }catch(e){}
+      return true;
+    },
+    /* Sync V3: install a custom / imported form that another device uploaded (its exact file text, verified by hash, plus its assets) */
+    async installSyncedForm(p){
+      await this.ensureReady(); p=p||{}; const id=String(p.id||''), text=String(p.text||''), m=p.meta||{};
+      if(!id || /[\/\\]/.test(id) || id==='.' || id==='..') throw new Error('Invalid synced form id.');
+      if(window.__STEP_FORM_UPDATE_COMMITTING || window.__STEP_NATIVE_IMPORT_BUSY) return {busy:true};
+      const cur=catalogForm(id); if(cur) return {conflict:true, formUid:String(cur.formUid||cur.id)};
+      const bankHash=await sha256Hex(text); if(p.bankHash && bankHash!==p.bankHash) throw new Error('Synced form content does not match its hash.');
+      const bank=normalizeBank(JSON.parse(text));
+      for(const a of (p.assets||[])){ const path=normalizeZipPath(a.path); if(!path.startsWith('assets/') || path.split('/').includes('..')) continue; const r=await stepSyncResolveLibraryPath(path,true); await writeBinary(r.dir,r.name,a.blob); }
+      await writeText(await formsDir(), `${id}.json`, text);
+      const rec=makeCatalogRecord(id,{...m,defaultName:m.defaultName||id},bank,text,bankHash,Array.isArray(m.sourceFiles)?m.sourceFiles:[],{formUid:p.formUid||m.formUid,qidSchemaVersion:m.qidSchemaVersion,legacyBankHashes:m.legacyBankHashes,displayName:m.displayName});
+      rec.optimized=!!m.optimized; rec.imageAssets=Number(m.imageAssets)||0;
+      upsertCatalogForm(rec); loadedFormCache.delete(id); revokeDataAssetObjectUrls(); await writeCatalog();
+      try{ await renderLibrary(); }catch(e){} try{ await renderQbankMode(); }catch(e){}
+      return {installed:true, formUid:String(rec.formUid||rec.id)};
+    },
+    async setFormMeta(id,patch){
+      await this.ensureReady(); const rec=catalogForm(id); if(!rec) throw new Error(`Form ${id} is not loaded locally.`); patch=patch||{}; let changed=false;
+      if(typeof patch.displayName==='string' && patch.displayName.trim() && rec.displayName!==patch.displayName){ rec.displayName=patch.displayName; changed=true; }
+      if(typeof patch.filter==='string' && patch.filter && rec.custom && rec.filter!==patch.filter){ rec.filter=patch.filter; changed=true; }
+      if(changed){ upsertCatalogForm(rec); await writeCatalog(); try{ await renderLibrary(); }catch(e){} }
+      return changed;
+    },
     async refresh(){ try{await refreshProgressSummaries();}catch(e){} try{await renderLibrary();}catch(e){} try{await renderQbankMode();}catch(e){} return true; }
   });
 
@@ -10536,11 +10574,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=23"></script>
-<script src="./js/sync-storage.js?v=23"></script>
-<script src="./js/progress-sync.js?v=23"></script>
-<script src="./js/library-backup.js?v=23"></script>
-<script src="./js/qid-settings.js?v=23"></script>
+<script src="./js/sync-merge.js?v=24"></script>
+<script src="./js/sync-storage.js?v=24"></script>
+<script src="./js/progress-sync.js?v=24"></script>
+<script src="./js/library-backup.js?v=24"></script>
+<script src="./js/qid-settings.js?v=24"></script>
+<script src="./js/sync3-core.js?v=24"></script>
+<script src="./js/sync3-bridge.js?v=24"></script>
+<script src="./js/sync3-store.js?v=24"></script>
+<script src="./js/sync3-drive.js?v=24"></script>
+<script src="./js/sync3-sync.js?v=24"></script>
+<script src="./js/sync3-migrate.js?v=24"></script>
+<script src="./js/sync3-boot.js?v=24"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11019,10 +11064,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=23"></script>
-<script src="./exam-notes.js?v=23"></script>
-<script src="./app-update.js?v=23"></script>
-<script src="./js/form-updates.js?v=23"></script>
+<script src="./bulk-import.js?v=24"></script>
+<script src="./exam-notes.js?v=24"></script>
+<script src="./app-update.js?v=24"></script>
+<script src="./js/form-updates.js?v=24"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11239,7 +11284,7 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
 :root:not([data-tu-exam="modern"]) #examScreen.reverse mark *,:root:not([data-tu-exam="modern"]) #examScreen.reverse .v15-highlight *{color:#000!important}
 :root:not([data-tu-exam="modern"]) #examScreen#examScreen.reverse #stem#stem :is(mark,.v15-highlight,[data-v15-highlight-id]),:root:not([data-tu-exam="modern"]) #examScreen#examScreen.reverse #stem#stem :is(mark,.v15-highlight,[data-v15-highlight-id]) *{color:#000!important}
 </style>
-<script src="./nav-delay.js?v=23"></script>
-<script src="./thunder-ui.js?v=23"></script>
+<script src="./nav-delay.js?v=24"></script>
+<script src="./thunder-ui.js?v=24"></script>
 </body>
 </html>

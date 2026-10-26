@@ -11,12 +11,19 @@
     callbackParam: 'cloud-auth'
   });
 
+  /* Sync V3 per-form fallback: while some forms cannot move to V3 yet, V2 keeps syncing ONLY those forms (and the Qbank if it is one
+     of them) through their own manifest. No scope stored = V2 exactly as before. */
+  const V2_SCOPE_KEY = 'exam-simulator2:v2Scope';
+  ROOT.v2Scope = () => { try { const s = JSON.parse(localStorage.getItem(V2_SCOPE_KEY) || 'null'); return s && Array.isArray(s.forms) && s.manifest ? s : null; } catch (e) { return null; } };
+
   const C = ROOT.config = Object.freeze({
     CLOUD: CLOUD_CONFIG,
     APP_NAME: CLOUD_CONFIG.appId,
     BUILD: 'EXAM-SIMULATOR2-PROGRESS-SYNC-V2.3.0',
     DRIVE_SCOPE: 'https://www.googleapis.com/auth/drive.appdata',
-    MANIFEST_FILE: `${CLOUD_CONFIG.driveFilePrefix}.manifest.json`,
+    MAIN_MANIFEST_FILE: `${CLOUD_CONFIG.driveFilePrefix}.manifest.json`,
+    get MANIFEST_FILE() { const s = ROOT.v2Scope(); return s ? s.manifest : `${CLOUD_CONFIG.driveFilePrefix}.manifest.json`; },
+    V2_SCOPE_KEY,
     MANIFEST_TYPE: 'exam-simulator2-progress-manifest',
     HISTORY_MANIFEST_FILE: `${CLOUD_CONFIG.driveFilePrefix}.progress-history.json`,
     HISTORY_MANIFEST_TYPE: 'exam-simulator2-progress-history',

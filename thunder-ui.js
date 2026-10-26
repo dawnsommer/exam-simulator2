@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 23;
+  const TU_RELEASE = 24;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -170,6 +170,9 @@ ${H} :is(.tu-syncpill,.tu-syncstrip)[data-tone="error"]{background:var(--tu-badc
 .tu-syncpill[data-tone="busy"] i{animation:tuPulse 1.2s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.tu-syncpill i{animation:none!important}}
 .tu-syncstrip{display:none}
+.tu-syncprog{width:72px;height:4px;border-radius:2px;background:rgba(127,127,127,.28);overflow:hidden;flex:none}
+.tu-syncprog b{display:block;height:100%;background:currentColor;border-radius:2px;transition:width .3s ease}
+.tu-form[data-s3-up] .tu-form-date>span::after{content:" · " attr(data-s3-label);opacity:.85}
 .tu-more{position:relative}
 .tu-more>summary{list-style:none}.tu-more>summary::-webkit-details-marker{display:none}
 .tu-more-panel{position:absolute;right:0;top:46px;z-index:30;min-width:240px;padding:6px;border-radius:16px;background:var(--tu-surface);border:1px solid var(--tu-line2);box-shadow:0 12px 32px rgba(0,0,0,.18);display:flex;flex-direction:column}
@@ -796,6 +799,7 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
   ${H} #tuHome .tu-iconbtn{width:44px;height:44px;min-width:44px}
   .tu-syncstrip{display:flex;align-items:center;gap:10px;min-height:40px;width:100%;padding:4px 6px 4px 14px!important;border-radius:14px!important;text-align:left;font:13px var(--tu-font)!important;cursor:pointer}
   .tu-syncstrip>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tu-syncstrip>.tu-syncprog{flex:none;width:56px}
   .tu-syncstrip>em{font-style:normal;height:30px;padding:0 12px;border-radius:999px;background:var(--tu-surface);color:var(--tu-on);display:flex;align-items:center;font-weight:800;font-size:12.5px;flex:none}
   .tu-home-top{display:flex;flex-direction:column;gap:12px}
   .tu-overall{order:-1;flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px 18px;padding:12px 16px;border-radius:20px}
@@ -952,6 +956,7 @@ ${H} .tu-setview .tu-qidmsg{margin:12px 22px 0!important;font-size:13px!importan
 .tu-adminrow small{font-size:12px}
 /* Backup & sync */
 .tu-synccard{padding:18px 20px;display:flex;flex-direction:column;gap:14px;border-radius:24px;min-width:0}
+.tu-sync3[hidden]{display:none!important}
 .tu-synchead{display:flex;align-items:center;gap:14px}
 .tu-settile{width:44px;height:44px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center}
 .tu-syncttl{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
@@ -1571,12 +1576,16 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   /* iPad Google Drive status, mirrored from the app's own sticker (#googleBackupStatus, fed by stepsync:state) */
   let lastSyncDetail = '';
   window.addEventListener('stepsync:state', e => { lastSyncDetail = String((e.detail && e.detail.detail) || ''); setTimeout(paintSyncBits, 0); });
+  /* Sync V3 publishes its own state (upgrade progress, then the live sync): it replaces the Google Drive status while it is set */
+  let sync3View = null;
+  window.addEventListener('stepsync3:state', e => { sync3View = e.detail && e.detail.label ? e.detail : null; setTimeout(paintSyncBits, 0); });
   const SYNC_VIEW = [
     [/^Synced$/i, 'Synced', ''], [/^Syncing/i, 'Syncing…', ''], [/^Checking/i, 'Checking…', ''], [/^Connecting/i, 'Connecting…', ''],
     [/^Local Changes/i, 'Local changes', 'Sync now'], [/^Cloud Newer/i, 'Cloud newer', 'Review'], [/^Conflict/i, 'Needs your choice', 'Choose version'],
     [/^Offline/i, 'Offline', ''], [/^Reconnect/i, 'Reconnect', 'Reconnect'], [/^Error/i, 'Sync error', 'Retry'], [/^Baseline/i, 'Baseline needed', 'Open'], [/^Off$/i, 'Backup off', 'Turn on']
   ];
   function syncView(){
+    if(sync3View){ const t = sync3View.tone || 'good'; return {label: String(sync3View.label), action: String(sync3View.action || ''), detail: String(sync3View.detail || ''), tone: t, dot: {good:'ok', busy:'busy', pending:'warn', conflict:'warn', error:'bad'}[t] || '', busy: t === 'busy', progress: typeof sync3View.progress === 'number' ? Math.max(0, Math.min(1, sync3View.progress)) : null}; }
     const el = byId('googleBackupStatus'); if(!el) return null;
     const raw = el.textContent.replace(/^Google Backup:\s*/i, '').trim() || 'Off';
     const hit = SYNC_VIEW.find(([re]) => re.test(raw)) || [null, raw, ''];
@@ -1607,8 +1616,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     paintNav();
     const home = byId('tuHome'); if(!home) return;
     const sv = IPAD ? syncView() : null;
-    setRegion('sync', sv ? `<button type="button" class="tu-syncpill" data-tone="${esc(sv.tone)}" data-tu-open-sync title="Google Drive progress sync: ${esc(sv.detail || sv.label)}"><i></i>${esc(sv.label)}</button>` : '');
-    setRegion('strip', sv ? `<button type="button" class="tu-syncstrip" data-tone="${esc(sv.tone)}" data-tu-open-sync aria-label="Google Drive sync: ${esc(sv.label)}. ${esc(sv.detail)}">${icon(ICONS.sync, 18)}<span><b>${esc(sv.label)}</b>${sv.detail ? ' · ' + esc(sv.detail) : ''}</span>${sv.action ? `<em>${esc(sv.action)}</em>` : ''}</button>` : '');
+    setRegion('sync', sv ? `<button type="button" class="tu-syncpill" data-tone="${esc(sv.tone)}" data-tu-open-sync title="Google Drive progress sync: ${esc(sv.detail || sv.label)}"><i></i>${esc(sv.label)}${sv.progress != null ? `<span class="tu-syncprog" aria-hidden="true"><b style="width:${Math.round(sv.progress * 100)}%"></b></span>` : ''}</button>` : '');
+    setRegion('strip', sv ? `<button type="button" class="tu-syncstrip" data-tone="${esc(sv.tone)}" data-tu-open-sync aria-label="Google Drive sync: ${esc(sv.label)}. ${esc(sv.detail)}">${icon(ICONS.sync, 18)}<span><b>${esc(sv.label)}</b>${sv.detail ? ' · ' + esc(sv.detail) : ''}</span>${sv.progress != null ? `<span class="tu-syncprog" aria-hidden="true"><b style="width:${Math.round(sv.progress * 100)}%"></b></span>` : ''}${sv.action ? `<em>${esc(sv.action)}</em>` : ''}</button>` : '');
   }
 
   /* view state */
@@ -2976,6 +2985,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
         : `<header class="tu-sethead"><h1>Backup &amp; sync</h1><span>Your progress is saved on this device first. Everything else is an extra copy.</span></header><section class="tu-card tu-synccard" aria-label="Storage" data-tu-r="storage"></section>` +
           (IPAD ? `<div class="tu-syncgrid"><section class="tu-card tu-synccard" aria-label="Google Drive progress sync" data-tu-r="progress"></section><section class="tu-card tu-synccard" aria-label="Full library in Google Drive" data-tu-r="library"></section></div><section class="tu-card tu-synccoll" aria-label="History and recovery" data-tu-r="hist"></section><section class="tu-card tu-synccoll" aria-label="Advanced sync tools" data-tu-r="adv"></section>`
             : `<section class="tu-card tu-synccoll" aria-label="Recovery copies" data-tu-r="rec"></section>`) +
+          (IPAD ? `<section class="tu-card tu-synccard tu-sync3" id="tuSync3Card" aria-label="Sync V3 preview" hidden></section>` : '') +
           `<section class="tu-card tu-synccard" aria-label="Move between devices" data-tu-r="move"></section>`;
       v.addEventListener('click', onSetClick);
       v.addEventListener('change', onSetChange);
