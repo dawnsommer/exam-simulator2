@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 36;
+  const TU_RELEASE = 37;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -622,6 +622,10 @@ ${H} .tu-layer .tu-upd-head .tu-round{width:32px;height:32px;min-width:32px}
 .tu-upd .tu-updbody{padding:0 12px 14px;gap:8px;overflow-y:auto;min-height:0;flex:1 1 auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .tu-upd .tu-updrow{padding:7px 12px;gap:2px}.tu-upd .tu-updrow b{font-size:13.5px}.tu-upd .tu-updrow small{font-size:11.5px}.tu-upd .tu-updchip{font-size:11px;padding:3px 8px}
 .tu-layer .tu-upd .tu-updbody .tu-actions .tu-btn{height:40px;padding:0 16px;font-size:13.5px}
+/* always-visible scrollbar (iPad / macOS overlay bars hide until you scroll): popover body and the Add forms panel */
+.tu-upd .tu-updbody::-webkit-scrollbar,.tu-add-body::-webkit-scrollbar{width:10px}
+.tu-upd .tu-updbody::-webkit-scrollbar-track,.tu-add-body::-webkit-scrollbar-track{background:var(--tu-s1);border-radius:8px}
+.tu-upd .tu-updbody::-webkit-scrollbar-thumb,.tu-add-body::-webkit-scrollbar-thumb{background:var(--tu-on3);border-radius:8px;border:2px solid var(--tu-s1)}
 .tu-upd .tu-updbody>:not(.tu-updlist){margin:0 8px}
 .tu-upd .tu-updbody>.tu-actions{margin-top:4px}
 /* the legacy Load New Form modal stays open off-screen while Add forms uses its slot and custom import */
