@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 35;
+  const TU_RELEASE = 36;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -596,7 +596,7 @@ ${H} .tu-layer p.tu-status.bad{color:var(--tu-bad)!important;font-weight:700}
 .tu-updbody{display:flex;flex-direction:column;gap:12px}
 .tu-updmsg{font-size:13.5px;font-weight:600;color:var(--tu-on2)}
 .tu-updmsg.ok{color:var(--tu-ok)}.tu-updmsg.warn{color:var(--tu-warn)}
-.tu-updlist{border:1px solid var(--tu-line2);border-radius:20px;overflow:hidden}
+.tu-updlist{border:1px solid var(--tu-line2);border-radius:20px;overflow:hidden;flex:none}
 .tu-updrow{display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-bottom:1px solid var(--tu-line2)}
 .tu-updrow:last-child{border-bottom:0}
 .tu-updrow>div{display:flex;align-items:center;gap:12px}
@@ -613,13 +613,15 @@ ${H} .tu-layer p.tu-status.bad{color:var(--tu-bad)!important;font-weight:700}
 .tu-layer .tu-updbody .tu-actions .tu-btn{height:48px;padding:0 20px;font-size:14.5px}
 .tu-layer .tu-updbody .tu-actions .tu-grow{flex:1;font-size:15px;font-weight:800}
 #tuUpd .tu-dialog-wrap{align-items:flex-start;justify-content:flex-end;padding:96px 40px 24px}
-.tu-layer .tu-upd{width:500px;max-width:calc(100vw - 32px)}
-.tu-upd-head{padding:22px 24px 14px;display:flex;align-items:flex-start;gap:12px;flex:none}
-.tu-upd-ico{width:44px;height:44px;border-radius:14px;background:var(--tu-pc);color:var(--tu-onpc);display:flex;align-items:center;justify-content:center;flex:none}
+.tu-layer .tu-upd{width:440px;max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);max-height:calc(100dvh - 120px)}
+.tu-upd-head{padding:14px 18px 8px;display:flex;align-items:flex-start;gap:12px;flex:none}
+.tu-upd-ico{width:36px;height:36px;border-radius:12px;background:var(--tu-pc);color:var(--tu-onpc);display:flex;align-items:center;justify-content:center;flex:none}
 .tu-upd-head>div{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
-${H} .tu-upd-head h2{font-size:20px!important;font-weight:800!important}
-${H} .tu-layer .tu-upd-head .tu-round{width:38px;height:38px;min-width:38px}
-.tu-upd .tu-updbody{padding:0 16px 20px;overflow:auto;min-height:0}
+${H} .tu-upd-head h2{font-size:17px!important;font-weight:800!important}
+${H} .tu-layer .tu-upd-head .tu-round{width:32px;height:32px;min-width:32px}
+.tu-upd .tu-updbody{padding:0 12px 14px;gap:8px;overflow-y:auto;min-height:0;flex:1 1 auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.tu-upd .tu-updrow{padding:7px 12px;gap:2px}.tu-upd .tu-updrow b{font-size:13.5px}.tu-upd .tu-updrow small{font-size:11.5px}.tu-upd .tu-updchip{font-size:11px;padding:3px 8px}
+.tu-layer .tu-upd .tu-updbody .tu-actions .tu-btn{height:40px;padding:0 16px;font-size:13.5px}
 .tu-upd .tu-updbody>:not(.tu-updlist){margin:0 8px}
 .tu-upd .tu-updbody>.tu-actions{margin-top:4px}
 /* the legacy Load New Form modal stays open off-screen while Add forms uses its slot and custom import */
