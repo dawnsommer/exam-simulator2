@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=34">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=34">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=35">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=35">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=34"></script>
-<script src="./js/form-updates-core.js?v=34"></script>
-<script src="./js/form-update-store.js?v=34"></script>
-<script src="./js/google-auth.js?v=34"></script>
+<script src="./js/sync-config.js?v=35"></script>
+<script src="./js/form-updates-core.js?v=35"></script>
+<script src="./js/form-update-store.js?v=35"></script>
+<script src="./js/google-auth.js?v=35"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=34" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=35" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=34"></script>
-<script src="./js/qid-migration.js?v=34"></script>
+<script src="jszip.min.js?v=35"></script>
+<script src="./js/qid-migration.js?v=35"></script>
 <script>
 
 
@@ -10616,18 +10616,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=34"></script>
-<script src="./js/sync-storage.js?v=34"></script>
-<script src="./js/progress-sync.js?v=34"></script>
-<script src="./js/library-backup.js?v=34"></script>
-<script src="./js/qid-settings.js?v=34"></script>
-<script src="./js/sync3-core.js?v=34"></script>
-<script src="./js/sync3-bridge.js?v=34"></script>
-<script src="./js/sync3-store.js?v=34"></script>
-<script src="./js/sync3-drive.js?v=34"></script>
-<script src="./js/sync3-sync.js?v=34"></script>
-<script src="./js/sync3-migrate.js?v=34"></script>
-<script src="./js/sync3-boot.js?v=34"></script>
+<script src="./js/sync-merge.js?v=35"></script>
+<script src="./js/sync-storage.js?v=35"></script>
+<script src="./js/progress-sync.js?v=35"></script>
+<script src="./js/library-backup.js?v=35"></script>
+<script src="./js/qid-settings.js?v=35"></script>
+<script src="./js/sync3-core.js?v=35"></script>
+<script src="./js/sync3-bridge.js?v=35"></script>
+<script src="./js/sync3-store.js?v=35"></script>
+<script src="./js/sync3-drive.js?v=35"></script>
+<script src="./js/sync3-sync.js?v=35"></script>
+<script src="./js/sync3-migrate.js?v=35"></script>
+<script src="./js/sync3-boot.js?v=35"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11106,10 +11106,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=34"></script>
-<script src="./exam-notes.js?v=34"></script>
-<script src="./app-update.js?v=34"></script>
-<script src="./js/form-updates.js?v=34"></script>
+<script src="./bulk-import.js?v=35"></script>
+<script src="./exam-notes.js?v=35"></script>
+<script src="./app-update.js?v=35"></script>
+<script src="./js/form-updates.js?v=35"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11332,8 +11332,8 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
    real, interactive item (rendered by renderQuestion, untouched); the other items of the set are display-only blocks above
    and below it, and a click on one makes it current and scrolls it to the top. Sequential rules: an item is locked (greyed in
    the list, Next disabled, block hidden) until every earlier item has an answer; once a later item is opened by any route the
-   earlier answers are frozen (saved in the block progress, bp.seqLocked); the Proceed to Next Item button asks first (Lock
-   Answer), Next and the list do not (the banner warns). Review mode keeps the single-item page. */
+   earlier answers are frozen (saved in the block progress, bp.seqLocked); the Lock Answer dialog asks before any forward move
+   inside the set (Next, the list, Proceed) while the current answer can still be changed. Review mode keeps the single-item page. */
 (function(){
   var lsetBaseRender = renderQuestion, lsetBaseGo = goToQuestionIndex, lsetBaseStatus = renderStatus;
   var lsetShown = -1, lsetAlign = null;
@@ -11377,6 +11377,12 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
     for(var k = m.indexOf(i) + 1; k < m.length; k++){ if(lsetAnswered(m[k])) return true; }
     return false;
   }
+  /* a later item of a sequential set joins the page only once the user went there (Next, the list or Proceed), not by answering */
+  function lsetReached(m){
+    if(lsetKind(m) !== 'sequential') return true;
+    var mem = lsetMembers(m), k = mem.indexOf(m);
+    return k <= 0 || lsetFrozen(mem[k - 1]) || lsetAnswered(m);
+  }
   function lsetFreezeBefore(target){
     var bp = lsetBp(); if(!bp) return;
     bp.seqLocked = bp.seqLocked || {};
@@ -11391,10 +11397,18 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
     }
     return h + '<div' + (ids ? ' id="item-number"' : '') + ' class="lset-num">Item ' + pos + ' of ' + total + '</div>';
   }
+  /* the Local app draws its options inside renderQuestion (no makeAnswerChoicesHtml): the same markup for a plain option list */
+  function lsetChoices(q, m){
+    var L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', st = (state.struck && state.struck[m]) || [];
+    return (q.choices || []).map(function(c, i){
+      var cls = ['answer', state.answers[m] === i ? 'selected' : '', st.indexOf(i) >= 0 ? 'struck' : ''].join(' ').replace(/\s+/g, ' ').trim();
+      return '<div class="' + cls + '" data-choice="' + i + '"><span class="radio"></span><span class="choice-text">' + L.charAt(i) + '. ' + lsetEsc(c) + '</span><span class="strike-symbol">\u2318</span></div>';
+    }).join('');
+  }
   function lsetPreview(m, kind, total){
     var q = questions[m], keep = state.current, pos = q._linkedSetIndex || 1, ch;
     state.current = m;
-    try{ ch = makeAnswerChoicesHtml(q, false, false); }finally{ state.current = keep; }
+    try{ ch = typeof makeAnswerChoicesHtml === 'function' ? makeAnswerChoicesHtml(q, false, false) : lsetChoices(q, m); }finally{ state.current = keep; }
     var end = kind === 'sequential' && pos === total ? '<div class="lset-end">' + lsetBox('End of Set') + '</div>' : '';
     return '<section class="lset-item lset-prev" data-lset-i="' + m + '"' + (pos === 1 ? ' data-lset-first="1"' : '') + '>' +
       lsetHead(q, kind, pos, total, false, pos === 1) +
@@ -11403,6 +11417,7 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   function lsetPreviewClick(e){
     var b = e.currentTarget, m = +b.getAttribute('data-lset-i'), a = e.target.closest && e.target.closest('.answer');
     if(e.type === 'contextmenu') e.preventDefault();
+    if(a && lsetFrozen(m)) return; // a locked answer does nothing and does not take you to that item
     if(window.getSelection && String(getSelection()).length) return;
     goToQuestionIndex(m);
     if(a && state.current === m){
@@ -11410,7 +11425,12 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
       if(real) real.dispatchEvent(new MouseEvent(e.type, {bubbles:true, cancelable:true, button:e.type === 'contextmenu' ? 2 : 0}));
     }
   }
-  function lsetScroller(ws){ return ws.getAttribute('data-lset') === 'abstract' ? ws.querySelector(':scope > .question-stack') : ws; }
+  /* NBME: the item stack beside the passage scrolls. Modern: the stack grows and the workspace scrolls (passage above it). */
+  function lsetScroller(ws){
+    if(ws.getAttribute('data-lset') !== 'abstract') return ws;
+    var st = ws.querySelector(':scope > .question-stack');
+    return st && /auto|scroll/.test(getComputedStyle(st).overflowY) ? st : ws;
+  }
   function lsetDecorate(was, oldTop){
     var ws = document.getElementById('workspace'), q = questions && questions[state.current], kind = lsetKind(state.current);
     if(!ws) return;
@@ -11451,7 +11471,7 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
     if(stacked){
       var before = '', after = '';
       lsetMembers(state.current).forEach(function(m){
-        if(m === state.current || lsetSeqLocked(m)) return;
+        if(m === state.current || lsetSeqLocked(m) || !lsetReached(m)) return;
         if(m < state.current) before += lsetPreview(m, kind, total) + '<hr class="lset-hr">';
         else after += '<hr class="lset-hr">' + lsetPreview(m, kind, total);
       });
@@ -11463,7 +11483,7 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
         var align = function(){
           if(lsetShown !== state.current || !flex.isConnected) return;
           if(was === state.current) sc.scrollTop = oldTop;
-          else if(pos === 1) sc.scrollTop = 0;
+          else if(pos === 1 && (sc !== ws || flex.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop < sc.clientHeight * 0.6)) sc.scrollTop = 0;
           else sc.scrollTop += flex.getBoundingClientRect().top - sc.getBoundingClientRect().top - 20;
         };
         // the shell decorates the new blocks a moment later (radios, icons) and they grow: align again
@@ -11500,8 +11520,7 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
       if(lsetSeqLocked(target)) return;
       var sameSeq = lsetKind(state.current) === 'sequential' && tq && cq && cq._linkedSetId === tq._linkedSetId && target > state.current;
       if(sameSeq){
-        var src = window.event && window.event.target;
-        if(src && src.closest && src.closest('#proceedBtn') && !lsetFrozen(state.current)){
+        if(!lsetFrozen(state.current)){
           appDialog({title:'Lock Answer', message:'You will not be able to change this answer if you proceed to the next item.', okText:'Proceed', cancelText:'Cancel', confirm:true}).then(function(ok){
             if(!ok) return;
             lsetFreezeBefore(target);
@@ -11516,8 +11535,8 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=34"></script>
-<script src="./nav-delay.js?v=34"></script>
-<script src="./thunder-ui.js?v=34"></script>
+<script src="./item-code.js?v=35"></script>
+<script src="./nav-delay.js?v=35"></script>
+<script src="./thunder-ui.js?v=35"></script>
 </body>
 </html>

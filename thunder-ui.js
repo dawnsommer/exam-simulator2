@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 34;
+  const TU_RELEASE = 35;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -300,6 +300,8 @@ ${H} #tuHome .tu-status button:last-child{border-right:0!important}
 .tu-form-actions{display:flex;align-items:center;gap:8px;min-width:0}
 .tu-form-actions>button{flex:none;white-space:nowrap}
 ${H} #tuHome .tu-form-actions .tu-btn{height:40px!important;min-height:0!important;padding:0 18px!important;font:700 14px var(--tu-font)!important;border:0!important;box-shadow:none!important;margin:0!important}
+/* the app's button hover (white ring + soft glow), which the box-shadow reset above would otherwise cancel; same as the sidebar Resume */
+${H} #tuHome .tu-form-actions .tu-btn:not(:disabled):hover{box-shadow:0 0 0 2px rgba(255,255,255,.75),0 0 12px rgba(0,103,153,.35)!important}
 ${H} #tuHome .tu-btn{border:0!important;box-shadow:none!important;margin:0!important;min-height:0!important}
 ${H} #tuHome .tu-btn:not(.tonal):not(.outline):not(.text):not(.quiet){background:var(--tu-p)!important;color:var(--tu-onp)!important}
 ${H} #tuHome .tu-btn.tonal{background:var(--tu-pc)!important;color:var(--tu-onpc)!important}
@@ -331,9 +333,26 @@ ${H} #tuHome .tu-form-actions>.tu-kebab{flex:none}
 ${H} aside.modern-sidebar #tuAddForms{order:1}
 ${H} aside.modern-sidebar #libraryTab{order:2}${H} aside.modern-sidebar #qbankTab{order:3}${H} aside.modern-sidebar #qbankTestsTab{order:4}
 ${H} aside.modern-sidebar #quickTab{order:5}${H} aside.modern-sidebar :is(#progressSyncTab,#tuSyncTab){order:6}${H} aside.modern-sidebar #settingsTab{order:7}
-${H} aside.modern-sidebar #tuNavCard{order:8;margin-top:auto}
-${H} aside.modern-sidebar #themeToggle{order:9;margin-top:6px!important}
-${H} aside.modern-sidebar>:not(.brand-block):not(.menu-tab):not(#tuAddForms):not(#tuNavCard):not(#themeToggle){order:10}
+${H} aside.modern-sidebar #tuResumeCard{order:8;margin-top:12px}
+${H} aside.modern-sidebar #tuNavCard{order:9;margin-top:auto}
+${H} aside.modern-sidebar #themeToggle{order:10;margin-top:6px!important}
+${H} aside.modern-sidebar>:not(.brand-block):not(.menu-tab):not(#tuAddForms):not(#tuResumeCard):not(#tuNavCard):not(#themeToggle){order:11}
+/* compact In-progress card under Settings (wide screens); the narrow layout keeps the Home card */
+.tu-rescard{background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:16px;padding:12px;margin:0 2px;display:flex;flex-direction:column;gap:8px;font-family:var(--tu-font)}
+.tu-rescard .tu-rc-top{display:flex;align-items:center;gap:10px;min-width:0}
+.tu-rescard .tu-resume-ico{width:32px;height:32px;flex:none}
+.tu-rescard .tu-resume-text{flex:1 1 auto;min-width:0}
+.tu-rescard .tu-resume-text b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-rescard .tu-resume-text>span{font-size:12px}
+.tu-rescard .tu-resume-bar{display:block;width:auto}
+.tu-rescard .tu-rc-act{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tu-rescard .tu-btn.text{padding:0 4px;font-size:12.5px;height:34px}
+.tu-rescard .tu-btn.small{height:34px;padding:0 14px}
+.tu-rescard .tu-rc-more{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--tu-line2);padding-top:8px}
+.tu-rescard .tu-rc-more>div{display:flex;align-items:center;gap:8px;min-width:0}
+.tu-rescard .tu-rc-more .tu-resume-text{flex:1 1 auto}
+@media (min-width:901px){#tuHome [data-tu-r="resume"]{display:none!important}}
+@media (max-width:900px){#tuResumeCard{display:none!important}}
 .tu-navcard{background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:16px;padding:14px;margin:0 2px;display:flex;flex-direction:column;gap:10px;font-family:var(--tu-font)}
 .tu-navcard>div{display:flex;align-items:center;gap:10px}
 .tu-navcard>div b{font-weight:700;font-size:14px;color:var(--tu-on)}
@@ -1740,6 +1759,34 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(open) html += list.slice(1).map(f => `<div class="tu-resume-row"><div class="tu-resume-text"><b>${esc(f.title)}</b><span>${esc(meta(f))}</span></div><button type="button" class="tu-btn outline small" data-tu-act="resume" data-id="${esc(f.id)}">Resume</button></div>`).join('');
     return html;
   }
+  /* compact copy of the Resume card in the left bar, under Settings: the latest form, the others behind "+N more" */
+  function resumeCardHtml(forms){
+    const list = forms.filter(f => f.canResume).sort((a, b) => String(b.activity).localeCompare(String(a.activity)));
+    if(!list.length) return '';
+    const open = homeUi.resumeOpen && list.length > 1;
+    const meta = f => (f.st === 'suspended' ? 'Suspended' : 'In progress') + ' · block ' + Math.min((Number(f.s.currentBlockPointer) || 0) + 1, f.s.blockCount || 1) + ' of ' + (f.s.blockCount || 1) + ' · ' + (f.s.answered || 0) + '/' + (f.s.total || f.rec.totalQuestions || 0);
+    const first = list[0];
+    return `<div class="tu-rc-top"><span class="tu-resume-ico">${icon(ICONS.play, 16)}</span><div class="tu-resume-text"><b title="${esc(first.title)}">${esc(first.title)}</b><span>${esc(meta(first))}</span></div></div>` +
+      `<span class="tu-resume-bar" aria-hidden="true"><i style="width:${first.answered}%"></i></span>` +
+      `<div class="tu-rc-act">${list.length > 1 ? `<button type="button" class="tu-btn text" data-tu-rc-more aria-expanded="${open}">${open ? 'Hide' : '+' + (list.length - 1) + ' more'}</button>` : '<span></span>'}<button type="button" class="tu-btn small" data-tu-rc-resume data-id="${esc(first.id)}">Resume</button></div>` +
+      (open ? `<div class="tu-rc-more">${list.slice(1).map(f => `<div><div class="tu-resume-text"><b title="${esc(f.title)}">${esc(f.title)}</b><span>${esc(meta(f))}</span></div><button type="button" class="tu-btn outline small" data-tu-rc-resume data-id="${esc(f.id)}">Resume</button></div>`).join('')}</div>` : '');
+  }
+  function paintResumeCard(forms){
+    const side = document.querySelector('#menu aside.modern-sidebar'); if(!side) return;
+    let card = byId('tuResumeCard');
+    if(!card){
+      card = document.createElement('div'); card.id = 'tuResumeCard'; card.className = 'tu-rescard'; card.setAttribute('aria-label', 'In progress');
+      side.insertBefore(card, byId('tuNavCard') || byId('themeToggle') || null);
+      card.addEventListener('click', e => {
+        const t = e.target.closest('button'); if(!t) return;
+        if(t.hasAttribute('data-tu-rc-more')){ homeUi.resumeOpen = !homeUi.resumeOpen; scheduleLibrary(); return; }
+        if(t.hasAttribute('data-tu-rc-resume')) cardAction(t.dataset.id, '[data-action="resume"]');
+      });
+    }
+    const html = resumeCardHtml(forms);
+    if(card.dataset.html !== html){ card.innerHTML = html; card.dataset.html = html; }
+    card.hidden = !html;
+  }
   function cardHtml(f){
     const ring = f.st === 'done' ? 'var(--tu-ok)' : 'var(--tu-p)';
     const primary = f.canResume ? `<button type="button" class="tu-btn" data-tu-act="resume" data-id="${esc(f.id)}">${icon(ICONS.play, 16)}Resume</button>`
@@ -1786,7 +1833,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     setRegion('recent', recentHtml(forms));
     setRegion('cats', catsHtml(tabs, forms, cat));
     const cmsEl = home.querySelector('[data-tu-r="cms"]'), ch = cmsHtml(tabs, forms, cat); setRegion('cms', ch); cmsEl.hidden = !ch; cmsEl.id = 'tuCmsPane';
-    const r = home.querySelector('[data-tu-r="resume"]'), rh = resumeHtml(forms); setRegion('resume', rh); r.hidden = !rh;
+    const r = home.querySelector('[data-tu-r="resume"]'), rh = resumeHtml(forms); setRegion('resume', rh); r.hidden = !rh; paintResumeCard(forms);
     // forms in the selected tab, then search, status and sort
     let inCat = forms;
     if(cat !== 'All'){ try{ const ids = new Set(B.recs(tabInternal(cat)).map(x => x.id)); inCat = forms.filter(f => ids.has(f.id)); }catch(e){} }
