@@ -8,13 +8,13 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 32;
+  const TU_RELEASE = 33;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
     teal:{label:'Teal', brand:'#00676C', deep:'#00403F'}
   };
-  const KEYS = {accent:'ThunderUSMLE.accent', status:'ThunderUSMLE.libraryStatus', sort:'ThunderUSMLE.librarySort', view:'ThunderUSMLE.libraryView'};
+  const KEYS = {accent:'ThunderUSMLE.accent', status:'ThunderUSMLE.libraryStatus', sort:'ThunderUSMLE.librarySort', view:'ThunderUSMLE.libraryView', cmsKeep:'ThunderUSMLE.cmsKeepOpen'};
   const THEME_KEY = 'step-simulator-local-menu-theme';
   const BOLT = 'M298 64 140 296h104l-30 152 162-238H270l28-146z';
   const byId = id => document.getElementById(id);
@@ -57,6 +57,20 @@
 :root[data-tu-accent="teal"]{--tu-brand:#00676C;--tu-brand-deep:#00403F;--tu-lp:#00676C;--tu-lonp:#FFFFFF;--tu-lpc:#C6ECEE;--tu-lonpc:#002022;--tu-dp:#80D4D9;--tu-donp:#003739;--tu-dpc:#00494D;--tu-donpc:#C6ECEE}
 :root[data-tu] #menu,:root[data-tu] #appDialogLayer,:root[data-tu] #examScreen .tu-report{--tu-bg:#F6F7FB;--tu-surface:#FFFFFF;--tu-s1:#EFF1F7;--tu-s2:#E7EAF3;--tu-s3:#DCE0EC;--tu-line:#D3D8E5;--tu-line2:#E4E7F0;--tu-on:#161A25;--tu-on2:#474E62;--tu-on3:#5F6679;--tu-ok:#17683D;--tu-okc:#D3EFDD;--tu-warn:#7D4B00;--tu-warnc:#FFE3B8;--tu-bad:#A8231B;--tu-badc:#FBDAD6;--tu-shadow:0 1px 2px rgba(20,26,40,.06),0 3px 10px rgba(20,26,40,.06);--tu-p:var(--tu-lp);--tu-onp:var(--tu-lonp);--tu-pc:var(--tu-lpc);--tu-onpc:var(--tu-lonpc);--tu-font:"Figtree",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif}
 :root[data-tu] #menu.theme-dark,:root[data-tu] #examScreen:is(.exam-dark,.reverse) .tu-report,:root[data-tu][data-tu-dark] #appDialogLayer{--tu-bg:#0E1118;--tu-surface:#161A23;--tu-s1:#131720;--tu-s2:#222835;--tu-s3:#2B3242;--tu-line:#3A4256;--tu-line2:#272E3D;--tu-on:#E4E7F0;--tu-on2:#B4BACB;--tu-on3:#9AA1B4;--tu-ok:#86DCA8;--tu-okc:#173A27;--tu-warn:#FFC772;--tu-warnc:#3D2C0F;--tu-bad:#FFB4AB;--tu-badc:#4A1612;--tu-shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.28);--tu-p:var(--tu-dp);--tu-onp:var(--tu-donp);--tu-pc:var(--tu-dpc);--tu-onpc:var(--tu-donpc)}
+/* confirmations and notices (appDialog: End Block, Suspend, Remove form, Delete progress, ...): the Library's modern dialog */
+:root[data-tu]:not([data-tun]) #appDialogLayer{background:rgba(14,17,24,.5);backdrop-filter:blur(4px);font-family:var(--tu-font)}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog{width:min(440px,100%);background:var(--tu-surface);color:var(--tu-on);border:0;border-radius:28px;box-shadow:0 16px 56px rgba(0,0,0,.3);padding:26px 26px 20px;animation:tuDlgIn .16s ease-out}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-head{background:none;color:var(--tu-on);padding:0 0 10px;font:700 21px/1.25 var(--tu-font);letter-spacing:0}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-body{padding:0;font:400 15px/1.5 var(--tu-font);color:var(--tu-on2);white-space:pre-line}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-input{width:100%;margin-top:14px;height:48px;padding:0 14px;border:1px solid var(--tu-line);border-radius:14px;background:var(--tu-s1);color:var(--tu-on);font:500 16px var(--tu-font)}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-input:focus{outline:2px solid var(--tu-p);outline-offset:1px}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-actions{display:flex;justify-content:flex-end;gap:10px;padding:22px 0 0;background:none;border:0;flex-wrap:wrap}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-actions button{min-width:96px;height:44px;padding:0 20px;border-radius:999px;font:700 14.5px var(--tu-font);cursor:pointer;box-shadow:none}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-actions .primary{background:var(--tu-p);color:var(--tu-onp);border:0}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-actions .primary.danger-confirm{background:var(--tu-bad);color:var(--tu-surface)}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-actions .secondary{background:transparent;color:var(--tu-on);border:1px solid var(--tu-line)}
+:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-actions button:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
+@media (max-width:480px){:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-actions{flex-direction:column-reverse}:root[data-tu]:not([data-tun]) #appDialogLayer .app-dialog-actions button{width:100%}}
 .tu-logo-tile{fill:var(--tu-brand)}.tu-logo-deep{fill:var(--tu-brand-deep)}.tu-ico{flex:none;display:block}
 .tu-sr{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}
 
@@ -1632,7 +1646,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
 
   /* view state */
-  const homeUi = {resumeOpen:false, tabsOpen:false, cms:false};
+  const keepCms = () => store.get(KEYS.cmsKeep, 'off') === 'on';
+  const homeUi = {resumeOpen:false, tabsOpen:false, cms:keepCms()};
   const regionCache = new Map();
   function setRegion(name, html){
     const el = document.querySelector(`#tuHome [data-tu-r="${name}"]`); if(!el) return;
@@ -1758,7 +1773,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const tabs = libTabs(), tabsByKey = {}; tabs.forEach(t => { tabsByKey[t.internal] = t; });
     const forms = B.forms().map(r => formInfo(r, tabsByKey));
     let cat = B.filter(); if(cat === 'Overview' || !tabs.some(t => t.key === cat)) cat = 'All';
-    if(CMS_TABS.includes(tabInternal(cat))) homeUi.cms = true; else if(cat !== 'All') homeUi.cms = false;
+    if(CMS_TABS.includes(tabInternal(cat)) || keepCms()) homeUi.cms = true; else if(cat !== 'All') homeUi.cms = false;
     if(homeUi.cms && !tabs.some(t => CMS_TABS.includes(t.internal))) homeUi.cms = false;
     const qs = forms.reduce((n, f) => n + (Number(f.rec.totalQuestions) || 0), 0);
     setRegion('count', forms.length ? esc(plural(forms.length, 'form') + ' · ' + qs.toLocaleString() + ' questions') : '');
@@ -1825,12 +1840,12 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   function onHomeClick(e){
     const t = e.target.closest('button, [data-tu-cat]'); if(!t || !byId('tuHome').contains(t)) return;
     if(t.dataset.tuGroup === 'cms'){ homeUi.cms = true; if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); return; }
-    if(t.dataset.tuCat){ homeUi.cms = CMS_TABS.includes(tabInternal(t.dataset.tuCat)); document.querySelector(`#libraryFilters .filter-pill[data-filter="${CSS.escape(t.dataset.tuCat)}"]`)?.click(); scheduleLibrary(); return; }
+    if(t.dataset.tuCat){ homeUi.cms = keepCms() || CMS_TABS.includes(tabInternal(t.dataset.tuCat)); document.querySelector(`#libraryFilters .filter-pill[data-filter="${CSS.escape(t.dataset.tuCat)}"]`)?.click(); scheduleLibrary(); return; }
     if(t.dataset.tuStatus){ store.set(KEYS.status, t.dataset.tuStatus); scheduleLibrary(); return; }
     if(t.dataset.tuView){ store.set(KEYS.view, t.dataset.tuView); scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-resume-more')){ homeUi.resumeOpen = !homeUi.resumeOpen; scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-tabs-more')){ homeUi.tabsOpen = !homeUi.tabsOpen; scheduleLibrary(); return; }
-    if(t.hasAttribute('data-tu-see-all')){ homeUi.cms = false; store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    if(t.hasAttribute('data-tu-see-all')){ homeUi.cms = keepCms(); store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
     if(t.hasAttribute('data-tu-updates')){ openUpdates(t); return; }
     if(t.hasAttribute('data-tu-addmini')){ openAdd('slot', t); return; }
     if(t.hasAttribute('data-tu-fullscreen')){ t.closest('details')?.removeAttribute('open'); toggleFullscreen(); return; }
@@ -2614,15 +2629,15 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   function mb(n){ n = Number(n) || 0; return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
   // Returns the status line and the body (progress, list, buttons) separately: the popover shows the status under its title.
   function updatesParts(){
-    const st = updState(), forms = st.forms || [], act = forms.filter(f => f.status === 'New' || f.status === 'Revised');
-    const list = forms.length ? `<div class="tu-updlist">${forms.map(f => { const status = f.reason && f.status !== 'Installed' ? 'Blocked' : f.status; return `<div class="tu-updrow"><div><i style="background:${TAB_DOTS[tabInternal(f.tab || '')] || TAB_DOTS.Custom}"></i><span><b>${esc(f.title || f.id)}</b><small>${esc([f.tab, (f.files || []).length ? mb(f.files.reduce((n, x) => n + (Number(x.size) || 0), 0)) : ''].filter(Boolean).join(' · '))}</small></span><em class="tu-updchip ${UPD_CHIP[status] || 'skip'}">${esc(status)}</em></div>${f.reason ? `<small class="tu-updwhy">${esc(f.reason)}</small>` : ''}</div>`; }).join('')}</div>` : '';
+    const st = updState(), forms = st.forms || [], act = forms.filter(f => f.status === 'New' || f.status === 'Revised'), picked = new Set(st.picked || []), chosen = act.filter(f => picked.has(f.id));
+    const list = forms.length ? `<div class="tu-updlist">${forms.map(f => { const status = f.reason && f.status !== 'Installed' ? 'Blocked' : f.status; const pick = (f.status === 'New' || f.status === 'Revised') && window.StepFormUpdates.pick ? `<button type="button" class="tu-check" role="checkbox" aria-checked="${picked.has(f.id)}" aria-label="Install ${esc(f.title || f.id)}" data-tu-upick="${esc(f.id)}"${st.busy ? ' disabled' : ''}>${icon('<path d="m5 12 5 5 9-10"/>', 14)}</button>` : ''; return `<div class="tu-updrow"><div>${pick}<i style="background:${TAB_DOTS[tabInternal(f.tab || '')] || TAB_DOTS.Custom}"></i><span><b>${esc(f.title || f.id)}</b><small>${esc([f.tab, (f.files || []).length ? mb(f.files.reduce((n, x) => n + (Number(x.size) || 0), 0)) : ''].filter(Boolean).join(' · '))}</small></span><em class="tu-updchip ${UPD_CHIP[status] || 'skip'}">${esc(status)}</em></div>${f.reason ? `<small class="tu-updwhy">${esc(f.reason)}</small>` : ''}</div>`; }).join('')}</div>` : '';
     const progress = st.percent != null ? `<div class="tu-updprog"><div><span>${st.percent < 90 ? 'Downloading' : 'Checking compatibility'}</span><span>${st.percent}%</span></div><span class="tu-tile-bar"><i style="width:${st.percent}%"></i></span></div>` : '';
     const checked = !!(st.message || forms.length), msg = st.message || 'Check for new and revised forms published for this app.';
     const tone = /up to date|^Installed|^Imported/i.test(msg) ? 'ok' : /offline|leave the active exam|failed|error|interrupted|mismatch/i.test(msg) ? 'warn' : '';
     return {
       status: `<span class="tu-updmsg ${tone}" role="status" aria-live="polite">${esc(msg)}</span>`,
-      body: `${progress}${list}<div class="tu-actions">${act.length && byId('formUpdatesInstall') ? `<button type="button" class="tu-btn tu-grow" data-tu-proxy="formUpdatesInstall"${st.busy ? ' disabled' : ''}>Download &amp; install · ${act.length}</button>` : ''}<button type="button" class="tu-btn outline" data-tu-proxy="formUpdatesCheck"${st.busy ? ' disabled' : ''}>${st.busy ? 'Updating…' : checked ? 'Check again' : 'Check for updates'}</button></div>` +
-        (act.length ? '<span class="tu-note">Installs everything listed in one go. Successful installs are reported to the app administrator. Your attempts are kept when question IDs match.</span>' : '')
+      body: `${progress}${list}<div class="tu-actions">${act.length > 1 ? `<button type="button" class="tu-link" data-tu-upickall="${chosen.length === act.length ? 'none' : 'all'}"${st.busy ? ' disabled' : ''}>${chosen.length === act.length ? 'Select none' : 'Select all'}</button>` : ''}${act.length && byId('formUpdatesInstall') ? `<button type="button" class="tu-btn tu-grow" data-tu-proxy="formUpdatesInstall"${st.busy || !chosen.length ? ' disabled' : ''}>Download &amp; install · ${chosen.length}</button>` : ''}<button type="button" class="tu-btn outline" data-tu-proxy="formUpdatesCheck"${st.busy ? ' disabled' : ''}>${st.busy ? 'Updating…' : checked ? 'Check again' : 'Check for updates'}</button></div>` +
+        (act.length ? '<span class="tu-note">Choose the forms to install. Successful installs are reported to the app administrator. Your attempts are kept when question IDs match.</span>' : '')
     };
   }
   function updatesHtml(){ const u = updatesParts(); return u.status + u.body; }
@@ -2837,7 +2852,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       setRow('Theme', 'Library, Qbank and Settings', `<div class="tu-setseg" role="radiogroup" aria-label="Theme">${seg('light', 'Light', 'sun')}${seg('dark', 'Dark', 'moon')}${seg('system', 'Match device')}</div>`) +
       setRow('Accent color', 'Buttons, selection, progress rings and the app icon. Crimson is the default.' + (IPAD ? ' The Home Screen icon updates when you add the app to the Home Screen again.' : ''), `<div class="tu-swatches" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(swatch).join('')}</div>`) +
       setRow('Exam style', 'NBME looks like test day (default). Modern applies the new design to answering, review and explanations, and fits phones. Also in the exam’s Settings menu and on the Score Report.', `<div class="tu-setseg" role="radiogroup" aria-label="Exam style">${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${examStyle() === v}" data-tu-examstyle="${v}">${l}</button>`).join('')}</div>`) +
-      setRow('Card density', 'Comfortable cards, or a compact list for big libraries', `<label class="tu-setselect"><span class="tu-sr">Card density</span><select data-tu-density><option value="grid"${view === 'grid' ? ' selected' : ''}>Comfortable</option><option value="list"${view === 'list' ? ' selected' : ''}>Compact</option></select></label>`);
+      setRow('Card density', 'Comfortable cards, or a compact list for big libraries', `<label class="tu-setselect"><span class="tu-sr">Card density</span><select data-tu-density><option value="grid"${view === 'grid' ? ' selected' : ''}>Comfortable</option><option value="list"${view === 'list' ? ' selected' : ''}>Compact</option></select></label>`) +
+      swRow('Keep CMS forms open', 'Leave the CMS forms pane expanded on the Library, including after picking another tab or reloading', 'data-tu-cmskeep', keepCms());
   }
   function tabsBody(){
     const d = setUi.data || {tabs:[], future:{}}, rows = tabRows(), f = d.future || {};
@@ -2922,8 +2938,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   let wipeBusy = false;
   async function wipeDeviceData(){
     if(wipeBusy) return;
-    if(!confirm(IPAD ? 'Delete everything this app stores on this device (forms, progress, Qbank, sync records)?\n\nGoogle Drive backups are not touched. Export or back up first if this device has progress that is not in Google Drive.' : 'Delete the browser data of this app (DATA folder link and records)?\n\nYour DATA folder files are not touched.')) return;
-    if(IPAD && String(prompt('Type DELETE to erase this device\'s library and progress.') || '').trim().toUpperCase() !== 'DELETE') return;
+    const askOk = async text => typeof appConfirm === 'function' ? appConfirm(text, {title:'Delete device data', okText:'Delete', danger:true}) : confirm(text);
+    if(!await askOk(IPAD ? 'Delete everything this app stores on this device (forms, progress, Qbank, sync records)?\n\nGoogle Drive backups are not touched. Export or back up first if this device has progress that is not in Google Drive.' : 'Delete the browser data of this app (DATA folder link and records)?\n\nYour DATA folder files are not touched.')) return;
+    if(IPAD){ const q = 'Type DELETE to erase this device\'s library and progress.', typed = typeof appPrompt === 'function' ? await appPrompt(q, '', {title:'Confirm deletion', okText:'Erase'}) : prompt(q); if(String(typed || '').trim().toUpperCase() !== 'DELETE') return; }
     wipeBusy = true; scheduleSettings(true);
     let names = [];
     try{ names = indexedDB.databases ? (await indexedDB.databases()).map(d => d.name).filter(Boolean) : []; }catch(e){}
@@ -3197,6 +3214,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(t.hasAttribute('data-tu-future')){ setUi.future = !setUi.future; scheduleSettings(); return; }
     if(ds.tuFutsw){ const id = ds.tuFutsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on)); legacyDo('library', () => setLegacyEl(legacyIn('#' + id), on)); return; }
     if(ds.tuSetsw){ const id = ds.tuSetsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on)); legacyDo(ds.tab, () => setLegacyEl(legacyIn('#' + id), on)); return; }
+    if(t.hasAttribute('data-tu-cmskeep')){ const on = !keepCms(); store.set(KEYS.cmsKeep, on ? 'on' : 'off'); homeUi.cms = on; scheduleLibrary(); scheduleSettings(); return; }
     if(t.hasAttribute('data-tu-defaults')){ setUi.defaults = !setUi.defaults; scheduleSettings(); if(setUi.defaults) legacySetTab('safety').then(() => scheduleSettings(true)); return; }
     if(ds.tuDefmode){ const v = ds.tuDefmode; legacyDo('safety', () => { setLegacyEl(legacyIn('#setDefaultMode'), v); setLegacy('qbankRunMode', v); }); return; }
     if(t.hasAttribute('data-tu-reset')){ legacyDo('qbank', () => clickLegacy('#settingsPanel [data-v9="settings-reset-qbank"]')); return; }
@@ -3287,6 +3305,12 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(tab) setTimeout(() => { heroTitle(); scheduleSettings(true); }, 0);
   }, true);
   document.addEventListener('click', e => {
+    const upick = e.target.closest && e.target.closest('[data-tu-upick],[data-tu-upickall]');
+    if(upick && window.StepFormUpdates){
+      e.preventDefault();
+      if(upick.dataset.tuUpick) window.StepFormUpdates.pick(upick.dataset.tuUpick); else window.StepFormUpdates.pickAll(upick.dataset.tuUpickall === 'all');
+      paintUpdates(); if(addUi.open) paintAdd(); return;
+    }
     const proxy = e.target.closest && e.target.closest('[data-tu-proxy]');
     if(proxy){ e.preventDefault(); byId(proxy.dataset.tuProxy)?.click(); setTimeout(() => scheduleSettings(true), 300); }
   });

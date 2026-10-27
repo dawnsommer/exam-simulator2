@@ -42,3 +42,10 @@ test('manifest rejects unpinned sources, duplicate IDs, unsafe paths, and invali
  const m={schemaVersion:1,repository:'dawnsommer/exam-simulator2',sourceCommit:commit,forms:[{id:'A',tab:'Tab',onExisting:'update',revision:'b'.repeat(64),files:[{path:'A/A.json',sha256:'c'.repeat(64),size:2}]}]};assert.equal(C.validateManifest(m),m);
  for(const change of [x=>x.sourceCommit='main',x=>x.repository='someone/else',x=>x.forms.push(x.forms[0]),x=>x.forms[0].files[0].path='A/../x',x=>x.forms[0].files[0].sha256='oops']){const n=structuredClone(m);change(n);assert.throws(()=>C.validateManifest(n));}
 });
+test('online updates: the user picks which New/Revised forms install; none picked means nothing installs',()=>{
+ const src=fs.readFileSync(path.join(root,'js/form-updates.js'),'utf8');
+ assert.match(src,/picked\.clear\(\);state\.forms\.filter\(isActionable\)\.forEach\(f=>picked\.add\(f\.id\)\)/,'a check pre-selects every available form');
+ assert.match(src,/const selected=state\.forms\.filter\(f=>isActionable\(f\)&&picked\.has\(f\.id\)\);if\(!selected\.length\)return;/,'install only takes the picked forms');
+ assert.match(src,/data-fu-pick/);assert.match(src,/state\.busy\|\|!chosen\.length\?'disabled'/,'Install is disabled with nothing picked');
+ assert.match(src,/window\.StepFormUpdates=\{check,install,pick,pickAll,/);assert.match(src,/picked:\[\.\.\.picked\]/);
+});

@@ -5,6 +5,7 @@
   const base=R.config.CLOUD.workerBaseUrl+'/exam-simulator2/updates/';
   const LOCKED='exam2AdminExplicitlyLocked';
   const KEY='formUpdatesAdminGrant',REVOKE='formUpdatesAdminRevocations',LABEL='formUpdatesDeviceLabel';
+  const picked=new Set(),isActionable=f=>f.status==='New'||f.status==='Revised';
   const state={busy:false,message:'',percent:null,forms:[],manifest:null,receiptPending:false};
   const admin={token:'',rows:[],message:'',busy:false,next:null,search:'',formId:'',revision:''};
   const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -45,12 +46,12 @@
   function paint(){
     mountToolbar();
     const box=document.getElementById('formUpdatesPanel');if(!box)return;
-    const actionable=state.forms.filter(f=>f.status==='New'||f.status==='Revised');
+    const actionable=state.forms.filter(isActionable),chosen=actionable.filter(f=>picked.has(f.id));
     box.hidden=!state.message&&!state.forms.length;
     box.innerHTML='<div class="fu-status" role="status" aria-live="polite">'+esc(state.message)+'</div>'+
       (state.percent!==null?'<div class="fu-progress-row"><div class="fu-track" role="progressbar" aria-label="Form download" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+state.percent+'"><i style="width:'+state.percent+'%"></i></div><span>'+state.percent+'%</span></div>':'')+
-      (state.forms.length?'<div class="fu-list">'+state.forms.map(f=>'<div class="fu-item"><div><b>'+esc(f.title||f.id)+'</b><small>'+esc(f.tab)+' · '+bytes(f.files.reduce((n,x)=>n+x.size,0))+'</small></div><span class="fu-kind">'+esc(f.status)+'</span>'+(f.reason?'<small class="fu-reason">'+esc(f.reason)+'</small>':'')+'</div>').join('')+'</div>':'')+
-      (actionable.length?'<button type="button" id="formUpdatesInstall" class="primary" '+(state.busy?'disabled':'')+'>Download & install · '+actionable.length+'</button><small class="fu-report-note">Successful installs are reported to the app administrator.</small>':'');
+      (state.forms.length?'<div class="fu-list">'+state.forms.map(f=>'<div class="fu-item">'+(isActionable(f)?'<input type="checkbox" class="fu-pick" data-fu-pick="'+esc(f.id)+'" aria-label="Install '+esc(f.title||f.id)+'" '+(picked.has(f.id)?'checked ':'')+(state.busy?'disabled':'')+'>':'')+'<div><b>'+esc(f.title||f.id)+'</b><small>'+esc(f.tab)+' · '+bytes(f.files.reduce((n,x)=>n+x.size,0))+'</small></div><span class="fu-kind">'+esc(f.status)+'</span>'+(f.reason?'<small class="fu-reason">'+esc(f.reason)+'</small>':'')+'</div>').join('')+'</div>':'')+
+      (actionable.length?'<button type="button" id="formUpdatesInstall" class="primary" '+(state.busy||!chosen.length?'disabled':'')+'>Download & install · '+chosen.length+'</button><small class="fu-report-note">Successful installs are reported to the app administrator.</small>':'');
     const button=document.getElementById('formUpdatesCheck');if(button){button.disabled=state.busy;button.textContent=state.busy?'Updating…':'Check for updates';}
   }
   function mountToolbar(){
@@ -74,14 +75,15 @@
       try{const res=await fetch(new URL('form-updates-manifest.json',new URL('./',location.href)),{cache:'no-store',credentials:'omit',signal:controller.signal});if(!res.ok)throw new Error('Update list is unavailable (HTTP '+res.status+').');manifest=C.validateManifest(await res.json());}finally{clearTimeout(timer);}
       const installed=await window.StepFormUpdateStore.installed();state.manifest=manifest;
       state.forms=manifest.forms.map(f=>{const prev=installed.find(x=>x.id.toLowerCase()===f.id.toLowerCase());return {...f,status:!prev?'New':f.onExisting==='skip'?'Skipped':prev.formUpdateRevision===f.revision?'Installed':'Revised'};});
-      const count=state.forms.filter(f=>f.status==='New'||f.status==='Revised').length;
+      picked.clear();state.forms.filter(isActionable).forEach(f=>picked.add(f.id));
+      const count=state.forms.filter(isActionable).length;
       state.message=count?count+' form'+(count===1?'':'s')+' available · '+bytes(state.forms.filter(f=>f.status==='New'||f.status==='Revised').reduce((n,f)=>n+f.files.reduce((x,v)=>x+v.size,0),0)):manifest.forms.length?'Your library is up to date.':'No form updates available.';
     }catch(e){state.message=e.name==='AbortError'?'The update check timed out. Try again.':e.message;state.manifest=null;}
     finally{state.busy=false;paint();}
   }
   async function install(){
     if(state.busy||!state.manifest)return;
-    const selected=state.forms.filter(f=>f.status==='New'||f.status==='Revised');if(!selected.length)return;
+    const selected=state.forms.filter(f=>isActionable(f)&&picked.has(f.id));if(!selected.length)return;
     state.busy=true;state.percent=0;state.message='Preparing download…';paint();
     const batchId=crypto.randomUUID(),authKey='formUpdatesReceiptAuth:'+batchId;
     try{
@@ -171,6 +173,7 @@
     if(window.__STEP_FORM_UPDATE_COMMITTING&&!e.target.closest?.('#formUpdatesPanel')){e.preventDefault();e.stopImmediatePropagation();return;}
     const checkButton=e.target.closest?.('#formUpdatesCheck'),installButton=e.target.closest?.('#formUpdatesInstall');
     if(checkButton){e.preventDefault();check();}if(installButton){e.preventDefault();install();}
+    const pickBox=e.target.closest?.('[data-fu-pick]');if(pickBox){pick(pickBox.dataset.fuPick,pickBox.checked);return;}
     const action=e.target.closest?.('[data-fu]')?.dataset.fu;
     if(action==='lock')lock().catch(e=>{admin.message=e.message;paintAdmin();});
     if(action==='more')loadAdmin(true);
@@ -183,7 +186,9 @@
   });
   window.addEventListener('online',()=>flushReports());
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){flushReports();if(admin.token)loadAdmin();}});
-  window.StepFormUpdates={check,install,lock,adminHtml,getState:()=>({...state,forms:state.forms.map(f=>({...f}))})};
+  function pick(id,on){if(state.busy)return;const f=state.forms.find(x=>x.id===id);if(!f||!isActionable(f))return;if(on===undefined?!picked.has(id):on)picked.add(id);else picked.delete(id);paint();}
+  function pickAll(on){if(state.busy)return;picked.clear();if(on)state.forms.filter(isActionable).forEach(f=>picked.add(f.id));paint();}
+  window.StepFormUpdates={check,install,pick,pickAll,lock,adminHtml,getState:()=>({...state,picked:[...picked],forms:state.forms.map(f=>({...f}))})};
   const style=document.createElement('style');style.textContent=`
     #libraryModePanel .workflow-actions-pane-v217 .exam-final-actionbar.fu-toolbar{display:grid!important;grid-template-columns:minmax(80px,1fr) minmax(125px,1.6fr) 70px!important;gap:7px!important;align-items:center!important}
     #libraryModePanel .fu-toolbar>button,#libraryModePanel .fu-toolbar>.exam-toolbar-menu>summary{min-height:42px!important;padding:9px 8px!important;font-size:12px!important;border-radius:11px!important}
@@ -197,7 +202,7 @@
     #menu.theme-dark .fu-toolbar .fu-more>summary{background:#1b3447!important;border-color:#4e6c80!important;color:#e3eef4!important}
     .fu-panel[hidden]{display:none}.fu-panel{border:1px solid var(--fu-line);border-radius:13px;padding:12px;margin-top:3px;background:var(--fu-soft);font:12px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
     .fu-status{color:var(--fu-muted)}.fu-progress-row{display:flex;gap:9px;align-items:center;margin-top:8px;font-variant-numeric:tabular-nums}.fu-track{height:4px;flex:1;overflow:hidden;border-radius:9px;background:#78909c30}.fu-track i{height:100%;display:block;background:#28847a;border-radius:9px;transition:width .15s}
-    .fu-list{max-height:230px;overflow:auto;margin:8px 0}.fu-item{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px 10px;padding:8px 0;border-top:1px solid var(--fu-line)}.fu-item>div{min-width:0;flex:1}.fu-item b{font-weight:650;overflow-wrap:anywhere}.fu-item small,.fu-admin td small{display:block;color:var(--fu-muted);font-size:11px}.fu-kind{font-size:10px;color:var(--fu-muted);background:#78909c15;padding:3px 7px;border-radius:20px;white-space:nowrap}.fu-reason{flex-basis:100%;color:#97622f!important}.fu-report-note{display:block;margin-top:8px;color:var(--fu-muted)}
+    .fu-list{max-height:230px;overflow:auto;margin:8px 0}.fu-item{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px 10px;padding:8px 0;border-top:1px solid var(--fu-line)}.fu-item>div{min-width:0;flex:1}.fu-pick{flex:none;width:20px;height:20px;margin:0 10px 0 0;accent-color:var(--fu-accent,#0b6bcb)}.fu-item b{font-weight:650;overflow-wrap:anywhere}.fu-item small,.fu-admin td small{display:block;color:var(--fu-muted);font-size:11px}.fu-kind{font-size:10px;color:var(--fu-muted);background:#78909c15;padding:3px 7px;border-radius:20px;white-space:nowrap}.fu-reason{flex-basis:100%;color:#97622f!important}.fu-report-note{display:block;margin-top:8px;color:var(--fu-muted)}
     .fu-panel>button{width:100%;font-size:12px;padding:9px!important;min-height:40px}.fu-admin{max-width:960px}.fu-admin-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.fu-admin-head h3{margin:0!important}.fu-admin-head p{margin:3px 0 0!important;font-size:12px;color:var(--fu-muted)}.fu-admin button{min-height:40px;font-size:12px}.fu-admin input{box-sizing:border-box;min-width:0;min-height:40px;border:1px solid var(--fu-line);border-radius:9px;padding:9px 11px;background:transparent;color:inherit;font:inherit}
     .fu-device-label{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--fu-muted);flex-wrap:wrap;margin-bottom:22px}.fu-device-label input{flex:1;max-width:280px}.fu-unlock{max-width:380px;margin:14px 0}.fu-unlock>label{font-size:12px;display:block;margin-bottom:7px}.fu-unlock>div{display:flex;gap:8px}.fu-unlock input{flex:1;width:0}.fu-unlock small{display:block;color:var(--fu-muted);font-size:11px;margin-top:8px}.fu-admin-filters{display:grid;grid-template-columns:minmax(130px,2fr) minmax(80px,1fr) minmax(80px,1fr) auto;gap:7px;margin-bottom:14px;font-size:12px}
     .fu-admin-table{overflow:auto;border:1px solid var(--fu-line);border-radius:12px}.fu-admin table{width:100%;border-collapse:collapse;font-size:12px;text-align:left}.fu-admin th,.fu-admin td{padding:11px 12px;border-bottom:1px solid var(--fu-line);vertical-align:top}.fu-admin th{background:var(--fu-soft);color:var(--fu-muted);font-size:11px;font-weight:600}.fu-admin td{overflow-wrap:anywhere}.fu-empty{padding:28px;text-align:center;font-size:12px;color:var(--fu-muted)}.fu-admin-status{font-size:12px;color:var(--fu-muted);min-height:18px}
