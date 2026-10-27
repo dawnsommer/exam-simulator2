@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 33;
+  const TU_RELEASE = 34;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -1533,7 +1533,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const LEGACY_TAB_COLORS = ['#d9e3ea', '#38bdf8'];
   const STATUSES = [['all','All'],['progress','In progress'],['done','Completed'],['new','Not started']];
   const ST_LABEL = {done:'Completed', progress:'In progress', suspended:'Suspended', new:'Not started'};
-  const SORTS = [['default','Library order'],['recent','Recent activity'],['name','Name A–Z'],['score','Score: high to low'],['answered','Most answered'],['status','Status']];
+  const SORTS = [['default','Library order'],['recent','Recent activity'],['completed','Recently completed'],['name','Name A–Z'],['score','Score: high to low'],['answered','Most answered'],['status','Status']];
   const tabInternal = f => f === 'NBME' ? 'N-Forms' : f;
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
@@ -1647,7 +1647,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
 
   /* view state */
   const keepCms = () => store.get(KEYS.cmsKeep, 'off') === 'on';
-  const homeUi = {resumeOpen:false, tabsOpen:false, cms:keepCms()};
+  const homeUi = {resumeOpen:false, tabsOpen:false, cms:false};
   const regionCache = new Map();
   function setRegion(name, html){
     const el = document.querySelector(`#tuHome [data-tu-r="${name}"]`); if(!el) return;
@@ -1723,7 +1723,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     return `<div class="tu-tiles${homeUi.tabsOpen ? '' : ' tu-clamp'}" data-tu-tiles>${tiles}</div><button type="button" class="tu-link tu-tiles-more" data-tu-tabs-more hidden aria-expanded="${homeUi.tabsOpen}">${homeUi.tabsOpen ? 'Show fewer tabs' : 'Show all tabs'}</button>`;
   }
   function cmsHtml(tabs, forms, cat){
-    const B = bridge(), cms = tabs.filter(t => CMS_TABS.includes(t.internal)); if(!homeUi.cms || !cms.length) return '';
+    const B = bridge(), cms = tabs.filter(t => CMS_TABS.includes(t.internal)); if(!(homeUi.cms || keepCms()) || !cms.length) return ''; // keep-open shows the pane without selecting the CMS forms tile
     const all = cmsForms(B, forms, tabs), done = all.filter(f => f.s.completed).length;
     const tiles = cms.map(t => { let meter = true; try{ meter = B.meterOn(t.internal); }catch(e){} return tileHtml(`data-tu-cat="${esc(t.key)}"`, t.label, t.color, tabForms(B, forms, t.internal), meter, cat === t.key, false); }).join('');
     return `<div class="tu-sec-head"><h2>CMS forms</h2><span>${done} of ${plural(all.length, 'form')} done${CMS_TABS.includes(tabInternal(cat)) ? '' : ' · pick a subject to filter'}</span></div><div class="tu-tiles">${tiles}</div>`;
@@ -1773,7 +1773,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const tabs = libTabs(), tabsByKey = {}; tabs.forEach(t => { tabsByKey[t.internal] = t; });
     const forms = B.forms().map(r => formInfo(r, tabsByKey));
     let cat = B.filter(); if(cat === 'Overview' || !tabs.some(t => t.key === cat)) cat = 'All';
-    if(CMS_TABS.includes(tabInternal(cat)) || keepCms()) homeUi.cms = true; else if(cat !== 'All') homeUi.cms = false;
+    if(CMS_TABS.includes(tabInternal(cat))) homeUi.cms = true; else if(cat !== 'All') homeUi.cms = false;
     if(homeUi.cms && !tabs.some(t => CMS_TABS.includes(t.internal))) homeUi.cms = false;
     const qs = forms.reduce((n, f) => n + (Number(f.rec.totalQuestions) || 0), 0);
     setRegion('count', forms.length ? esc(plural(forms.length, 'form') + ' · ' + qs.toLocaleString() + ' questions') : '');
@@ -1801,6 +1801,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const shown = inCat.filter(f => isIn(f, status)).sort((a, b) => {
       const d = order.get(a.id) - order.get(b.id);
       if(sort === 'recent') return String(b.activity).localeCompare(String(a.activity)) || d;
+      if(sort === 'completed') return String(b.completedAt || '').localeCompare(String(a.completedAt || '')) || d; // never-completed forms (empty date) follow, in library order
       if(sort === 'name') return a.title.localeCompare(b.title, undefined, {numeric:true}) || d;
       if(sort === 'score') return (b.score ?? -1) - (a.score ?? -1) || d;
       if(sort === 'answered') return b.answered - a.answered || d;
@@ -1840,12 +1841,12 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   function onHomeClick(e){
     const t = e.target.closest('button, [data-tu-cat]'); if(!t || !byId('tuHome').contains(t)) return;
     if(t.dataset.tuGroup === 'cms'){ homeUi.cms = true; if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); return; }
-    if(t.dataset.tuCat){ homeUi.cms = keepCms() || CMS_TABS.includes(tabInternal(t.dataset.tuCat)); document.querySelector(`#libraryFilters .filter-pill[data-filter="${CSS.escape(t.dataset.tuCat)}"]`)?.click(); scheduleLibrary(); return; }
+    if(t.dataset.tuCat){ homeUi.cms = CMS_TABS.includes(tabInternal(t.dataset.tuCat)); document.querySelector(`#libraryFilters .filter-pill[data-filter="${CSS.escape(t.dataset.tuCat)}"]`)?.click(); scheduleLibrary(); return; }
     if(t.dataset.tuStatus){ store.set(KEYS.status, t.dataset.tuStatus); scheduleLibrary(); return; }
     if(t.dataset.tuView){ store.set(KEYS.view, t.dataset.tuView); scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-resume-more')){ homeUi.resumeOpen = !homeUi.resumeOpen; scheduleLibrary(); return; }
     if(t.hasAttribute('data-tu-tabs-more')){ homeUi.tabsOpen = !homeUi.tabsOpen; scheduleLibrary(); return; }
-    if(t.hasAttribute('data-tu-see-all')){ homeUi.cms = keepCms(); store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    if(t.hasAttribute('data-tu-see-all')){ homeUi.cms = false; store.set(KEYS.status, 'done'); if(bridge().filter() !== 'All') document.querySelector('#libraryFilters .filter-pill[data-filter="All"]')?.click(); scheduleLibrary(); byId('tuHome').querySelector('.tu-forms')?.scrollIntoView({behavior:'smooth', block:'start'}); return; }
     if(t.hasAttribute('data-tu-updates')){ openUpdates(t); return; }
     if(t.hasAttribute('data-tu-addmini')){ openAdd('slot', t); return; }
     if(t.hasAttribute('data-tu-fullscreen')){ t.closest('details')?.removeAttribute('open'); toggleFullscreen(); return; }
@@ -2853,7 +2854,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       setRow('Accent color', 'Buttons, selection, progress rings and the app icon. Crimson is the default.' + (IPAD ? ' The Home Screen icon updates when you add the app to the Home Screen again.' : ''), `<div class="tu-swatches" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(swatch).join('')}</div>`) +
       setRow('Exam style', 'NBME looks like test day (default). Modern applies the new design to answering, review and explanations, and fits phones. Also in the exam’s Settings menu and on the Score Report.', `<div class="tu-setseg" role="radiogroup" aria-label="Exam style">${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${examStyle() === v}" data-tu-examstyle="${v}">${l}</button>`).join('')}</div>`) +
       setRow('Card density', 'Comfortable cards, or a compact list for big libraries', `<label class="tu-setselect"><span class="tu-sr">Card density</span><select data-tu-density><option value="grid"${view === 'grid' ? ' selected' : ''}>Comfortable</option><option value="list"${view === 'list' ? ' selected' : ''}>Compact</option></select></label>`) +
-      swRow('Keep CMS forms open', 'Leave the CMS forms pane expanded on the Library, including after picking another tab or reloading', 'data-tu-cmskeep', keepCms());
+      swRow('Keep CMS forms open', 'Keep the CMS subject tiles expanded on the Library (the CMS forms button stays unselected until you pick it)', 'data-tu-cmskeep', keepCms());
   }
   function tabsBody(){
     const d = setUi.data || {tabs:[], future:{}}, rows = tabRows(), f = d.future || {};
@@ -3214,7 +3215,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(t.hasAttribute('data-tu-future')){ setUi.future = !setUi.future; scheduleSettings(); return; }
     if(ds.tuFutsw){ const id = ds.tuFutsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on)); legacyDo('library', () => setLegacyEl(legacyIn('#' + id), on)); return; }
     if(ds.tuSetsw){ const id = ds.tuSetsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on)); legacyDo(ds.tab, () => setLegacyEl(legacyIn('#' + id), on)); return; }
-    if(t.hasAttribute('data-tu-cmskeep')){ const on = !keepCms(); store.set(KEYS.cmsKeep, on ? 'on' : 'off'); homeUi.cms = on; scheduleLibrary(); scheduleSettings(); return; }
+    if(t.hasAttribute('data-tu-cmskeep')){ const on = !keepCms(); store.set(KEYS.cmsKeep, on ? 'on' : 'off'); scheduleLibrary(); scheduleSettings(); return; }
     if(t.hasAttribute('data-tu-defaults')){ setUi.defaults = !setUi.defaults; scheduleSettings(); if(setUi.defaults) legacySetTab('safety').then(() => scheduleSettings(true)); return; }
     if(ds.tuDefmode){ const v = ds.tuDefmode; legacyDo('safety', () => { setLegacyEl(legacyIn('#setDefaultMode'), v); setLegacy('qbankRunMode', v); }); return; }
     if(t.hasAttribute('data-tu-reset')){ legacyDo('qbank', () => clickLegacy('#settingsPanel [data-v9="settings-reset-qbank"]')); return; }
