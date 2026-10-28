@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=37">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=37">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=38">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=38">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=37"></script>
-<script src="./js/form-updates-core.js?v=37"></script>
-<script src="./js/form-update-store.js?v=37"></script>
-<script src="./js/google-auth.js?v=37"></script>
+<script src="./js/sync-config.js?v=38"></script>
+<script src="./js/form-updates-core.js?v=38"></script>
+<script src="./js/form-update-store.js?v=38"></script>
+<script src="./js/google-auth.js?v=38"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=37" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=38" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=37"></script>
-<script src="./js/qid-migration.js?v=37"></script>
+<script src="jszip.min.js?v=38"></script>
+<script src="./js/qid-migration.js?v=38"></script>
 <script>
 
 
@@ -3835,7 +3835,25 @@ document.addEventListener('click', function(e){
       async function attemptFor(formId,mode){const b=await readBundle(formId); if(!b.attempts.length)return null; if(mode==='first')return b.attempts.slice().sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)))[0]; if(mode==='latest_completed')return b.attempts.filter(a=>sessionDone(a.session)).sort((a,b)=>String(b.completedAt||b.session.updatedAt||'').localeCompare(String(a.completedAt||a.session.updatedAt||'')))[0]||activeAtt(b); return activeAtt(b)}
       qbankPool=async function(){const qp=await readQbankProgress(), ids=qbankSelectedIds(); let rows=(catalog.forms||[]).filter(f=>ids.includes(f.id)).flatMap(f=>f.questionIndex||[]); const mode=$id('qbankQuestionMode')?.value||'unused', source=$id('qbankSourceMode')?.value||(qp.settings.linkToLibrary?'linked':'separate'); if(source==='separate'){if(mode==='unused')rows=rows.filter(r=>!qp.used[r.key]); if(mode==='used')rows=rows.filter(r=>qp.used[r.key]); if(['wrongs','marked','wrongs_marked'].includes(mode))rows=[]; return rows} const attemptMode=$id('qbankAttemptSource')?.value||'first', banks={}, out=[]; for(const r of rows){const a=await attemptFor(r.formId,attemptMode); if(!a){if(mode==='all'||mode==='unused')out.push(r); continue} const bp=a.session.blocks?.[r.blockIndex], ans=bp?.answers?.[r.questionIndex], marked=!!bp?.flagged?.[r.questionIndex]; if(!banks[r.formId])banks[r.formId]=await readFormBank(r.formId); const correct=banks[r.formId]?.blocks?.[r.blockIndex]?.questions?.[r.questionIndex]?.correct, used=ans!=null, wrong=used&&ans!==correct; if(mode==='all'||(mode==='unused'&&!used)||(mode==='used'&&used)||(mode==='wrongs'&&wrong)||(mode==='marked'&&marked)||(mode==='wrongs_marked'&&(wrong||marked))) out.push(r)} return out};
       updateQbankAvailable=async function(){const pool=await qbankPool(), inp=$id('qbankQuestionCount'); if(inp){inp.max=String(pool.length); if(!+inp.value||+inp.value>pool.length)inp.value=String(Math.min(pool.length,40)||pool.length||1)}};
-      startQbankMode=async function(){if(!dataDirHandle)throw new Error('Connect DATA folder first.'); let pool=await qbankPool(); await persistQbankSelectedIds(qbankSelectedIds()); if(!pool.length)throw new Error('No questions available.'); if($id('qbankShuffle')?.checked)pool=pool.sort(()=>Math.random()-.5); const n=Math.max(1,parseInt($id('qbankQuestionCount')?.value||'40',10)||40), selected=pool.slice(0,n), byForm={}; selected.forEach(r=>(byForm[r.formId]||(byForm[r.formId]=[])).push(r)); const banks={}; for(const id of Object.keys(byForm))banks[id]=await readFormBank(id); const qs=selected.map(r=>{const q=cloneJson(banks[r.formId].blocks[r.blockIndex].questions[r.questionIndex]); q.sourceFormId=r.formId; q.sourceFormName=displayName(catalogForm(r.formId)); q._qbankKey=r.key; q.subject=q.subject||r.subject; q.topic=q.topic||r.topic; return q}); const bs=Math.max(1,parseInt($id('qbankBlockSize')?.value||'40',10)||40), blocks=[]; for(let i=0;i<qs.length;i+=bs)blocks.push({name:`Qbank Block ${blocks.length+1}`,questions:qs.slice(i,i+bs)}); const poolType=$id('qbankQuestionMode')?.value||'unused', runMode=$id('qbankRunMode')?.value||'testing', source=$id('qbankSourceMode')?.value||'separate', attempt=$id('qbankAttemptSource')?.value||'first', auto=`${runMode==='tutor'?'Tutor':'Qbank'} — ${poolLabel(poolType)} — ${qs.length}Q — ${new Date().toLocaleDateString()}`, name=($id('qbankTestName')?.value||auto).trim(); importedBank={title:name,description:`Selected forms: ${Object.keys(byForm).join(', ')}`,librarySlotId:'QBANK_MODE',blocks}; currentBankRawText=JSON.stringify({title:name,keys:selected.map(r=>r.key)},null,2); currentBankHash=await sha256Hex(currentBankRawText); qbankRuntime.pendingKeys=selected.map(r=>r.key); qbankRuntime.pendingFormIds=Object.keys(byForm); activeRunContext={type:'qbank',formId:'QBANK_MODE',qbank:true,qbankTestId:rid('qb'),qbankTestName:name,qbankRunMode:runMode,qbankSourceMode:source,qbankPoolType:poolType,qbankAttemptSource:attempt}; selectedBlockIndex=0; activeSession=null; reviewMode=false; startTest('full')};
+      /* Qbank picks and shuffles whole units: a linked set (abstract, same-vignette, shared options) is drawn together, kept adjacent and in order, and
+         never split across blocks (a block may run over Qs/block to hold a set). Each set gets an id of its own, so equal ids in two forms never merge */
+      async function qbankPickUnits(pool,n,shuffle){
+        const ann=window.v215AnnotateQuestions, setOf={}, rowSet={};
+        if(ann){ for(const id of [...new Set(pool.map(r=>r.formId))]){ try{
+          const bank=await readFormBank(id), flat=[], at=[]; (bank.blocks||[]).forEach((b,bi)=>(b.questions||[]).forEach((q,qi)=>{flat.push(q); at.push(id+':'+bi+':'+qi)}));
+          ann(flat).sets.forEach(s=>s.indexes.forEach((fi,k)=>{rowSet[at[fi]]={id:id+'::'+s.id,type:s.type,order:k}}));
+        }catch(e){} } }
+        const units=[], byId={};
+        pool.forEach(r=>{const s=rowSet[r.formId+':'+r.blockIndex+':'+r.questionIndex]; if(!s){units.push([r]); return} if(!byId[s.id]){byId[s.id]=[]; units.push(byId[s.id])} byId[s.id].push({r,order:s.order,type:s.type,id:s.id})});
+        const flat=units.map(u=>u[0] && u[0].r ? u.sort((a,b)=>a.order-b.order).map(x=>x.r) : u);
+        if(shuffle){for(let i=flat.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [flat[i],flat[j]]=[flat[j],flat[i]]}}
+        const rows=[], sizes=[]; let taken=0;
+        for(const u of flat){ if(taken+u.length>n && taken) continue; rows.push(...u); sizes.push(u.length); taken+=u.length; if(taken>=n) break; }
+        Object.keys(byId).forEach(id=>{const m=byId[id]; const picks=m.filter(x=>rows.includes(x.r)); picks.forEach((x,k)=>{setOf[x.r.key]={id:x.id,type:x.type,position:k+1,total:picks.length}})});
+        Object.keys(setOf).forEach(k=>{if(setOf[k].total<2)delete setOf[k]});
+        return {rows,sizes,setOf};
+      }
+      startQbankMode=async function(){if(!dataDirHandle)throw new Error('Connect DATA folder first.'); let pool=await qbankPool(); await persistQbankSelectedIds(qbankSelectedIds()); if(!pool.length)throw new Error('No questions available.'); const n=Math.max(1,parseInt($id('qbankQuestionCount')?.value||'40',10)||40), picked=await qbankPickUnits(pool,n,!!$id('qbankShuffle')?.checked), selected=picked.rows, byForm={}; selected.forEach(r=>(byForm[r.formId]||(byForm[r.formId]=[])).push(r)); const banks={}; for(const id of Object.keys(byForm))banks[id]=await readFormBank(id); const qs=selected.map(r=>{const q=cloneJson(banks[r.formId].blocks[r.blockIndex].questions[r.questionIndex]); q.sourceFormId=r.formId; q.sourceFormName=displayName(catalogForm(r.formId)); q._qbankKey=r.key; q.subject=q.subject||r.subject; q.topic=q.topic||r.topic; const ls=picked.setOf[r.key]; if(ls)q.linkedSet={id:ls.id,type:ls.type,position:ls.position,total:ls.total}; return q}); const bs=Math.max(1,parseInt($id('qbankBlockSize')?.value||'40',10)||40), blocks=[]; let at=0, cur=[]; for(const len of picked.sizes){const part=qs.slice(at,at+len); at+=len; if(cur.length&&cur.length+len>bs){blocks.push({name:`Qbank Block ${blocks.length+1}`,questions:cur}); cur=[]} cur=cur.concat(part)} if(cur.length)blocks.push({name:`Qbank Block ${blocks.length+1}`,questions:cur}); const poolType=$id('qbankQuestionMode')?.value||'unused', runMode=$id('qbankRunMode')?.value||'testing', source=$id('qbankSourceMode')?.value||'separate', attempt=$id('qbankAttemptSource')?.value||'first', auto=`${runMode==='tutor'?'Tutor':'Qbank'} — ${poolLabel(poolType)} — ${qs.length}Q — ${new Date().toLocaleDateString()}`, name=($id('qbankTestName')?.value||auto).trim(); importedBank={title:name,description:`Selected forms: ${Object.keys(byForm).join(', ')}`,librarySlotId:'QBANK_MODE',blocks}; currentBankRawText=JSON.stringify({title:name,keys:selected.map(r=>r.key)},null,2); currentBankHash=await sha256Hex(currentBankRawText); qbankRuntime.pendingKeys=selected.map(r=>r.key); qbankRuntime.pendingFormIds=Object.keys(byForm); activeRunContext={type:'qbank',formId:'QBANK_MODE',qbank:true,qbankTestId:rid('qb'),qbankTestName:name,qbankRunMode:runMode,qbankSourceMode:source,qbankPoolType:poolType,qbankAttemptSource:attempt}; selectedBlockIndex=0; activeSession=null; reviewMode=false; startTest('full')};
       async function renderQbankTests(){const g=$id('qbankTestsGrid'); if(!g)return; const qp=await readQbankProgress(), q=($id('qTestSearch')?.value||'').toLowerCase(), f=$id('qTestFilter')?.value||'all'; let arr=qp.sessions.filter(x=>x.session); arr=arr.filter(t=>{const txt=[t.name,t.sourceMode,t.poolType,(t.formIds||[]).join(' ')].join(' ').toLowerCase(); if(q&&!txt.includes(q))return false; if(f==='completed')return t.status==='completed'; if(f==='progress')return t.status!=='completed'; if(f==='testing')return t.mode!=='tutor'; if(f==='tutor')return t.mode==='tutor'; if(f==='linked')return t.sourceMode==='linked'; if(f==='separate')return t.sourceMode!=='linked'; return true}); if(!arr.length){g.innerHTML='<div class="v75-empty"><h3>No Qbank tests yet</h3><p>Generated Qbank tests will appear here.</p></div>'; return} g.innerHTML=arr.map(t=>{const done=t.status==='completed', pct=t.summary?.percent; return `<article class="qbank-test-card ${t.mode==='tutor'?'tutor':''}" data-qb-id="${escapeAttr(t.qbankTestId)}"><div class="qbank-test-title">${esc(t.name||'Qbank Test')} <button class="v9-small-icon" data-v9="qbank-rename" title="Rename">✎</button></div><div class="qbank-test-meta">${t.mode==='tutor'?'Tutor':'Testing'} · ${t.total||0} Qs · ${done?'Completed':'In progress'} ${date(t.completedAt||t.updatedAt)} · Score ${pct==null?'—':pct+'%'}</div><div class="v75-chiprow"><span class="v75-chip ${t.sourceMode==='linked'?'purple':'green'}">${t.sourceMode==='linked'?'Linked Library':'Separate Qbank'}</span><span class="v75-chip">${esc(poolLabel(t.poolType))}</span></div><div class="qbank-test-actions">${done?'<button class="primary" data-v9="qbank-review">Review</button>':'<button class="primary" data-v9="qbank-resume">Resume</button>'}<button class="secondary" data-v9="qbank-export">Export</button><button class="danger" data-v9="qbank-delete">Delete</button></div></article>`}).join('')}
       async function openQTest(id,how){const qp=await readQbankProgress(), rec=qp.sessions.find(x=>x.qbankTestId===id); if(!rec?.session)throw new Error('Qbank test not found.'); const s=cloneJson(rec.session); importedBank=await buildQbankBankFromSession(s); currentBankRawText=JSON.stringify({title:importedBank.title,keys:s.qbankKeys||[]},null,2); currentBankHash=s.bankHash||await sha256Hex(currentBankRawText); activeRunContext={type:'qbank',formId:'QBANK_MODE',qbank:true,qbankTestId:id}; qbankRuntime.pendingKeys=(s.qbankKeys||[]).slice(); qbankRuntime.pendingFormIds=(s.qbankFormIds||[]).slice(); how==='resume'?await loadSessionForResume(s):loadSessionForReview(s)}
       function renderSettings(){const p=$id('settingsPanel'); if(!p)return; p.innerHTML='<div class="library-toolbar glass-panel"><div><div class="panel-kicker">Global controls</div><h2>Settings</h2><p>Broad simulator defaults, Qbank safety, and progress backup tools.</p></div></div><div class="settings-grid"><section class="settings-card maroon"><h3>Qbank Settings</h3><p>High-level Qbank behavior.</p><div class="settings-list"><div class="settings-row"><div><label>Link Qbank to Form Library</label><span>Build Qbank pools from form attempts.</span></div><input id="setLinkQbank" type="checkbox"></div><div class="settings-row"><div><label>Library read-only mode</label><span>Qbank reads but never writes to forms.</span></div><input id="setReadOnly" type="checkbox" checked></div><div class="settings-row"><div><label>Reset Qbank history</label><span>Deletes Qbank used-history and Qbank test catalogue only.</span></div><button class="danger" data-v9="settings-reset-qbank">Reset</button></div></div></section><section class="settings-card"><h3>Library Safety</h3><p>Protection defaults for destructive actions.</p><div class="settings-list"><div class="settings-row"><div><label>Protect 1st attempts</label><span>Extra confirmation before destructive changes.</span></div><input id="setProtectFirst" type="checkbox" checked></div><div class="settings-row"><div><label>Confirm before deleting attempts</label><span>Always confirm progress deletion.</span></div><input id="setConfirmDelete" type="checkbox" checked></div></div></section><section class="settings-card"><h3>Interface Defaults</h3><p>Defaults for new Qbank tests.</p><div class="settings-list"><div class="settings-row"><div><label>Default Qbank mode</label></div><select id="setDefaultMode"><option value="testing">Testing</option><option value="tutor">Tutor</option></select></div><div class="settings-row"><div><label>Default seconds/question</label></div><input id="setDefaultSpq" type="number" min="15" step="5" value="90"></div><div class="settings-row"><div><label>Default Qbank block size</label></div><input id="setDefaultBlock" type="number" min="1" value="40"></div><div class="settings-row"><div><label>Default linked attempt source</label></div><select id="setAttemptSource"><option value="first">1st attempts only</option><option value="latest_completed">Latest completed</option><option value="active">Active selected</option></select></div></div></section><section class="settings-card wide"><h3>Library Tabs</h3><p>Choose which library tabs show tab-level progress/score meters and which completed tabs feed the Completed page.</p><div id="libraryTabMeterSettings" class="settings-list"></div></section></div>'; readQbankProgress().then(qp=>{const s=qp.settings; $id('setLinkQbank').checked=!!s.linkToLibrary; $id('setReadOnly').checked=s.libraryReadOnly!==false; $id('setDefaultMode').value=s.defaultMode||'testing'; $id('setDefaultBlock').value=+s.defaultBlockSize||40; $id('setDefaultSpq').value=+s.defaultSecondsPerQuestion||90; $id('setAttemptSource').value=s.defaultAttemptSource||'first'; const tabRoot=$id('libraryTabMeterSettings'); if(tabRoot) tabRoot.innerHTML=libraryTabSettingsHtml();})}
@@ -6760,6 +6778,10 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     var arr=v15GetAnchors(type,idx).filter(function(a){ return String(a && a.id)!==String(id); });
     v15SetAnchors(type,idx,arr); // Keep empty bucket; never delete key and trigger legacy resurrection.
   }
+  // the stem of item i with its highlights (the linked-set page draws the other items of a set from it)
+  function v15SetKey(i){ var q=questions[i]; if(!q||!q._linkedSetId) return ''; var a=i; while(a>0 && questions[a-1]._linkedSetId===q._linkedSetId) a--; return 'set'+a; }
+  window.v15SetHtml=function(html,q){ try{ var i=questions.indexOf(q), k=v15SetKey(i); return k ? v15ApplyAnchorsToHtml(html, v15GetAnchors('stem',k), 'stem') : html; }catch(e){ return html; } };
+  window.v15StemHtmlFor=function(i){ try{ var q=questions[i]; return q ? v15ApplyAnchorsToHtml(v15BaseStemHtml(q), v15GetAnchors('stem',i), 'stem') : ''; }catch(e){ return ''; } };
   function v15PrepareCurrentHtml(){
     try{
       if(!Array.isArray(questions) || !questions.length || !questions[state.current]) return;
@@ -6769,9 +6791,9 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
       q._explanationHtml = v15ApplyAnchorsToHtml(v15BaseExplanationHtml(q), v15GetAnchors('explanation',idx), 'explanation');
     }catch(e){ console.warn('v15 prepare failed', e); }
   }
-  function v15AddHighlightFromSelection(container,type){
+  function v15AddHighlightFromSelection(container,type,idx){
     var off=v15OffsetsForSelection(container); if(!off) return false;
-    v15AddAnchor(type,state.current,off);
+    v15AddAnchor(type,idx==null?state.current:idx,off);
     try{ window.getSelection().removeAllRanges(); }catch(e){}
     var priorMutation=window.__stepReviewMutationWrite; window.__stepReviewMutationWrite=true;
     try{ if(typeof persistBlockProgress==='function') persistBlockProgress(); }catch(e){}
@@ -6785,6 +6807,12 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     var range; try{ range=sel.getRangeAt(0); }catch(e){ return null; }
     var stem=document.querySelector('#stem');
     if(stem && (stem.contains(range.commonAncestorContainer)||stem.contains(range.startContainer)||stem.contains(range.endContainer))) return {el:stem,type:'stem'};
+    // a linked-set page also shows the set's other items as display-only blocks: a stem selected there belongs to that item
+    // the set's abstract (left pane) and shared vignette belong to the set: their highlights are kept under the set's first item
+    var sp=document.querySelector('#workspace .lset-passage'), si=Array.prototype.slice.call(document.querySelectorAll('#workspace .lset-intro')), sh=(sp?[sp]:[]).concat(si);
+    for(var h=0;h<sh.length;h++){ if(sh[h].contains(range.commonAncestorContainer)||sh[h].contains(range.startContainer)||sh[h].contains(range.endContainer)){ var sk=v15SetKey(state.current); if(sk) return {el:sh[h],type:'stem',idx:sk}; } }
+    var lst=Array.prototype.slice.call(document.querySelectorAll('#workspace .lset-prev .lset-stem'));
+    for(var k=0;k<lst.length;k++){ var s=lst[k]; if(s.contains(range.commonAncestorContainer)||s.contains(range.startContainer)||s.contains(range.endContainer)){ var li=Number(s.closest('.lset-prev').getAttribute('data-lset-i')); if(Number.isFinite(li)) return {el:s,type:'stem',idx:li}; } }
     var bodies=Array.prototype.slice.call(document.querySelectorAll('.qbank-body[data-panel-mode="explanation"]'));
     for(var i=0;i<bodies.length;i++){ var b=bodies[i]; if(b && (b.contains(range.commonAncestorContainer)||b.contains(range.startContainer)||b.contains(range.endContainer))) return {el:b,type:'explanation'}; }
     return null;
@@ -6798,7 +6826,7 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     var c=v15HighlightContainerFromSelection(); if(!c) return false;
     var sig=v15SelectionSignature(c), now=Date.now(); if(!sig || (sig===v15LastAdd.sig && now-v15LastAdd.t<750)) return false;
     v15LastAdd={sig:sig,t:now};
-    var ok=v15AddHighlightFromSelection(c.el,c.type);
+    var ok=v15AddHighlightFromSelection(c.el,c.type,c.idx);
     if(ok && e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
     return ok;
   }
@@ -6807,11 +6835,13 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     var el=v15NearestHighlight(node); if(!el) return false;
     var type=el.getAttribute('data-v15-highlight-type') || el.getAttribute('data-v14-highlight-type') || (el.closest('#stem')?'stem':'explanation');
     var id=el.getAttribute('data-v15-highlight-id') || el.getAttribute('data-v14-highlight-id'); if(!id) return false;
-    var sig=[state&&state.current,type,id].join('|'), now=Date.now();
+    var host=el.closest('.lset-prev'), hidx=host?Number(host.getAttribute('data-lset-i')):NaN, idx=Number.isFinite(hidx)?hidx:state.current;
+    if(el.closest('.lset-passage,.lset-intro')) idx=v15SetKey(state.current)||idx;
+    var sig=[idx,type,id].join('|'), now=Date.now();
     if(sig===v15LastRemove.sig && now-v15LastRemove.t<500){ if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); } return true; }
     v15LastRemove={sig:sig,t:now};
     if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
-    v15RemoveAnchor(type,state.current,id);
+    v15RemoveAnchor(type,idx,id);
     var priorMutation=window.__stepReviewMutationWrite; window.__stepReviewMutationWrite=true;
     try{ if(typeof persistBlockProgress==='function') persistBlockProgress(); }catch(err){}
     finally{ window.__stepReviewMutationWrite=priorMutation; }
@@ -8258,6 +8288,7 @@ details.v75-menu summary{
     }
     return units;
   }
+  window.v215AnnotateQuestions = v215AnnotateQuestions;
   function v215Shuffle(units){
     var arr = units.slice();
     for(var i=arr.length-1;i>0;i--){
@@ -10616,18 +10647,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=37"></script>
-<script src="./js/sync-storage.js?v=37"></script>
-<script src="./js/progress-sync.js?v=37"></script>
-<script src="./js/library-backup.js?v=37"></script>
-<script src="./js/qid-settings.js?v=37"></script>
-<script src="./js/sync3-core.js?v=37"></script>
-<script src="./js/sync3-bridge.js?v=37"></script>
-<script src="./js/sync3-store.js?v=37"></script>
-<script src="./js/sync3-drive.js?v=37"></script>
-<script src="./js/sync3-sync.js?v=37"></script>
-<script src="./js/sync3-migrate.js?v=37"></script>
-<script src="./js/sync3-boot.js?v=37"></script>
+<script src="./js/sync-merge.js?v=38"></script>
+<script src="./js/sync-storage.js?v=38"></script>
+<script src="./js/progress-sync.js?v=38"></script>
+<script src="./js/library-backup.js?v=38"></script>
+<script src="./js/qid-settings.js?v=38"></script>
+<script src="./js/sync3-core.js?v=38"></script>
+<script src="./js/sync3-bridge.js?v=38"></script>
+<script src="./js/sync3-store.js?v=38"></script>
+<script src="./js/sync3-drive.js?v=38"></script>
+<script src="./js/sync3-sync.js?v=38"></script>
+<script src="./js/sync3-migrate.js?v=38"></script>
+<script src="./js/sync3-boot.js?v=38"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11106,10 +11137,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=37"></script>
-<script src="./exam-notes.js?v=37"></script>
-<script src="./app-update.js?v=37"></script>
-<script src="./js/form-updates.js?v=37"></script>
+<script src="./bulk-import.js?v=38"></script>
+<script src="./exam-notes.js?v=38"></script>
+<script src="./app-update.js?v=38"></script>
+<script src="./js/form-updates.js?v=38"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11393,7 +11424,7 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
     if(pos === 1 && q.setNotice && kind === 'abstract') h += lsetBanner(q.setNotice, '', ids);
     if(kind === 'sequential'){
       if(pos === 1) h += lsetBanner(q.setNotice || LSET_SEQ_NOTICE.replace('2', total), 'Proceed to Next Item', ids);
-      if(vignette) h += '<div class="IntroContent lset-intro">' + q.sharedStimulusHtml + '</div><p>&nbsp;</p>';
+      if(vignette) h += '<div class="IntroContent lset-intro">' + (window.v15SetHtml ? window.v15SetHtml(q.sharedStimulusHtml, q) : q.sharedStimulusHtml) + '</div><p>&nbsp;</p>';
     }
     return h + '<div' + (ids ? ' id="item-number"' : '') + ' class="lset-num">Item ' + pos + ' of ' + total + '</div>';
   }
@@ -11412,11 +11443,12 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
     var end = kind === 'sequential' && pos === total ? '<div class="lset-end">' + lsetBox('End of Set') + '</div>' : '';
     return '<section class="lset-item lset-prev" data-lset-i="' + m + '"' + (pos === 1 ? ' data-lset-first="1"' : '') + '>' +
       lsetHead(q, kind, pos, total, false, pos === 1) +
-      '<div class="lset-stem stem">' + (q._stemHtml || buildStemHtml(q)) + '</div><div class="answers">' + ch + '</div>' + end + '</section>';
+      '<div class="lset-stem stem">' + ((window.v15StemHtmlFor && window.v15StemHtmlFor(m)) || q._stemHtml || buildStemHtml(q)) + '</div><div class="answers">' + ch + '</div>' + end + '</section>';
   }
   function lsetPreviewClick(e){
     var b = e.currentTarget, m = +b.getAttribute('data-lset-i'), a = e.target.closest && e.target.closest('.answer');
     if(e.type === 'contextmenu') e.preventDefault();
+    if(!b.isConnected) return; // a highlight made in this block redrew the page before the click arrived
     if(a && lsetFrozen(m)) return; // a locked answer does nothing and does not take you to that item
     if(window.getSelection && String(getSelection()).length) return;
     goToQuestionIndex(m);
@@ -11444,7 +11476,7 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
     if(kind === 'abstract'){
       var pass = document.createElement('section');
       pass.className = 'lset-passage'; pass.setAttribute('aria-label', 'Abstract'); pass.tabIndex = 0;
-      pass.innerHTML = q.abstractStimulusHtml;
+      pass.innerHTML = window.v15SetHtml ? window.v15SetHtml(q.abstractStimulusHtml, q) : q.abstractStimulusHtml;
       ws.insertBefore(pass, stack);
     }
     var head = document.createElement('div');
@@ -11535,8 +11567,8 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=37"></script>
-<script src="./nav-delay.js?v=37"></script>
-<script src="./thunder-ui.js?v=37"></script>
+<script src="./item-code.js?v=38"></script>
+<script src="./nav-delay.js?v=38"></script>
+<script src="./thunder-ui.js?v=38"></script>
 </body>
 </html>

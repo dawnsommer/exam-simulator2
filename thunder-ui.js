@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 37;
+  const TU_RELEASE = 38;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -3957,7 +3957,7 @@ ${P}[data-tun-view="q"] #workspace[data-lset="abstract"] .question-stack{all:uns
 ${P}[data-tun-view="q"] #workspace[data-lset="abstract"] .question-flex{margin:20px 8px 20px 20px!important;padding:45px 5px 10px 10px!important;outline:2px dotted #000!important;width:auto!important}
 ${P}[data-tun-view="q"] #workspace[data-lset="abstract"][data-lset-pos="next"] .question-flex{padding-top:42px!important}
 ${P} #workspace[data-lset="abstract"] .mark-line{left:0!important;top:0!important}
-${P} #workspace[data-lset] .stem-warning{display:none!important}
+${P} #workspace[data-lset] .stem-warning:not(.tun-media-warn){display:none!important}
 ${P} #workspace[data-lset="abstract"] #stem{width:auto!important;max-width:100%!important}
 ${P} #workspace[data-lset] .lset-head{display:block!important;font-size:16px!important;line-height:22.4px!important;color:#000!important}
 ${P} #workspace[data-lset] .lset-head p{margin:0!important;padding:0!important}
@@ -4034,13 +4034,13 @@ ${P} #stem :is(ul,ol){list-style:none!important}
 ${P} #stem li{display:block!important}
 ${P} #stem .chart-list>li::before{content:"\\2022\\00a0"!important}
 ${P} #stem li::marker{content:none}
-${P} #stem table{display:table!important;box-sizing:border-box!important;margin:16px auto!important;padding:0!important;border-collapse:collapse!important;width:auto;min-width:0!important;max-width:none!important}
-${P} #stem thead{display:table-header-group!important}${P} #stem tbody{display:table-row-group!important}${P} #stem tr{display:table-row!important}
+${P} :is(#stem,.lset-intro) table{display:table!important;box-sizing:border-box!important;margin:16px auto!important;padding:0!important;border-collapse:collapse!important;width:auto;min-width:0!important;max-width:none!important}
+${P} :is(#stem,.lset-intro) thead{display:table-header-group!important}${P} :is(#stem,.lset-intro) tbody{display:table-row-group!important}${P} :is(#stem,.lset-intro) tr{display:table-row!important}
 /* cells: v2's .stem td rules (content-box, 2px .5em 1px 2px); the legacy lab-table min-widths (360 / 220 / 120 px) no
    longer leak in. Table width, text-align and vertical-align are not forced, so an NBME-style stem's inline styles
    (style="width:717px", text-align:center) apply, as in the reference */
-${P} #stem :is(td,th){display:table-cell!important;box-sizing:content-box!important;padding:2px .5em 1px 2px!important;white-space:normal!important;min-width:max-content!important;max-width:none!important}
-${P} #stem :where(td,th){text-align:left;vertical-align:top}
+${P} :is(#stem,.lset-intro) :is(td,th){display:table-cell!important;box-sizing:content-box!important;padding:2px .5em 1px 2px!important;white-space:normal!important;min-width:max-content!important;max-width:none!important}
+${P} :is(#stem,.lset-intro) :where(td,th){text-align:left;vertical-align:top}
 ${P} #stem .stem-vitals-table :is(td,th){text-align:center!important}
 /* v3 (patient-chart-Q1): centred cells never wrap */
 ${P} #stem table[align=center] td[style*="text-align:center"],${P} #stem .stem-vitals-table :is(td,th){white-space:nowrap!important}
@@ -4053,8 +4053,8 @@ ${P} #stem table[align=left] td,${P} #stem table[align=left] td span{white-space
 /* lab group rows (decision 2026-10-25, NBME style): the label ("Serum") sits in the first column as plain text (the cell
    becomes a block, so the table gives it an anonymous one-column cell) and the tests under it are indented by two
    spaces (2 x 0.27783em, the width of NBME's &nbsp;&nbsp;) */
-${P} #stem .stem-lab-table tr>th[colspan]:only-child{display:block!important;font-weight:400!important;text-align:left!important;min-width:0!important}
-${P} #stem .stem-lab-table tr:has(>:is(th,td)[colspan]:only-child)~tr:not(:has(>[colspan]))>td:first-child{padding-left:calc(2px + .55566em)!important}
+${P} :is(#stem,.lset-intro) .stem-lab-table tr>th[colspan]:only-child{display:block!important;font-weight:400!important;text-align:left!important;min-width:0!important}
+${P} :is(#stem,.lset-intro) .stem-lab-table tr:has(>:is(th,td)[colspan]:only-child)~tr:not(:has(>[colspan]))>td:first-child{padding-left:calc(2px + .55566em)!important}
 /* the "response options are the same" notice of a shared-options set (outside a linked-set page, which draws its own bar): the
    abstract banner's box (black 2px frame, #ecf2f9), plain text with the bold count, a blank line below */
 ${P} #workspace .stem-warning{box-sizing:border-box!important;width:100%!important;border:2px solid #000!important;background:#ecf2f9!important;padding:1px 3px!important;margin:0 0 22.4px!important;font-size:16px!important;line-height:22.4px!important;color:#000!important}
@@ -4065,7 +4065,7 @@ ${PD} #workspace .stem-warning{background:#1a2733!important;border-color:#fff!im
    so the label is 23 px lower and 2 px in, the list 3 px under it, and the next subheading 22 px lower */
 ${P} #stem .chart-subheading[data-tun-med]{margin-top:23px!important;padding-left:2px!important}
 ${P} #stem .chart-list[data-tun-med]{margin-top:3px!important;margin-bottom:22px!important;padding-left:2px!important}
-${P} #stem table tr:hover:not(.tun0){background:#d7dced!important}
+${P} :is(#stem,.lset-intro) table tr:hover:not(.tun0){background:#d7dced!important}
 /* v3: sub/sup 75 % and shifted by .5em from the baseline (no UA vertical-align sub/super) */
 ${P} #stem :is(sub,sup){font-size:75%!important;line-height:0!important;vertical-align:baseline!important;position:relative!important}
 ${P} #stem sub{bottom:-.5em!important}${P} #stem sup{top:-.5em!important}
@@ -4379,7 +4379,7 @@ ${PD} #lockBtn .lock-ico,${PD} #endBlockBtn .x,${PD} #suspendBtn .pause-ico,${PD
 ${PD} #lockBtn .lock-ico svg,${PD} #suspendBtn .pause-ico svg{fill:#94eaff}
 ${PD} #workspace{background:#000!important}
 ${PD}[data-tun-view="q"] #workspace .question-flex{color:#fff!important}
-${PD} #stem table tr:hover:not(.tun0){background:#222!important}
+${PD} :is(#stem,.lset-intro) table tr:hover:not(.tun0){background:#222!important}
 ${PD} #workspace :is(.v15-highlight,[data-v15-highlight-id]){background:#ff0!important;color:#000!important}
 ${PD} #workspace ::selection{background:#3a6ea5;color:#fff}
 ${PD} #workspace .answers{border-color:#fff!important}
@@ -4389,6 +4389,8 @@ ${PD} #workspace .answers .strike-symbol:hover::before{background:rgba(255,255,2
 ${PD} #workspace .answers:not(.choice-table-active) .answer.struck .choice-text{color:rgba(255,255,255,.9)!important;text-decoration-color:#e6e6e6!important}
 ${PD} #workspace .answers:not(.choice-table-active) .answer.struck .choice-text::first-letter{color:#fff!important}
 ${PD} #workspace .choice-table-active .choice-table-row.struck .choice-cell{color:rgba(255,255,255,.5)!important}
+/* a sequential set's shared vignette sits outside #stem, so the dark rules for stem tables never reached its lab table (white cells, white text) */
+${PD} .lset-intro :is(table,thead,tbody,tr,th,td,.stem-lab-block):not(.patient-chart *){background:transparent!important;color:inherit!important}
 ${PD} #workspace #proceedBtn{background:#6ed6dd!important;color:#000!important;border:1px solid #fff!important}
 ${PD} #workspace #proceedBtn:hover,${PD} #workspace #proceedBtn:focus{background:#6ed6dd!important;color:#000!important}
 /* Settings menu (v3): the reference's #toolsMenu. Our Exam style switch first, then the reference's rows, then our
@@ -4877,6 +4879,12 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
         }
         return;
       }
+      if(!t.className && t.rows.length === 1 && t.rows[0].cells.length === 1 && /associated media[\s\S]*headphones/i.test(t.textContent)){
+        // the builder's one-cell "associated media ... headphones" table wears the set notice's box (.stem-warning); the text and its marks move as they are
+        const w = document.createElement('div'), b = document.createElement('b'), c = t.rows[0].cells[0];
+        w.className = 'stem-warning tun-media-warn'; while(c.firstChild) b.appendChild(c.firstChild);
+        w.appendChild(b); t.replaceWith(w); return;
+      }
       if(t.className) return;
       const rows = [...t.rows], txt = c => c.textContent.replace(/\s+/g, '');
       if(heads && rows.length === 1){
@@ -5345,6 +5353,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     return kind === 'audio' ? 'audio/mpeg' : 'video/mp4';
   }
   function wrapMedia(){
+    wrapMediaKeep();
     if(typeof makeExhibit !== 'function' || makeExhibit.__tu) return;
     const base = makeExhibit;
     const wrapped = function(key){
@@ -5355,6 +5364,21 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     };
     wrapped.__tu = true;
     makeExhibit = wrapped; // eslint-disable-line no-global-assign
+  }
+  /* a re-render of the same item (an option click, a strike, a mark) replaces #workspace's children: the playing <audio>/<video> goes back
+     into the new card, so the sound neither restarts nor stops. A new item or a review switch gets fresh players */
+  function wrapMediaKeep(){
+    if(typeof renderQuestion !== 'function' || renderQuestion.__tuKeep) return;
+    const base = renderQuestion;
+    const wrapped = function(){
+      const old = {};
+      try{ if(avs.key === viewerItemKey()) avEls().forEach(el => { const k = avKey(el); if(k && !old[k] && byId('workspace')?.contains(el)) old[k] = el; }); }catch(e){}
+      const r = base.apply(this, arguments);
+      try{ document.querySelectorAll('#workspace .tun-media :is(audio,video)').forEach(n => { const k = n.getAttribute('src'), o = old[k]; if(o && o !== n && o.tagName === n.tagName){ n.replaceWith(o); o.setAttribute('data-tun-avr', '1'); } }); }catch(e){}
+      return r;
+    };
+    wrapped.__tuKeep = true;
+    renderQuestion = wrapped; // eslint-disable-line no-global-assign
   }
   // attributes only: media cards (no tools), the Modern explanation entries (ids for the jumps) and the section label
   function avMarkCards(ws){
