@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 39;
+  const TU_RELEASE = 40;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -4257,6 +4257,7 @@ ${RVD} .tun-rvyours.bad span{color:#ff6b6b}
 ${RVD} .tun-rvthumbs button{border-color:#94eaff;background:#000}
 ${RVD} .qbank-body[data-panel-mode="explanation"]{background:#000!important;border-color:#555!important}
 ${RVBD},${RVBD} *{color:#fff!important}
+${RVBD} :is(.v15-highlight,[data-v15-highlight-id],mark),${RVBD} :is(.v15-highlight,[data-v15-highlight-id],mark) *{color:#000!important}
 ${RVBD} h3{border-bottom-color:#555!important}
 ${RVBD} .exp-correct>div:first-of-type>b{color:#fff!important}
 ${RVBD} .exp-wrong[data-tun-yours]{border-left-color:#ff5050!important}
