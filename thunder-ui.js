@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 38;
+  const TU_RELEASE = 39;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -1579,12 +1579,14 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     });
   }
   function blockCountOf(rec){ const idx = Array.isArray(rec.questionIndex) ? rec.questionIndex : []; return idx.reduce((n, q) => Math.max(n, (Number(q.blockIndex) || 0) + 1), 0) || 1; }
+  // NBME and UWSA forms take a 3-digit score (same rule as hasThreeDigit in the app's HTML)
+  const hasThreeDigit = rec => !!rec && (rec.type === 'N' || rec.filter === 'UWSA' || /^UWSA/i.test(String(rec.id || '')));
   function formInfo(rec, tabsByKey){
     const B = bridge(), s = rec.progressSummary || {};
     const st = s.completed ? 'done' : s.canResume ? (s.suspended ? 'suspended' : 'progress') : (s.answered || s.inProgress) ? 'progress' : 'new';
     let tabKey = 'Custom'; try{ tabKey = B.tabKey(rec) || 'Custom'; }catch(e){}
     const tab = tabsByKey[tabKey] || {label: tabKey === 'N-Forms' ? 'NBME' : tabKey, color: TAB_DOTS[tabKey] || TAB_DOTS.Custom};
-    let chip = false; try{ chip = B.scoreChipOn(tabKey); }catch(e){ chip = rec.type === 'N'; }
+    let chip = false; try{ chip = B.scoreChipOn(tabKey); }catch(e){ chip = hasThreeDigit(rec); }
     const blocks = s.blockCount || blockCountOf(rec), attempts = Number(s.attemptCount) || (s.answered || s.completed ? 1 : 0);
     const score = s.completed && s.scorePct != null ? Number(s.scorePct) : null;
     return {
@@ -1959,7 +1961,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       `<div class="tu-sheet-tabs" role="tablist" aria-label="Form sections"><button type="button" role="tab" data-tu-tab="overview" aria-selected="${sheetState.tab === 'overview'}">Overview</button><button type="button" role="tab" data-tu-tab="manage" aria-selected="${sheetState.tab === 'manage'}">Manage</button></div></div>`;
     let body = '';
     if(sheetState.tab === 'overview'){
-      const third = rec.type === 'N' ? [rec.threeDigitScore || '—', '3-digit'] : [f.answered + '%', 'Answered'];
+      const third = hasThreeDigit(rec) ? [rec.threeDigitScore || '—', '3-digit'] : [f.answered + '%', 'Answered'];
       body += `<div class="tu-sheet-stats"><div><b>${f.score == null ? '—' : f.score + '%'}</b><span>Score</span></div><div><b>${esc(third[0])}</b><span>${third[1]}</span></div><div><b>${esc(f.blocks)}</b><span>Blocks</span></div><div><b>${f.marked}</b><span>Marked</span></div></div>`;
       body += `<div class="tu-sheet-actions">${f.canResume ? `<button type="button" class="tu-btn" data-tu-do="resume">${icon(ICONS.play, 18)}Resume</button><button type="button" class="tu-btn outline" data-tu-do="start">New attempt</button>` : `<button type="button" class="tu-btn" data-tu-do="start">${icon(ICONS.play, 18)}${f.startLabel}</button>`}${f.canReview ? `<button type="button" class="tu-btn tonal" data-tu-do="review">${icon('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', 18)}Review &amp; score report</button>` : ''}</div>`;
       const c = sheetState.counts;
@@ -1980,7 +1982,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     } else {
       const rows = [];
       rows.push(`<div class="tu-rowi"><div><b>Library tab</b><span>Where this form appears and which meter it counts toward</span></div><strong>${esc(f.tabLabel)}</strong></div>`);
-      if(rec.type === 'N') rows.push(`<div class="tu-rowi"><div><b>3-digit score</b><span>Shown on the card when enabled for this tab</span></div><strong>${esc(rec.threeDigitScore || '—')}</strong>${has('[data-action="score3"]') ? '<button type="button" class="tu-btn outline small" data-tu-do="score3">Edit</button>' : ''}</div>`);
+      if(hasThreeDigit(rec)) rows.push(`<div class="tu-rowi"><div><b>3-digit score</b><span>Shown on the card when enabled for this tab</span></div><strong>${esc(rec.threeDigitScore || '—')}</strong>${has('[data-action="score3"]') ? '<button type="button" class="tu-btn outline small" data-tu-do="score3">Edit</button>' : ''}</div>`);
       rows.push(`<div class="tu-rowi"><div><b>Progress file</b><span>Move this form’s attempts as a single file</span></div><button type="button" class="tu-btn outline small" data-tu-do="import-save">Import</button>${f.s.answered || f.s.completed ? '<button type="button" class="tu-btn outline small" data-tu-do="export-save">Export</button>' : ''}</div>`);
       rows.push(`<div class="tu-rowi"><div><b>Images</b><span>${rec.optimized ? 'Optimized' + (rec.imageAssets ? ' · ' + esc(plural(Number(rec.imageAssets), 'asset')) : '') : 'Original images inside the form file'}</span></div><button type="button" class="tu-btn outline small" data-tu-do="optimize">${rec.optimized ? 'Optimize again' : 'Optimize'}</button></div>`);
       body += `<div class="tu-rows">${rows.join('')}</div>`;

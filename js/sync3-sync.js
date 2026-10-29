@@ -10,7 +10,7 @@
 })(typeof window!=='undefined'?window:(typeof globalThis!=='undefined'?globalThis:this),function(Core,Bridge){
   'use strict';
   const K=Core.K,canon=Core.canon;
-  const DEFAULTS={ans:null,fl:false,st:[],hs:[],he:[],nt:'',sus:null};
+  const DEFAULTS={ans:null,fl:false,st:[],hs:[],he:[],hr:[],nt:'',sus:null};
 
   /* which replica file a unit lives in: lib (L, T), set (S) or one form (A, I, B, F) */
   function scopeOf(k,attForm){

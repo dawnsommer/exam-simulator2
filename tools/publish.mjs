@@ -11,7 +11,7 @@ const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 export function buildManifest(root,commit){
   if(!/^[a-f0-9]{40}$/.test(commit||''))throw new Error('A full source commit SHA is required.');
   const dir=path.join(root,'update'),items=fs.readdirSync(dir,{withFileTypes:true});
-  const folders=items.filter(e=>e.isDirectory()).map(e=>e.name).sort();
+  const folders=items.filter(e=>e.isDirectory()&&e.name.toLowerCase()!=='explanations').map(e=>e.name).sort();
   for(const e of items)if(e.isSymbolicLink()||(!e.isDirectory()&&!['instructions.txt','.gitkeep','.DS_Store'].includes(e.name)))throw new Error('Unexpected update entry: '+e.name);
   const instructions=C.parseInstructions(fs.readFileSync(path.join(dir,'instructions.txt'),'utf8'),folders);
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8'),start=html.indexOf('function normalizeBank(data){'),end=html.indexOf('\nfunction getBlockSizeSetting()',start);
@@ -25,11 +25,16 @@ export function buildManifest(root,commit){
     const policy=instructions.get(id),revision=sha(C.stable({files,tab:policy.tab,onExisting:policy.onExisting}));
     return {...policy,title:bank.title||id,totalQuestions:normalized.blocks.reduce((n,b)=>n+b.questions.length,0),revision,files};
   });
-  return C.validateManifest({schemaVersion:1,repository:'dawnsommer/exam-simulator2',sourceCommit:commit,forms});
+  const xdir=path.join(dir,'explanations'),explanations=fs.existsSync(xdir)?fs.readdirSync(xdir,{withFileTypes:true}).filter(e=>!e.name.startsWith('.')&&!e.name.startsWith('._')&&e.name!=='__MACOSX').map(e=>{
+    if(e.isSymbolicLink()||!e.isFile()||!/^[A-Za-z0-9_-]+\.json$/.test(e.name))throw new Error('Unexpected explanations entry: '+e.name);
+    const bytes=fs.readFileSync(path.join(xdir,e.name)),formId=e.name.slice(0,-5);C.validateExplanationFile(formId,bytes);
+    return {formId,path:'explanations/'+e.name,size:bytes.length,sha256:sha(bytes)};
+  }).sort((a,b)=>a.formId.localeCompare(b.formId)):[];
+  return C.validateManifest({schemaVersion:1,repository:'dawnsommer/exam-simulator2',sourceCommit:commit,forms,explanations});
 }
 export function publish(root,output,commit){
   const manifest=buildManifest(root,commit);
-  const publicFiles=['index.html','manifest.webmanifest','offline.html','privacy.html','sw.js','app-update.js','bulk-import.js','exam-notes.js','nav-delay.js','item-code.js','jszip.min.js','thunder-ui.js','js','icons','ui_icons'];
+  const publicFiles=['index.html','manifest.webmanifest','offline.html','privacy.html','sw.js','app-update.js','bulk-import.js','exam-notes.js','nav-delay.js','item-code.js','jszip.min.js','thunder-ui.js','rapid-review.js','js','icons','ui_icons'];
   const allowed=new Set([...publicFiles,'.nojekyll','form-updates-manifest.json']);
   if(path.resolve(output)===path.resolve(root)||path.resolve(root).startsWith(path.resolve(output)+path.sep))throw new Error('Choose a dedicated site output directory.');
   if(fs.existsSync(output)){

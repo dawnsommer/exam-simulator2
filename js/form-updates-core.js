@@ -14,13 +14,38 @@
       const line=raw.trim();if(!line||line.startsWith('#'))return;
       const parts=line.split('|').map(x=>x.trim()),[id,tab,action]=parts;
       if(parts.length!==3||!id||!tab||!['update','skip'].includes(action?.toLowerCase()))throw new Error('instructions.txt line '+(i+1)+': use Folder | Tab | update or skip.');
-      if(!/^[A-Za-z0-9_-]+$/.test(id)||id.toUpperCase()==='QBANK_MODE')throw new Error('instructions.txt line '+(i+1)+': invalid form folder '+id+'.');
+      if(!/^[A-Za-z0-9_-]+$/.test(id)||id.toUpperCase()==='QBANK_MODE'||id.toLowerCase()==='explanations')throw new Error('instructions.txt line '+(i+1)+': invalid form folder '+id+'.');
       if(tab.length>80||/[\x00-\x1f]/.test(tab)||['Overview','All','Completed','All Loaded'].some(x=>x.toLowerCase()===tab.toLowerCase()))throw new Error('instructions.txt line '+(i+1)+': choose a form tab, not '+tab+'.');
       if(seen.has(id.toLowerCase()))throw new Error('instructions.txt line '+(i+1)+': duplicate folder '+id+'.');
       seen.add(id.toLowerCase());out.set(id,{id,tab,onExisting:action.toLowerCase()});
     });
     if(folders){for(const id of folders)if(!out.has(id))throw new Error('Missing instructions for folder '+id+'.');for(const id of out.keys())if(!folders.includes(id))throw new Error('instructions.txt names missing folder '+id+'.');}
     return out;
+  }
+  // Rapid Review explanation files: update/explanations/<ID>.json, published as manifest.explanations. Folder name `explanations` is reserved.
+  const EXPL_MAX=2*1024*1024;
+  function validateExplanations(list){
+    if(!Array.isArray(list))throw new Error('Invalid explanations list.');
+    const ids=new Set();
+    for(const x of list){
+      if(!x||!/^[A-Za-z0-9_-]+$/.test(x.formId||'')||x.path!=='explanations/'+x.formId+'.json'||ids.has(x.formId.toLowerCase())||!Number.isSafeInteger(x.size)||x.size<0||x.size>EXPL_MAX||!/^[a-f0-9]{64}$/.test(x.sha256||''))throw new Error('Invalid explanation file '+(x&&x.path)+'.');
+      ids.add(x.formId.toLowerCase());
+    }
+    return list;
+  }
+  // bytes: Uint8Array/Buffer of explanations/<id>.json; qids: optional Set of the form's qids (when the form is in update/)
+  function validateExplanationFile(id,bytes,qids){
+    if(!/^[A-Za-z0-9_-]+$/.test(id))throw new Error('Invalid explanation file name '+id+'.json.');
+    if(bytes.length>EXPL_MAX)throw new Error(id+'.json is over 2 MB.');
+    let d;try{d=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch(e){throw new Error(id+'.json is not valid JSON.');}
+    if(!d||d.type!=='StepRapidReview')throw new Error(id+'.json: type must be "StepRapidReview".');
+    if(d.formId!==id)throw new Error(id+'.json: formId "'+d.formId+'" does not match the file name.');
+    if(!d.items||typeof d.items!=='object'||Array.isArray(d.items))throw new Error(id+'.json: items must be an object keyed by qid.');
+    for(const [k,v] of Object.entries(d.items)){
+      if(!/^[A-Za-z0-9_.:-]+$/.test(k)||!v||typeof v!=='object'||Array.isArray(v))throw new Error(id+'.json: bad item "'+k+'".');
+      if(qids&&!qids.has(k))throw new Error(id+'.json: qid '+k+' is not in update/'+id+'/'+id+'.json.');
+    }
+    return d;
   }
   function validateManifest(m){
     if(m?.schemaVersion!==1||!Array.isArray(m.forms)||!/^[a-f0-9]{40}$/.test(m.sourceCommit||'')||!/^dawnsommer\/exam-simulator2$/.test(m.repository||''))throw new Error('Invalid form-update manifest.');
@@ -32,6 +57,7 @@
       for(const x of f.files){safePath(x.path);if(!x.path.startsWith(f.id+'/')||paths.has(x.path.toLowerCase())||!Number.isSafeInteger(x.size)||x.size<0||!/^[a-f0-9]{64}$/.test(x.sha256||''))throw new Error('Invalid update file '+x.path+'.');paths.add(x.path.toLowerCase());const rel=x.path.slice(f.id.length+1);if(rel===f.id+'.json')jsons++;else if(!rel.startsWith('assets/'))throw new Error('Unexpected update file '+x.path+'.');}
       if(jsons!==1)throw new Error('Missing '+f.id+'/'+f.id+'.json.');
     }
+    if(m.explanations!==undefined)validateExplanations(m.explanations);
     return m;
   }
   // Preserve installed block/question order so positional legacy/retest/shuffle views remain valid.
@@ -59,5 +85,5 @@
   function rewriteHash(value,from,to){
     const out=clone(value);function visit(v){if(!v||typeof v!=='object')return;for(const k of Object.keys(v)){if(k==='bankHash'&&v[k]===from)v[k]=to;else visit(v[k]);}}visit(out);return out;
   }
-  return {parseInstructions,validateManifest,safePath,compatibleBank,rewriteHash,stable};
+  return {parseInstructions,validateManifest,validateExplanations,validateExplanationFile,safePath,compatibleBank,rewriteHash,stable};
 });

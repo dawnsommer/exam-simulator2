@@ -98,3 +98,10 @@ PLAYWRIGHT_MODULE=/absolute/path/to/playwright node tests/form-updates.browser.c
 ```
 
 The browser test uses its own origin, temporary browser storage, synthetic forms, and a local SQLite-backed Worker. Service workers are blocked in that test so all backend traffic stays intercepted. The existing `../tests/browser-regressions.cjs` separately checks actual app-shell/offline behavior. No production Drive data is needed for either suite.
+
+
+## Rapid Review explanation files (2026-10-29)
+
+- Put `<ID>.json` in `update/explanations/` (one file per form; add or replace one at a time). The name must be the form id and match `formId` inside; items are keyed by qid. Do not list it in `instructions.txt`; the folder name `explanations` is reserved.
+- `node tools/release.mjs --check` validates them (JSON, `type: "StepRapidReview"`, formId = file name, ≤ 2 MB, qids exist in `update/<ID>/<ID>.json` when that form is there).
+- `publish.mjs` lists them as manifest `explanations: [{formId, path, size, sha256}]`. Both apps download changed files for installed forms automatically (start, return after 1 h, Check now in Settings › Review screen). Removing a file never deletes it on devices; publish a corrected one instead.

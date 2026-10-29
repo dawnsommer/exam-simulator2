@@ -82,6 +82,7 @@
         if(Array.isArray(b.flagged)&&b.flagged[i]===true)item('fl',true);
         const hs=isObj(b.stemHighlightAnchors)?b.stemHighlightAnchors[i]:null;if(nonEmpty(hs))item('hs',hs);
         const he=isObj(b.explanationHighlightAnchors)?b.explanationHighlightAnchors[i]:null;if(nonEmpty(he))item('he',he);
+        const hr=isObj(b.rapidHighlights)?b.rapidHighlights[i]:null;if(nonEmpty(hr))item('hr',hr);     // Rapid Review highlights: a field of their own, older code ignores it
         const tm=Array.isArray(b.questionTime)?Number(b.questionTime[i]):0;if(tm>0)item('tm',{__total:tm});
         const rv=isObj(b.revealed)||Array.isArray(b.revealed)?b.revealed[i]:null;if(rv===true)item('rv',true);
         const ra=b.result&&Array.isArray(b.result.answers)?b.result.answers.find(r=>Number(r&&r.item)===i+1):null;
@@ -157,12 +158,13 @@
       const h=vis[K.att(att)].v||{},order=Array.isArray(h.order)?h.order:[],bl=Array.isArray(h.bl)&&h.bl.length?h.bl:[order.length];
       let off=0;const blocks=bl.map((len,bi)=>{
         const q=order.slice(off,off+len);off+=len;const g=f=>i=>{const u=vis[K.item(att,q[i],f)];return u?u.v:undefined;};
-        const b={blockName:(h.bnames&&h.bnames[bi])||'Block '+(bi+1),total:len,questionQids:q,answers:[],firstAnswers:[],flagged:[],struck:{},revealed:{},questionTime:[],stemHighlightAnchors:{},explanationHighlightAnchors:{},answerChangeLog:[],notes:'',blockCompleted:false};
+        const b={blockName:(h.bnames&&h.bnames[bi])||'Block '+(bi+1),total:len,questionQids:q,answers:[],firstAnswers:[],flagged:[],struck:{},revealed:{},questionTime:[],stemHighlightAnchors:{},explanationHighlightAnchors:{},rapidHighlights:{},answerChangeLog:[],notes:'',blockCompleted:false};
         q.forEach((id,i)=>{
           const a=g('ans')(i);b.answers.push(a==null?null:a);const f=g('first')(i);b.firstAnswers.push(f==null?null:f);
           b.flagged.push(g('fl')(i)===true);const st=g('st')(i);if(nonEmpty(st))b.struck[i]=st;
           const hs=g('hs')(i);if(nonEmpty(hs))b.stemHighlightAnchors[i]=hs;
           const he=g('he')(i);if(nonEmpty(he))b.explanationHighlightAnchors[i]=he;
+          const hr=g('hr')(i);if(nonEmpty(hr))b.rapidHighlights[i]=hr;
           b.questionTime.push(tmTotal(g('tm')(i)));const rv=g('rv')(i);if(rv===true)b.revealed[i]=true;
           (g('log')(i)||[]).forEach(e=>{const{t,...rest}=e;b.answerChangeLog.push({...rest,item:i+1});});
         });
@@ -188,14 +190,14 @@
   }
   /* ---------- apply (Release B): visible units -> the app's own progress record, patched in place by QID ---------- */
   const cl=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
-  const POS_OBJ=['struck','revealed','stemHighlightAnchors','explanationHighlightAnchors'];
+  const POS_OBJ=['struck','revealed','stemHighlightAnchors','explanationHighlightAnchors','rapidHighlights'];
   const sameList=(a,b)=>Array.isArray(a)&&Array.isArray(b)&&a.length===b.length&&a.every((x,i)=>x===b[i]);
   /* a block of a session built from its units alone (an attempt that only exists in the cloud, or a block whose questions differ) */
   function blockFromUnits(rb,hdr,bi,keep){
     const b={blockName:(hdr.bnames&&hdr.bnames[bi])||rb.blockName||'Block '+(bi+1),configuredIndex:hdr.cfg&&hdr.cfg[bi]!=null?hdr.cfg[bi]:bi,total:rb.total,current:rb.current||0,
       answers:rb.answers.slice(),flagged:rb.flagged.slice(),struck:cl(rb.struck),revealed:cl(rb.revealed),stemHtml:[],questionTime:rb.questionTime.slice(),firstAnswers:rb.firstAnswers.slice(),
       answerChangeLog:cl(rb.answerChangeLog),notes:rb.notes||'',blockStartedAt:Date.now(),blockCompleted:false,locked:false,result:null,explanationHtml:rb.questionQids.map(()=>''),
-      stemHighlightAnchors:cl(rb.stemHighlightAnchors),explanationHighlightAnchors:cl(rb.explanationHighlightAnchors),highlightMigrationVersion:15,legacyRenderedHtmlIgnored:true,questionQids:rb.questionQids.slice()};
+      stemHighlightAnchors:cl(rb.stemHighlightAnchors),explanationHighlightAnchors:cl(rb.explanationHighlightAnchors),rapidHighlights:cl(rb.rapidHighlights),highlightMigrationVersion:15,legacyRenderedHtmlIgnored:true,questionQids:rb.questionQids.slice()};
     if(rb.blockRemainingSeconds!=null)b.blockRemainingSeconds=rb.blockRemainingSeconds;if(rb.dayRemainingSeconds!=null)b.dayRemainingSeconds=rb.dayRemainingSeconds;
     if(rb.blockElapsedSeconds!=null)b.blockElapsedSeconds=rb.blockElapsedSeconds;if(rb.resumeCapturedAt!=null)b.resumeCapturedAt=rb.resumeCapturedAt;
     return Object.assign(b,keep||{});

@@ -42,6 +42,17 @@ test('manifest rejects unpinned sources, duplicate IDs, unsafe paths, and invali
  const m={schemaVersion:1,repository:'dawnsommer/exam-simulator2',sourceCommit:commit,forms:[{id:'A',tab:'Tab',onExisting:'update',revision:'b'.repeat(64),files:[{path:'A/A.json',sha256:'c'.repeat(64),size:2}]}]};assert.equal(C.validateManifest(m),m);
  for(const change of [x=>x.sourceCommit='main',x=>x.repository='someone/else',x=>x.forms.push(x.forms[0]),x=>x.forms[0].files[0].path='A/../x',x=>x.forms[0].files[0].sha256='oops']){const n=structuredClone(m);change(n);assert.throws(()=>C.validateManifest(n));}
 });
+test('Rapid Review explanations: reserved folder name, optional manifest list, file validation',()=>{
+ assert.throws(()=>C.parseInstructions('explanations | Tab | update',['explanations']),/invalid form folder/);
+ const m={schemaVersion:1,repository:'dawnsommer/exam-simulator2',sourceCommit:commit,forms:[],explanations:[{formId:'C-IM-07',path:'explanations/C-IM-07.json',size:5,sha256:'a'.repeat(64)}]};
+ assert.equal(C.validateManifest(m),m);assert.equal(C.validateManifest({...m,explanations:undefined}).forms.length,0);
+ for(const change of [x=>x.explanations[0].path='explanations/other.json',x=>x.explanations.push(x.explanations[0]),x=>x.explanations[0].sha256='oops',x=>x.explanations[0].size=3*1024*1024,x=>x.explanations='no']){const n=structuredClone(m);change(n);assert.throws(()=>C.validateManifest(n));}
+ const file=o=>Buffer.from(JSON.stringify({type:'StepRapidReview',version:1,formId:'C-IM-07',items:{q1:{task:'x'}},...o}));
+ assert.ok(C.validateExplanationFile('C-IM-07',file()));assert.ok(C.validateExplanationFile('C-IM-07',file(),new Set(['q1','q2'])));
+ assert.throws(()=>C.validateExplanationFile('C-IM-07',file({formId:'X'})),/does not match/);assert.throws(()=>C.validateExplanationFile('C-IM-07',file({type:'Other'})),/type/);
+ assert.throws(()=>C.validateExplanationFile('C-IM-07',file(),new Set(['q9'])),/qid q1/);assert.throws(()=>C.validateExplanationFile('C-IM-07',Buffer.from('{bad')),/valid JSON/);
+ assert.throws(()=>C.validateExplanationFile('C-IM-07',Buffer.alloc(2*1024*1024+1)),/2 MB/);
+});
 test('online updates: the user picks which New/Revised forms install; none picked means nothing installs',()=>{
  const src=fs.readFileSync(path.join(root,'js/form-updates.js'),'utf8');
  assert.match(src,/picked\.clear\(\);state\.forms\.filter\(isActionable\)\.forEach\(f=>picked\.add\(f\.id\)\)/,'a check pre-selects every available form');

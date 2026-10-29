@@ -164,3 +164,16 @@ test('form source and content: update-service forms are catalog, the user\'s own
   const text = JSON.stringify({ blocks: [{ questions: [{ stem: '<img src="DATA/assets/CUST-1/a b.png">', image: 'assets/CUST-1/x.jpg', exhibits: ['DATA/assets/CUST-1/x.jpg', 'assets/../etc/passwd', 'assets/short', 'https://e.com/assets/CUST-1/r.png?x=1'] }] }] });
   assert.deepEqual(Bridge.assetPathsOf(text).sort(), ['assets/CUST-1/a', 'assets/CUST-1/a b.png', 'assets/CUST-1/r.png', 'assets/CUST-1/x.jpg'].sort());
 });
+
+test('Rapid Review highlights: their own item field (hr), by QID, back into rapidHighlights; blocks without them are unchanged', async () => {
+  const p = bundle(), hl = [{ u: 'over', s: 0, e: 3, t: 'abc' }];
+  p.bundle.attempts[0].session.blocks[0].rapidHighlights = { 2: hl };
+  const x = await extract(p), by = Object.fromEntries(x.units.map(u => [u.k, u.v]));
+  assert.deepEqual(by[K.item('n-11:att-1', QIDS[2], 'hr')], hl);
+  assert.equal(by[K.item('n-11:att-1', QIDS[0], 'hr')], undefined);
+  const vis = view(merge({}, [stampAll(Bridge.localizeTm(x.units, {}, 'A'), 'A')], { now: NOW }).units, { now: NOW }).units;
+  const a1 = Bridge.rebuildAttempts(vis).find(a => a.attemptId === 'att-1').session.blocks[0];
+  assert.deepEqual(a1.rapidHighlights, { 2: hl });
+  const y = await extract(bundle());
+  assert.equal(y.units.some(u => u.k.endsWith('|hr') || /[:|]hr$/.test(u.k)), false, 'no highlights, no units');
+});

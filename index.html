@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=38">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=38">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=39">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=39">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=38"></script>
-<script src="./js/form-updates-core.js?v=38"></script>
-<script src="./js/form-update-store.js?v=38"></script>
-<script src="./js/google-auth.js?v=38"></script>
+<script src="./js/sync-config.js?v=39"></script>
+<script src="./js/form-updates-core.js?v=39"></script>
+<script src="./js/form-update-store.js?v=39"></script>
+<script src="./js/google-auth.js?v=39"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=38" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=39" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=38"></script>
-<script src="./js/qid-migration.js?v=38"></script>
+<script src="jszip.min.js?v=39"></script>
+<script src="./js/qid-migration.js?v=39"></script>
 <script>
 
 
@@ -2836,6 +2836,8 @@ document.addEventListener('click', function(e){
   }
   function isNFormRec(rec){ const id=String(rec?.id||''); const nm=String(rec?.displayName||rec?.defaultName||''); return rec?.type==='N' || rec?.filter==='N-Forms' || /^N[-_ ]?0?([6-9]|1[0-6])$/i.test(id) || /^N[-_ ]?0?([6-9]|1[0-6])\b/i.test(nm); }
 
+  // NBME forms and every UWSA form take a 3-digit score (the one place that decides it)
+  function hasThreeDigit(rec){ return !!rec && (rec.type==='N' || rec.filter==='UWSA' || /^UWSA/i.test(String(rec.id||'')) || isNFormRec(rec)); }
   function getFormTabKey(rec){
     if(!rec) return 'Custom';
     if(rec.type === 'N') return 'N-Forms';
@@ -2949,8 +2951,8 @@ document.addEventListener('click', function(e){
     grid.querySelectorAll('button[data-action]').forEach(btn=>btn.addEventListener('click',async e=>{ const card=e.target.closest('[data-form-id]'); const id=card?.dataset.formId; const action=e.target.dataset.action; try{ if(action==='start') await startLibraryForm(id); if(action==='review'){ const recNow=catalogForm(id), ps=recNow&&recNow.progressSummary||{}; if(!ps.completed) return; await reviewLibraryForm(id); } if(action==='import-save'){ pendingImport={type:'save',id}; $('#slotSaveInput').value=''; $('#slotSaveInput').click(); } if(action==='export-save') await exportSave(id); if(action==='rename') await renameForm(id); if(action==='score3') await setThreeDigitScore(id); if(action==='delete-progress') await deleteProgress(id); if(action==='delete') await deleteForm(id); if(action==='optimize') await optimizeExistingForm(id); }catch(err){ alert(err.message||String(err)); } }));
   }
   function makeFormCard(rec){
-    const isN=isNFormRec(rec); const s=rec.progressSummary||{}; const scoreText=(!s.completed||s.scorePct===null||s.scorePct===undefined)?'—':`${s.scorePct}%`; const three=isN?(rec.threeDigitScore||'—'):''; const badge=s.completed?'Completed':(s.answered?'In progress':'Loaded'); const badgeCls=s.completed?'done':(s.answered?'partial':''); const cls=[isN?'nform':rec.custom?'custom':'', s.completed?'completed-card':''].filter(Boolean).join(' ');
-    return `<article class="v75-card ${cls}" data-form-id="${escapeAttr(rec.id)}"><div class="v75-head"><div><div class="v75-title">${escapeHtml(rec.displayName||rec.id)} <button class="rename-btn" data-action="rename" title="Rename">✎</button></div><div class="v75-sub">${escapeHtml(rec.subject||'Custom')} · ${escapeHtml(rec.id)} · ${rec.totalQuestions||0} Qs</div></div><div class="v75-head-right"><div class="v75-badge-row"><span class="v75-badge ${badgeCls}">${badge}</span>${(isN && tabScoreChipEnabled(getFormTabKey(rec)))?`<span class="v75-three-chip"><b>${escapeHtml(three)}</b><span>3-digit</span></span>`:''}</div></div></div><div class="v75-score-row"><div class="v75-bigmetric"><b>${scoreText}</b><span>Score %</span></div><div class="v75-mini-metrics"><div class="v75-mini"><b>${s.progressPct||0}%</b><span>Answered</span></div><div class="v75-mini"><b>${s.completedBlocks||0}/${s.blockCount||0}</b><span>Blocks</span></div><div class="v75-mini"><b>${s.marked||0}</b><span>Marked</span></div></div></div><div class="v75-progress"><div style="width:${Math.max(0,Math.min(100,s.progressPct||0))}%"></div></div><div class="v75-chiprow"><span class="v75-chip green">Imported ${escapeHtml(fmtDate(rec.importedAt))}</span><span class="v75-chip">${rec.optimized?'Optimized':'Original images'}</span>${rec.imageAssets?`<span class="v75-chip purple">${rec.imageAssets} assets</span>`:''}${rec.lastBackup?`<span class="v75-chip">Backup saved</span>`:''}</div><div class="v75-card-footer"><div class="v75-primary-actions"><button class="primary" data-action="start">Start / Setup</button><button class="secondary" data-action="review" ${s.completed?'':'disabled'}>Review</button></div><details class="v75-menu"><summary>More ▾</summary><div class="v75-menu-panel"><button data-action="import-save">Import Progress Save</button><button data-action="export-save">Export Progress Save</button>${isN?'<button data-action="score3">Set 3-digit score</button>':''}<button data-action="optimize">Optimize Images</button><button data-action="rename">Rename</button><button class="dangerish" data-action="delete-progress">Delete Current Progress</button><button class="dangerish" data-action="delete">Remove Form</button></div></details></div></article>`;
+    const isN=isNFormRec(rec); const s=rec.progressSummary||{}; const scoreText=(!s.completed||s.scorePct===null||s.scorePct===undefined)?'—':`${s.scorePct}%`; const three=hasThreeDigit(rec)?(rec.threeDigitScore||'—'):''; const badge=s.completed?'Completed':(s.answered?'In progress':'Loaded'); const badgeCls=s.completed?'done':(s.answered?'partial':''); const cls=[isN?'nform':rec.custom?'custom':'', s.completed?'completed-card':''].filter(Boolean).join(' ');
+    return `<article class="v75-card ${cls}" data-form-id="${escapeAttr(rec.id)}"><div class="v75-head"><div><div class="v75-title">${escapeHtml(rec.displayName||rec.id)} <button class="rename-btn" data-action="rename" title="Rename">✎</button></div><div class="v75-sub">${escapeHtml(rec.subject||'Custom')} · ${escapeHtml(rec.id)} · ${rec.totalQuestions||0} Qs</div></div><div class="v75-head-right"><div class="v75-badge-row"><span class="v75-badge ${badgeCls}">${badge}</span>${(hasThreeDigit(rec) && tabScoreChipEnabled(getFormTabKey(rec)))?`<span class="v75-three-chip"><b>${escapeHtml(three)}</b><span>3-digit</span></span>`:''}</div></div></div><div class="v75-score-row"><div class="v75-bigmetric"><b>${scoreText}</b><span>Score %</span></div><div class="v75-mini-metrics"><div class="v75-mini"><b>${s.progressPct||0}%</b><span>Answered</span></div><div class="v75-mini"><b>${s.completedBlocks||0}/${s.blockCount||0}</b><span>Blocks</span></div><div class="v75-mini"><b>${s.marked||0}</b><span>Marked</span></div></div></div><div class="v75-progress"><div style="width:${Math.max(0,Math.min(100,s.progressPct||0))}%"></div></div><div class="v75-chiprow"><span class="v75-chip green">Imported ${escapeHtml(fmtDate(rec.importedAt))}</span><span class="v75-chip">${rec.optimized?'Optimized':'Original images'}</span>${rec.imageAssets?`<span class="v75-chip purple">${rec.imageAssets} assets</span>`:''}${rec.lastBackup?`<span class="v75-chip">Backup saved</span>`:''}</div><div class="v75-card-footer"><div class="v75-primary-actions"><button class="primary" data-action="start">Start / Setup</button><button class="secondary" data-action="review" ${s.completed?'':'disabled'}>Review</button></div><details class="v75-menu"><summary>More ▾</summary><div class="v75-menu-panel"><button data-action="import-save">Import Progress Save</button><button data-action="export-save">Export Progress Save</button>${hasThreeDigit(rec)?'<button data-action="score3">Set 3-digit score</button>':''}<button data-action="optimize">Optimize Images</button><button data-action="rename">Rename</button><button class="dangerish" data-action="delete-progress">Delete Current Progress</button><button class="dangerish" data-action="delete">Remove Form</button></div></details></div></article>`;
   }
   async function renameForm(id){ const rec=catalogForm(id); if(!rec) return; const next=await appPrompt('Rename this form:', rec.displayName||id, {title:'Rename Form'}); if(next===null) return; rec.displayName=next.trim()||rec.defaultName||id; upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); renderQbankMode(); }
   async function setThreeDigitScore(id){ const rec=catalogForm(id); if(!rec) return; const next=await appPrompt('Enter converted 3-digit score:', rec.threeDigitScore||'', {title:'Set 3-digit score'}); if(next===null) return; const clean=next.trim(); if(clean && !/^\d{3}$/.test(clean)) return alert('Enter exactly 3 digits, e.g. 245.'); rec.threeDigitScore=clean; rec.updatedAt=nowIso(); upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); }
@@ -3813,7 +3815,7 @@ document.addEventListener('click', function(e){
       importSaveToForm=async function(id,file){const rec=catalogForm(id); if(!rec)throw new Error('Load the form JSON first.'); const b=bundleFromData(JSON.parse(await file.text()),id); b.attempts.forEach(a=>{a.session.bankHash=rec.bankHash; a.session.libraryFormId=id; a.session.libraryFormName=rec.displayName||id}); await writeBundle(id,b); alert('Progress save imported.')};
 
       function statusChip(s){if(!s)return 'Loaded'; if(s.completed)return `Completed ${date(s.completedAt)}`; if(s.inProgress||s.answered)return `Started ${date(s.updatedAt)}`; return 'Loaded'}
-      makeFormCard=function(rec){const s=rec.progressSummary||{}, score=(!s.completed||s.scorePct==null)?'—':`${s.scorePct}%`, three=rec.type==='N'?(rec.threeDigitScore||'—'):''; const has=!!(s.answered||s.scoreTotal||s.completed||s.inProgress), can=!!s.canResume, reviewReady=!!s.completed, badge=s.completed?'Completed':(s.suspended?'Suspended':(s.inProgress||s.answered?'In progress':'Loaded')), bcls=s.completed?'done':(s.suspended?'suspended':(s.inProgress||s.answered?'partial':'')); return `<article class="v75-card ${rec.type==='N'?'nform':''} ${rec.custom?'custom':''} ${s.completed?'completed-card':''} ${s.suspended?'suspended-card':''}" data-form-id="${escapeAttr(rec.id)}"><div class="v75-head"><div><div class="v75-title">${esc(rec.displayName||rec.id)} <button class="rename-btn" data-action="rename" title="Rename">✎</button></div><div class="v75-sub">${esc(rec.subject||'Custom')} · ${esc(rec.id)} · ${rec.totalQuestions||0} Qs</div><div class="v9-card-note">Active: ${esc(s.activeAttemptLabel||'No attempt')} ${s.attemptCount?`· ${s.attemptCount} attempt${s.attemptCount===1?'':'s'}`:''}</div></div><div class="v75-head-right"><div class="v75-badge-row"><span class="v75-badge ${bcls}">${badge}</span>${(rec.type==='N' && tabScoreChipEnabled(getFormTabKey(rec)))?`<span class="v75-three-chip"><b>${esc(three)}</b><span>3-digit</span></span>`:''}</div></div></div><div class="v75-score-row"><div class="v75-bigmetric"><b>${score}</b><span>Score %</span></div><div class="v75-mini-metrics"><div class="v75-mini"><b>${s.progressPct||0}%</b><span>Answered</span></div><div class="v75-mini"><b>${s.completedBlocks||0}/${s.blockCount||0}</b><span>Blocks</span></div><div class="v75-mini"><b>${s.marked||0}</b><span>Marked</span></div></div></div><div class="v75-progress"><div style="width:${Math.max(0,Math.min(100,s.progressPct||0))}%"></div></div><div class="v75-chiprow"><span class="v75-chip green">${esc(statusChip(s))}</span><span class="v75-chip">${rec.optimized?'Optimized':'Original images'}</span>${rec.imageAssets?`<span class="v75-chip purple">${rec.imageAssets} assets</span>`:''}</div><div class="v75-card-footer"><div class="v75-primary-actions"><button class="primary" data-action="start">${has?'New Attempt':'Start'}</button><button class="secondary" data-action="resume" ${can?'':'disabled'}>Resume</button><button class="secondary" data-action="review" ${reviewReady?'':'disabled'}>Review</button></div><details class="v75-menu"><summary>More ▾</summary><div class="v75-menu-panel"><button data-v9="attempts">Progress / Attempts</button><button data-v9="retest-wrongs">Retest Wrongs</button><button data-v9="retest-marked">Retest Marked</button><button data-v9="retest-both">Retest Marked + Wrongs</button><button data-action="import-save">Import Progress Save</button><button data-action="export-save">Export Progress Save</button>${rec.type==='N'?'<button data-action="score3">Set 3-digit score</button>':''}<button data-action="optimize">Optimize Images</button><button data-action="rename">Rename Form</button><button class="dangerish" data-v9="delete-attempt">Delete selected attempt</button><button class="dangerish" data-action="delete-progress">Delete all progress</button><button class="dangerish" data-action="delete">Remove Form</button></div></details></div></article>`};
+      makeFormCard=function(rec){const s=rec.progressSummary||{}, score=(!s.completed||s.scorePct==null)?'—':`${s.scorePct}%`, three=hasThreeDigit(rec)?(rec.threeDigitScore||'—'):''; const has=!!(s.answered||s.scoreTotal||s.completed||s.inProgress), can=!!s.canResume, reviewReady=!!s.completed, badge=s.completed?'Completed':(s.suspended?'Suspended':(s.inProgress||s.answered?'In progress':'Loaded')), bcls=s.completed?'done':(s.suspended?'suspended':(s.inProgress||s.answered?'partial':'')); return `<article class="v75-card ${rec.type==='N'?'nform':''} ${rec.custom?'custom':''} ${s.completed?'completed-card':''} ${s.suspended?'suspended-card':''}" data-form-id="${escapeAttr(rec.id)}"><div class="v75-head"><div><div class="v75-title">${esc(rec.displayName||rec.id)} <button class="rename-btn" data-action="rename" title="Rename">✎</button></div><div class="v75-sub">${esc(rec.subject||'Custom')} · ${esc(rec.id)} · ${rec.totalQuestions||0} Qs</div><div class="v9-card-note">Active: ${esc(s.activeAttemptLabel||'No attempt')} ${s.attemptCount?`· ${s.attemptCount} attempt${s.attemptCount===1?'':'s'}`:''}</div></div><div class="v75-head-right"><div class="v75-badge-row"><span class="v75-badge ${bcls}">${badge}</span>${(rec.type==='N' && tabScoreChipEnabled(getFormTabKey(rec)))?`<span class="v75-three-chip"><b>${esc(three)}</b><span>3-digit</span></span>`:''}</div></div></div><div class="v75-score-row"><div class="v75-bigmetric"><b>${score}</b><span>Score %</span></div><div class="v75-mini-metrics"><div class="v75-mini"><b>${s.progressPct||0}%</b><span>Answered</span></div><div class="v75-mini"><b>${s.completedBlocks||0}/${s.blockCount||0}</b><span>Blocks</span></div><div class="v75-mini"><b>${s.marked||0}</b><span>Marked</span></div></div></div><div class="v75-progress"><div style="width:${Math.max(0,Math.min(100,s.progressPct||0))}%"></div></div><div class="v75-chiprow"><span class="v75-chip green">${esc(statusChip(s))}</span><span class="v75-chip">${rec.optimized?'Optimized':'Original images'}</span>${rec.imageAssets?`<span class="v75-chip purple">${rec.imageAssets} assets</span>`:''}</div><div class="v75-card-footer"><div class="v75-primary-actions"><button class="primary" data-action="start">${has?'New Attempt':'Start'}</button><button class="secondary" data-action="resume" ${can?'':'disabled'}>Resume</button><button class="secondary" data-action="review" ${reviewReady?'':'disabled'}>Review</button></div><details class="v75-menu"><summary>More ▾</summary><div class="v75-menu-panel"><button data-v9="attempts">Progress / Attempts</button><button data-v9="retest-wrongs">Retest Wrongs</button><button data-v9="retest-marked">Retest Marked</button><button data-v9="retest-both">Retest Marked + Wrongs</button><button data-action="import-save">Import Progress Save</button><button data-action="export-save">Export Progress Save</button>${hasThreeDigit(rec)?'<button data-action="score3">Set 3-digit score</button>':''}<button data-action="optimize">Optimize Images</button><button data-action="rename">Rename Form</button><button class="dangerish" data-v9="delete-attempt">Delete selected attempt</button><button class="dangerish" data-action="delete-progress">Delete all progress</button><button class="dangerish" data-action="delete">Remove Form</button></div></details></div></article>`};
       async function prepLibrary(id,ctx={}){const rec=catalogForm(id); if(!rec)throw new Error('Form not found.'); const bank=await readFormBank(id); importedBank=bank; currentBankRawText=JSON.stringify(bank,null,2); currentBankHash=rec.bankHash||await sha256Hex(currentBankRawText); selectedBlockIndex=0; activeSession=null; reviewMode=false; activeRunContext=Object.assign({type:'library',formId:id,qbank:false},ctx); if($('#blockSizeSelect')&&rec.suggestedBlockSize) $('#blockSizeSelect').value=rec.suggestedBlockSize; renderMenu(); setMenuMode('quick')}
       startLibraryForm=async function(id){const b=await readBundle(id), a=activeAtt(b); if(a&&sessionCanResume(a.session)){const r=await appConfirm('An incomplete attempt exists. Resume it?',{okText:'Resume existing',cancelText:'Start new attempt'}); if(r){await resumeLibraryForm(id); return} if(!await appConfirm('Start a new full attempt? Existing progress remains saved.',{okText:'Start new attempt'})) return} const type=b.attempts.length?'new_attempt':'initial'; await prepLibrary(id,{v9AttemptId:rid('attempt'),v9AttemptType:type,v9AttemptLabel:type==='initial'?'1st Attempt':`New Attempt ${b.attempts.length+1}`})};
       reviewLibraryForm=async function(id){const rec=catalogForm(id), b=await readBundle(id), a=activeAtt(b); if(!a)throw new Error('No progress save found.'); const bank=await readFormBank(id); importedBank=bank; currentBankRawText=JSON.stringify(bank,null,2); currentBankHash=rec.bankHash||await sha256Hex(currentBankRawText); activeRunContext={type:'library',formId:id,qbank:false,v9AttemptId:a.attemptId}; const s=cloneJson(a.session); s.bankHash=currentBankHash; s.libraryFormId=id; s.libraryFormName=rec.displayName||id; s.currentBlockPointer=0; if(s.blocks?.[0])s.blocks[0].current=0; loadSessionForReview(s)};
@@ -5429,7 +5431,7 @@ document.addEventListener('click', function(e){
         window.__STEP_SIM_V2110_LIBRARY_SCORE_PATCH = true;
         function v2110ScoreHasValue(rec){ return !!(rec && String(rec.threeDigitScore || '').trim()); }
         function v2110ScoreChipEnabledFor(tab){ try{ return !!tabScoreChipEnabled(tab); }catch(e){ return tab === 'N-Forms'; } }
-        function v2110AllowScoreAction(rec){ return !!(rec && (rec.type === 'N' || v2110ScoreChipEnabledFor(getFormTabKey(rec)))); }
+        function v2110AllowScoreAction(rec){ return !!(rec && (hasThreeDigit(rec) || v2110ScoreChipEnabledFor(getFormTabKey(rec)))); }
         function v2110ShowScoreChip(rec){ return !!(rec && v2110ScoreChipEnabledFor(getFormTabKey(rec)) && v2110ScoreHasValue(rec)); }
         function v2110ScoreChipHtml(rec){ return `<span class="v75-three-chip"><b>${escapeHtml(String(rec.threeDigitScore || '').trim())}</b><span>3-digit</span></span>`; }
         function v2110RemoveScore3Buttons(html){ return String(html).replace(/<button\s+data-action=["']score3["'][^>]*>\s*Set\s+3[- ]digit\s+Score\s*<\/button>/gi,''); }
@@ -6266,7 +6268,7 @@ html:fullscreen .bottombar{bottom:0!important}
   }
   function addVisibleThreeDigitButtons(){
     document.querySelectorAll('.v75-card').forEach(function(card){
-      var id=card.getAttribute('data-form-id')||''; if(!/^N[-_ ]?0?([6-9]|1[0-6])$/i.test(id)) return;
+      var id=card.getAttribute('data-form-id')||''; if(!/^N[-_ ]?0?([6-9]|1[0-6])$/i.test(id) && !/^UWSA/i.test(id)) return;
       if(card.querySelector('[data-action="score3"]')) return;
       var panel=card.querySelector('.v75-menu-panel');
       if(!panel) return;
@@ -6854,6 +6856,7 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     ['blockName','configuredIndex','total','current','answers','firstAnswers','answerChangeLog','flagged','struck','revealed','questionTime','notes','blockStartedAt','blockCompleted','locked','result','attemptId','attemptLabel','attemptType','blockRemainingSeconds','dayRemainingSeconds','blockElapsedSeconds','resumeCapturedAt'].forEach(function(k){ if(bp[k]!==undefined) out[k]=v15Clone(bp[k]); });
     if(bp[V15.stemKey]) out[V15.stemKey]=v15Clone(bp[V15.stemKey]);
     if(bp[V15.expKey]) out[V15.expKey]=v15Clone(bp[V15.expKey]);
+    if(bp.rapidHighlights && typeof bp.rapidHighlights==='object') out.rapidHighlights=v15Clone(bp.rapidHighlights);     // Rapid Review highlights (rapid-review.js): their own section
     if(Number(bp[V15.migrationKey])>=15 || bp[V15.legacyIgnoredKey] || bp[V15.stemKey] || bp[V15.expKey]){ out[V15.migrationKey]=15; out[V15.legacyIgnoredKey]=true; }
     else {
       out[V15.migrationKey]=15;
@@ -8687,7 +8690,7 @@ span[data-v15-highlight-id]:hover{outline:0!important;box-shadow:none!important;
     return Object.prototype.hasOwnProperty.call(s.scoreChips||{}, tab) ? !!s.scoreChips[tab] : tab === 'N-Forms';
   }
   function hasScore(rec){ return !!(rec && String(rec.threeDigitScore||'').trim()); }
-  function allowScoreAction(rec){ return !!(rec && (rec.type === 'N' || chipEnabled(tabKey(rec)))); }
+  function allowScoreAction(rec){ return !!(rec && (hasThreeDigit(rec) || chipEnabled(tabKey(rec)))); }
   function showScoreChip(rec){ return !!(rec && chipEnabled(tabKey(rec)) && hasScore(rec)); }
   function scoreChipHtml(rec){ return '<span class="v75-three-chip"><b>'+esc(String(rec.threeDigitScore||'').trim())+'</b><span>3-digit</span></span>'; }
   function removeScore3Buttons(html){ return String(html).replace(/<button\s+data-action=["']score3["'][^>]*>\s*Set\s+3[- ]digit\s+Score\s*<\/button>/gi,''); }
@@ -10647,18 +10650,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=38"></script>
-<script src="./js/sync-storage.js?v=38"></script>
-<script src="./js/progress-sync.js?v=38"></script>
-<script src="./js/library-backup.js?v=38"></script>
-<script src="./js/qid-settings.js?v=38"></script>
-<script src="./js/sync3-core.js?v=38"></script>
-<script src="./js/sync3-bridge.js?v=38"></script>
-<script src="./js/sync3-store.js?v=38"></script>
-<script src="./js/sync3-drive.js?v=38"></script>
-<script src="./js/sync3-sync.js?v=38"></script>
-<script src="./js/sync3-migrate.js?v=38"></script>
-<script src="./js/sync3-boot.js?v=38"></script>
+<script src="./js/sync-merge.js?v=39"></script>
+<script src="./js/sync-storage.js?v=39"></script>
+<script src="./js/progress-sync.js?v=39"></script>
+<script src="./js/library-backup.js?v=39"></script>
+<script src="./js/qid-settings.js?v=39"></script>
+<script src="./js/sync3-core.js?v=39"></script>
+<script src="./js/sync3-bridge.js?v=39"></script>
+<script src="./js/sync3-store.js?v=39"></script>
+<script src="./js/sync3-drive.js?v=39"></script>
+<script src="./js/sync3-sync.js?v=39"></script>
+<script src="./js/sync3-migrate.js?v=39"></script>
+<script src="./js/sync3-boot.js?v=39"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11137,10 +11140,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=38"></script>
-<script src="./exam-notes.js?v=38"></script>
-<script src="./app-update.js?v=38"></script>
-<script src="./js/form-updates.js?v=38"></script>
+<script src="./bulk-import.js?v=39"></script>
+<script src="./exam-notes.js?v=39"></script>
+<script src="./app-update.js?v=39"></script>
+<script src="./js/form-updates.js?v=39"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11567,8 +11570,9 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=38"></script>
-<script src="./nav-delay.js?v=38"></script>
-<script src="./thunder-ui.js?v=38"></script>
+<script src="./item-code.js?v=39"></script>
+<script src="./nav-delay.js?v=39"></script>
+<script src="./thunder-ui.js?v=39"></script>
+<script src="./rapid-review.js?v=39"></script>
 </body>
 </html>
