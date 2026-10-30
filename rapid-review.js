@@ -6,7 +6,7 @@
   'use strict';
   const LT = 'ABCDEFGHIJKLMNOP';
   const PREF = 'stepReviewTabDefault', PLACE = 'stepReviewPlacement', LAYOUT = 'StepExamReviewExplanationLayout', ZOOM = 'stepRapidZoom';
-  let rrOn = false, sideTab = 'exp', raf = 0, autoKey = null, sub = 'over', setHint = '';
+  let rrOn = false, sideTab = 'exp', raf = 0, autoKey = null, sub = 'over', setHint = '', wantTopic = false;
   const ls = {get: k => { try{ return localStorage.getItem(k); }catch(e){ return null; } }, set: (k, v) => { try{ localStorage.setItem(k, v); }catch(e){} }};
   const getPref = () => ls.get(PREF) === 'rapid' ? 'rapid' : 'explanation';
   const getLayout = () => { try{ return getReviewExplanationLayout(); }catch(e){ return ls.get(LAYOUT) === 'below' ? 'below' : 'split'; } };
@@ -108,6 +108,37 @@ background:var(--rr-bg);color:var(--rr-t);font-family:var(--rr-ff,Arial,Helvetic
 .rr-pw-b .rr-pw-b{margin-left:.2em}
 .rr-pw-if{font-weight:700;color:var(--rr-at)}
 .rr-pw-ar{color:var(--rr-m);margin:0 .3em}
+.rr-pane :is(.rr-tp-k,.rr-tp-t,.rr-tp-row>.k,.rr-tp-tbl .cap,.rr-tp-tbl th,.rr-tp-tbl td:first-child,.rr-tp-row b,.rr-tp-core b,.rr-tp-tbl b){font-family:var(--rr-ffb,inherit)}
+.rr-tp-head{margin:10px 0 6px}
+.rr-tp-k{display:flex;align-items:center;gap:6px;font-size:.72em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--rr-at)}
+.rr-tp-kind{font-size:.95em;letter-spacing:.04em;border:1px solid var(--rr-ab);border-radius:20px;padding:0 7px}
+.rr-tp-t{font-weight:700;font-size:1.1em;margin-top:1px}
+.rr-tp-scope{font-size:.82em;color:var(--rr-m)}
+.rr-tp-core{margin:8px 0 6px;background:var(--rr-abg);border-left:3px solid var(--rr-ab);border-radius:0 6px 6px 0;padding:6px 10px 7px}
+.rr-tp-row{display:grid;grid-template-columns:7.2em minmax(0,1fr);gap:0 10px;border-top:1px solid var(--rr-b2);padding:6px 0}
+.rr-tp-row>.k{font-size:.72em;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--rr-m);padding-top:.28em}
+.rr-tp-row ul{margin:0;padding:0;list-style:none}
+.rr-tp-row li{position:relative;padding-left:.9em;margin:1px 0}
+.rr-tp-row li::before{content:"";position:absolute;left:.1em;top:.62em;width:.32em;height:.32em;border-radius:50%;background:var(--rr-m)}
+.rr-tp-row li.st{background:var(--rr-wbg);border-radius:5px;padding:1px 6px 1px 1.35em;margin:2px 0}
+.rr-tp-row li.st::before{content:"★";background:none;width:auto;height:auto;left:.35em;top:.08em;font-size:.85em;color:var(--rr-wb)}
+.rr-tp-tbl{margin-top:10px}
+.rr-tp-tbl .cap{font-size:.72em;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--rr-m);margin-bottom:4px}
+.rr-tp-tbl table{border-collapse:collapse;width:100%;font-size:.88em}
+.rr-tp-tbl th{text-align:left;font-size:.82em;font-weight:700;color:var(--rr-m);border-bottom:1px solid var(--rr-b);padding:3px 6px}
+.rr-tp-tbl td{border-top:1px solid var(--rr-b2);padding:4px 6px;vertical-align:top}
+.rr-tp-tbl td:first-child{font-weight:700}
+.rr-tp-ev{margin-top:12px;font-size:.78em;color:var(--rr-m)}
+.rr-tp-ev a{color:inherit}
+@container (max-width:480px){
+  .rr-tp-row{grid-template-columns:1fr}
+  .rr-tp-row>.k{padding:0 0 2px}
+  .rr-tp-tbl :is(table,tbody,tr,td){display:block;width:100%}
+  .rr-tp-tbl thead{display:none}
+  .rr-tp-tbl tr{border-top:1px solid var(--rr-b2);padding:5px 0}
+  .rr-tp-tbl td{border:0;padding:0 6px}
+  .rr-tp-tbl td:not(:first-child)::before{content:attr(data-h) ": ";font-size:.82em;font-weight:700;color:var(--rr-m)}
+}
 @container (max-width:480px){
   .rr-tbl .rr-o{grid-template-columns:1.55em minmax(0,1fr)}
   .rr-tbl .rr-mx{grid-column:2;margin-top:2px}
@@ -331,18 +362,39 @@ ${setCss()}`;
   // the explanation's own "Time spent" value (the app draws it in its answer panel, which stays in the page while this tab is open)
   const spent = () => { const e = document.querySelector('#workspace .time-spent-value'); return e ? e.textContent.trim() : ''; };
   const hlSig = () => { try{ return JSON.stringify(hlList()); }catch(e){ return ''; } };
+  // Topic sub-tab: the card for the item's topic id, carried in the same file's "topics" block (null when absent or malformed)
+  function topicOf(c){
+    const tp = c.d && c.d.topics, id = c.it && c.it.topic, card = tp && typeof tp === 'object' && id && tp[id];
+    return card && typeof card === 'object' && Array.isArray(card.rows) ? card : null;
+  }
+  const mdb = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  function topicHtml(card){
+    const str = v => typeof v === 'string' ? v : '';
+    const rows = card.rows.filter(r => r && Array.isArray(r.items)).map(r => `<div class="rr-tp-row"><span class="k">${esc(str(r.label))}</span><ul>${r.items.map(str).filter(Boolean).map(x => x.startsWith('\u2605 ') ? `<li class="st">${mdb(x.slice(2))}</li>` : `<li>${mdb(x)}</li>`).join('')}</ul></div>`).join('');
+    const tb = card.table, cols = tb && Array.isArray(tb.cols) ? tb.cols.map(str) : [];
+    const table = cols.length && Array.isArray(tb.rows) ? `<div class="rr-tp-tbl"><div class="cap">${esc(str(tb.title))}</div><table><thead><tr>${cols.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${tb.rows.filter(Array.isArray).map(r => `<tr>${r.map((x, i) => `<td data-h="${esc(cols[i] || '')}">${mdb(str(x))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '';
+    // markdown links in the evidence line: only http(s) targets become links
+    const ev = esc(str(card.evidence)).replace(/\[([^\]]+)\]\((https?:\/\/[^\s)"]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    return `<div class="rr-tp-head"><div class="rr-tp-k">Topic${card.kind ? ` <span class="rr-tp-kind">${esc(str(card.kind))}</span>` : ''}</div><div class="rr-tp-t">${esc(str(card.name))}</div>${card.scope ? `<div class="rr-tp-scope">${esc(str(card.scope))}</div>` : ''}</div>`
+      + (card.core ? `<div class="rr-tp-core">${mdb(str(card.core))}</div>` : '') + rows + table + (ev ? `<div class="rr-tp-ev">${ev}</div>` : '');
+  }
   function render(c){
     const {q, it} = c, n = (q.choices || []).length;
     const pick = pickOf();
     const cor = Number(q.correct), wrong = pick != null && pick !== cor;
     const tempt = wrong && it.options && it.options[LT[pick]] && it.options[LT[pick]].tempting;
     const alg = it.algorithm, trig = it.triggers || [];
-    if(sub === 'path') sub = 'over';
-    const bar = `<div class="rr-bar"><div class="rr-seg" role="tablist" aria-label="Rapid review sections">${[['over', 'Overview'], ['opt', 'Options'], ['stem', 'Stem']].map(([k, l]) => `<button type="button" role="tab" aria-selected="${sub === k}" class="rr-sub ${sub === k ? 'on' : ''}" data-rr-sub="${k}">${l}</button>`).join('')}</div>${spent() ? `<span class="rr-time"><b>Time spent:</b> ${esc(spent())}</span>` : ''}<span class="rr-zoom"><button type="button" data-rr-z="-1" aria-label="Smaller text">A−</button><button type="button" class="rr-zr" data-rr-z="0" aria-label="Reset text size">${Math.round(getZ() * 100)}%</button><button type="button" data-rr-z="1" aria-label="Larger text">A+</button></span></div>`;
+    const card = topicOf(c);
+    // Topic stays the chosen sub-tab while paging; a question without a card shows Overview, the next card question returns to Topic
+    if(wantTopic && card) sub = 'topic';
+    if(sub === 'path' || (sub === 'topic' && !card)) sub = 'over';
+    const bar = `<div class="rr-bar"><div class="rr-seg" role="tablist" aria-label="Rapid review sections">${[['over', 'Overview'], ['opt', 'Options'], ['stem', 'Stem']].concat(card ? [['topic', 'Topic']] : []).map(([k, l]) => `<button type="button" role="tab" aria-selected="${sub === k}" class="rr-sub ${sub === k ? 'on' : ''}" data-rr-sub="${k}">${l}</button>`).join('')}</div>${spent() ? `<span class="rr-time"><b>Time spent:</b> ${esc(spent())}</span>` : ''}<span class="rr-zoom"><button type="button" data-rr-z="-1" aria-label="Smaller text">A−</button><button type="button" class="rr-zr" data-rr-z="0" aria-label="Reset text size">${Math.round(getZ() * 100)}%</button><button type="button" data-rr-z="1" aria-label="Larger text">A+</button></span></div>`;
     let body;
     if(sub === 'opt'){
       const all = []; for(let i = 0; i < n; i++) all.push(i);
       body = `<div class="rr-tbl"><div class="rr-colh"><span></span><span>Choice · clue · fit</span><span>Management</span></div>${all.map(i => optRow(q, it, i, pick, cor, true)).join('')}</div>`;
+    }else if(sub === 'topic'){
+      body = topicHtml(card);
     }else if(sub === 'stem'){
       const stem = stemHtml(String(q.stem || ''), trig);
       body = `<div class="rr-lab">Stem${trig.length ? ' · clues marked' : ''}</div><div class="rr-stem">${stem}</div>${/rr-mk t/.test(stem) ? '<div class="rr-leg">Red mark = the phrase that pulls toward the trap.</div>' : ''}`;
@@ -683,7 +735,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     const hs = t.closest('.rr-pane .rr-hl'); if(hs){ const sl = window.getSelection(); if(!sl || sl.isCollapsed){ hlRemove(hs); return; } }
     if(t.closest('[data-rr-check]')){ sync(true); return; }
     const sb = t.closest('[data-rr-sub]');
-    if(sb){ sub = sb.getAttribute('data-rr-sub'); if(sub === 'path') sub = 'over'; schedule(); return; }
+    if(sb){ sub = sb.getAttribute('data-rr-sub'); if(sub === 'path') sub = 'over'; wantTopic = sub === 'topic'; schedule(); return; }
     const zb = t.closest('[data-rr-z]');
     if(zb){ const dz = Number(zb.getAttribute('data-rr-z')); ls.set(ZOOM, String(dz === 0 ? 1 : Math.max(0.8, Math.min(1.3, +(getZ() + 0.05 * dz).toFixed(2))))); schedule(); return; }
     const lb = t.closest('[data-rr-lay]');
