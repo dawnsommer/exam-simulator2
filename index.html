@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=40">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=40">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=41">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=41">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=40"></script>
-<script src="./js/form-updates-core.js?v=40"></script>
-<script src="./js/form-update-store.js?v=40"></script>
-<script src="./js/google-auth.js?v=40"></script>
+<script src="./js/sync-config.js?v=41"></script>
+<script src="./js/form-updates-core.js?v=41"></script>
+<script src="./js/form-update-store.js?v=41"></script>
+<script src="./js/google-auth.js?v=41"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=40" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=41" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=40"></script>
-<script src="./js/qid-migration.js?v=40"></script>
+<script src="jszip.min.js?v=41"></script>
+<script src="./js/qid-migration.js?v=41"></script>
 <script>
 
 
@@ -6793,6 +6793,15 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
       q._explanationHtml = v15ApplyAnchorsToHtml(v15BaseExplanationHtml(q), v15GetAnchors('explanation',idx), 'explanation');
     }catch(e){ console.warn('v15 prepare failed', e); }
   }
+  function v15RenderKeepScroll(){
+    // re-render for a highlight change without the explanation/stem jumping back to the top
+    var sel='#workspace,.qbank-panel,.qbank-body,.rr-pane,.lset-passage,#stem,.right-panel-wrap', saved=[];
+    try{ Array.prototype.forEach.call(document.querySelectorAll(sel),function(el,i){ if(el.scrollTop||el.scrollLeft) saved.push([el,el.scrollTop,el.scrollLeft]); }); }catch(e){}
+    var keep=saved.map(function(a){ return [a[0].id?'#'+a[0].id:(a[0].className&&typeof a[0].className==='string'?'.'+a[0].className.trim().split(/\s+/)[0]:''),a[1],a[2]]; });
+    function put(){ try{ keep.forEach(function(k){ if(!k[0]) return; var els=document.querySelectorAll(k[0]); for(var i=0;i<els.length;i++){ if(els[i].scrollHeight>els[i].clientHeight){ els[i].scrollTop=k[1]; els[i].scrollLeft=k[2]; break; } } }); }catch(e){} }
+    try{ if(typeof renderQuestion==='function') renderQuestion(); }catch(e){}
+    put(); try{ requestAnimationFrame(put); }catch(e){} setTimeout(put,60);
+  }
   function v15AddHighlightFromSelection(container,type,idx){
     var off=v15OffsetsForSelection(container); if(!off) return false;
     v15AddAnchor(type,idx==null?state.current:idx,off);
@@ -6800,7 +6809,7 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     var priorMutation=window.__stepReviewMutationWrite; window.__stepReviewMutationWrite=true;
     try{ if(typeof persistBlockProgress==='function') persistBlockProgress(); }catch(e){}
     finally{ window.__stepReviewMutationWrite=priorMutation; }
-    try{ if(typeof renderQuestion==='function') renderQuestion(); }catch(e){}
+    v15RenderKeepScroll();
     return true;
   }
   function v15NearestHighlight(node){ return node && node.closest ? node.closest('[data-v15-highlight-id],mark[data-v14-highlight-id]') : null; }
@@ -6847,7 +6856,7 @@ body.a8-exam-active{overflow:hidden!important;background:#fff!important}
     var priorMutation=window.__stepReviewMutationWrite; window.__stepReviewMutationWrite=true;
     try{ if(typeof persistBlockProgress==='function') persistBlockProgress(); }catch(err){}
     finally{ window.__stepReviewMutationWrite=priorMutation; }
-    try{ if(typeof renderQuestion==='function') renderQuestion(); }catch(err){}
+    v15RenderKeepScroll();
     return true;
   }
   function v15CompactBlock(bp){
@@ -10650,18 +10659,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=40"></script>
-<script src="./js/sync-storage.js?v=40"></script>
-<script src="./js/progress-sync.js?v=40"></script>
-<script src="./js/library-backup.js?v=40"></script>
-<script src="./js/qid-settings.js?v=40"></script>
-<script src="./js/sync3-core.js?v=40"></script>
-<script src="./js/sync3-bridge.js?v=40"></script>
-<script src="./js/sync3-store.js?v=40"></script>
-<script src="./js/sync3-drive.js?v=40"></script>
-<script src="./js/sync3-sync.js?v=40"></script>
-<script src="./js/sync3-migrate.js?v=40"></script>
-<script src="./js/sync3-boot.js?v=40"></script>
+<script src="./js/sync-merge.js?v=41"></script>
+<script src="./js/sync-storage.js?v=41"></script>
+<script src="./js/progress-sync.js?v=41"></script>
+<script src="./js/library-backup.js?v=41"></script>
+<script src="./js/qid-settings.js?v=41"></script>
+<script src="./js/sync3-core.js?v=41"></script>
+<script src="./js/sync3-bridge.js?v=41"></script>
+<script src="./js/sync3-store.js?v=41"></script>
+<script src="./js/sync3-drive.js?v=41"></script>
+<script src="./js/sync3-sync.js?v=41"></script>
+<script src="./js/sync3-migrate.js?v=41"></script>
+<script src="./js/sync3-boot.js?v=41"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11140,10 +11149,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=40"></script>
-<script src="./exam-notes.js?v=40"></script>
-<script src="./app-update.js?v=40"></script>
-<script src="./js/form-updates.js?v=40"></script>
+<script src="./bulk-import.js?v=41"></script>
+<script src="./exam-notes.js?v=41"></script>
+<script src="./app-update.js?v=41"></script>
+<script src="./js/form-updates.js?v=41"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11570,9 +11579,9 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=40"></script>
-<script src="./nav-delay.js?v=40"></script>
-<script src="./thunder-ui.js?v=40"></script>
-<script src="./rapid-review.js?v=40"></script>
+<script src="./item-code.js?v=41"></script>
+<script src="./nav-delay.js?v=41"></script>
+<script src="./thunder-ui.js?v=41"></script>
+<script src="./rapid-review.js?v=41"></script>
 </body>
 </html>
