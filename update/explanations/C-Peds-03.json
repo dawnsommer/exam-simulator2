@@ -1,0 +1,4737 @@
+{
+ "type": "StepRapidReview",
+ "version": 1,
+ "formId": "C-Peds-03",
+ "model": "Gemini 3.8 Flash",
+ "promptVersion": "v4",
+ "generatedAt": "2026-10-29",
+ "items": {
+  "c-peds-03-q001": {
+   "task": "Diagnosis",
+   "boardCall": "Truncus arteriosus + absent thymic shadow + hypocalcemia -> hypoparathyroidism",
+   "hinge": "Conotruncal defect and absent thymic shadow indicate 22q11.2 deletion with parathyroid aplasia causing hypocalcemia.",
+   "trap": "Pseudohypoparathyroidism causes hypocalcemia but does not cause absent thymus or conotruncal heart disease.",
+   "options": {
+    "A": {
+     "clue": "High PTH with hypercalcemia",
+     "support": "parathyroid adenoma",
+     "fit": "Not here: calcium 7 mg/dL",
+     "tx": "Parathyroidectomy",
+     "tempting": "involves abnormal parathyroid hormone levels"
+    },
+    "B": {
+     "clue": "Deficient PTH with hypocalcemia",
+     "support": "DiGeorge syndrome",
+     "fit": "Here: jittery, calcium 7 mg/dL, absent thymic shadow",
+     "tx": "Calcium gluconate + calcitriol"
+    },
+    "C": {
+     "clue": "End-organ PTH unresponsiveness",
+     "support": "Albright hereditary osteodystrophy",
+     "fit": "Not here: truncus arteriosus, absent thymic shadow",
+     "tx": "Oral calcium + calcitriol",
+     "tempting": "causes hypocalcemia and developmental delay"
+    },
+    "D": {
+     "clue": "Defective proximal bicarbonate reabsorption",
+     "support": "Fanconi syndrome",
+     "fit": "Not here: normal bicarbonate, conotruncal defect",
+     "tx": "Bicarbonate replacement",
+     "tempting": "causes pediatric metabolic and electrolyte disorders"
+    },
+    "E": {
+     "clue": "Impaired mineralization from vitamin D lack",
+     "support": "nutritional rickets",
+     "fit": "Not here: 8-day-old newborn, absent thymic shadow",
+     "tx": "Vitamin D + calcium",
+     "tempting": "causes neonatal hypocalcemia"
+    },
+    "F": {
+     "clue": "Proximal tubule phosphate wasting",
+     "support": "PHEX gene mutation",
+     "fit": "Not here: marked hypocalcemia, conotruncal cardiac defect",
+     "tx": "Oral phosphate + calcitriol",
+     "tempting": "causes inherited pediatric hypocalcemia"
+    }
+   },
+   "algorithm": {
+    "title": "Neonatal hypocalcemia in 22q11.2 deletion syndrome",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Jitteriness or tetany: check serum calcium + albumin + magnesium"
+     },
+     {
+      "level": 1,
+      "text": "**Severe hypocalcemia or seizures:** IV calcium gluconate + continuous cardiac monitoring"
+     },
+     {
+      "level": 0,
+      "text": "Conotruncal cardiac defect + absent thymus + hypocalcemia: 22q11.2 deletion (DiGeorge syndrome)"
+     },
+     {
+      "level": 0,
+      "text": "Third and fourth pharyngeal pouch dysgenesis leads to hypoparathyroidism + T-cell deficiency"
+     },
+     {
+      "level": 0,
+      "text": "Oral calcium + calcitriol for maintenance therapy of hypoparathyroidism"
+     },
+     {
+      "level": 0,
+      "text": "Flow cytometry for T cells + irradiated blood products + avoid live vaccines"
+     },
+     {
+      "level": 0,
+      "text": "Echocardiography + renal ultrasound to screen for associated congenital anomalies"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "truncus arteriosus defect"
+    },
+    {
+     "text": "8-day-old newborn appears jittery"
+    },
+    {
+     "text": "micrognathia and hypertelorism"
+    },
+    {
+     "text": "serum calcium concentration is 7 mg/dL"
+    },
+    {
+     "text": "without a thymic shadow"
+    }
+   ]
+  },
+  "c-peds-03-q002": {
+   "task": "Diagnosis",
+   "boardCall": "Diarrhea with blood and mucus + recent amoxicillin-clavulanate -> Clostridium difficile",
+   "hinge": "Dysentery-like diarrhea starting 1 day after completing a 10-day course of amoxicillin-clavulanate indicates C. difficile colitis.",
+   "trap": "Diarrhea containing blood and mucus with fever mimics Shigella or Salmonella, but recent antibiotic exposure points to C. difficile.",
+   "options": {
+    "A": {
+     "clue": "Toxin-mediated colitis following antibiotic therapy",
+     "support": "pseudomembranous colitis",
+     "fit": "Here: completed 10-day course of amoxicillin-clavulanate 1 day ago",
+     "tx": "Oral vancomycin"
+    },
+    "B": {
+     "clue": "Poultry or reptile exposure gastroenteritis",
+     "support": "nontyphoidal salmonellosis",
+     "fit": "Not here: onset 1 day after finishing amoxicillin-clavulanate",
+     "tx": "Supportive care",
+     "tempting": "causes fever, abdominal pain, and bloody diarrhea"
+    },
+    "C": {
+     "clue": "Shiga toxin producing acute dysentery",
+     "support": "fecal-oral bacterial dysentery",
+     "fit": "Not here: preceded by 10-day amoxicillin-clavulanate course",
+     "tx": "Azithromycin if severe",
+     "tempting": "causes fever with blood and mucus in stool"
+    },
+    "D": {
+     "clue": "Preformed heat-stable enterotoxin food poisoning",
+     "support": "rapid-onset gastroenteritis",
+     "fit": "Not here: bloody and mucoid stool, moderate illness",
+     "tx": "Supportive rehydration",
+     "tempting": "causes antibiotic-associated diarrhea"
+    },
+    "E": {
+     "clue": "Pet or pork exposure pseudoappendicitis",
+     "support": "invasive enterocolitis",
+     "fit": "Not here: diarrhea containing blood 1 day after antibiotics",
+     "tx": "Supportive care",
+     "tempting": "causes fever, abdominal pain, and bloody diarrhea"
+    }
+   },
+   "algorithm": {
+    "title": "Clostridioides difficile colitis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Acute diarrhea within 12 weeks of antibiotics: test stool for C. difficile toxin NAAT"
+     },
+     {
+      "level": 0,
+      "text": "Discontinue inciting antibiotic immediately if clinically feasible"
+     },
+     {
+      "level": 0,
+      "text": "Oral vancomycin or fidaxomicin for 10 days"
+     },
+     {
+      "level": 1,
+      "text": "**Fulminant colitis (hypotension, ileus, toxic megacolon):** high-dose oral vancomycin + IV metronidazole"
+     },
+     {
+      "level": 1,
+      "text": "**Surgical emergency:** urgent surgical consultation for subtotal colectomy"
+     },
+     {
+      "level": 0,
+      "text": "**First recurrence:** prolonged tapered oral vancomycin pulse regimen"
+     },
+     {
+      "level": 0,
+      "text": "Contact precautions with soap and water hand hygiene to prevent transmission"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "diarrhea containing blood and mucus"
+    },
+    {
+     "text": "completed a 10-day course of amoxicillin-clavulanate 1 day ago"
+    },
+    {
+     "text": "moderate left lower quadrant tenderness with no rebound"
+    },
+    {
+     "text": "fever, abdominal pain, and diarrhea containing blood and mucus",
+     "trap": true
+    }
+   ]
+  },
+  "c-peds-03-q003": {
+   "task": "Diagnosis",
+   "boardCall": "Air-fluid level + poor tympanic mobility + afebrile -> serous otitis media",
+   "hinge": "Middle ear air-fluid level and reduced mobility without fever or acute inflammation define serous otitis media.",
+   "trap": "Recurrent otitis media history suggests acute otitis media, but the tympanic membrane is bluish gray and landmarks are visible.",
+   "options": {
+    "A": {
+     "clue": "Vestibular schwannoma at cerebellopontine angle",
+     "support": "retrocochlear hearing loss",
+     "fit": "Not here: visible middle ear air-fluid level",
+     "tx": "Observation or surgery",
+     "tempting": "causes unilateral hearing impairment"
+    },
+    "B": {
+     "clue": "Bulging erythematous inflamed tympanic membrane",
+     "support": "suppurative middle ear infection",
+     "fit": "Not here: afebrile, bluish gray membrane, visible landmarks",
+     "tx": "High-dose amoxicillin",
+     "tempting": "history of several episodes of acute otitis media"
+    },
+    "C": {
+     "clue": "Acute unilateral peripheral facial palsy",
+     "support": "seventh cranial nerve palsy",
+     "fit": "Not here: normal facial movement, middle ear effusion",
+     "tx": "Oral corticosteroids",
+     "tempting": "can follow viral upper respiratory infection"
+    },
+    "D": {
+     "clue": "Semicircular canal otolith displacement",
+     "support": "transient positional vertigo",
+     "fit": "Not here: 18-month-old with middle ear fluid level",
+     "tx": "Epley repositioning maneuver",
+     "tempting": "causes inner ear symptoms after viral illness"
+    },
+    "E": {
+     "clue": "Keratinizing squamous epithelium behind drum",
+     "support": "pearly attic mass",
+     "fit": "Not here: landmarks visible, intact bluish gray membrane",
+     "tx": "Tympanomastoidectomy",
+     "tempting": "develops after recurrent episodes of otitis media"
+    },
+    "F": {
+     "clue": "Postauricular fluctuance and ear protrusion",
+     "support": "coalescent mastoid infection",
+     "fit": "Not here: external ear and canal appear normal",
+     "tx": "IV vancomycin + cefepime",
+     "tempting": "complication of recurrent acute otitis media"
+    },
+    "G": {
+     "clue": "Full-thickness defect in tympanic membrane",
+     "support": "ruptured tympanic membrane",
+     "fit": "Not here: intact membrane retaining an air-fluid level",
+     "tx": "Dry ear precautions",
+     "tempting": "frequent sequela of recurrent middle ear infections"
+    },
+    "H": {
+     "clue": "Medial retraction of pars tensa or flaccida",
+     "support": "negative middle ear pressure",
+     "fit": "Not here: air-fluid level present, landmarks visible",
+     "tx": "Observation",
+     "tempting": "results from chronic Eustachian tube dysfunction"
+    },
+    "I": {
+     "clue": "Nonpurulent middle ear fluid without inflammation",
+     "support": "otitis media with effusion",
+     "fit": "Here: bluish gray membrane, air-fluid level, minimal movement",
+     "tx": "Watchful waiting"
+    }
+   },
+   "algorithm": {
+    "title": "Otitis media with effusion (serous otitis media)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Pneumatic otoscopy: evaluate tympanic membrane translucency + mobility + color"
+     },
+     {
+      "level": 0,
+      "text": "Middle ear effusion without acute inflammation: diagnose serous otitis media"
+     },
+     {
+      "level": 0,
+      "text": "Watchful waiting with observation for up to 3 months"
+     },
+     {
+      "level": 1,
+      "text": "**Effusion persists beyond 3 months:** formal audiologic hearing evaluation"
+     },
+     {
+      "level": 1,
+      "text": "**Documented hearing loss or speech delay:** tympanostomy tube placement"
+     },
+     {
+      "level": 0,
+      "text": "Avoid antihistamines + decongestants + systemic steroids"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "bluish gray with visible landmarks"
+    },
+    {
+     "text": "air-fluid level is present behind the inferior half"
+    },
+    {
+     "text": "minimal movement on pneumatic otoscopy"
+    },
+    {
+     "text": "several episodes of acute otitis media",
+     "trap": true
+    }
+   ]
+  },
+  "c-peds-03-q004": {
+   "task": "Prevention",
+   "boardCall": "Age 16 + kindergarten vaccines complete + no adolescent vaccines -> Tdap + HPV + meningococcal",
+   "hinge": "A 16-year-old requires routine adolescent immunizations: Tdap (Td received at age 10 lacks pertussis), MenACWY, and HPV.",
+   "trap": "Receiving Td at age 10 makes Td sound sufficient, but adolescents still require a dose of acellular pertussis via Tdap.",
+   "options": {
+    "A": {
+     "clue": "Adult tetanus booster and hepatitis B",
+     "support": "unimmunized adult regimen",
+     "fit": "Not here: hepatitis B complete, lacks pertussis and meningococcal",
+     "tx": "Tdap + MenACWY + HPV",
+     "tempting": "Td at age 10 tempts repeating Td rather than Tdap"
+    },
+    "B": {
+     "clue": "Routine adolescent preventive immunization bundle",
+     "support": "age 11-16 immunization platform",
+     "fit": "Here: age 16, needs adolescent pertussis, meningococcal, and HPV",
+     "tx": "Tdap + MenACWY + HPV"
+    },
+    "C": {
+     "clue": "Childhood viral vaccines and Tdap",
+     "support": "infant booster combination",
+     "fit": "Not here: MMR and hepatitis B completed prior to kindergarten",
+     "tx": "Tdap + MenACWY + HPV",
+     "tempting": "Tdap is correctly included"
+    },
+    "D": {
+     "clue": "Infant pneumococcal and polio platform",
+     "support": "childhood primary series",
+     "fit": "Not here: PCV-7 and IPV series completed in kindergarten",
+     "tx": "Tdap + MenACWY + HPV",
+     "tempting": "sports physical catch-up regimen"
+    },
+    "E": {
+     "clue": "Pediatric viral and bacterial catch-up",
+     "support": "unvaccinated child schedule",
+     "fit": "Not here: immunizations were up-to-date at kindergarten entry",
+     "tx": "Tdap + MenACWY + HPV",
+     "tempting": "childhood vaccines for sports clearance"
+    },
+    "F": {
+     "clue": "Adult tetanus and meningococcal conjugate",
+     "support": "omitted pertussis coverage",
+     "fit": "Not here: lacks pertussis component, MMR already complete",
+     "tx": "Tdap + MenACWY + HPV",
+     "tempting": "meningococcal vaccine is indicated at age 16"
+    }
+   },
+   "algorithm": {
+    "title": "Routine adolescent immunization schedule",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Review immunization history at adolescent preventive health visit"
+     },
+     {
+      "level": 0,
+      "text": "Administer Tdap + meningococcal conjugate (MenACWY) + HPV vaccine series",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Age 16 MenACWY booster due:** give booster dose if primary dose given at 11-12"
+     },
+     {
+      "level": 1,
+      "text": "**Td received previously without pertussis:** administer single Tdap dose regardless of interval"
+     },
+     {
+      "level": 0,
+      "text": "Annual inactivated influenza vaccination for all adolescents"
+     },
+     {
+      "level": 0,
+      "text": "**Increased risk (asplenia, complement deficiency):** administer meningococcal serogroup B series"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "immunizations were up-to-date when she began kindergarten"
+    },
+    {
+     "text": "diphtheria-tetanus toxoid at the age of 10 years"
+    },
+    {
+     "text": "sexually active for the past year with two male partners"
+    },
+    {
+     "text": "healthy 16-year-old girl comes to the physician"
+    }
+   ]
+  },
+  "c-peds-03-q005": {
+   "task": "Diagnosis",
+   "boardCall": "Type 1 diabetes + fatigue + menorrhagia + palpable thyroid -> thyroid-stimulating hormone (TSH)",
+   "hinge": "Fatigue, menorrhagia, bradycardia, and palpable goiter in a patient with type 1 diabetes point to primary hypothyroidism with elevated TSH.",
+   "trap": "Heavy irregular menses in an adolescent suggest polycystic ovary syndrome, tempting DHEA-S or LH.",
+   "options": {
+    "A": {
+     "clue": "Glucocorticoid hormone increased in hypercortisolemia",
+     "support": "Cushing syndrome",
+     "fit": "Not here: pulse 60/min, no striae, no central obesity",
+     "tx": "Adrenal imaging",
+     "tempting": "fatigue and menstrual changes suggest Cushing syndrome"
+    },
+    "B": {
+     "clue": "Adrenal androgen marker of hyperandrogenism",
+     "support": "polycystic ovary syndrome",
+     "fit": "Not here: no hirsutism or acne, palpable thyroid gland",
+     "tx": "Combined oral contraceptives",
+     "tempting": "irregular heavy menses suggest androgen excess"
+    },
+    "C": {
+     "clue": "Ovarian granulosa cell steroid hormone",
+     "support": "ovarian follicular production",
+     "fit": "Not here: pulse 60/min, palpable goiter, hypothyroid anovulation",
+     "tx": "Hormone replacement",
+     "tempting": "menstrual alterations suggest disordered estrogen production"
+    },
+    "D": {
+     "clue": "Anterior pituitary gonadotropin triggering ovulation",
+     "support": "midcycle ovulatory surge",
+     "fit": "Not here: hypothyroid hyperprolactinemia suppresses gonadotropins",
+     "tx": "Ovulation induction",
+     "tempting": "menstrual irregularities suggest gonadotropin dysfunction"
+    },
+    "E": {
+     "clue": "Anterior pituitary thyrotropin elevated in hypothyroidism",
+     "support": "Hashimoto thyroiditis",
+     "fit": "Here: type 1 diabetes, tiredness, pulse 60/min, palpable thyroid",
+     "tx": "Oral levothyroxine"
+    }
+   },
+   "algorithm": {
+    "title": "Autoimmune primary hypothyroidism in type 1 diabetes",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fatigue + menorrhagia + bradycardia in type 1 diabetes: check serum TSH + free T4"
+     },
+     {
+      "level": 0,
+      "text": "Elevated TSH with low free T4 confirms primary autoimmune hypothyroidism"
+     },
+     {
+      "level": 0,
+      "text": "Hashimoto thyroiditis causes autoimmune thyroid destruction and compensatory TSH surge"
+     },
+     {
+      "level": 0,
+      "text": "Start oral levothyroxine with periodic TSH monitoring"
+     },
+     {
+      "level": 1,
+      "text": "**TSH remains elevated after 6-8 weeks:** titrate levothyroxine dose upward"
+     },
+     {
+      "level": 0,
+      "text": "Screen for associated celiac disease with anti-tissue transglutaminase IgA"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "progressive tiredness during the past month"
+    },
+    {
+     "text": "diagnosis of type 1 diabetes mellitus 4 years ago"
+    },
+    {
+     "text": "flow has been heavier"
+    },
+    {
+     "text": "pulse is 60/min"
+    },
+    {
+     "text": "thyroid gland is easily palpated"
+    },
+    {
+     "text": "irregular 30- to 40-day intervals",
+     "trap": true
+    }
+   ]
+  },
+  "c-peds-03-q006": {
+   "task": "Mechanism",
+   "boardCall": "Continuous machinery murmur + bounding pulses -> extracardiac left-to-right shunt (PDA)",
+   "hinge": "Continuous machinery murmur loudest in the second left intercostal space with 4+ pulses defines an extracardiac left-to-right PDA shunt.",
+   "trap": "Right toe cyanosis might tempt a right-to-left shunt, but continuous murmur and bounding pulses confirm left-to-right PDA flow.",
+   "options": {
+    "A": {
+     "clue": "Aorta-to-pulmonary artery vascular conduit",
+     "support": "patent ductus arteriosus",
+     "fit": "Here: continuous machinery murmur, 4+ pulses in all extremities",
+     "tx": "Transcatheter coil closure"
+    },
+    "B": {
+     "clue": "Eisenmenger reversal of ductal blood flow",
+     "support": "differential cyanosis",
+     "fit": "Not here: 4+ pulses in all extremities, saturations 97% to 98%",
+     "tx": "Sildenafil + bosentan",
+     "tempting": "cyanosis with shunt reversal tempts right-to-left flow"
+    },
+    "C": {
+     "clue": "Interatrial communication with fixed split S2",
+     "support": "atrial septal defect",
+     "fit": "Not here: continuous machinery murmur, thrill in second left space",
+     "tx": "Percutaneous device closure",
+     "tempting": "causes pediatric left-to-right cardiac shunting"
+    },
+    "D": {
+     "clue": "Interatrial Eisenmenger shunt reversal",
+     "support": "Eisenmenger ASD",
+     "fit": "Not here: continuous machinery murmur, bounding 4+ pulses",
+     "tx": "Heart-lung transplantation",
+     "tempting": "cyanosis can accompany right-to-left intracardiac shunting"
+    },
+    "E": {
+     "clue": "Interventricular defect with holosystolic murmur",
+     "support": "ventricular septal defect",
+     "fit": "Not here: murmur is continuous rather than holosystolic",
+     "tx": "Surgical patch repair",
+     "tempting": "most common congenital intracardiac left-to-right shunt"
+    },
+    "F": {
+     "clue": "Interventricular Eisenmenger shunt reversal",
+     "support": "Eisenmenger VSD",
+     "fit": "Not here: continuous machinery murmur, no holosystolic murmur",
+     "tx": "Pulmonary vasodilator therapy",
+     "tempting": "cyanosis occurs with right-to-left ventricular shunt"
+    }
+   },
+   "algorithm": {
+    "title": "Patent ductus arteriosus",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Continuous machinery murmur + wide pulse pressure: perform echocardiography"
+     },
+     {
+      "level": 0,
+      "text": "Patent ductus arteriosus creates an extracardiac left-to-right shunt between aorta and pulmonary artery"
+     },
+     {
+      "level": 0,
+      "text": "Asymptomatic small PDA: elective transcatheter closure or surgical ligation"
+     },
+     {
+      "level": 1,
+      "text": "**Premature infant with symptomatic PDA:** administer IV indomethacin or ibuprofen"
+     },
+     {
+      "level": 1,
+      "text": "**Uncorrected large PDA with pulmonary hypertension:** monitor for Eisenmenger shunt reversal"
+     },
+     {
+      "level": 0,
+      "text": "Infective endocarditis prophylaxis indicated only for residual defect after surgical repair"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "apical impulse is prominent"
+    },
+    {
+     "text": "thrill in the second left intercostal space"
+    },
+    {
+     "text": "continuous \"machinery-like\" murmur increasing in intensity during systole"
+    },
+    {
+     "text": "loudest in the second left intercostal space"
+    },
+    {
+     "text": "Peripheral pulses are 4+ in all extremities"
+    }
+   ]
+  },
+  "c-peds-03-q007": {
+   "task": "Diagnosis",
+   "boardCall": "Headaches + papilledema + high LP opening pressure + health supplements -> vitamin A excess",
+   "hinge": "Papilledema with elevated intracranial opening pressure and normal neuroimaging in a patient taking dietary supplements is caused by vitamin A toxicity.",
+   "trap": "Excess vitamin D causes toxicity with fatigue and confusion, but causes hypercalcemia and nephrolithiasis rather than isolated intracranial hypertension.",
+   "options": {
+    "A": {
+     "clue": "Retinoid-induced elevated intracranial pressure",
+     "support": "pseudotumor cerebri",
+     "fit": "Here: papilledema, normal CT, increased LP opening pressure",
+     "tx": "Stop vitamin A"
+    },
+    "B": {
+     "clue": "Pyridoxine neurotoxicity causing peripheral neuropathy",
+     "support": "sensory polyneuropathy",
+     "fit": "Not here: papilledema, elevated opening pressure, normal CT",
+     "tx": "Discontinue vitamin B6",
+     "tempting": "health food supplement that causes neurotoxicity"
+    },
+    "C": {
+     "clue": "Ascorbic acid excess causing nephrolithiasis",
+     "support": "hyperoxaluria",
+     "fit": "Not here: increased opening pressure and papilledema",
+     "tx": "Reduce vitamin C",
+     "tempting": "common water-soluble supplement taken in mega-doses"
+    },
+    "D": {
+     "clue": "Calciferol toxicity causing hypercalcemia",
+     "support": "hypercalcemic nephropathy",
+     "fit": "Not here: papilledema and elevated opening pressure",
+     "tx": "Hydration + furosemide",
+     "tempting": "fat-soluble vitamin known for serious toxicity"
+    },
+    "E": {
+     "clue": "Tocopherol toxicity causing coagulopathy",
+     "support": "platelet dysfunction",
+     "fit": "Not here: normal CT, increased opening pressure, papilledema",
+     "tx": "Stop vitamin E",
+     "tempting": "fat-soluble vitamin in health food regimens"
+    }
+   },
+   "algorithm": {
+    "title": "Idiopathic intracranial hypertension from vitamin A toxicity",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Headache + papilledema: urgent neuroimaging (MRI or CT) to exclude mass lesion"
+     },
+     {
+      "level": 0,
+      "text": "Lumbar puncture demonstrates elevated opening pressure (> 250 mm H2O) with normal CSF"
+     },
+     {
+      "level": 0,
+      "text": "Discontinue all retinoids + vitamin A supplements immediately"
+     },
+     {
+      "level": 0,
+      "text": "Start oral acetazolamide to decrease CSF production"
+     },
+     {
+      "level": 1,
+      "text": "**Severe visual loss refractory to acetazolamide:** optic nerve sheath fenestration or shunting"
+     },
+     {
+      "level": 0,
+      "text": "Serial automated visual field testing to prevent permanent vision loss"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "headaches that have increased in frequency and severity"
+    },
+    {
+     "text": "taking several vitamin supplements including A, B 6, C, D, and E"
+    },
+    {
+     "text": "mild papilledema"
+    },
+    {
+     "text": "increased opening pressure"
+    }
+   ]
+  },
+  "c-peds-03-q008": {
+   "task": "Next step",
+   "boardCall": "2-week-old + forceful nonbilious vomiting + hungry feeder -> abdominal ultrasonography",
+   "hinge": "Abdominal ultrasonography is the diagnostic imaging test of choice to confirm hypertrophic pyloric stenosis.",
+   "trap": "Abdominal plain radiograph is commonly obtained for infant vomiting, but ultrasound directly visualizes pyloric muscle hypertrophy.",
+   "options": {
+    "A": {
+     "clue": "Gas pattern evaluation on scout radiograph",
+     "support": "plain radiography",
+     "fit": "Not here: nonspecific gas pattern, cannot measure pyloric muscle",
+     "tx": "Abdominal ultrasound",
+     "tempting": "standard initial radiograph for infant vomiting"
+    },
+    "B": {
+     "clue": "Mediastinal and thoracic visualization",
+     "support": "chest radiography",
+     "fit": "Not here: vomiting after feeds, clear lungs, soft abdomen",
+     "tx": "Abdominal ultrasound",
+     "tempting": "checks for aspiration or hiatal hernia"
+    },
+    "C": {
+     "clue": "Fluoroscopic contrast evaluation of colon",
+     "support": "lower gastrointestinal study",
+     "fit": "Not here: nonbilious upper tract emesis, normal stooling",
+     "tx": "Abdominal ultrasound",
+     "tempting": "contrast study for pediatric lower bowel obstruction"
+    },
+    "D": {
+     "clue": "Direct measurement of pyloric muscle thickness",
+     "support": "abdominal ultrasonography",
+     "fit": "Here: 2-week-old, forceful nonbilious vomiting, hungry feeder",
+     "tx": "Pyloromyotomy"
+    },
+    "E": {
+     "clue": "Ionizing cross-sectional abdominal imaging",
+     "support": "computed tomography",
+     "fit": "Not here: unnecessary ionizing radiation in a 2-week-old",
+     "tx": "Abdominal ultrasound",
+     "tempting": "cross-sectional imaging modality for abdominal disease"
+    }
+   },
+   "algorithm": {
+    "title": "Hypertrophic pyloric stenosis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Forceful nonbilious emesis in infant: assess hydration + electrolytes (hypochloremic alkalosis)"
+     },
+     {
+      "level": 0,
+      "text": "Abdominal ultrasonography showing pyloric muscle thickening (> 3 mm thickness, > 14 mm length)",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Equivocal ultrasound findings:** upper GI series showing \"string sign\""
+     },
+     {
+      "level": 0,
+      "text": "IV fluid resuscitation with normal saline + potassium replacement to correct alkalosis"
+     },
+     {
+      "level": 0,
+      "text": "Surgical Ramstedt pyloromyotomy once electrolytes and hydration normalize"
+     },
+     {
+      "level": 0,
+      "text": "Resume small-volume oral feedings gradually postoperatively"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "excessive forceful vomiting after eating"
+    },
+    {
+     "text": "vomitus is not green or bloody"
+    },
+    {
+     "text": "continues to breast feed vigorously"
+    },
+    {
+     "text": "fewer wet diapers than normal"
+    },
+    {
+     "text": "mildly dehydrated"
+    }
+   ]
+  },
+  "c-peds-03-q009": {
+   "task": "Diagnosis",
+   "boardCall": "6-month-old + coryza + barking inspiratory stridor -> larynx (croup)",
+   "hinge": "Inspiratory stridor localizes airway obstruction to the larynx and subglottic space in viral laryngotracheobronchitis.",
+   "trap": "Wheezing and lower airway retractions in an infant suggest bronchiolitis, tempting bronchioles or alveoli.",
+   "options": {
+    "A": {
+     "clue": "Gas exchange parenchymal consolidation",
+     "support": "bacterial or viral pneumonia",
+     "fit": "Not here: inspiratory stridor rather than crackles or dullness",
+     "tx": "Empiric antibiotics",
+     "tempting": "infant fever and respiratory distress suggest pneumonia"
+    },
+    "B": {
+     "clue": "Large central conducting airway inflammation",
+     "support": "tracheobronchitis",
+     "fit": "Not here: prominent inspiratory stridor audible without stethoscope",
+     "tx": "Supportive care",
+     "tempting": "cough and fever involve large bronchial airways"
+    },
+    "C": {
+     "clue": "Small distal airway obstruction with wheezing",
+     "support": "viral bronchiolitis",
+     "fit": "Not here: inspiratory stridor rather than expiratory wheezing",
+     "tx": "Supportive care",
+     "tempting": "common cause of infant respiratory distress with coryza"
+    },
+    "D": {
+     "clue": "Musculoskeletal chest boundary restriction",
+     "support": "thoracic wall deformity",
+     "fit": "Not here: acute febrile illness with inspiratory stridor",
+     "tx": "Physical therapy",
+     "tempting": "accessory muscle retractions involve the chest wall"
+    },
+    "E": {
+     "clue": "Subglottic upper airway narrowing causing stridor",
+     "support": "laryngotracheobronchitis",
+     "fit": "Here: 6-month-old, coryza, inspiratory stridor without stethoscope",
+     "tx": "Single dose oral dexamethasone"
+    }
+   },
+   "algorithm": {
+    "title": "Viral croup (laryngotracheobronchitis)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Barking cough + inspiratory stridor: evaluate work of breathing and oxygen saturation"
+     },
+     {
+      "level": 0,
+      "text": "Upper airway subglottic edema caused by parainfluenza virus"
+     },
+     {
+      "level": 0,
+      "text": "Mild croup (no stridor at rest): single dose oral dexamethasone + humidified air"
+     },
+     {
+      "level": 1,
+      "text": "**Moderate to severe croup (stridor at rest, retractions):** nebulized racemic epinephrine + oral or IM dexamethasone"
+     },
+     {
+      "level": 1,
+      "text": "**Impending respiratory failure:** endotracheal intubation with a smaller tube size"
+     },
+     {
+      "level": 0,
+      "text": "Observe for at least 2 hours following epinephrine to monitor for rebound stridor"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "nasal congestion, and a runny nose for 2 days"
+    },
+    {
+     "text": "mild respiratory distress"
+    },
+    {
+     "text": "temperature is 38.3°C (101°F)"
+    },
+    {
+     "text": "inspiratory stridor can be heard without the use of a stethoscope"
+    },
+    {
+     "text": "Generalized harsh breath sounds"
+    }
+   ]
+  },
+  "c-peds-03-q010": {
+   "task": "Prevention",
+   "boardCall": "Cow milk diet after 6 months + microcytic anemia -> iron supplementation",
+   "hinge": "Excessive cow milk consumption without iron-fortified foods causes dietary iron deficiency anemia in toddlers.",
+   "trap": "Folate deficiency can cause nutritional anemia, but it causes macrocytic megaloblastic anemia rather than microcytosis.",
+   "options": {
+    "A": {
+     "clue": "Folate cofactor for thymidylate synthesis",
+     "support": "megaloblastic anemia prevention",
+     "fit": "Not here: hematocrit 26%, microcytic hypochromic smear",
+     "tx": "Oral folic acid",
+     "tempting": "supplement that prevents nutritional pediatric anemia"
+    },
+    "B": {
+     "clue": "Essential mineral for heme synthesis",
+     "support": "iron deficiency anemia",
+     "fit": "Here: 2% cow milk diet, table food, hematocrit 26%",
+     "tx": "Oral ferrous sulfate"
+    },
+    "C": {
+     "clue": "Phospholipid surfactant component",
+     "support": "respiratory distress syndrome",
+     "fit": "Not here: 1-year-old with anemia and pallor",
+     "tx": "Surfactant therapy",
+     "tempting": "dietary lipid component"
+    },
+    "D": {
+     "clue": "Pyridoxine cofactor in heme synthesis",
+     "support": "sideroblastic anemia",
+     "fit": "Not here: microcytic hypochromic anemia from cow milk excess",
+     "tx": "Pyridoxine supplementation",
+     "tempting": "vitamin required for heme pathway"
+    },
+    "E": {
+     "clue": "Lipid antioxidant protecting erythrocytes",
+     "support": "hemolytic anemia in preemies",
+     "fit": "Not here: microcytic hypochromic smear from excessive cow milk",
+     "tx": "Vitamin E supplementation",
+     "tempting": "antioxidant vitamin preventing hemolysis"
+    }
+   },
+   "algorithm": {
+    "title": "Nutritional iron deficiency anemia in infants",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Microcytic hypochromic anemia with high RDW: check serum ferritin"
+     },
+     {
+      "level": 0,
+      "text": "Low ferritin (< 12 ng/mL) confirms iron deficiency anemia"
+     },
+     {
+      "level": 0,
+      "text": "Limit cow milk intake to less than 24 ounces daily"
+     },
+     {
+      "level": 0,
+      "text": "Oral ferrous sulfate supplementation + vitamin C to enhance absorption"
+     },
+     {
+      "level": 1,
+      "text": "**Reticulocytosis within 1-2 weeks:** confirms therapeutic response to oral iron"
+     },
+     {
+      "level": 0,
+      "text": "Continue oral iron for 2-3 months after hemoglobin normalizes to replenish stores"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "fed 2% cow's milk and table food since then"
+    },
+    {
+     "text": "commercial formula until the age of 6 months"
+    },
+    {
+     "text": "Hematocrit is 26%"
+    },
+    {
+     "text": "pallor for 2 weeks"
+    }
+   ]
+  },
+  "c-peds-03-q011": {
+   "task": "Pharmacology",
+   "boardCall": "Febrile 3-month-old + nitrites 2+ + leukocyte esterase 3+ -> IV cefotaxime",
+   "hinge": "Urine dipstick with nitrites and leukocyte esterase in a febrile infant indicates UTI requiring third-generation cephalosporin coverage.",
+   "trap": "Cefazolin provides first-generation coverage, but cefotaxime or ceftriaxone is required for infant uropathogens and pyelonephritis.",
+   "options": {
+    "A": {
+     "clue": "First-generation cephalosporin",
+     "support": "gram-positive skin coverage",
+     "fit": "Not here: inadequate Enterobacteriaceae coverage for infant pyelonephritis",
+     "tx": "IV cefazolin",
+     "tempting": "cephalosporin commonly used for mild pediatric infections"
+    },
+    "B": {
+     "clue": "Third-generation cephalosporin",
+     "support": "pediatric gram-negative pyelonephritis",
+     "fit": "Here: temperature 39 C, nitrites 2+, leukocyte esterase 3+",
+     "tx": "IV cefotaxime"
+    },
+    "C": {
+     "clue": "Antistaphylococcal penicillin",
+     "support": "MSSA soft tissue infection",
+     "fit": "Not here: lacks gram-negative coverage for coliform urinary infection",
+     "tx": "IV nafcillin",
+     "tempting": "effective against pediatric Staph aureus infections"
+    },
+    "D": {
+     "clue": "Narrow-spectrum natural penicillin",
+     "support": "streptococcal pharyngitis",
+     "fit": "Not here: no coverage for gram-negative bacilli causing UTI",
+     "tx": "IV penicillin",
+     "tempting": "standard narrow-spectrum pediatric penicillin"
+    },
+    "E": {
+     "clue": "Glycopeptide active against MRSA",
+     "support": "resistant gram-positive cocci",
+     "fit": "Not here: ineffective against gram-negative uropathogens like E. coli",
+     "tx": "IV vancomycin",
+     "tempting": "broad-spectrum inpatient empiric agent"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric urinary tract infection and pyelonephritis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Febrile infant with abnormal urinalysis: obtain catheterized urine culture before starting antibiotics"
+     },
+     {
+      "level": 0,
+      "text": "IV third-generation cephalosporin (cefotaxime or ceftriaxone) for febrile infant UTI",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Neonates under 28 days:** IV ampicillin + cefotaxime to cover Listeria"
+     },
+     {
+      "level": 0,
+      "text": "Renal and bladder ultrasonography after first febrile UTI to evaluate for anatomic abnormalities"
+     },
+     {
+      "level": 1,
+      "text": "**Abnormal ultrasound or recurrent UTI:** voiding cystourethrogram to evaluate for vesicoureteral reflux"
+     },
+     {
+      "level": 0,
+      "text": "Transition to oral cefixime or cephalexin once afebrile and clinical improvement occurs"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "rectal temperature is 39°C (102.2°F)"
+    },
+    {
+     "text": "Nitrites 2+"
+    },
+    {
+     "text": "Leukocyte esterase 3+"
+    },
+    {
+     "text": "1-day history of fever, vomiting, and fussiness"
+    },
+    {
+     "text": "patient is uncircumcised"
+    }
+   ]
+  },
+  "c-peds-03-q012": {
+   "task": "Pharmacology",
+   "boardCall": "BP 250/154 + seizure + unarousable + retinopathy -> IV sodium nitroprusside",
+   "hinge": "Hypertensive encephalopathy with extreme blood pressure elevation and end-organ injury requires titratable IV vasodilator therapy.",
+   "trap": "Lorazepam treats the acute seizure, but the underlying driver and primary life threat is severe hypertensive emergency.",
+   "options": {
+    "A": {
+     "clue": "Potent arteriolar vasodilator",
+     "support": "diazoxide",
+     "fit": "Not here: causes unpredictable profound hypotension and reflex tachycardia",
+     "tx": "IV diazoxide",
+     "tempting": "rapid-acting intravenous arteriolar vasodilator"
+    },
+    "B": {
+     "clue": "Loop diuretic for volume overload",
+     "support": "loop diuretic",
+     "fit": "Not here: patient is not volume-overloaded, risk of hypovolemia",
+     "tx": "IV furosemide",
+     "tempting": "lowers blood pressure via natriuresis"
+    },
+    "C": {
+     "clue": "Direct arteriolar vasodilator",
+     "support": "hydralazine",
+     "fit": "Not here: unpredictable response and reflex tachycardia worsen encephalopathy",
+     "tx": "IV hydralazine",
+     "tempting": "intravenous agent used in pregnancy-associated hypertension"
+    },
+    "D": {
+     "clue": "Benzodiazepine GABA agonist",
+     "support": "acute seizure abortive",
+     "fit": "Not here: seizure ended 20 minutes ago, BP 250/154",
+     "tx": "IV lorazepam",
+     "tempting": "first-line abortive agent for generalized tonic-clonic seizures"
+    },
+    "E": {
+     "clue": "Direct nitric oxide donor vasodilator",
+     "support": "hypertensive emergency",
+     "fit": "Here: BP 250/154 mm Hg, unarousable, retinopathy, seizure",
+     "tx": "IV sodium nitroprusside"
+    }
+   },
+   "algorithm": {
+    "title": "Hypertensive emergency and encephalopathy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Severe hypertension with end-organ damage (seizure, encephalopathy, retinopathy): continuous arterial monitoring"
+     },
+     {
+      "level": 0,
+      "text": "Titratable IV sodium nitroprusside, labetalol, or nicardipine infusion",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Reduce mean arterial pressure by no more than 25% over first 2-4 hours"
+     },
+     {
+      "level": 1,
+      "text": "**Active persistent seizure:** IV lorazepam while initiating antihypertensive therapy"
+     },
+     {
+      "level": 0,
+      "text": "Noncontrast head CT to exclude acute intracranial hemorrhage or edema"
+     },
+     {
+      "level": 0,
+      "text": "Transition to oral antihypertensive agents once blood pressure stabilizes over 24-48 hours"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "generalized tonic-clonic seizure lasting 5 minutes"
+    },
+    {
+     "text": "He has hypertension treated with a calcium-channel blocking agent"
+    },
+    {
+     "text": "blood pressure is 250/154 mm Hg"
+    },
+    {
+     "text": "Examination shows proliferative retinopathy"
+    },
+    {
+     "text": "On arrival, he is unarousable"
+    }
+   ]
+  },
+  "c-peds-03-q013": {
+   "task": "Mechanism",
+   "boardCall": "Large compressible vascular lesion + petechiae and bruises -> thrombocytopenia from platelet sequestration (Kasabach-Merritt)",
+   "hinge": "A large vascular tumor trapping platelets and causing consumptive coagulopathy defines Kasabach-Merritt phenomenon.",
+   "trap": "Generalized petechiae and bleeding suggest primary DIC or sepsis, but the large buttock vascular tumor is the site of sequestration.",
+   "options": {
+    "A": {
+     "clue": "Systemic microvascular fibrin thrombi formation",
+     "support": "systemic consumptive coagulopathy",
+     "fit": "Not here: localized vascular mass driving the consumptive process",
+     "tx": "Treat underlying cause",
+     "tempting": "causes thrombocytopenia, petechiae, and consumptive coagulopathy"
+    },
+    "B": {
+     "clue": "Arteriovenous shunting causing cardiac failure",
+     "support": "high-output heart failure",
+     "fit": "Not here: petechiae and bruising rather than cardiomegaly",
+     "tx": "Diuretics + inotropes",
+     "tempting": "large vascular lesions can cause vascular overload"
+    },
+    "C": {
+     "clue": "Ischemic tissue hypoplasia from vascular steal",
+     "support": "regional limb undergrowth",
+     "fit": "Not here: normal limb growth with thrombocytopenia and purpura",
+     "tx": "Supportive care",
+     "tempting": "vascular lesions can affect regional tissue perfusion"
+    },
+    "D": {
+     "clue": "Angiogenic tissue overgrowth syndrome",
+     "support": "Klippel-Trenaunay syndrome",
+     "fit": "Not here: isolated vascular tumor with consumptive thrombocytopenia",
+     "tx": "Compression therapy",
+     "tempting": "vascular malformations cause regional hypertrophy"
+    },
+    "E": {
+     "clue": "Platelet trapping within a large vascular tumor",
+     "support": "Kasabach-Merritt phenomenon",
+     "fit": "Here: 12 x 8-cm lobulated buttock lesion, petechiae, bruises",
+     "tx": "Corticosteroids + sirolimus"
+    }
+   },
+   "algorithm": {
+    "title": "Kasabach-Merritt phenomenon",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Large rapidly growing vascular tumor: check CBC + platelet count + fibrinogen + D-dimer"
+     },
+     {
+      "level": 0,
+      "text": "Platelet sequestration within tumor causes profound thrombocytopenia and consumptive coagulopathy"
+     },
+     {
+      "level": 0,
+      "text": "Systemic corticosteroid therapy (prednisolone) + sirolimus to inhibit vascular tumor proliferation"
+     },
+     {
+      "level": 1,
+      "text": "**Refractory coagulopathy:** vincristine or embolization of the vascular malformation"
+     },
+     {
+      "level": 0,
+      "text": "Platelet transfusion reserved strictly for active life-threatening hemorrhage or immediate pre-procedure"
+     },
+     {
+      "level": 0,
+      "text": "Serial platelet counts + coagulation profiles until vascular tumor regresses"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "12 x 8-cm, red, raised, well-defined lesion"
+    },
+    {
+     "text": "lobulated and compressible overlying the buttocks since birth"
+    },
+    {
+     "text": "multiple petechiae and bruises"
+    },
+    {
+     "text": "1-month-old infant has had a 12 x 8-cm"
+    }
+   ]
+  },
+  "c-peds-03-q014": {
+   "task": "Diagnosis",
+   "boardCall": "Bilateral nocturnal calf pain + active days + normal exam + massage relieves -> growing pains",
+   "hinge": "Nocturnal bilateral calf pain without daytime limp, swelling, or exam abnormalities that resolves with massage defines growing pains.",
+   "trap": "Osteoid osteoma also causes nocturnal pain relieved by analgesics, but is unilateral and focal to a single bone.",
+   "options": {
+    "A": {
+     "clue": "Retropatellar cartilage softening",
+     "support": "anterior knee pain",
+     "fit": "Not here: calf pain, normal knee exam",
+     "tx": "Quadriceps strengthening",
+     "tempting": "causes pediatric lower extremity pain"
+    },
+    "B": {
+     "clue": "Intervertebral disc space infection",
+     "support": "back pain and refusal to walk",
+     "fit": "Not here: afebrile, calf pain, no spinal tenderness",
+     "tx": "IV antibiotics",
+     "tempting": "causes nocturnal pain awakening from sleep"
+    },
+    "C": {
+     "clue": "Benign nocturnal bilateral lower extremity pain",
+     "support": "growing pains",
+     "fit": "Here: nocturnal calf pain, active days, normal exam",
+     "tx": "Reassurance + massage"
+    },
+    "D": {
+     "clue": "Generalized ligamentous laxity with arthralgias",
+     "support": "Beighton score >= 5",
+     "fit": "Not here: normal joint mobility and calf localization",
+     "tx": "Physical therapy",
+     "tempting": "causes activity-related limb aches in young children"
+    },
+    "E": {
+     "clue": "Lateral knee friction pain",
+     "support": "distal iliotibial friction syndrome",
+     "fit": "Not here: nocturnal calf aching rather than lateral knee",
+     "tx": "Stretching exercises",
+     "tempting": "exacerbated by physical activity"
+    },
+    "F": {
+     "clue": "Acute traumatic ligamentous tear",
+     "support": "joint instability and hemarthrosis",
+     "fit": "Not here: 3-month bilateral nocturnal calves pain",
+     "tx": "RICE protocol",
+     "tempting": "pain following vigorous daytime play"
+    },
+    "G": {
+     "clue": "Tibial tubercle traction apophysitis",
+     "support": "adolescent anterior knee pain",
+     "fit": "Not here: 3-year-old, pain in calves, no tubercle tenderness",
+     "tx": "Rest + stretching",
+     "tempting": "exacerbated by daytime activity"
+    },
+    "H": {
+     "clue": "Focal bony nidus with nocturnal pain",
+     "support": "osteoid osteoma",
+     "fit": "Not here: bilateral calf pain, no focal bone tenderness",
+     "tx": "Oral NSAIDs",
+     "tempting": "nocturnal pain relieved by acetaminophen"
+    },
+    "I": {
+     "clue": "Metaphyseal bone infection with localized tenderness",
+     "support": "acute osteomyelitis",
+     "fit": "Not here: afebrile, bilateral calf pain, no point tenderness",
+     "tx": "IV antibiotics",
+     "tempting": "severe deep bone pain awakening child"
+    },
+    "J": {
+     "clue": "Patellofemoral maltracking with cinema sign",
+     "support": "anterior knee syndrome",
+     "fit": "Not here: calf pain at night, normal knee exam",
+     "tx": "Physical therapy",
+     "tempting": "exacerbated by running and jumping"
+    },
+    "K": {
+     "clue": "Slipped capital epiphysis or Perthes disease",
+     "support": "referred hip pathology",
+     "fit": "Not here: normal hip range of motion, bilateral calves",
+     "tx": "Orthopedic referral",
+     "tempting": "hip pathology commonly presents with lower extremity pain"
+    },
+    "L": {
+     "clue": "Chronic regional pain syndrome with allodynia",
+     "support": "complex regional pain syndrome",
+     "fit": "Not here: no hyperalgesia, temperature changes, or edema",
+     "tx": "Physical therapy",
+     "tempting": "chronic lower extremity pain"
+    },
+    "M": {
+     "clue": "Chronic joint inflammation with morning stiffness",
+     "support": "juvenile idiopathic arthritis",
+     "fit": "Not here: nocturnal pain only, no joint swelling or stiffness",
+     "tx": "Oral NSAIDs",
+     "tempting": "chronic pediatric extremity pain"
+    },
+    "N": {
+     "clue": "Acute purulent joint infection with refusal to walk",
+     "support": "bacterial septic arthritis",
+     "fit": "Not here: afebrile, 3-month duration, normal physical exam",
+     "tx": "Joint aspiration + antibiotics",
+     "tempting": "causes severe nocturnal limb pain"
+    },
+    "O": {
+     "clue": "Transient patellar displacement",
+     "support": "patellar instability",
+     "fit": "Not here: calf pain, normal patellar tracking",
+     "tx": "Bracing + therapy",
+     "tempting": "pain after vigorous daytime activities"
+    },
+    "P": {
+     "clue": "Transient postviral hip synovitis with limp",
+     "support": "transient synovitis",
+     "fit": "Not here: bilateral calf pain, 3-month course, normal gait",
+     "tx": "Rest + oral NSAIDs",
+     "tempting": "common benign cause of pediatric limb pain"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric nocturnal limb pain (growing pains)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Bilateral leg pain awakening child at night: comprehensive musculoskeletal examination"
+     },
+     {
+      "level": 0,
+      "text": "Normal exam + no limp + pain resolves with massage: diagnose benign growing pains"
+     },
+     {
+      "level": 0,
+      "text": "Reassurance + parental massage + stretching exercises + oral acetaminophen"
+     },
+     {
+      "level": 1,
+      "text": "**Unilateral pain, daytime limp, fever, or joint effusion:** obtain plain radiographs + ESR/CRP"
+     },
+     {
+      "level": 1,
+      "text": "**Focal bone tenderness with nocturnal pain relieved by NSAIDs:** evaluate for osteoid osteoma"
+     },
+     {
+      "level": 0,
+      "text": "Avoid unnecessary laboratory testing and imaging when diagnostic criteria are fully met"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "predominantly in her calves"
+    },
+    {
+     "text": "only occurs at night and often awakens her from sleep"
+    },
+    {
+     "text": "resolves with acetaminophen use and massage"
+    },
+    {
+     "text": "pain is exacerbated when she has been particularly active"
+    }
+   ]
+  },
+  "c-peds-03-q015": {
+   "task": "Diagnosis",
+   "boardCall": "Fever + red warm swollen tender knee + refusal to move or bear weight -> septic arthritis",
+   "hinge": "Acute fever, refusal to bear weight, and a swollen, erythematous, exquisitely tender joint with restricted range of motion confirm septic arthritis.",
+   "trap": "Toxic synovitis causes acute refusal to bear weight, but presents with mild pain and without marked erythema, warmth, or high fever.",
+   "options": {
+    "A": {
+     "clue": "Retropatellar cartilage softening",
+     "support": "patellofemoral chondrosis",
+     "fit": "Not here: temperature 38.7 C, swollen, red, warm knee",
+     "tx": "Physical therapy",
+     "tempting": "causes anterior knee pain and swelling"
+    },
+    "B": {
+     "clue": "Intervertebral disc space infection",
+     "support": "pediatric spinal infection",
+     "fit": "Not here: red, hot, swollen knee with effusion",
+     "tx": "IV antibiotics",
+     "tempting": "causes fever and refusal to bear weight"
+    },
+    "C": {
+     "clue": "Benign bilateral nocturnal calf aches",
+     "support": "growing pains",
+     "fit": "Not here: acute fever, erythematous swollen knee, non-weight-bearing",
+     "tx": "Reassurance + massage",
+     "tempting": "nocturnal pain awakening child from sleep"
+    },
+    "D": {
+     "clue": "Generalized joint hyperlaxity",
+     "support": "joint hypermobility",
+     "fit": "Not here: acute fever, monoarticular swelling, warmth, and erythema",
+     "tx": "Joint protection",
+     "tempting": "causes joint pain after physical exertion"
+    },
+    "E": {
+     "clue": "Lateral epicondyle friction inflammation",
+     "support": "IT band friction",
+     "fit": "Not here: high fever, diffuse joint erythema, warmth, effusion",
+     "tx": "Rest + stretching",
+     "tempting": "causes lateral knee pain"
+    },
+    "F": {
+     "clue": "Traumatic soft tissue disruption",
+     "support": "acute sprain or tear",
+     "fit": "Not here: temperature 38.7 C, exquisite erythema without trauma",
+     "tx": "Surgical repair",
+     "tempting": "acute painful knee with inability to bear weight"
+    },
+    "G": {
+     "clue": "Tibial tubercle traction apophysitis",
+     "support": "adolescent apophysitis",
+     "fit": "Not here: 5-year-old with fever, joint erythema, effusion",
+     "tx": "Activity modification",
+     "tempting": "causes localized anterior knee pain"
+    },
+    "H": {
+     "clue": "Benign osteolytic bone lesion with nidus",
+     "support": "osteoid osteoma",
+     "fit": "Not here: temperature 38.7 C, acutely swollen erythematous joint",
+     "tx": "Radiofrequency ablation",
+     "tempting": "causes nocturnal pain preventing sleep"
+    },
+    "I": {
+     "clue": "Bone cortex infection with localized tenderness",
+     "support": "acute osteomyelitis",
+     "fit": "Not here: joint effusion, resists passive knee motion",
+     "tx": "IV antibiotics",
+     "tempting": "causes fever, bone pain, and refusal to bear weight"
+    },
+    "J": {
+     "clue": "Patellofemoral tracking mismatch",
+     "support": "patellofemoral syndrome",
+     "fit": "Not here: temperature 38.7 C, knee swollen, red, warm",
+     "tx": "Physical therapy",
+     "tempting": "causes knee pain and joint dysfunction"
+    },
+    "K": {
+     "clue": "Hip joint pathology causing referred knee pain",
+     "support": "referred hip disease",
+     "fit": "Not here: obvious local knee swelling, erythema, and warmth",
+     "tx": "Treat primary hip condition",
+     "tempting": "pediatric hip disorders commonly refer pain to knee"
+    },
+    "L": {
+     "clue": "Chronic localized neuropathic allodynia",
+     "support": "complex regional pain",
+     "fit": "Not here: acute 24-hour onset with fever 38.7 C",
+     "tx": "Multimodal pain therapy",
+     "tempting": "causes extreme tenderness and refusal to bear weight"
+    },
+    "M": {
+     "clue": "Chronic autoimmune synovitis",
+     "support": "juvenile idiopathic arthritis",
+     "fit": "Not here: hyperacute 24-hour fever, intense erythema and warmth",
+     "tx": "Oral NSAIDs",
+     "tempting": "causes monoarticular pediatric knee swelling"
+    },
+    "N": {
+     "clue": "Acute bacterial joint infection with purulent effusion",
+     "support": "septic arthritis",
+     "fit": "Here: temperature 38.7 C, left knee swollen, red, warm",
+     "tx": "Arthrocentesis + IV antibiotics"
+    },
+    "O": {
+     "clue": "Transient patellar displacement",
+     "support": "patellar dislocation",
+     "fit": "Not here: fever 38.7 C, marked joint warmth and erythema",
+     "tx": "Closed reduction",
+     "tempting": "causes acute severe knee pain and flexion deformity"
+    },
+    "P": {
+     "clue": "Transient reactive postviral joint effusion",
+     "support": "toxic synovitis",
+     "fit": "Not here: high fever 38.7 C, red, warm, exquisitely tender",
+     "tx": "Rest + oral NSAIDs",
+     "tempting": "common pediatric cause of acute refusal to bear weight"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric septic arthritis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Acute fever + joint effusion + refusal to bear weight: urgent orthopedic evaluation"
+     },
+     {
+      "level": 0,
+      "text": "Urgent arthrocentesis: synovial WBC > 50,000/mm3 with > 75% PMNs confirms septic arthritis"
+     },
+     {
+      "level": 0,
+      "text": "Emergent surgical irrigation and debridement or arthroscopic washout"
+     },
+     {
+      "level": 0,
+      "text": "Empiric IV vancomycin + cefazolin (or ceftriaxone) pending culture results"
+     },
+     {
+      "level": 1,
+      "text": "**Culture confirms methicillin-sensitive S. aureus:** switch to IV cefazolin or nafcillin"
+     },
+     {
+      "level": 0,
+      "text": "Transition to targeted oral antibiotics once afebrile and inflammatory markers decline"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "unable to bear weight on her left leg"
+    },
+    {
+     "text": "temperature is 38.7°C (101.7°F)"
+    },
+    {
+     "text": "left knee is swollen, red, warm, and exquisitely tender"
+    },
+    {
+     "text": "She holds the knee in 45 degrees of flexion"
+    },
+    {
+     "text": "refuses to move the knee and resists passive extension and flexion"
+    }
+   ]
+  },
+  "c-peds-03-q016": {
+   "task": "Ethics",
+   "boardCall": "Child asks if dying + parents requested nondisclosure -> 'Have you talked to your parents about this?'",
+   "hinge": "Exploring what the child understands and facilitating family communication honors parental wishes without lying or breaking trust.",
+   "trap": "Telling the child that parents forbade disclosure violates parental confidentiality and damages the parent-child relationship.",
+   "options": {
+    "A": {
+     "clue": "Open-ended communication exploration",
+     "support": "pediatric truth-telling ethics",
+     "fit": "Here: 6-year-old asking if dying, parents desire nondisclosure",
+     "tx": "Facilitate family discussion"
+    },
+    "B": {
+     "clue": "Divulging parental nondisclosure directive",
+     "support": "parental conflict revelation",
+     "fit": "Not here: undermines parental trust and distresses young child",
+     "tx": "Facilitate family discussion",
+     "tempting": "truthful explanation for why the physician cannot answer directly"
+    },
+    "C": {
+     "clue": "Deceptive false reassurance",
+     "support": "medical dishonesty",
+     "fit": "Not here: misleading and false in progressive refractory leukemia",
+     "tx": "Facilitate family discussion",
+     "tempting": "protects the child from terrifying reality"
+    },
+    "D": {
+     "clue": "Evasive noncommittal dismissal",
+     "support": "conversational evasion",
+     "fit": "Not here: dismissive and ignores the child's underlying emotional distress",
+     "tx": "Facilitate family discussion",
+     "tempting": "neutral evasion that avoids explicit lying"
+    },
+    "E": {
+     "clue": "Invalidation of emotional distress",
+     "support": "judgmental reprimand",
+     "fit": "Not here: blaming and insensitive to terminal illness concerns",
+     "tx": "Facilitate family discussion",
+     "tempting": "attempts to promote positive thinking"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric prognostic disclosure and communication ethics",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Child asks about death or prognosis when parents requested nondisclosure: pause and acknowledge"
+     },
+     {
+      "level": 0,
+      "text": "Assess child's underlying understanding, fears, and specific concerns gently"
+     },
+     {
+      "level": 0,
+      "text": "Ask open-ended questions: \"Have you talked to your parents about this?\""
+     },
+     {
+      "level": 0,
+      "text": "Do not lie, give false reassurance, or disclose prognosis against parental directives"
+     },
+     {
+      "level": 0,
+      "text": "Meet privately with parents to explain child's awareness and need for open discussion"
+     },
+     {
+      "level": 0,
+      "text": "Facilitate joint multidisciplinary family conference with palliative care and child life specialists"
+     },
+     {
+      "level": 0,
+      "text": "Support parents in sharing honest prognostic information tailored to child developmental level"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "progressive acute myelogenous leukemia despite numerous therapeutic interventions"
+    },
+    {
+     "text": "parents request that the patient not be told his prognosis"
+    },
+    {
+     "text": "patient asks if he is going to die soon"
+    },
+    {
+     "text": "futility of further treatment"
+    }
+   ]
+  },
+  "c-peds-03-q017": {
+   "task": "Next step",
+   "boardCall": "Excessive oral secretions + choking on first feed + maternal polyhydramnios -> insertion of nasogastric tube",
+   "hinge": "Attempting to pass a nasogastric tube is the immediate diagnostic step to evaluate suspected esophageal atresia.",
+   "trap": "Chest CT provides detailed thoracic anatomy, but NG tube placement with plain radiography is the immediate first-line evaluation.",
+   "options": {
+    "A": {
+     "clue": "Karyotype or chromosomal microarray",
+     "support": "genetic anomaly workup",
+     "fit": "Not here: acute airway and feeding risk takes immediate priority",
+     "tx": "Insert NG tube first",
+     "tempting": "VACTERL association often accompanies esophageal atresia"
+    },
+    "B": {
+     "clue": "Sonographic evaluation of abdominal viscera",
+     "support": "abdominal ultrasound",
+     "fit": "Not here: symptoms localize to upper gastrointestinal tract and esophagus",
+     "tx": "Insert NG tube first",
+     "tempting": "evaluates for associated renal or GI anomalies"
+    },
+    "C": {
+     "clue": "Cross-sectional thoracic radiation imaging",
+     "support": "chest CT",
+     "fit": "Not here: unnecessary ionizing radiation before simple bedside tube attempt",
+     "tx": "Insert NG tube first",
+     "tempting": "provides cross-sectional imaging of tracheoesophageal fistula"
+    },
+    "D": {
+     "clue": "Direct endoscopic airway visualization",
+     "support": "laryngoscopy",
+     "fit": "Not here: invasive airway procedure before noninvasive tube passage",
+     "tx": "Insert NG tube first",
+     "tempting": "evaluates for laryngeal cleft or airway abnormalities"
+    },
+    "E": {
+     "clue": "Bedside catheter passage to assess patency",
+     "support": "esophageal atresia evaluation",
+     "fit": "Here: excessive oral secretions, coughing on first feed, polyhydramnios",
+     "tx": "Surgical repair"
+    }
+   },
+   "algorithm": {
+    "title": "Esophageal atresia and tracheoesophageal fistula",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Polyhydramnios + excessive oral secretions + choking on feeds: place infant on NPO status"
+     },
+     {
+      "level": 0,
+      "text": "Insertion of a nasogastric tube with chest/abdominal radiograph to confirm resistance",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Tube coils in upper esophageal pouch:** confirms esophageal atresia"
+     },
+     {
+      "level": 0,
+      "text": "Maintain continuous low suction on pouch catheter + elevate head of bed"
+     },
+     {
+      "level": 0,
+      "text": "Echocardiography + spinal and renal ultrasound to screen for VACTERL anomalies"
+     },
+     {
+      "level": 0,
+      "text": "Surgical primary esophageal anastomosis + tracheoesophageal fistula ligation once infant is stable"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "excessive oral secretions and coughing following his first feeding"
+    },
+    {
+     "text": "symptoms resolve after suctioning"
+    },
+    {
+     "text": "Polyhydramnios was diagnosed by ultrasonography at 35 weeks' gestation"
+    },
+    {
+     "text": "newborn is examined 12 hours after birth"
+    }
+   ]
+  },
+  "c-peds-03-q018": {
+   "task": "Diagnosis",
+   "boardCall": "Painless adenopathy + mediastinal mass + pruritus + B symptoms -> Hodgkin disease",
+   "hinge": "Cervical and mediastinal adenopathy accompanied by pruritus, weight loss, and elevated ESR in an adolescent confirms Hodgkin lymphoma.",
+   "trap": "Thymoma presents with an anterior mediastinal mass, but does not cause widespread peripheral lymphadenopathy or systemic B symptoms.",
+   "options": {
+    "A": {
+     "clue": "Large intranuclear owl-eye inclusion bodies",
+     "support": "viral lymphadenitis",
+     "fit": "Not here: mediastinal mass, 15-lb weight loss, progressive generalized adenopathy",
+     "tx": "Supportive care",
+     "tempting": "causes infectious mononucleosis-like lymphadenopathy"
+    },
+    "B": {
+     "clue": "Reed-Sternberg cells in inflammatory background",
+     "support": "classical Hodgkin lymphoma",
+     "fit": "Here: neck mass, axillary/inguinal adenopathy, pruritus, weight loss, mediastinal mass",
+     "tx": "ABVD chemotherapy + radiation"
+    },
+    "C": {
+     "clue": "Noncaseating granulomatous epithelioid inflammation",
+     "support": "sarcoidosis",
+     "fit": "Not here: mediastinal mass with peripheral lymphadenopathy and pruritus",
+     "tx": "Oral corticosteroids",
+     "tempting": "causes mediastinal adenopathy, elevated ESR, and constitutional symptoms"
+    },
+    "D": {
+     "clue": "Epithelial neoplasm of thymic gland",
+     "support": "anterior mediastinal tumor",
+     "fit": "Not here: generalized peripheral adenopathy, pruritus, and weight loss",
+     "tx": "Surgical thymectomy",
+     "tempting": "classic cause of an anterior mediastinal mass"
+    },
+    "E": {
+     "clue": "Caseating necrotizing granulomas with acid-fast bacilli",
+     "support": "tuberculous lymphadenitis",
+     "fit": "Not here: painless generalized adenopathy, pruritus, large mediastinal mass",
+     "tx": "Four-drug antimycobacterial therapy",
+     "tempting": "causes cervical scrofula, weight loss, and mediastinal adenopathy"
+    }
+   },
+   "algorithm": {
+    "title": "Hodgkin lymphoma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Painless firm lymphadenopathy + mediastinal mass + constitutional symptoms: perform excisional node biopsy"
+     },
+     {
+      "level": 0,
+      "text": "Excisional lymph node biopsy demonstrating Reed-Sternberg cells confirms Hodgkin lymphoma"
+     },
+     {
+      "level": 0,
+      "text": "PET-CT scan + bone marrow biopsy for Ann Arbor clinical staging"
+     },
+     {
+      "level": 0,
+      "text": "Risk-adapted combination chemotherapy (ABVD regimen) + targeted involved-site radiation therapy"
+     },
+     {
+      "level": 1,
+      "text": "**Relapsed or refractory disease:** brentuximab vedotin or autologous stem cell transplantation"
+     },
+     {
+      "level": 0,
+      "text": "Long-term surveillance for secondary malignancies + cardiac toxicity + thyroid dysfunction"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "mass in the right side of the neck"
+    },
+    {
+     "text": "progressive axillary and inguinal adenopathy, and generalized pruritus"
+    },
+    {
+     "text": "6.8-kg (15-lb) weight loss during this period"
+    },
+    {
+     "text": "x-ray of the chest shows a mediastinal mass"
+    },
+    {
+     "text": "increased erythrocyte sedimentation rate"
+    }
+   ]
+  },
+  "c-peds-03-q019": {
+   "task": "Diagnosis",
+   "boardCall": "4-year-old + edema and ascites after URI + 4+ protein with bland sediment -> minimal change nephrotic syndrome",
+   "hinge": "Sudden onset of massive proteinuria and generalized edema without hematuria or hypertension in a preschooler defines minimal change disease.",
+   "trap": "Postinfectious glomerulonephritis develops after an infection, but presents with hematuria, RBC casts, and hypertension.",
+   "options": {
+    "A": {
+     "clue": "Poststreptococcal nephritic syndrome with hematuria",
+     "support": "acute postinfectious glomerulonephritis",
+     "fit": "Not here: no occult blood, RBCs, or casts in urine",
+     "tx": "Supportive care + loop diuretics",
+     "tempting": "follows upper respiratory infection and causes pediatric edema"
+    },
+    "B": {
+     "clue": "Segmental sclerosis on light microscopy",
+     "support": "steroid-resistant nephrotic syndrome",
+     "fit": "Not here: classic initial preschooler presentation of pure nephrotic syndrome",
+     "tx": "Corticosteroids + calcineurin inhibitors",
+     "tempting": "causes nephrotic syndrome in pediatric patients"
+    },
+    "C": {
+     "clue": "Mesangial IgA deposition with synpharyngitic hematuria",
+     "support": "IgA nephropathy",
+     "fit": "Not here: 4+ protein without microscopic or gross hematuria",
+     "tx": "ACE inhibitors",
+     "tempting": "develops days after an upper respiratory tract infection"
+    },
+    "D": {
+     "clue": "Subepithelial immune complex spike-and-dome deposits",
+     "support": "membranous nephropathy",
+     "fit": "Not here: extremely rare in young children without secondary hepatitis B",
+     "tx": "Immunosuppressive therapy",
+     "tempting": "primary cause of heavy nephrotic-range proteinuria"
+    },
+    "E": {
+     "clue": "Podocyte foot process effacement on electron microscopy",
+     "support": "minimal change disease",
+     "fit": "Here: 4+ protein, no occult blood, periorbital and pedal edema",
+     "tx": "Oral prednisone"
+    }
+   },
+   "algorithm": {
+    "title": "Minimal change disease (nephrotic syndrome)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Generalized edema + 4+ proteinuria + bland urine sediment: check spot urine protein-to-creatinine ratio"
+     },
+     {
+      "level": 0,
+      "text": "Heavy proteinuria with hypoalbuminemia (< 2.5 g/dL): diagnose nephrotic syndrome"
+     },
+     {
+      "level": 0,
+      "text": "Empiric oral prednisone therapy without renal biopsy in typical pediatric presentation"
+     },
+     {
+      "level": 0,
+      "text": "Salt and fluid restriction + oral furosemide for symptomatic severe edema"
+     },
+     {
+      "level": 1,
+      "text": "**Steroid-resistant or frequently relapsing disease:** perform percutaneous renal biopsy"
+     },
+     {
+      "level": 0,
+      "text": "Routine pneumococcal vaccination + annual influenza vaccine to prevent encapsulated bacterial sepsis"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "periorbital and pedal edema and ascites 7 days after an upper respiratory tract infection"
+    },
+    {
+     "text": "2+ pretibial edema"
+    },
+    {
+     "text": "Urinalysis shows 4+ protein"
+    },
+    {
+     "text": "no occult blood, WBCs, RBCs, casts"
+    },
+    {
+     "text": "Breath sounds are diminished on the right side of the chest"
+    }
+   ]
+  },
+  "c-peds-03-q020": {
+   "task": "Prevention",
+   "boardCall": "Severe neurologic impairment + severe GERD + recurrent aspiration pneumonia -> Nissen fundoplication",
+   "hinge": "Surgical fundoplication wraps the gastric fundus around the lower esophagus, eliminating severe reflux and recurrent aspiration pneumonia.",
+   "trap": "Gastrostomy provides enteral access for feeding but does not prevent gastroesophageal reflux or subsequent pulmonary aspiration.",
+   "options": {
+    "A": {
+     "clue": "Surgical exteriorization of cervical esophagus",
+     "support": "esophageal diversion",
+     "fit": "Not here: destructive procedure that eliminates oral feeding continuity",
+     "tx": "Reconstruction",
+     "tempting": "diverts oral secretions away from the airway"
+    },
+    "B": {
+     "clue": "360-degree gastric fundic wrap",
+     "support": "Nissen fundoplication",
+     "fit": "Here: grade 4 reflux, recurrent aspiration pneumonias, neurologic impairment",
+     "tx": "Nissen fundoplication"
+    },
+    "C": {
+     "clue": "Percutaneous or surgical feeding tube",
+     "support": "gastrostomy tube placement",
+     "fit": "Not here: feeds the stomach without preventing gastroesophageal reflux",
+     "tx": "Tube feeding",
+     "tempting": "common nutritional intervention in neurologically impaired infants"
+    },
+    "D": {
+     "clue": "Longitudinal pyloric muscle division",
+     "support": "pyloromyotomy for pyloric stenosis",
+     "fit": "Not here: treats gastric outlet obstruction, not gastroesophageal reflux",
+     "tx": "Ramstedt pyloromyotomy",
+     "tempting": "promotes gastric emptying to decrease stomach volume"
+    },
+    "E": {
+     "clue": "Denervation with drainage widening",
+     "support": "peptic ulcer surgical procedure",
+     "fit": "Not here: outdated peptic ulcer operation, does not stop reflux",
+     "tx": "Medical therapy",
+     "tempting": "accelerates gastric emptying"
+    }
+   },
+   "algorithm": {
+    "title": "Severe gastroesophageal reflux with aspiration in neurologic impairment",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Recurrent aspiration pneumonia + neurologic impairment: perform barium swallow to confirm severe reflux"
+     },
+     {
+      "level": 0,
+      "text": "Initial trial of thickened feeds + upright positioning + proton pump inhibitor"
+     },
+     {
+      "level": 0,
+      "text": "Nissen fundoplication (360-degree gastric fundic wrap) to prevent reflux and recurrent aspiration",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Concomitant feeding difficulty or failure to thrive:** place gastrostomy tube concurrently"
+     },
+     {
+      "level": 1,
+      "text": "**Severe retching or fundoplication failure:** gastrojejunostomy or Roux-en-Y conversion"
+     },
+     {
+      "level": 0,
+      "text": "Chest physiotherapy + surveillance for post-fundoplication gas bloat syndrome"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "pneumonia for the fourth time"
+    },
+    {
+     "text": "born at 28 weeks' gestation with a grade 4 intraventricular hemorrhage"
+    },
+    {
+     "text": "generalized neurologic devastation"
+    },
+    {
+     "text": "Barium swallow shows a grade 4 gastroesophageal reflux"
+    },
+    {
+     "text": "9-month-old boy has pneumonia"
+    }
+   ]
+  },
+  "c-peds-03-q021": {
+   "task": "Diagnosis",
+   "boardCall": "8-week-old + projectile nonbilious vomiting + olive mass -> hypochloremic hypokalemic metabolic alkalosis (84 | 2.8 | 7.50)",
+   "hinge": "Recurrent loss of gastric hydrochloric acid produces hypochloremia, secondary renal potassium wasting, and metabolic alkalosis.",
+   "trap": "Severe dehydration can cause prerenal azotemia or lactic acidosis, but persistent vomiting of gastric acid dominates as alkalosis.",
+   "options": {
+    "A": {
+     "clue": "Normal chloride with hypokalemic alkalosis",
+     "support": "non-gastric fluid loss",
+     "fit": "Not here: normal chloride 106 despite continuous vomiting",
+     "tx": "IV fluid rehydration",
+     "tempting": "shows hypokalemia and alkalosis"
+    },
+    "B": {
+     "clue": "Normal chloride and hyperkalemic alkalosis",
+     "support": "non-physiologic profile",
+     "fit": "Not here: normal chloride 106 and elevated potassium 5.2",
+     "tx": "IV fluid rehydration",
+     "tempting": "shows metabolic alkalosis"
+    },
+    "C": {
+     "clue": "Hypochloremic hypokalemic metabolic alkalosis",
+     "support": "gastric acid loss",
+     "fit": "Here: projectile nonbilious emesis, olive mass, dehydration",
+     "tx": "IV isotonic fluids + KCl"
+    },
+    "D": {
+     "clue": "Hypochloremic hypokalemic metabolic acidosis",
+     "support": "mixed anion-gap acidosis",
+     "fit": "Not here: acidemic pH 7.25 despite severe gastric HCl loss",
+     "tx": "IV fluid rehydration",
+     "tempting": "shows hypochloremia and hypokalemia"
+    },
+    "E": {
+     "clue": "Hypochloremic hyperkalemic metabolic acidosis",
+     "support": "renal failure acidosis",
+     "fit": "Not here: elevated potassium 5.2 and acidemic pH 7.25",
+     "tx": "IV fluid rehydration",
+     "tempting": "dehydration often causes metabolic acidosis"
+    }
+   },
+   "algorithm": {
+    "title": "Hypertrophic pyloric stenosis electrolyte derangement",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Projectile nonbilious vomiting + olive-shaped mass: check serum electrolytes + venous blood gas"
+     },
+     {
+      "level": 0,
+      "text": "Gastric HCl loss produces hypochloremic hypokalemic metabolic alkalosis (Cl < 90, K < 3.5, pH > 7.45)"
+     },
+     {
+      "level": 0,
+      "text": "Urgent IV volume resuscitation with isotonic normal saline boluses"
+     },
+     {
+      "level": 1,
+      "text": "**Urine output established:** add potassium chloride to maintenance IV fluids"
+     },
+     {
+      "level": 0,
+      "text": "Postpone surgical pyloromyotomy until serum bicarbonate < 30 mEq/L and chloride > 98 mEq/L"
+     },
+     {
+      "level": 0,
+      "text": "Perform Ramstedt pyloromyotomy once electrolytes and volume status fully correct"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "vomiting continuously after each meal"
+    },
+    {
+     "text": "emesis is projectile and does not contain bile"
+    },
+    {
+     "text": "small olive-sized mass in the epigastric region"
+    },
+    {
+     "text": "infant appears lethargic and has dry mucous membranes"
+    }
+   ]
+  },
+  "c-peds-03-q022": {
+   "task": "Diagnosis",
+   "boardCall": "Firm nodular midline abdominal mass + calcifications + bone pain/metastasis -> neuroblastoma",
+   "hinge": "A firm, nodular midline retroperitoneal mass with calcifications and distant skeletal metastases in a toddler confirms neuroblastoma.",
+   "trap": "Nephroblastoma (Wilms tumor) is a common pediatric abdominal tumor, but is smooth, unilateral, renal-confined, and rarely crosses the midline.",
+   "options": {
+    "A": {
+     "clue": "Primitive neuroectodermal bone sarcoma",
+     "support": "primary bone tumor",
+     "fit": "Not here: 12-cm midline retroperitoneal mass with calcifications",
+     "tx": "Chemotherapy + surgery",
+     "tempting": "causes bone pain and cortical bone destruction"
+    },
+    "B": {
+     "clue": "Nonfunctioning multicystic renal malformation",
+     "support": "benign renal dysplasia",
+     "fit": "Not here: nodular midline mass with calcifications and bone pain",
+     "tx": "Ultrasound surveillance",
+     "tempting": "causes pediatric palpable abdominal mass"
+    },
+    "C": {
+     "clue": "Neural crest origin sympathetic chain malignancy",
+     "support": "pediatric neuroblastoma",
+     "fit": "Here: firm nodular midline mass, calcifications, wrist pain",
+     "tx": "Chemotherapy + surgical resection"
+    },
+    "D": {
+     "clue": "Blastemal embryonal renal neoplasm",
+     "support": "Wilms tumor",
+     "fit": "Not here: midline calcified mass rather than smooth flank mass",
+     "tx": "Nephrectomy + chemotherapy",
+     "tempting": "most common primary renal tumor in young children"
+    },
+    "E": {
+     "clue": "Bilateral hereditary cystic renal enlargement",
+     "support": "polycystic kidney disease",
+     "fit": "Not here: solid nodular midline mass, bone metastases",
+     "tx": "ACE inhibitors + dialysis",
+     "tempting": "causes bilateral palpable abdominal masses and hypertension"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric neuroblastoma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Abdominal mass crossing midline + systemic symptoms: measure urine homovanillic (HVA) and vanillylmandelic (VMA) acid"
+     },
+     {
+      "level": 0,
+      "text": "Neural crest malignancy arising from adrenal gland or retroperitoneal sympathetic chain"
+     },
+     {
+      "level": 0,
+      "text": "Abdominal CT or MRI + MIBG scintigraphy to evaluate primary tumor and metastatic spread"
+     },
+     {
+      "level": 0,
+      "text": "Core biopsy of mass or bone marrow aspirate for histopathology and MYCN amplification status"
+     },
+     {
+      "level": 0,
+      "text": "Multimodal therapy: risk-stratified chemotherapy + surgical resection + radiation therapy"
+     },
+     {
+      "level": 1,
+      "text": "**High-risk disease (MYCN amplified or distant metastasis):** autologous stem cell transplantation + anti-GD2 immunotherapy"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "firm, nodular midline mass from the mid to upper abdomen"
+    },
+    {
+     "text": "pain and swelling of the right wrist"
+    },
+    {
+     "text": "12-cm midline mass with multiple calcifications"
+    },
+    {
+     "text": "worsening, diffuse abdominal pain and loss of appetite"
+    }
+   ]
+  },
+  "c-peds-03-q023": {
+   "task": "Diagnosis",
+   "boardCall": "Male newborn + no urination since birth + distended lower abdomen midline mass -> posterior urethral valves",
+   "hinge": "A distended palpable bladder producing a midline mass and failure to void in a male neonate confirms bladder outlet obstruction from posterior urethral valves.",
+   "trap": "Meconium ileus causes abdominal distention in neonates, but presents with failure to pass meconium and bilious emesis rather than anuria.",
+   "options": {
+    "A": {
+     "clue": "Teratogenic dysmorphism and CNS depression",
+     "support": "fetal alcohol syndrome",
+     "fit": "Not here: alert and active, lower abdominal distended midline bladder",
+     "tx": "Supportive care",
+     "tempting": "mother drank alcohol during pregnancy"
+    },
+    "B": {
+     "clue": "21-hydroxylase deficiency with ambiguous genitalia",
+     "support": "congenital adrenal hyperplasia",
+     "fit": "Not here: normal male genitalia, isolated urinary obstruction",
+     "tx": "Hydrocortisone + fludrocortisone",
+     "tempting": "causes neonatal vomiting and metabolic crisis"
+    },
+    "C": {
+     "clue": "Inspissated meconium terminal ileal obstruction",
+     "support": "cystic fibrosis complication",
+     "fit": "Not here: passed meconium stool, no emesis, urinary retention",
+     "tx": "Gastrografin enema",
+     "tempting": "causes neonatal lower abdominal distention"
+    },
+    "D": {
+     "clue": "Unilateral embryonal renal neoplasm",
+     "support": "Wilms tumor",
+     "fit": "Not here: suprapubic distended bladder mass causing anuria",
+     "tx": "Nephrectomy + chemotherapy",
+     "tempting": "causes pediatric palpable abdominal mass"
+    },
+    "E": {
+     "clue": "Obstructing membranous folds in posterior urethra",
+     "support": "bladder outlet obstruction",
+     "fit": "Here: male newborn, not urinated since birth, distended midline mass",
+     "tx": "Catheter decompression + valve ablation"
+    },
+    "F": {
+     "clue": "Spermatic cord twist causing acute scrotal ischemia",
+     "support": "neonatal testicular torsion",
+     "fit": "Not here: normal scrotal exam, lower midline abdominal mass",
+     "tx": "Surgical exploration",
+     "tempting": "causes acute pediatric genitourinary emergency"
+    }
+   },
+   "algorithm": {
+    "title": "Posterior urethral valves",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Male infant failing to void + palpable bladder: immediate urethral catheterization to relieve obstruction"
+     },
+     {
+      "level": 0,
+      "text": "Renal and bladder ultrasonography: bilateral hydroureteronephrosis + thickened bladder wall"
+     },
+     {
+      "level": 0,
+      "text": "Voiding cystourethrogram (VCUG) confirms dilated posterior urethra with abrupt transition"
+     },
+     {
+      "level": 0,
+      "text": "Serum creatinine + electrolyte monitoring to manage post-obstructive diuresis"
+     },
+     {
+      "level": 0,
+      "text": "Endoscopic transurethral valve ablation once infant is stable and infection-free"
+     },
+     {
+      "level": 1,
+      "text": "**Urethra too small for resectoscope:** temporary cutaneous vesicostomy"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "12-hour-old male newborn has not urinated since birth"
+    },
+    {
+     "text": "passed one small meconium stool"
+    },
+    {
+     "text": "lower abdomen is distended with a midline mass"
+    },
+    {
+     "text": "His mother received no prenatal care"
+    }
+   ]
+  },
+  "c-peds-03-q024": {
+   "task": "Diagnosis",
+   "boardCall": "Superior mediastinal mass + facial swelling + serosanguineous pleural effusion -> malignant pleural effusion",
+   "hinge": "Superior vena cava compression and a large serosanguineous pleural effusion with a superior mediastinal mass indicate malignancy.",
+   "trap": "Traumatic hemothorax yields bloody fluid, but occurs following thoracic trauma and lacks an underlying superior mediastinal mass.",
+   "options": {
+    "A": {
+     "clue": "Transudative fluid from elevated venous pressures",
+     "support": "congestive heart failure",
+     "fit": "Not here: reddish brown serosanguineous fluid, superior mediastinal mass",
+     "tx": "Diuretics + ACE inhibitors",
+     "tempting": "causes jugular venous distention and bilateral edema"
+    },
+    "B": {
+     "clue": "Tumor invasion or lymphatic obstruction by neoplasm",
+     "support": "pediatric lymphoma or leukemia",
+     "fit": "Here: superior mediastinal mass, facial swelling, serosanguineous fluid",
+     "tx": "Systemic chemotherapy"
+    },
+    "C": {
+     "clue": "Hypoalbuminemic bilateral transudative effusion",
+     "support": "nephrotic syndrome",
+     "fit": "Not here: unilateral hemorrhagic effusion, superior mediastinal mass",
+     "tx": "Oral corticosteroids",
+     "tempting": "causes pediatric facial and extremity swelling"
+    },
+    "D": {
+     "clue": "Direct vascular disruption from thoracic trauma",
+     "support": "traumatic hemothorax",
+     "fit": "Not here: no history of trauma, superior mediastinal mass",
+     "tx": "Chest tube thoracostomy",
+     "tempting": "explains reddish brown fluid with numerous erythrocytes"
+    },
+    "E": {
+     "clue": "Caseous pleural inflammation with high lymphocytes",
+     "support": "pleural tuberculosis",
+     "fit": "Not here: large superior mediastinal mass causing SVC syndrome",
+     "tx": "Antimycobacterial therapy",
+     "tempting": "causes pediatric exudative pleural effusion"
+    }
+   },
+   "algorithm": {
+    "title": "Anterior/superior mediastinal mass with malignant effusion",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Mediastinal mass + facial swelling (SVC syndrome): immediate airway + vascular stability assessment"
+     },
+     {
+      "level": 0,
+      "text": "Avoid general anesthesia or muscle relaxants due to risk of complete airway collapse"
+     },
+     {
+      "level": 0,
+      "text": "Diagnostic thoracentesis: pleural fluid cytology + flow cytometry + cell count"
+     },
+     {
+      "level": 0,
+      "text": "Exudative serosanguineous fluid with malignant lymphoblasts confirms T-cell ALL or lymphoma"
+     },
+     {
+      "level": 0,
+      "text": "Systemic corticosteroids + multiagent chemotherapy to rapidly shrink mediastinal tumor"
+     },
+     {
+      "level": 1,
+      "text": "**Severe tracheobronchial or superior vena cava compression:** emergent mediastinal radiation therapy"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "mass in the superior mediastinum"
+    },
+    {
+     "text": "large pleural effusion in the right hemithorax"
+    },
+    {
+     "text": "Thoracentesis yields 400 ml of reddish brown serosanguineous fluid"
+    },
+    {
+     "text": "mild swelling of the face and upper extremities"
+    },
+    {
+     "text": "jugular venous distention"
+    }
+   ]
+  },
+  "c-peds-03-q025": {
+   "task": "Diagnosis",
+   "boardCall": "Toddler + sudden drooling + vomiting + oral lip and tongue ulcers -> drain cleaner (caustic ingestion)",
+   "hinge": "Superficial chemical burn ulcers on the lips and tongue accompanied by acute drooling indicate caustic alkali ingestion from drain cleaner.",
+   "trap": "Organophosphate poisoning causes profuse secretions and drooling, but does not cause chemical ulcerations of the lips and tongue.",
+   "options": {
+    "A": {
+     "clue": "Hepatic centrilobular necrosis from toxic metabolite",
+     "support": "acetaminophen hepatotoxicity",
+     "fit": "Not here: oral mucosal ulcers and acute drooling within 1 hour",
+     "tx": "N-acetylcysteine",
+     "tempting": "patient was treated with acetaminophen-containing decongestant"
+    },
+    "B": {
+     "clue": "Anticholinergic toxidrome with dry mucosal membranes",
+     "support": "diphenhydramine toxicity",
+     "fit": "Not here: active drooling and caustic mucosal ulcerations",
+     "tx": "Physostigmine if severe",
+     "tempting": "common bathroom medication kept in reach"
+    },
+    "C": {
+     "clue": "Caustic alkaline liquefactive necrosis of mucosa",
+     "support": "corrosive chemical injury",
+     "fit": "Here: sudden drooling, vomiting, oral ulcers on lips and tongue",
+     "tx": "Airway evaluation + esophagoscopy"
+    },
+    "D": {
+     "clue": "Gastric mucosal irritation and renal impairment",
+     "support": "NSAID toxicity",
+     "fit": "Not here: acute drooling and superficial caustic ulcers on lips",
+     "tx": "Supportive care",
+     "tempting": "bathroom medication with gastrointestinal toxicity"
+    },
+    "E": {
+     "clue": "Acetylcholinesterase inhibition causing cholinergic toxidrome",
+     "support": "organophosphate toxicity",
+     "fit": "Not here: visible oral mucosal ulcers, no miosis or wheezing",
+     "tx": "Atropine + pralidoxime",
+     "tempting": "causes profuse salivation and drooling from insecticide"
+    },
+    "F": {
+     "clue": "Sympathomimetic toxidrome with hypertension and tachycardia",
+     "support": "pseudoephedrine toxicity",
+     "fit": "Not here: oral ulcers, active drooling, blood pressure 80/60",
+     "tx": "Benzodiazepines",
+     "tempting": "child was actively receiving pseudoephedrine for URI"
+    }
+   },
+   "algorithm": {
+    "title": "Caustic ingestion (alkali injury from drain cleaner)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Acute drooling + oral ulcers: secure airway + assess breathing and circulatory stability"
+     },
+     {
+      "level": 0,
+      "text": "Remove contaminated clothing immediately + flush exposed skin with copious water"
+     },
+     {
+      "level": 0,
+      "text": "Keep patient strictly NPO; do not induce emesis or administer neutralizing agents"
+     },
+     {
+      "level": 0,
+      "text": "Upright chest and abdominal radiographs to rule out esophageal perforation or pneumoperitoneum"
+     },
+     {
+      "level": 0,
+      "text": "Early esophagogastroduodenoscopy (EGD) within 12-24 hours to assess depth and extent of injury"
+     },
+     {
+      "level": 1,
+      "text": "**Grade III deep circumferential ulceration:** parenteral nutrition + surveillance for esophageal stricture"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "1 hour after the onset of vomiting and drooling"
+    },
+    {
+     "text": "left alone in the bathroom of her home for a few minutes"
+    },
+    {
+     "text": "agitated and drooling"
+    },
+    {
+     "text": "two small superficial ulcers on the lips and tongue"
+    },
+    {
+     "text": "drain cleaner, and insecticide spray in the bathroom"
+    }
+   ]
+  },
+  "c-peds-03-q026": {
+   "task": "Pharmacology",
+   "boardCall": "Afebrile child + post-viral hip pain/limp + small effusion + ESR 28 -> oral ibuprofen (transient synovitis)",
+   "hinge": "Transient synovitis following a viral illness in a well-appearing, afebrile child is treated conservatively with oral NSAIDs and rest.",
+   "trap": "Septic arthritis requires IV vancomycin or ceftriaxone, but presents with high fever, toxic appearance, inability to bear weight, and ESR > 40.",
+   "options": {
+    "A": {
+     "clue": "Viral DNA polymerase inhibitor",
+     "support": "herpesvirus infection",
+     "fit": "Not here: reactive postviral synovitis, no active herpesvirus infection",
+     "tx": "Oral ibuprofen",
+     "tempting": "viral illness preceded the onset of hip pain"
+    },
+    "B": {
+     "clue": "Lincosamide antibiotic covering Gram positives",
+     "support": "bacterial osteoarticular infection",
+     "fit": "Not here: afebrile, alert child without bacterial joint infection",
+     "tx": "Oral ibuprofen",
+     "tempting": "oral antibiotic for pediatric musculoskeletal infection"
+    },
+    "C": {
+     "clue": "Nonsteroidal anti-inflammatory COX inhibitor",
+     "support": "transient synovitis of the hip",
+     "fit": "Here: temperature 36 C, post-viral limp, ESR 28, small effusion",
+     "tx": "Oral ibuprofen"
+    },
+    "D": {
+     "clue": "Third-generation cephalosporin",
+     "support": "acute septic arthritis",
+     "fit": "Not here: afebrile, ESR 28, small joint effusion, alert appearance",
+     "tx": "Oral ibuprofen",
+     "tempting": "first-line empiric parenteral antibiotic for septic arthritis"
+    },
+    "E": {
+     "clue": "Glycopeptide covering MRSA",
+     "support": "resistant staphylococcal joint infection",
+     "fit": "Not here: afebrile, well-appearing child with mild reactive synovitis",
+     "tx": "Oral ibuprofen",
+     "tempting": "empiric MRSA coverage for pediatric septic arthritis"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric transient synovitis of the hip",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Acute hip pain + limp after viral infection: assess Kocher criteria (fever, non-weight-bearing, ESR > 40, WBC > 12,000)"
+     },
+     {
+      "level": 0,
+      "text": "Afebrile child meeting < 2 Kocher criteria: diagnose transient synovitis"
+     },
+     {
+      "level": 0,
+      "text": "Oral ibuprofen + activity modification with bed rest",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Symptoms typically improve within 24-48 hours and resolve completely within 1-2 weeks"
+     },
+     {
+      "level": 1,
+      "text": "**Fever develops or persistent limp beyond 7-10 days:** repeat ESR/CRP + hip ultrasonography"
+     },
+     {
+      "level": 1,
+      "text": "**High clinical suspicion for septic arthritis (>= 3 Kocher criteria):** urgent ultrasound-guided arthrocentesis"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "left hip pain for 2 days and an associated limp for the past 4 hours"
+    },
+    {
+     "text": "One week ago, he had watery stools and temperatures to 37.8°C (100°F)"
+    },
+    {
+     "text": "temperature is 36°C (96.8°F)"
+    },
+    {
+     "text": "left hip is not swollen or erythematous, but there is pain with movement"
+    },
+    {
+     "text": "erythrocyte sedimentation rate is 28 mm/h"
+    },
+    {
+     "text": "Ultrasonography of the left hip joint shows a small effusion"
+    }
+   ]
+  },
+  "c-peds-03-q027": {
+   "task": "Diagnosis",
+   "boardCall": "Age 16 + short stature + primary amenorrhea + nevi + pedal edema -> 45,X Turner syndrome",
+   "hinge": "Primary amenorrhea with Tanner stage 1 puberty, congenital short stature, pedal edema, and nevi confirms 45,X Turner syndrome.",
+   "trap": "Constitutional delay causes short stature and delayed puberty, but bone age is delayed and pedal edema or nevi are absent.",
+   "options": {
+    "A": {
+     "clue": "Autoimmune thyroid destruction",
+     "support": "primary hypothyroidism",
+     "fit": "Not here: normal bone age at 10, multiple nevi, pedal edema",
+     "tx": "Levothyroxine",
+     "tempting": "causes short stature and delayed sexual maturation"
+    },
+    "B": {
+     "clue": "Delayed growth spurt with delayed bone age",
+     "support": "constitutional growth delay",
+     "fit": "Not here: bone age equal to chronologic age, primary amenorrhea at 16",
+     "tx": "Reassurance",
+     "tempting": "common cause of short stature and delayed puberty"
+    },
+    "C": {
+     "clue": "Suprasellar Rathke pouch tumor",
+     "support": "pituitary compression",
+     "fit": "Not here: congenital lifelong short stature, pedal edema, cutaneous nevi",
+     "tx": "Surgical resection",
+     "tempting": "causes hypopituitarism and delayed puberty"
+    },
+    "D": {
+     "clue": "Genetic short stature matching family percentiles",
+     "support": "normal growth variant",
+     "fit": "Not here: parents have normal heights, absent puberty with primary amenorrhea",
+     "tx": "Reassurance",
+     "tempting": "height consistently below third percentile since birth"
+    },
+    "E": {
+     "clue": "Complete or partial X-chromosome monosomy",
+     "support": "Turner syndrome",
+     "fit": "Here: height below 3rd percentile, primary amenorrhea, pedal edema, nevi",
+     "tx": "Growth hormone + estrogen replacement"
+    },
+    "F": {
+     "clue": "Congenital multiple anterior pituitary hormone deficiency",
+     "support": "panhypopituitarism",
+     "fit": "Not here: normal bone age at 10, pedal edema, cutaneous nevi",
+     "tx": "Hormone replacement",
+     "tempting": "causes growth failure and absent pubertal development"
+    }
+   },
+   "algorithm": {
+    "title": "Turner syndrome (gonadal dysgenesis 45,X)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Female adolescent with short stature + primary amenorrhea: perform peripheral blood karyotype analysis"
+     },
+     {
+      "level": 0,
+      "text": "Monosomy 45,X confirms Turner syndrome causing streak ovaries and hypergonadotropic hypogonadism"
+     },
+     {
+      "level": 0,
+      "text": "Screening echocardiography + cardiac MRI to detect bicuspid aortic valve and coarctation of aorta"
+     },
+     {
+      "level": 0,
+      "text": "Renal ultrasonography to identify horseshoe kidney or collecting system duplication"
+     },
+     {
+      "level": 0,
+      "text": "Recombinant human growth hormone therapy in childhood to optimize adult final height"
+     },
+     {
+      "level": 0,
+      "text": "Exogenous estrogen therapy initiated around age 12 to promote secondary sexual characteristics"
+     },
+     {
+      "level": 1,
+      "text": "**Breakthrough bleeding begins:** add cyclical progestin to maintain endometrial health"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "height has been below the 3rd percentile"
+    },
+    {
+     "text": "bone age was equal to chronologic age"
+    },
+    {
+     "text": "multiple nevi over the face and trunk"
+    },
+    {
+     "text": "There is bilateral pedal edema"
+    },
+    {
+     "text": "Breast development is Tanner stage 1, and pubic hair development is Tanner stage 1"
+    }
+   ]
+  },
+  "c-peds-03-q028": {
+   "task": "Next step",
+   "boardCall": "3-year-old + aniridia + palpable right flank mass -> abdominal ultrasonography (WAGR / Wilms tumor)",
+   "hinge": "Abdominal ultrasonography is the initial diagnostic imaging modality of choice to evaluate a suspected pediatric renal mass.",
+   "trap": "Urine VMA and HVA testing is diagnostic for neuroblastoma, but aniridia strongly points to Wilms tumor (WAGR syndrome).",
+   "options": {
+    "A": {
+     "clue": "Serum catecholamines for chromaffin tumors",
+     "support": "pheochromocytoma",
+     "fit": "Not here: aniridia and unilateral flank mass indicate renal tumor",
+     "tx": "Abdominal ultrasound",
+     "tempting": "evaluates pediatric abdominal tumors"
+    },
+    "B": {
+     "clue": "Urinary catecholamine metabolites",
+     "support": "neuroblastoma workup",
+     "fit": "Not here: aniridia associates with Wilms tumor rather than neuroblastoma",
+     "tx": "Abdominal ultrasound",
+     "tempting": "standard metabolic workup for pediatric retroperitoneal mass"
+    },
+    "C": {
+     "clue": "Scout radiograph of abdominal gas pattern",
+     "support": "plain abdominal radiograph",
+     "fit": "Not here: lacks soft tissue resolution to characterize a renal mass",
+     "tx": "Abdominal ultrasound",
+     "tempting": "inexpensive initial screening radiograph"
+    },
+    "D": {
+     "clue": "Thoracic plain film for pulmonary metastases",
+     "support": "chest radiography",
+     "fit": "Not here: initial imaging must evaluate and characterize the abdominal mass",
+     "tx": "Abdominal ultrasound",
+     "tempting": "Wilms tumor metastasizes to lungs"
+    },
+    "E": {
+     "clue": "Noninvasive sonographic evaluation of renal parenchyma",
+     "support": "abdominal ultrasonography",
+     "fit": "Here: 3-year-old, aniridia, palpable right flank mass",
+     "tx": "Surgical resection + chemotherapy"
+    }
+   },
+   "algorithm": {
+    "title": "Wilms tumor (nephroblastoma) and WAGR syndrome",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Aniridia + palpable flank mass (WAGR syndrome): avoid vigorous palpation to prevent tumor rupture"
+     },
+     {
+      "level": 0,
+      "text": "Ultrasonography of the abdomen to confirm solid intrarenal mass and assess vena caval patency",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Contrast-enhanced CT or MRI of abdomen and chest for tumor staging and pulmonary metastasis evaluation"
+     },
+     {
+      "level": 0,
+      "text": "Radical nephrectomy with regional lymph node sampling without prior percutaneous needle biopsy"
+     },
+     {
+      "level": 0,
+      "text": "Adjuvant chemotherapy (vincristine + dactinomycin) +/- flank radiation therapy"
+     },
+     {
+      "level": 1,
+      "text": "**Under 8 years old:** surveillance renal ultrasound every 3 months for contralateral tumor"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Examination shows aniridia"
+    },
+    {
+     "text": "palpable mass in the right flank"
+    },
+    {
+     "text": "mother states that his belly seems big"
+    },
+    {
+     "text": "3-year-old boy is brought for a well-child examination"
+    }
+   ]
+  },
+  "c-peds-03-q029": {
+   "task": "Mechanism",
+   "boardCall": "Dark urine + periorbital edema + hypertension 10 days after pharyngitis -> antigen-antibody immune complex deposition",
+   "hinge": "Subepithelial immune complex deposition following streptococcal infection produces poststreptococcal glomerulonephritis.",
+   "trap": "Active direct bacterial infiltration does not occur; the renal injury is mediated by circulating and in situ immune complexes.",
+   "options": {
+    "A": {
+     "clue": "Subepithelial humps of IgG and C3",
+     "support": "poststreptococcal glomerulonephritis",
+     "fit": "Here: dark urine, periorbital edema, hypertension 10 days post-pharyngitis",
+     "tx": "Supportive care + loop diuretics"
+    },
+    "B": {
+     "clue": "Direct bacterial penetration into glomerulus",
+     "support": "suppurative nephritis",
+     "fit": "Not here: sterile immune-mediated injury rather than bacterial colonization",
+     "tx": "Antibiotics",
+     "tempting": "streptococcal pharyngitis preceded renal symptoms"
+    },
+    "C": {
+     "clue": "Bacterial invasion of podocytes",
+     "support": "direct epithelial infection",
+     "fit": "Not here: post-infectious immune complex disease, not viable bacterial infection",
+     "tx": "Antibiotics",
+     "tempting": "streptococcal organisms trigger the clinical illness"
+    },
+    "D": {
+     "clue": "Sloughing of proximal tubular epithelium",
+     "support": "acute tubular necrosis",
+     "fit": "Not here: glomerular nephritic sediment with RBC casts and hypertension",
+     "tx": "Isotonic fluids",
+     "tempting": "causes dark tea-colored urine and acute kidney injury"
+    },
+    "E": {
+     "clue": "Hypoperfusion renal microvascular compromise",
+     "support": "ischemic acute kidney injury",
+     "fit": "Not here: blood pressure 140/90 mm Hg, glomerular RBC casts",
+     "tx": "Fluid resuscitation",
+     "tempting": "explains oliguria and dark concentrated urine"
+    }
+   },
+   "algorithm": {
+    "title": "Poststreptococcal glomerulonephritis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Tea-colored urine + hypertension + periorbital edema: check serum C3 + antistreptolysin O (ASO) titer"
+     },
+     {
+      "level": 0,
+      "text": "Deposition of antigen-antibody immune complexes along glomerular basement membrane"
+     },
+     {
+      "level": 0,
+      "text": "Subepithelial humps on electron microscopy + low serum complement C3 confirm diagnosis"
+     },
+     {
+      "level": 0,
+      "text": "Initiate supportive therapy: sodium and water restriction + oral furosemide for hypertension"
+     },
+     {
+      "level": 1,
+      "text": "**Severe volume overload or uremia:** initiate urgent dialysis until glomerular function recovers"
+     },
+     {
+      "level": 0,
+      "text": "Serum C3 complement levels typically normalize within 6-8 weeks of disease onset"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "sore throat and an upper respiratory tract infection 10 days ago"
+    },
+    {
+     "text": "blood pressure is 140/90 mm Hg"
+    },
+    {
+     "text": "slight swelling around the eyes"
+    },
+    {
+     "text": "light brown urine with RBC and granular casts"
+    },
+    {
+     "text": "1-day history of lethargy, mild abdominal pain, and dark urine"
+    }
+   ]
+  },
+  "c-peds-03-q030": {
+   "task": "Diagnosis",
+   "boardCall": "Clenched hands with overlapping fingers + prominent occiput + micrognathia + short sternum -> trisomy 18 (Edwards syndrome)",
+   "hinge": "Clenched fists with index overlapping the middle finger and prominent occiput define Edwards syndrome (trisomy 18).",
+   "trap": "Maternal alcohol intake tempts fetal alcohol syndrome, but overlapping clenched fingers and prominent occiput are pathognomonic for trisomy 18.",
+   "options": {
+    "A": {
+     "clue": "Multiple congenital nonprogressive joint contractures",
+     "support": "arthrogryposis multiplex congenita",
+     "fit": "Not here: prominent occiput, micrognathia, VSD murmur, clenched overlapping fingers",
+     "tx": "Physical therapy",
+     "tempting": "causes clenched hands and abnormal limb postures"
+    },
+    "B": {
+     "clue": "Intrauterine TORCH infection with microcephaly",
+     "support": "congenital infection",
+     "fit": "Not here: no chorioretinitis, hepatosplenomegaly, or purpuric rash",
+     "tx": "Targeted antivirals",
+     "tempting": "causes intrauterine growth restriction and congenital anomalies"
+    },
+    "C": {
+     "clue": "Prenatal ethanol teratogenesis",
+     "support": "fetal alcohol syndrome",
+     "fit": "Not here: prominent occiput and overlapping clenched fingers rather than smooth philtrum",
+     "tx": "Supportive care",
+     "tempting": "mother drank one to two beers daily during pregnancy"
+    },
+    "D": {
+     "clue": "Extra chromosome 18 nondisjunction",
+     "support": "Edwards syndrome",
+     "fit": "Here: clenched overlapping fingers, prominent occiput, micrognathia, low birth weight",
+     "tx": "Palliative care + multidisciplinary support"
+    },
+    "E": {
+     "clue": "Placental vascular malperfusion causing asymmetric IUGR",
+     "support": "placental insufficiency",
+     "fit": "Not here: major syndromic malformations and characteristic overlapping digits",
+     "tx": "Nutritional support",
+     "tempting": "common cause of low birth weight at term"
+    }
+   },
+   "algorithm": {
+    "title": "Edwards syndrome (trisomy 18)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Dysmorphic newborn with overlapping clenched fingers + prominent occiput: perform urgent confirmatory karyotype (FISH)"
+     },
+     {
+      "level": 0,
+      "text": "Chromosomal nondisjunction causing complete trisomy 18 in over 95% of cases"
+     },
+     {
+      "level": 0,
+      "text": "Comprehensive echocardiography to identify congenital heart disease (VSD, PDA, ASD, or polyvalvular disease)"
+     },
+     {
+      "level": 0,
+      "text": "Renal and cranial ultrasonography to detect horseshoe kidney and structural brain anomalies"
+     },
+     {
+      "level": 0,
+      "text": "Multidisciplinary family-centered counseling discussing guarded prognosis and high infant mortality"
+     },
+     {
+      "level": 1,
+      "text": "**Parental goal of intervention:** targeted palliative surgical procedures or comfort measures"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "prominent occiput, narrow palpebral fissures, a small recessed mandible, and a short sternum"
+    },
+    {
+     "text": "index finger folded over the middle finger"
+    },
+    {
+     "text": "grade 2/6 holosystolic murmur that is heard best at the lower left sternal border"
+    },
+    {
+     "text": "generalized hypertonia"
+    },
+    {
+     "text": "2370-g (5-lb 3-oz) newborn is delivered at term"
+    }
+   ]
+  },
+  "c-peds-03-q031": {
+   "task": "Diagnosis",
+   "boardCall": "Toddler + episodic severe cramping + asymptomatic intervals + reddish stool -> intussusception",
+   "hinge": "Episodic colicky abdominal pain with pain-free intervals and occult/grossly bloody stool in a toddler indicates intussusception.",
+   "trap": "Juvenile polyps cause lower GI bleeding in toddlers, but the bleeding is painless and does not cause severe colicky pain.",
+   "options": {
+    "A": {
+     "clue": "Gastric mucosal inflammation",
+     "support": "dyspeptic gastritis",
+     "fit": "Not here: episodic colicky abdominal pain with bloody stool",
+     "tx": "Proton pump inhibitors",
+     "tempting": "causes abdominal pain and occult bleeding"
+    },
+    "B": {
+     "clue": "Telescoping of proximal into distal bowel",
+     "support": "ileocolic intussusception",
+     "fit": "Here: episodic severe cramping, resting comfortably between episodes, reddish stool",
+     "tx": "Air or contrast enema"
+    },
+    "C": {
+     "clue": "Benign hamartomatous colonic polyp",
+     "support": "juvenile polyposis",
+     "fit": "Not here: severe episodic cramping pain, polyps cause painless bleeding",
+     "tx": "Colonoscopic polypectomy",
+     "tempting": "common cause of lower GI bleeding in toddlers"
+    },
+    "D": {
+     "clue": "Mucosal defect in stomach or duodenum",
+     "support": "peptic ulcer disease",
+     "fit": "Not here: colicky episodic cramping with reddish stool in toddler",
+     "tx": "H2 blockers or PPIs",
+     "tempting": "causes abdominal pain and gastrointestinal bleeding"
+    },
+    "E": {
+     "clue": "Viral intestinal epithelial infection",
+     "support": "viral enteritis",
+     "fit": "Not here: severe episodic cramping and occult bloody stool without diarrhea",
+     "tx": "Oral rehydration",
+     "tempting": "common cause of pediatric abdominal cramping"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric ileocolic intussusception",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Episodic severe cramping + red currant jelly stool: abdominal ultrasound is first-line imaging"
+     },
+     {
+      "level": 0,
+      "text": "Target or \"doughnut sign\" on ultrasound confirms ileocolic intussusception"
+     },
+     {
+      "level": 0,
+      "text": "Pneumatic (air) or hydrostatic (contrast) enema reduction under fluoroscopic guidance"
+     },
+     {
+      "level": 1,
+      "text": "**Enema reduction successful:** observe for 12-24 hours for recurrence"
+     },
+     {
+      "level": 1,
+      "text": "**Peritonitis, bowel perforation, or enema failure:** emergent surgical laparotomy"
+     },
+     {
+      "level": 0,
+      "text": "**Child older than 3 years with recurrence:** evaluate for pathologic lead point (Meckel diverticulum, polyp)"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "intermittent severe abdominal cramping over the past 3 days"
+    },
+    {
+     "text": "third stool had reddish discoloration"
+    },
+    {
+     "text": "currently alert and resting comfortably"
+    },
+    {
+     "text": "Test of the stool for occult blood is positive"
+    },
+    {
+     "text": "3-year-old boy is brought to the emergency department"
+    }
+   ]
+  },
+  "c-peds-03-q032": {
+   "task": "Next step",
+   "boardCall": "15-year-old boy + early pubertal development (Tanner 2) + mild gynecomastia -> reassurance",
+   "hinge": "Tanner stage 2 development at age 15 with physiologic pubertal gynecomastia represents normal early male puberty requiring reassurance.",
+   "trap": "Mild bilateral gynecomastia in a male adolescent tempts laboratory or biopsy workup, but is benign and transient in early puberty.",
+   "options": {
+    "A": {
+     "clue": "Explanation of normal pubertal sequence and timing",
+     "support": "physiologic pubertal progression",
+     "fit": "Here: Tanner stage 2, pubic hair 6 months ago, physiologic gynecomastia",
+     "tx": "Reassurance"
+    },
+    "B": {
+     "clue": "Quantitative serum androgen determination",
+     "support": "hypogonadism evaluation",
+     "fit": "Not here: puberty has already begun normally with Tanner 2 development",
+     "tx": "Reassurance first",
+     "tempting": "evaluates for testosterone deficiency in delayed puberty"
+    },
+    "C": {
+     "clue": "Immunoassay detection of illicit substances",
+     "support": "substance screening",
+     "fit": "Not here: no behavioral abnormalities or drug-induced symptoms",
+     "tx": "Reassurance first",
+     "tempting": "marijuana use can cause adolescent gynecomastia"
+    },
+    "D": {
+     "clue": "Intracranial cross-sectional imaging",
+     "support": "pituitary or hypothalamic imaging",
+     "fit": "Not here: no neurologic signs, normal pubertal initiation underway",
+     "tx": "Reassurance first",
+     "tempting": "evaluates for pituitary lesions causing hypogonadism"
+    },
+    "E": {
+     "clue": "Histopathologic tissue excision",
+     "support": "breast neoplasm evaluation",
+     "fit": "Not here: physiologic bilateral symmetric pubertal gynecomastia",
+     "tx": "Reassurance first",
+     "tempting": "evaluates adolescent breast enlargement"
+    }
+   },
+   "algorithm": {
+    "title": "Normal male pubertal timing and physiologic gynecomastia",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Concern regarding pubertal progression in adolescent male: assess Tanner staging + testicular volume"
+     },
+     {
+      "level": 0,
+      "text": "Testicular enlargement (> 4 mL) and Tanner 2 development confirm pubertal onset has occurred"
+     },
+     {
+      "level": 0,
+      "text": "Provide reassurance regarding normal pubertal variation and transient physiologic gynecomastia",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Follow-up clinical examination in 6 months to document expected pubertal progression"
+     },
+     {
+      "level": 1,
+      "text": "**No pubertal signs by age 14 or absent testicular growth:** check bone age + LH + FSH + testosterone"
+     },
+     {
+      "level": 1,
+      "text": "**Gynecomastia persistent beyond 2 years:** discuss medical therapy or surgical reduction"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "concerned that he has not had to begin shaving"
+    },
+    {
+     "text": "first noticed pubic hair development 6 months ago"
+    },
+    {
+     "text": "Examination shows mild bilateral gynecomastia"
+    },
+    {
+     "text": "Genital and pubic hair development is Tanner stage 2"
+    },
+    {
+     "text": "15-year-old boy is brought to the physician"
+    }
+   ]
+  },
+  "c-peds-03-q033": {
+   "task": "Diagnosis",
+   "boardCall": "Scalp alopecia + broken 'black-dot' hairs + occipital lymphadenopathy -> Trichophyton tonsurans (tinea capitis)",
+   "hinge": "Scalp alopecia with broken hairs close to the scalp and regional occipital lymphadenopathy defines tinea capitis, most commonly Trichophyton tonsurans.",
+   "trap": "Microsporum causes tinea capitis with ectothrix spores, but Trichophyton tonsurans is the predominant modern cause of endothrix black-dot tinea capitis.",
+   "options": {
+    "A": {
+     "clue": "Dimorphic budding yeast with pseudohyphae",
+     "support": "candidiasis",
+     "fit": "Not here: scalp alopecia with broken hairs and occipital lymphadenopathy",
+     "tx": "Topical nystatin",
+     "tempting": "causes pediatric cutaneous fungal infections"
+    },
+    "B": {
+     "clue": "Dermatophyte infecting skin and nails",
+     "support": "tinea cruris and pedis",
+     "fit": "Not here: does not infect hair shafts or scalp",
+     "tx": "Topical terbinafine",
+     "tempting": "common dermatophyte causing cutaneous fungal infections"
+    },
+    "C": {
+     "clue": "Lipophilic yeast with short hyphae",
+     "support": "tinea versicolor",
+     "fit": "Not here: causes hypo- or hyperpigmented macules on trunk, not scalp alopecia",
+     "tx": "Topical selenium sulfide",
+     "tempting": "superficial fungal infection in children"
+    },
+    "D": {
+     "clue": "Anthropophilic dermatophyte fluorescing on Wood lamp",
+     "support": "ectothrix tinea capitis",
+     "fit": "Not here: T. tonsurans is far more common cause of black-dot alopecia",
+     "tx": "Oral griseofulvin",
+     "tempting": "classic historical cause of tinea capitis"
+    },
+    "E": {
+     "clue": "Endothrix dermatophyte causing black-dot alopecia",
+     "support": "tinea capitis",
+     "fit": "Here: posterior scalp alopecia, broken hairs, occipital lymphadenopathy",
+     "tx": "Oral griseofulvin or terbinafine"
+    }
+   },
+   "algorithm": {
+    "title": "Tinea capitis (scalp dermatophytosis)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Scalp scaling + patchy alopecia with broken hairs: perform KOH preparation of hair scrapings"
+     },
+     {
+      "level": 0,
+      "text": "Endothrix arthroconidia on KOH or fungal culture confirms Trichophyton tonsurans infection"
+     },
+     {
+      "level": 0,
+      "text": "Oral antifungal therapy (griseofulvin or terbinafine) for 4-8 weeks"
+     },
+     {
+      "level": 0,
+      "text": "Adjuvant selenium sulfide or ketoconazole shampoo to reduce fungal shedding"
+     },
+     {
+      "level": 1,
+      "text": "**Severe inflammatory boggy mass (kerion):** continue oral antifungal + short course oral prednisone"
+     },
+     {
+      "level": 0,
+      "text": "Examine household contacts and screen shared combs or brushes to prevent reinfection"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "scattered areas of hair loss on his scalp"
+    },
+    {
+     "text": "small oval areas of alopecia over the posterior scalp"
+    },
+    {
+     "text": "numerous hairs broken off close to the scalp"
+    },
+    {
+     "text": "Several small, occipital, nontender lymph nodes are palpated"
+    },
+    {
+     "text": "previously healthy 4-year-old boy"
+    }
+   ]
+  },
+  "c-peds-03-q034": {
+   "task": "Diagnosis",
+   "boardCall": "Persistent severe chickenpox > 4 weeks with continuous lesions -> impaired T-lymphocyte function",
+   "hinge": "Cell-mediated immunity mediated by T lymphocytes is essential for clearing varicella-zoster virus and limiting viral dissemination.",
+   "trap": "Impaired B-lymphocyte function predisposes to recurrent sinorespiratory encapsulated bacterial infections, not prolonged viral varicella.",
+   "options": {
+    "A": {
+     "clue": "Deficient humoral antibody production",
+     "support": "agammaglobulinemia",
+     "fit": "Not here: predisposes to encapsulated bacteria, not prolonged disseminated varicella",
+     "tx": "IVIG replacement",
+     "tempting": "causes recurrent pediatric infections"
+    },
+    "B": {
+     "clue": "Defective complement membrane attack complex",
+     "support": "complement deficiency",
+     "fit": "Not here: predisposes to Neisseria and encapsulated bacterial infections",
+     "tx": "Prophylactic antibiotics",
+     "tempting": "causes primary immune deficiency"
+    },
+    "C": {
+     "clue": "CD18 integrin defect with delayed cord detachment",
+     "support": "leukocyte adhesion deficiency",
+     "fit": "Not here: causes neutrophilia and bacterial infections without pus",
+     "tx": "Stem cell transplant",
+     "tempting": "causes recurrent pediatric skin and mucosal infections"
+    },
+    "D": {
+     "clue": "Defective directional polymorphonuclear migration",
+     "support": "hyper-IgE syndrome",
+     "fit": "Not here: causes cold staphylococcal abscesses and eczema",
+     "tx": "Prophylactic antibiotics",
+     "tempting": "causes recurrent cutaneous infections"
+    },
+    "E": {
+     "clue": "Deficient cell-mediated viral clearance",
+     "support": "T-cell immunodeficiency",
+     "fit": "Here: persistent chickenpox for 4 weeks, continuous new vesicular lesions",
+     "tx": "IV acyclovir + immune workup"
+    },
+    "F": {
+     "clue": "NADPH oxidase defect in phagocytic killing",
+     "support": "chronic granulomatous disease",
+     "fit": "Not here: predisposes to catalase-positive bacteria and fungi",
+     "tx": "TMP-SMX + itraconazole",
+     "tempting": "causes recurrent pediatric granulomatous infections"
+    }
+   },
+   "algorithm": {
+    "title": "T-cell immunodeficiency presenting with prolonged viral infection",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Persistent or severe varicella (> 2 weeks) in infant: urgent evaluation for T-cell immunodeficiency"
+     },
+     {
+      "level": 0,
+      "text": "Cell-mediated immunity via T lymphocytes is required for intracellular viral host defense"
+     },
+     {
+      "level": 0,
+      "text": "Start high-dose IV acyclovir immediately to treat disseminated varicella-zoster infection"
+     },
+     {
+      "level": 0,
+      "text": "Flow cytometry for T, B, and NK cell subsets + quantitative immunoglobulins"
+     },
+     {
+      "level": 1,
+      "text": "**Severe combined immunodeficiency (SCID):** avoid live viral vaccines + irradiated blood products"
+     },
+     {
+      "level": 0,
+      "text": "Definitive treatment with urgent allogeneic hematopoietic stem cell transplantation"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "chickenpox for 4 weeks"
+    },
+    {
+     "text": "continued to have new lesions since then"
+    },
+    {
+     "text": "pa pules, fluid-filled vesicles, and crusted small ulcers"
+    },
+    {
+     "text": "positive for the varicella antigen"
+    },
+    {
+     "text": "12-month-old girl is brought to the physician"
+    }
+   ]
+  },
+  "c-peds-03-q035": {
+   "task": "Diagnosis",
+   "boardCall": "Cafe-au-lait macules in child + mother with lumps (neurofibromas) and scoliosis -> autosomal dominant (NF1)",
+   "hinge": "Neurofibromatosis type 1 is inherited in an autosomal dominant pattern with high penetrance and variable clinical expressivity.",
+   "trap": "Variable expressivity and new mutations might tempt multifactorial inheritance, but NF1 is a classic monogenic autosomal dominant disorder.",
+   "options": {
+    "A": {
+     "clue": "Single mutated gene on an autosome",
+     "support": "neurofibromatosis type 1",
+     "fit": "Here: child with brown spots, mother with spots, lumps, and scoliosis",
+     "tx": "Annual screening"
+    },
+    "B": {
+     "clue": "Two mutant alleles required on autosome",
+     "support": "recessive inheritance",
+     "fit": "Not here: vertical transmission seen directly from mother to daughter",
+     "tx": "Genetic counseling",
+     "tempting": "common pattern for metabolic pediatric genetic disorders"
+    },
+    "C": {
+     "clue": "Maternally transmitted mitochondrial DNA mutation",
+     "support": "mitochondrial inheritance",
+     "fit": "Not here: cutaneous neurofibromas and cafe-au-lait spots indicate NF1",
+     "tx": "Supportive care",
+     "tempting": "condition is passed from mother to child"
+    },
+    "D": {
+     "clue": "Polygenic and environmental interaction",
+     "support": "complex disease",
+     "fit": "Not here: classic monogenic tumor suppressor gene mutation on chromosome 17",
+     "tx": "Supportive care",
+     "tempting": "variable expressivity can mimic complex multifactorial traits"
+    },
+    "E": {
+     "clue": "Hemizygous male expression with carrier females",
+     "support": "X-linked recessive",
+     "fit": "Not here: fully expressed in both mother and female daughter",
+     "tx": "Genetic counseling",
+     "tempting": "sex-linked pediatric genetic disorders"
+    },
+    "F": {
+     "clue": "Undetermined genetic or environmental etiology",
+     "support": "idiopathic condition",
+     "fit": "Not here: well-established NF1 gene mutation on chromosome 17q11",
+     "tx": "Specialist referral",
+     "tempting": "etiology of spontaneous birth defects"
+    }
+   },
+   "algorithm": {
+    "title": "Neurofibromatosis type 1 (autosomal dominant)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Multiple cafe-au-lait macules + family history: clinical diagnosis using NF1 diagnostic criteria"
+     },
+     {
+      "level": 0,
+      "text": "NF1 gene mutation on chromosome 17 exhibits 100% penetrance with variable expressivity"
+     },
+     {
+      "level": 0,
+      "text": "Annual comprehensive pediatric ophthalmology exam: screen for optic pathway glioma + Lisch nodules"
+     },
+     {
+      "level": 0,
+      "text": "Annual blood pressure monitoring to screen for renal artery stenosis and pheochromocytoma"
+     },
+     {
+      "level": 0,
+      "text": "Spine examination + radiographs for early detection of progressive dystrophic scoliosis"
+     },
+     {
+      "level": 1,
+      "text": "**Plexiform neurofibromas with pain or deformity:** MEK inhibitor therapy (selumetinib) or surgical resection"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "developed several brown spots on the skin since birth"
+    },
+    {
+     "text": "mother has similar spots as well as several 1-cm subcutaneous lumps and scoliosis"
+    },
+    {
+     "text": "four 1-cm flat brown spots on the back"
+    },
+    {
+     "text": "2-year-old girl is brought to the physician"
+    }
+   ]
+  },
+  "c-peds-03-q036": {
+   "task": "Diagnosis",
+   "boardCall": "Viral URI prodrome + tachycardia + hypotension + S3 gallop + crackles -> myocarditis",
+   "hinge": "An acute viral illness followed by hypotension, S3 gallop, and pulmonary crackles indicates acute myocarditis with cardiogenic shock.",
+   "trap": "Bronchiolitis causes tachypnea and crackles following a URI, but does not cause an S3 gallop or profound hypotension.",
+   "options": {
+    "A": {
+     "clue": "Viral small airway inflammation with wheezing",
+     "support": "viral bronchiolitis",
+     "fit": "Not here: blood pressure 60/palpable, S3 gallop, signs of cardiogenic shock",
+     "tx": "Supportive care",
+     "tempting": "common viral respiratory infection in a 10-month-old"
+    },
+    "B": {
+     "clue": "Microbial vegetation on heart valves",
+     "support": "infective endocarditis",
+     "fit": "Not here: acute 8-hour cardiogenic collapse without preexisting valve disease",
+     "tx": "IV antibiotics",
+     "tempting": "causes fever and cardiac signs in infants"
+    },
+    "C": {
+     "clue": "Asymmetric septal hypertrophy with systolic murmur",
+     "support": "genetic cardiomyopathy",
+     "fit": "Not here: acute onset following URI with S3 gallop and hypotension",
+     "tx": "Beta-blockers",
+     "tempting": "causes heart failure and gallop rhythms in infants"
+    },
+    "D": {
+     "clue": "Viral myocardial inflammation with contractile dysfunction",
+     "support": "acute viral myocarditis",
+     "fit": "Here: URI prodrome, BP 60/palpable, pulse 160, S3 gallop, crackles",
+     "tx": "Inotropic support + IVIG"
+    },
+    "E": {
+     "clue": "Acute chordal or papillary muscle rupture",
+     "support": "mechanical valvular disruption",
+     "fit": "Not here: normal S1 and S2, acute myocarditis following viral illness",
+     "tx": "Emergent valve surgery",
+     "tempting": "causes acute pulmonary edema and cardiogenic shock"
+    }
+   },
+   "algorithm": {
+    "title": "Acute pediatric viral myocarditis and cardiogenic shock",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Hypotension (BP 60/palpable) + tachycardia + S3 gallop: emergent ICU admission + arterial line placement"
+     },
+     {
+      "level": 0,
+      "text": "Endomyocardial viral infection causing acute systolic pump failure and pulmonary congestion"
+     },
+     {
+      "level": 0,
+      "text": "Urgent echocardiography: diffuse ventricular hypokinesis + dilated cardiac chambers + decreased ejection fraction"
+     },
+     {
+      "level": 0,
+      "text": "Judicious fluid resuscitation: avoid aggressive fluid boluses which worsen pulmonary edema"
+     },
+     {
+      "level": 0,
+      "text": "Inotropic support with milrinone or epinephrine infusion to improve myocardial contractility"
+     },
+     {
+      "level": 1,
+      "text": "**Refractory cardiogenic shock:** initiate mechanical circulatory support (ECMO)"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "fever and agitation for 8 hours"
+    },
+    {
+     "text": "upper respiratory tract infection for 2 days"
+    },
+    {
+     "text": "pulse is 160/min"
+    },
+    {
+     "text": "blood pressure is 60/palpable mm Hg"
+    },
+    {
+     "text": "An S3 gallop is heard on auscultation"
+    },
+    {
+     "text": "Scattered crackles are heard bilaterally"
+    }
+   ]
+  },
+  "c-peds-03-q037": {
+   "task": "Next step",
+   "boardCall": "Severe dehydration + glucose > 500 + fruity breath (DKA) -> IV 0.9% saline bolus",
+   "hinge": "The initial step in pediatric diabetic ketoacidosis is volume resuscitation with an isotonic saline bolus before starting insulin.",
+   "trap": "Starting insulin immediately is tempting in severe hyperglycemia, but insulin before fluid resuscitation precipitates hypovolemic shock and cerebral edema.",
+   "options": {
+    "A": {
+     "clue": "Hypotonic dextrose fluid for hypoglycemia",
+     "support": "free water administration",
+     "fit": "Not here: glucose > 500 mg/dL, worsens hyperglycemia and cerebral edema",
+     "tx": "Isotonic 0.9% saline first",
+     "tempting": "intravenous fluid for dehydrated child"
+    },
+    "B": {
+     "clue": "Isotonic crystalloid volume expansion",
+     "support": "diabetic ketoacidosis resuscitation",
+     "fit": "Here: glucose > 500 mg/dL, capillary refill 4 seconds, severe dehydration",
+     "tx": "IV 0.9% saline bolus"
+    },
+    "C": {
+     "clue": "Potassium-supplemented balanced crystalloid",
+     "support": "hypokalemic maintenance",
+     "fit": "Not here: potassium must never be given before verifying renal function",
+     "tx": "Isotonic 0.9% saline first",
+     "tempting": "DKA involves total-body potassium deficit"
+    },
+    "D": {
+     "clue": "Bolus administration of short-acting insulin",
+     "support": "insulin bolus",
+     "fit": "Not here: insulin boluses increase cerebral edema risk and worsen shock",
+     "tx": "Isotonic 0.9% saline first",
+     "tempting": "insulin lowers marked hyperglycemia"
+    },
+    "E": {
+     "clue": "Continuous regular insulin infusion",
+     "support": "DKA corrective therapy",
+     "fit": "Not here: fluid resuscitation must precede insulin to avoid cardiovascular collapse",
+     "tx": "Isotonic 0.9% saline first",
+     "tempting": "definitive therapy to suppress lipolysis and ketoacidosis"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric diabetic ketoacidosis (DKA)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Hyperglycemia (> 200 mg/dL) + acidosis + severe dehydration: secure vascular access + check venous blood gas"
+     },
+     {
+      "level": 0,
+      "text": "Intravenous volume resuscitation with isotonic 0.9% saline bolus (20 ml/kg over 1 hour)",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Start continuous IV regular insulin infusion only after fluid expansion and serum potassium is known"
+     },
+     {
+      "level": 1,
+      "text": "**Serum potassium < 5.5 mEq/L with documented voiding:** add potassium to IV fluids"
+     },
+     {
+      "level": 1,
+      "text": "**Serum glucose reaches 250-300 mg/dL:** add 5% dextrose to fluids to prevent rapid osmolality drops"
+     },
+     {
+      "level": 0,
+      "text": "Hourly neurologic monitoring to identify signs of cerebral edema (headache, bradycardia, lethargy)"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "seven episodes of vomiting over the past 6 hours"
+    },
+    {
+     "text": "appears severely dehydrated"
+    },
+    {
+     "text": "fruity odor to her breath"
+    },
+    {
+     "text": "Capillary refill time is 4 seconds"
+    },
+    {
+     "text": "capillary blood glucose concentration is greater than 500 mg/dL"
+    }
+   ]
+  },
+  "c-peds-03-q038": {
+   "task": "Next step",
+   "boardCall": "17-year-old + hirsutism + oligomenorrhea + weight gain -> measure serum testosterone (PCOS)",
+   "hinge": "Measuring serum total and free testosterone is the initial diagnostic laboratory step to confirm hyperandrogenism in suspected PCOS.",
+   "trap": "Abdominal striae and moodiness suggest Cushing syndrome, but morning cortisol is not an appropriate screening test; androgen excess is the primary driver.",
+   "options": {
+    "A": {
+     "clue": "Basal glucocorticoid screen",
+     "support": "Cushing syndrome workup",
+     "fit": "Not here: morning cortisol is not a validated screening test for hypercortisolemia",
+     "tx": "Check testosterone first",
+     "tempting": "abdominal striae and weight gain suggest Cushing syndrome"
+    },
+    "B": {
+     "clue": "Lactotroph hormone for galactorrhea",
+     "support": "hyperprolactinemia",
+     "fit": "Not here: prominent hirsutism points directly to androgen excess rather than prolactinoma",
+     "tx": "Check testosterone first",
+     "tempting": "evaluates secondary oligomenorrhea and amenorrhea"
+    },
+    "C": {
+     "clue": "Biochemical evaluation of hyperandrogenism",
+     "support": "polycystic ovary syndrome",
+     "fit": "Here: increasing facial hair growth, oligomenorrhea, abdominal striae",
+     "tx": "Oral contraceptives + lifestyle"
+    },
+    "D": {
+     "clue": "Cross-sectional adrenal and pelvic radiation imaging",
+     "support": "tumor localization",
+     "fit": "Not here: biochemical confirmation of androgen excess must precede imaging",
+     "tx": "Check testosterone first",
+     "tempting": "evaluates for androgen-secreting adrenal tumors"
+    },
+    "E": {
+     "clue": "Magnetic resonance of sella turcica",
+     "support": "pituitary adenoma imaging",
+     "fit": "Not here: no visual defects or galactorrhea, initial step is biochemical",
+     "tx": "Check testosterone first",
+     "tempting": "screens for pituitary microadenoma"
+    }
+   },
+   "algorithm": {
+    "title": "Polycystic ovary syndrome (PCOS) in adolescents",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Hirsutism + oligomenorrhea in adolescent: perform comprehensive endocrine evaluation"
+     },
+     {
+      "level": 0,
+      "text": "Measurement of serum total and free testosterone concentrations to document hyperandrogenism",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Check serum 17-hydroxyprogesterone to rule out nonclassic congenital adrenal hyperplasia"
+     },
+     {
+      "level": 0,
+      "text": "Lifestyle modification with diet and exercise to improve insulin sensitivity"
+     },
+     {
+      "level": 0,
+      "text": "Combined oral contraceptive pills as first-line therapy for menstrual regularity and hirsutism"
+     },
+     {
+      "level": 1,
+      "text": "**Hirsutism refractory after 6 months of OCPs:** add spironolactone antiandrogen therapy"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "8-month history of increasing facial hair growth"
+    },
+    {
+     "text": "5.4-kg (12-lb) weight gain during this time"
+    },
+    {
+     "text": "menses have occurred at irregular 45-day intervals"
+    },
+    {
+     "text": "Examination shows striae over the abdomen"
+    },
+    {
+     "text": "There is no clitoromegaly"
+    }
+   ]
+  },
+  "c-peds-03-q039": {
+   "task": "Diagnosis",
+   "boardCall": "Cough + coryza + conjunctivitis + high fever + cephalocaudal maculopapular rash -> rubeola (measles)",
+   "hinge": "The 3 Cs (cough, coryza, conjunctivitis) preceding a cephalocaudal erythematous maculopapular rash sparing palms and soles confirm rubeola.",
+   "trap": "Kawasaki disease causes fever, conjunctivitis, and rash, but requires at least 5 days of fever and typically involves the palms and soles.",
+   "options": {
+    "A": {
+     "clue": "Tick-borne intracellular infection",
+     "support": "human granulocytic anaplasmosis",
+     "fit": "Not here: 3 Cs prodrome with classic cephalocaudal maculopapular rash",
+     "tx": "Oral doxycycline",
+     "tempting": "causes fever, headache, and variable rash after tick bite"
+    },
+    "B": {
+     "clue": "IgA immune complex vasculitis",
+     "support": "IgA vasculitis",
+     "fit": "Not here: maculopapular rash rather than palpable purpura on buttocks/legs",
+     "tx": "Supportive care",
+     "tempting": "common pediatric rash following upper respiratory illness"
+    },
+    "C": {
+     "clue": "Autoeczematization secondary to distant dermatitis",
+     "support": "id reaction",
+     "fit": "Not here: high fever 38.9 C, cough, conjunctivitis, and coryza",
+     "tx": "Topical corticosteroids",
+     "tempting": "causes widespread symmetric pruritic papules"
+    },
+    "D": {
+     "clue": "Systemic medium-vessel vasculitis",
+     "support": "Kawasaki disease",
+     "fit": "Not here: prominent cough and coryza, rash spares palms and soles",
+     "tx": "IVIG + aspirin",
+     "tempting": "causes high fever, conjunctivitis, and polymorphic rash"
+    },
+    "E": {
+     "clue": "Herald patch followed by Christmas tree pattern",
+     "support": "pityriasis rosea",
+     "fit": "Not here: high fever 38.9 C, eye discharge, cough, and coryza",
+     "tx": "Supportive care",
+     "tempting": "causes generalized trunk maculopapular eruption"
+    },
+    "F": {
+     "clue": "Rickettsial vasculitis spreading centripetally",
+     "support": "Rocky Mountain spotted fever",
+     "fit": "Not here: rash begins on face and spares palms and soles",
+     "tx": "Oral doxycycline",
+     "tempting": "causes acute high fever and widespread maculopapular rash"
+    },
+    "G": {
+     "clue": "Paramyxovirus infection with 3 Cs prodrome",
+     "support": "measles (rubeola)",
+     "fit": "Here: temperature 38.9 C, cough, coryza, eye discharge, cephalocaudal rash",
+     "tx": "Oral vitamin A"
+    },
+    "H": {
+     "clue": "Sarcoptes scabiei mite burrow infestation",
+     "support": "scabies infestation",
+     "fit": "Not here: acute high fever, conjunctivitis, cephalocaudal spread",
+     "tx": "Topical permethrin",
+     "tempting": "causes widespread pruritic papular eruption"
+    },
+    "I": {
+     "clue": "Group A streptococcal erythrogenic toxin",
+     "support": "scarlet fever",
+     "fit": "Not here: prominent conjunctivitis and coryza, lack of sandpaper texture",
+     "tx": "Oral penicillin",
+     "tempting": "causes fever and generalized red papular exanthem"
+    },
+    "J": {
+     "clue": "Exfoliative toxin producing epidermal peeling",
+     "support": "staphylococcal scalded skin syndrome",
+     "fit": "Not here: morbilliform rash rather than diffuse erythema and flaccid bullae",
+     "tx": "IV nafcillin or vancomycin",
+     "tempting": "causes pediatric fever and widespread erythematous rash"
+    }
+   },
+   "algorithm": {
+    "title": "Rubeola (measles)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "High fever + 3 Cs (cough, coryza, conjunctivitis) + maculopapular rash: place on airborne isolation immediately"
+     },
+     {
+      "level": 0,
+      "text": "Cephalocaudal rash progression spreading from hairline downward to extremities"
+     },
+     {
+      "level": 0,
+      "text": "Confirmatory measles IgM serology + throat/nasopharyngeal swab for viral RT-PCR"
+     },
+     {
+      "level": 0,
+      "text": "Administer oral vitamin A therapy immediately to reduce morbidity and mortality"
+     },
+     {
+      "level": 0,
+      "text": "Report case immediately to local public health department for contact tracing"
+     },
+     {
+      "level": 1,
+      "text": "**Unvaccinated contacts within 72 hours of exposure:** administer post-exposure MMR vaccine"
+     },
+     {
+      "level": 1,
+      "text": "**High-risk contacts within 6 days:** administer intramuscular immunoglobulin"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "cough, congestion, eye discharge, and fever for 4 days"
+    },
+    {
+     "text": "rash initially began on her face and chest but has spread"
+    },
+    {
+     "text": "temperature is 38.9°C(102.1°F)"
+    },
+    {
+     "text": "diffuse red, macular and papular rash involving the face, trunk, and extremities"
+    },
+    {
+     "text": "there are no lesions on the palms or soles"
+    }
+   ]
+  },
+  "c-peds-03-q040": {
+   "task": "Diagnosis",
+   "boardCall": "Chronic cough refractory to asthma/antibiotic therapy + focal linear middle lobe consolidation -> bronchiectasis",
+   "hinge": "Chronic cough unresponsive to bronchodilators, antibiotics, and steroids with persistent focal middle lobe collapse indicates localized bronchiectasis.",
+   "trap": "Asthma is the most common cause of pediatric chronic cough, but fails to respond here to bronchodilators and oral corticosteroids.",
+   "options": {
+    "A": {
+     "clue": "SERPINA1 deficiency causing panacinar emphysema",
+     "support": "alpha-1 antitrypsin deficiency",
+     "fit": "Not here: normal growth, localized right middle lobe linear consolidation",
+     "tx": "Alpha-1 augmentation",
+     "tempting": "causes early-onset pediatric pulmonary disease"
+    },
+    "B": {
+     "clue": "Reversible airway hyperresponsiveness and bronchospasm",
+     "support": "pediatric asthma",
+     "fit": "Not here: completely unresponsive to beta-agonists and oral prednisone",
+     "tx": "Inhaled corticosteroids",
+     "tempting": "most common cause of chronic pediatric cough"
+    },
+    "C": {
+     "clue": "Permanent bronchial dilation from chronic inflammation",
+     "support": "localized bronchiectasis",
+     "fit": "Here: 1-year chronic cough, unresponsive to asthma medications, middle lobe consolidation",
+     "tx": "Airway clearance + targeted antibiotics"
+    },
+    "D": {
+     "clue": "Congenital lobar hyperinflation with air trapping",
+     "support": "congenital lobar emphysema",
+     "fit": "Not here: linear consolidation rather than hyperlucent hyperinflated lobe",
+     "tx": "Surgical lobectomy",
+     "tempting": "causes persistent pediatric pulmonary symptoms"
+    },
+    "E": {
+     "clue": "CFTR mutation causing diffuse bronchiectasis",
+     "support": "cystic fibrosis",
+     "fit": "Not here: 50th percentile weight, no diarrhea, isolated single lobe lesion",
+     "tx": "CFTR modulators",
+     "tempting": "major cause of pediatric bronchiectasis and chronic cough"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric bronchiectasis and localized middle lobe syndrome",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Chronic cough refractory to asthma therapy + focal atelectasis: high-resolution chest CT (HRCT)"
+     },
+     {
+      "level": 0,
+      "text": "High-resolution CT showing bronchial dilation (signet-ring sign) confirms bronchiectasis"
+     },
+     {
+      "level": 0,
+      "text": "Flexible bronchoscopy to evaluate for retained foreign body or localized endobronchial obstruction"
+     },
+     {
+      "level": 0,
+      "text": "Sweat chloride test + ciliary biopsy to rule out cystic fibrosis and primary ciliary dyskinesia"
+     },
+     {
+      "level": 0,
+      "text": "Daily chest physiotherapy with positive expiratory pressure (PEP) device to enhance airway clearance"
+     },
+     {
+      "level": 1,
+      "text": "**Acute pulmonary exacerbation:** culture-directed oral or IV antibiotics for 14 days"
+     },
+     {
+      "level": 1,
+      "text": "**Refractory localized single-lobe bronchiectasis:** surgical lobectomy of affected segment"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "1-year history of chronic nonproductive cough"
+    },
+    {
+     "text": "linear consolidation in the right middle lobe"
+    },
+    {
+     "text": "cough occurs during the day and night"
+    },
+    {
+     "text": "She is at the 50th percentile for height and weight"
+    }
+   ]
+  },
+  "c-peds-03-q041": {
+   "task": "Screening",
+   "boardCall": "Sexually active 16-year-old female + inconsistent condom use -> screening for Chlamydia trachomatis and Neisseria gonorrhoeae",
+   "hinge": "Annual chlamydia and gonorrhea screening via NAAT is routinely recommended for all sexually active women under 25.",
+   "trap": "Cervical ectropion is a normal physiologic variant in adolescents; it does not indicate pathology or require colposcopy or HPV testing.",
+   "options": {
+    "A": {
+     "clue": "Molecular detection of oncogenic HPV strains",
+     "support": "cervical cancer screening",
+     "fit": "Not here: HPV co-testing is not recommended under age 30",
+     "tx": "Screen after age 30",
+     "tempting": "performed alongside cervical screening"
+    },
+    "B": {
+     "clue": "Nucleic acid amplification testing for common STIs",
+     "support": "routine adolescent STI screening",
+     "fit": "Here: sexually active adolescent, inconsistent condoms, cervical ectropion",
+     "tx": "Doxycycline or ceftriaxone"
+    },
+    "C": {
+     "clue": "Gonadotropin assessment for ovulatory dysfunction",
+     "support": "hypogonadism evaluation",
+     "fit": "Not here: normal regular menses occurring at 35-day intervals",
+     "tx": "Reassurance",
+     "tempting": "evaluates endocrine reproductive function"
+    },
+    "D": {
+     "clue": "Thyroid axis assessment",
+     "support": "thyroid screening",
+     "fit": "Not here: asymptomatic with normal vital signs, BMI, and menses",
+     "tx": "Reassurance",
+     "tempting": "routine screen for systemic fatigue or menstrual issues"
+    },
+    "E": {
+     "clue": "Magnified illuminated cervical inspection",
+     "support": "abnormal cytology workup",
+     "fit": "Not here: cervical ectropion is normal physiologic variant in teens",
+     "tx": "Reassurance",
+     "tempting": "evaluates visible cervical lesions"
+    }
+   },
+   "algorithm": {
+    "title": "Adolescent routine sexual health and STI screening",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Sexually active adolescent: confidential sexual history + risk behavior assessment"
+     },
+     {
+      "level": 0,
+      "text": "Annual nucleic acid amplification testing (NAAT) for Chlamydia trachomatis + Neisseria gonorrhoeae",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Urine NAAT or self-collected vaginal swab preferred over speculum cervical swab"
+     },
+     {
+      "level": 0,
+      "text": "Screen routinely for HIV + syphilis + hepatitis B + offer HPV vaccination"
+     },
+     {
+      "level": 0,
+      "text": "Provide comprehensive contraception counseling prioritizing long-acting reversible contraception (LARC)"
+     },
+     {
+      "level": 1,
+      "text": "**Positive chlamydia or gonorrhea test:** treat patient + notify and treat all recent sexual partners"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "requesting contraceptive advice"
+    },
+    {
+     "text": "currently sexually active with two male partners and uses condoms inconsistently"
+    },
+    {
+     "text": "Pelvic examination shows an ectropion on the cervix"
+    },
+    {
+     "text": "menses occur at regular 35-day intervals"
+    },
+    {
+     "text": "16-year-old girl comes to the physician"
+    }
+   ]
+  },
+  "c-peds-03-q042": {
+   "task": "Diagnosis",
+   "boardCall": "Midshaft humerus fracture + wrist drop (loss of wrist/finger extension) -> radial nerve injury",
+   "hinge": "The radial nerve traverses the spiral groove of the midshaft humerus; fracture here causes wrist drop and loss of finger extension.",
+   "trap": "Median nerve injury is commonly associated with supracondylar humerus fractures and impairs thumb opposition and forearm pronation.",
+   "options": {
+    "A": {
+     "clue": "Innervates biceps brachii and brachialis",
+     "support": "musculocutaneous nerve",
+     "fit": "Not here: impaired elbow flexion, but patient has wrist drop",
+     "tx": "Conservative observation",
+     "tempting": "anterior arm nerve injured in humerus trauma"
+    },
+    "B": {
+     "clue": "Brachial cord forming radial and axillary nerves",
+     "support": "posterior cord plexopathy",
+     "fit": "Not here: isolated wrist/finger extension loss without axillary deltoid weakness",
+     "tx": "Brachial plexus exploration",
+     "tempting": "origin of the radial nerve"
+    },
+    "C": {
+     "clue": "Innervates forearm flexors and thenar compartment",
+     "support": "median nerve",
+     "fit": "Not here: injured in supracondylar fractures, preserves wrist extension",
+     "tx": "Splinting or decompression",
+     "tempting": "common nerve injury in pediatric elbow fractures"
+    },
+    "D": {
+     "clue": "Traverses midshaft spiral groove to supply extensors",
+     "support": "radial nerve neuropathy",
+     "fit": "Here: midshaft humerus fracture, inability to extend wrist or fingers",
+     "tx": "Coaptation splint + observation"
+    },
+    "E": {
+     "clue": "Courses behind medial epicondyle to supply intrinsic hand",
+     "support": "ulnar nerve",
+     "fit": "Not here: injured in medial epicondyle fractures, causes claw hand",
+     "tx": "Ulnar transposition",
+     "tempting": "frequent nerve injury around the elbow"
+    }
+   },
+   "algorithm": {
+    "title": "Radial nerve injury in midshaft humerus fracture",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Midshaft humerus fracture + wrist drop: assess motor extension + sensation over dorsal first webspace"
+     },
+     {
+      "level": 0,
+      "text": "Radial nerve neuropraxia in the spiral (radial) groove occurs in up to 15% of cases"
+     },
+     {
+      "level": 0,
+      "text": "Closed reduction and immobilization with coaptation splint or functional Sarmiento brace"
+     },
+     {
+      "level": 0,
+      "text": "Conservative management with watchful waiting, as > 85% of closed injuries recover spontaneously"
+     },
+     {
+      "level": 0,
+      "text": "Passive range-of-motion physical therapy + wrist splint in extension to prevent joint contractures"
+     },
+     {
+      "level": 1,
+      "text": "**Open fracture, vascular compromise, or no recovery after 3-4 months:** electrodiagnostic testing + surgical exploration"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "fracture of the shaft of his right humerus"
+    },
+    {
+     "text": "unable to extend his wrist or fingers"
+    },
+    {
+     "text": "falls out of a tree"
+    },
+    {
+     "text": "12-year-old boy falls out of a tree"
+    }
+   ]
+  },
+  "c-peds-03-q043": {
+   "task": "Diagnosis",
+   "boardCall": "4-day-old + indirect bilirubin 12.5 mg/dL + gaining weight + 7 wet diapers/day -> physiologic jaundice",
+   "hinge": "Unconjugated hyperbilirubinemia peaking at day 4-5 in a well-hydrated, thriving infant with stable hematocrit represents physiologic jaundice.",
+   "trap": "Mother is blood group B and baby is O, which excludes ABO hemolytic disease; baby has regained birth weight, excluding dehydration.",
+   "options": {
+    "A": {
+     "clue": "Maternal-fetal blood group incompatibility",
+     "support": "ABO hemolytic disease",
+     "fit": "Not here: mother is type B and newborn is type O",
+     "tx": "Phototherapy + IVIG",
+     "tempting": "mother and baby have different ABO blood types"
+    },
+    "B": {
+     "clue": "Anatomic extrahepatic biliary duct atresia",
+     "support": "biliary atresia",
+     "fit": "Not here: direct bilirubin normal at 0.3 mg/dL, stools yellow",
+     "tx": "Kasai portoenterostomy",
+     "tempting": "causes neonatal progressive jaundice"
+    },
+    "C": {
+     "clue": "Inadequate enteral fluid intake",
+     "support": "breastfeeding jaundice",
+     "fit": "Not here: seven wet diapers daily and regained birth weight",
+     "tx": "Increased feeding frequency",
+     "tempting": "breast-fed late preterm infant with rising bilirubin"
+    },
+    "D": {
+     "clue": "G6PD or pyruvate kinase enzyme deficiency",
+     "support": "hemolytic anemia",
+     "fit": "Not here: stable hematocrit (54% to 52%), no acute hemolysis",
+     "tx": "Avoid oxidant triggers",
+     "tempting": "causes neonatal unconjugated hyperbilirubinemia"
+    },
+    "E": {
+     "clue": "Transient developmental hepatic UGT deficiency",
+     "support": "neonatal physiologic jaundice",
+     "fit": "Here: onset after 24 hours, total bilirubin 12.5, well hydrated",
+     "tx": "Reassurance + continue feeding"
+    },
+    "F": {
+     "clue": "Hematocrit > 65% increasing bilirubin load",
+     "support": "neonatal polycythemia",
+     "fit": "Not here: normal hematocrit of 52% and 54%",
+     "tx": "Partial exchange transfusion",
+     "tempting": "high hematocrit increases bilirubin turnover"
+    }
+   },
+   "algorithm": {
+    "title": "Neonatal unconjugated hyperbilirubinemia",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Jaundice in first week of life: check total and direct bilirubin + maternal/infant blood types"
+     },
+     {
+      "level": 0,
+      "text": "Unconjugated bilirubin peaking at 3-5 days in well-hydrated infant confirms physiologic jaundice"
+     },
+     {
+      "level": 0,
+      "text": "Plot total serum bilirubin on hour-specific Bhutani nomogram to determine phototherapy risk threshold"
+     },
+     {
+      "level": 0,
+      "text": "Continue frequent breastfeeding (8-12 times daily) + monitor hydration and stooling"
+     },
+     {
+      "level": 1,
+      "text": "**Bilirubin exceeds hour-specific phototherapy threshold:** initiate intensive blue-light phototherapy"
+     },
+     {
+      "level": 1,
+      "text": "**Bilirubin reaches exchange transfusion threshold:** perform double-volume exchange transfusion"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "2-day history of progressive jaundice"
+    },
+    {
+     "text": "seven wet diapers daily, and his stools are yellow and seedy"
+    },
+    {
+     "text": "weighed 2608 g {5 lb 12 oz)"
+    },
+    {
+     "text": "he now weighs 2608 g (5 lb 12 oz)"
+    },
+    {
+     "text": "Bilirubin, total (mg/dL) 8.2 12.5"
+    }
+   ]
+  },
+  "c-peds-03-q044": {
+   "task": "Next step",
+   "boardCall": "Septic shock with fluid refractoriness + cardiomegaly + pulmonary edema -> IV dopamine (inotropic support)",
+   "hinge": "Persistent hypotension and oliguria despite fluid resuscitation, accompanied by cardiomegaly and pulmonary edema, indicate myocardial dysfunction requiring inotropic support.",
+   "trap": "Giving additional fluid boluses is dangerous once cardiomegaly and bilateral pulmonary edema develop, as excess fluid worsens pulmonary congestion.",
+   "options": {
+    "A": {
+     "clue": "Rapid crystalloid volume expansion",
+     "support": "hypovolemic shock",
+     "fit": "Not here: worsening cardiomegaly, pulmonary edema, fluid-refractory shock",
+     "tx": "Inotrope infusion",
+     "tempting": "standard treatment for persistent oliguria and hypotension"
+    },
+    "B": {
+     "clue": "Inotrope and vasopressor adrenergic agonist",
+     "support": "fluid-refractory septic/cardiogenic shock",
+     "fit": "Here: BP 70/30, oliguria < 0.5 mL/kg/h, cardiomegaly, pulmonary edema",
+     "tx": "IV dopamine infusion"
+    },
+    "C": {
+     "clue": "Loop diuretic causing intravascular depletion",
+     "support": "acute volume overload",
+     "fit": "Not here: severe hypotension (BP 70/30 mm Hg), worsens perfusion",
+     "tx": "Inotrope infusion",
+     "tempting": "treats bilateral pulmonary edema and facial edema"
+    },
+    "D": {
+     "clue": "Potent arterial and venous vasodilator",
+     "support": "hypertensive emergency",
+     "fit": "Not here: profound hypotension (70/30 mm Hg), would precipitate arrest",
+     "tx": "Inotrope infusion",
+     "tempting": "reduces afterload in acute heart failure"
+    },
+    "E": {
+     "clue": "Increased FiO2 for refractory hypoxemia",
+     "support": "oxygen supplementation",
+     "fit": "Not here: PaO2 is already 100 mm Hg on 40% oxygen",
+     "tx": "Inotrope infusion",
+     "tempting": "responds to bilateral hazy lung fields on radiograph"
+    }
+   },
+   "algorithm": {
+    "title": "Fluid-refractory septic shock with myocardial dysfunction",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Hypotension (BP 70/30) + purpura + obtundation: endotracheal intubation + arterial/central line placement"
+     },
+     {
+      "level": 0,
+      "text": "Initial isotonic crystalloid boluses + empiric IV ceftriaxone and vancomycin"
+     },
+     {
+      "level": 0,
+      "text": "Development of cardiomegaly and pulmonary edema signals fluid overload and myocardial depression"
+     },
+     {
+      "level": 0,
+      "text": "Stop fluid boluses and initiate IV dopamine or epinephrine infusion for inotropic support",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Target normal mean arterial pressure + capillary refill < 2 seconds + urine output > 1 mL/kg/h"
+     },
+     {
+      "level": 1,
+      "text": "**Refractory vasodilatory shock:** add norepinephrine or vasopressin infusion"
+     },
+     {
+      "level": 1,
+      "text": "**Suspected adrenal insufficiency:** stress-dose IV hydrocortisone"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "purple macular rash over the trunk and extremities"
+    },
+    {
+     "text": "patient is obtunded"
+    },
+    {
+     "text": "blood pressure is 70/30 mm Hg"
+    },
+    {
+     "text": "urine output decreases to less than 0.5 mL/kg/h"
+    },
+    {
+     "text": "chest x-ray shows hazy lung fields bilaterally and cardiomegaly"
+    }
+   ]
+  },
+  "c-peds-03-q045": {
+   "task": "Next step",
+   "boardCall": "Recurrent non-urticarial angioedema + colicky abdominal pain/diarrhea -> measure serum C1 esterase inhibitor",
+   "hinge": "Recurrent episodes of non-pruritic, non-urticarial angioedema accompanied by bowel wall edema (abdominal pain) define hereditary angioedema.",
+   "trap": "Allergic angioedema is IgE-mediated with urticaria and pruritus; non-urticarial angioedema with abdominal pain is bradykinin-mediated, so allergy skin/RAST testing is unhelpful.",
+   "options": {
+    "A": {
+     "clue": "IgE-mediated cutaneous mast cell degranulation",
+     "support": "environmental allergy workup",
+     "fit": "Not here: non-urticarial, non-pruritic swelling with visceral abdominal attacks",
+     "tx": "Check C1 inhibitor first",
+     "tempting": "evaluates recurrent facial and lip swelling"
+    },
+    "B": {
+     "clue": "Endothelial enzyme elevated in granulomas",
+     "support": "sarcoidosis evaluation",
+     "fit": "Not here: intermittent episodic angioedema, no pulmonary or uveal disease",
+     "tx": "Check C1 inhibitor first",
+     "tempting": "screens for sarcoid granulomatous inflammation"
+    },
+    "C": {
+     "clue": "Quantitative and functional complement serine protease inhibitor",
+     "support": "hereditary angioedema",
+     "fit": "Here: episodic non-urticarial swelling of lip, face, arms, abdominal pain",
+     "tx": "C1-INH concentrate or icatibant"
+    },
+    "D": {
+     "clue": "Specific serum IgE antibody determination",
+     "support": "type I hypersensitivity",
+     "fit": "Not here: bradykinin-mediated disease without urticaria, pruritus, or triggers",
+     "tx": "Check C1 inhibitor first",
+     "tempting": "evaluates allergic etiology of recurrent angioedema"
+    },
+    "E": {
+     "clue": "Serum globulin band densitometry",
+     "support": "monoclonal gammopathy screen",
+     "fit": "Not here: no evidence of plasma cell neoplasm in a 17-year-old",
+     "tx": "Check C1 inhibitor first",
+     "tempting": "screens for abnormal serum protein concentrations"
+    }
+   },
+   "algorithm": {
+    "title": "Hereditary angioedema (C1 esterase inhibitor deficiency)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Recurrent non-urticarial angioedema + episodic abdominal pain: check serum C4 complement concentration"
+     },
+     {
+      "level": 0,
+      "text": "Measurement of serum C1 esterase inhibitor concentration and functional activity",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Decreased C1-INH antigenic or functional level confirms hereditary angioedema (type I or type II)"
+     },
+     {
+      "level": 0,
+      "text": "Acute attacks: IV C1-INH concentrate, plasma kallikrein inhibitor (ecallantide), or icatibant"
+     },
+     {
+      "level": 0,
+      "text": "Avoid antihistamines, corticosteroids, and epinephrine as they are ineffective in bradykinin angioedema"
+     },
+     {
+      "level": 1,
+      "text": "**Long-term prophylaxis for frequent attacks:** oral danazol or subcutaneous lanadelumab"
+     },
+     {
+      "level": 1,
+      "text": "**Pre-procedure prophylaxis before dental work:** administer C1-INH concentrate"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "swelling of his lower lip that has slowly resolved during the past 2 days"
+    },
+    {
+     "text": "12-month history of intermittent asymmetric swelling of his face, chest, and arms"
+    },
+    {
+     "text": "During three of the episodes, he also had abdominal pain and diarrhea"
+    },
+    {
+     "text": "Examination shows no abnormalities"
+    },
+    {
+     "text": "He takes no medications"
+    }
+   ]
+  },
+  "c-peds-03-q046": {
+   "task": "Next step",
+   "boardCall": "4-month-old + bronchiolitis + SpO2 84% on room air -> administration of supplemental oxygen",
+   "hinge": "Immediate supplemental oxygen administration is the vital priority to correct severe hypoxemia (SpO2 84%) in viral bronchiolitis.",
+   "trap": "Inhaled bronchodilators and systemic epinephrine are not routinely recommended in bronchiolitis and must never take precedence over correcting hypoxemia.",
+   "options": {
+    "A": {
+     "clue": "Arterial puncture for blood gas and pH",
+     "support": "acid-base assessment",
+     "fit": "Not here: painful invasive test that delays immediate oxygen therapy",
+     "tx": "Supplemental oxygen first",
+     "tempting": "assesses severity of respiratory distress and PaCO2"
+    },
+    "B": {
+     "clue": "Pharyngeal swab for bacterial pathogens",
+     "support": "bacterial pharyngitis",
+     "fit": "Not here: lower respiratory viral process, delays treatment of hypoxemia",
+     "tx": "Supplemental oxygen first",
+     "tempting": "screens for bacterial respiratory superinfection"
+    },
+    "C": {
+     "clue": "Viral isolation in cell culture",
+     "support": "virologic confirmation",
+     "fit": "Not here: slow viral testing must not delay correction of SpO2 84%",
+     "tx": "Supplemental oxygen first",
+     "tempting": "identifies RSV pathogen in winter months"
+    },
+    "D": {
+     "clue": "Thoracic plain film for infiltrates",
+     "support": "chest radiography",
+     "fit": "Not here: does not change immediate management; oxygen must be given first",
+     "tx": "Supplemental oxygen first",
+     "tempting": "evaluates for viral versus bacterial pneumonia"
+    },
+    "E": {
+     "clue": "Soft tissue neck plain film",
+     "support": "upper airway radiography",
+     "fit": "Not here: clear lower airway disease with crackles and wheezes",
+     "tx": "Supplemental oxygen first",
+     "tempting": "evaluates for upper airway obstruction"
+    },
+    "F": {
+     "clue": "Inhaled beta-2 agonist",
+     "support": "albuterol nebulization",
+     "fit": "Not here: not routinely recommended in infant bronchiolitis, hypoxemia takes priority",
+     "tx": "Supplemental oxygen first",
+     "tempting": "standard therapy for expiratory wheezing"
+    },
+    "G": {
+     "clue": "Supplemental inspired oxygen delivery",
+     "support": "acute hypoxemia management",
+     "fit": "Here: 4-month-old, intercostal retractions, wheezes, oxygen saturation 84%",
+     "tx": "Oxygen via nasal cannula"
+    },
+    "H": {
+     "clue": "Subcutaneous sympathomimetic injection",
+     "support": "anaphylaxis or croup",
+     "fit": "Not here: systemic epinephrine is contraindicated for routine infant bronchiolitis",
+     "tx": "Supplemental oxygen first",
+     "tempting": "potent bronchodilator used in severe pediatric airway distress"
+    }
+   },
+   "algorithm": {
+    "title": "Acute viral bronchiolitis in infants",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Hypoxemia (saturation 84%) + respiratory distress: immediate airway assessment + continuous pulse oximetry"
+     },
+     {
+      "level": 0,
+      "text": "Administration of humidified supplemental oxygen via nasal cannula to maintain saturation >= 90%",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Nasal suctioning with saline drops to clear upper airway secretions before feeds"
+     },
+     {
+      "level": 0,
+      "text": "Assess hydration: initiate IV fluids or nasogastric feeds if tachypneic infant cannot feed safely"
+     },
+     {
+      "level": 0,
+      "text": "Routine bronchodilators, systemic corticosteroids, and antibiotics are not recommended"
+     },
+     {
+      "level": 1,
+      "text": "**Escalating work of breathing or persistent hypoxemia:** trial heated humidified high-flow nasal cannula"
+     },
+     {
+      "level": 1,
+      "text": "**Impending respiratory failure or severe apnea:** endotracheal intubation and mechanical ventilation"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "cough and poor feeding for 2 days"
+    },
+    {
+     "text": "mild intercostal retractions, and diffuse bilateral crackles and wheezes are heard"
+    },
+    {
+     "text": "Pulse oximetry on room air shows an oxygen saturation of 84%"
+    },
+    {
+     "text": "temperature is 37.5°C (99.5°F), pulse is 140/min, and respirations are 56/min"
+    },
+    {
+     "text": "previously healthy 4-month-old girl"
+    }
+   ]
+  },
+  "c-peds-03-q047": {
+   "task": "Diagnosis",
+   "boardCall": "Infant apnea + bilateral retinal hemorrhages + subdural hemorrhage -> acceleration-deceleration head injury (abusive head trauma)",
+   "hinge": "Repetitive acceleration-deceleration shearing forces (shaken baby syndrome) cause tearing of bridging veins and multilayered retinal hemorrhages.",
+   "trap": "Simple blunt trauma or accidental falls in an infant do not produce extensive bilateral multilayered retinal hemorrhages or interhemispheric subdural hematoma.",
+   "options": {
+    "A": {
+     "clue": "Rotational shearing forces tearing bridging veins",
+     "support": "abusive head trauma",
+     "fit": "Here: unresponsive infant, bilateral retinal hemorrhages, acute subdural hemorrhage",
+     "tx": "Intracranial pressure control"
+    },
+    "B": {
+     "clue": "Unexplained brief resolved infant event",
+     "support": "BRUE",
+     "fit": "Not here: devastating acute brain injury with subdural bleeding and edema",
+     "tx": "Supportive observation",
+     "tempting": "infant suddenly cried, became limp, and stopped breathing"
+    },
+    "C": {
+     "clue": "Foreign material inhalation into airway",
+     "support": "pulmonary aspiration",
+     "fit": "Not here: extensive intracranial hemorrhage, edema, and retinal hemorrhages",
+     "tx": "Airway suctioning",
+     "tempting": "explains sudden apnea and cyanosis around bath time"
+    },
+    "D": {
+     "clue": "Direct focal impact without rotational shear",
+     "support": "accidental blunt head trauma",
+     "fit": "Not here: lacks diffuse rotational shear causing interhemispheric subdural and retinal hemorrhages",
+     "tx": "Neurosurgical evaluation",
+     "tempting": "common mechanical etiology of traumatic brain injury"
+    },
+    "E": {
+     "clue": "Submersion asphyxia and hypoxic brain injury",
+     "support": "submersion injury",
+     "fit": "Not here: occurred before entering bath, acute subdural and retinal hemorrhages",
+     "tx": "Respiratory support",
+     "tempting": "event occurred in bathroom prior to bath"
+    },
+    "F": {
+     "clue": "External mechanical airway occlusion",
+     "support": "intentional or accidental asphyxia",
+     "fit": "Not here: does not cause rotational subdural hemorrhage or retinal hemorrhages",
+     "tx": "Airway support",
+     "tempting": "causes acute pediatric apnea and cyanosis"
+    }
+   },
+   "algorithm": {
+    "title": "Abusive head trauma (acceleration-deceleration injury)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Unresponsive infant + retinal hemorrhages + subdural hematoma: secure airway + emergent neuroresuscitation"
+     },
+     {
+      "level": 0,
+      "text": "Rotational acceleration-deceleration forces tear bridging veins causing subdural hemorrhage and diffuse axonal injury"
+     },
+     {
+      "level": 0,
+      "text": "Emergent noncontrast head CT + neurosurgical consultation to evaluate for surgical hematoma evacuation"
+     },
+     {
+      "level": 0,
+      "text": "Targeted intracranial pressure (ICP) management: hypertonic saline + head elevation + avoid hyperventilation"
+     },
+     {
+      "level": 0,
+      "text": "Complete skeletal survey + dilated ophthalmology examination to document occult fractures and retinal hemorrhages"
+     },
+     {
+      "level": 0,
+      "text": "Immediate notification of Child Protective Services (CPS) + social work + hospital child protection team"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "stopped breathing"
+    },
+    {
+     "text": "unresponsive, flaccid, and cyanotic"
+    },
+    {
+     "text": "pupils are fixed and dilated"
+    },
+    {
+     "text": "bilateral retinal hemorrhages"
+    },
+    {
+     "text": "bilateral cerebral edema and acute interhemispheric subdural hemorrhage"
+    }
+   ]
+  },
+  "c-peds-03-q048": {
+   "task": "Diagnosis",
+   "boardCall": "2-month-old + grade 3/6 holosystolic murmur with thrill at lower left sternal border + left atrial enlargement -> ventricular septal defect",
+   "hinge": "A harsh holosystolic murmur and systolic thrill loudest at the lower left sternal border with left atrial volume overload define a ventricular septal defect.",
+   "trap": "Atrial septal defect causes a systolic ejection murmur at the upper left border with fixed split S2, not a harsh holosystolic murmur with thrill.",
+   "options": {
+    "A": {
+     "clue": "Systolic ejection murmur at right upper sternal border",
+     "support": "left ventricular outflow obstruction",
+     "fit": "Not here: holosystolic murmur at lower left sternal border with thrill",
+     "tx": "Balloon valvuloplasty",
+     "tempting": "causes systolic murmur and precordial thrill"
+    },
+    "B": {
+     "clue": "Midsystolic murmur at LUSB with fixed split S2",
+     "support": "interatrial communication",
+     "fit": "Not here: harsh holosystolic murmur with palpable systolic thrill",
+     "tx": "Percutaneous device closure",
+     "tempting": "causes pediatric left-to-right cardiac shunting"
+    },
+    "C": {
+     "clue": "Systolic ejection murmur with early click",
+     "support": "right ventricular outflow obstruction",
+     "fit": "Not here: pansystolic murmur at lower left border, enlarged left atrium",
+     "tx": "Balloon pulmonary valvuloplasty",
+     "tempting": "causes prominent systolic murmur and thrill"
+    },
+    "D": {
+     "clue": "Cyanotic anomaly with single S2 and ejection murmur",
+     "support": "tetralogy of Fallot",
+     "fit": "Not here: acyanotic infant with normal oxygenation and holosystolic murmur",
+     "tx": "Complete surgical repair",
+     "tempting": "includes a large ventricular septal defect"
+    },
+    "E": {
+     "clue": "Communication in ventricular septum",
+     "support": "membranous or muscular VSD",
+     "fit": "Here: grade 3/6 holosystolic murmur, thrill at LLSB, enlarged left atrium",
+     "tx": "Observation or surgical closure"
+    }
+   },
+   "algorithm": {
+    "title": "Ventricular septal defect (VSD)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Holosystolic murmur + thrill at lower left sternal border: transthoracic echocardiography is diagnostic test of choice"
+     },
+     {
+      "level": 0,
+      "text": "Echocardiography defines VSD size, anatomic location, and hemodynamic shunt ratio"
+     },
+     {
+      "level": 0,
+      "text": "Small muscular or perimembranous VSD: clinical observation with reassurance, as most close spontaneously"
+     },
+     {
+      "level": 1,
+      "text": "**Large VSD with failure to thrive or heart failure:** initiate oral furosemide + ACE inhibitor"
+     },
+     {
+      "level": 0,
+      "text": "Optimize caloric intake with high-calorie infant formula to support optimal infant growth"
+     },
+     {
+      "level": 1,
+      "text": "**Persistent heart failure or pulmonary hypertension:** surgical patch closure within first 6-12 months"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "grade 3/6 holosystolic murmur is heard at the lower left sternal border"
+    },
+    {
+     "text": "systolic thrill is palpated at the lower left sternal border"
+    },
+    {
+     "text": "x-ray of the chest shows an enlarged left atrium"
+    },
+    {
+     "text": "Femoral pulses are equal"
+    },
+    {
+     "text": "2-month-old boy is brought to the physician"
+    }
+   ]
+  },
+  "c-peds-03-q049": {
+   "task": "Diagnosis",
+   "boardCall": "Paroxysmal coughing spells + cyanosis + posttussive vomiting in 2-month-old -> pertussis (Bordetella pertussis)",
+   "hinge": "Violent coughing paroxysms accompanied by facial cyanosis and posttussive emesis in an unvaccinated 2-month-old indicate pertussis.",
+   "trap": "Chlamydial pneumonia in young infants causes a staccato cough, but presents with tachypnea, crackles, and lack of violent paroxysms or cyanotic pauses.",
+   "options": {
+    "A": {
+     "clue": "Gastric acid microaspiration with feeding",
+     "support": "reflux aspiration",
+     "fit": "Not here: prolonged 20-second coughing paroxysms with cyanotic episodes",
+     "tx": "Thickened feeds + positioning",
+     "tempting": "cough followed by vomiting suggests gastroesophageal reflux"
+    },
+    "B": {
+     "clue": "Staccato paroxysmal cough with lung crackles",
+     "support": "Chlamydia trachomatis pneumonia",
+     "fit": "Not here: clear lungs without crackles, violent paroxysms with cyanosis",
+     "tx": "Oral azithromycin",
+     "tempting": "causes paroxysmal coughing spells in 2-month-old infant"
+    },
+    "C": {
+     "clue": "Tachypnea, hepatomegaly, and gallop rhythm",
+     "support": "congestive heart failure",
+     "fit": "Not here: appears healthy between coughing spells, clear lung exam",
+     "tx": "Diuretics + inotropes",
+     "tempting": "causes cyanosis and respiratory symptoms in infant"
+    },
+    "D": {
+     "clue": "Bordetella pertussis toxin-mediated paroxysms",
+     "support": "whooping cough",
+     "fit": "Here: 20-second coughing spells, cyanosis for 10 seconds, posttussive vomiting",
+     "tx": "Oral azithromycin"
+    },
+    "E": {
+     "clue": "Distal airway obstruction with wheezing and fever",
+     "support": "RSV bronchiolitis",
+     "fit": "Not here: no crackles or wheezes on chest auscultation, posttussive vomiting",
+     "tx": "Supportive care",
+     "tempting": "common viral respiratory cause of infant cough and apnea"
+    }
+   },
+   "algorithm": {
+    "title": "Pertussis (whooping cough) in young infants",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Paroxysmal coughing + posttussive emesis or apnea in infant: immediately admit to hospital for monitoring"
+     },
+     {
+      "level": 0,
+      "text": "Droplet isolation precautions + obtain nasopharyngeal swab for Bordetella pertussis PCR and culture"
+     },
+     {
+      "level": 0,
+      "text": "Start oral azithromycin for 5 days immediately without waiting for laboratory confirmation"
+     },
+     {
+      "level": 0,
+      "text": "Complete blood count: marked absolute lymphocytosis supports clinical diagnosis"
+     },
+     {
+      "level": 1,
+      "text": "**Hyperleukocytosis (> 50,000/mm3) or refractory hypoxemia:** intensive care for exchange transfusion"
+     },
+     {
+      "level": 0,
+      "text": "Prescribe prophylactic azithromycin to all household contacts regardless of immunization status"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "coughing spells that have progressively worsened over the past 10 days"
+    },
+    {
+     "text": "frequently followed by vomiting"
+    },
+    {
+     "text": "Coughing continues for 20 seconds, at which time he appears cyanotic"
+    },
+    {
+     "text": "No crackles are heard on auscultation of the chest"
+    },
+    {
+     "text": "2-month-old boy is brought to the physician"
+    }
+   ]
+  },
+  "c-peds-03-q050": {
+   "task": "Mechanism",
+   "boardCall": "7-day-old + bilious vomiting + bloody stool + peritonitis + shock -> failure of normal bowel rotation (midgut volvulus)",
+   "hinge": "Bilious vomiting and bowel ischemia (bloody stool, peritonitis) in the first week of life result from midgut volvulus due to failed 270-degree bowel rotation.",
+   "trap": "Duodenal atresia results from failed recanalization, but causes non-ischemic obstruction on day 1 with double bubble rather than volvulus shock on day 7.",
+   "options": {
+    "A": {
+     "clue": "Viscous inspissated secretions causing meconium ileus",
+     "support": "cystic fibrosis",
+     "fit": "Not here: acute presentation on day 7 with bilious emesis and volvulus shock",
+     "tx": "Gastrografin enema",
+     "tempting": "causes neonatal bowel obstruction and feeding intolerance"
+    },
+    "B": {
+     "clue": "Failed recanalization of embryonic gut lumen",
+     "support": "duodenal atresia",
+     "fit": "Not here: double-bubble present at birth, lacks volvulus ischemia and bloody stool",
+     "tx": "Duodenoduodenostomy",
+     "tempting": "causes neonatal bilious vomiting"
+    },
+    "C": {
+     "clue": "Absent myenteric and submucosal plexus ganglion cells",
+     "support": "Hirschsprung disease",
+     "fit": "Not here: acute midgut volvulus with bilious vomiting and bowel necrosis",
+     "tx": "Swenson pull-through",
+     "tempting": "causes pediatric intestinal obstruction and enterocolitis"
+    },
+    "D": {
+     "clue": "Arrested counterclockwise 270-degree gut rotation",
+     "support": "intestinal malrotation and midgut volvulus",
+     "fit": "Here: 7-day-old, bilious vomiting, bloody stool, hypotension, peritonitis",
+     "tx": "Emergent Ladd procedure"
+    },
+    "E": {
+     "clue": "Intrauterine mesenteric vascular accident",
+     "support": "jejunoileal atresia",
+     "fit": "Not here: presents immediately at birth with distention and triple-bubble pattern",
+     "tx": "Intestinal resection",
+     "tempting": "causes congenital intestinal obstruction and ischemic bowel"
+    }
+   },
+   "algorithm": {
+    "title": "Intestinal malrotation with midgut volvulus",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Bilious vomiting + shock (BP 65/35) + peritonitis: immediate NPO + NG tube decompression + rapid IV fluid resuscitation"
+     },
+     {
+      "level": 0,
+      "text": "Failure of normal counterclockwise 270-degree bowel rotation leads to narrow mesenteric base"
+     },
+     {
+      "level": 0,
+      "text": "Midgut twists around superior mesenteric vessels causing acute intestinal strangulation and bloody stools"
+     },
+     {
+      "level": 0,
+      "text": "Upper GI series: corkscrew duodenum or ligament of Treitz to the right of midline"
+     },
+     {
+      "level": 0,
+      "text": "Empiric broad-spectrum IV antibiotics (ampicillin, gentamicin, metronidazole) for enteric translocation"
+     },
+     {
+      "level": 1,
+      "text": "**Peritonitis or shock present:** emergent exploratory laparotomy with Ladd procedure"
+     },
+     {
+      "level": 1,
+      "text": "**Frankly necrotic bowel segments:** bowel resection with temporary enterostomy"
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "onset of vomiting bilious material"
+    },
+    {
+     "text": "passed one bloody stool during this period"
+    },
+    {
+     "text": "blood pressure is 65/35 mm Hg"
+    },
+    {
+     "text": "diffuse tenderness with guarding"
+    },
+    {
+     "text": "On digital rectal examination, there is gross blood"
+    }
+   ]
+  }
+ }
+}

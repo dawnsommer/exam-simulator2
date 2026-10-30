@@ -1,0 +1,4854 @@
+{
+ "type": "StepRapidReview",
+ "version": 1,
+ "formId": "C-Surg-05",
+ "model": "Gemini 3.8 Flash",
+ "promptVersion": "v4",
+ "generatedAt": "2026-10-29",
+ "items": {
+  "c-surg-05-q001": {
+   "task": "Next step",
+   "boardCall": "Fatigue + splenomegaly + family splenectomy + spherocytes -> Splenectomy",
+   "hinge": "Familial extravascular hemolysis with spherocytes indicates hereditary spherocytosis, cured symptomatically by splenectomy.",
+   "trap": "Fava bean avoidance is for episodic G6PD deficiency, not chronic hereditary spherocytosis.",
+   "options": {
+    "A": {
+     "clue": "Triggers episodic hemolytic crisis",
+     "support": "G6PD deficiency",
+     "fit": "Not here: chronic fatigue, familial splenectomy history",
+     "tx": "Avoid oxidant stressors",
+     "tempting": "episodic hemolysis trigger sounds like red cell enzymopathy"
+    },
+    "B": {
+     "clue": "Identifies specific causal gene mutations",
+     "support": "hereditary red cell disorders",
+     "fit": "Not here: clinical and smear features suffice",
+     "tx": "",
+     "tempting": "family history makes genetic confirmation sound reasonable"
+    },
+    "C": {
+     "clue": "Increases fetal hemoglobin production",
+     "support": "sickle cell disease",
+     "fit": "Not here: spherocytes, no sickle cells",
+     "tx": "Hydroxyurea",
+     "tempting": "treats chronic hereditary hemolytic anemia"
+    },
+    "D": {
+     "clue": "Replenishes depleted systemic iron stores",
+     "support": "iron deficiency anemia",
+     "fit": "Not here: hemolytic anemia, splenomegaly present",
+     "tx": "Oral iron",
+     "tempting": "fatigue and pale conjunctivae mimic iron deficiency"
+    },
+    "E": {
+     "clue": "Suppresses autoantibody-mediated red cell destruction",
+     "support": "autoimmune hemolytic anemia",
+     "fit": "Not here: family splenectomy history present",
+     "tx": "Glucocorticoids",
+     "tempting": "spherocytes also appear in autoimmune hemolytic anemia"
+    },
+    "F": {
+     "clue": "Corrects megaloblastic erythropoiesis deficiency",
+     "support": "vitamin B12 deficiency",
+     "fit": "Not here: spherocytes, no hypersegmented neutrophils",
+     "tx": "Cyanocobalamin",
+     "tempting": "fatigue with pale conjunctivae suggests vitamin deficiency"
+    },
+    "G": {
+     "clue": "Evaluates primary marrow hematopoiesis failure",
+     "support": "marrow infiltrative disorders",
+     "fit": "Not here: peripheral hemolysis with splenomegaly",
+     "tx": "",
+     "tempting": "unexplained chronic cytopenia prompts bone marrow evaluation"
+    },
+    "H": {
+     "clue": "Eliminates site of spherocyte clearance",
+     "support": "hereditary spherocytosis",
+     "fit": "Here: splenomegaly, pale conjunctivae, familial splenectomies",
+     "tx": "Splenectomy"
+    }
+   },
+   "algorithm": {
+    "title": "Hereditary spherocytosis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Hemolytic anemia + spherocytes on peripheral smear: direct Coombs test",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Coombs negative:** confirm hereditary spherocytosis with eosin-5-maleimide binding test",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Coombs positive:** autoimmune hemolytic anemia; initiate glucocorticoid therapy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Prescribe daily oral folic acid supplementation to sustain erythropoiesis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer pneumococcal, meningococcal, and Haemophilus vaccines weeks prior to surgery",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Splenectomy for moderate to severe symptomatic hemolytic anemia",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Prescribe prophylactic oral penicillin postoperatively in young children",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "3-month history of fatigue"
+    },
+    {
+     "text": "underwent splenectomy in their 20s"
+    },
+    {
+     "text": "conjunctivae are pale"
+    },
+    {
+     "text": "spleen tip is palpated 3 cm below the left costal margin"
+    }
+   ]
+  },
+  "c-surg-05-q002": {
+   "task": "Diagnosis",
+   "boardCall": "Transfusion fever + negative Coombs + no hemoglobinuria -> Nonhemolytic transfusion reaction",
+   "hinge": "Fever and chills during blood transfusion with clear lungs, negative Coombs, and no hemoglobinuria define febrile nonhemolytic reaction.",
+   "trap": "Mild shortness of breath can suggest TRALI, but lungs are clear and vital signs are stable.",
+   "options": {
+    "A": {
+     "clue": "ABO incompatibility causing intravascular hemolysis",
+     "support": "acute hemolytic reaction",
+     "fit": "Not here: negative Coombs, no hemoglobinuria",
+     "tx": "Aggressive IV hydration",
+     "tempting": "fever and chills during transfusion mimic acute hemolysis"
+    },
+    "B": {
+     "clue": "IgE-mediated mast cell degranulation",
+     "support": "anaphylaxis",
+     "fit": "Not here: no wheezing, stridor, or hypotension",
+     "tx": "Intramuscular epinephrine",
+     "tempting": "mild dyspnea during transfusion suggests allergic reaction"
+    },
+    "C": {
+     "clue": "Anamnestic antibody response days later",
+     "support": "delayed hemolytic reaction",
+     "fit": "Not here: acute intra-transfusion fever, Coombs negative",
+     "tx": "Supportive care",
+     "tempting": "patient received previous transfusion unit one hour ago"
+    },
+    "D": {
+     "clue": "Cytokine release from stored leukocytes",
+     "support": "febrile nonhemolytic reaction",
+     "fit": "Here: temperature 38.4°C, Coombs negative, clear lungs",
+     "tx": "Acetaminophen + leukoreduction"
+    },
+    "E": {
+     "clue": "Donor anti-leukocyte antibodies causing noncardiogenic edema",
+     "support": "TRALI",
+     "fit": "Not here: lungs clear to auscultation",
+     "tx": "Respiratory support",
+     "tempting": "mild shortness of breath during transfusion"
+    }
+   },
+   "algorithm": {
+    "title": "Acute transfusion reactions",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fever, chills, or dyspnea during transfusion: stop transfusion immediately",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform clerical check + direct Coombs test + urinalysis for hemoglobinuria",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Coombs negative without hemolysis:** febrile nonhemolytic reaction; give acetaminophen",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Hemoglobinuria or positive Coombs:** acute hemolytic reaction; aggressive IV crystalloids",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Bilateral pulmonary infiltrates:** transfusion-related acute lung injury; ventilatory support",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Use prestorage leukoreduced red blood cells for future transfusions",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "sudden onset of fever, chills, and mild shortness of breath"
+    },
+    {
+     "text": "His temperature is 38.4°C (101.1°F)"
+    },
+    {
+     "text": "direct antiglobulin (Coombs) test is negative"
+    },
+    {
+     "text": "Urinalysis shows no hemoglobin"
+    },
+    {
+     "text": "mild shortness of breath",
+     "trap": true
+    }
+   ]
+  },
+  "c-surg-05-q003": {
+   "task": "Next step",
+   "boardCall": "Benzocaine endoscopy + cyanosis + saturation gap + methemoglobin 41% -> Intravenous administration of methylene blue",
+   "hinge": "Refractory cyanosis with normal PaO2 and elevated methemoglobin after topical benzocaine requires methylene blue.",
+   "trap": "Normal PaO2 on arterial blood gas can mislead into thinking oxygenation is adequate.",
+   "options": {
+    "A": {
+     "clue": "High inspired fraction of oxygen",
+     "support": "hypoxemic respiratory failure",
+     "fit": "Not here: normal PO2 282 mm Hg",
+     "tx": "High-flow oxygen",
+     "tempting": "pulse oximetry of 84% prompts supplemental oxygen"
+    },
+    "B": {
+     "clue": "Dissolves systemic oxygen under pressure",
+     "support": "carbon monoxide poisoning",
+     "fit": "Not here: carboxyhemoglobin 2%, methemoglobin 41%",
+     "tx": "Hyperbaric chamber",
+     "tempting": "carboxyhemoglobin reported in arterial blood gas panel"
+    },
+    "C": {
+     "clue": "Replaces defective circulating red cells",
+     "support": "severe refractory methemoglobinemia",
+     "fit": "Not here: initial therapy with methylene blue indicated",
+     "tx": "Red cell exchange",
+     "tempting": "severe methemoglobin level of 41% sounds life-threatening"
+    },
+    "D": {
+     "clue": "Reduces ferric iron to ferrous",
+     "support": "methemoglobinemia",
+     "fit": "Here: benzocaine spray, cyanosis, methemoglobin 41%",
+     "tx": "Methylene blue"
+    },
+    "E": {
+     "clue": "Assisted positive pressure lung ventilation",
+     "support": "hypercapnic ventilatory failure",
+     "fit": "Not here: PCO2 43 mm Hg, normal ventilation",
+     "tx": "Endotracheal intubation",
+     "tempting": "confusion and rapid respirations mimic respiratory failure"
+    }
+   },
+   "algorithm": {
+    "title": "Methemoglobinemia",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Cyanosis unresponsive to oxygen with saturation gap after benzocaine or dapsone",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain arterial blood gas with co-oximetry to measure methemoglobin percentage",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Discontinue offending topical anesthetic or oxidizing medication",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Intravenous administration of methylene blue",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Refractory to methylene blue:** consider underlying G6PD deficiency",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**G6PD deficiency present:** avoid methylene blue; treat with ascorbic acid",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Severe hemolysis or rebound:** perform exchange transfusion",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "20% benzocaine spray for analgesia"
+    },
+    {
+     "text": "mildly confused and cyanotic"
+    },
+    {
+     "text": "decrease in oxygen saturation from 99% to 84%"
+    },
+    {
+     "text": "Methemoglobin 41%"
+    },
+    {
+     "text": "PO₂ 282 mm Hg",
+     "trap": true
+    }
+   ]
+  },
+  "c-surg-05-q004": {
+   "task": "Diagnosis",
+   "boardCall": "Thunderclap headache + nuchal rigidity + blood in basal cisterns -> Subarachnoid hemorrhage",
+   "hinge": "Acute severe headache with nuchal rigidity and hyperattenuation in the basal cisterns and sulci on noncontrast CT confirms subarachnoid hemorrhage.",
+   "trap": "Bilateral Babinski signs and stupor might suggest diffuse cerebral infarction or herniation.",
+   "options": {
+    "A": {
+     "clue": "Ischemia causing focal arterial territory deficit",
+     "support": "acute stroke",
+     "fit": "Not here: diffuse hyperintense signal in cisterns",
+     "tx": "Thrombolysis or thrombectomy",
+     "tempting": "acute neurologic deterioration with bilateral Babinski signs"
+    },
+    "B": {
+     "clue": "Hyperdense bleeding within brain parenchyma",
+     "support": "intracerebral hemorrhage",
+     "fit": "Not here: blood confined to cisterns and sulci",
+     "tx": "Blood pressure control + surgery",
+     "tempting": "sudden headache, vomiting, and depressed consciousness"
+    },
+    "C": {
+     "clue": "Tangle of abnormal vessels prone to rupture",
+     "support": "arteriovenous malformation",
+     "fit": "Not here: acute hemorrhage phenotype without vascular nidus",
+     "tx": "Embolization or resection",
+     "tempting": "underlying vascular cause of spontaneous intracranial bleeding"
+    },
+    "D": {
+     "clue": "Posterior fossa cerebellar neoplasm in children",
+     "support": "medulloblastoma",
+     "fit": "Not here: acute 1-hour onset, hyperintense cisterns",
+     "tx": "Surgical resection + radiation",
+     "tempting": "vomiting and headache from posterior fossa mass"
+    },
+    "E": {
+     "clue": "Intra-axial glial brain tumor",
+     "support": "astrocytoma",
+     "fit": "Not here: acute hyperintense cistern blood",
+     "tx": "Surgical resection",
+     "tempting": "headache with progressive neurologic depression"
+    },
+    "F": {
+     "clue": "Dural-based extra-axial enhancing brain mass",
+     "support": "meningioma",
+     "fit": "Not here: acute onset, blood in sulci",
+     "tx": "Surgical resection",
+     "tempting": "extra-axial lesion adjacent to meninges"
+    },
+    "G": {
+     "clue": "Ring-enhancing focal parenchymal brain collection",
+     "support": "bacterial abscess",
+     "fit": "Not here: no fever, acute 1-hour onset",
+     "tx": "Surgical aspiration + antibiotics",
+     "tempting": "nuchal rigidity and depressed consciousness mimic CNS infection"
+    },
+    "H": {
+     "clue": "Multiple well-circumscribed gray-white junction metastases",
+     "support": "metastatic carcinoma",
+     "fit": "Not here: diffuse subarachnoid hyperintensity",
+     "tx": "Targeted therapy + radiation",
+     "tempting": "headache with acute neurologic deterioration in older adult"
+    },
+    "I": {
+     "clue": "Pulsatile exophthalmos with orbital bruit",
+     "support": "carotid cavernous fistula",
+     "fit": "Not here: severe headache, blood in cisterns",
+     "tx": "Endovascular embolization",
+     "tempting": "vascular lesion causing sudden severe cranial pathology"
+    },
+    "J": {
+     "clue": "Chronic granulomatous infection in immunocompromised hosts",
+     "support": "MAI granuloma",
+     "fit": "Not here: acute 1-hour presentation, blood in cisterns",
+     "tx": "Clarithromycin + ethambutol",
+     "tempting": "meningeal signs mimic atypical CNS infections"
+    },
+    "K": {
+     "clue": "Focal pus collection outside dura mater",
+     "support": "epidural abscess",
+     "fit": "Not here: no fever, diffuse cisternal hyperdensity",
+     "tx": "Urgent drainage + antibiotics",
+     "tempting": "nuchal rigidity and severe headache mimic epidural infection"
+    },
+    "L": {
+     "clue": "Port-wine stain with leptomeningeal angioma",
+     "support": "Sturge-Weber syndrome",
+     "fit": "Not here: adult onset, no facial nevus",
+     "tx": "Anticonvulsants",
+     "tempting": "leptomeningeal vascular abnormality causing neurologic deficit"
+    },
+    "M": {
+     "clue": "Biconvex hyperdense collection limited by sutures",
+     "support": "epidural hematoma",
+     "fit": "Not here: blood in basal cisterns, no trauma",
+     "tx": "Emergent surgical craniotomy",
+     "tempting": "acute intracranial hemorrhage with depressed consciousness"
+    },
+    "N": {
+     "clue": "Blood filling subarachnoid space and cisterns",
+     "support": "subarachnoid hemorrhage",
+     "fit": "Here: thunderclap headache, nuchal rigidity, cisternal hyperintensity",
+     "tx": "Nimodipine + coiling or clipping"
+    },
+    "O": {
+     "clue": "Fungal mass in immunocompromised patient",
+     "support": "fungal abscess",
+     "fit": "Not here: hyperintense basal cisterns, acute onset",
+     "tx": "Antifungal therapy + drainage",
+     "tempting": "nuchal rigidity with depressed consciousness suggests CNS infection"
+    },
+    "P": {
+     "clue": "Crescent-shaped collection crossing suture lines",
+     "support": "subdural hematoma",
+     "fit": "Not here: blood in basal cisterns and sulci",
+     "tx": "Surgical burr holes or craniotomy",
+     "tempting": "extravasated blood over cerebral hemispheres"
+    },
+    "Q": {
+     "clue": "Infiltrative ring-enhancing mass with central necrosis",
+     "support": "glioblastoma",
+     "fit": "Not here: acute thunderclap onset, cisternal blood",
+     "tx": "Surgical debulking + chemoradiation",
+     "tempting": "severe headache and obtundation in older adult"
+    }
+   },
+   "algorithm": {
+    "title": "Aneurysmal subarachnoid hemorrhage",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Sudden thunderclap headache: emergent noncontrast head CT",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**CT negative with persistent suspicion:** perform lumbar puncture for xanthochromia",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Hyperattenuation in cisterns: perform emergent CT or digital subtraction angiography",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Endovascular coiling or surgical clipping to secure ruptured aneurysm",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer oral nimodipine to prevent delayed cerebral ischemia from vasospasm",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Acute hydrocephalus:** place external ventricular drain",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Maintain euvolemia and blood pressure parameters in neurointensive care unit",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "acute onset of a severe diffuse headache"
+    },
+    {
+     "text": "marked nuchal rigidity"
+    },
+    {
+     "text": "hyperintense signal within the basal cisterns and sulci"
+    },
+    {
+     "text": "stuporous and responds to vigorous stimulation"
+    }
+   ]
+  },
+  "c-surg-05-q005": {
+   "task": "Mechanism",
+   "boardCall": "Severe head injury + hypertension + bradycardia -> Increased intracranial pressure",
+   "hinge": "Severe traumatic brain injury accompanied by hypertension and bradycardia represents the Cushing response to increased intracranial pressure.",
+   "trap": "The bottle of amphetamines in the car suggests drug intoxication, which would cause tachycardia rather than bradycardia.",
+   "options": {
+    "A": {
+     "clue": "Renal hypoperfusion activating renin-angiotensin-aldosterone axis",
+     "support": "renovascular hypertension",
+     "fit": "Not here: pulse 50/min, severe head injury",
+     "tx": "Endovascular stenting or repair",
+     "tempting": "blunt abdominal trauma abrasion suggests renal vascular injury"
+    },
+    "B": {
+     "clue": "Sympathomimetic excess causing tachycardia and hypertension",
+     "support": "sympathomimetic toxicity",
+     "fit": "Not here: bradycardia with pulse 50/min",
+     "tx": "Benzodiazepines",
+     "tempting": "bottle of amphetamines found inside the vehicle"
+    },
+    "C": {
+     "clue": "Hypoventilation causing respiratory acidosis and hypercapnia",
+     "support": "hypercapnic hypoventilation",
+     "fit": "Not here: already intubated on arrival",
+     "tx": "Mechanical ventilation",
+     "tempting": "depressed consciousness with GCS 6 impairs spontaneous ventilation"
+    },
+    "D": {
+     "clue": "Brainstem compression triggering Cushing reflex",
+     "support": "increased intracranial pressure",
+     "fit": "Here: GCS 6, pulse 50/min, BP 180/90",
+     "tx": "Hypertonic saline + decompression"
+    },
+    "E": {
+     "clue": "Adrenal medullary surge causing tachycardia and hypertension",
+     "support": "hyperadrenergic stress",
+     "fit": "Not here: pulse 50/min, bradycardia present",
+     "tx": "Alpha and beta blockade",
+     "tempting": "trauma stress and pain release endogenous catecholamines"
+    },
+    "F": {
+     "clue": "Sympathetic pain activation causing tachycardia and hypertension",
+     "support": "acute physiologic pain response",
+     "fit": "Not here: GCS 6, pulse 50/min",
+     "tx": "Analgesia",
+     "tempting": "obvious facial fractures and lacerations cause severe pain"
+    }
+   },
+   "algorithm": {
+    "title": "Cushing reflex from increased intracranial pressure",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Severe head injury with hypertension + bradycardia: suspect increased intracranial pressure",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Intracranial hypertension decreases cerebral perfusion; brainstem ischemia activates sympathetic vasoconstriction",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Baroreceptor activation from systemic hypertension produces reflex parasympathetic bradycardia",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Elevate head of bed + administer IV hypertonic saline or mannitol",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain emergent noncontrast head CT to evaluate for mass lesion",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Surgically treatable mass lesion:** emergent surgical craniotomy and evacuation",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "severe head injuries in a high-speed motor vehicle collision"
+    },
+    {
+     "text": "bottle of amphetamines inside the patient's vehicle",
+     "trap": true
+    },
+    {
+     "text": "Glasgow Coma Scale score is 6"
+    },
+    {
+     "text": "pulse is 50/min, and blood pressure is 180/90 mm Hg"
+    },
+    {
+     "text": "right-sided hemotympanum"
+    }
+   ]
+  },
+  "c-surg-05-q006": {
+   "task": "Next step",
+   "boardCall": "TBI + lucid interval + hypoventilation + blown pupil -> Tracheal intubation and ventilation",
+   "hinge": "Impending brain herniation with hypoventilation (respirations 5/min) requires immediate tracheal intubation and ventilation before diagnostic imaging or surgical intervention.",
+   "trap": "Ventriculostomy is tempting for intracranial hypertension, but securing the airway and oxygenation takes immediate priority.",
+   "options": {
+    "A": {
+     "clue": "High-resolution magnetic resonance imaging of brain",
+     "support": "stable intracranial pathology",
+     "fit": "Not here: respirations 5/min, emergency airway required",
+     "tx": "",
+     "tempting": "demonstrates intracranial hemorrhage and tissue detail"
+    },
+    "B": {
+     "clue": "Reduces vasogenic edema around tumors",
+     "support": "CNS neoplasms",
+     "fit": "Not here: acute trauma, steroids contraindicated",
+     "tx": "Dexamethasone",
+     "tempting": "commonly used to reduce cerebral edema"
+    },
+    "C": {
+     "clue": "Combined alpha and beta adrenergic antagonist",
+     "support": "acute hypertensive emergency",
+     "fit": "Not here: Cushing reflex preserves cerebral perfusion",
+     "tx": "Labetalol",
+     "tempting": "blood pressure 180/90 mm Hg appears hypertensive"
+    },
+    "D": {
+     "clue": "Secures definitive airway and restores ventilation",
+     "support": "severe traumatic brain injury",
+     "fit": "Here: respirations 5/min, unarousable, blown pupil",
+     "tx": "Tracheal intubation"
+    },
+    "E": {
+     "clue": "Cannulates lateral ventricle to drain CSF",
+     "support": "intracranial hypertension monitoring",
+     "fit": "Not here: ventilatory arrest imminent, airway first",
+     "tx": "Ventriculostomy",
+     "tempting": "signs of herniation suggest urgent intracranial pressure management"
+    }
+   },
+   "algorithm": {
+    "title": "Severe traumatic brain injury with impending herniation",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Tracheal intubation and mechanical ventilation for hypoventilation or GCS <= 8",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Noncontrast head CT reveals lens-shaped biconvex epidural hematoma",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Infuse IV hypertonic saline or mannitol + temporary brief hyperventilation for herniation signs",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Emergent surgical craniotomy and evacuation of epidural hematoma",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent intracranial hypertension:** place intracranial pressure monitor or ventriculostomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Admit to neuro-ICU; avoid hypotonic fluids and maintain cerebral perfusion pressure",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "lost consciousness at the scene for less than 1 minute"
+    },
+    {
+     "text": "could not be aroused when they arrived home 30 minutes later"
+    },
+    {
+     "text": "respirations are 5/min"
+    },
+    {
+     "text": "blood pressure is 180/90 mm Hg"
+    },
+    {
+     "text": "left pupil is 6 mm and unreactive"
+    }
+   ]
+  },
+  "c-surg-05-q007": {
+   "task": "Diagnosis",
+   "boardCall": "Unilateral sensorineural hearing loss + tinnitus + loss of taste -> Acoustic neuroma",
+   "hinge": "Unilateral high-frequency sensorineural hearing loss combined with tinnitus, imbalance, and right taste impairment indicates vestibular schwannoma (acoustic neuroma) involving CN VII and VIII.",
+   "trap": "Meniere disease presents with episodic vertigo and fluctuating low-frequency hearing loss, unlike chronic unsteadiness with high-frequency loss.",
+   "options": {
+    "A": {
+     "clue": "Benign Schwann cell tumor of CN VIII",
+     "support": "vestibular schwannoma",
+     "fit": "Here: unilateral hearing loss, tinnitus, taste loss",
+     "tx": "Surgical resection or stereotactic radiosurgery"
+    },
+    "B": {
+     "clue": "Endolymphatic hydrops causing episodic vertigo",
+     "support": "Meniere disease",
+     "fit": "Not here: no vertigo, high-frequency neural loss",
+     "tx": "Low-salt diet + diuretics",
+     "tempting": "tinnitus and unilateral hearing loss mimic Meniere disease"
+    },
+    "C": {
+     "clue": "Infection of leptomeninges with fever and stiff neck",
+     "support": "meningitis",
+     "fit": "Not here: 3-month indolent course, afebrile",
+     "tx": "Empiric IV antibiotics",
+     "tempting": "cranial nerve deficits can complicate bacterial meningitis"
+    },
+    "D": {
+     "clue": "Bony remodeling of otic capsule causing conductive loss",
+     "support": "otosclerosis",
+     "fit": "Not here: neural hearing loss, taste impairment",
+     "tx": "Stapedectomy or hearing aid",
+     "tempting": "progressive hearing loss and tinnitus in young to middle-aged adult"
+    },
+    "E": {
+     "clue": "Sellar mass compressing optic chiasm",
+     "support": "pituitary adenoma",
+     "fit": "Not here: sensorineural hearing loss, no visual defect",
+     "tx": "Transsphenoidal surgery or dopamine agonist",
+     "tempting": "intracranial tumor causing progressive cranial nerve abnormalities"
+    }
+   },
+   "algorithm": {
+    "title": "Acoustic neuroma (vestibular schwannoma)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Unilateral sensorineural hearing loss + tinnitus + imbalance: perform audiometry",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Contrast-enhanced brain MRI with internal auditory canal thin cuts",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Contrast-enhancing cerebellopontine angle mass:** confirms vestibular schwannoma",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Serial MRI surveillance for small indolent or asymptomatic tumors",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Tumor progression or size < 3 cm:** stereotactic radiosurgery",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Tumor size > 3 cm or brainstem compression:** surgical resection",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "3-month history of mild hearing loss and ringing in her right ear"
+    },
+    {
+     "text": "decreased sense of taste on the right"
+    },
+    {
+     "text": "episodes of unsteadiness during this period"
+    },
+    {
+     "text": "predominantly high-frequency neural hearing loss on the right"
+    }
+   ]
+  },
+  "c-surg-05-q008": {
+   "task": "Mechanism",
+   "boardCall": "Infant enlarging neck mass -> Vascular proliferation",
+   "hinge": "A benign, rapidly enlarging red vascular neck mass in an otherwise healthy infant is an infantile hemangioma caused by vascular endothelial cell proliferation.",
+   "trap": "A midline posterior neck mass in an infant might suggest cephalocele, but benign vascular proliferation without neural defect is characteristic.",
+   "options": {
+    "A": {
+     "clue": "Herniation of cranial contents through skull defect",
+     "support": "cephalocele",
+     "fit": "Not here: benign growing red vascular lesion",
+     "tx": "Surgical repair",
+     "tempting": "mass on the back of the neck in an infant"
+    },
+    "B": {
+     "clue": "Granulomatous inflammatory response to adipose injury",
+     "support": "subcutaneous fat necrosis",
+     "fit": "Not here: progressive 8-month vascular enlargement",
+     "tx": "Observation",
+     "tempting": "subcutaneous neck mass after birth trauma"
+    },
+    "C": {
+     "clue": "Dilated lymphatic channels forming cystic hygroma",
+     "support": "lymphatic malformation",
+     "fit": "Not here: vascular endothelial proliferation",
+     "tx": "Sclerotherapy or excision",
+     "tempting": "cystic cervical neck mass in infancy"
+    },
+    "D": {
+     "clue": "Malignant neoplastic dedifferentiation",
+     "support": "soft tissue sarcoma",
+     "fit": "Not here: benign growth, development appropriate",
+     "tx": "Chemotherapy + surgical resection",
+     "tempting": "progressively enlarging mass over 8 months sounds malignant"
+    },
+    "E": {
+     "clue": "Occlusion of epithelial gland duct",
+     "support": "epidermoid cyst",
+     "fit": "Not here: progressive vascular lesion since early infancy",
+     "tx": "Surgical excision",
+     "tempting": "painless benign subcutaneous neck lump"
+    },
+    "F": {
+     "clue": "Benign clonal proliferation of endothelial cells",
+     "support": "infantile hemangioma",
+     "fit": "Here: enlarging mass over past 8 months",
+     "tx": "Observation or oral propranolol"
+    }
+   },
+   "algorithm": {
+    "title": "Infantile hemangioma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Rapidly growing red vascular cutaneous lesion in infancy: suspect infantile hemangioma",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Benign vascular endothelial cell proliferation undergoes initial growth followed by spontaneous regression",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Clinical diagnosis based on classic appearance and progression; imaging rarely required",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Uncomplicated cutaneous lesions: observation and parental reassurance",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Visual compromise, airway involvement, or ulceration:** initiate oral propranolol therapy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Secondary infection:** treat with topical wound care and oral antibiotics",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "10-month-old boy"
+    },
+    {
+     "text": "mass on the back of his neck"
+    },
+    {
+     "text": "enlarging over the past 8 months"
+    },
+    {
+     "text": "growth and development are appropriate for age"
+    }
+   ]
+  },
+  "c-surg-05-q009": {
+   "task": "Diagnosis",
+   "boardCall": "Ear ulcer + rolled borders + sun exposure -> Basal cell carcinoma",
+   "hinge": "A slowly enlarging, ulcerated, bleeding lesion on the chronically sun-exposed ear of an outdoor worker is classic for basal cell carcinoma.",
+   "trap": "Keratoacanthoma also presents as an ulcerated crateriform lesion, but typically evolves rapidly over weeks rather than 2 years.",
+   "options": {
+    "A": {
+     "clue": "Premalignant gritty erythematous scaly papule",
+     "support": "actinic keratosis",
+     "fit": "Not here: ulcerated bleeding ear lesion",
+     "tx": "Cryotherapy or topical fluorouracil",
+     "tempting": "sun-exposed ear lesion in chronic construction worker"
+    },
+    "B": {
+     "clue": "Pearly rolled border with central ulceration",
+     "support": "basal cell carcinoma",
+     "fit": "Here: 2-year ear ulcer, bleeds with trauma",
+     "tx": "Mohs micrographic surgery"
+    },
+    "C": {
+     "clue": "Rapidly growing crateriform nodule with central keratin",
+     "support": "keratoacanthoma",
+     "fit": "Not here: indolent 2-year progression",
+     "tx": "Surgical excision",
+     "tempting": "ulcerated nodule on sun-exposed head and neck"
+    },
+    "D": {
+     "clue": "Asymmetric pigmented lesion with irregular borders",
+     "support": "cutaneous melanoma",
+     "fit": "Not here: non-pigmented ulcerated chronic lesion",
+     "tx": "Wide local excision",
+     "tempting": "bleeding skin lesion on chronically sun-exposed ear"
+    },
+    "E": {
+     "clue": "Non-healing wound from recurrent mechanical injury",
+     "support": "chronic trauma ulcer",
+     "fit": "Not here: 2-year growth, construction sun exposure",
+     "tx": "Wound care",
+     "tempting": "bleeds with minor trauma"
+    }
+   },
+   "algorithm": {
+    "title": "Basal cell carcinoma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Nonhealing pearly ulcerated lesion on sun-exposed skin: perform shave or punch biopsy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Histopathology demonstrates basaloid nests with peripheral palisading and retraction artifact",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Low-risk trunk or extremity lesion:** standard surgical excision or electrodessication and curettage",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**High-risk facial area (ear, nose, eyelid):** Mohs micrographic surgery",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Locally advanced or unresectable disease:** treat with hedgehog inhibitor vismodegib",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Advise sun protection and schedule annual full-body skin surveillance examinations",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "lesion on the left ear for 2 years"
+    },
+    {
+     "text": "gradually enlarged and ulcerated and occasionally bleeds with minor trauma"
+    },
+    {
+     "text": "worked in construction for 40 years"
+    }
+   ]
+  },
+  "c-surg-05-q010": {
+   "task": "Next step",
+   "boardCall": "Child hip pain + fever + refusal to bear weight + purulent fluid -> Surgical incision and drainage",
+   "hinge": "Purulent synovial fluid (leukocytes 196,000/mm3) in pediatric septic arthritis of the hip requires emergent surgical incision and drainage.",
+   "trap": "Daily needle aspiration may suffice for accessible joints like the knee, but the hip requires operative drainage to prevent avascular necrosis.",
+   "options": {
+    "A": {
+     "clue": "Nonsteroidal anti-inflammatory inhibiting cyclooxygenase",
+     "support": "rheumatic fever or arthritis",
+     "fit": "Not here: purulent joint fluid, WBC 196,000",
+     "tx": "Aspirin",
+     "tempting": "anti-inflammatory therapy for acute painful joint"
+    },
+    "B": {
+     "clue": "Inhibits microtubule assembly in neutrophils",
+     "support": "acute gout flare",
+     "fit": "Not here: child, septic joint fluid",
+     "tx": "Colchicine",
+     "tempting": "relieves acute crystal-induced monoarthritis inflammation"
+    },
+    "C": {
+     "clue": "Systemic corticosteroid suppressing immune activation",
+     "support": "inflammatory arthritis",
+     "fit": "Not here: purulent bacterial septic arthritis",
+     "tx": "Prednisone",
+     "tempting": "anti-inflammatory treatment for acute hip synovitis"
+    },
+    "D": {
+     "clue": "Serial percutaneous arthrocentesis for joint decompression",
+     "support": "peripheral joint septic arthritis",
+     "fit": "Not here: deep hip joint requires operative drainage",
+     "tx": "Arthrocentesis",
+     "tempting": "less invasive joint decompression strategy"
+    },
+    "E": {
+     "clue": "Operative joint arthrotomy and debridement",
+     "support": "septic arthritis of hip",
+     "fit": "Here: synovial WBC 196,000, fever, non-weight-bearing",
+     "tx": "Surgical incision and drainage"
+    }
+   },
+   "algorithm": {
+    "title": "Pediatric septic arthritis of the hip",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fever + refusal to bear weight + hip held in abduction/external rotation: emergent ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Ultrasound-guided arthrocentesis: synovial leukocyte count > 50,000/mm³ confirms septic arthritis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Surgical incision and drainage of the hip joint to prevent avascular necrosis",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Initiate empiric intravenous vancomycin or cefazolin targeting Staphylococcus aureus",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Synovial culture and susceptibility results available:** narrow to targeted antibiotic therapy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor serial C-reactive protein and ESR to assess treatment response",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "2-day history of fever and progressive left hip pain"
+    },
+    {
+     "text": "refused to bear weight on her left leg since awakening 4 hours ago"
+    },
+    {
+     "text": "left leg abducted and externally rotated"
+    },
+    {
+     "text": "erythrocyte sedimentation rate is 70 mm/h"
+    },
+    {
+     "text": "leukocyte count of 196,000/mm³"
+    }
+   ]
+  },
+  "c-surg-05-q011": {
+   "task": "Diagnosis",
+   "boardCall": "Fragility fractures + low vitamin D + normal calcium -> Increased parathyroid hormone concentration",
+   "hinge": "Vitamin D deficiency impairs calcium absorption, driving compensatory secondary hyperparathyroidism to maintain normal calcium at the expense of bone.",
+   "trap": "Normal serum calcium can mislead into thinking parathyroid hormone is normal, but PTH compensation sustains calcium.",
+   "options": {
+    "A": {
+     "clue": "Renal enzyme deficiency in chronic kidney disease",
+     "support": "renal osteodystrophy",
+     "fit": "Not here: primary nutritional vitamin D deficiency",
+     "tx": "Calcitriol",
+     "tempting": "vitamin D activation step affected in renal failure"
+    },
+    "B": {
+     "clue": "Thyroid hypofunction with elevated TSH",
+     "support": "hypothyroidism",
+     "fit": "Not here: isolated vitamin D-mediated bone loss",
+     "tx": "Levothyroxine",
+     "tempting": "fatigue and recurrent fractures in elderly women"
+    },
+    "C": {
+     "clue": "Thyroid C-cell hormone opposing parathyroid hormone",
+     "support": "medullary thyroid carcinoma",
+     "fit": "Not here: hypovitaminosis D, no thyroid mass",
+     "tx": "Thyroidectomy",
+     "tempting": "regulates skeletal calcium turnover and bone resorption"
+    },
+    "D": {
+     "clue": "Marker of bone formation secreted by osteoblasts",
+     "support": "high-turnover bone disease",
+     "fit": "Not here: classic vitamin D deficiency response",
+     "tx": "Bisphosphonates",
+     "tempting": "osteocalcin increases in high bone turnover states"
+    },
+    "E": {
+     "clue": "Compensatory hormone secreted in response to hypocalcemia",
+     "support": "secondary hyperparathyroidism",
+     "fit": "Here: osteoporosis, low vitamin D, normal calcium",
+     "tx": "Ergocalciferol or cholecalciferol"
+    }
+   },
+   "algorithm": {
+    "title": "Secondary hyperparathyroidism from vitamin D deficiency",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fragility fractures + osteoporosis on DEXA: check serum calcium, phosphorus, 25-hydroxyvitamin D, and PTH",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Low vitamin D reduces intestinal calcium absorption: triggers compensatory elevation of parathyroid hormone",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Elevated PTH stimulates bone resorption and renal calcium reabsorption: restores normal serum calcium",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate high-dose oral vitamin D repletion therapy to normalize circulating 25-hydroxyvitamin D",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent osteoporosis after vitamin D repletion:** initiate oral bisphosphonate therapy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Ensure adequate daily dietary calcium intake and monitor annual DEXA bone density",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "sustained a right hip fracture when she fell in her kitchen"
+    },
+    {
+     "text": "sustained a Colles fracture in a fall"
+    },
+    {
+     "text": "serum 25-hydroxyvitamin D concentration is decreased"
+    },
+    {
+     "text": "DEXA scan shows osteoporosis"
+    },
+    {
+     "text": "serum calcium concentration is within the reference ranges",
+     "trap": true
+    }
+   ]
+  },
+  "c-surg-05-q012": {
+   "task": "Diagnosis",
+   "boardCall": "Groin pain + difficulty tying shoes + painful internal rotation -> Osteoarthritis of the hip",
+   "hinge": "Weight-bearing groin pain radiating to anterior thigh with restricted internal rotation and difficulty bending forward indicates hip osteoarthritis.",
+   "trap": "Trochanteric bursitis causes lateral hip pain over the greater trochanter, not groin pain with internal rotation.",
+   "options": {
+    "A": {
+     "clue": "Nerve root compression causing dermatomal radicular pain",
+     "support": "lumbar radiculopathy",
+     "fit": "Not here: normal strength, reflexes, joint-specific pain",
+     "tx": "Physical therapy or decompression",
+     "tempting": "radiating thigh pain in an older adult"
+    },
+    "B": {
+     "clue": "Degenerative loss of articular cartilage in hip",
+     "support": "hip osteoarthritis",
+     "fit": "Here: groin pain, painful internal rotation, limp",
+     "tx": "NSAIDs + physical therapy"
+    },
+    "C": {
+     "clue": "Degenerative joint space narrowing of knee compartment",
+     "support": "knee osteoarthritis",
+     "fit": "Not here: symptoms localize to groin and hip",
+     "tx": "Exercise + knee arthroplasty",
+     "tempting": "anterior distal thigh pain adjacent to the knee"
+    },
+    "D": {
+     "clue": "Autoimmune synovitis with morning stiffness and erosions",
+     "support": "rheumatoid arthritis",
+     "fit": "Not here: weight-bearing pain, monoarticular, no swelling",
+     "tx": "Methotrexate + biologics",
+     "tempting": "bilateral or chronic disabling joint symptoms in women"
+    },
+    "E": {
+     "clue": "Tenderness over lateral greater trochanteric prominence",
+     "support": "greater trochanteric pain syndrome",
+     "fit": "Not here: no lateral tenderness, groin pain predominates",
+     "tx": "Bursa injection + stretching",
+     "tempting": "hip pain causing a limp in older adult"
+    }
+   },
+   "algorithm": {
+    "title": "Osteoarthritis of the hip",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Groin pain with weight bearing + restricted internal rotation: obtain standing pelvis and hip radiographs",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Radiographic features confirm joint space narrowing, subchondral sclerosis, osteophytes, and subchondral cysts",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initial conservative management: low-impact aerobic exercise, physical therapy, and oral NSAIDs",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent moderate to severe pain:** intra-articular glucocorticoid or hyaluronic acid injection",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Refractory pain with severe mobility limitation:** elective total hip arthroplasty",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Encourage weight loss and assistive cane usage in contralateral hand to reduce joint loading",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "pain of the left groin and distal anterior thigh with weight bearing for 3 months"
+    },
+    {
+     "text": "difficulty bending forward and tying her left shoe"
+    },
+    {
+     "text": "Internal rotation of the left hip produces pain"
+    },
+    {
+     "text": "no tenderness over the lateral thigh"
+    }
+   ]
+  },
+  "c-surg-05-q013": {
+   "task": "Diagnosis",
+   "boardCall": "Postoperative STEMI + hypotension + cool skin + pulmonary edema -> Decreased | increased | increased",
+   "hinge": "Cardiogenic shock from acute myocardial infarction produces decreased cardiac output, elevated pulmonary capillary wedge pressure, and elevated systemic vascular resistance.",
+   "trap": "Distributive septic shock causes decreased SVR and warm extremities, whereas cardiogenic shock causes elevated SVR and cool extremities.",
+   "options": {
+    "A": {
+     "clue": "Low preload from volume depletion or bleeding",
+     "support": "hypovolemic shock",
+     "fit": "Not here: crackles halfway up lungs, elevated PCWP",
+     "tx": "IV crystalloids",
+     "tempting": "postoperative hypotension and diaphoresis suggest surgical bleeding"
+    },
+    "B": {
+     "clue": "Pump failure with high wedge pressure and vasoconstriction",
+     "support": "cardiogenic shock",
+     "fit": "Here: STEMI, BP 95/75, cool skin, crackles",
+     "tx": "Percutaneous coronary intervention + inotropes"
+    },
+    "C": {
+     "clue": "Isolated cardiac index depression without vascular compensation",
+     "support": "uncompensated cardiac dysfunction",
+     "fit": "Not here: cool skin indicates reflex vasoconstriction",
+     "tx": "Inotropic support",
+     "tempting": "hypotension and shock after recent major colectomy"
+    },
+    "D": {
+     "clue": "Hyperdynamic high-output cardiac failure state",
+     "support": "high-output heart failure",
+     "fit": "Not here: acute STEMI with depressed cardiac output",
+     "tx": "Address underlying high-output cause",
+     "tempting": "elevated pressures from pulmonary edema and vasoconstriction"
+    },
+    "E": {
+     "clue": "Hyperdynamic circulation with peripheral vasodilation",
+     "support": "distributive or septic shock",
+     "fit": "Not here: cool skin, STEMI, elevated SVR",
+     "tx": "IV fluids + norepinephrine",
+     "tempting": "postoperative fever 37.5°C and diaphoresis suggest sepsis"
+    },
+    "F": {
+     "clue": "Elevated cardiac output without systemic resistance changes",
+     "support": "early hyperdynamic sepsis",
+     "fit": "Not here: acute myocardial infarction with pump failure",
+     "tx": "Antibiotics + fluids",
+     "tempting": "diaphoresis and tachycardia following major surgery"
+    },
+    "G": {
+     "clue": "Isolated pulmonary congestion with preserved cardiac output",
+     "support": "mild left ventricular failure",
+     "fit": "Not here: overt hypotension with BP 95/75",
+     "tx": "Diuretics",
+     "tempting": "crackles at lung bases indicate pulmonary venous congestion"
+    },
+    "H": {
+     "clue": "Normal hemodynamic baseline parameters",
+     "support": "euvolemic stable cardiovascular state",
+     "fit": "Not here: STEMI with cardiogenic shock signs",
+     "tx": "Routine postoperative monitoring",
+     "tempting": "cardiac exam shows no murmurs or gallops"
+    }
+   },
+   "algorithm": {
+    "title": "Cardiogenic shock secondary to acute myocardial infarction",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Hypotension + pulmonary edema + cool skin following STEMI: diagnose cardiogenic shock",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Hemodynamic profile confirms decreased cardiac output, increased PCWP, and increased compensatory SVR",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate emergency coronary angiography with percutaneous coronary intervention to reperfuse myocardium",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer norepinephrine or dobutamine to improve cardiac contractility and organ perfusion",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Refractory cardiogenic shock:** place mechanical circulatory support such as intra-aortic balloon pump",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor arterial line and central venous pressures continuously in coronary intensive care unit",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "chest pain 3 days after undergoing a left colectomy"
+    },
+    {
+     "text": "ST-segment elevation in leads II, III, and aVF"
+    },
+    {
+     "text": "blood pressure is 95/75 mm Hg"
+    },
+    {
+     "text": "Crackles are heard halfway up the lung bases"
+    },
+    {
+     "text": "The skin is cool"
+    }
+   ]
+  },
+  "c-surg-05-q014": {
+   "task": "Mechanism",
+   "boardCall": "Young man + harsh systolic murmur + bicuspid valve -> Calcification of the valve",
+   "hinge": "Congenital bicuspid aortic valve produces turbulent hemodynamic shear stress that leads to accelerated dystrophic calcification and premature aortic stenosis.",
+   "trap": "Atherosclerotic plaque affects the coronary and peripheral arteries, whereas aortic stenosis results from dystrophic valve calcification.",
+   "options": {
+    "A": {
+     "clue": "Dystrophic calcification driven by turbulent mechanical shear",
+     "support": "bicuspid aortic valve stenosis",
+     "fit": "Here: harsh systolic murmur, bicuspid aortic valve",
+     "tx": "Surgical aortic valve replacement"
+    },
+    "B": {
+     "clue": "Endothelial lipid accumulation forming vascular intimal plaque",
+     "support": "atherosclerosis",
+     "fit": "Not here: valvular dystrophic calcification, not vascular plaque",
+     "tx": "Statin therapy",
+     "tempting": "vascular atherosclerosis shares risk factors with calcific stenosis"
+    },
+    "C": {
+     "clue": "Tendon rupture causing acute mitral valve regurgitation",
+     "support": "mitral valve regurgitation",
+     "fit": "Not here: aortic valve pathology, no mitral regurgitation",
+     "tx": "Mitral valve repair",
+     "tempting": "ruptured chordae cause systolic murmurs"
+    },
+    "D": {
+     "clue": "Post-streptococcal molecular mimicry causing rheumatic carditis",
+     "support": "rheumatic heart disease",
+     "fit": "Not here: congenital bicuspid valve, no rheumatic history",
+     "tx": "Penicillin prophylaxis",
+     "tempting": "common worldwide cause of acquired valvular heart disease"
+    },
+    "E": {
+     "clue": "Platelet and fibrin aggregation forming nonbacterial thrombotic vegetation",
+     "support": "marantic endocarditis",
+     "fit": "Not here: dystrophic mineralization of abnormal valve",
+     "tx": "Anticoagulation",
+     "tempting": "abnormal valve leaflets predispose to thrombus or vegetations"
+    }
+   },
+   "algorithm": {
+    "title": "Bicuspid aortic valve and calcific aortic stenosis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Congenital bicuspid aortic valve causes turbulent hemodynamic flow across two asymmetric leaflets",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Mechanical stress triggers progressive dystrophic calcification and fibrous thickening of the valve",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain baseline echocardiography to assess aortic valve area and screen for ascending thoracic aneurysm",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform serial echocardiographic surveillance every three to five years for mild asymptomatic stenosis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Severe symptomatic aortic stenosis or root dilation > 5.0 cm:** surgical aortic valve replacement",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Recommend first-degree relatives undergo screening transthoracic echocardiography",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "25-year-old man"
+    },
+    {
+     "text": "harsh systolic murmur is heard"
+    },
+    {
+     "text": "Echocardiography shows a bicuspid aortic valve"
+    }
+   ]
+  },
+  "c-surg-05-q015": {
+   "task": "Next step",
+   "boardCall": "Tearing chest pain + BP differential + widened mediastinum -> Administration of labetalol",
+   "hinge": "Acute aortic dissection with widened mediastinum and blood pressure differential requires immediate intravenous beta-blockade to reduce heart rate and shear stress.",
+   "trap": "Anticoagulation with heparin is indicated for acute coronary syndrome but is catastrophic and contraindicated in aortic dissection.",
+   "options": {
+    "A": {
+     "clue": "Parenteral anticoagulant augmenting antithrombin III activity",
+     "support": "acute coronary syndrome",
+     "fit": "Not here: tearing pain, widened mediastinum; heparin contraindicated",
+     "tx": "Heparin",
+     "tempting": "sudden severe chest pain with sinus tachycardia mimics ACS"
+    },
+    "B": {
+     "clue": "Intravenous alpha and beta blocker reducing shear stress",
+     "support": "acute aortic dissection",
+     "fit": "Here: tearing pain, BP differential, widened mediastinum",
+     "tx": "IV labetalol"
+    },
+    "C": {
+     "clue": "Direct venous vasodilator without negative inotropic effect",
+     "support": "acute pulmonary edema or angina",
+     "fit": "Not here: reflex tachycardia worsens aortic wall shear stress",
+     "tx": "Nitroglycerin",
+     "tempting": "lowers blood pressure rapidly in hypertensive emergencies"
+    },
+    "D": {
+     "clue": "Endotracheal tube placement under direct visualization",
+     "support": "acute upper airway obstruction",
+     "fit": "Not here: oxygen saturation 100%, lungs clear",
+     "tx": "Fiberoptic intubation",
+     "tempting": "tall patient with chest pain and tachycardia"
+    },
+    "E": {
+     "clue": "Needle aspiration of fluid from pericardial sac",
+     "support": "cardiac tamponade",
+     "fit": "Not here: normal heart sounds, lungs clear, no tamponade",
+     "tx": "Pericardiocentesis",
+     "tempting": "aortic dissection can rupture into pericardial sac"
+    }
+   },
+   "algorithm": {
+    "title": "Acute aortic dissection",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Sudden tearing chest pain radiating to back + blood pressure asymmetry: suspect aortic dissection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer IV labetalol or esmolol to lower heart rate < 60/min and systolic BP < 120 mm Hg",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Systolic blood pressure remains > 120 mm Hg despite beta-blockade:** add IV nicardipine",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain emergent chest and abdominal CT angiography to classify dissection extent",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Type A dissection (involves ascending aorta):** emergent surgical aortic repair",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Uncomplicated Type B dissection (descending aorta):** continue medical anti-impulse therapy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "sudden onset of tearing chest pain radiating to his back"
+    },
+    {
+     "text": "110/70 mm Hg in his right arm and 70/40 mm Hg in his left arm"
+    },
+    {
+     "text": "Pulses are difficult to palpate in the left upper extremity"
+    },
+    {
+     "text": "chest x-ray shows a widened upper mediastinum"
+    }
+   ]
+  },
+  "c-surg-05-q016": {
+   "task": "Next step",
+   "boardCall": "Exertional calf claudication + low ABI -> Prescription for an exercise program",
+   "hinge": "Lower extremity peripheral artery disease with stable claudication is managed initially with smoking cessation and a supervised exercise program.",
+   "trap": "Surgical bypass or angioplasty is tempting for low ABI but is reserved for disabling symptoms refractory to exercise or critical limb ischemia.",
+   "options": {
+    "A": {
+     "clue": "Percutaneous endovascular luminal balloon dilatation",
+     "support": "focal stenotic arterial disease",
+     "fit": "Not here: conservative trial indicated before revascularization",
+     "tx": "Angioplasty",
+     "tempting": "diminished distal pulses and low ABI suggest invasive intervention"
+    },
+    "B": {
+     "clue": "Surgical conduit bypassing occluded femoral segment",
+     "support": "critical limb ischemia",
+     "fit": "Not here: no rest pain, ulceration, or gangrene",
+     "tx": "Femoropopliteal bypass",
+     "tempting": "absent distal pulses suggest major arterial occlusion"
+    },
+    "C": {
+     "clue": "Disruption of sympathetic chain to reduce vasoconstriction",
+     "support": "refractory vasospastic disorders",
+     "fit": "Not here: atherosclerotic peripheral artery disease",
+     "tx": "Surgical sympathectomy",
+     "tempting": "improves cutaneous collateral blood flow in extremities"
+    },
+    "D": {
+     "clue": "Direct systemic smooth muscle relaxation",
+     "support": "vasodilator therapy",
+     "fit": "Not here: exercise training superior as initial therapy",
+     "tx": "Vasodilators",
+     "tempting": "vasodilation sounds intuitively helpful for ischemic limbs"
+    },
+    "E": {
+     "clue": "Supervised treadmill walking program promoting collaterals",
+     "support": "intermittent claudication",
+     "fit": "Here: claudication, smoker, ABI 0.75 and 0.60",
+     "tx": "Supervised exercise training"
+    }
+   },
+   "algorithm": {
+    "title": "Lower extremity peripheral artery disease",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Exertional calf pain relieved by rest: measure resting ankle-brachial index bilaterally",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "ABI <= 0.90 confirms diagnosis of lower extremity peripheral artery disease",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Prescription for a supervised exercise training program combined with aggressive risk modification",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Initiate high-intensity statin therapy + daily aspirin + smoking cessation counseling",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent lifestyle-limiting claudication after three months:** add oral cilostazol trial",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Critical limb ischemia (rest pain, nonhealing ulcer) or medical failure:** perform revascularization",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "comes to the physician's office because of claudication"
+    },
+    {
+     "text": "femoral pulses are palpable bilaterally, and distal pulses are absent"
+    },
+    {
+     "text": "Ankle-arm indices are 0.75 on the right and 0.60 on the left"
+    },
+    {
+     "text": "He smokes two packs of cigarettes per day"
+    }
+   ]
+  },
+  "c-surg-05-q017": {
+   "task": "Mechanism",
+   "boardCall": "Medial ankle ulcer + edema + brown pigmentation + intact pulses -> Venous insufficiency",
+   "hinge": "Ulceration over the medial malleolus with pedal edema, hemosiderin pigmentation, and preserved peripheral pulses indicates chronic venous insufficiency.",
+   "trap": "Diabetes mellitus history pulls toward neurotrophic ulcer, but neurotrophic ulcers appear on plantar pressure points rather than the medial ankle.",
+   "options": {
+    "A": {
+     "clue": "Atherosclerotic arterial hypoperfusion causing punch-out ulcer",
+     "support": "arterial insufficiency ulcer",
+     "fit": "Not here: peripheral pulses are present and normal",
+     "tx": "Revascularization",
+     "tempting": "lower extremity ulceration in an older patient with vascular disease"
+    },
+    "B": {
+     "clue": "Elevated central venous pressure causing dependent bilateral edema",
+     "support": "congestive heart failure",
+     "fit": "Not here: localized medial ankle ulceration",
+     "tx": "Diuretics",
+     "tempting": "chronic bilateral lower extremity swelling"
+    },
+    "C": {
+     "clue": "Loss of protective sensation causing plantar pressure ulcer",
+     "support": "diabetic neuropathic ulcer",
+     "fit": "Not here: medial ankle location, brown stasis pigmentation",
+     "tx": "Offloading footwear",
+     "tempting": "10-year history of type 2 diabetes mellitus"
+    },
+    "D": {
+     "clue": "Segmental inflammatory vasculitis in young heavy smokers",
+     "support": "thromboangiitis obliterans",
+     "fit": "Not here: medial malleolus ulcer, normal peripheral pulses",
+     "tx": "Smoking cessation",
+     "tempting": "distal extremity ulceration in chronic peripheral vascular disease"
+    },
+    "E": {
+     "clue": "Valvular incompetence causing venous hypertension and pooling",
+     "support": "chronic venous insufficiency",
+     "fit": "Here: medial ankle ulcer, edema, brown pigmentation, pulses normal",
+     "tx": "Compression therapy + leg elevation"
+    }
+   },
+   "algorithm": {
+    "title": "Chronic venous insufficiency and stasis ulceration",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Medial malleolus ulcer + lower leg edema + brown hemosiderin hyperpigmentation: suspect venous stasis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Venous valvular incompetence produces ambulatory venous hypertension, capillary extravasation, and skin breakdown",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm normal arterial perfusion with pulse examination or ABI before compression therapy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Prescribe lower extremity compression stockings + frequent leg elevation + local wound debridement",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Active surrounding erythema or cellulitis:** administer oral systemic antibiotics",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Nonhealing ulcer despite compression:** perform venous duplex ultrasound to evaluate for endovenous ablation",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "ulceration of the medial aspect of the right ankle"
+    },
+    {
+     "text": "chronic bilateral ankle swelling"
+    },
+    {
+     "text": "bilateral lower leg and pedal edema with patches of brown pigmentation"
+    },
+    {
+     "text": "Peripheral pulses are present and normal"
+    },
+    {
+     "text": "5-year history of type 2 diabetes mellitus",
+     "trap": true
+    }
+   ]
+  },
+  "c-surg-05-q018": {
+   "task": "Next step",
+   "boardCall": "Knee dislocation + transient pulse deficit -> Arteriography",
+   "hinge": "Knee dislocation with documented distal pulse deficit requires arteriography or CT angiography to rule out popliteal artery injury despite post-reduction pulse recovery.",
+   "trap": "Clinical improvement and return of leg motion after reduction can mislead into assuming no vascular injury occurred.",
+   "options": {
+    "A": {
+     "clue": "Doppler assessment of deep lower extremity veins",
+     "support": "deep vein thrombosis",
+     "fit": "Not here: popliteal arterial injury is primary concern",
+     "tx": "Anticoagulation",
+     "tempting": "evaluates lower extremity vascular flow after major knee trauma"
+    },
+    "B": {
+     "clue": "Cross-sectional noncontrast musculoskeletal bone imaging",
+     "support": "complex knee fracture",
+     "fit": "Not here: urgent arterial evaluation required",
+     "tx": "Surgical fixation",
+     "tempting": "characterizes osseous injury after severe knee joint dislocation"
+    },
+    "C": {
+     "clue": "Minimally invasive intra-articular joint endoscopy",
+     "support": "internal knee derangement",
+     "fit": "Not here: vascular assessment takes priority over ligaments",
+     "tx": "Ligament repair",
+     "tempting": "assesses cruciate ligament damage following joint dislocation"
+    },
+    "D": {
+     "clue": "Contrast radiographic imaging of arterial vascular lumen",
+     "support": "popliteal artery injury",
+     "fit": "Here: posterior knee dislocation, absent initial pulses",
+     "tx": "Arteriography or CTA"
+    },
+    "E": {
+     "clue": "Electrophysiologic testing of peripheral nerve integrity",
+     "support": "peroneal nerve injury",
+     "fit": "Not here: vascular injury takes precedence; acute NCV unhelpful",
+     "tx": "Splinting + observation",
+     "tempting": "initial sensory and motor loss below knee suggests nerve trauma"
+    },
+    "F": {
+     "clue": "Expectant observational clinical management",
+     "support": "uninjured neurovascular exam",
+     "fit": "Not here: pre-reduction pulse deficit mandates vascular imaging",
+     "tx": "Observation",
+     "tempting": "patient regained leg movement and pulses improved after reduction"
+    }
+   },
+   "algorithm": {
+    "title": "Knee dislocation and popliteal artery injury",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Posterior knee dislocation: perform immediate closed reduction and immobilize joint in splint",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform post-reduction neurovascular examination and measure ankle-brachial index",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Arteriography or CT angiography for documented pulse deficit, asymmetry, or ABI < 0.90",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Hard signs of vascular injury (expanding hematoma, active bleeding):** emergent operative exploration",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor serial compartment pressures and neurovascular exams to detect compartment syndrome",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Compartment pressures > 30 mm Hg:** perform emergent surgical four-compartment fasciotomy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "posterior dislocation of the right knee"
+    },
+    {
+     "text": "dorsalis pedis and posterior tibial pulses are absent on the right"
+    },
+    {
+     "text": "Motor and sensory function is absent below the right knee"
+    },
+    {
+     "text": "patient is able to move the leg",
+     "trap": true
+    }
+   ]
+  },
+  "c-surg-05-q019": {
+   "task": "Next step",
+   "boardCall": "Newborn cyanosis + hyperoxia test failure + cardiomegaly -> Echocardiography",
+   "hinge": "Neonatal central cyanosis failing to improve on 100% supplemental oxygen indicates cyanotic congenital heart disease, requiring immediate echocardiography.",
+   "trap": "Indomethacin closes the ductus arteriosus, which would cause circulatory collapse in ductal-dependent cyanotic heart lesions.",
+   "options": {
+    "A": {
+     "clue": "Ultrasound visualization of cardiac anatomy and shunts",
+     "support": "cyanotic congenital heart disease",
+     "fit": "Here: cyanosis, failed hyperoxia, cardiomegaly, hepatomegaly",
+     "tx": "Echocardiography"
+    },
+    "B": {
+     "clue": "Cross-sectional thoracic radiation imaging",
+     "support": "pulmonary parenchymal disease",
+     "fit": "Not here: bedside echocardiography is faster and diagnostic",
+     "tx": "",
+     "tempting": "pulmonary congestion and diffuse crackles suggest thoracic pathology"
+    },
+    "C": {
+     "clue": "Nonsteroidal anti-inflammatory promoting ductal closure",
+     "support": "patent ductus arteriosus closure",
+     "fit": "Not here: ductal closure is fatal in cyanotic CHD",
+     "tx": "Indomethacin",
+     "tempting": "used to manipulate ductal patency in neonatal cardiorespiratory distress"
+    },
+    "D": {
+     "clue": "Exogenous phospholipid reducing alveolar surface tension",
+     "support": "respiratory distress syndrome",
+     "fit": "Not here: term infant, cyanosis refractory to oxygen",
+     "tx": "Endotracheal surfactant",
+     "tempting": "respiratory distress with diffuse crackles in a newborn"
+    },
+    "E": {
+     "clue": "Invasive fluoroscopic cardiac catheterization and manometry",
+     "support": "interventional cardiac catheterization",
+     "fit": "Not here: bedside noninvasive echocardiography indicated first",
+     "tx": "Balloon atrial septostomy",
+     "tempting": "definitive hemodynamic assessment for congenital heart defects"
+    }
+   },
+   "algorithm": {
+    "title": "Cyanotic congenital heart disease in the newborn",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Newborn cyanosis failing hyperoxia test (oxygen saturation < 85% on 100% oxygen): suspect cyanotic defect",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Bedside echocardiography to delineate cardiac anatomy and identify ductal-dependent lesions",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Initiate continuous intravenous prostaglandin E1 infusion to maintain ductus arteriosus patency",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Transposition of great arteries with inadequate mixing:** emergent balloon atrial septostomy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Cardiogenic shock or metabolic acidosis:** intubation and cautious inotropic support",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Avoid indomethacin and titrate inspired oxygen cautiously to avoid closing the ductus",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "6-hour history of shortness of breath and blue lips and extremities"
+    },
+    {
+     "text": "Oxygen saturation on room air is 75%"
+    },
+    {
+     "text": "liver edge is palpated 4 cm below the right costal margin"
+    },
+    {
+     "text": "chest x-ray shows cardiomegaly and moderate pulmonary congestion"
+    }
+   ]
+  },
+  "c-surg-05-q020": {
+   "task": "Prognosis",
+   "boardCall": "Gastric aspiration during intubation -> Volume of aspirated fluid",
+   "hinge": "The severity and extent of lung injury in chemical aspiration pneumonitis are determined primarily by the volume and pH of the aspirated fluid.",
+   "trap": "Solid particulate matter can cause acute mechanical airway obstruction, but the severity of chemical pneumonitis depends on fluid volume and acidity.",
+   "options": {
+    "A": {
+     "clue": "Concentration of hepatic biliary secretions in aspirate",
+     "support": "bilious aspiration",
+     "fit": "Not here: fluid volume and acidity determine severity",
+     "tx": "Tracheal suctioning",
+     "tempting": "bile was explicitly aspirated from the trachea"
+    },
+    "B": {
+     "clue": "Total elapsed time of endotracheal airway cannulation",
+     "support": "ventilator-associated complication",
+     "fit": "Not here: initial aspirate burden dictates acute injury",
+     "tx": "Timely extubation",
+     "tempting": "difficult intubation duration suggests increased airway complication risk"
+    },
+    "C": {
+     "clue": "Particulate food remnants obstructing conducting airways",
+     "support": "foreign body aspiration",
+     "fit": "Not here: chemical pneumonitis severity driven by volume",
+     "tx": "Bronchoscopic removal",
+     "tempting": "solid material can obstruct major bronchi and cause atelectasis"
+    },
+    "D": {
+     "clue": "Surgical antimicrobial prophylaxis given prior to incision",
+     "support": "surgical site infection prevention",
+     "fit": "Not here: acute injury is chemical caustic pneumonitis",
+     "tx": "Antibiotics for secondary infection",
+     "tempting": "antibiotic coverage might mitigate downstream bacterial pneumonia"
+    },
+    "E": {
+     "clue": "Total fluid volume and acid load entering lungs",
+     "support": "chemical aspiration pneumonitis",
+     "fit": "Here: bile aspirated, intubation aspiration event",
+     "tx": "Suctioning + ventilatory support"
+    }
+   },
+   "algorithm": {
+    "title": "Aspiration pneumonitis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Observed aspiration during induction or intubation: immediate endotracheal suctioning and airway clearance",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Volume of aspirated fluid and low gastric pH correlate directly with severity of lung parenchymal injury",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide supportive respiratory management with supplemental oxygen and positive end-expiratory pressure",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Withhold empiric antibiotic therapy for acute chemical pneumonitis during the initial 48 hours",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**New fever or purulent sputum after 48 hours:** treat secondary bacterial aspiration pneumonia with ampicillin-sulbactam",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Serial chest radiographs and blood gas monitoring to assess progression to acute respiratory distress syndrome",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "aspirates during a difficult intubation"
+    },
+    {
+     "text": "diagnosis is confirmed when bile is aspirated from the trachea"
+    },
+    {
+     "text": "While undergoing a splenectomy for immune thrombocytopenic purpura"
+    }
+   ]
+  },
+  "c-surg-05-q021": {
+   "task": "Next step",
+   "boardCall": "Hospice patient + malignant pleural effusion + dyspnea -> Thoracentesis",
+   "hinge": "Bedside therapeutic thoracentesis provides immediate, minimally invasive symptom palliation for dyspnea concordant with hospice goals.",
+   "trap": "Systemic chemotherapy or radiation treats the underlying malignancy but conflicts with hospice palliative preferences.",
+   "options": {
+    "A": {
+     "clue": "Cytotoxic chemotherapy to shrink neoplastic tumor burden",
+     "support": "disease-modifying oncology",
+     "fit": "Not here: inconsistent with hospice comfort goals",
+     "tx": "Carboplatin + paclitaxel",
+     "tempting": "standard oncologic therapy for advanced lung cancer"
+    },
+    "B": {
+     "clue": "Ionizing thoracic radiation for local tumor control",
+     "support": "radiotherapy",
+     "fit": "Not here: delayed onset, invasive for acute dyspnea",
+     "tx": "External beam radiation",
+     "tempting": "palliates obstructing endobronchial or chest wall tumors"
+    },
+    "C": {
+     "clue": "Surgical thoracotomy with mechanical pleural symphysis",
+     "support": "recurrent refractory effusion",
+     "fit": "Not here: overly invasive and morbid for hospice",
+     "tx": "Open pleurodesis",
+     "tempting": "prevents future recurrence of malignant pleural effusion"
+    },
+    "D": {
+     "clue": "Bedside percutaneous needle aspiration of pleural fluid",
+     "support": "palliative symptom relief",
+     "fit": "Here: hospice care, acute dyspnea, pleural effusion",
+     "tx": "Therapeutic thoracentesis"
+    },
+    "E": {
+     "clue": "Surgical creation of tracheal stoma below cords",
+     "support": "upper airway obstruction",
+     "fit": "Not here: pleural effusion source, highly invasive",
+     "tx": "Surgical tracheostomy",
+     "tempting": "airway intervention for acute severe respiratory distress"
+    }
+   },
+   "algorithm": {
+    "title": "Malignant pleural effusion in hospice care",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Acute dyspnea from malignant pleural effusion in patient receiving home hospice care",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform bedside therapeutic thoracentesis for rapid, minimally invasive symptom palliation",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Prioritize goal-concordant symptom relief and noninvasive comfort measures",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Rapidly recurrent symptomatic pleural effusion:** place tunneled indwelling pleural catheter for home drainage",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Prescribe oral or subcutaneous low-dose opioids to alleviate refractory dyspnea sensation",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Avoid aggressive disease-directed chemotherapy, radiation, or open surgical thoracotomy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "unresectable squamous cell lung cancer"
+    },
+    {
+     "text": "acute onset of severe shortness of breath"
+    },
+    {
+     "text": "x-ray of the chest shows a unilateral pleural effusion"
+    },
+    {
+     "text": "patient has been receiving hospice care at home"
+    }
+   ]
+  },
+  "c-surg-05-q022": {
+   "task": "Mechanism",
+   "boardCall": "Tall thin adolescent + sudden chest pain + hyperresonance -> Air collection in the pleural space",
+   "hinge": "Sudden pleuritic pain and dyspnea in a tall, thin adolescent with unilateral hyperresonance and absent breath sounds indicate spontaneous pneumothorax from intrapleural air.",
+   "trap": "Decreased breath sounds during exercise can mimic exercise-induced bronchospasm, but hyperresonance points to pneumothorax.",
+   "options": {
+    "A": {
+     "clue": "Extravasated alveolar gas expanding the pleural cavity",
+     "support": "primary spontaneous pneumothorax",
+     "fit": "Here: tall thin teen, hyperresonance, decreased breath sounds",
+     "tx": "Thoracostomy or aspiration"
+    },
+    "B": {
+     "clue": "Volume loss and alveolar collapse from bronchial obstruction",
+     "support": "resorption atelectasis",
+     "fit": "Not here: hyperresonance to percussion, acute pleuritic onset",
+     "tx": "Chest physiotherapy",
+     "tempting": "causes unilateral decreased breath sounds"
+    },
+    "C": {
+     "clue": "Bronchospasm with mucosal edema and airway narrowing",
+     "support": "acute asthma exacerbation",
+     "fit": "Not here: unilateral signs, hyperresonance without wheezes",
+     "tx": "Inhaled albuterol",
+     "tempting": "acute breathing difficulty during track practice"
+    },
+    "D": {
+     "clue": "Parietal pleuritic inflammation with pleural friction rub",
+     "support": "acute pleurisy",
+     "fit": "Not here: marked hyperresonance and diminished breath sounds",
+     "tx": "NSAIDs",
+     "tempting": "sharp pleuritic chest pain in a young athlete"
+    },
+    "E": {
+     "clue": "Alveolar infiltration by inflammatory exudate and consolidation",
+     "support": "community-acquired pneumonia",
+     "fit": "Not here: afebrile, acute onset, hyperresonance instead of dullness",
+     "tx": "Oral antibiotics",
+     "tempting": "chest pain and rapid breathing in an adolescent"
+    }
+   },
+   "algorithm": {
+    "title": "Primary spontaneous pneumothorax",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Rupture of apical subpleural bleb in tall thin adolescent: air escapes into pleural cavity",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Intrapleural air collection causes ipsilateral lung collapse with hyperresonance and diminished breath sounds",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain upright chest radiograph to evaluate pneumothorax size and confirm absent lung markings",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Small pneumothorax (< 2 cm) and clinically stable:** high-flow oxygen and observation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Large pneumothorax (> 2 cm) or severe dyspnea:** perform needle aspiration or chest tube insertion",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Recurrent ipsilateral or contralateral pneumothorax:** video-assisted thoracoscopic surgery and pleurodesis",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "sudden onset of difficulty breathing and sharp chest pain"
+    },
+    {
+     "text": "BMI is 16 kg/m²"
+    },
+    {
+     "text": "Breath sounds are decreased over the lateral chest on the right"
+    },
+    {
+     "text": "hyperresonance to percussion"
+    }
+   ]
+  },
+  "c-surg-05-q023": {
+   "task": "Next step",
+   "boardCall": "Penetrating neck stab + expanding hematoma -> Endotracheal intubation",
+   "hinge": "An expanding pulsatile anterior neck hematoma threatens catastrophic airway loss; securing the airway with endotracheal intubation is the immediate priority.",
+   "trap": "Arteriography evaluates vascular injury but must not delay immediate airway protection in a visibly expanding neck hematoma.",
+   "options": {
+    "A": {
+     "clue": "Endoscopic evaluation of esophageal mucosal integrity",
+     "support": "aerodigestive tract injury",
+     "fit": "Not here: expanding neck hematoma compromises airway first",
+     "tx": "",
+     "tempting": "evaluates occult aerodigestive tract trauma after neck stab"
+    },
+    "B": {
+     "clue": "Placement of cuffed airway tube in trachea",
+     "support": "impending airway obstruction",
+     "fit": "Here: penetrating neck stab, expanding hematoma",
+     "tx": "Endotracheal intubation"
+    },
+    "C": {
+     "clue": "Catheter contrast angiography of neck vasculature",
+     "support": "stable zone II neck trauma",
+     "fit": "Not here: airway compromise takes precedence over imaging",
+     "tx": "Angiography",
+     "tempting": "characterizes carotid or vertebral arterial injury"
+    },
+    "D": {
+     "clue": "Surgical incision through cricothyroid membrane",
+     "support": "failed orotracheal intubation",
+     "fit": "Not here: orotracheal intubation should be attempted first",
+     "tx": "Surgical cricothyroidotomy",
+     "tempting": "surgical airway bypasses anterior neck distortion"
+    },
+    "E": {
+     "clue": "Operative surgical stoma through anterior tracheal rings",
+     "support": "prolonged mechanical ventilation",
+     "fit": "Not here: rapid endotracheal intubation is faster and preferred",
+     "tx": "Tracheostomy",
+     "tempting": "definitive surgical airway for severe neck injury"
+    }
+   },
+   "algorithm": {
+    "title": "Penetrating neck trauma with expanding hematoma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Penetrating neck injury with expanding pulsatile hematoma threatening airway compromise",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Endotracheal intubation immediately to secure the airway before complete anatomic distortion",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Orotracheal intubation fails:** perform emergent surgical cricothyroidotomy or tracheostomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Transport immediately to operating room for emergent surgical neck exploration",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Zone II injury with hard signs:** surgical arterial repair or temporary shunt placement",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer uncrossed blood products and IV crystalloids for hemorrhagic shock resuscitation",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "stabbed in the anterior neck 30 minutes ago"
+    },
+    {
+     "text": "large, pulsatile hematoma at the level of the thyroid cartilage"
+    },
+    {
+     "text": "hematoma expands"
+    }
+   ]
+  },
+  "c-surg-05-q024": {
+   "task": "Mechanism",
+   "boardCall": "Postoperative morphine + bradypnea + respiratory acidosis -> Alveolar hypoventilation",
+   "hinge": "Severe postoperative hypercapnic respiratory acidosis (PCO2 73) with bradypnea following morphine and upper abdominal surgery is caused by alveolar hypoventilation.",
+   "trap": "Atelectasis increases the A-a gradient, but isolated high A-a gradient does not produce severe hypercapnia and acidosis.",
+   "options": {
+    "A": {
+     "clue": "Insufficient minute ventilation retaining carbon dioxide",
+     "support": "hypercapnic respiratory failure",
+     "fit": "Here: respirations 11/min, PCO2 73, pH 7.26",
+     "tx": "Ventilatory support + naloxone"
+    },
+    "B": {
+     "clue": "Vascular occlusion reducing perfusion to lung units",
+     "support": "pulmonary embolism",
+     "fit": "Not here: high PCO2 73, bradypnea, normal cardiac exam",
+     "tx": "Anticoagulation",
+     "tempting": "acute postoperative hypoxemia suggests pulmonary embolism"
+    },
+    "C": {
+     "clue": "Impaired alveolar diffusion or ventilation-perfusion mismatch",
+     "support": "parenchymal lung disease",
+     "fit": "Not here: pure alveolar hypoventilation explains hypoxemia",
+     "tx": "Supplemental oxygen",
+     "tempting": "elevated diaphragms on chest x-ray suggest atelectasis"
+    },
+    "D": {
+     "clue": "Hypercatabolism increasing carbon dioxide generation",
+     "support": "malignant hyperthermia or sepsis",
+     "fit": "Not here: bradypnea 11/min with opioid sedation",
+     "tx": "Cooling + treat underlying cause",
+     "tempting": "postoperative fever 38°C and tachycardia"
+    },
+    "E": {
+     "clue": "Ventilation of unperfused alveoli from microvascular compromise",
+     "support": "dead space ventilation",
+     "fit": "Not here: opioid-induced hypoventilation is primary cause",
+     "tx": "Mechanical ventilation",
+     "tempting": "underlying chronic obstructive pulmonary disease"
+    }
+   },
+   "algorithm": {
+    "title": "Postoperative hypercapnic respiratory failure",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Postoperative bradypnea + acute hypercapnia (PCO2 73 mm Hg) + respiratory acidosis: alveolar hypoventilation",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Opioid administration suppresses brainstem respiratory drive while upper abdominal incisions impair diaphragmatic excursion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer low-dose intravenous naloxone to reverse excessive opioid sedation without precipitating pain crisis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent severe hypoventilation or acidosis:** initiate noninvasive positive pressure ventilation or re-intubation",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Transition to multimodal opioid-sparing analgesia and encourage aggressive incentive spirometry",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain serial arterial blood gas measurements to verify resolution of hypercapnia and acidosis",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "receiving 6 L/min of oxygen via nasal cannula and intravenous morphine for pain"
+    },
+    {
+     "text": "respirations are 11/min"
+    },
+    {
+     "text": "moderate elevation of both diaphragms"
+    },
+    {
+     "text": "PCO₂ 73 mm Hg"
+    },
+    {
+     "text": "pH 7.26"
+    }
+   ]
+  },
+  "c-surg-05-q025": {
+   "task": "Next step",
+   "boardCall": "Cirrhosis + ascites + fever + encephalopathy -> Paracentesis",
+   "hinge": "New fever, encephalopathy, and renal dysfunction in a cirrhotic patient with ascites mandate immediate diagnostic paracentesis to rule out spontaneous bacterial peritonitis.",
+   "trap": "Abdominal ultrasound confirms ascites but must not delay emergent diagnostic paracentesis to evaluate for SBP.",
+   "options": {
+    "A": {
+     "clue": "Sonographic visualization of abdominal viscera and ascites",
+     "support": "ascites localization",
+     "fit": "Not here: bedside paracentesis is diagnostic and urgently needed",
+     "tx": "",
+     "tempting": "confirms ascites before attempting invasive fluid removal"
+    },
+    "B": {
+     "clue": "Nutritional vitamin supplementation for alcohol abuse",
+     "support": "vitamin deficiency",
+     "fit": "Not here: fever and peritonitis take priority over vitamins",
+     "tx": "Oral vitamin repletion",
+     "tempting": "history of chronic alcoholism and muscle wasting"
+    },
+    "C": {
+     "clue": "Endoscopic retrograde visualization of pancreaticobiliary ducts",
+     "support": "biliary tract disease",
+     "fit": "Not here: primary ascitic infection, not biliary obstruction",
+     "tx": "Sphincterotomy",
+     "tempting": "prior episode of pancreatitis 3 weeks ago"
+    },
+    "D": {
+     "clue": "Extracorporeal clearance of nitrogenous toxins and fluid",
+     "support": "acute renal failure with uremia",
+     "fit": "Not here: evaluate and treat infection driving hepatorenal syndrome",
+     "tx": "Hemodialysis",
+     "tempting": "elevated urea nitrogen 60 mg/dL and creatinine 2.6 mg/dL"
+    },
+    "E": {
+     "clue": "Diagnostic needle aspiration of peritoneal ascitic fluid",
+     "support": "spontaneous bacterial peritonitis",
+     "fit": "Here: cirrhosis, ascites, fever 38.4°C, lethargy",
+     "tx": "Diagnostic paracentesis"
+    }
+   },
+   "algorithm": {
+    "title": "Spontaneous bacterial peritonitis in decompensated cirrhosis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Cirrhosis + ascites with fever, encephalopathy, or renal failure: perform immediate diagnostic paracentesis",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Inoculate ascitic fluid directly into blood culture bottles at bedside and check cell count",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Ascitic absolute neutrophil count >= 250/mm³:** initiates empiric IV third-generation cephalosporin",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer intravenous albumin infusion to preserve renal perfusion and prevent hepatorenal syndrome",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Secondary peritonitis suspected (polymicrobial, protein > 1 g/dL):** obtain abdominal CT imaging",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate long-term oral fluoroquinolone prophylaxis after resolution of initial peritonitis episode",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "excessively sleepy for the past 2 days"
+    },
+    {
+     "text": "temperature is 38.4°C (101.1°F)"
+    },
+    {
+     "text": "severe jaundice and peripheral muscle wasting"
+    },
+    {
+     "text": "distention and a fluid wave"
+    },
+    {
+     "text": "Leukocyte count 11,500/mm³"
+    }
+   ]
+  },
+  "c-surg-05-q026": {
+   "task": "Next step",
+   "boardCall": "Crohn terminal ileal thickening + vomiting + rectal air -> Upper gastrointestinal series with a water-soluble contrast and small bowel follow-through",
+   "hinge": "Suspected partial small-bowel obstruction from terminal ileal Crohn stricture is evaluated with a water-soluble contrast upper GI series and small bowel follow-through.",
+   "trap": "Capsule endoscopy is strictly contraindicated in suspected small bowel strictures due to the danger of capsule impaction.",
+   "options": {
+    "A": {
+     "clue": "Fluoroscopic retrograde contrast evaluation of colon",
+     "support": "large bowel pathology",
+     "fit": "Not here: colon not dilated, ileal disease predominates",
+     "tx": "Fluoroscopic reduction",
+     "tempting": "fluoroscopic evaluation of bowel obstruction"
+    },
+    "B": {
+     "clue": "Fluoroscopic anterograde imaging of small intestine transit",
+     "support": "small bowel stricture",
+     "fit": "Here: Crohn ileal thickening, vomiting, partial obstruction",
+     "tx": "Water-soluble contrast study"
+    },
+    "C": {
+     "clue": "Magnetic resonance imaging of abdominal viscera",
+     "support": "perianal Crohn disease",
+     "fit": "Not here: dynamic luminal fluoroscopy preferred for acute obstruction",
+     "tx": "",
+     "tempting": "characterizes transmural inflammation in Crohn disease"
+    },
+    "D": {
+     "clue": "Swallowed video capsule imaging of small bowel mucosa",
+     "support": "occult GI bleeding",
+     "fit": "Not here: strictly contraindicated; capsule can impact in stricture",
+     "tx": "Endoscopy",
+     "tempting": "visualizes mucosal inflammation throughout the small intestine"
+    },
+    "E": {
+     "clue": "Endoscopic examination of large bowel and terminal ileum",
+     "support": "luminal mucosal evaluation",
+     "fit": "Not here: high perforation risk during acute obstruction",
+     "tx": "Endoscopic dilation",
+     "tempting": "visualizes and biopsies terminal ileal Crohn lesions"
+    }
+   },
+   "algorithm": {
+    "title": "Crohn disease with partial small bowel obstruction",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Terminal ileal thickening + vomiting + crampy pain: suspect Crohn stricture with partial obstruction",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Upper gastrointestinal series with water-soluble contrast and small bowel follow-through to identify stricture",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Avoid capsule endoscopy due to high risk of capsule impaction within narrowed stricture lumen",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate bowel rest, nasogastric decompression, IV hydration, and systemic intravenous corticosteroids",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Refractory fibrotic stricture without active inflammation:** surgical stricturoplasty or bowel resection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate biologic therapy (anti-TNF agent) for long-term maintenance of remission",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "thickening of the terminal ileum and air in the rectum"
+    },
+    {
+     "text": "vomited yellow-green material once"
+    },
+    {
+     "text": "moderate distention with mild right lower quadrant tenderness"
+    },
+    {
+     "text": "6.8-kg (15-lb) weight loss"
+    }
+   ]
+  },
+  "c-surg-05-q027": {
+   "task": "Next step",
+   "boardCall": "Painless jaundice + dilated intrahepatic ducts + small gallbladder -> Endoscopic retrograde cholangiopancreatography",
+   "hinge": "Painless cholestatic jaundice with bilateral intrahepatic ductal dilation and a small, collapsed gallbladder indicates hilar obstruction (Klatskin tumor), evaluated by ERCP.",
+   "trap": "Carcinoembryonic antigen (CEA) is a serum marker that cannot localize the obstruction or provide therapeutic biliary decompression.",
+   "options": {
+    "A": {
+     "clue": "Serum oncofetal tumor marker measurement",
+     "support": "colorectal tumor monitoring",
+     "fit": "Not here: nonspecific marker; cannot visualize or relieve obstruction",
+     "tx": "",
+     "tempting": "tumor marker for gastrointestinal malignancy"
+    },
+    "B": {
+     "clue": "Fluoroscopic and endoscopic retrograde biliary cannulation",
+     "support": "hilar biliary obstruction",
+     "fit": "Here: dilated intrahepatic ducts, small gallbladder, alkaline phosphatase 500",
+     "tx": "ERCP with stent placement"
+    },
+    "C": {
+     "clue": "Nuclear radiotracer excretion into biliary tree",
+     "support": "acute cholecystitis",
+     "fit": "Not here: evaluates cystic duct patency, not hilar strictures",
+     "tx": "Cholecystectomy",
+     "tempting": "evaluates biliary excretion and ductal transit"
+    },
+    "D": {
+     "clue": "Percutaneous core tissue needle sampling of liver",
+     "support": "parenchymal liver disease",
+     "fit": "Not here: biliary dilation risk of bile leak and bleeding",
+     "tx": "",
+     "tempting": "evaluates unexplained elevated liver enzymes"
+    },
+    "E": {
+     "clue": "Open surgical abdominal exploration and inspection",
+     "support": "surgical abdomen",
+     "fit": "Not here: endoscopic visualization and stenting indicated first",
+     "tx": "Surgical resection",
+     "tempting": "direct surgical exploration for suspected abdominal cancer"
+    }
+   },
+   "algorithm": {
+    "title": "Hilar cholangiocarcinoma (Klatskin tumor)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Painless jaundice + dilated intrahepatic ducts + collapsed gallbladder: suspect hilar biliary stricture",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform endoscopic retrograde cholangiopancreatography (ERCP) for cholangiography, brush cytology, and stenting",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**ERCP fails to traverse proximal hilar stricture:** perform percutaneous transhepatic cholangiography",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain high-resolution contrast CT or MRI/MRCP to assess vascular invasion and resectability",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Resectable localized tumor:** perform surgical en bloc resection with partial hepatectomy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Unresectable advanced disease:** place bilateral biliary stents and initiate palliative systemic chemotherapy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "4-month history of right-sided upper abdominal pain"
+    },
+    {
+     "text": "9-kg (20-lb) weight loss"
+    },
+    {
+     "text": "Direct bilirubin 1.4 mg/dL"
+    },
+    {
+     "text": "Alkaline phosphatase 500 U/L"
+    },
+    {
+     "text": "dilated intrahepatic ducts in both lobes and a small gallbladder"
+    }
+   ]
+  },
+  "c-surg-05-q028": {
+   "task": "Diagnosis",
+   "boardCall": "Secretory watery diarrhea 5 L/day + hypokalemia + pancreatic mass -> VIPoma",
+   "hinge": "Massive secretory watery diarrhea (5 L/day) accompanied by flushing, hypokalemia, and a pancreatic mass characterizes a VIPoma (WDHA syndrome).",
+   "trap": "Gastrinoma causes peptic ulcer disease and gastric hyperacidity rather than massive secretory diarrhea with high stool potassium and achlorhydria.",
+   "options": {
+    "A": {
+     "clue": "Gastrin-secreting tumor causing refractory peptic ulceration",
+     "support": "Zollinger-Ellison syndrome",
+     "fit": "Not here: 5 L watery diarrhea, hypokalemia, alkalosis",
+     "tx": "High-dose PPI + resection",
+     "tempting": "pancreatic neuroendocrine tumor causing diarrhea"
+    },
+    "B": {
+     "clue": "Glucagon excess causing necrolytic migratory erythema",
+     "support": "glucagonoma",
+     "fit": "Not here: massive secretory diarrhea, no skin rash",
+     "tx": "Octreotide + resection",
+     "tempting": "pancreatic islet cell tumor with weight loss"
+    },
+    "C": {
+     "clue": "Insulin-secreting tumor causing fasting hypoglycemia",
+     "support": "insulinoma",
+     "fit": "Not here: secretory diarrhea and hypokalemia",
+     "tx": "Surgical enucleation",
+     "tempting": "pancreatic neuroendocrine tumor causing neuroglycopenic symptoms"
+    },
+    "D": {
+     "clue": "Somatostatin-secreting tumor causing diabetes, cholelithiasis, steatorrhea",
+     "support": "somatostatinoma",
+     "fit": "Not here: watery secretory diarrhea, hypokalemia, flushing",
+     "tx": "Surgical resection",
+     "tempting": "pancreatic neuroendocrine tumor causing weight loss and diarrhea"
+    },
+    "E": {
+     "clue": "Vasoactive intestinal peptide tumor causing WDHA syndrome",
+     "support": "VIPoma",
+     "fit": "Here: 5 L stool, K 2.8, flushing, pancreatic mass",
+     "tx": "Octreotide + surgical resection"
+    }
+   },
+   "algorithm": {
+    "title": "Vasoactive intestinal peptide-secreting tumor (VIPoma)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Profuse secretory watery diarrhea (> 3 L/day) + hypokalemia + facial flushing: suspect VIPoma",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm diagnosis by demonstrating elevated fasting plasma vasoactive intestinal peptide concentration",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate aggressive intravenous fluid hydration and intravenous potassium and electrolyte repletion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer somatostatin analog (octreotide) to inhibit VIP secretion and control watery diarrhea",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Localized resectable pancreatic tumor on CT:** perform surgical exploration and oncologic resection",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Metastatic hepatic disease:** hepatic arterial embolization or peptide receptor radionuclide therapy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "1-month history of profuse, watery diarrhea with facial flushing"
+    },
+    {
+     "text": "stool output is 5 L over the next 24 hours"
+    },
+    {
+     "text": "potassium concentration of 2.8 mEq/L"
+    },
+    {
+     "text": "CT scan of the abdomen shows a pancreatic mass"
+    },
+    {
+     "text": "pH of 7.56"
+    }
+   ]
+  },
+  "c-surg-05-q029": {
+   "task": "Mechanism",
+   "boardCall": "Dysphagia + undigested food regurgitation + pharyngeal pouch -> Cricopharyngeal muscle spasm",
+   "hinge": "Zenker diverticulum develops due to impaired relaxation and spasm of the cricopharyngeal muscle, creating elevated intraluminal pressure that herniates mucosa.",
+   "trap": "Achalasia causes failure of lower esophageal sphincter relaxation with aperistalsis, whereas Zenker is a proximal pharyngoesophageal pouch.",
+   "options": {
+    "A": {
+     "clue": "Degeneration of myenteric plexus causing distal aperistalsis",
+     "support": "achalasia",
+     "fit": "Not here: proximal pharyngeal pouch, normal distal esophagus",
+     "tx": "Pneumatic dilation or myotomy",
+     "tempting": "progressive dysphagia and regurgitation of undigested food"
+    },
+    "B": {
+     "clue": "Uncoordinated upper esophageal sphincter contraction during swallowing",
+     "support": "Zenker diverticulum",
+     "fit": "Here: 2-year dysphagia, undigested food regurgitation",
+     "tx": "Cricopharyngeal myotomy"
+    },
+    "C": {
+     "clue": "Simultaneous non-peristaltic contractions causing chest pain",
+     "support": "distal esophageal spasm",
+     "fit": "Not here: undigested regurgitation, anatomical pouch present",
+     "tx": "Calcium channel blockers",
+     "tempting": "esophageal motility disorder causing dysphagia"
+    },
+    "D": {
+     "clue": "Acid exposure producing mucosal inflammation and peptic stricture",
+     "support": "peptic stricture from GERD",
+     "fit": "Not here: proximal diverticulum, undigested food regurgitation",
+     "tx": "PPI + endoscopic dilation",
+     "tempting": "chronic progressive dysphagia in an older adult"
+    }
+   },
+   "algorithm": {
+    "title": "Zenker diverticulum",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Progressive dysphagia + halitosis + regurgitation of undigested food in older adult: suspect Zenker diverticulum",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Cricopharyngeal muscle spasm increases pharyngeal pressure: posterior mucosal herniation through Killian triangle",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain diagnostic barium swallow esophagram to demonstrate size and location of diverticular pouch",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Avoid blind instrumentation, nasogastric tube passage, or upper endoscopy to prevent diverticular perforation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Symptomatic or large diverticulum:** perform surgical or endoscopic cricopharyngeal myotomy with diverticulectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Postoperative speech therapy and swallowing evaluation to ensure recovery of safe deglutition",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "2-year history of progressive dysphagia"
+    },
+    {
+     "text": "intermittent regurgitation of undigested food"
+    },
+    {
+     "text": "70-year-old man"
+    }
+   ]
+  },
+  "c-surg-05-q030": {
+   "task": "Next step",
+   "boardCall": "Hematemesis + hypotension + tachycardia + dizziness -> Intravenous fluid therapy and blood transfusion",
+   "hinge": "Active upper gastrointestinal bleeding with hemodynamic instability (pulse 130, BP 90/40) mandates immediate volume resuscitation with IV fluids and blood transfusion before procedures.",
+   "trap": "Endoscopic sclerosis or band ligation of varices is tempting, but hemodynamic stabilization with fluids and blood takes priority.",
+   "options": {
+    "A": {
+     "clue": "Systemic splanchnic vasoconstrictor peptide",
+     "support": "variceal hemorrhage adjuvant",
+     "fit": "Not here: fluid and blood resuscitation must come first",
+     "tx": "Vasopressin",
+     "tempting": "lowers portal pressure in variceal bleeding"
+    },
+    "B": {
+     "clue": "Ultra-short-acting beta-1 selective antagonist",
+     "support": "aortic dissection or tachydysrhythmia",
+     "fit": "Not here: worsens shock; tachycardia is compensatory",
+     "tx": "Esmolol",
+     "tempting": "tachycardia with pulse 130/min prompts rate control"
+    },
+    "C": {
+     "clue": "Restoration of intravascular volume and oxygen delivery",
+     "support": "hemorrhagic shock",
+     "fit": "Here: pulse 130, BP 90/40, bright red hematemesis",
+     "tx": "IV fluids + PRBC transfusion"
+    },
+    "D": {
+     "clue": "Endoscopic sclerosant injection into variceal channels",
+     "support": "active variceal bleeding",
+     "fit": "Not here: stabilize shock first; duodenal ulcer also present",
+     "tx": "Endoscopic sclerotherapy",
+     "tempting": "upper endoscopy showed esophageal varices"
+    },
+    "E": {
+     "clue": "Percutaneous radiologic portosystemic shunt creation",
+     "support": "refractory variceal bleeding",
+     "fit": "Not here: initial resuscitation and endoscopic therapy first",
+     "tx": "TIPS placement",
+     "tempting": "definitive portal decompression for cirrhotic ascites and varices"
+    }
+   },
+   "algorithm": {
+    "title": "Acute upper gastrointestinal hemorrhage and hemorrhagic shock",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Massive hematemesis + tachycardia (130/min) + hypotension (90/40 mm Hg): diagnose hemorrhagic shock",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Intravenous fluid therapy and blood transfusion via two large-bore peripheral catheters",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Initiate IV proton pump inhibitor infusion + octreotide + empiric IV ceftriaxone for cirrhotic patient",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform therapeutic upper endoscopy once patient is hemodynamically stabilized to treat bleeding source",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Active duodenal ulcer with visible vessel:** endoscopic dual therapy with hemoclip and epinephrine",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Refractory duodenal bleeding despite endoscopy:** transcatheter angiographic embolization",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "vomited bright red blood three times during the past 6 hours"
+    },
+    {
+     "text": "pulse is 130/min, and blood pressure is 90/40 mm Hg"
+    },
+    {
+     "text": "He becomes dizzy when he sits up"
+    },
+    {
+     "text": "ulcer with a blood clot on a visible vessel"
+    },
+    {
+     "text": "Upper endoscopy shows esophageal varices",
+     "trap": true
+    }
+   ]
+  },
+  "c-surg-05-q031": {
+   "task": "Diagnosis",
+   "boardCall": "Elderly woman + massive abdominal distention + coffee-bean sign -> Sigmoid volvulus",
+   "hinge": "Massive colonic distention in an elderly patient with an inverted U-shaped dilated loop on abdominal radiograph is sigmoid volvulus.",
+   "trap": "A McBurney scar suggests prior appendectomy and adhesive small bowel obstruction, but the radiograph shows a massive colonic loop.",
+   "options": {
+    "A": {
+     "clue": "Malignant right colon neoplasm causing microcytic anemia",
+     "support": "colorectal carcinoma",
+     "fit": "Not here: acute 16-hour distention, sigmoid coffee-bean loop",
+     "tx": "Right hemicolectomy",
+     "tempting": "large-bowel obstruction in an elderly patient"
+    },
+    "B": {
+     "clue": "Telescoping of proximal ileum into distal ileum",
+     "support": "adult intussusception",
+     "fit": "Not here: massive colonic distention on x-ray",
+     "tx": "Surgical resection",
+     "tempting": "cramping lower abdominal pain and bowel obstruction"
+    },
+    "C": {
+     "clue": "Adhesive band obstructing small bowel loops",
+     "support": "small bowel obstruction",
+     "fit": "Not here: massive coffee-bean loop, large-bowel distention",
+     "tx": "NG suction + laparotomy",
+     "tempting": "prior appendectomy incision creates adhesive obstruction risk"
+    },
+    "D": {
+     "clue": "Adynamic neurogenic intestinal hypomotility",
+     "support": "paralytic ileus",
+     "fit": "Not here: mechanical torsion with focal coffee-bean loop",
+     "tx": "Supportive bowel rest",
+     "tempting": "diffuse abdominal distention in an elderly hospitalized patient"
+    },
+    "E": {
+     "clue": "Torsion of redundant sigmoid mesentery around axis",
+     "support": "sigmoid volvulus",
+     "fit": "Here: massive distention, 16-hour pain, coffee-bean loop",
+     "tx": "Endoscopic detorsion + rectal tube"
+    }
+   },
+   "algorithm": {
+    "title": "Sigmoid volvulus",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Acute severe abdominal distention + constipation in elderly patient: obtain plain abdominal radiographs",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Radiograph confirms inverted U-shaped dilated sigmoid loop pointing to right upper quadrant",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform flexible sigmoidoscopy to achieve immediate detorsion and mucosal inspection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Place rectal decompression tube past obstruction to prevent immediate recurrent torsion",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Ischemic bowel, peritonitis, or detorsion failure:** perform emergent exploratory laparotomy with Hartmann resection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Schedule elective sigmoid resection during same admission due to high recurrence rates",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "severe cramping pain in the lower abdomen"
+    },
+    {
+     "text": "constant for the past 16 hours"
+    },
+    {
+     "text": "abdomen is markedly distended"
+    },
+    {
+     "text": "McBurney incisional scar is noted in the right lower quadrant",
+     "trap": true
+    }
+   ]
+  },
+  "c-surg-05-q032": {
+   "task": "Next step",
+   "boardCall": "Severe pain out of proportion + small bowel thickening + acidosis -> Infusion of heparin",
+   "hinge": "Severe abdominal pain out of proportion to exam with metabolic acidosis and bowel wall thickening indicates acute mesenteric ischemia; immediate heparin anticoagulation is essential.",
+   "trap": "Colonoscopy is dangerous and unhelpful in acute small-bowel ischemia, wasting critical time needed for resuscitation and revascularization.",
+   "options": {
+    "A": {
+     "clue": "Systemic anticoagulation preventing thrombus extension",
+     "support": "acute mesenteric ischemia",
+     "fit": "Here: severe pain out of proportion, small bowel thickening, acidosis",
+     "tx": "IV unfractionated heparin"
+    },
+    "B": {
+     "clue": "Inotropic and vasoconstrictive catecholamine infusion",
+     "support": "cardiogenic or distributive shock",
+     "fit": "Not here: alpha-vasoconstriction worsens mesenteric hypoperfusion",
+     "tx": "Dopamine",
+     "tempting": "tachycardia and hypotension-trending hemodynamics"
+    },
+    "C": {
+     "clue": "Endoscopic visualization of colonic mucosa",
+     "support": "ischemic colitis",
+     "fit": "Not here: small-bowel pathology, risk of perforation",
+     "tx": "Endoscopy",
+     "tempting": "evaluates suspected ischemic bowel disease"
+    },
+    "D": {
+     "clue": "Catheter-directed arterial fluoroscopic evaluation",
+     "support": "mesenteric arterial imaging",
+     "fit": "Not here: IV heparin initiated immediately prior to angiography",
+     "tx": "Angiography",
+     "tempting": "diagnostic catheterization for mesenteric arterial occlusion"
+    },
+    "E": {
+     "clue": "Surgical anastomosis between esophagus and duodenum",
+     "support": "total gastrectomy reconstruction",
+     "fit": "Not here: acute intestinal ischemia, not gastric neoplasm",
+     "tx": "Surgical reconstruction",
+     "tempting": "upper gastrointestinal surgical procedure"
+    }
+   },
+   "algorithm": {
+    "title": "Acute mesenteric ischemia",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Severe pain out of proportion to exam + metabolic acidosis + bowel wall thickening: suspect mesenteric ischemia",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate continuous intravenous infusion of unfractionated heparin immediately",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Administer broad-spectrum intravenous antibiotics + rapid IV crystalloid resuscitation",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain emergent multiphasic mesenteric CT angiography to identify arterial embolus or thrombosis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Peritoneal signs, bowel perforation, or extensive necrosis:** emergent exploratory laparotomy and embolectomy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Early non-peritoneal occlusion:** endovascular mechanical thrombectomy or transcatheter thrombolysis",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "2-day history of severe abdominal pain"
+    },
+    {
+     "text": "mild, diffuse tenderness to palpation"
+    },
+    {
+     "text": "pulse is 102/min, and blood pressure is 110/85 mm Hg"
+    },
+    {
+     "text": "thickening of the wall of the small bowel"
+    },
+    {
+     "text": "HCO₃⁻ 20 mEq/L"
+    }
+   ]
+  },
+  "c-surg-05-q033": {
+   "task": "Diagnosis",
+   "boardCall": "Pregnancy 28 weeks + RUQ pain + fever + leukocytosis -> Acute cholecystitis",
+   "hinge": "Constant RUQ pain, fever, leukocytosis, and local voluntary guarding in a pregnant woman indicate acute cholecystitis.",
+   "trap": "Severe preeclampsia or HELLP causes RUQ pain and liver enzyme elevation but requires hypertension, proteinuria, and severe thrombocytopenia.",
+   "options": {
+    "A": {
+     "clue": "Premature separation of placenta with painful uterine bleeding",
+     "support": "placental abruption",
+     "fit": "Not here: no contractions, no bleeding, RUQ localization",
+     "tx": "Emergent delivery",
+     "tempting": "acute abdominal pain and decreased fetal movement in pregnancy"
+    },
+    "B": {
+     "clue": "Inflammation of gravid-displaced vermiform appendix",
+     "support": "acute appendicitis in pregnancy",
+     "fit": "Not here: classic RUQ gallbladder tenderness and cholestasis",
+     "tx": "Appendectomy",
+     "tempting": "appendix is displaced superiorly toward RUQ in third trimester"
+    },
+    "C": {
+     "clue": "Cystic duct stone impaction causing gallbladder inflammation",
+     "support": "acute cholecystitis in pregnancy",
+     "fit": "Here: 28 weeks, constant RUQ pain, fever 38°C, leukocytosis",
+     "tx": "Laparoscopic cholecystectomy + antibiotics"
+    },
+    "D": {
+     "clue": "Microvesicular fatty liver infiltration causing fulminant failure",
+     "support": "acute fatty liver of pregnancy",
+     "fit": "Not here: normal coagulation, no hypoglycemia or encephalopathy",
+     "tx": "Urgent delivery",
+     "tempting": "third-trimester jaundice and elevated liver enzymes"
+    },
+    "E": {
+     "clue": "Gonococcal or chlamydial perihepatitis with violin-string adhesions",
+     "support": "Fitz-Hugh-Curtis syndrome",
+     "fit": "Not here: no pelvic inflammatory signs or discharge",
+     "tx": "Ceftriaxone + doxycycline",
+     "tempting": "RUQ pain and tenderness in a young woman"
+    },
+    "F": {
+     "clue": "Endothelial dysfunction with hypertension, proteinuria, organ damage",
+     "support": "severe preeclampsia",
+     "fit": "Not here: normal blood pressure 138/70, trace protein",
+     "tx": "Magnesium sulfate + delivery",
+     "tempting": "RUQ pain and elevated transaminases in third trimester"
+    }
+   },
+   "algorithm": {
+    "title": "Acute cholecystitis in pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "RUQ pain + fever + leukocytosis in pregnancy: perform emergent right upper quadrant ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Ultrasound reveals gallstones, gallbladder wall thickening > 3 mm, and sonographic Murphy sign",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate IV hydration + bowel rest + pregnancy-safe intravenous antibiotics (cefuroxime)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform continuous maternal hemodynamic and cardiotocographic fetal monitoring",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Confirmed acute cholecystitis in any trimester:** perform laparoscopic cholecystectomy during index admission",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Refractory sepsis or peritonitis:** open surgical exploration and cholecystectomy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "constant right upper abdominal pain"
+    },
+    {
+     "text": "28 weeks' gestation"
+    },
+    {
+     "text": "temperature is 38°C (100.4°F)"
+    },
+    {
+     "text": "tenderness in the right upper quadrant with voluntary guarding"
+    },
+    {
+     "text": "Leukocyte count 14,000/mm³"
+    }
+   ]
+  },
+  "c-surg-05-q034": {
+   "task": "Next step",
+   "boardCall": "Post-pancreatectomy steatorrhea + diarrhea -> Pancrelipase",
+   "hinge": "Exocrine pancreatic insufficiency causing steatorrhea and postprandial diarrhea after distal pancreatectomy is treated with oral pancrelipase enzyme replacement.",
+   "trap": "Cholestyramine treats bile acid diarrhea but will not correct lipid malabsorption from pancreatic enzyme deficiency.",
+   "options": {
+    "A": {
+     "clue": "Bile acid sequestrant resin binding intraluminal bile salts",
+     "support": "bile acid diarrhea",
+     "fit": "Not here: pancreatectomy steatorrhea, not bile salt excess",
+     "tx": "Cholestyramine",
+     "tempting": "treats post-cholecystectomy or post-resection secretory diarrhea"
+    },
+    "B": {
+     "clue": "Anticholinergic antispasmodic relaxing intestinal smooth muscle",
+     "support": "irritable bowel syndrome",
+     "fit": "Not here: pancreatic malabsorption, not spastic motility",
+     "tx": "Dicyclomine",
+     "tempting": "relieves crampy abdominal pain and hyperactive bowel sounds"
+    },
+    "C": {
+     "clue": "Opioid receptor agonist slowing gastrointestinal motility",
+     "support": "nonspecific diarrhea",
+     "fit": "Not here: does not treat underlying digestive enzyme deficit",
+     "tx": "Diphenoxylate",
+     "tempting": "symptomatically suppresses frequent loose bowel movements"
+    },
+    "D": {
+     "clue": "Nitroimidazole antibiotic targeting anaerobic organisms",
+     "support": "small intestinal bacterial overgrowth",
+     "fit": "Not here: structural loss of pancreatic parenchyma",
+     "tx": "Metronidazole",
+     "tempting": "treats bacterial overgrowth causing malabsorption"
+    },
+    "E": {
+     "clue": "Exogenous porcine lipase, amylase, and protease enzymes",
+     "support": "pancreatic exocrine insufficiency",
+     "fit": "Here: pancreatectomy history, foul-smelling stools, diarrhea",
+     "tx": "Pancrelipase"
+    }
+   },
+   "algorithm": {
+    "title": "Pancreatic exocrine insufficiency",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Steatorrhea + postprandial diarrhea + weight loss following distal pancreatectomy: suspect exocrine deficiency",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm exocrine insufficiency with low fecal elastase-1 concentration (< 200 mcg/g)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Prescribe oral pancrelipase capsules with every meal and snack",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Co-prescribe proton pump inhibitor therapy to prevent gastric acid degradation of supplemental enzymes",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Supplement fat-soluble vitamins (A, D, E, K) and assess annual bone mineral density",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent diarrhea despite high-dose enzymes:** evaluate for small intestinal bacterial overgrowth",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "4-week history of mild abdominal cramps"
+    },
+    {
+     "text": "underwent distal pancreatectomy for pancreatitis and chronic pain 3 months ago"
+    },
+    {
+     "text": "bowel sounds are hyperactive and high pitched"
+    },
+    {
+     "text": "Amylase activity 90 U/L"
+    }
+   ]
+  },
+  "c-surg-05-q035": {
+   "task": "Diagnosis",
+   "boardCall": "Liver trauma + jaundice + hematemesis + duodenal blood -> Hematobilia",
+   "hinge": "Upper gastrointestinal bleeding, jaundice, and biliary-source duodenal blood following penetrating liver trauma define hemobilia (hematobilia).",
+   "trap": "Duodenal ulcer can cause hematemesis after trauma, but blood issuing from the ampulla with jaundice indicates hemobilia.",
+   "options": {
+    "A": {
+     "clue": "Mucosal defect in duodenum from acid peptic injury",
+     "support": "peptic ulcer disease",
+     "fit": "Not here: no active mucosal ulcer, jaundice with bili 8.0",
+     "tx": "PPI + endoscopic clip",
+     "tempting": "endoscopy showed blood and clots pooling in duodenum"
+    },
+    "B": {
+     "clue": "Dilated submucosal collateral veins from portal hypertension",
+     "support": "cirrhotic variceal bleeding",
+     "fit": "Not here: normal esophagus, penetrating liver trauma history",
+     "tx": "Endoscopic band ligation",
+     "tempting": "severe upper gastrointestinal bleeding in a jaundiced patient"
+    },
+    "C": {
+     "clue": "Gastric mucosal crater with active bleeding vessel",
+     "support": "bleeding gastric ulcer",
+     "fit": "Not here: normal gastric mucosa on endoscopy",
+     "tx": "Endoscopic hemostasis",
+     "tempting": "common cause of major postoperative hematemesis"
+    },
+    "D": {
+     "clue": "Diffuse erosive superficial inflammation of gastric lining",
+     "support": "stress gastritis",
+     "fit": "Not here: no gastric erosions, jaundice with bili 8.0",
+     "tx": "IV proton pump inhibitors",
+     "tempting": "stress-related bleeding following major trauma and laparotomy"
+    },
+    "E": {
+     "clue": "Bile duct bleeding communicating with hepatic vasculature",
+     "support": "hemobilia",
+     "fit": "Here: liver gunshot wound, jaundice, hematemesis, duodenal clots",
+     "tx": "Transcatheter arterial embolization"
+    }
+   },
+   "algorithm": {
+    "title": "Hemobilia (hematobilia)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Upper GI bleeding + jaundice + RUQ pain (Quincke triad) after liver trauma or instrumentation",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Upper endoscopy excludes gastroduodenal ulcers and visualizes blood emerging from ampulla of Vater",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform emergent transcatheter mesenteric and hepatic angiography to identify pseudoaneurysm",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Transcatheter arterial embolization (TAE) to achieve definitive selective hemostasis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Failure of transcatheter embolization or ongoing hemorrhage:** surgical hepatic artery ligation",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor serial hemoglobin, bilirubin, and liver enzymes in intensive care unit",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "gunshot wound to the right upper quadrant of the abdomen"
+    },
+    {
+     "text": "increasing jaundice and hematemesis"
+    },
+    {
+     "text": "total serum bilirubin concentration is 8.0 mg/dL"
+    },
+    {
+     "text": "through-and-through injury to the right lobe of the liver was found"
+    },
+    {
+     "text": "clots and blood in the duodenum, but no active site of bleeding is identified"
+    }
+   ]
+  },
+  "c-surg-05-q036": {
+   "task": "Diagnosis",
+   "boardCall": "Diabetic pyelonephritis + persistent fever after 10 days antibiotics -> Perinephric abscess",
+   "hinge": "Persistent fever and leukocytosis in a diabetic patient after appropriate antibiotic therapy for pyelonephritis indicate perinephric or renal abscess.",
+   "trap": "Attributing prolonged fever to the natural course of diabetic pyelonephritis misses a treatable purulent collection.",
+   "options": {
+    "A": {
+     "clue": "Acquired pathogen resistance to active antimicrobial agents",
+     "support": "resistant bacterial superinfection",
+     "fit": "Not here: anatomical suppurative complication more common",
+     "tx": "Adjust antibiotics",
+     "tempting": "persistent fever despite 10 days of intravenous antibiotics"
+    },
+    "B": {
+     "clue": "Non-infectious immune-mediated drug fever from antibiotics",
+     "support": "drug-induced fever",
+     "fit": "Not here: marked leukocytosis 27,000 with left shift",
+     "tx": "Discontinue offending drug",
+     "tempting": "fever persisting 10 days into parenteral antibiotic treatment"
+    },
+    "C": {
+     "clue": "Protracted resolution expected in immunocompromised host",
+     "support": "uncomplicated diabetic pyelonephritis",
+     "fit": "Not here: fever past 72 hours requires imaging for complication",
+     "tx": "Continue current antibiotics",
+     "tempting": "diabetes mellitus delays infection clearance and immune recovery"
+    },
+    "D": {
+     "clue": "Pus collection within Gerota fascia outside renal capsule",
+     "support": "perinephric abscess",
+     "fit": "Here: diabetes, persistent fever day 10, WBC 27,000",
+     "tx": "Percutaneous drainage + antibiotics"
+    },
+    "E": {
+     "clue": "Splenic parenchymal ischemia causing left upper quadrant pain",
+     "support": "splenic infarction",
+     "fit": "Not here: primary urinary tract source and flank pain",
+     "tx": "Supportive care",
+     "tempting": "embolic complication causing fever and abdominal pain"
+    }
+   },
+   "algorithm": {
+    "title": "Renal and perinephric abscess",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Persistent fever and leukocytosis beyond 72 hours of parenteral antibiotics in pyelonephritis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain contrast-enhanced CT of abdomen and pelvis to detect renal or perinephric abscess",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform percutaneous ultrasound- or CT-guided catheter drainage of purulent collection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Send aspirated fluid for Gram stain, aerobic and anaerobic cultures, and sensitivities",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Microbiology results available:** adjust parenteral antibiotic regimen to targeted sensitivities",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Large multilocular abscess failing percutaneous catheter drainage:** open surgical drainage",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "temperature is 39°C (102.2°F)"
+    },
+    {
+     "text": "Urine culture is positive for Escherichia coli"
+    },
+    {
+     "text": "Ampicillin and gentamicin are administered intravenously"
+    },
+    {
+     "text": "Ten days later, she continues to be febrile"
+    },
+    {
+     "text": "Leukocyte count is 27,000/mm³"
+    }
+   ]
+  },
+  "c-surg-05-q037": {
+   "task": "Mechanism",
+   "boardCall": "Ileal Crohn resection + nephrolithiasis -> Increased absorption of oxalate",
+   "hinge": "Extensive terminal ileal resection impairs bile acid absorption; unabsorbed fatty acids bind luminal calcium, freeing dietary oxalate for hyperabsorption in the colon.",
+   "trap": "Hypercalciuria from excessive vitamin D or hyperparathyroidism causes stones, but ileal resection causes enteric hyperoxaluria.",
+   "options": {
+    "A": {
+     "clue": "Exogenous hypervitaminosis causing hypercalcemia and hypercalciuria",
+     "support": "vitamin D toxicity",
+     "fit": "Not here: daily multivitamin dose is non-toxic",
+     "tx": "Stop supplements",
+     "tempting": "takes daily multivitamin with vitamin D"
+    },
+    "B": {
+     "clue": "Autonomous parathyroid adenoma causing hypercalcemic hypercalciuria",
+     "support": "primary hyperparathyroidism",
+     "fit": "Not here: enteric hyperoxaluria from ileal disease",
+     "tx": "Parathyroidectomy",
+     "tempting": "classic etiology of recurrent calcium nephrolithiasis"
+    },
+    "C": {
+     "clue": "Colonic hyperabsorption of free oxalate unbound by calcium",
+     "support": "enteric hyperoxaluria",
+     "fit": "Here: ileal resections, Crohn disease, ureteral stone",
+     "tx": "Oral calcium carbonate"
+    },
+    "D": {
+     "clue": "Defective proximal tubule dibasic amino acid transporter",
+     "support": "cystinuria",
+     "fit": "Not here: no family history, hexagonal crystals absent",
+     "tx": "Potassium citrate + penicillamine",
+     "tempting": "hereditary metabolic defect causing radiopaque nephrolithiasis"
+    },
+    "E": {
+     "clue": "Hyperuricosuria from purine turnover forming radiolucent stones",
+     "support": "uric acid nephrolithiasis",
+     "fit": "Not here: calcium oxalate stone secondary to malabsorption",
+     "tx": "Urine alkalinization",
+     "tempting": "chronic diarrhea creates concentrated acidic urine"
+    }
+   },
+   "algorithm": {
+    "title": "Enteric hyperoxaluria and calcium oxalate nephrolithiasis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Terminal ileal resection impairs bile acid reabsorption: leads to fat malabsorption",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Unabsorbed luminal fatty acids bind calcium; unbound free oxalate undergoes increased absorption in colon",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Hyperoxaluria causes renal tubular supersaturation and calcium oxalate stone formation",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Prescribe high oral fluid intake (> 3 L/day) + dietary oxalate restriction + low-fat diet",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer oral calcium carbonate with meals to bind intraluminal oxalate within the bowel",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Obstructing ureteral stone with unremitting pain or infection:** perform ureteroscopy or lithotripsy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "6-day history of right flank pain that radiates to her right groin"
+    },
+    {
+     "text": "three resections of the small bowel, mostly involving the distal ileum"
+    },
+    {
+     "text": "calculus in the middle of the right ureter"
+    },
+    {
+     "text": "6-year history of Crohn disease"
+    }
+   ]
+  },
+  "c-surg-05-q038": {
+   "task": "Next step",
+   "boardCall": "Blunt flank trauma + gross hematuria + stable vitals -> CT scan of the abdomen",
+   "hinge": "Hemodynamically stable blunt flank trauma with gross hematuria requires intravenous contrast-enhanced CT of the abdomen and pelvis to evaluate renal injury.",
+   "trap": "Retrograde urethrography is indicated for suspected urethral injury with blood at the meatus or pelvic fracture, not isolated gross hematuria from flank trauma.",
+   "options": {
+    "A": {
+     "clue": "Serum marker reflecting baseline renal filtration function",
+     "support": "renal functional assessment",
+     "fit": "Not here: acute trauma imaging required before functional changes manifest",
+     "tx": "",
+     "tempting": "evaluates baseline kidney function after renal injury"
+    },
+    "B": {
+     "clue": "Multiphasic intravenous contrast cross-sectional imaging",
+     "support": "blunt renal injury evaluation",
+     "fit": "Here: flank abrasion, RUQ tenderness, gross hematuria",
+     "tx": "Contrast abdominal CT"
+    },
+    "C": {
+     "clue": "Retrograde fluoroscopic bladder distention imaging",
+     "support": "urinary bladder rupture",
+     "fit": "Not here: pelvic x-ray normal, flank trauma source",
+     "tx": "Surgical repair or catheter",
+     "tempting": "evaluates bladder integrity in blunt abdominal trauma"
+    },
+    "D": {
+     "clue": "Retrograde fluoroscopic contrast study of urethra",
+     "support": "anterior or posterior urethral injury",
+     "fit": "Not here: no meatal blood, no pelvic fracture, female anatomy",
+     "tx": "Suprapubic cystostomy",
+     "tempting": "standard diagnostic maneuver for lower urinary tract trauma"
+    },
+    "E": {
+     "clue": "Direct endoscopic visualization of bladder lumen",
+     "support": "mucosal bladder evaluation",
+     "fit": "Not here: contrast CT provides comprehensive parenchymal grading",
+     "tx": "Endoscopic fulguration",
+     "tempting": "visualizes source of gross hematuria within the bladder"
+    },
+    "F": {
+     "clue": "Immediate emergency surgical abdominal opening",
+     "support": "hemodynamically unstable hemoperitoneum",
+     "fit": "Not here: stable blood pressure 100/60, nonoperative candidate",
+     "tx": "Exploratory laparotomy",
+     "tempting": "severe abdominal tenderness after high-speed MVC"
+    }
+   },
+   "algorithm": {
+    "title": "Blunt renal trauma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Blunt flank trauma with gross hematuria and stable hemodynamics: suspect renal parenchymal injury",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform intravenous contrast-enhanced CT scan of abdomen and pelvis with delayed excretory imaging",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Grade renal injury (AAST organ injury scale grades 1 to 5)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Non-operative conservative management with bed rest and serial hematocrit for grades 1 to 4",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent hemodynamic instability or expanding pulsatile retroperitoneal hematoma:** emergent surgical exploration",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Renal collecting system rupture with persistent urinoma:** place ureteral stent or nephrostomy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "abrasion over the right flank"
+    },
+    {
+     "text": "severe right upper quadrant tenderness"
+    },
+    {
+     "text": "There is gross hematuria"
+    },
+    {
+     "text": "pulse is 92/min, respirations are 13/min, and blood pressure is 100/60 mm Hg"
+    }
+   ]
+  },
+  "c-surg-05-q039": {
+   "task": "Diagnosis",
+   "boardCall": "Unilateral serosanguineous nipple discharge + no breast mass -> Intraductal papilloma",
+   "hinge": "Spontaneous unilateral serosanguineous nipple discharge without a palpable breast mass or mammographic calcifications is classic for intraductal papilloma.",
+   "trap": "Breast cancer is in the differential for bloody discharge, but a solitary intraductal papilloma is the most common cause without a mass or calcifications.",
+   "options": {
+    "A": {
+     "clue": "Painful fluctuant purulent breast collection with erythema",
+     "support": "lactational or subareolar abscess",
+     "fit": "Not here: no erythema, fever, or tender breast mass",
+     "tx": "Incision and drainage + antibiotics",
+     "tempting": "nipple discharge in a parous woman"
+    },
+    "B": {
+     "clue": "Malignant ductal proliferation with microcalcifications or mass",
+     "support": "invasive ductal carcinoma",
+     "fit": "Not here: normal mammogram, no palpable mass",
+     "tx": "Lumpectomy or mastectomy",
+     "tempting": "unilateral serosanguineous nipple discharge sounds malignant"
+    },
+    "C": {
+     "clue": "Subareolar duct dilation with thick multicolored discharge",
+     "support": "mammary duct ectasia",
+     "fit": "Not here: serosanguineous discharge, no pasty secretion",
+     "tx": "Warm compresses or duct excision",
+     "tempting": "perimenopausal nipple discharge"
+    },
+    "D": {
+     "clue": "Foamy histiocyte reaction following breast trauma",
+     "support": "traumatic fat necrosis",
+     "fit": "Not here: serosanguineous nipple discharge, no mass",
+     "tx": "Observation or excision",
+     "tempting": "painless benign breast lesion"
+    },
+    "E": {
+     "clue": "Firm, mobile, well-circumscribed stromal-epithelial nodule",
+     "support": "fibroadenoma",
+     "fit": "Not here: no palpable breast mass present",
+     "tx": "Observation or excision",
+     "tempting": "benign breast neoplasm in premenopausal women"
+    },
+    "F": {
+     "clue": "Premenstrual cyclic breast tenderness and nodularity",
+     "support": "fibrocystic changes",
+     "fit": "Not here: unilateral serosanguineous discharge, no nodularity",
+     "tx": "Supportive bra + NSAIDs",
+     "tempting": "common benign breast condition in women in their 40s"
+    },
+    "G": {
+     "clue": "Cystic retention of inspissated milk postpartum",
+     "support": "galactocele",
+     "fit": "Not here: serosanguineous discharge, not lactating",
+     "tx": "Needle aspiration",
+     "tempting": "history of parity and nipple discharge"
+    },
+    "H": {
+     "clue": "Benign papillary proliferation of lactiferous duct epithelium",
+     "support": "intraductal papilloma",
+     "fit": "Here: unilateral serosanguineous discharge, no mass, normal mammogram",
+     "tx": "Surgical duct excision"
+    },
+    "I": {
+     "clue": "Lactational breast infection with localized wedge erythema",
+     "support": "acute mastitis",
+     "fit": "Not here: afebrile, no breast tenderness or redness",
+     "tx": "Oral dicloxacillin",
+     "tempting": "inflammatory breast symptom in parous female"
+    }
+   },
+   "algorithm": {
+    "title": "Intraductal papilloma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Unilateral spontaneous bloody or serosanguineous nipple discharge: obtain diagnostic mammography and subareolar ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform ductography (galactography) or ductoscopy to identify intraductal filling defect",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Complete surgical excision of the involved single terminal lactiferous duct (microdochectomy)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Pathology confirms benign fibrovascular core lined by luminal epithelial and outer myoepithelial cells",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Atypia or concurrent ductal carcinoma in situ present:** perform wider margin re-excision",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Routine annual screening mammography surveillance following surgical recovery",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "1-month history of discharge from the left nipple"
+    },
+    {
+     "text": "Examination shows no breast masses"
+    },
+    {
+     "text": "serosanguineous discharge is easily expressed from the left nipple"
+    },
+    {
+     "text": "Mammography shows no areas of microcalcification"
+    }
+   ]
+  },
+  "c-surg-05-q040": {
+   "task": "Prevention",
+   "boardCall": "BRCA1 positive + family history -> Bilateral mastectomy and oophorectomy",
+   "hinge": "Carriers of pathogenic BRCA1 mutations achieve maximum risk reduction for both breast and ovarian cancers through prophylactic bilateral mastectomy and bilateral salpingo-oophorectomy.",
+   "trap": "Tamoxifen reduces estrogen receptor-positive breast cancer risk but does not reduce ovarian cancer risk and is less effective than prophylactic surgery in BRCA1.",
+   "options": {
+    "A": {
+     "clue": "Prophylactic surgical removal of both breasts and ovaries",
+     "support": "BRCA risk reduction",
+     "fit": "Here: BRCA1 positive, extensive familial breast and ovarian cancer",
+     "tx": "Prophylactic mastectomy + salpingo-oophorectomy"
+    },
+    "B": {
+     "clue": "Selective estrogen receptor modulator plus bilateral mastectomy",
+     "support": "partial surgical prophylaxis",
+     "fit": "Not here: does not provide definitive ovarian risk reduction",
+     "tx": "Tamoxifen + surgery",
+     "tempting": "reduces breast cancer risk with mastectomy"
+    },
+    "C": {
+     "clue": "Triple therapy combining endocrine chemoprevention and surgery",
+     "support": "unnecessary polytherapy",
+     "fit": "Not here: tamoxifen redundant once bilateral mastectomy performed",
+     "tx": "Combination prophylaxis",
+     "tempting": "maximizes every modality of cancer prevention"
+    },
+    "D": {
+     "clue": "Selective estrogen receptor modulator plus bilateral oophorectomy",
+     "support": "medical breast chemoprevention",
+     "fit": "Not here: bilateral mastectomy provides superior breast risk reduction",
+     "tx": "Tamoxifen + oophorectomy",
+     "tempting": "addresses both breast and ovarian risk without breast surgery"
+    },
+    "E": {
+     "clue": "Selective estrogen receptor modulator chemoprevention alone",
+     "support": "breast chemoprevention",
+     "fit": "Not here: no protection against fatal epithelial ovarian cancer",
+     "tx": "Oral tamoxifen",
+     "tempting": "non-surgical pharmacologic risk reduction strategy"
+    }
+   },
+   "algorithm": {
+    "title": "Hereditary breast and ovarian cancer syndrome (BRCA1 mutation)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Confirmed BRCA1 pathogenic mutation with extensive family history of premenopausal breast and ovarian cancers",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Bilateral mastectomy and bilateral salpingo-oophorectomy to maximize cancer risk reduction",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Risk-reducing salpingo-oophorectomy between ages 35 and 40 reduces ovarian cancer risk by 80-90%",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Risk-reducing bilateral mastectomy reduces invasive breast cancer risk by greater than 90%",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Patient declines or defers risk-reducing surgery:** annual breast MRI alternating with mammography every 6 months",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide genetic counseling and offer cascade genetic testing to adult first-degree relatives",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "recently tested positive for the BRCA1 mutation"
+    },
+    {
+     "text": "Another sister was diagnosed with breast and ovarian cancer at the age of 35 years"
+    },
+    {
+     "text": "Examination and mammography of the patient show no abnormalities"
+    }
+   ]
+  },
+  "c-surg-05-q041": {
+   "task": "Diagnosis",
+   "boardCall": "Ascites + omental caking + ovarian masses + psammoma bodies -> Ovarian cancer",
+   "hinge": "Ascites, omental caking, peritoneal carcinomatosis, and psammoma bodies in an older woman with bilateral ovarian masses are hallmark features of serous ovarian carcinoma.",
+   "trap": "Colon cancer can produce carcinomatosis and bowel obstruction, but psammoma bodies and bilateral ovarian primaries point to ovarian cancer.",
+   "options": {
+    "A": {
+     "clue": "Primary colonic adenocarcinoma producing obstruction",
+     "support": "colorectal carcinoma",
+     "fit": "Not here: bilateral ovarian masses, psammoma bodies",
+     "tx": "Colectomy + FOLFOX",
+     "tempting": "small-bowel obstruction and peritoneal carcinomatosis"
+    },
+    "B": {
+     "clue": "Uterine corpus malignancy presenting with postmenopausal bleeding",
+     "support": "endometrial carcinoma",
+     "fit": "Not here: no abnormal vaginal bleeding, ovarian masses",
+     "tx": "Hysterectomy + staging",
+     "tempting": "pelvic malignancy in an older female"
+    },
+    "C": {
+     "clue": "Gastric signet-ring adenocarcinoma with bilateral Krukenberg metastasis",
+     "support": "metastatic gastric cancer",
+     "fit": "Not here: psammoma bodies indicate serous ovarian histology",
+     "tx": "Systemic chemotherapy",
+     "tempting": "bilateral ovarian metastasis from GI primary"
+    },
+    "D": {
+     "clue": "Metastatic mammary carcinoma involving peritoneum",
+     "support": "metastatic breast cancer",
+     "fit": "Not here: primary ovarian masses, psammoma bodies",
+     "tx": "Endocrine or chemotherapy",
+     "tempting": "common gynecologic site of metastatic spread"
+    },
+    "E": {
+     "clue": "Squamous carcinoma of cervix invading pelvo-abdominal cavity",
+     "support": "cervical carcinoma",
+     "fit": "Not here: no cervical lesion, psammoma bodies present",
+     "tx": "Chemoradiation",
+     "tempting": "advanced gynecologic malignancy causing peritoneal seeding"
+    },
+    "F": {
+     "clue": "Malignant epithelial serous tumor with calcified psammoma bodies",
+     "support": "ovarian serous carcinoma",
+     "fit": "Here: omental caking, bilateral ovarian masses, psammoma bodies",
+     "tx": "Surgical debulking + carboplatin/paclitaxel"
+    },
+    "G": {
+     "clue": "Pancreatic ductal adenocarcinoma with peritoneal carcinomatosis",
+     "support": "pancreatic carcinoma",
+     "fit": "Not here: bilateral abnormal ovaries, psammoma bodies",
+     "tx": "FOLFIRINOX",
+     "tempting": "weight loss, ascites, and peritoneal metastasis"
+    }
+   },
+   "algorithm": {
+    "title": "Advanced epithelial ovarian carcinoma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Ascites + omental caking + bowel obstruction in postmenopausal woman: suspect ovarian malignancy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Intraoperative biopsy and frozen section confirm serous carcinoma with characteristic psammoma bodies",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform comprehensive cytoreductive surgical debulking (hysterectomy, bilateral salpingo-oophorectomy, and omentectomy)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate adjuvant platinum-based combination chemotherapy with IV carboplatin and paclitaxel",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**BRCA mutation or homologous recombination deficiency:** initiate maintenance PARP inhibitor therapy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor serial serum CA-125 concentrations and periodic CT scans to detect recurrence",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "increasingly severe abdominal cramps"
+    },
+    {
+     "text": "bloating feeling for 6 months"
+    },
+    {
+     "text": "Peritoneal and bowel surfaces are studded with nodules"
+    },
+    {
+     "text": "thickened and \"caked\" with nodules of tumor"
+    },
+    {
+     "text": "malignancy and the presence of psammoma bodies"
+    }
+   ]
+  },
+  "c-surg-05-q042": {
+   "task": "Diagnosis",
+   "boardCall": "Young man + gynecomastia + testicular mass + normal beta-hCG -> Leydig cell tumor",
+   "hinge": "Tender bilateral gynecomastia with a palpable testicular nodule and normal serum beta-hCG in a young man indicates an estrogen-secreting Leydig cell tumor.",
+   "trap": "Primary gonadal failure causes elevated gonadotropins and bilateral small testes, whereas a unilateral nodule points to a discrete testicular tumor.",
+   "options": {
+    "A": {
+     "clue": "Painful genital ulcer with ragged edges and adenopathy",
+     "support": "Haemophilus ducreyi infection",
+     "fit": "Not here: testicular mass, tender gynecomastia, no ulcers",
+     "tx": "Oral azithromycin",
+     "tempting": "genital pathology in sexually active young male"
+    },
+    "B": {
+     "clue": "Sex cord-stromal neoplasm secreting estrogen and testosterone",
+     "support": "Leydig cell tumor",
+     "fit": "Here: gynecomastia, testicular nodule, normal beta-hCG",
+     "tx": "Radical inguinal orchiectomy"
+    },
+    "C": {
+     "clue": "Adrenal enzymatic block with compensatory androgen excess",
+     "support": "congenital adrenal hyperplasia",
+     "fit": "Not here: adult presentation, solitary testicular nodule",
+     "tx": "Glucocorticoids",
+     "tempting": "endocrine imbalance causing sex hormone alterations"
+    },
+    "D": {
+     "clue": "Ulcerative or exophytic squamous carcinoma of glans",
+     "support": "penile carcinoma",
+     "fit": "Not here: intratesticular mass, bilateral gynecomastia",
+     "tx": "Surgical excision",
+     "tempting": "male genital mass in a young patient"
+    },
+    "E": {
+     "clue": "Acute inflammatory infection of the epididymis",
+     "support": "bacterial epididymitis",
+     "fit": "Not here: 6-month painless nodule, gynecomastia present",
+     "tx": "Ceftriaxone + doxycycline",
+     "tempting": "scrotal mass or swelling in young men"
+    },
+    "F": {
+     "clue": "Prolactin-secreting sellar adenoma causing galactorrhea",
+     "support": "prolactinoma",
+     "fit": "Not here: palpable testicular nodule present",
+     "tx": "Cabergoline",
+     "tempting": "hormonal cause of bilateral gynecomastia in men"
+    },
+    "G": {
+     "clue": "Painful vesicular and ulcerative mucosal lesions",
+     "support": "genital herpes simplex",
+     "fit": "Not here: discrete testicular mass and breast enlargement",
+     "tx": "Oral valacyclovir",
+     "tempting": "common genital complaint in young adult males"
+    },
+    "H": {
+     "clue": "Intrinsic testicular failure with elevated gonadotropins",
+     "support": "Klinefelter syndrome",
+     "fit": "Not here: asymmetric discrete testicular nodule",
+     "tx": "Testosterone replacement",
+     "tempting": "bilateral gynecomastia and small testes"
+    },
+    "I": {
+     "clue": "Fluid collection within tunica vaginalis that transilluminates",
+     "support": "benign hydrocele",
+     "fit": "Not here: solid testicular parenchymal nodule, gynecomastia",
+     "tx": "Observation or hydrocelectomy",
+     "tempting": "common painless scrotal swelling in adult men"
+    },
+    "J": {
+     "clue": "Painless indurated genital chancre or gummatous orchitis",
+     "support": "Treponema pallidum infection",
+     "fit": "Not here: endocrine-active testicular neoplasm, gynecomastia",
+     "tx": "Benzathine penicillin G",
+     "tempting": "infectious cause of testicular mass or swelling"
+    }
+   },
+   "algorithm": {
+    "title": "Leydig cell testicular tumor",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Gynecomastia + palpable testicular nodule in young male: perform high-resolution scrotal ultrasonography",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Measure serum tumor markers: normal alpha-fetoprotein and beta-hCG exclude germ cell tumors",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform definitive diagnostic and therapeutic radical inguinal orchiectomy with high spermatic cord ligation",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Histology demonstrates characteristic Reinke crystals within abundant eosinophilic cytoplasm",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Malignant features on pathology (size > 5 cm, necrosis, high mitotic index):** retroperitoneal lymph node dissection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Postoperative endocrine re-evaluation to verify normalization of serum estrogen and testosterone levels",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "bilateral breast enlargement for 6 months"
+    },
+    {
+     "text": "tender gynecomastia bilaterally"
+    },
+    {
+     "text": "small nodule on the left testicle"
+    },
+    {
+     "text": "serum β-hCG concentration are within the reference range"
+    }
+   ]
+  },
+  "c-surg-05-q043": {
+   "task": "Diagnosis",
+   "boardCall": "Thyroid nodule + family history in multiple young males -> Medullary carcinoma",
+   "hinge": "Familial thyroid carcinoma in multiple first-degree relatives at young ages is characteristic of medullary thyroid carcinoma arising from C cells in MEN2.",
+   "trap": "Papillary carcinoma is the most common thyroid cancer and metastasizes to lymph nodes, but the strong young-onset familial pattern identifies medullary carcinoma.",
+   "options": {
+    "A": {
+     "clue": "Undifferentiated rapidly enlarging aggressive thyroid neoplasm",
+     "support": "anaplastic thyroid cancer",
+     "fit": "Not here: indolent 10-day nodule, young-onset familial pattern",
+     "tx": "Palliative tracheostomy + chemo",
+     "tempting": "aggressive neck mass with cervical lymphadenopathy"
+    },
+    "B": {
+     "clue": "Follicular cell malignancy with vascular and capsular invasion",
+     "support": "follicular carcinoma",
+     "fit": "Not here: cervical lymphadenopathy, MEN2 family pattern",
+     "tx": "Thyroidectomy + radioactive iodine",
+     "tempting": "solitary cold thyroid nodule in middle-aged adult"
+    },
+    "C": {
+     "clue": "Benign oncocytic follicular neoplasm with granular cytoplasm",
+     "support": "Hürthle cell adenoma",
+     "fit": "Not here: palpable firm cervical lymph node metastasis",
+     "tx": "Lobectomy",
+     "tempting": "isolated benign thyroid mass"
+    },
+    "D": {
+     "clue": "Calcitonin-secreting C-cell malignancy associated with RET mutations",
+     "support": "medullary thyroid carcinoma",
+     "fit": "Here: familial thyroid cancer, thyroid nodule, cervical adenopathy",
+     "tx": "Total thyroidectomy + lymphadenectomy"
+    },
+    "E": {
+     "clue": "Most common thyroid cancer with Orphan Annie eyes",
+     "support": "papillary thyroid carcinoma",
+     "fit": "Not here: extensive young-onset familial clustering",
+     "tx": "Thyroidectomy",
+     "tempting": "common thyroid malignancy with cervical lymph node metastasis"
+    }
+   },
+   "algorithm": {
+    "title": "Medullary thyroid carcinoma (familial / MEN2)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Thyroid nodule + cervical lymphadenopathy + family history of thyroid cancer: suspect medullary carcinoma",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain ultrasound-guided fine-needle aspiration biopsy + measure serum calcitonin and CEA levels",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen for concurrent pheochromocytoma with plasma free metanephrines prior to surgical neck exploration",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform total thyroidectomy with bilateral central and ipsilateral compartment neck lymph node dissection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform germline RET proto-oncogene mutation testing to counsel family and guide prophylactic surgery",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Metastatic or unresectable disease with RET mutation:** treat with selective RET inhibitor selpercatinib",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "nontender mass in his neck"
+    },
+    {
+     "text": "diagnosed with thyroid cancer at the ages of 46, 46, and 49 years"
+    },
+    {
+     "text": "2-cm nodule in the right lobe of the thyroid gland"
+    },
+    {
+     "text": "1-cm, firm, nontender lymph node is palpable in the anterior cervical chain"
+    }
+   ]
+  },
+  "c-surg-05-q044": {
+   "task": "Diagnosis",
+   "boardCall": "Hemodialysis + pruritus + high PTH + low-normal calcium -> Secondary hyperparathyroidism",
+   "hinge": "End-stage renal disease on hemodialysis with high intact PTH (485 pg/mL) and low-normal calcium (8.3 mg/dL) defines secondary hyperparathyroidism.",
+   "trap": "Tertiary hyperparathyroidism develops after prolonged renal failure but features autonomous hypercalcemia, whereas this patient has low-normal calcium.",
+   "options": {
+    "A": {
+     "clue": "Inactivating CASR mutation causing benign hypercalcemia",
+     "support": "familial hypocalciuric hypercalcemia",
+     "fit": "Not here: low-normal calcium 8.3, severe renal failure",
+     "tx": "Reassurance",
+     "tempting": "abnormal parathyroid hormone regulation"
+    },
+    "B": {
+     "clue": "PTHrP secretion from solid malignancy causing hypercalcemia",
+     "support": "humoral hypercalcemia of malignancy",
+     "fit": "Not here: high intact PTH, low-normal calcium 8.3",
+     "tx": "Bisphosphonates + treat cancer",
+     "tempting": "itching and fatigue in middle-aged patient"
+    },
+    "C": {
+     "clue": "Solitary parathyroid adenoma causing autonomous hypercalcemia",
+     "support": "primary hyperparathyroidism",
+     "fit": "Not here: calcium 8.3, ESRD on hemodialysis",
+     "tx": "Parathyroidectomy",
+     "tempting": "markedly elevated parathyroid hormone concentration"
+    },
+    "D": {
+     "clue": "Physiologic parathyroid response to renal phosphate retention",
+     "support": "secondary hyperparathyroidism in CKD",
+     "fit": "Here: hemodialysis, PTH 485 pg/mL, calcium 8.3 mg/dL",
+     "tx": "Phosphate binders + calcimimetics"
+    },
+    "E": {
+     "clue": "Autonomous parathyroid hyperplasia causing hypercalcemia in ESRD",
+     "support": "tertiary hyperparathyroidism",
+     "fit": "Not here: serum calcium is low-normal, not hypercalcemic",
+     "tx": "Subtotal parathyroidectomy",
+     "tempting": "longstanding hemodialysis patient with very high PTH"
+    }
+   },
+   "algorithm": {
+    "title": "Secondary hyperparathyroidism in end-stage renal disease",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Chronic kidney disease on hemodialysis with pruritus, bone pain, and fatigue: check PTH and calcium",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Elevated intact PTH (> 300 pg/mL) with normal or low calcium confirms secondary hyperparathyroidism",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate non-calcium phosphate binder therapy (sevelamer) with meals to lower serum phosphate",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer active oral or IV vitamin D analog (calcitriol or paricalcitol) to suppress parathyroid drive",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Add calcimimetic agent (cinacalcet) to allosterically activate calcium-sensing receptors",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Refractory severe hyperparathyroidism (PTH > 800) with calciphylaxis:** subtotal parathyroidectomy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "1-month history of generalized itching and fatigue"
+    },
+    {
+     "text": "chronic renal failure secondary to glomerulonephritis"
+    },
+    {
+     "text": "serum calcium concentration is 8.3 mg/dL"
+    },
+    {
+     "text": "serum intact parathyroid hormone concentration is 485 pg/mL"
+    }
+   ]
+  },
+  "c-surg-05-q045": {
+   "task": "Pharmacology",
+   "boardCall": "Adrenal mass + episodic headache/palpitations + metanephrines -> Phenoxybenzamine",
+   "hinge": "Preoperative medical preparation for pheochromocytoma resection mandates initial nonselective alpha-adrenergic blockade with phenoxybenzamine to prevent intraoperative hypertensive crisis.",
+   "trap": "Administering propranolol first is dangerous because unopposed alpha-adrenergic stimulation triggers life-threatening hypertensive crisis.",
+   "options": {
+    "A": {
+     "clue": "Muscarinic acetylcholine antagonist causing tachycardia and mydriasis",
+     "support": "anticholinergic therapy",
+     "fit": "Not here: worsens hypertension and baseline tachycardia",
+     "tx": "Atropine",
+     "tempting": "autonomic drug used perioperatively"
+    },
+    "B": {
+     "clue": "Glucocorticoid providing anti-inflammatory immunosuppression",
+     "support": "corticosteroid therapy",
+     "fit": "Not here: medullary chromaffin tumor, not adrenal insufficiency",
+     "tx": "Methylprednisolone",
+     "tempting": "adrenal mass with planned surgical resection"
+    },
+    "C": {
+     "clue": "Irreversible nonselective alpha-adrenergic receptor antagonist",
+     "support": "pheochromocytoma alpha-blockade",
+     "fit": "Here: adrenal mass, episodic triad, high metanephrines",
+     "tx": "Phenoxybenzamine"
+    },
+    "D": {
+     "clue": "Nonselective beta-adrenergic receptor antagonist",
+     "support": "beta-blockade",
+     "fit": "Not here: strictly contraindicated before establishing alpha-blockade",
+     "tx": "Propranolol",
+     "tempting": "tachycardia and palpitations prompt beta-blocker therapy"
+    },
+    "E": {
+     "clue": "Parenteral nitric oxide donor for acute hypertensive emergency",
+     "support": "short-term vasodilator",
+     "fit": "Not here: oral alpha-blockade required for preoperative preparation",
+     "tx": "Sodium nitroprusside",
+     "tempting": "blood pressure 172/105 mm Hg suggests acute vasodilation"
+    }
+   },
+   "algorithm": {
+    "title": "Pheochromocytoma preoperative medical optimization",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Episodic headache + sweating + tachycardia with adrenal mass and elevated urinary metanephrines",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Phenoxybenzamine oral alpha-adrenergic blockade for 10-14 days prior to surgery",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Encourage high dietary sodium intake and oral hydration to expand contracted intravascular volume",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Add beta-blocker (propranolol) only after several days of effective alpha-blockade to treat tachycardia",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Never administer beta-blocker first to prevent unopposed alpha-mediated severe hypertensive crisis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Hemodynamic parameters normalized (BP < 130/80):** perform laparoscopic adrenalectomy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "3-month history of episodes of headache, sweating, and rapid heartbeat"
+    },
+    {
+     "text": "10-year history of hypertension that has been difficult to control"
+    },
+    {
+     "text": "blood pressure is 172/105 mm Hg"
+    },
+    {
+     "text": "increased catecholamine and metanephrine concentrations"
+    },
+    {
+     "text": "4-cm enhancing mass in the right adrenal gland"
+    }
+   ]
+  },
+  "c-surg-05-q046": {
+   "task": "Diagnosis",
+   "boardCall": "Adult bitemporal hemianopia + blurred vision -> Pituitary adenoma",
+   "hinge": "Bitemporal hemianopia indicates compression of crossing nasal retinal fibers at the optic chiasm, most commonly caused by a pituitary adenoma in adults.",
+   "trap": "Craniopharyngioma also causes chiasm compression but typically presents in children with sellar calcifications and hypopituitarism.",
+   "options": {
+    "A": {
+     "clue": "Posterior circulation vascular dilation compressing brainstem",
+     "support": "basilar aneurysm",
+     "fit": "Not here: localized optic chiasm compression without cranial neuropathy",
+     "tx": "Endovascular coiling",
+     "tempting": "intracranial vascular anomaly causing visual disturbance"
+    },
+    "B": {
+     "clue": "Septic thrombosis of cavernous venous sinus",
+     "support": "cavernous sinus thrombosis",
+     "fit": "Not here: no fever, proptosis, or ophthalmoplegia",
+     "tx": "IV antibiotics + heparin",
+     "tempting": "parasellar pathology causing visual and ocular abnormalities"
+    },
+    "C": {
+     "clue": "Suprasellar cystic mass from Rathke pouch remnants",
+     "support": "craniopharyngioma",
+     "fit": "Not here: adult presentation, classic pituitary adenoma pattern",
+     "tx": "Surgical resection",
+     "tempting": "sellar mass compressing optic chiasm in young adults"
+    },
+    "D": {
+     "clue": "Pilocytic astrocytoma of optic nerve",
+     "support": "optic nerve glioma",
+     "fit": "Not here: causes monocular vision loss, not bitemporal hemianopia",
+     "tx": "Chemotherapy or radiation",
+     "tempting": "intrinsic visual pathway tumor causing vision loss"
+    },
+    "E": {
+     "clue": "Benign adenoma of anterior pituitary gland",
+     "support": "pituitary adenoma",
+     "fit": "Here: bitemporal hemianopia, pale optic discs, blurred vision",
+     "tx": "Transsphenoidal resection or cabergoline"
+    }
+   },
+   "algorithm": {
+    "title": "Pituitary macroadenoma with optic chiasm compression",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Adult with bitemporal hemianopia + pale optic discs: perform dedicated pituitary MRI with contrast",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain baseline anterior pituitary hormone panel (prolactin, TSH, free T4, cortisol, IGF-1, LH/FSH)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Prolactinoma (serum prolactin > 200 ng/mL):** medical therapy with dopamine agonist cabergoline",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Nonfunctioning macroadenoma with visual field deficit:** emergent transsphenoidal surgical decompression",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform postoperative formal visual field perimetry to document decompression of optic pathway",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide lifelong endocrine surveillance and hormone replacement therapy for hypopituitarism",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "blurred vision for 2 weeks"
+    },
+    {
+     "text": "Visual field testing shows bitemporal hemianopia"
+    },
+    {
+     "text": "slightly pale optic discs"
+    },
+    {
+     "text": "37-year-old man"
+    }
+   ]
+  },
+  "c-surg-05-q047": {
+   "task": "Diagnosis",
+   "boardCall": "Migrating polyarthritis + fever + evanescent rash + apical holosystolic murmur -> Mitral regurgitation",
+   "hinge": "Acute rheumatic fever carditis presents with a new holosystolic apical murmur radiating to the axilla, diagnostic of acute mitral regurgitation.",
+   "trap": "A ventricular septal defect also causes a holosystolic murmur, but it is loudest at the left lower sternal border and unrelated to acute rheumatic carditis.",
+   "options": {
+    "A": {
+     "clue": "Systolic ejection murmur radiating to carotids",
+     "support": "aortic stenosis",
+     "fit": "Not here: holosystolic apical murmur radiating to axilla",
+     "tx": "Aortic valve replacement",
+     "tempting": "systolic murmur in valvular carditis"
+    },
+    "B": {
+     "clue": "Holosystolic apical murmur radiating to left axilla",
+     "support": "mitral regurgitation",
+     "fit": "Here: migratory polyarthritis, rash, fever, apical murmur",
+     "tx": "Penicillin + anti-inflammatories"
+    },
+    "C": {
+     "clue": "Cyanotic defect with pulmonary stenosis and overriding aorta",
+     "support": "Tetralogy of Fallot",
+     "fit": "Not here: acquired rheumatic carditis, not congenital cyanosis",
+     "tx": "Surgical repair",
+     "tempting": "congenital heart lesion in pediatric patient"
+    },
+    "D": {
+     "clue": "Holosystolic murmur increasing with inspiration",
+     "support": "tricuspid regurgitation",
+     "fit": "Not here: apical murmur radiating to axilla, Carvallo sign absent",
+     "tx": "Annuloplasty",
+     "tempting": "atrioventricular valvular regurgitation"
+    },
+    "E": {
+     "clue": "Holosystolic murmur with thrill at sternal border",
+     "support": "ventricular septal defect",
+     "fit": "Not here: apical location, radiating to axilla, rheumatic context",
+     "tx": "Surgical or catheter closure",
+     "tempting": "holosystolic murmur in a child with fever"
+    }
+   },
+   "algorithm": {
+    "title": "Acute rheumatic fever and mitral regurgitation",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Migratory polyarthritis + fever + evanescent rash + holosystolic apical murmur: suspect acute rheumatic fever",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm recent streptococcal infection with elevated anti-streptolysin O (ASO) or anti-DNase B titers",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform baseline transthoracic echocardiography to document mitral valvulitis and regurgitation severity",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Eradicate remaining group A Streptococcus with intramuscular benzathine penicillin G or oral penicillin V",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer oral aspirin or naproxen for joint inflammation; add systemic glucocorticoids for severe carditis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Prescribe intramuscular benzathine penicillin G secondary prophylaxis every 4 weeks to prevent recurrence",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "migrating polyarthralgia and fever for 4 days"
+    },
+    {
+     "text": "evanescent rash"
+    },
+    {
+     "text": "left knee is red, swollen, and tender"
+    },
+    {
+     "text": "grade 4/6, holosystolic apical murmur is heard with radiation to the axilla"
+    }
+   ]
+  },
+  "c-surg-05-q048": {
+   "task": "Next step",
+   "boardCall": "Major thermal burn + initial 24 hours -> Isotonic crystalloid solution only",
+   "hinge": "During the first 24 hours of major burn resuscitation, isotonic crystalloid solution alone (lactated Ringer) is used, avoiding colloid due to capillary permeability.",
+   "trap": "Colloids are ineffective and worsen pulmonary edema during the initial 24 hours due to widespread capillary leakage.",
+   "options": {
+    "A": {
+     "clue": "Albumin and salt solution combination",
+     "support": "delayed burn resuscitation",
+     "fit": "Not here: colloids worsen capillary leak in first 24 hours",
+     "tx": "Colloid resuscitation",
+     "tempting": "restores oncotic pressure in severe burn shock"
+    },
+    "B": {
+     "clue": "Plasma containing clotting factors and albumin",
+     "support": "coagulopathy correction",
+     "fit": "Not here: no documented acute trauma-induced coagulopathy",
+     "tx": "FFP transfusion",
+     "tempting": "replaces protein losses in major burns"
+    },
+    "C": {
+     "clue": "High osmolar sodium chloride solution",
+     "support": "hypertonic fluid resuscitation",
+     "fit": "Not here: carries severe hypernatremia and renal injury risk",
+     "tx": "Hypertonic saline",
+     "tempting": "reduces total volume requirements in burn resuscitation"
+    },
+    "D": {
+     "clue": "Balanced physiological salt solution (lactated Ringer)",
+     "support": "acute burn shock resuscitation",
+     "fit": "Here: major burns, intubated, first 12-24 hours",
+     "tx": "Isotonic crystalloid infusion"
+    },
+    "E": {
+     "clue": "Concentrated red blood cells for acute anemia",
+     "support": "hemorrhagic resuscitation",
+     "fit": "Not here: hemoconcentration occurs in burns; PRBCs not indicated",
+     "tx": "PRBC transfusion",
+     "tempting": "hypotension and shock in trauma patient"
+    }
+   },
+   "algorithm": {
+    "title": "Severe thermal burn resuscitation",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Severe burns + smoke inhalation + stridor: immediate endotracheal intubation + 100% oxygen",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Isotonic crystalloid solution only (lactated Ringer) for intravenous fluid resuscitation",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Calculate resuscitation volume using Parkland formula (4 mL x kg body weight x % TBSA)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer first half of calculated crystalloid volume over first 8 hours post-injury",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Titrate IV crystalloid infusion rate to maintain adequate adult hourly urine output",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Withhold intravenous colloid solutions during the initial 24 hours to prevent exacerbated tissue edema",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "cough productive of carbonaceous sputum"
+    },
+    {
+     "text": "second degree burns over the face and upper extremities"
+    },
+    {
+     "text": "Stridor and wheezes are heard over the lung bases bilaterally"
+    },
+    {
+     "text": "carboxyhemoglobin concentration is 35%"
+    },
+    {
+     "text": "facial edema, and the eyebrows are singed"
+    }
+   ]
+  },
+  "c-surg-05-q049": {
+   "task": "Diagnosis",
+   "boardCall": "Motorcycle collision + hypotension + tachycardia + no external injury -> Hypovolemia",
+   "hinge": "Hypotension and tachycardia following blunt polytrauma must be assumed to result from hypovolemia due to concealed internal hemorrhage until proven otherwise.",
+   "trap": "Sluggish dilated pupils suggest head trauma, but isolated head injury produces hypertension and bradycardia (Cushing triad), not hemorrhagic hypotension.",
+   "options": {
+    "A": {
+     "clue": "Airway compromise from aspiration of gastric contents",
+     "support": "aspiration pneumonitis",
+     "fit": "Not here: hemodynamic collapse from occult blood loss",
+     "tx": "Tracheal suctioning",
+     "tempting": "unconscious trauma patient at risk for gastric aspiration"
+    },
+    "B": {
+     "clue": "Myocardial bruising causing dysrhythmias or pump failure",
+     "support": "blunt cardiac injury",
+     "fit": "Not here: severe hypovolemic shock from internal hemorrhage",
+     "tx": "Continuous ECG monitoring",
+     "tempting": "hypotension after blunt chest or abdominal trauma"
+    },
+    "C": {
+     "clue": "Concealed internal hemorrhage reducing circulating vascular volume",
+     "support": "hypovolemic hemorrhagic shock",
+     "fit": "Here: pulse 132, BP 88/62, motorcycle crash",
+     "tx": "Blood transfusion + FAST exam"
+    },
+    "D": {
+     "clue": "Loss of sympathetic vascular tone",
+     "support": "neurogenic shock",
+     "fit": "Not here: tachycardia with pulse 132/min rules out neurogenic shock",
+     "tx": "IV fluids + vasopressors",
+     "tempting": "unconscious patient with abnormal pupils after vehicular crash"
+    },
+    "E": {
+     "clue": "Mechanical damage to cord causing flaccid areflexic paralysis",
+     "support": "acute spinal cord transection",
+     "fit": "Not here: moves extremities to pain, sinus tachycardia present",
+     "tx": "Spinal immobilization",
+     "tempting": "high-energy motorcycle trauma causing hypotension"
+    }
+   },
+   "algorithm": {
+    "title": "Hemorrhagic shock in blunt polytrauma",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Tachycardia (132/min) + hypotension (88/62 mm Hg) after blunt trauma: suspect internal hemorrhage",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate immediate balanced uncrossed packed red blood cells, plasma, and platelets (1:1:1)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform bedside Focused Assessment with Sonography for Trauma (FAST) and chest/pelvic x-rays",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Positive peritoneal fluid on FAST with ongoing instability:** emergent exploratory laparotomy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Unstable pelvic fracture on radiograph:** apply pelvic circumferential binder immediately",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Avoid attributing trauma hypotension to head injury; intracranial bleeding does not cause hypovolemic shock",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "pulse is 132/min, respirations are 22/min, and blood pressure is 88/62 mm Hg"
+    },
+    {
+     "text": "motorcycle collision"
+    },
+    {
+     "text": "There are no visible external injuries"
+    },
+    {
+     "text": "pupils are 6 mm and sluggish",
+     "trap": true
+    }
+   ]
+  },
+  "c-surg-05-q050": {
+   "task": "Ethics",
+   "boardCall": "Incidental cancer during hernia repair -> Close the operative site and discuss further treatment with the patient when she awakens",
+   "hinge": "Incidental, nonemergent malignancy discovered during elective surgery without prior informed consent requires closing the site and discussing options once the patient awakens.",
+   "trap": "Obtaining consent from next of kin is invalid for nonemergent elective oncology decisions when the competent patient can decide after awakening.",
+   "options": {
+    "A": {
+     "clue": "Preserving patient autonomy by deferring unconsented elective surgery",
+     "support": "informed consent ethics",
+     "fit": "Here: incidental metastatic cancer, unconsented, nonemergent",
+     "tx": "Close operative site + discuss"
+    },
+    "B": {
+     "clue": "Invasive vascular catheter placement without prior consent",
+     "support": "unauthorized intervention",
+     "fit": "Not here: invasive port placement requires explicit informed consent",
+     "tx": "Chemotherapy port placement",
+     "tempting": "anticipates inevitable systemic chemotherapy requirement"
+    },
+    "C": {
+     "clue": "Placement of intraperitoneal delivery catheter without consent",
+     "support": "unauthorized intervention",
+     "fit": "Not here: unconsented invasive procedure for nonemergent condition",
+     "tx": "Peritoneal catheter placement",
+     "tempting": "facilitates future intraperitoneal chemotherapy"
+    },
+    "D": {
+     "clue": "Surrogate decision-making for competent patient temporarily under anesthesia",
+     "support": "inappropriate surrogate consent",
+     "fit": "Not here: surrogate cannot consent to nonemergency when patient will awaken",
+     "tx": "Next of kin consent",
+     "tempting": "next of kin can provide immediate permission"
+    },
+    "E": {
+     "clue": "Major oncologic debulking without patient consent",
+     "support": "unauthorized major surgery",
+     "fit": "Not here: nonemergent major laparotomy requires direct patient consent",
+     "tx": "Tumor debulking",
+     "tempting": "immediate tumor debulking spares a second operation"
+    }
+   },
+   "algorithm": {
+    "title": "Incidental nonemergent surgical findings and informed consent",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Unexpected nonemergent malignancy discovered intraoperatively outside scope of signed surgical consent",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Close the operative site and discuss findings and treatment options when patient awakens",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Do not extend elective operation to include nonemergent cancer resection or line placement",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Surrogate decision-makers cannot grant consent for nonemergent procedures when patient will regain capacity",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain staging CT imaging of chest, abdomen, and pelvis and measure serum CA-125",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Multidisciplinary staging complete:** obtain informed consent for definitive staging and cytoreduction",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "operative treatment of an umbilical hernia with incarcerated omentum"
+    },
+    {
+     "text": "solid nodule is excised, and a frozen section shows metastatic carcinoma"
+    },
+    {
+     "text": "consistent with primary ovarian cancer"
+    }
+   ]
+  }
+ }
+}

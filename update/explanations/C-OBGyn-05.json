@@ -1,0 +1,4727 @@
+{
+ "type": "StepRapidReview",
+ "version": 1,
+ "formId": "C-OBGyn-05",
+ "model": "Gemini 3.8 Flash",
+ "promptVersion": "v4",
+ "generatedAt": "2026-10-30",
+ "items": {
+  "795672": {
+   "task": "Prevention",
+   "boardCall": "52-year-old adult needing routine immunization update -> annual influenza vaccine",
+   "hinge": "Annual influenza vaccination is indicated for all adults regardless of age or risk factors.",
+   "trap": "New sexual activity tempts HPV, but HPV vaccination is not routinely recommended after age 26.",
+   "options": {
+    "A": {
+     "clue": "Travel or liver disease risk",
+     "support": "high-risk adult vaccine",
+     "fit": "Not here: no chronic liver disease or travel",
+     "tx": "Hepatitis A vaccine series",
+     "tempting": "routine immunization update"
+    },
+    "B": {
+     "clue": "Ages 9-26 routine",
+     "support": "HPV prevention",
+     "fit": "Not here: age 52 years",
+     "tx": "9-valent HPV vaccine",
+     "tempting": "becoming sexually active with boyfriend"
+    },
+    "C": {
+     "clue": "Annual universal adult vaccine",
+     "support": "routine seasonal immunization",
+     "fit": "Here: age 52, no immunizations since childhood",
+     "tx": "Annual inactivated influenza vaccine"
+    },
+    "D": {
+     "clue": "Asplenia or dorm living",
+     "support": "meningococcal prophylaxis",
+     "fit": "Not here: age 52, no shared housing",
+     "tx": "Meningococcal conjugate vaccine",
+     "tempting": "missed adult vaccines"
+    },
+    "E": {
+     "clue": "Born after 1980 non-immune",
+     "support": "live varicella vaccine",
+     "fit": "Not here: received childhood immunizations",
+     "tx": "Varicella vaccine series",
+     "tempting": "childhood vaccines incomplete"
+    }
+   },
+   "algorithm": {
+    "title": "Adult routine immunization updates",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Administer annual influenza vaccination universally for all persons >= 6 months",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Tetanus booster: administer Tdap once, then Td or Tdap every 10 years",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Age-based immunizations: recombinant zoster (>= 50), pneumococcal conjugate (>= 65)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Age 19-26 years:** routine catch-up HPV vaccination series",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Age 27-45 years:** shared clinical decision-making for HPV series",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen for risk-based vaccines: hepatitis B, hepatitis A, meningococcal conjugate",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "52-year-old nulligravid woman"
+    },
+    {
+     "text": "routine health maintenance examination"
+    },
+    {
+     "text": "received all appropriate childhood immunizations but none since that time"
+    },
+    {
+     "text": "plans on becoming sexually active with her boyfriend soon",
+     "trap": true
+    }
+   ]
+  },
+  "795673": {
+   "task": "Risk factor",
+   "boardCall": "Postmenopausal compression fracture + low impact -> Caucasian race is major risk",
+   "hinge": "Caucasian ethnicity and advanced age are major non-modifiable risks for low bone density.",
+   "trap": "Alcohol use causes bone loss with heavy drinking, but one drink nightly is not the strongest risk.",
+   "options": {
+    "A": {
+     "clue": "Heavy chronic alcohol intake",
+     "support": "osteoporosis risk factor",
+     "fit": "Not here: drinks one alcoholic beverage each night",
+     "tx": "Alcohol cessation",
+     "tempting": "alcohol impairs bone formation"
+    },
+    "B": {
+     "clue": "Vascular risk factor",
+     "support": "cardiovascular morbidity",
+     "fit": "Not here: hypertension controlled on beta-blocker",
+     "tx": "Antihypertensive therapy",
+     "tempting": "hypertension affects calcium excretion"
+    },
+    "C": {
+     "clue": "Never giving birth",
+     "support": "estrogen exposure duration",
+     "fit": "Not here: nulliparity confers minimal fracture risk",
+     "tx": "None",
+     "tempting": "estrogen changes in pregnancy"
+    },
+    "D": {
+     "clue": "White or Asian ethnicity",
+     "support": "major osteoporosis risk",
+     "fit": "Here: 69-year-old white woman with compression fracture",
+     "tx": "Bisphosphonate + vitamin D"
+    },
+    "E": {
+     "clue": "Antihypertensive drug class",
+     "support": "potential bone-protective effect",
+     "fit": "Not here: beta-blockers do not promote osteoporosis",
+     "tx": "Continue beta-blocker",
+     "tempting": "patient takes beta-blocker"
+    }
+   },
+   "algorithm": {
+    "title": "Osteoporosis and fragility fracture risk",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Low-impact thoracic compression fracture: fragility fracture establishing osteoporosis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Non-modifiable risk factors: Caucasian race + female sex + advanced age",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "DEXA scan to quantify bone mineral density: T-score <= -2.5 defines osteoporosis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**T-score <= -2.5 or fragility fracture:** initiate oral alendronate",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Severe disease or bisphosphonate failure:** switch to subcutaneous teriparatide",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Maintain adequate calcium + vitamin D + weight-bearing exercise",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "69-year-old nulliparous white woman"
+    },
+    {
+     "text": "sudden onset of severe pain in the upper back after sitting down"
+    },
+    {
+     "text": "compression fracture of the 10th thoracic vertebra"
+    },
+    {
+     "text": "drinks one alcoholic beverage with dinner each night",
+     "trap": true
+    }
+   ]
+  },
+  "795674": {
+   "task": "Mechanism",
+   "boardCall": "Postpartum pleuritic pain + hypoxemia + respiratory alkalosis -> pulmonary artery thrombus",
+   "hinge": "Postpartum hypercoagulability presenting with acute pleuritic pain, hypoxia, and respiratory alkalosis indicates pulmonary embolism.",
+   "trap": "Amniotic fluid embolism also occurs postpartum, but presents immediately during labor with collapse and DIC.",
+   "options": {
+    "A": {
+     "clue": "Airway hyperreactivity wheezing",
+     "support": "asthma bronchospasm",
+     "fit": "Not here: normal breath sounds bilaterally",
+     "tx": "Albuterol + inhaled corticosteroids",
+     "tempting": "shortness of breath"
+    },
+    "B": {
+     "clue": "Consolidation or ARDS infiltrates",
+     "support": "alveolar filling process",
+     "fit": "Not here: normal breath sounds, no fever",
+     "tx": "Antibiotics + supportive oxygen",
+     "tempting": "pleuritic chest pain and hypoxemia"
+    },
+    "C": {
+     "clue": "Amniotic fluid embolism hallmark",
+     "support": "intrapartum catastrophic collapse",
+     "fit": "Not here: 2 days postpartum, stable hemodynamics",
+     "tx": "Supportive care + resuscitation",
+     "tempting": "recent delivery and sudden respiratory distress"
+    },
+    "D": {
+     "clue": "Chronic bronchitis obstruction",
+     "support": "bronchiolar mucus plugging",
+     "fit": "Not here: acute pleuritic pain, clear lungs",
+     "tx": "Bronchodilators + chest physiotherapy",
+     "tempting": "progressive shortness of breath"
+    },
+    "E": {
+     "clue": "Postpartum hypercoagulable vascular occlusion",
+     "support": "pulmonary thromboembolism",
+     "fit": "Here: oxygen saturation 89%, PCO2 21 mm Hg",
+     "tx": "Therapeutic anticoagulation with heparin"
+    }
+   },
+   "algorithm": {
+    "title": "Postpartum pulmonary embolism",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Postpartum dyspnea + pleuritic pain + hypoxia: suspect pulmonary embolism",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Thrombus within pulmonary arteries causes ventilation-perfusion mismatch + tachypnea + alkalosis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm with CT pulmonary angiography or ventilation-perfusion scan",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Hemodynamically stable:** initiate therapeutic anticoagulation with low-molecular-weight heparin",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Massive PE with persistent hypotension:** systemic thrombolysis or catheter embolectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Continue therapeutic anticoagulation for at least 3-6 months postpartum",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Two days after spontaneous vaginal delivery of a healthy newborn at term"
+    },
+    {
+     "text": "left-sided pleuritic chest pain and progressive shortness of breath"
+    },
+    {
+     "text": "oxygen saturation of 89%"
+    },
+    {
+     "text": "Breath sounds are normal bilaterally"
+    }
+   ]
+  },
+  "795675": {
+   "task": "Diagnosis",
+   "boardCall": "Post-hysterectomy anuria + 25 cm suprapubic mass + high creatinine -> urinary retention",
+   "hinge": "Large symmetric midline mass 25 cm above symphysis with acute anuria represents a distended bladder.",
+   "trap": "Ureteral transection is a classic post-hysterectomy injury but does not cause a giant midline suprapubic mass.",
+   "options": {
+    "A": {
+     "clue": "Asymmetric painful surgical collection",
+     "support": "postoperative hematoma",
+     "fit": "Not here: no unusual pain, clean incision",
+     "tx": "Surgical drainage or observation",
+     "tempting": "recent pelvic surgery"
+    },
+    "B": {
+     "clue": "Hypoperfusion with BUN/Cr > 20",
+     "support": "volume depletion",
+     "fit": "Not here: BUN 30 with creatinine 3",
+     "tx": "Intravenous crystalloid hydration",
+     "tempting": "elevated serum creatinine"
+    },
+    "C": {
+     "clue": "Urine leak into retroperitoneum",
+     "support": "urinary tract injury",
+     "fit": "Not here: midline symmetric 25 cm mass",
+     "tx": "Percutaneous drainage + stenting",
+     "tempting": "pelvic surgery complication"
+    },
+    "D": {
+     "clue": "Iatrogenic ureteral obstruction",
+     "support": "surgical ureteral ligated injury",
+     "fit": "Not here: distended bladder 25 cm above symphysis",
+     "tx": "Ureteral reimplantation or stent",
+     "tempting": "anuria after hysterectomy"
+    },
+    "E": {
+     "clue": "Postoperative bladder outlet or detrusor failure",
+     "support": "acute urinary retention",
+     "fit": "Here: not voided for 36 hours, 25 cm mass",
+     "tx": "Immediate urinary catheterization"
+    }
+   },
+   "algorithm": {
+    "title": "Postoperative acute urinary retention",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Postoperative anuria + large midline mass: suspect acute urinary retention",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Immediate urethral catheter decompression to measure post-void residual volume",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Output > 500 mL:** confirm retention + leave catheter to gravity drainage",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Catheterization fails or obstructed:** bedside bladder ultrasound + urology consult",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor for post-obstructive diuresis with serial electrolytes + volume replacement",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Trial of voiding once renal function normalizes",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Seven days after undergoing an abdominal hysterectomy"
+    },
+    {
+     "text": "has not voided since discharge 36 hours ago"
+    },
+    {
+     "text": "soft symmetric mass that extends 25 cm above the symphysis"
+    },
+    {
+     "text": "Creatinine 3 mg/dL"
+    }
+   ]
+  },
+  "795676": {
+   "task": "Prevention",
+   "boardCall": "Pregnant + STI history + HBsAg negative -> administer Hepatitis B vaccine",
+   "hinge": "Hepatitis B vaccine is inactivated and indicated in high-risk pregnant patients, while MMR is contraindicated.",
+   "trap": "Low rubella titer tempts rubella vaccination, but live-attenuated MMR is contraindicated in pregnancy.",
+   "options": {
+    "A": {
+     "clue": "Recombinant vaccine safe in pregnancy",
+     "support": "high-risk STI exposure",
+     "fit": "Here: multiple sexually transmitted diseases, negative HBsAg",
+     "tx": "Hepatitis B vaccination series"
+    },
+    "B": {
+     "clue": "Polio immunization in travelers",
+     "support": "inactivated polio protection",
+     "fit": "Not here: no travel or endemic exposure",
+     "tx": "Inactivated polio vaccine",
+     "tempting": "childhood immunization update"
+    },
+    "C": {
+     "clue": "Live attenuated paramyxovirus vaccine",
+     "support": "MMR component",
+     "fit": "Not here: 14 weeks' gestation",
+     "tx": "Postpartum MMR vaccine",
+     "tempting": "daughter has fever and rash"
+    },
+    "D": {
+     "clue": "Live attenuated mumps vaccine",
+     "support": "MMR component",
+     "fit": "Not here: pregnancy contraindicates live vaccines",
+     "tx": "Postpartum MMR vaccine",
+     "tempting": "daughter has viral syndrome"
+    },
+    "E": {
+     "clue": "Live attenuated togavirus vaccine",
+     "support": "rubella immunization",
+     "fit": "Not here: pregnant, rubella titer < 1:8",
+     "tx": "Postpartum rubella vaccination",
+     "tempting": "rubella titer is less than 1:8"
+    },
+    "F": {
+     "clue": "Clostridium tetani toxoid",
+     "support": "routine booster",
+     "fit": "Not here: tetanus toxoid received 5 years ago",
+     "tx": "Tdap at 27-36 weeks",
+     "tempting": "routine prenatal vaccination"
+    }
+   },
+   "algorithm": {
+    "title": "Vaccination indications and contraindications in pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Contraindicated in pregnancy: live vaccines (MMR, varicella, live attenuated influenza)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Non-immune to rubella or varicella:** administer vaccine immediately postpartum",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Routine during pregnancy: inactivated influenza + Tdap (at 27-36 weeks)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "High-risk indicated vaccines: administer hepatitis B vaccine series for multiple STDs",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Hepatitis B exposure occurs during pregnancy:** give hepatitis B vaccine + HBIG",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen all pregnant patients at first prenatal visit for HBsAg + rubella immunity",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "14 weeks' gestation"
+    },
+    {
+     "text": "history of multiple sexually transmitted diseases"
+    },
+    {
+     "text": "Hepatitis B surface antigen assay is negative"
+    },
+    {
+     "text": "rubella titer is less than 1:8",
+     "trap": true
+    }
+   ]
+  },
+  "795677": {
+   "task": "Next step",
+   "boardCall": "Rh-negative unsensitized + bloody amniocentesis -> immediate intramuscular Rh(D) immune globulin",
+   "hinge": "Invasive procedures with fetomaternal hemorrhage in unsensitized Rh-negative women require immediate Rh(D) immune globulin.",
+   "trap": "Routine Rh(D) immune globulin at 28 weeks and delivery is standard, but does not cover acute fetomaternal exposure now.",
+   "options": {
+    "A": {
+     "clue": "Fetal antibody testing",
+     "support": "nonexistent clinical modality",
+     "fit": "Not here: maternal antibodies determine alloimmunization",
+     "tx": "Maternal antibody titers",
+     "tempting": "evaluates fetal status"
+    },
+    "B": {
+     "clue": "Serial antibody surveillance",
+     "support": "monitoring sensitized patients",
+     "fit": "Not here: patient is unsensitized",
+     "tx": "Titers if sensitized",
+     "tempting": "screens for alloimmunization"
+    },
+    "C": {
+     "clue": "Nonspecific pooled antibodies",
+     "support": "nonspecific intravenous immunoglobulin",
+     "fit": "Not here: does not provide specific anti-D",
+     "tx": "Rh(D) immune globulin",
+     "tempting": "immune globulin prophylaxis"
+    },
+    "D": {
+     "clue": "Anti-D prophylaxis for hemorrhage",
+     "support": "alloimmunization prevention",
+     "fit": "Here: Rh-negative, grossly bloody amniocentesis at 17 weeks",
+     "tx": "Intramuscular Rh(D) immune globulin"
+    },
+    "E": {
+     "clue": "Routine third-trimester prophylaxis",
+     "support": "standard unsensitized schedule",
+     "fit": "Not here: invasive bloody procedure requires immediate dosing",
+     "tx": "Immediate Rh(D) immune globulin",
+     "tempting": "standard 28-week prophylaxis timing"
+    },
+    "F": {
+     "clue": "Fetal lung maturation",
+     "support": "preterm steroid therapy",
+     "fit": "Not here: 17 weeks' gestation, no labor",
+     "tx": "Betamethasone at 24-34 weeks",
+     "tempting": "fetal therapy"
+    },
+    "G": {
+     "clue": "Intrauterine transfusion for hydrops",
+     "support": "severe fetal anemia therapy",
+     "fit": "Not here: no fetal anemia documented",
+     "tx": "Intrauterine red blood cell transfusion",
+     "tempting": "fetal intervention"
+    },
+    "H": {
+     "clue": "Fatal incompatible transfusion",
+     "support": "contraindicated fetal transfusion",
+     "fit": "Not here: Rh-positive blood triggers severe hemolysis",
+     "tx": "Never give Rh-positive cells",
+     "tempting": "fetal transfusion"
+    },
+    "I": {
+     "clue": "Spectrophotometric bilirubin assessment",
+     "support": "historical severe hemolysis marker",
+     "fit": "Not here: middle cerebral artery Doppler preferred",
+     "tx": "MCA Doppler peak velocity",
+     "tempting": "amniocentesis follow-up"
+    },
+    "J": {
+     "clue": "Expectant observation without prophylaxis",
+     "support": "no intervention",
+     "fit": "Not here: fetomaternal hemorrhage risks alloimmunization",
+     "tx": "Administer Rh(D) immune globulin",
+     "tempting": "antibody screen was negative"
+    }
+   },
+   "algorithm": {
+    "title": "Prevention of Rh(D) alloimmunization",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Initial prenatal visit: determine maternal ABO blood type + Rh(D) status + antibody screen",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Rh-positive or already sensitized:** no Rh(D) immune globulin indicated",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Unsensitized Rh-negative patient: routine Rh(D) immune globulin at 28 weeks + postpartum",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Fetomaternal hemorrhage event: give intramuscular Rh(D) immune globulin within 72 hours",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Gestational age >= 20 weeks:** perform Kleihauer-Betke test to calculate required dose",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Repeat antibody screen at 28 weeks prior to routine administration",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "17 weeks' gestation"
+    },
+    {
+     "text": "Rh-negative, and an antibody screening at 12 weeks' gestation was negative"
+    },
+    {
+     "text": "Amniocentesis is done, and the amniotic fluid is grossly bloody"
+    },
+    {
+     "text": "antibody screening at 12 weeks' gestation was negative",
+     "trap": true
+    }
+   ]
+  },
+  "795678": {
+   "task": "Next step",
+   "boardCall": "Maternal anti-Kell titer 1:256 -> paternal Kell antigen typing",
+   "hinge": "When maternal red cell alloimmunization is identified, testing paternal antigen status determines fetal risk.",
+   "trap": "Amniotic bilirubin or fetal monitoring tempts invasive testing, but if the father lacks Kell, the fetus is not at risk.",
+   "options": {
+    "A": {
+     "clue": "Proteinuria and renal assessment",
+     "support": "preeclampsia evaluation",
+     "fit": "Not here: 8 weeks' gestation, normal blood pressure",
+     "tx": "Urine protein to creatinine ratio",
+     "tempting": "routine prenatal laboratory evaluation"
+    },
+    "B": {
+     "clue": "Paternal red cell phenotyping",
+     "support": "fetal antigen risk assessment",
+     "fit": "Here: anti-Kell antibody titer 1:256",
+     "tx": "Paternal Kell blood typing"
+    },
+    "C": {
+     "clue": "Hepatic enzyme evaluation",
+     "support": "hepatobiliary disease assessment",
+     "fit": "Not here: no jaundice or abdominal pain",
+     "tx": "Hepatic panel",
+     "tempting": "evaluates maternal liver function"
+    },
+    "D": {
+     "clue": "Invasive assessment for hemolysis",
+     "support": "severe fetal anemia workup",
+     "fit": "Not here: paternal Kell status not yet known",
+     "tx": "Middle cerebral artery Doppler",
+     "tempting": "high anti-Kell antibody titer"
+    },
+    "E": {
+     "clue": "Immunomodulatory pooled globulin",
+     "support": "severe alloimmune mitigation",
+     "fit": "Not here: paternal antigen status unconfirmed",
+     "tx": "Fetal surveillance if father positive",
+     "tempting": "treats severe maternal alloimmunization"
+    },
+    "F": {
+     "clue": "Anti-D prophylaxis",
+     "support": "prevention of Rh(D) sensitization",
+     "fit": "Not here: anti-Kell antibody present, not anti-D",
+     "tx": "Rh(D) immune globulin",
+     "tempting": "patient is Rh-negative"
+    }
+   },
+   "algorithm": {
+    "title": "Management of maternal red cell alloimmunization",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Positive maternal antibody screen for atypical red cell antibody (eg, anti-Kell)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Determine paternal red blood cell antigen status and zygosity",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Father is antigen-negative:** fetus not at risk; resume routine prenatal care",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Father is heterozygous or antigen-positive:** determine fetal antigen status via cell-free DNA",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "If fetus is antigen-positive: monitor serial middle cerebral artery peak systolic velocity",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**MCA Doppler > 1.5 multiples of the median:** perform cordocentesis + intrauterine transfusion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Repeat maternal antibody titers every 4 weeks if baseline titer below critical threshold",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "first prenatal visit"
+    },
+    {
+     "text": "blood transfusion"
+    },
+    {
+     "text": "blood group is O, Rh-negative"
+    },
+    {
+     "text": "Indirect antiglobulin (Coombs) test is positive for anti-Kell antibody at a titer of 1:256"
+    }
+   ]
+  },
+  "795679": {
+   "task": "Diagnosis",
+   "boardCall": "Maternal fever 38.4 C + CVA tenderness + fetal heart rate 180 -> maternal fever",
+   "hinge": "Maternal fever is the most common cause of fetal tachycardia, especially in acute pyelonephritis.",
+   "trap": "Maternal anemia is present (Hb 9.7 g/dL) but physiologic dilution does not cause fetal heart rate of 180/min.",
+   "options": {
+    "A": {
+     "clue": "Sinusoidal heart rate tracing",
+     "support": "severe fetal anemia",
+     "fit": "Not here: no hydrops, acute maternal infection",
+     "tx": "Intrauterine fetal transfusion",
+     "tempting": "causes fetal tachycardia"
+    },
+    "B": {
+     "clue": "Oligohydramnios and poor turgor",
+     "support": "fetal hypovolemia",
+     "fit": "Not here: amniotic fluid normal, acute maternal illness",
+     "tx": "Maternal intravenous hydration",
+     "tempting": "maternal nausea and decreased intake"
+    },
+    "C": {
+     "clue": "Inadequate maternal oxygen transport",
+     "support": "severe anemia compensation",
+     "fit": "Not here: hemoglobin 9.7 g/dL physiologic",
+     "tx": "Oral iron supplementation",
+     "tempting": "hemoglobin concentration is 9.7 g/dL"
+    },
+    "D": {
+     "clue": "Catecholamine surge tachycardia",
+     "support": "acute emotional distress",
+     "fit": "Not here: temperature 38.4 C, CVA tenderness",
+     "tx": "Reassurance + supportive care",
+     "tempting": "emergency department presentation anxiety"
+    },
+    "E": {
+     "clue": "Pyrexia accelerating fetal pacemaker",
+     "support": "febrile fetal tachycardia",
+     "fit": "Here: temperature is 38.4 C, back pain, CVA tenderness",
+     "tx": "Intravenous ceftriaxone + acetaminophen"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of fetal tachycardia",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fetal tachycardia: baseline fetal heart rate > 160/min for >= 10 minutes",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Maternal pyrexia accelerates fetal sinus node: maternal fever is the most common etiology",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Rule out intra-amniotic infection (uterine tenderness + purulent fluid) and pyelonephritis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Unilateral flank pain or CVA tenderness:** admit for intravenous ceftriaxone + maternal antipyretics",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Intra-amniotic infection suspected:** initiate intravenous ampicillin + gentamicin + delivery",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Continuous electronic fetal monitoring until maternal temperature normalizes",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "27 weeks’ gestation"
+    },
+    {
+     "text": "moderate back pain, fever, and nausea"
+    },
+    {
+     "text": "Her temperature is 38.4°C (101.1°F)"
+    },
+    {
+     "text": "baseline fetal heart rate is 180/min with decreased variability"
+    },
+    {
+     "text": "hemoglobin concentration is 9.7 g/dL",
+     "trap": true
+    }
+   ]
+  },
+  "795680": {
+   "task": "Diagnosis",
+   "boardCall": "Maternal slapped-cheek rash + reticular limb rash -> Parvovirus B19",
+   "hinge": "Erythematous facial rash followed by a reticular marble-like extremity rash is classic for parvovirus B19.",
+   "trap": "Rubella causes rash and fetal risk, but presents with descending maculopapular rash and posterior lymphadenopathy.",
+   "options": {
+    "A": {
+     "clue": "Sensorineural hearing loss + periventricular calcifications",
+     "support": "congenital CMV",
+     "fit": "Not here: no slapped-cheek or reticular rash",
+     "tx": "Valganciclovir for neonatal infection",
+     "tempting": "common congenital viral infection"
+    },
+    "B": {
+     "clue": "Painful grouped mucosal vesicles",
+     "support": "HSV infection",
+     "fit": "Not here: marble-appearing rash on extremities",
+     "tx": "Oral or intravenous acyclovir",
+     "tempting": "viral skin lesions"
+    },
+    "C": {
+     "clue": "Anogenital warts or dysplasia",
+     "support": "HPV infection",
+     "fit": "Not here: reticular rash on extremities",
+     "tx": "Cryotherapy or observation",
+     "tempting": "common viral infection"
+    },
+    "D": {
+     "clue": "Slapped-cheek facial rash + reticular erythema",
+     "support": "erythema infectiosum",
+     "fit": "Here: bright cheek rash followed by marble-appearing rash",
+     "tx": "Serial ultrasound for hydrops fetalis"
+    },
+    "E": {
+     "clue": "Descending maculopapular rash + lymphadenopathy",
+     "support": "congenital rubella syndrome",
+     "fit": "Not here: bright facial then marble-like extremity rash",
+     "tx": "Supportive care",
+     "tempting": "teratogenic rash in pregnancy"
+    }
+   },
+   "algorithm": {
+    "title": "Parvovirus B19 infection in pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Maternal slapped-cheek facial rash followed by lacy reticular rash: suspect parvovirus B19",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm maternal infection with serum parvovirus B19 IgM and IgG antibodies",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Maternal IgM positive (acute infection):** serial ultrasounds every 1-2 weeks for 8-12 weeks",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor fetus for anemia, ascites, pericardial effusion, and hydrops fetalis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Hydrops fetalis or elevated MCA peak velocity:** cordocentesis + intrauterine transfusion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Reassure if maternal IgG positive and IgM negative (prior immunity)",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "34 weeks' gestation"
+    },
+    {
+     "text": "bright rash over her cheeks that resolved within 3 days"
+    },
+    {
+     "text": "rash has now developed on her arms and legs"
+    },
+    {
+     "text": "marble-appearing rash over the upper and lower extremities"
+    }
+   ]
+  },
+  "795681": {
+   "task": "Diagnosis",
+   "boardCall": "Positive pregnancy test + spotting + unilateral adnexal tenderness -> ectopic pregnancy",
+   "hinge": "First-trimester abdominal pain, vaginal spotting, and adnexal tenderness with positive beta-hCG indicates ectopic pregnancy.",
+   "trap": "Cervical motion tenderness mimics PID, but a positive pregnancy test and unilateral adnexal tenderness make ectopic primary.",
+   "options": {
+    "A": {
+     "clue": "Right lower quadrant peritonitis + anorexia",
+     "support": "acute appendicitis",
+     "fit": "Not here: vaginal spotting, positive pregnancy test",
+     "tx": "Laparoscopic appendectomy",
+     "tempting": "right lower quadrant pain"
+    },
+    "B": {
+     "clue": "Extrauterine implantation with bleeding + pain",
+     "support": "ectopic gestation",
+     "fit": "Here: spotting, right adnexal tenderness, positive pregnancy test",
+     "tx": "Methotrexate or laparoscopic salpingostomy"
+    },
+    "C": {
+     "clue": "Sudden pain from ruptured luteal cyst",
+     "support": "ovarian cyst accident",
+     "fit": "Not here: positive pregnancy test, closed cervical os",
+     "tx": "Observation or laparoscopic cystectomy",
+     "tempting": "acute pelvic pain and adnexal tenderness"
+    },
+    "D": {
+     "clue": "Snowstorm appearance + markedly high hCG",
+     "support": "gestational trophoblastic disease",
+     "fit": "Not here: right adnexal tenderness, uterus consistent with dates",
+     "tx": "Uterine dilation and curettage",
+     "tempting": "first-trimester vaginal bleeding"
+    },
+    "E": {
+     "clue": "Cervical motion tenderness + purulent discharge + fever",
+     "support": "pelvic inflammatory disease",
+     "fit": "Not here: positive pregnancy test, closed os, afebrile",
+     "tx": "Ceftriaxone + doxycycline + metronidazole",
+     "tempting": "cervical motion tenderness"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of first-trimester pelvic pain and bleeding",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Positive pregnancy test + pain + vaginal bleeding: perform transvaginal ultrasonography",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Intrauterine pregnancy visualized:** evaluate for threatened abortion vs subchorionic hematoma",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**No intrauterine pregnancy seen:** correlate with quantitative serum beta-hCG",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Definitive extrauterine gestational sac or adnexal mass: ectopic pregnancy confirmed",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Hemodynamically stable + unruptured + hCG < 5000:** administer intramuscular methotrexate",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Hemodynamically unstable or ruptured:** urgent laparoscopic salpingostomy or salpingectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Serial beta-hCG until undetectable to ensure complete resolution",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "vaginal spotting and lower abdominal pain for 3 hours"
+    },
+    {
+     "text": "last menstrual period was 6 weeks ago"
+    },
+    {
+     "text": "right adnexa is tender"
+    },
+    {
+     "text": "Urine pregnancy test is positive"
+    },
+    {
+     "text": "cervical motion tenderness with a firm cervix and a closed cervical os",
+     "trap": true
+    }
+   ]
+  },
+  "795682": {
+   "task": "Prognosis",
+   "boardCall": "Painless third-trimester bleeding + unengaged fetal vertex -> placenta previa risking hemorrhagic shock",
+   "hinge": "Painless vaginal bleeding with a soft nontender uterus indicates placenta previa, which risks severe maternal hemorrhagic shock.",
+   "trap": "Placental abruption also causes third-trimester bleeding, but typically presents with painful uterine contractions and tenderness.",
+   "options": {
+    "A": {
+     "clue": "Sudden cardiovascular collapse and DIC",
+     "support": "intrapartum emergency",
+     "fit": "Not here: hemodynamically stable, painless vaginal bleeding",
+     "tx": "Aggressive supportive resuscitation",
+     "tempting": "catastrophic obstetric complication"
+    },
+    "B": {
+     "clue": "Consumptive coagulopathy with bleeding",
+     "support": "abruption or sepsis complication",
+     "fit": "Not here: normal vitals, painless bleeding",
+     "tx": "Cryoprecipitate + platelets + plasma",
+     "tempting": "severe bleeding complication"
+    },
+    "C": {
+     "clue": "Profound hypovolemic hypotension",
+     "support": "placenta previa hemorrhage",
+     "fit": "Here: heavy painless vaginal bleeding at 33 weeks",
+     "tx": "Large-bore IV access + crystalloid"
+    },
+    "D": {
+     "clue": "Systemic infection with organ dysfunction",
+     "support": "infectious complication",
+     "fit": "Not here: afebrile, pulse 90/min, no infection",
+     "tx": "Broad-spectrum intravenous antibiotics",
+     "tempting": "hospital presentation with bleeding"
+    },
+    "E": {
+     "clue": "Full-thickness disruption of uterine wall",
+     "support": "scarred uterus catastrophe",
+     "fit": "Not here: primigravid, nontender uterus",
+     "tx": "Emergency laparotomy + repair",
+     "tempting": "acute third-trimester bleeding"
+    }
+   },
+   "algorithm": {
+    "title": "Third-trimester painless vaginal bleeding",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Heavy painless vaginal bleeding: establish two large-bore IVs + crossmatch packed red blood cells",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Placenta previa: high risk of massive blood loss leading to maternal hemorrhagic shock",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform transabdominal ultrasound to locate placenta; avoid digital cervical exam",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Placenta previa and stable:** admit for observation + administer antenatal corticosteroids",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Active catastrophic bleeding or instability:** emergency surgical delivery via cesarean",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Schedule elective cesarean delivery at 36-37 weeks if previa persists",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "healthy 22-year-old primigravid woman at 33 weeks' gestation"
+    },
+    {
+     "text": "heavy, painless vaginal bleeding for 30 minutes"
+    },
+    {
+     "text": "nontender uterus consistent in size with a 33-week gestation"
+    },
+    {
+     "text": "vertex is not engaged in the pelvis"
+    }
+   ]
+  },
+  "795683": {
+   "task": "Prognosis",
+   "boardCall": "Maternal achondroplasia + contracted pelvic diameters -> scheduled cesarean delivery",
+   "hinge": "Marked pelvic contraction in maternal achondroplasia causes absolute cephalopelvic disproportion, requiring cesarean delivery.",
+   "trap": "Fetal achondroplasia is 50% possible, but maternal pelvic anatomy guarantees cephalopelvic disproportion and cesarean.",
+   "options": {
+    "A": {
+     "clue": "Surgical delivery for pelvic disproportion",
+     "support": "contracted pelvic inlet",
+     "fit": "Here: conjugate 7 cm, intraspinous 5 cm",
+     "tx": "Scheduled cesarean delivery"
+    },
+    "B": {
+     "clue": "Autosomal dominant dwarfism transmission",
+     "support": "50% genetic risk",
+     "fit": "Not here: pelvic diameters mandate cesarean delivery",
+     "tx": "Prenatal genetic counseling",
+     "tempting": "autosomal dominant inheritance pattern"
+    },
+    "C": {
+     "clue": "Gestational hypertension with end-organ damage",
+     "support": "preeclampsia syndrome",
+     "fit": "Not here: blood pressure 106/60 mm Hg",
+     "tx": "Low-dose aspirin prophylaxis",
+     "tempting": "trace protein on urinalysis"
+    },
+    "D": {
+     "clue": "Uremic azotemia with oliguria",
+     "support": "renal insufficiency",
+     "fit": "Not here: normal blood pressure and gestation",
+     "tx": "Nephrology evaluation",
+     "tempting": "trace proteinuria"
+    },
+    "E": {
+     "clue": "Uterine muscular disruption during labor",
+     "support": "prior uterine scar catastrophe",
+     "fit": "Not here: primigravid without prior uterine surgery",
+     "tx": "Emergency laparotomy",
+     "tempting": "short stature and uterine stress"
+    }
+   },
+   "algorithm": {
+    "title": "Achondroplasia in pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Maternal achondroplasia: contracted pelvis causes severe cephalopelvic disproportion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Contracted pelvis mandates surgical delivery: schedule elective cesarean delivery",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Preoperative anesthesia consult: difficult airway + spinal stenosis complicate neuraxial anesthesia",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**General anesthesia required:** perform awake fiberoptic intubation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Spinal anesthesia considered:** use careful dosing due to small subarachnoid space",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Offer genetic counseling + prenatal testing for FGFR3 mutation",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "32-year-old primigravid woman at 8 weeks' gestation"
+    },
+    {
+     "text": "She has achondroplasia"
+    },
+    {
+     "text": "conjugate diameter of 7 cm"
+    },
+    {
+     "text": "Urinalysis shows trace protein",
+     "trap": true
+    }
+   ]
+  },
+  "795684": {
+   "task": "Next step",
+   "boardCall": "Retained intrauterine demise + thrombocytopenia -> induction of labor",
+   "hinge": "Prolonged retention of fetal demise beyond 2-4 weeks causes consumptive coagulopathy; prompt induction is required.",
+   "trap": "Platelets 90,000/mm3 tempts platelet transfusion, but transfusion is not indicated without active bleeding or count < 50,000/mm3.",
+   "options": {
+    "A": {
+     "clue": "Uterine evacuation via vaginal labor",
+     "support": "intrauterine fetal demise management",
+     "fit": "Here: retained demise 4 weeks, platelets 90,000",
+     "tx": "Induction with misoprostol or oxytocin"
+    },
+    "B": {
+     "clue": "Coagulation factor replacement",
+     "support": "active coagulopathy therapy",
+     "fit": "Not here: fibrinogen normal at 250 mg/dL",
+     "tx": "FFP for active bleeding",
+     "tempting": "platelet count dropping"
+    },
+    "C": {
+     "clue": "Platelet pool infusion",
+     "support": "severe thrombocytopenia transfusion",
+     "fit": "Not here: platelets 90,000 with mild bleeding",
+     "tx": "Transfuse if platelets < 50,000",
+     "tempting": "Platelet count 90,000/mm³"
+    },
+    "D": {
+     "clue": "Abdominal operative delivery",
+     "support": "maternal emergency delivery",
+     "fit": "Not here: intrauterine demise, vaginal delivery preferred",
+     "tx": "Induction of labor",
+     "tempting": "retained demise with bleeding"
+    },
+    "E": {
+     "clue": "Uterine suction or curettage",
+     "support": "first-trimester abortion procedure",
+     "fit": "Not here: 36 weeks' size gestation",
+     "tx": "Induction of labor",
+     "tempting": "evacuation of dead fetus"
+    }
+   },
+   "algorithm": {
+    "title": "Management of intrauterine fetal demise",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Confirmed intrauterine fetal demise: discuss delivery timing + options with patient",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Risk of retained fetus > 2-4 weeks: release of tissue factor causes consumptive coagulopathy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Check maternal CBC + coagulation profile (platelets, fibrinogen, PT, PTT)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate induction of labor with vaginal misoprostol or oxytocin infusion",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Overt DIC with active bleeding:** transfuse cryoprecipitate + platelets + FFP",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform autopsy + placental pathology + fetal karyotype to evaluate cause",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "confirms the absence of fetal cardiac activity"
+    },
+    {
+     "text": "choose to return home to await spontaneous labor"
+    },
+    {
+     "text": "Four weeks later"
+    },
+    {
+     "text": "Platelet count 90,000/mm³",
+     "trap": true
+    }
+   ]
+  },
+  "795685": {
+   "task": "Next step",
+   "boardCall": "18 weeks' gestation + fundal height 23 cm -> pelvic ultrasonography for dating",
+   "hinge": "Fundal height discrepancy > 3 cm requires ultrasonography to confirm gestational age and rule out twins or polyhydramnios.",
+   "trap": "Trace glucose or 10-lb weight gain tempts glucose testing, but large-for-gestational-age fundus mandates ultrasound first.",
+   "options": {
+    "A": {
+     "clue": "Routine follow-up observation",
+     "support": "expectant prenatal surveillance",
+     "fit": "Not here: 5 cm fundal size discrepancy",
+     "tx": "Immediate ultrasound evaluation",
+     "tempting": "normal blood pressure and reassuring tones"
+    },
+    "B": {
+     "clue": "Dietary education for excessive weight",
+     "support": "lifestyle modification",
+     "fit": "Not here: fundal height discrepancy requires anatomical evaluation",
+     "tx": "Nutritional review",
+     "tempting": "gained 4.5 kg in 4 weeks"
+    },
+    "C": {
+     "clue": "Aneuploidy serum screening component",
+     "support": "second-trimester quad screen",
+     "fit": "Not here: anatomical size-date discrepancy workup needed",
+     "tx": "Serum quad screening",
+     "tempting": "18 weeks' prenatal visit"
+    },
+    "D": {
+     "clue": "Oral glucose tolerance assessment",
+     "support": "gestational diabetes screening",
+     "fit": "Not here: screen at 24-28 weeks",
+     "tx": "1-hour glucose challenge test",
+     "tempting": "trace positive for glucose"
+    },
+    "E": {
+     "clue": "Acoustic imaging for gestational age",
+     "support": "fetal biometric assessment",
+     "fit": "Here: 18 weeks' gestation, fundal height 23 cm",
+     "tx": "Obstetric ultrasonography"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of uterine size greater than dates",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fundal height discrepancy > 3 cm from gestational age: suspect size-dates discrepancy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform obstetric ultrasonography to verify gestational age and anatomical factors",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Twin or triplet gestation:** initiate multiple pregnancy surveillance protocol",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Polyhydramnios or fetal macrosomia:** screen for gestational diabetes + structural anomalies",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Molar pregnancy or pelvic mass:** evaluate with pelvic MRI or pelvic pathology",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Adjust estimated due date if early ultrasound discrepancy confirms mistaken dates",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "18-year-old primigravid woman at 18 weeks' gestation"
+    },
+    {
+     "text": "uterus that measures 23 cm above the pubic symphysis"
+    },
+    {
+     "text": "gained 4.5 kg (10 lb) since her last visit 4 weeks ago"
+    },
+    {
+     "text": "trace positive for glucose",
+     "trap": true
+    }
+   ]
+  },
+  "795686": {
+   "task": "Mechanism",
+   "boardCall": "Crack cocaine in pregnancy + refractory preterm labor -> increasing catecholamines stimulating contractions",
+   "hinge": "Cocaine inhibits synaptic monoamine reuptake, increasing circulating catecholamines that activate alpha-1 adrenergic myometrial receptors.",
+   "trap": "Cocaine increases synaptic norepinephrine, but does so by inhibiting reuptake rather than increasing reuptake.",
+   "options": {
+    "A": {
+     "clue": "Sympathetic depletion causing smooth relaxation",
+     "support": "tocolytic response mechanism",
+     "fit": "Not here: cocaine enhances sympathetic stimulation",
+     "tx": "Beta-2 adrenergic agonists",
+     "tempting": "opposite effect of stimulant"
+    },
+    "B": {
+     "clue": "Cholinergic down-regulation in myometrium",
+     "support": "autonomic imbalance",
+     "fit": "Not here: uterine contractility is adrenergic-mediated",
+     "tx": "Supportive care",
+     "tempting": "sympathetic dominance hypothesis"
+    },
+    "C": {
+     "clue": "Monoamine accumulation activating adrenergic receptors",
+     "support": "cocaine-induced myometrial stimulation",
+     "fit": "Here: crack cocaine use, preterm labor",
+     "tx": "Intravenous fluids + maternal sedation"
+    },
+    "D": {
+     "clue": "Enhanced presynaptic transmitter clearance",
+     "support": "reuptake acceleration",
+     "fit": "Not here: cocaine inhibits presynaptic reuptake",
+     "tx": "Supportive care",
+     "tempting": "involves norepinephrine reuptake"
+    },
+    "E": {
+     "clue": "Enhanced vagal or cholinergic activation",
+     "support": "parasympathetic hyperactivity",
+     "fit": "Not here: cocaine is an adrenergic sympathomimetic",
+     "tx": "Atropine",
+     "tempting": "autonomic nervous system alteration"
+    }
+   },
+   "algorithm": {
+    "title": "Cocaine-induced preterm labor and uterine hypercontractility",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Cocaine blocks presynaptic reuptake of norepinephrine and dopamine at nerve terminals",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Increasing catecholamine levels stimulate alpha-1 receptors, causing vasoconstriction + myometrial contractions",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Complications include placental abruption, uterine rupture, fetal hypoxemia, and preterm birth",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Preterm labor < 34 weeks:** administer antenatal betamethasone + magnesium sulfate for neuroprotection",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Placental abruption or fetal distress:** emergency cesarean delivery",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide toxicology screening + maternal substance use disorder rehabilitation",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "24 weeks' gestation"
+    },
+    {
+     "text": "Treatment with a tocolytic agent is ineffective"
+    },
+    {
+     "text": "She has used crack cocaine during the pregnancy"
+    }
+   ]
+  },
+  "795687": {
+   "task": "Diagnosis",
+   "boardCall": "Arrest at 6 cm + contractions every 5 min at 30 mm Hg -> hypotonic contractions",
+   "hinge": "Contractions every 5 minutes lasting 30 seconds with peak 30 mm Hg are inadequate to advance active labor.",
+   "trap": "Occiput posterior position can prolong labor, but prior delivery of a larger baby with weak contractions points to hypotonic dysfunction.",
+   "options": {
+    "A": {
+     "clue": "Fetal head too large for maternal pelvis",
+     "support": "mechanical pelvic obstruction",
+     "fit": "Not here: prior vaginal delivery of 3629-g infant",
+     "tx": "Cesarean delivery for CPD",
+     "tempting": "labor arrest in active phase"
+    },
+    "B": {
+     "clue": "Estimated fetal weight exceeding 4000 g",
+     "support": "macrosomic obstructed labor",
+     "fit": "Not here: estimated weight 3487 g",
+     "tx": "Cesarean delivery if CPD",
+     "tempting": "arrest of cervical dilation"
+    },
+    "C": {
+     "clue": "Inadequate frequency and amplitude of contractions",
+     "support": "uterine contractility failure",
+     "fit": "Here: contractions every 5 minutes, 30 mm Hg",
+     "tx": "Intravenous oxytocin augmentation"
+    },
+    "D": {
+     "clue": "Age over 35 complicating obstetric outcomes",
+     "support": "advanced maternal age",
+     "fit": "Not here: age alone does not cause labor arrest",
+     "tx": "Labor augmentation",
+     "tempting": "42-year-old parturient"
+    },
+    "E": {
+     "clue": "Malposition causing slower cervical advancement",
+     "support": "fetal malposition protraction",
+     "fit": "Not here: contractions are weak, prior larger infant",
+     "tx": "Manual rotation or expectant trial",
+     "tempting": "left occiput posterior position"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation and management of active phase labor arrest",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Active phase labor arrest: cervical dilation >= 6 cm without progress after adequate contractions",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Assess contraction adequacy via intrauterine pressure catheter (target >= 200 Montevideo units)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Hypotonic contractions (< 200 MVUs):** initiate intravenous oxytocin augmentation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Adequate contractions (>= 200 MVUs) for >= 4 hours:** arrest established; perform cesarean",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Inadequate contractions with oxytocin for >= 6 hours:** arrest established; perform cesarean",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Evaluate for cephalopelvic disproportion, fetal malpresentation, or pelvic dystocia",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "cervix that has remained 6 cm dilated and completely effaced for 3 hours"
+    },
+    {
+     "text": "Contractions occur every 5 minutes, last 30 seconds, and are 30 mm Hg in pressure"
+    },
+    {
+     "text": "spontaneous vaginal delivery of a 3629-g (8-lb) boy 3 years ago"
+    },
+    {
+     "text": "left occiput posterior position",
+     "trap": true
+    }
+   ]
+  },
+  "795688": {
+   "task": "Next step",
+   "boardCall": "Preterm fluid leakage without contractions -> sterile speculum examination",
+   "hinge": "Suspected premature rupture of membranes must be evaluated first with a sterile speculum exam; avoid digital exam.",
+   "trap": "Digital cervical examination evaluates dilation but introduces microorganisms and significantly shortens the latency period in PPROM.",
+   "options": {
+    "A": {
+     "clue": "Trophoblast glue predictive of delivery",
+     "support": "preterm labor assessment",
+     "fit": "Not here: active fluid leakage for 2 days",
+     "tx": "Tocolysis if indicated",
+     "tempting": "preterm assessment at 33 weeks"
+    },
+    "B": {
+     "clue": "Direct fetal cardiac wire attachment",
+     "support": "internal fetal monitoring",
+     "fit": "Not here: intact membranes unconfirmed, FHR reassuring",
+     "tx": "External Doppler monitoring",
+     "tempting": "fetal surveillance"
+    },
+    "C": {
+     "clue": "Manual palpatory cervical assessment",
+     "support": "digital cervical assessment",
+     "fit": "Not here: digital exam increases chorioamnionitis risk",
+     "tx": "Sterile speculum examination",
+     "tempting": "determines cervical dilation"
+    },
+    "D": {
+     "clue": "Direct visualization with nitrazine and ferning",
+     "support": "PPROM diagnostic standard",
+     "fit": "Here: fluid leaking from vagina for 2 days",
+     "tx": "Sterile speculum examination"
+    },
+    "E": {
+     "clue": "Transabdominal needle amniotic sampling",
+     "support": "intra-amniotic infection test",
+     "fit": "Not here: non-invasive speculum exam confirms rupture",
+     "tx": "Sterile speculum exam first",
+     "tempting": "confirms amniotic fluid leak"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of suspected preterm prelabor rupture of membranes",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Suspected rupture of membranes: avoid digital cervical examination to prevent infection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform sterile speculum examination to observe fluid pooling in posterior fornix",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Nitrazine test turns blue (pH > 6.5) + microscopic ferning:** rupture of membranes present",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Diagnosis uncertain:** perform ultrasound for oligohydramnios or amniotic dye test",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Manage PPROM at 24-34 weeks: administer latency antibiotics + betamethasone + magnesium",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Intra-amniotic infection or fetal distress:** deliver promptly regardless of gestational age",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Plan delivery at 34 weeks' gestation if stable",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "33 weeks' gestation"
+    },
+    {
+     "text": "fluid leaking from her vagina for 2 days"
+    },
+    {
+     "text": "not had any uterine contractions"
+    },
+    {
+     "text": "fetal heart rate is 140/min"
+    }
+   ]
+  },
+  "795689": {
+   "task": "Diagnosis",
+   "boardCall": "Prolonged ROM + maternal fever 38.8 C + uterine tenderness -> chorioamnionitis",
+   "hinge": "Prolonged rupture of membranes with maternal fever, leukocytosis, and uterine tenderness establishes chorioamnionitis.",
+   "trap": "Pyelonephritis also causes fever and leukocytosis, but catheterized urine is negative and CVA tenderness is absent.",
+   "options": {
+    "A": {
+     "clue": "Intra-amniotic infection with uterine tenderness",
+     "support": "intrapartum uterine infection",
+     "fit": "Here: fever 38.8 C, uterine tenderness, ROM 32 hours",
+     "tx": "Ampicillin + gentamicin + delivery"
+    },
+    "B": {
+     "clue": "Decreased amniotic volume with cord compression",
+     "support": "variable deceleration etiology",
+     "fit": "Not here: fever and uterine tenderness indicate infection",
+     "tx": "Amnioinfusion or delivery",
+     "tempting": "ruptured membranes for 32 hours"
+    },
+    "C": {
+     "clue": "Upper urinary tract bacterial infection",
+     "support": "renal parenchymal infection",
+     "fit": "Not here: urine shows no WBCs, no CVA tenderness",
+     "tx": "Intravenous ceftriaxone",
+     "tempting": "maternal fever and leukocytosis"
+    },
+    "D": {
+     "clue": "Umbilical cord entanglement causing occlusion",
+     "support": "mechanical vascular compromise",
+     "fit": "Not here: systemic infectious signs present",
+     "tx": "Emergency cesarean for nonreassuring tracing",
+     "tempting": "fetal heart rate tracing abnormality"
+    },
+    "E": {
+     "clue": "Chronic placental vascular insufficiency",
+     "support": "late decelerations etiology",
+     "fit": "Not here: acute infectious syndrome with fever",
+     "tx": "Maternal repositioning + delivery",
+     "tempting": "fetal deceleration tracing"
+    }
+   },
+   "algorithm": {
+    "title": "Intra-amniotic infection (chorioamnionitis)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Prolonged rupture of membranes + fever >= 39.0 C (or >= 38.0 C with uterine tenderness): chorioamnionitis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate broad-spectrum IV antibiotics: ampicillin + gentamicin",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Undergoing cesarean delivery:** add clindamycin or metronidazole for anaerobic coverage",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer maternal antipyretics to decrease fetal tachycardia and metabolic demand",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Proceed with labor augmentation; chorioamnionitis is an indication for delivery, not instant cesarean",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Category III tracing or nonreassuring fetal status:** proceed to urgent cesarean delivery",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "spontaneous rupture of membranes 32 hours ago"
+    },
+    {
+     "text": "Her temperature is 38.8°C (101.8°F)"
+    },
+    {
+     "text": "uterus is tender to palpation"
+    },
+    {
+     "text": "leukocyte count is 19,200/mm³ with a left shift"
+    },
+    {
+     "text": "Microscopic examination of a catheterized urine specimen shows no WBCs or bacteria",
+     "trap": true
+    }
+   ]
+  },
+  "795690": {
+   "task": "Diagnosis",
+   "boardCall": "TOLAC + severe acute abdominal pain + prolonged deceleration -> uterine rupture",
+   "hinge": "Prior cesarean hysterotomy presenting in labor with acute breakthrough abdominal pain and prolonged fetal bradycardia is uterine rupture.",
+   "trap": "Umbilical cord compression causes decelerations, but does not explain sudden severe maternal abdominal pain in a scarred uterus.",
+   "options": {
+    "A": {
+     "clue": "Premature placental separation with tetanic contractions",
+     "support": "placental abruption",
+     "fit": "Not here: sudden bradycardia and lower pain without bleeding",
+     "tx": "Emergent delivery + volume resuscitation",
+     "tempting": "acute abdominal pain in labor"
+    },
+    "B": {
+     "clue": "Inferior vena cava compression syncope",
+     "support": "aortocaval hypotension",
+     "fit": "Not here: sudden prolonged deceleration and focal pain",
+     "tx": "Left lateral decubitus positioning",
+     "tempting": "hypotensive fetal response"
+    },
+    "C": {
+     "clue": "Transient mechanical funic vessel compromise",
+     "support": "variable deceleration mechanism",
+     "fit": "Not here: severe maternal pain with prior cesarean",
+     "tx": "Repositioning + amnioinfusion",
+     "tempting": "prolonged fetal deceleration"
+    },
+    "D": {
+     "clue": "Disruption of uterine wall scar",
+     "support": "catastrophic uterine dehiscence",
+     "fit": "Here: prior cesarean, severe pain, prolonged deceleration",
+     "tx": "Emergent laparotomy + cesarean delivery"
+    },
+    "E": {
+     "clue": "Abrupt drop in FHR from cord compression",
+     "support": "periodic heart rate pattern",
+     "fit": "Not here: prolonged bradycardia with acute pain",
+     "tx": "Intrauterine resuscitation",
+     "tempting": "deceleration to 60-70/min"
+    }
+   },
+   "algorithm": {
+    "title": "Intrapartum uterine rupture",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Trial of labor after cesarean (TOLAC): monitor closely for signs of scar rupture",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Sudden prolonged fetal bradycardia + breakthrough abdominal pain: uterine rupture until proven otherwise",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Other signs: loss of fetal station, cessation of contractions, maternal hypotension",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Immediate emergency laparotomy + cesarean delivery with neonatal resuscitation team",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Uterine repair feasible:** surgical debridement + layered hysterotomy closure",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Intractable maternal hemorrhage:** proceed with emergent postpartum hysterectomy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "second pregnancy ended in cesarean delivery for breech presentation at term"
+    },
+    {
+     "text": "sudden decrease in fetal heart rate variability followed by a prolonged fetal heart rate deceleration"
+    },
+    {
+     "text": "patient develops increasing lower abdominal pain"
+    },
+    {
+     "text": "no vaginal bleeding"
+    }
+   ]
+  },
+  "795691": {
+   "task": "Diagnosis",
+   "boardCall": "Post-cesarean serosanguineous wound discharge + obesity -> wound dehiscence",
+   "hinge": "Profuse serosanguineous (pink, watery) wound discharge 48 hours post-laparotomy is pathognomonic for fascial dehiscence.",
+   "trap": "Wound infection causes discharge, but it is typically purulent and accompanied by erythema, induration, and fever after day 4.",
+   "options": {
+    "A": {
+     "clue": "Separation of incisional fascial layers",
+     "support": "surgical wound breakdown",
+     "fit": "Here: profuse serosanguineous drainage 48 hours after cesarean",
+     "tx": "Urgent surgical fascial reclosure"
+    },
+    "B": {
+     "clue": "Protrusion of intra-abdominal viscera through defect",
+     "support": "transfascial evisceration",
+     "fit": "Not here: profuse drainage without visceral exposure",
+     "tx": "Saline dressings + emergency surgery",
+     "tempting": "progression of fascial disruption"
+    },
+    "C": {
+     "clue": "Localized collection of blood in wound",
+     "support": "wound hematoma",
+     "fit": "Not here: profuse serosanguineous fluid, not bloody clot",
+     "tx": "Evacuation or conservative dressing",
+     "tempting": "postoperative incisional collection"
+    },
+    "D": {
+     "clue": "Purulent erythema and warmth in incision",
+     "support": "surgical site infection",
+     "fit": "Not here: serosanguineous drainage without erythema or pus",
+     "tx": "Wound opening + wet-to-dry packings",
+     "tempting": "drainage from surgical incision"
+    },
+    "E": {
+     "clue": "Communication between bladder and skin",
+     "support": "iatrogenic urinary fistula",
+     "fit": "Not here: serosanguineous drainage, not clear urine",
+     "tx": "Fistulogram + surgical repair",
+     "tempting": "drainage following pelvic surgery"
+    }
+   },
+   "algorithm": {
+    "title": "Management of postoperative wound dehiscence",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Profuse serosanguineous drainage from abdominal incision: suspect fascial dehiscence",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Palpate wound with sterile gloved finger to evaluate fascial integrity",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Superficial separation (intact fascia):** local wound care + packing with dressing changes",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Fascial defect or visible evisceration:** cover with moist saline gauze + emergent surgical repair",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Address underlying risk factors: optimize glycemic control, nutrition, and intra-abdominal pressure",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer perioperative prophylactic antibiotics prior to surgical reclosure",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "obese 35-year-old woman"
+    },
+    {
+     "text": "type 2 diabetes mellitus has a cesarean delivery because of fetal macrosomia"
+    },
+    {
+     "text": "Forty-eight hours later"
+    },
+    {
+     "text": "profuse serosanguineous drainage from the midline skin incision"
+    }
+   ]
+  },
+  "795692": {
+   "task": "Diagnosis",
+   "boardCall": "Postpartum hemorrhage + vessel extending to membrane margin -> succenturiate placental lobe",
+   "hinge": "Vessels traversing the membranes to the margin without tapering indicate a retained accessory succenturiate lobe.",
+   "trap": "Placenta accreta causes retained placenta from deep adherence, but does not present with accessory vessels extending across membranes.",
+   "options": {
+    "A": {
+     "clue": "Antepartum retroplacental clot separation",
+     "support": "antepartum hemorrhage",
+     "fit": "Not here: delivery completed 30 minutes ago",
+     "tx": "Immediate emergent delivery",
+     "tempting": "acute painful uterine bleeding"
+    },
+    "B": {
+     "clue": "Villi attaching directly to myometrium",
+     "support": "morbid adherence",
+     "fit": "Not here: placenta delivered spontaneously",
+     "tx": "Hysterectomy or manual extraction",
+     "tempting": "retained placenta causing hemorrhage"
+    },
+    "C": {
+     "clue": "Villi penetrating full-thickness uterine serosa",
+     "support": "transmural invasive placenta",
+     "fit": "Not here: normal spontaneous placental delivery",
+     "tx": "Cesarean hysterectomy",
+     "tempting": "severe postpartum hemorrhage"
+    },
+    "D": {
+     "clue": "Placenta overlying internal cervical os",
+     "support": "third-trimester bleeding",
+     "fit": "Not here: successful vaginal delivery completed",
+     "tx": "Cesarean delivery before labor",
+     "tempting": "painless vaginal bleeding"
+    },
+    "E": {
+     "clue": "Accessory lobe connected by intramembranous vessels",
+     "support": "retained placental tissue",
+     "fit": "Here: nontapering vessel extending to membrane margin",
+     "tx": "Manual extraction or ultrasound curettage"
+    }
+   },
+   "algorithm": {
+    "title": "Postpartum hemorrhage and retained succenturiate lobe",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Postpartum hemorrhage: initiate fundal massage + large-bore IV access + oxytocin infusion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Examine delivered placenta: inspect membranes and cotyledons for missing fragments",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Nontapering vessel extending to membrane margin:** retained succenturiate lobe suspected",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform bedside transabdominal or transvaginal ultrasound to identify retained tissue",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Retained accessory lobe visualized:** manual extraction or suction curettage under ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer second-line uterotonics (methylergonovine, carboprost, or misoprostol) if atony persists",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Thirty minutes after an uncomplicated spontaneous vaginal delivery"
+    },
+    {
+     "text": "sudden onset of heavy vaginal bleeding"
+    },
+    {
+     "text": "placenta delivered spontaneously with a nontapering vessel extending to the margin of the membranes"
+    },
+    {
+     "text": "uterus has moderate tone and is consistent in size with a 24-week gestation"
+    }
+   ]
+  },
+  "795693": {
+   "task": "Next step",
+   "boardCall": "Postpartum hemorrhage refractory to oxytocin and massage -> administer ergonovine",
+   "hinge": "Persistent uterine atony despite oxytocin infusion and bimanual massage requires second-line uterotonics such as ergonovine.",
+   "trap": "Coagulation labs or exploratory laparotomy are inappropriate delays or prematurely invasive before trying second-line uterotonics.",
+   "options": {
+    "A": {
+     "clue": "Laboratory coagulation profile panel",
+     "support": "consumptive coagulopathy workup",
+     "fit": "Not here: clear uterine atony requires uterotonics",
+     "tx": "Uterotonics before lab panel",
+     "tempting": "evaluates coagulopathy in hemorrhage"
+    },
+    "B": {
+     "clue": "Ergot alkaloid promoting tetanic contractions",
+     "support": "second-line uterotonic agent",
+     "fit": "Here: excessive bleeding, boggy uterus after oxytocin",
+     "tx": "Intramuscular methylergonovine"
+    },
+    "C": {
+     "clue": "Surgical instrumental scraping of endometrium",
+     "support": "retained tissue evacuation",
+     "fit": "Not here: boggy uterus indicates uterine atony",
+     "tx": "Uterine evacuation if retained",
+     "tempting": "removes possible retained fragments"
+    },
+    "D": {
+     "clue": "Percutaneous catheter arterial thrombosis",
+     "support": "interventional vascular occlusion",
+     "fit": "Not here: try medical uterotonic therapy first",
+     "tx": "Arterial embolization for refractory",
+     "tempting": "refractory postpartum hemorrhage"
+    },
+    "E": {
+     "clue": "Emergency surgical laparotomy exploration",
+     "support": "operative hemorrhage control",
+     "fit": "Not here: reserve for medical and tamponade failures",
+     "tx": "Uterine compression sutures",
+     "tempting": "immediate surgical intervention"
+    }
+   },
+   "algorithm": {
+    "title": "Stepwise management of postpartum hemorrhage from uterine atony",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Uterine atony with hemorrhage: fundal massage + rapid IV oxytocin infusion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer second-line uterotonics: intramuscular methylergonovine (ergonovine)",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Hypertension present:** avoid methylergonovine; give carboprost or misoprostol",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Asthma present:** avoid carboprost; give methylergonovine or misoprostol",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "If bleeding persists: place intrauterine balloon tamponade to achieve compression",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Tamponade fails:** urgent exploratory laparotomy for B-Lynch sutures or hysterectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate massive transfusion protocol if blood loss exceeds 1500 mL or shock develops",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "delivers a full-term, 4082-g (9-lb) newborn vaginally"
+    },
+    {
+     "text": "excessive vaginal bleeding and a boggy uterus"
+    },
+    {
+     "text": "bleeding continues after uterine massage"
+    }
+   ]
+  },
+  "795694": {
+   "task": "Diagnosis",
+   "boardCall": "Forceps delivery + unilateral facial paralysis with crying -> facial nerve injury",
+   "hinge": "Forceps compression over the stylomastoid foramen causes unilateral facial nerve palsy.",
+   "trap": "Shoulder dystocia maneuvers cause brachial plexus palsy (Erb palsy), not isolated cranial nerve VII facial paralysis.",
+   "options": {
+    "A": {
+     "clue": "Traction on C5-C6 roots (waiter's tip)",
+     "support": "brachial plexus stretching",
+     "fit": "Not here: no motion right face, upper extremities normal",
+     "tx": "Physical therapy and observation",
+     "tempting": "shoulder dystocia delivery maneuvers"
+    },
+    "B": {
+     "clue": "Nonprogressive perinatal brain injury",
+     "support": "chronic spastic encephalopathy",
+     "fit": "Not here: isolated acute lower motor facial palsy",
+     "tx": "Multidisciplinary rehabilitation",
+     "tempting": "low 1-minute Apgar score"
+    },
+    "C": {
+     "clue": "Compression of cranial nerve VII from forceps",
+     "support": "birth trauma neuropathy",
+     "fit": "Here: delivered with forceps, right facial immobility",
+     "tx": "Artificial tears + supportive observation"
+    },
+    "D": {
+     "clue": "Intracranial bleed with neurologic deficit",
+     "support": "subdural or intraventricular hemorrhage",
+     "fit": "Not here: isolated peripheral facial nerve weakness",
+     "tx": "Head ultrasonography or CT",
+     "tempting": "difficult operative delivery"
+    },
+    "E": {
+     "clue": "Systemic neurotoxicity from local anesthetic",
+     "support": "local anesthetic systemic toxicity",
+     "fit": "Not here: maternal pudendal block, localized cranial deficit",
+     "tx": "Supportive care + lipid emulsion",
+     "tempting": "pudendal block with 1% lidocaine"
+    },
+    "F": {
+     "clue": "Neuromuscular blockade from hypermagnesemia",
+     "support": "magnesium toxicity",
+     "fit": "Not here: maternal infusion, infant lacks generalized hypotonia",
+     "tx": "Calcium gluconate + ventilation",
+     "tempting": "maternal magnesium sulfate infusion"
+    }
+   },
+   "algorithm": {
+    "title": "Neonatal birth trauma and cranial nerve palsy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Instrument-assisted delivery (forceps): risk of direct compression injury to facial nerve",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Facial nerve palsy: uninhibited forehead + eye closure failure + mouth deviation when crying",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Differentiate from central CNS lesion: central lesions spare upper forehead wrinkles",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Isolated peripheral facial palsy:** apply eye lubricant drops to prevent exposure keratitis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Limb weakness or Moro reflex asymmetry:** evaluate for concurrent clavicular fracture or Erb palsy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Most cases resolve spontaneously within several weeks to months without intervention",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "delivered with forceps after the fetal heart rate decreased to 80/min"
+    },
+    {
+     "text": "shoulders were firmly impacted, and the newborn was delivered after 3 minutes using special maneuvers"
+    },
+    {
+     "text": "no motion of the right side of the face, even when the child cries"
+    },
+    {
+     "text": "pudendal block with 1% lidocaine",
+     "trap": true
+    }
+   ]
+  },
+  "795695": {
+   "task": "Diagnosis",
+   "boardCall": "Polyhydramnios + fundal height > dates + BMI 29 -> undiagnosed maternal diabetes mellitus",
+   "hinge": "Maternal hyperglycemia causes fetal hyperglycemia and osmotic polyuria, resulting in polyhydramnios.",
+   "trap": "Renal agenesis causes oligohydramnios, whereas maternal diabetes increases fetal urination.",
+   "options": {
+    "A": {
+     "clue": "Physiologic maternal volume expansion",
+     "support": "fluid overload state",
+     "fit": "Not here: amniotic fluid volume tightly fetally regulated",
+     "tx": "Reassurance and observation",
+     "tempting": "excessive fluid intake"
+    },
+    "B": {
+     "clue": "Trisomy with structural anomalies",
+     "support": "chromosomal abnormality",
+     "fit": "Not here: normal ultrasound anatomy, only polyhydramnios",
+     "tx": "Fetal karyotype or microarray",
+     "tempting": "polyhydramnios etiology"
+    },
+    "C": {
+     "clue": "Congenital muscular weakness and contractures",
+     "support": "myotonic dystrophy syndrome",
+     "fit": "Not here: no facial dysmorphism or joint contractures",
+     "tx": "Genetic counseling",
+     "tempting": "polyhydramnios from swallowing defect"
+    },
+    "D": {
+     "clue": "Bilateral absent renal parenchyma",
+     "support": "Potter sequence oligohydramnios",
+     "fit": "Not here: renal agenesis causes severe oligohydramnios",
+     "tx": "Palliative care consultation",
+     "tempting": "fetal renal disorder"
+    },
+    "E": {
+     "clue": "Maternal hyperglycemia causing fetal osmotic diuresis",
+     "support": "gestational diabetes mellitus",
+     "fit": "Here: fundal height 30 cm, moderate polyhydramnios",
+     "tx": "Oral glucose tolerance test"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of polyhydramnios in pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Polyhydramnios: amniotic fluid index >= 24 cm or single deepest pocket >= 8 cm",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Maternal hyperglycemia leads to fetal glucosuria and osmotic diuresis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform 1-hour 50-g glucose challenge test (or 3-hour 100-g OGTT) to diagnose diabetes",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Gestational diabetes diagnosed:** initiate nutritional therapy + self-monitoring of blood glucose",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Fasting or postprandial targets unmet:** start insulin or metformin",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform comprehensive fetal anatomy ultrasound to rule out GI atresia and neural tube defects",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate serial antenatal testing (NST and biophysical profile) starting at 32-34 weeks",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "37-year-old woman, gravida 2, para 1, at 28 weeks' gestation"
+    },
+    {
+     "text": "BMI was 29 kg/m²"
+    },
+    {
+     "text": "Fundal height is 30 cm"
+    },
+    {
+     "text": "moderate polyhydramnios"
+    }
+   ]
+  },
+  "795696": {
+   "task": "Diagnosis",
+   "boardCall": "Pregnant + flank pain + fever 38.6 C + pyuria -> pyelonephritis",
+   "hinge": "Fever, constant flank pain, pyuria, and hematuria in pregnancy establish acute pyelonephritis; ureteral dilation is physiologic.",
+   "trap": "Right ureteral dilation is normal hydronephrosis of pregnancy (dextrorotation), not mechanical ureteral calculus or obstruction.",
+   "options": {
+    "A": {
+     "clue": "Mechanical extrinsic bilateral compression",
+     "support": "structural hydronephrosis",
+     "fit": "Not here: fever 38.6 C and pyuria indicate infection",
+     "tx": "Ureteral stenting if obstruction",
+     "tempting": "ureters are markedly dilated"
+    },
+    "B": {
+     "clue": "Isolated lower tract bladder inflammation",
+     "support": "hemorrhagic cystitis",
+     "fit": "Not here: fever 38.6 C and constant flank pain",
+     "tx": "Oral cephalexin or nitrofurantoin",
+     "tempting": "hematuria and pyuria"
+    },
+    "C": {
+     "clue": "Upper urinary tract bacterial parenchyma infection",
+     "support": "acute pyelonephritis",
+     "fit": "Here: temperature 38.6 C, right flank pain, pyuria",
+     "tx": "IV ceftriaxone or ampicillin-gentamicin"
+    },
+    "D": {
+     "clue": "Renal venous thrombus with severe pain",
+     "support": "thrombotic parenchymal ischemia",
+     "fit": "Not here: pyuria with marked WBCs in urine",
+     "tx": "Anticoagulation with heparin",
+     "tempting": "flank pain and hematuria"
+    },
+    "E": {
+     "clue": "Urolithiasis causing colicky groin radiation",
+     "support": "obstructing nephrolithiasis",
+     "fit": "Not here: ultrasound shows no stones or obstruction",
+     "tx": "Analgesia + hydration",
+     "tempting": "flank pain with hematuria"
+    }
+   },
+   "algorithm": {
+    "title": "Acute pyelonephritis in pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fever + flank pain + pyuria in pregnancy: diagnose acute pyelonephritis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Physiologic hydronephrosis (progesterone + dextrorotation) predisposes to ascending infection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Admit for intravenous antibiotics (ceftriaxone or ampicillin + gentamicin) + IV fluids",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Afebrile for 48 hours and improving:** transition to oral beta-lactam to complete 14 days",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent fever > 48-72 hours:** repeat ultrasound to rule out perinephric abscess or obstruction",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Maintain daily suppressive antimicrobial therapy (nitrofurantoin or cephalexin) until delivery",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "constant moderate pain in the right flank for 12 hours"
+    },
+    {
+     "text": "temperature is 38.6°C (101.4°F)"
+    },
+    {
+     "text": "catheterized urine specimen shows 15–20 RBC/hpf and 30–40 WBC/hpf"
+    },
+    {
+     "text": "ureters are markedly dilated, the right more than the left",
+     "trap": true
+    }
+   ]
+  },
+  "795697": {
+   "task": "Diagnosis",
+   "boardCall": "Pregnant + fever + RLQ tenderness + leukocytosis -> acute appendicitis",
+   "hinge": "Fever, nausea, RLQ tenderness, and leukocytosis in pregnancy indicate acute appendicitis, the most common non-obstetric surgical emergency.",
+   "trap": "Fetal tachycardia and contractions mimic chorioamnionitis, but intact membranes, closed cervix, and focal RLQ tenderness indicate appendicitis.",
+   "options": {
+    "A": {
+     "clue": "Focal peritoneal RLQ inflammation in pregnancy",
+     "support": "acute surgical appendicitis",
+     "fit": "Here: temperature 38.3 C, RLQ tenderness, leukocytosis 16,700",
+     "tx": "Laparoscopic or open appendectomy"
+    },
+    "B": {
+     "clue": "RUQ peritoneal inflammation with Murphy sign",
+     "support": "acute gallbladder inflammation",
+     "fit": "Not here: exquisite tenderness in right lower quadrant",
+     "tx": "Laparoscopic cholecystectomy",
+     "tempting": "nausea, vomiting, and leukocytosis"
+    },
+    "C": {
+     "clue": "Intra-amniotic bacterial infection with purulence",
+     "support": "uterine cavity infection",
+     "fit": "Not here: no loss of vaginal fluid, membranes intact",
+     "tx": "Intravenous antibiotics + delivery",
+     "tempting": "uterine contractions and fetal tachycardia"
+    },
+    "D": {
+     "clue": "Ascending genital tract pelvic infection",
+     "support": "pelvic inflammatory disease",
+     "fit": "Not here: 27 weeks' gestation with acute surgical abdomen",
+     "tx": "Intravenous ceftriaxone + doxycycline",
+     "tempting": "extreme tenderness on pelvic examination"
+    },
+    "E": {
+     "clue": "Renal collecting system infection with CVA tenderness",
+     "support": "upper tract urinary infection",
+     "fit": "Not here: anterior RLQ tenderness without flank signs",
+     "tx": "Intravenous ceftriaxone",
+     "tempting": "fever, chills, and leukocytosis"
+    }
+   },
+   "algorithm": {
+    "title": "Acute appendicitis in pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fever + nausea + right-sided abdominal pain in pregnancy: suspect acute appendicitis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Gradual upward displacement of appendix by enlarging gravid uterus may alter location",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform graded compression ultrasound of right lower quadrant as initial imaging",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Ultrasound non-diagnostic or equivocal:** perform non-contrast abdominal MRI",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform prompt surgical appendectomy (laparoscopic or open) to prevent perforation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Perforation occurs:** significant increase in peritonitis, preterm labor, and fetal mortality",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide perioperative broad-spectrum IV antibiotics (cefoxitin or piperacillin-tazobactam)",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "increasingly severe abdominal pain and a 3-hour history of nausea, vomiting, chills"
+    },
+    {
+     "text": "temperature is 38.3°C (100.9°F), pulse is 120/min"
+    },
+    {
+     "text": "exquisite tenderness in the right lower quadrant"
+    },
+    {
+     "text": "leukocyte count is 16,700/mm³"
+    }
+   ]
+  },
+  "795698": {
+   "task": "Pharmacology",
+   "boardCall": "Lactational mastitis + cracked nipple + fever 38.4 C -> oral dicloxacillin",
+   "hinge": "Lactational mastitis is most commonly caused by Staphylococcus aureus and requires penicillinase-resistant dicloxacillin or cephalexin.",
+   "trap": "Tetracycline is contraindicated in breastfeeding due to tooth discoloration, and ampicillin has high resistance rates in S aureus.",
+   "options": {
+    "A": {
+     "clue": "Aminopenicillin lacking penicillinase resistance",
+     "support": "broad-spectrum penicillin",
+     "fit": "Not here: high staphylococcal beta-lactamase resistance",
+     "tx": "Dicloxacillin for MSSA",
+     "tempting": "first-line postpartum antibiotic"
+    },
+    "B": {
+     "clue": "Oral penicillinase-resistant beta-lactam agent",
+     "support": "anti-staphylococcal penicillin",
+     "fit": "Here: lactational breast erythema, tenderness, fever 38.4 C",
+     "tx": "Dicloxacillin + continue nursing"
+    },
+    "C": {
+     "clue": "Macrolide targeting atypical pulmonary pathogens",
+     "support": "macrolide class antimicrobial",
+     "fit": "Not here: inferior efficacy against MSSA",
+     "tx": "Macrolide for penicillin-allergic patients",
+     "tempting": "penicillin alternative"
+    },
+    "D": {
+     "clue": "Bacteriostatic agent causing fetal tooth discoloration",
+     "support": "contraindicated in lactation",
+     "fit": "Not here: causes infant dental staining",
+     "tx": "Dicloxacillin or cephalexin",
+     "tempting": "skin infection coverage"
+    },
+    "E": {
+     "clue": "Folate synthesis inhibitor covering MRSA",
+     "support": "sulfa antimicrobial combination",
+     "fit": "Not here: reserve for confirmed community MRSA",
+     "tx": "TMP-SMX for refractory MRSA",
+     "tempting": "effective against MRSA"
+    }
+   },
+   "algorithm": {
+    "title": "Management of lactational mastitis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fever + localized breast erythema and tenderness in lactating patient: lactational mastitis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Most common pathogen is Staphylococcus aureus entering through cracked nipples",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate oral dicloxacillin (or cephalexin) + encourage continued frequent breastfeeding",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**High risk for MRSA or severe infection:** treat with oral clindamycin or trimethoprim-sulfamethoxazole",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Fluctuant mass or failure to improve after 48-72 hours:** perform breast ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Hypoechoic fluid collection present:** perform needle aspiration or surgical drainage",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Reassure patient that continuing to breastfeed or pump is safe for the infant",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "tenderness of the left breast for 2 days"
+    },
+    {
+     "text": "She has been breast-feeding for 2 weeks"
+    },
+    {
+     "text": "temperature is 38.4°C (101.1°F)"
+    },
+    {
+     "text": "erythematous, hard, tender upper outer quadrant"
+    },
+    {
+     "text": "nipple has fissures"
+    }
+   ]
+  },
+  "795699": {
+   "task": "Diagnosis",
+   "boardCall": "22-year-old woman + firm smooth mobile painless breast mass -> fibroadenoma",
+   "hinge": "A well-circumscribed, firm, mobile, painless solitary breast mass in a woman under 30 is classically a fibroadenoma.",
+   "trap": "Fibrocystic changes are typically multiple, bilateral, and fluctuate in pain and tenderness with the menstrual cycle.",
+   "options": {
+    "A": {
+     "clue": "Fluctuant painful breast collection with fever",
+     "support": "infectious pocket",
+     "fit": "Not here: painless mass without erythema or warmth",
+     "tx": "Needle drainage + antibiotics",
+     "tempting": "enlarging breast mass"
+    },
+    "B": {
+     "clue": "Traumatic hemorrhage with foamy lipid macrophages",
+     "support": "post-traumatic breast lesion",
+     "fit": "Not here: firm smooth mobile mass without trauma",
+     "tx": "Observation or reassurance",
+     "tempting": "benign palpable mass"
+    },
+    "C": {
+     "clue": "Benign fibroepithelial mobile stromal neoplasm",
+     "support": "benign breast tumor",
+     "fit": "Here: 22-year-old, 4-cm firm smooth mobile mass",
+     "tx": "Targeted ultrasound + core biopsy"
+    },
+    "D": {
+     "clue": "Hormone-sensitive cyclical tender nodularity",
+     "support": "fibrocystic breast disease",
+     "fit": "Not here: solitary, painless, non-cyclical enlargement",
+     "tx": "Supportive bra + oral NSAIDs",
+     "tempting": "benign mass in reproductive-age woman"
+    },
+    "E": {
+     "clue": "Milk retention cyst in postpartum woman",
+     "support": "lactational retention cyst",
+     "fit": "Not here: nulliparous, no history of lactation",
+     "tx": "Needle aspiration",
+     "tempting": "cystic breast mass"
+    },
+    "F": {
+     "clue": "Benign ductal growth with bloody discharge",
+     "support": "intraductal lesion",
+     "fit": "Not here: 4-cm mobile mass without nipple discharge",
+     "tx": "Duct excision",
+     "tempting": "benign breast neoplasm"
+    },
+    "G": {
+     "clue": "Soft, lobulated subcutaneous adipose tumor",
+     "support": "benign adipocytic tumor",
+     "fit": "Not here: firm and smooth stromal mass",
+     "tx": "Observation or surgical excision",
+     "tempting": "painless mobile benign lump"
+    },
+    "H": {
+     "clue": "Subareolar chronic duct dilatation with discharge",
+     "support": "ductal inflammatory dilation",
+     "fit": "Not here: peripheral upper outer quadrant mass",
+     "tx": "Warm compresses + reassurance",
+     "tempting": "benign ductal process"
+    },
+    "I": {
+     "clue": "Erythematous tender lactational breast inflammation",
+     "support": "acute breast cellulitis",
+     "fit": "Not here: painless mass, afebrile, no erythema",
+     "tx": "Dicloxacillin + continued nursing",
+     "tempting": "breast lump"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of a palpable breast mass in women < 30 years",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Palpable breast mass in woman < 30 years: perform targeted diagnostic breast ultrasonography",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Simple cyst visualized on ultrasound:** perform needle aspiration only if symptomatic",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Solid, circumscribed mobile mass (fibroadenoma features):** follow with serial ultrasound or biopsy",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Mass > 3 cm, growing, or patient desires removal:** perform core needle biopsy or surgical excision",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Suspicious features (irregular margins, shadowing):** core needle biopsy + mammography",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Reassure patient regarding benign nature of confirmed fibroadenomas",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "painless lump in her right breast during breast self-examination"
+    },
+    {
+     "text": "She notes that the lump has increased in size"
+    },
+    {
+     "text": "4-cm, firm, smooth, mobile mass is palpated in the upper outer quadrant"
+    }
+   ]
+  },
+  "795700": {
+   "task": "Diagnosis",
+   "boardCall": "Isolated axillary lymph node adenocarcinoma + normal mammography -> occult breast cancer",
+   "hinge": "Adenocarcinoma in an isolated female axillary node represents occult breast primary until proven otherwise, even with normal mammogram.",
+   "trap": "Lung, pancreas, or gastric adenocarcinomas metastasize to supraclavicular or mediastinal nodes, not isolated low axillary nodes.",
+   "options": {
+    "A": {
+     "clue": "Mammary gland adenocarcinoma lymphatic drainage",
+     "support": "occult primary malignancy",
+     "fit": "Here: 54-year-old, 2-cm axillary node adenocarcinoma",
+     "tx": "Breast MRI + axillary dissection"
+    },
+    "B": {
+     "clue": "Bronchogenic epithelial adenocarcinoma metastasis",
+     "support": "pulmonary neoplasm",
+     "fit": "Not here: normal chest x-ray, isolated axillary node",
+     "tx": "Chemotherapy + targeted therapy",
+     "tempting": "common visceral adenocarcinoma"
+    },
+    "C": {
+     "clue": "Primary malignancy of lymphoid lineage cells",
+     "support": "lymphoma diagnosis",
+     "fit": "Not here: biopsy demonstrates adenocarcinoma, not lymphoma",
+     "tx": "Systemic immunochemotherapy",
+     "tempting": "primary lymph node enlargement"
+    },
+    "D": {
+     "clue": "Ductal adenocarcinoma spreading to celiac axis",
+     "support": "pancreatobiliary malignancy",
+     "fit": "Not here: spreads to retroperitoneal or peripancreatic nodes",
+     "tx": "Systemic chemotherapy",
+     "tempting": "common adenocarcinoma"
+    },
+    "E": {
+     "clue": "Gastric signet ring or intestinal adenocarcinoma",
+     "support": "gastric malignancy",
+     "fit": "Not here: spreads to left supraclavicular node (Virchow)",
+     "tx": "Gastric resection + chemotherapy",
+     "tempting": "supraclavicular node metastasis mimicker"
+    }
+   },
+   "algorithm": {
+    "title": "Occult breast cancer presenting as isolated axillary metastasis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Axillary lymph node biopsy reveals metastatic adenocarcinoma: suspect occult breast cancer",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform diagnostic mammography + targeted breast ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Mammogram and ultrasound negative:** perform contrast-enhanced breast MRI",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Primary lesion detected on MRI:** perform MRI-guided core needle biopsy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform axillary lymph node dissection + systemic staging with CT chest/abdomen/pelvis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Primary breast lesion remains occult:** treat as stage II breast cancer with radiation or mastectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Determine hormone receptor (ER/PR) and HER2 status on node biopsy to guide systemic therapy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "found to have a 2-cm left axillary lymph node"
+    },
+    {
+     "text": "mammography show normal findings"
+    },
+    {
+     "text": "biopsy specimen of the node shows adenocarcinoma"
+    }
+   ]
+  },
+  "795701": {
+   "task": "Screening",
+   "boardCall": "Pelvic inflammatory disease with multiple partners -> HIV antibody test",
+   "hinge": "Diagnosis of an acute STI (PID) mandates comprehensive screening for concurrent STIs including HIV and syphilis.",
+   "trap": "Pap smear and HPV testing evaluate cervical cancer screening, not acute sexually transmitted infection workup.",
+   "options": {
+    "A": {
+     "clue": "Cervical cytology screening for dysplasia",
+     "support": "routine cervical cancer screening",
+     "fit": "Not here: acute PID mucosal inflammation invalidates Pap",
+     "tx": "Pap smear at age 21",
+     "tempting": "cervical examination screening"
+    },
+    "B": {
+     "clue": "Viral culture or PCR for vesicular ulcers",
+     "support": "genital herpes workup",
+     "fit": "Not here: purulent cervicitis without painful genital ulcers",
+     "tx": "Oral acyclovir or valacyclovir",
+     "tempting": "sexually transmitted infection testing"
+    },
+    "C": {
+     "clue": "Serologic screening for concurrent retroviral infection",
+     "support": "routine STI panel",
+     "fit": "Here: acute pelvic inflammatory disease, multiple partners",
+     "tx": "HIV antigen and antibody immunoassay"
+    },
+    "D": {
+     "clue": "High-risk viral DNA oncogenic testing",
+     "support": "cervical cancer co-testing",
+     "fit": "Not here: HPV testing not indicated in 19-year-old",
+     "tx": "Screening starting at age 30",
+     "tempting": "routine sexually transmitted testing"
+    },
+    "E": {
+     "clue": "Fluoroscopic contrast evaluation of tubal patency",
+     "support": "infertility diagnostic test",
+     "fit": "Not here: contraindicated during acute pelvic infection",
+     "tx": "Pelvic ultrasound for abscess",
+     "tempting": "evaluates fallopian tube pathology"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation and management of acute pelvic inflammatory disease",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Cervical motion + adnexal tenderness + purulent cervicitis: diagnose acute PID",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Order NAAT for N gonorrhoeae and C trachomatis + HIV antibody and syphilis screening",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Perform transvaginal pelvic ultrasonography to evaluate for tubo-ovarian abscess",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Tubo-ovarian abscess or severe illness:** admit for IV cefoxitin + doxycycline (or ampicillin-sulbactam)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Mild to moderate outpatient PID:** intramuscular ceftriaxone + oral doxycycline + metronidazole",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Re-evaluate within 48-72 hours; hospitalize if no clinical improvement occurs",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "severe pelvic pain and a pus-like vaginal discharge"
+    },
+    {
+     "text": "temperature is 38.5°C (101.3°F), pulse is 110/min"
+    },
+    {
+     "text": "copious purulent discharge coming from the cervical os"
+    },
+    {
+     "text": "cervical motion and bilateral adnexal tenderness"
+    },
+    {
+     "text": "fluctuant mass in the cul-de-sac"
+    }
+   ]
+  },
+  "795702": {
+   "task": "Next step",
+   "boardCall": "Painless vulvar ulcer after prior negative RPR -> repeat rapid plasma reagin",
+   "hinge": "Primary syphilis can have a false-negative initial nontreponemal test; repeat RPR or order darkfield testing.",
+   "trap": "Prior HSV diagnosis tempts repeating viral culture, but the new lesion is solitary, painless, and clean-based.",
+   "options": {
+    "A": {
+     "clue": "Retroviral serology testing",
+     "support": "routine coinfection screen",
+     "fit": "Not here: acute ulcer evaluation requires syphilis restaging",
+     "tx": "Fourth-generation HIV assay",
+     "tempting": "screen for sexually transmitted coinfections"
+    },
+    "B": {
+     "clue": "Nontreponemal serologic test for syphilis",
+     "support": "primary syphilis detection",
+     "fit": "Here: 1x2.5-cm nontender vulvar ulcer with raised edges",
+     "tx": "Intramuscular benzathine penicillin G"
+    },
+    "C": {
+     "clue": "Urogenital NAAT for common bacteria",
+     "support": "cervicitis screening",
+     "fit": "Not here: no sexual exposure since negative test",
+     "tx": "Ceftriaxone + doxycycline",
+     "tempting": "routine sexually transmitted infection re-evaluation"
+    },
+    "D": {
+     "clue": "Cytopathic detection of vesicular virus",
+     "support": "herpes simplex diagnosis",
+     "fit": "Not here: solitary painless ulcer, finished valacyclovir",
+     "tx": "Oral valacyclovir",
+     "tempting": "history of HSV-2 six weeks ago"
+    },
+    "E": {
+     "clue": "Surgical removal of cutaneous lesion",
+     "support": "malignancy diagnostic biopsy",
+     "fit": "Not here: infectious etiology suspected in 19-year-old",
+     "tx": "Antimicrobial therapy",
+     "tempting": "persistent or enlarging vulvar lesion"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of genital ulcer disease",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Genital ulcer evaluation: distinguish painful (HSV, chancroid) from painless (syphilis, LGV)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Painless indurated chancre: order treponemal test or repeat rapid plasma reagin",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**High clinical suspicion but negative initial RPR:** repeat RPR in 1-2 weeks or perform darkfield",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Positive RPR or treponemal test:** administer single injection of intramuscular benzathine penicillin",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen all patients with genital ulcers for HIV, hepatitis B, and gonorrhea/chlamydia",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Follow quantitative nontreponemal titers at 6 and 12 months to verify cure",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "ulcer on the inner side of the right vulva"
+    },
+    {
+     "text": "diagnosed with herpes simplex virus 2 involving the left side of the vulva",
+     "trap": true
+    },
+    {
+     "text": "completed a 10-day course of valacyclovir therapy"
+    },
+    {
+     "text": "1 × 2.5-cm nontender ulcer with slightly raised edges and a shallow base"
+    }
+   ]
+  },
+  "795703": {
+   "task": "Diagnosis",
+   "boardCall": "Fever + severe dysuria + bilateral coalescing vulvar vesicles -> Herpes simplex virus",
+   "hinge": "Grouped erythematous labial vesicles with severe vulvar burning and bilateral inguinal lymphadenopathy indicate primary HSV.",
+   "trap": "Treponema pallidum causes a solitary painless chancre; Haemophilus ducreyi causes a deep purulent painful ulcer, not grouped vesicles.",
+   "options": {
+    "A": {
+     "clue": "Painless genital papule with suppurative buboes",
+     "support": "lymphogranuloma venereum",
+     "fit": "Not here: painful coalescing labial vesicles with dysuria",
+     "tx": "Oral doxycycline",
+     "tempting": "inguinal lymphadenopathy"
+    },
+    "B": {
+     "clue": "Fishy malodorous discharge with clue cells",
+     "support": "bacterial vaginosis",
+     "fit": "Not here: painful vesicles and fever 38.5 C",
+     "tx": "Oral or topical metronidazole",
+     "tempting": "common vulvar irritation"
+    },
+    "C": {
+     "clue": "Painful purulent ulcer with ragged borders",
+     "support": "chancroid infection",
+     "fit": "Not here: grouped labial vesicles, not deep ulcer",
+     "tx": "Single-dose azithromycin or ceftriaxone",
+     "tempting": "painful genital lesion with lymphadenopathy"
+    },
+    "D": {
+     "clue": "Painful grouped vesicles on erythematous base",
+     "support": "primary herpes genitalis",
+     "fit": "Here: fever 38.5 C, bilateral coalescing labial vesicles",
+     "tx": "Oral valacyclovir or acyclovir"
+    },
+    "E": {
+     "clue": "Purulent cervicitis and urethritis",
+     "support": "gonococcal genital infection",
+     "fit": "Not here: vesicular labial lesions, not discharge",
+     "tx": "Intramuscular ceftriaxone",
+     "tempting": "severe dysuria in sexually active female"
+    },
+    "F": {
+     "clue": "Painless indurated clean-based chancre",
+     "support": "primary syphilis",
+     "fit": "Not here: exquisitely painful vesicles and fever",
+     "tx": "Intramuscular benzathine penicillin",
+     "tempting": "sexually transmitted genital ulcer"
+    },
+    "G": {
+     "clue": "Frothy yellow-green malodorous vaginitis",
+     "support": "trichomoniasis",
+     "fit": "Not here: external labial vesicles without vaginitis",
+     "tx": "Oral metronidazole",
+     "tempting": "dysuria and vulvar burning"
+    }
+   },
+   "algorithm": {
+    "title": "Genital herpes simplex virus infection",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Bilateral painful genital vesicles + dysuria + fever: suspect primary HSV infection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm diagnosis with viral PCR (preferred) or direct viral culture of fresh vesicle base",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate oral valacyclovir or acyclovir within 72 hours of symptom onset",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Severe dysuria with urinary retention:** insert Foley catheter + give analgesics",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Frequent recurrent outbreaks (>= 6 per year):** initiate daily suppressive valacyclovir",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Counsel on viral shedding and condom use to prevent partner transmission",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "fever, chills, and severe burning vulvar pain with urination"
+    },
+    {
+     "text": "temperature is 38.5°C (101.3°F), pulse is 110/min"
+    },
+    {
+     "text": "bilateral, tender, firm inguinal lymphadenopathy"
+    },
+    {
+     "text": "erythematous, coalescing labial vesicles bilaterally"
+    }
+   ]
+  },
+  "795704": {
+   "task": "Pharmacology",
+   "boardCall": "Adolescent vulvar pruritus + pseudohyphae on smear -> topical vaginal miconazole",
+   "hinge": "Vulvar erythema and pruritus with budding yeast and pseudohyphae is Candida vulvovaginitis, treated with topical azoles.",
+   "trap": "Metronidazole and clindamycin treat bacterial vaginosis (clue cells, fishy odor), not fungal Candida.",
+   "options": {
+    "A": {
+     "clue": "Lincosamide targeting anaerobic bacteria",
+     "support": "anaerobic bacterial antibiotic",
+     "fit": "Not here: pseudohyphae on smear represent yeast",
+     "tx": "Oral clindamycin for BV",
+     "tempting": "vaginal infection antimicrobial"
+    },
+    "B": {
+     "clue": "Nitroimidazole targeting anaerobes and protozoa",
+     "support": "antibacterial and antiprotozoal agent",
+     "fit": "Not here: fungal elements seen, not clue cells",
+     "tx": "Oral metronidazole for BV/trichomoniasis",
+     "tempting": "first-line vaginitis therapy"
+    },
+    "C": {
+     "clue": "Topical lincosamide formulation",
+     "support": "topical bacterial vaginitis therapy",
+     "fit": "Not here: active fungal candidiasis on smear",
+     "tx": "Vaginal clindamycin ovules",
+     "tempting": "topical formulation for vaginitis"
+    },
+    "D": {
+     "clue": "Topical nitroimidazole gel",
+     "support": "topical bacterial vaginosis therapy",
+     "fit": "Not here: ineffective against Candida species",
+     "tx": "Vaginal metronidazole gel",
+     "tempting": "topical vaginitis treatment"
+    },
+    "E": {
+     "clue": "Topical imidazole antifungal agent",
+     "support": "ergosterol synthesis inhibitor",
+     "fit": "Here: vulvar itching, labial erythema, pseudohyphae on smear",
+     "tx": "Topical vaginal miconazole cream"
+    }
+   },
+   "algorithm": {
+    "title": "Management of Candida vulvovaginitis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Vulvovaginal itching + erythema: perform wet mount preparation with 10% potassium hydroxide",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Microscopy shows budding yeast and pseudohyphae: Candida vulvovaginitis established",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer topical vaginal miconazole cream (or single oral fluconazole dose)",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Recurrent vulvovaginal candidiasis (>= 4 per year):** extended induction then weekly oral fluconazole",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Non-albicans species (Candida glabrata):** treat with vaginal boric acid suppositories",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Identify and modify predisposing factors: optimize glycemic control and minimize systemic antibiotic use",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "7-day history of vulvar and vaginal itching"
+    },
+    {
+     "text": "currently takes no medications"
+    },
+    {
+     "text": "mild erythema and excoriation of the labia majora"
+    }
+   ]
+  },
+  "795705": {
+   "task": "Pharmacology",
+   "boardCall": "Soft pink papillary vulvar lesions -> topical podophyllum resin",
+   "hinge": "Soft pink papillary lesions on the vulva are condylomata acuminata (HPV 6/11), treated topically with podophyllum resin.",
+   "trap": "Acyclovir treats ulcerative vesicular lesions of HSV, not fleshy exophytic papillomas of HPV.",
+   "options": {
+    "A": {
+     "clue": "Guanosine analog inhibiting viral DNA polymerase",
+     "support": "anti-herpetic antiviral agent",
+     "fit": "Not here: papillary fleshy lesions, not vesicles",
+     "tx": "Oral acyclovir for HSV",
+     "tempting": "common sexually transmitted antiviral"
+    },
+    "B": {
+     "clue": "Macrolide targeting intracellular bacteria",
+     "support": "chlamydial antibiotic therapy",
+     "fit": "Not here: warts caused by HPV, not Chlamydia",
+     "tx": "Oral azithromycin for chlamydia",
+     "tempting": "empiric sexually transmitted infection treatment"
+    },
+    "C": {
+     "clue": "Antiviral cytokine injection for refractory warts",
+     "support": "intralesional biological response modifier",
+     "fit": "Not here: expensive, reserved for severe refractory warts",
+     "tx": "Intralesional interferon",
+     "tempting": "treats stubborn condylomata"
+    },
+    "D": {
+     "clue": "Topical antimitotic resin causing tissue necrosis",
+     "support": "cytotoxic chemical ablative agent",
+     "fit": "Here: multiple 5- to 10-mm soft pink papillary lesions",
+     "tx": "Topical podophyllum resin application"
+    },
+    "E": {
+     "clue": "Nucleoside reverse transcriptase inhibitor",
+     "support": "antiretroviral agent for HIV",
+     "fit": "Not here: condylomata acuminata without systemic HIV illness",
+     "tx": "HAART regimen for HIV",
+     "tempting": "treats viral sexually transmitted disease"
+    },
+    "F": {
+     "clue": "Ionizing radiation for invasive vulvar cancer",
+     "support": "neoplastic radiotherapy",
+     "fit": "Not here: benign infectious HPV warts, not cancer",
+     "tx": "Radiotherapy for vulvar carcinoma",
+     "tempting": "destroys proliferating tissue"
+    }
+   },
+   "algorithm": {
+    "title": "Management of condylomata acuminata (anogenital warts)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Exophytic flesh-colored or pink papillary genital verrucae: diagnose condylomata acuminata (HPV 6/11)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Apply provider-administered topical podophyllum resin (or trichloroacetic acid)",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Patient-applied outpatient options:** prescribe imiquimod cream or podofilox solution",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Extensive, bulky, or refractory lesions:** surgical excision, cryotherapy, or electrocautery",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Pregnant patient:** avoid podophyllum/imiquimod; treat with trichloroacetic acid or cryotherapy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer HPV vaccination series to protect against additional oncogenic strains",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "vulvar irritation for 14 days"
+    },
+    {
+     "text": "three partners since the age of 15 years"
+    },
+    {
+     "text": "multiple 5- to 10-mm soft pink papillary lesions with areas of pigmentation"
+    }
+   ]
+  },
+  "795706": {
+   "task": "Next step",
+   "boardCall": "Asymptomatic 15-week-sized leiomyomata uteri + normal hematocrit -> observation only",
+   "hinge": "Asymptomatic uterine fibroids require observation only, regardless of uterine size, when bleeding and pressure are absent.",
+   "trap": "15-week uterine size tempts myomectomy or GnRH agonists, but asymptomatic fibroids require no intervention.",
+   "options": {
+    "A": {
+     "clue": "Expectant management with serial surveillance",
+     "support": "conservative non-interventional monitoring",
+     "fit": "Here: asymptomatic 15-week-sized uterus, normal hematocrit",
+     "tx": "Routine clinical observation"
+    },
+    "B": {
+     "clue": "Contrast radiographic imaging of urinary tract",
+     "support": "intravenous urogram",
+     "fit": "Not here: no ureteral compression, pelvic ultrasound sufficient",
+     "tx": "Renal ultrasound if hydronephrosis",
+     "tempting": "evaluates ureteral compression from large fibroid"
+    },
+    "C": {
+     "clue": "Hypothalamic-pituitary down-regulation shrinking tumors",
+     "support": "hypoestrogenic medical therapy",
+     "fit": "Not here: reserved for preoperative bridging or symptoms",
+     "tx": "GnRH agonist plus add-back",
+     "tempting": "shrinks large 15-week fibroid"
+    },
+    "D": {
+     "clue": "Hormonal suppression reducing bleeding",
+     "support": "menorrhagia medical therapy",
+     "fit": "Not here: patient has no bleeding symptoms",
+     "tx": "Oral contraceptives for menorrhagia",
+     "tempting": "first-line medical management of fibroids"
+    },
+    "E": {
+     "clue": "Surgical enucleation preserving fertility",
+     "support": "operative fibroid resection",
+     "fit": "Not here: totally asymptomatic without bulk symptoms",
+     "tx": "Myomectomy for symptomatic disease",
+     "tempting": "uterus enlarged to 15-week size"
+    }
+   },
+   "algorithm": {
+    "title": "Management of uterine leiomyomata (fibroids)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Palpable uterine enlargement: confirm leiomyomata via transvaginal and transabdominal pelvic ultrasonography",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Recommend clinical observation only for asymptomatic uterine fibroids regardless of size",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Heavy menstrual bleeding desiring future pregnancy:** combined oral contraceptives or tranexamic acid",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Submucosal fibroids causing infertility or bleeding:** hysteroscopic myomectomy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Symptomatic bulk symptoms completed childbearing:** uterine artery embolization or hysterectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Re-evaluate annually with pelvic examination; investigate rapid postmenopausal growth",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "uterus consistent in size with a 15-week gestation"
+    },
+    {
+     "text": "hematocrit is 41%"
+    },
+    {
+     "text": "Pelvic ultrasonography confirms leiomyomata uteri"
+    }
+   ]
+  },
+  "795707": {
+   "task": "Diagnosis",
+   "boardCall": "Postmenopausal woman + palpable ovary -> palpable ovary requires pelvic ultrasound",
+   "hinge": "Ovaries atrophy after menopause; any palpable ovary in a postmenopausal woman is suspicious for ovarian malignancy.",
+   "trap": "Pelvic organ prolapse (cystocele, rectocele) is common and benign, whereas a palpable postmenopausal ovary is a red flag.",
+   "options": {
+    "A": {
+     "clue": "Anterior vaginal wall bladder herniation",
+     "support": "anterior compartment prolapse",
+     "fit": "Not here: benign, common, and asymptomatic pelvic defect",
+     "tx": "Pelvic floor muscle training",
+     "tempting": "palpable pelvic wall bulge"
+    },
+    "B": {
+     "clue": "Atrophic non-palpable postmenopausal gonad",
+     "support": "normal postmenopausal examination",
+     "fit": "Not here: normal expected finding after menopause",
+     "tx": "No evaluation needed",
+     "tempting": "asymmetric ovarian finding"
+    },
+    "C": {
+     "clue": "Palpable gonad suggesting postmenopausal neoplasm",
+     "support": "abnormal adnexal finding",
+     "fit": "Here: 65-year-old, right ovary palpable on exam",
+     "tx": "Transvaginal ultrasound + CA-125"
+    },
+    "D": {
+     "clue": "Posterior vaginal wall rectal herniation",
+     "support": "posterior compartment prolapse",
+     "fit": "Not here: benign pelvic support defect, asymptomatic",
+     "tx": "Pessary or observation",
+     "tempting": "palpable pelvic floor laxity"
+    },
+    "E": {
+     "clue": "Apical descent of uterus and cervix",
+     "support": "apical pelvic prolapse",
+     "fit": "Not here: mild first-degree prolapse is benign",
+     "tx": "Expectant observation",
+     "tempting": "uterine displacement on examination"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of postmenopausal adnexal mass",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Palpable ovary in postmenopausal woman: high index of suspicion for ovarian malignancy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Order urgent transvaginal ultrasonography to assess adnexal morphology and vascularity",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Measure serum CA-125 level to assist in risk stratification",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Premenopausal comparison:** palpable ovary is physiologic and normal during reproductive years",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Solid components, thick septations, or elevated CA-125:** refer for staging laparotomy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Simple unilocular cyst < 5 cm with normal CA-125:** follow with serial ultrasound every 3-6 months",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "second-degree cystocele, a first-degree rectocele",
+     "trap": true
+    },
+    {
+     "text": "first-degree uterovaginal prolapse"
+    },
+    {
+     "text": "right ovary is palpable but less than 5 cm in diameter"
+    }
+   ]
+  },
+  "795708": {
+   "task": "Risk factor",
+   "boardCall": "Oligomenorrhea + BMI 30 + heavy bleeding -> chronic anovulation drives endometrial cancer",
+   "hinge": "Chronic anovulation causes prolonged unopposed estrogen exposure without progesterone, the strongest driver of endometrial hyperplasia and cancer.",
+   "trap": "Diabetes and hypertension are associated comorbidities, but chronic anovulatory unopposed estrogen is the dominant direct risk.",
+   "options": {
+    "A": {
+     "clue": "Unopposed estrogen stimulation of endometrium",
+     "support": "dominant hormonal carcinogen",
+     "fit": "Here: four to six periods annually, heavy bleeding",
+     "tx": "Endometrial biopsy + progestin"
+    },
+    "B": {
+     "clue": "Hyperinsulinemia altering sex hormone binding",
+     "support": "metabolic comorbid risk factor",
+     "fit": "Not here: secondary to unopposed estrogen drive",
+     "tx": "Glycemic control with metformin",
+     "tempting": "type 2 diabetes on glyburide"
+    },
+    "C": {
+     "clue": "Increased cumulative lifetime ovulatory cycles",
+     "support": "mild lifetime estrogen risk",
+     "fit": "Not here: menarche at 11 is minor risk",
+     "tx": "Observation",
+     "tempting": "menarche at the age of 11 years"
+    },
+    "D": {
+     "clue": "Vascular endothelial comorbidity",
+     "support": "non-causal comorbid association",
+     "fit": "Not here: hypertension is not independent risk",
+     "tx": "Antihypertensive therapy",
+     "tempting": "blood pressure is 150/88 mm Hg"
+    },
+    "E": {
+     "clue": "Absence of protective gestational progesterone surges",
+     "support": "reproductive risk factor",
+     "fit": "Not here: chronic anovulation confers higher risk",
+     "tx": "Counseling and surveillance",
+     "tempting": "47-year-old nulligravid woman"
+    }
+   },
+   "algorithm": {
+    "title": "Endometrial cancer risk factors and evaluation",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Abnormal uterine bleeding in women >= 45 years: evaluate for endometrial hyperplasia and carcinoma",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Chronic anovulation provides unopposed estrogen stimulation of the endometrium without progesterone",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform endometrial biopsy to rule out hyperplasia or malignancy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Endometrial hyperplasia without atypia:** treat with oral progestins or levonorgestrel IUD",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Atypical hyperplasia or adenocarcinoma:** total hysterectomy + bilateral salpingo-oophorectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Address co-existing metabolic risk factors: optimize glycemic control and achieve weight loss",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "two episodes of heavy vaginal bleeding during the past 3 months"
+    },
+    {
+     "text": "four to six menstrual periods each year with moderate flow"
+    },
+    {
+     "text": "type 2 diabetes mellitus treated with glyburide"
+    },
+    {
+     "text": "blood pressure is 150/88 mm Hg",
+     "trap": true
+    }
+   ]
+  },
+  "795709": {
+   "task": "Diagnosis",
+   "boardCall": "11-year-old girl + 8-cm complex echogenic adnexal mass -> mature cystic teratoma",
+   "hinge": "An 8-cm complex adnexal mass with internal echogenicity in a premenarchal girl is a mature cystic teratoma.",
+   "trap": "Functional cysts are simple unilocular fluid collections, while teratomas display complex heterogeneous echogenicity.",
+   "options": {
+    "A": {
+     "clue": "Peritoneal inflammatory collection after appendicitis",
+     "support": "ruptured appendiceal collection",
+     "fit": "Not here: pelvic mass without acute peritoneal abdomen",
+     "tx": "Percutaneous drainage + antibiotics",
+     "tempting": "right-sided abdominal discomfort"
+    },
+    "B": {
+     "clue": "Malignant serous or mucinous ovarian tumor",
+     "support": "postmenopausal ovarian cancer",
+     "fit": "Not here: rare in 11-year-old, germ cell primary",
+     "tx": "Surgical debulking + chemotherapy",
+     "tempting": "8-cm complex adnexal mass"
+    },
+    "C": {
+     "clue": "Unilocular anechoic follicular or luteal cyst",
+     "support": "physiologic ovarian cyst",
+     "fit": "Not here: complex mass with echogenicity, premenarchal",
+     "tx": "Observation for spontaneous involution",
+     "tempting": "common adnexal mass in females"
+    },
+    "D": {
+     "clue": "Gestational trophoblastic snowstorm lesion",
+     "support": "trophoblastic pregnancy neoplasm",
+     "fit": "Not here: 11-year-old premenarchal girl, not pregnant",
+     "tx": "Uterine suction curettage",
+     "tempting": "complex echogenic pelvic mass"
+    },
+    "E": {
+     "clue": "Germ cell tumor containing multiple germ layers",
+     "support": "benign dermoid cyst",
+     "fit": "Here: 11-year-old, 8-cm complex mass with echogenicity",
+     "tx": "Ovarian cystectomy preserving ovary"
+    }
+   },
+   "algorithm": {
+    "title": "Adnexal masses in children and adolescents",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Adnexal mass in adolescent: perform transabdominal or transvaginal pelvic ultrasonography",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Complex cystic mass with acoustic shadowing and internal echogenicity: mature cystic teratoma (dermoid)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Check tumor markers (AFP, beta-hCG, LDH, CA-125) to rule out immature or malignant germ cell tumor",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Acute severe pain with absent Doppler flow:** emergency laparoscopy for ovarian detorsion",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Elective management of benign teratoma:** laparoscopic ovarian cystectomy preserving cortex",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Examine contralateral ovary as up to 10-15% of dermoid cysts are bilateral",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "11-year-old girl is brought to the physician"
+    },
+    {
+     "text": "never had a menstrual period"
+    },
+    {
+     "text": "8-cm complex mass in the right adnexa with echogenicity"
+    }
+   ]
+  },
+  "795710": {
+   "task": "Diagnosis",
+   "boardCall": "Primary amenorrhea + short stature + elevated FSH/LH -> Turner syndrome (45,X)",
+   "hinge": "Primary amenorrhea with short stature, delayed puberty, hypoestrogenism, and elevated gonadotropins indicates hypergonadotropic hypogonadism from Turner syndrome.",
+   "trap": "Müllerian agenesis has normal FSH/LH and secondary sexual development; hypogonadotropic hypogonadism has low or normal FSH/LH.",
+   "options": {
+    "A": {
+     "clue": "Hypothalamic amenorrhea from severe weight restriction",
+     "support": "functional hypothalamic failure",
+     "fit": "Not here: BMI 28 kg/m2, elevated gonadotropins",
+     "tx": "Nutritional restoration + psychotherapy",
+     "tempting": "primary amenorrhea presentation"
+    },
+    "B": {
+     "clue": "Müllerian duct agenesis with absent vagina/uterus",
+     "support": "Mayer-Rokitansky-Kuster-Hauser",
+     "fit": "Not here: cervix visualized, elevated FSH and LH",
+     "tx": "Vaginal dilators or vaginoplasty",
+     "tempting": "primary amenorrhea with normal breast development"
+    },
+    "C": {
+     "clue": "Complete or partial monosomy X karyotype",
+     "support": "ovarian dysgenesis hypergonadotropic",
+     "fit": "Here: height 150 cm, Tanner 3, FSH 33 mIU/mL",
+     "tx": "Estrogen + progesterone replacement"
+    },
+    "D": {
+     "clue": "Pituitary prolactinoma causing galactorrhea-amenorrhea",
+     "support": "hyperprolactinemic hypogonadism",
+     "fit": "Not here: prolactin normal at 9 ng/mL",
+     "tx": "Dopamine agonists (cabergoline)",
+     "tempting": "amenorrhea endocrine workup"
+    },
+    "E": {
+     "clue": "Low FSH/LH from hypothalamic-pituitary failure",
+     "support": "central hypogonadism",
+     "fit": "Not here: elevated LH 22 and FSH 33 mIU/mL",
+     "tx": "Pulsatile GnRH or hormone replacement",
+     "tempting": "hypoestrogenic primary amenorrhea"
+    },
+    "F": {
+     "clue": "Hyperandrogenism with oligo-ovulation and polycystic ovaries",
+     "support": "polycystic ovarian syndrome",
+     "fit": "Not here: primary amenorrhea with elevated gonadotropins",
+     "tx": "Combined oral contraceptives",
+     "tempting": "BMI 28 with menstrual absence"
+    },
+    "G": {
+     "clue": "Intrauterine gestation with elevated beta-hCG",
+     "support": "gestational secondary amenorrhea",
+     "fit": "Not here: lifelong primary amenorrhea, hypoestrogenized vagina",
+     "tx": "Prenatal care",
+     "tempting": "most common cause of amenorrhea"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of primary amenorrhea",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Primary amenorrhea: absence of menarche by age 15 with secondary sex characteristics (or 13 without)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Pelvic ultrasound confirms presence of uterus; measure serum FSH, LH, and prolactin",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Elevated FSH/LH (hypergonadotropic hypogonadism):** perform peripheral blood karyotype analysis",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Karyotype 45,X:** diagnose Turner syndrome; screen for bicuspid aortic valve and coarctation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Low or normal FSH/LH (hypogonadotropic):** evaluate for constitutional delay, anorexia, or stress",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Absent uterus on ultrasound:** karyotype differentiates Müllerian agenesis (46,XX) from AIS (46,XY)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate estrogen replacement therapy for breast development, then add cyclical progesterone",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "never had a menstrual period"
+    },
+    {
+     "text": "150 cm (4 ft 11 in) tall"
+    },
+    {
+     "text": "vaginal mucosa is hypoestrogenized"
+    },
+    {
+     "text": "follicle-stimulating hormone concentration of 33 mIU/mL"
+    }
+   ]
+  },
+  "795711": {
+   "task": "Prevention",
+   "boardCall": "Prior DVT + poor daily pill adherence -> depot medroxyprogesterone injection",
+   "hinge": "Prior DVT contraindicates estrogen; progestin-only injection every 3 months avoids daily adherence issues and estrogen thrombotic risk.",
+   "trap": "Combined oral contraceptives and vaginal ring contain estrogen, which is absolutely contraindicated with prior venous thromboembolism.",
+   "options": {
+    "A": {
+     "clue": "Combined estrogen-progestin intravaginal ring",
+     "support": "estrogen-containing hormonal contraception",
+     "fit": "Not here: estrogen contraindicated with prior DVT",
+     "tx": "Progestin-only alternatives",
+     "tempting": "monthly rather than daily administration"
+    },
+    "B": {
+     "clue": "Intramuscular progestin-only quarterly injection",
+     "support": "estrogen-free long-acting contraception",
+     "fit": "Here: prior deep venous thrombosis, poor pill adherence",
+     "tx": "Depot medroxyprogesterone every 3 months"
+    },
+    "C": {
+     "clue": "Permanent surgical bilateral fallopian occlusion",
+     "support": "irreversible surgical sterilization",
+     "fit": "Not here: uncertain if desiring future children",
+     "tx": "Laparoscopic tubal ligation",
+     "tempting": "highly effective permanent contraception"
+    },
+    "D": {
+     "clue": "Daily estrogen-progestin oral steroid tablet",
+     "support": "combined oral contraceptive pill",
+     "fit": "Not here: estrogen contraindicated with prior DVT",
+     "tx": "Progestin-only pill or injection",
+     "tempting": "standard effective reversible contraception"
+    },
+    "E": {
+     "clue": "Intrauterine levonorgestrel or copper device",
+     "support": "long-acting reversible contraception",
+     "fit": "Not here: recent chlamydia with multiple partners",
+     "tx": "IUD placement after STI resolution",
+     "tempting": "estrogen-free long-acting method"
+    }
+   },
+   "algorithm": {
+    "title": "Contraceptive selection in patients with medical comorbidities",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Review medical history: prior venous thromboembolism is an absolute contraindication to estrogen",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Recommend progestin-only contraception: intramuscular depot medroxyprogesterone acetate every 3 months",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Desires long-acting reversible implant:** etonogestrel subdermal implant provides 3-5 years protection",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Intrauterine device consideration:** avoid if active pelvic infection or high current STI risk",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Permanent sterilization requested:** laparoscopic tubal ligation once childbearing desires completed",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Counsel on dual protection: emphasize consistent male latex condom use to prevent STIs",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Advise on bone mineral density monitoring if depot medroxyprogesterone used beyond 2 years",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "deep venous thrombosis during her second pregnancy"
+    },
+    {
+     "text": "treated for Chlamydia trachomatis infection",
+     "trap": true
+    },
+    {
+     "text": "difficulty remembering to take daily medications"
+    }
+   ]
+  },
+  "795712": {
+   "task": "Next step",
+   "boardCall": "Fundal IUD + intramural fibroid without cavity distortion -> leave IUD in place + counsel",
+   "hinge": "An intramural fibroid that does not distort the endometrial cavity does not compromise IUD efficacy; leave in place.",
+   "trap": "A 4-cm fibroid tempts IUD removal or surgical myomectomy, but non-distorting asymptomatic fibroids require no intervention.",
+   "options": {
+    "A": {
+     "clue": "Maintain intrauterine device in normal cavity",
+     "support": "uncompromised contraceptive efficacy",
+     "fit": "Here: visible string, 4-cm intramural fibroid, normal cavity",
+     "tx": "Leave IUD in place"
+    },
+    "B": {
+     "clue": "Device extraction and contraceptive transition",
+     "support": "unnecessary contraceptive interruption",
+     "fit": "Not here: IUD is correctly positioned in fundus",
+     "tx": "Barrier or hormonal contraception",
+     "tempting": "fibroid near IUD location"
+    },
+    "C": {
+     "clue": "Device removal with surgical myomectomy",
+     "support": "premature invasive surgical intervention",
+     "fit": "Not here: patient is completely asymptomatic",
+     "tx": "Laparoscopic myomectomy",
+     "tempting": "enlarged uterus with leiomyoma"
+    },
+    "D": {
+     "clue": "Exchange for alternative geometric frame",
+     "support": "unnecessary device replacement",
+     "fit": "Not here: T-shaped copper IUD functions effectively",
+     "tx": "Copper IUD replacement",
+     "tempting": "anatomic modification for fibroid"
+    },
+    "E": {
+     "clue": "Manual or hysteroscopic spatial repositioning",
+     "support": "unfeasible technical manipulation",
+     "fit": "Not here: fundal position is already optimal",
+     "tx": "Expectant management",
+     "tempting": "prevent fibroid contact with IUD"
+    }
+   },
+   "algorithm": {
+    "title": "Management of intrauterine devices with uterine leiomyomata",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "IUD user found to have uterine leiomyoma: perform pelvic ultrasonography to evaluate cavity",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Endometrial cavity normal in size and undistorted: leave IUD in place + counsel",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Intramural or subserosal fibroid without cavity distortion:** maintain current IUD + monitor symptoms",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Submucosal fibroid distorting cavity or causing expulsion:** remove IUD + offer alternative contraception",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Severe dysmenorrhea or heavy bleeding develops:** switch to levonorgestrel-releasing IUD or oral progestin",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Re-evaluate annually with pelvic exam; confirm visible string and stable fibroid size",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "copper-containing IUD for contraception for 2 years"
+    },
+    {
+     "text": "enlarged uterus and a visible IUD string"
+    },
+    {
+     "text": "4-cm intramural leiomyoma uteri",
+     "trap": true
+    },
+    {
+     "text": "endometrial cavity is normal in size"
+    }
+   ]
+  },
+  "795713": {
+   "task": "Next step",
+   "boardCall": "16-year-old requesting contraception alone -> prescribe oral contraceptive",
+   "hinge": "Title X and state laws allow confidential contraceptive access for minors without parental consent or invasive exams.",
+   "trap": "Routine pelvic examination or parental notification is not required before prescribing combined oral contraceptives to healthy adolescents.",
+   "options": {
+    "A": {
+     "clue": "Educational discussion withholding effective prescription",
+     "support": "inadequate contraceptive access",
+     "fit": "Not here: risks unintended adolescent pregnancy",
+     "tx": "Provide active contraception",
+     "tempting": "cautious conservative approach"
+    },
+    "B": {
+     "clue": "Mandatory parental disclosure and presence",
+     "support": "breach of adolescent confidentiality",
+     "fit": "Not here: minors access confidential contraception",
+     "tx": "Respect patient autonomy",
+     "tempting": "minor requesting medical prescription"
+    },
+    "C": {
+     "clue": "Nucleic acid amplification for chlamydia/gonorrhea",
+     "support": "unnecessary pre-contraception screening",
+     "fit": "Not here: asymptomatic prior to first intercourse",
+     "tx": "Screening after sexual debut",
+     "tempting": "routine adolescent STI screening"
+    },
+    "D": {
+     "clue": "Invasive speculum and bimanual examination",
+     "support": "unnecessary pelvic exam barrier",
+     "fit": "Not here: pelvic exam not required before OCPs",
+     "tx": "Prescribe without pelvic examination",
+     "tempting": "standard gynecologic visit component"
+    },
+    "E": {
+     "clue": "Hormonal ovulation suppression prescription",
+     "support": "first-line adolescent contraception",
+     "fit": "Here: 16-year-old requesting contraception before sexual activity",
+     "tx": "Low-dose combined oral contraceptive"
+    }
+   },
+   "algorithm": {
+    "title": "Adolescent contraceptive counseling and confidentiality",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Adolescent requesting contraception: ensure confidential care without requiring parental consent",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Take thorough medical history + check blood pressure (pelvic exam and STI screening not mandatory before OCP)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Prescribe requested low-dose combined oral contraceptive (or offer LARC methods)",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**History of migraine with aura or hypertension:** prescribe progestin-only pills or implant",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Desires top-tier long-acting method:** provide subdermal implant or intrauterine device",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide dual protection counseling: reinforce consistent condom use for STI prevention",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Offer emergency contraception prescription and schedule follow-up visit in 3 months",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "16-year-old girl comes alone to the physician requesting advice regarding contraception"
+    },
+    {
+     "text": "requests an oral contraceptive"
+    },
+    {
+     "text": "Menses occur at regular 28-day intervals"
+    }
+   ]
+  },
+  "795714": {
+   "task": "Mechanism",
+   "boardCall": "Postmenopausal urinary frequency + negative urine cultures -> decreased estradiol production",
+   "hinge": "Estrogen receptors populate the bladder trigone and urethra; postmenopausal estradiol loss causes genitourinary syndrome of menopause.",
+   "trap": "Negative cultures rule out recurrent bacterial UTI; progesterone does not maintain urogenital mucosal integrity.",
+   "options": {
+    "A": {
+     "clue": "Adrenal and ovarian androgen precursor",
+     "support": "intermediate steroid hormone",
+     "fit": "Not here: does not maintain urogenital mucosal epithelium",
+     "tx": "None indicated",
+     "tempting": "postmenopausal endocrine alteration"
+    },
+    "B": {
+     "clue": "Primary circulating ovarian estrogen",
+     "support": "urogenital mucosal trophic hormone",
+     "fit": "Here: 68-year-old, dysuria, nocturia, negative cultures",
+     "tx": "Topical vaginal estradiol cream"
+    },
+    "C": {
+     "clue": "Secretory progestogen maintaining endometrium",
+     "support": "luteal steroid hormone",
+     "fit": "Not here: loss causes anovulation, not mucosal atrophy",
+     "tx": "Oral progestin if intact uterus",
+     "tempting": "menopausal hormone loss"
+    },
+    "D": {
+     "clue": "Eicosanoids mediating pain and contractions",
+     "support": "local inflammatory lipid mediators",
+     "fit": "Not here: not an endocrine trophic ovarian hormone",
+     "tx": "NSAIDs",
+     "tempting": "inflammatory bladder symptoms"
+    },
+    "E": {
+     "clue": "Circulating androgen maintaining libido and muscle",
+     "support": "ovarian and adrenal androgen",
+     "fit": "Not here: estradiol directly maintains trigone epithelium",
+     "tx": "Androgen replacement",
+     "tempting": "ovarian hormone declining with age"
+    }
+   },
+   "algorithm": {
+    "title": "Genitourinary syndrome of menopause (atrophic cystourethritis)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Postmenopausal dysuria + frequency + sterile urine cultures: suspect genitourinary syndrome of menopause",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Decreased ovarian estradiol production causes thinning and loss of elasticity of bladder trigone and urethral mucosa",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Pelvic examination shows pale, smooth, dry vaginal mucosa with loss of rugae",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Mild symptoms:** prescribe non-hormonal vaginal lubricants and moisturizers",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Moderate to severe urogenital symptoms:** initiate low-dose topical vaginal estradiol cream or ring",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Topical vaginal estrogen carries minimal systemic absorption and does not require opposing progestin",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "68-year-old woman"
+    },
+    {
+     "text": "dysuria, nocturia, and frequent urination"
+    },
+    {
+     "text": "Several urine cultures have been negative"
+    }
+   ]
+  },
+  "795715": {
+   "task": "Diagnosis",
+   "boardCall": "Infertility + dysmenorrhea + dyspareunia + normal HSG -> pelvic endometriosis",
+   "hinge": "Subfertility accompanied by dysmenorrhea and dyspareunia with otherwise normal basic fertility workup indicates endometriosis.",
+   "trap": "Normal hysterosalpingography demonstrates patent tubes, but fails to visualize peritoneal endometriotic implants.",
+   "options": {
+    "A": {
+     "clue": "Ectopic endometrial glands and stroma",
+     "support": "peritoneal inflammatory implants",
+     "fit": "Here: 18 months infertility, dysmenorrhea, dyspareunia, normal HSG",
+     "tx": "Laparoscopic ablation or excision"
+    },
+    "B": {
+     "clue": "Pituitary lactotroph adenoma causing galactorrhea",
+     "support": "hyperprolactinemic anovulation",
+     "fit": "Not here: regular 28-day menses, documented LH surges",
+     "tx": "Dopamine agonist (cabergoline)",
+     "tempting": "common hormonal infertility cause"
+    },
+    "C": {
+     "clue": "Thyroid hormone deficiency causing anovulation",
+     "support": "hypothyroid metabolic dysfunction",
+     "fit": "Not here: regular cycles, no cold intolerance or weight gain",
+     "tx": "Oral levothyroxine",
+     "tempting": "endocrine contributor to infertility"
+    },
+    "D": {
+     "clue": "Hostile or scant postcoital cervical secretion",
+     "support": "cervical factor infertility",
+     "fit": "Not here: dysmenorrhea and dyspareunia indicate pelvic disease",
+     "tx": "Intrauterine insemination",
+     "tempting": "unexplained subfertility factor"
+    },
+    "E": {
+     "clue": "Fibrous bands from pelvic infection or surgery",
+     "support": "adhesive mechanical distortion",
+     "fit": "Not here: normal HSG, no prior surgery or PID",
+     "tx": "Laparoscopic adhesiolysis",
+     "tempting": "tuboperitoneal factor in infertility"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of infertility and suspected endometriosis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Infertility > 12 months in woman < 35 years: perform basic workup (semen analysis, ovulation, tubal patency)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Dysmenorrhea + dyspareunia with normal HSG and semen: suspect pelvic endometriosis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform diagnostic laparoscopy with biopsy to directly visualize and excise peritoneal implants",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Minimal to mild endometriosis (stage I or II):** laparoscopic surgical ablation improves fertility",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Moderate to severe endometriosis (stage III or IV):** surgical resection followed by assisted reproductive technology",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Note: medical ovulation suppression relieves pain but does not improve fertility",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "unable to conceive for 18 months"
+    },
+    {
+     "text": "moderate dysmenorrhea and dyspareunia"
+    },
+    {
+     "text": "in-phase endometrial biopsy, and hysterosalpingography, shows no abnormalities"
+    }
+   ]
+  },
+  "795716": {
+   "task": "Next step",
+   "boardCall": "14-year-old + Tanner 4 + nausea and fatigue -> urine pregnancy test",
+   "hinge": "Pregnancy must be excluded first before any amenorrhea or endocrine evaluation, even in an adolescent claiming no menses.",
+   "trap": "Patient reports never having had a period, but ovulation precedes menarche; pregnancy test is mandatory before endocrine labs.",
+   "options": {
+    "A": {
+     "clue": "Hematologic analysis of erythrocytes and leukocytes",
+     "support": "anemia and infection workup",
+     "fit": "Not here: nausea, frequency, and fatigue suggest pregnancy",
+     "tx": "Iron supplementation if anemic",
+     "tempting": "fatigue evaluation in adolescent"
+    },
+    "B": {
+     "clue": "Serum estradiol quantification",
+     "support": "ovarian functional assessment",
+     "fit": "Not here: Tanner stage 4 breasts confirm estrogenization",
+     "tx": "None indicated",
+     "tempting": "amenorrhea hormonal workup"
+    },
+    "C": {
+     "clue": "Gonadotropin pituitary assessment",
+     "support": "central vs peripheral hypogonadism",
+     "fit": "Not here: exclude pregnancy before endocrine testing",
+     "tx": "Order if pregnancy negative",
+     "tempting": "primary amenorrhea evaluation"
+    },
+    "D": {
+     "clue": "Human chorionic gonadotropin immunoassay",
+     "support": "first-line pregnancy detection",
+     "fit": "Here: 14-year-old, Tanner 4, nausea, frequency, fatigue",
+     "tx": "Urine or serum beta-hCG test"
+    },
+    "E": {
+     "clue": "Medroxyprogesterone withdrawal bleeding test",
+     "support": "estrogen priming outflow test",
+     "fit": "Not here: contraindicated before ruling out gestation",
+     "tx": "Progestin challenge if not pregnant",
+     "tempting": "amenorrhea diagnostic algorithm step"
+    }
+   },
+   "algorithm": {
+    "title": "Initial diagnostic approach to amenorrhea",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Amenorrhea with nausea, urinary frequency, or fatigue: rule out pregnancy as initial step",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Order urine or serum human chorionic gonadotropin (beta-hCG) pregnancy test",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Positive pregnancy test:** confirm viability and location with transabdominal or pelvic ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Negative pregnancy test and Tanner 4 breasts:** measure serum TSH, prolactin, and FSH",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Elevated FSH:** primary ovarian insufficiency or gonadal dysgenesis; order karyotype",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Normal FSH and uterus present:** perform progesterone challenge test to assess outflow tract",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Examine external genitalia to exclude imperforate hymen or transverse vaginal septum",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "nausea, urinary frequency, and fatigue for 2 months"
+    },
+    {
+     "text": "never had a menstrual period"
+    },
+    {
+     "text": "Breast development is Tanner stage 4"
+    }
+   ]
+  },
+  "795717": {
+   "task": "Next step",
+   "boardCall": "Heavy regular menses + completed childbearing + prior DVT -> endometrial ablation",
+   "hinge": "Prior DVT contraindicates estrogen; completed childbearing and normal uterine cavity make endometrial ablation an ideal procedure.",
+   "trap": "Combined oral contraceptives are contraindicated due to prior DVT; copper IUD increases menstrual bleeding and pain.",
+   "options": {
+    "A": {
+     "clue": "Combined estrogen-progestin steroid tablets",
+     "support": "hormonal menorrhagia treatment",
+     "fit": "Not here: contraindicated due to prior deep venous thrombosis",
+     "tx": "Avoid estrogen-containing therapies",
+     "tempting": "first-line medical therapy for menorrhagia"
+    },
+    "B": {
+     "clue": "Non-hormonal intrauterine copper device",
+     "support": "copper-induced foreign body reaction",
+     "fit": "Not here: exacerbates menorrhagia and dysmenorrhea",
+     "tx": "Avoid in heavy menses",
+     "tempting": "estrogen-free contraceptive option"
+    },
+    "C": {
+     "clue": "Minimally invasive thermal destruction of endometrium",
+     "support": "surgical treatment for menorrhagia",
+     "fit": "Here: completed childbearing, prior DVT, normal ultrasound",
+     "tx": "Endometrial ablation"
+    },
+    "D": {
+     "clue": "Cervical dilation with instrumental curettage",
+     "support": "transient endometrial scraping",
+     "fit": "Not here: provides only temporary therapeutic benefit",
+     "tx": "Definitive medical or ablation therapy",
+     "tempting": "rapid evaluation and bleeding control"
+    },
+    "E": {
+     "clue": "Vascular particle embolization of uterine arteries",
+     "support": "leiomyoma ischemic therapy",
+     "fit": "Not here: normal ultrasound without fibroids or adenomyosis",
+     "tx": "Arterial embolization for fibroids",
+     "tempting": "minimally invasive bleeding procedure"
+    }
+   },
+   "algorithm": {
+    "title": "Management of heavy menstrual bleeding with contraindications to estrogen",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Heavy menstrual bleeding: perform pelvic ultrasound and rule out endometrial hyperplasia or malignancy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Review contraindications: prior venous thromboembolism is an absolute contraindication to combined estrogen therapy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform endometrial ablation for refractory menorrhagia in patients who completed childbearing",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Pre-procedure prerequisite:** perform endometrial biopsy to rule out malignancy and verify permanent contraception",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Medical alternative:** place levonorgestrel-releasing intrauterine device (progestin-only)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Ablation fails or severe dysmenorrhea persists:** offer definitive total laparoscopic hysterectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Counsel that ablation does not provide contraception; partner vasectomy provides effective sterilization",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "severe pelvic pain and heavy bleeding during her menstrual periods"
+    },
+    {
+     "text": "delivery of her second child was complicated by deep venous thrombosis",
+     "trap": true
+    },
+    {
+     "text": "Pelvic ultrasonography shows a normal uterus"
+    }
+   ]
+  },
+  "795718": {
+   "task": "Next step",
+   "boardCall": "Postmenopausal bleeding + 12-week-sized irregular uterus -> endometrial biopsy",
+   "hinge": "Any postmenopausal vaginal bleeding mandates prompt endometrial biopsy to rule out endometrial carcinoma.",
+   "trap": "Hemoglobin 9 g/dL does not require packed red cell transfusion in a hemodynamically stable patient.",
+   "options": {
+    "A": {
+     "clue": "Pituitary gonadotropin quantification",
+     "support": "menopausal status verification",
+     "fit": "Not here: menopause established 6 years ago, bleeding present",
+     "tx": "None indicated",
+     "tempting": "confirm menopausal state"
+    },
+    "B": {
+     "clue": "Pelvic magnetic resonance cross-sectional imaging",
+     "support": "local staging modality",
+     "fit": "Not here: tissue histology required before imaging",
+     "tx": "MRI for myometrial staging",
+     "tempting": "characterizes 12-week pelvic mass"
+    },
+    "C": {
+     "clue": "Allogeneic packed erythrocyte transfusion",
+     "support": "hemodynamic resuscitation",
+     "fit": "Not here: hemoglobin 9 g/dL in stable patient",
+     "tx": "Oral iron supplementation",
+     "tempting": "hemoglobin concentration is 9 g/dL"
+    },
+    "D": {
+     "clue": "Histopathologic tissue sampling of endometrium",
+     "support": "in-office cancer biopsy",
+     "fit": "Here: postmenopausal bleeding, 12-week irregular uterus",
+     "tx": "Pipelle endometrial biopsy"
+    },
+    "E": {
+     "clue": "Complete surgical uterine removal",
+     "support": "definitive operative oncologic therapy",
+     "fit": "Not here: requires histologic confirmation before surgery",
+     "tx": "Hysterectomy if cancer confirmed",
+     "tempting": "postmenopausal bleeding and uterine enlargement"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of postmenopausal vaginal bleeding",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Postmenopausal bleeding: cancer until proven otherwise (requires tissue diagnosis)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform in-office endometrial biopsy as primary diagnostic procedure",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Alternative initial test:** transvaginal ultrasound (endometrial stripe <= 4 mm excludes malignancy)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Endometrial biopsy non-diagnostic or stripe > 4 mm:** perform hysteroscopy with dilation and curettage",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Endometrial adenocarcinoma diagnosed:** perform total abdominal hysterectomy + bilateral salpingo-oophorectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Withhold packed red blood cell transfusion unless active cardiovascular compromise or hemoglobin < 7 g/dL",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "heavy vaginal bleeding for the past 3 days"
+    },
+    {
+     "text": "Menopause occurred 6 years ago"
+    },
+    {
+     "text": "uterus consistent in size with a 12-week gestation"
+    },
+    {
+     "text": "hemoglobin concentration is 9 g/dL, and hematocrit is 27%",
+     "trap": true
+    }
+   ]
+  },
+  "795719": {
+   "task": "Next step",
+   "boardCall": "Frail elderly woman + reducible uterine prolapse -> insertion of a vaginal pessary",
+   "hinge": "A reducible pelvic organ prolapse in a frail elderly patient with significant comorbidities is managed conservatively with a pessary.",
+   "trap": "Surgical repair carries operative risk and is reserved for failed pessary trials or ulcerated prolapse.",
+   "options": {
+    "A": {
+     "clue": "Acoustic imaging of internal pelvic structures",
+     "support": "structural sonographic imaging",
+     "fit": "Not here: pelvic organ prolapse is clinical diagnosis",
+     "tx": "Pelvic exam suffices",
+     "tempting": "evaluates pelvic mass"
+    },
+    "B": {
+     "clue": "Endometrial histological tissue sampling",
+     "support": "uterine bleeding evaluation",
+     "fit": "Not here: no vaginal bleeding reported",
+     "tx": "None indicated",
+     "tempting": "elderly female with uterine pathology"
+    },
+    "C": {
+     "clue": "Removable silicone pelvic support device",
+     "support": "conservative mechanical support",
+     "fit": "Here: 87-year-old, dementia, reducible uterine prolapse",
+     "tx": "Vaginal pessary placement"
+    },
+    "D": {
+     "clue": "Surgical excision of elongated cervix",
+     "support": "Manchester-Fothergill operative step",
+     "fit": "Not here: invasive surgical procedure in frail patient",
+     "tx": "Conservative pessary trial first",
+     "tempting": "prolapsing uterine cervix"
+    },
+    "E": {
+     "clue": "Operative surgical extirpation of uterus",
+     "support": "definitive surgical repair",
+     "fit": "Not here: invasive surgery carrying high anesthetic risk",
+     "tx": "Pessary or colpocleisis",
+     "tempting": "definitive prolapse correction"
+    }
+   },
+   "algorithm": {
+    "title": "Management of pelvic organ prolapse in elderly frail patients",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Symptomatic or visible uterovaginal prolapse: evaluate reducibility and vaginal mucosa integrity",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Fit and insert a removable vaginal pessary (ring or Gellhorn) as initial non-operative therapy",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Mucosal ulceration or erosions present:** remove pessary + apply topical vaginal estrogen cream until healed",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Pessary fails or patient/caregivers unable to manage:** consider obliterative surgery (colpocleisis)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Medically fit patient desiring reconstructive surgery:** perform vaginal hysterectomy with apical suspension",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Schedule routine pessary cleaning and mucosal inspection every 2-3 months by nursing staff",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "87-year-old woman who is a nursing home resident"
+    },
+    {
+     "text": "partial prolapse of the uterine cervix through the introitus"
+    },
+    {
+     "text": "uterus can be easily pushed back into the pelvis"
+    },
+    {
+     "text": "no cervical ulceration"
+    }
+   ]
+  },
+  "795720": {
+   "task": "Diagnosis",
+   "boardCall": "Postpartum hemorrhage + lactation failure + hypothyroidism -> panhypopituitarism (Sheehan syndrome)",
+   "hinge": "Ischemic necrosis of the hypertrophied anterior pituitary following postpartum hemorrhage causes panhypopituitarism.",
+   "trap": "Primary hypothyroidism causes elevated TSH, but Sheehan syndrome destroys the pituitary, leading to low TSH with low T4.",
+   "options": {
+    "A": {
+     "clue": "Isolated anterior pituitary hypersecretion",
+     "support": "hyperfunctioning pituitary adenoma",
+     "fit": "Not here: ischemic necrosis causes anterior hormone deficiencies",
+     "tx": "Pituitary surgery or suppression",
+     "tempting": "endocrine excess syndrome"
+    },
+    "B": {
+     "clue": "Selective corticotroph and thyrotroph deficiency",
+     "support": "partial hypopituitarism",
+     "fit": "Not here: agalactia and amenorrhea indicate gonadotroph/lactotroph failure",
+     "tx": "Glucocorticoid + levothyroxine",
+     "tempting": "matches fatigue and hypothyroid symptoms"
+    },
+    "C": {
+     "clue": "Panhypopituitarism of all anterior pituitary hormones",
+     "support": "global anterior pituitary necrosis",
+     "fit": "Here: postpartum hemorrhage, agalactia, amenorrhea, cold intolerance",
+     "tx": "Hydrocortisone + levothyroxine + estrogen"
+    },
+    "D": {
+     "clue": "Selective isolated gonadotroph deficiency",
+     "support": "isolated hypogonadotropic hypogonadism",
+     "fit": "Not here: fatigue and dry skin indicate central hypothyroidism/adrenal",
+     "tx": "Hormone replacement therapy",
+     "tempting": "explains persistent postpartum amenorrhea"
+    },
+    "E": {
+     "clue": "Primary thyroid failure with elevated TSH",
+     "support": "Hashimoto postpartum thyroiditis",
+     "fit": "Not here: pituitary failure produces low TSH, not high",
+     "tx": "Oral levothyroxine monotherapy",
+     "tempting": "fatigue, depression, dry skin, cold intolerance"
+    }
+   },
+   "algorithm": {
+    "title": "Postpartum pituitary necrosis (Sheehan syndrome)",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Severe postpartum hemorrhage with transfusion: ischemia to physiologically enlarged pituitary",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Early presentation: failure of lactation (prolactin deficiency) and failure of menses to resume",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Secondary anterior pituitary failure: all trophic hormones decreased (ACTH, TSH, LH, FSH, GH, prolactin)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm panhypopituitarism with baseline serum hormone panel + pituitary MRI",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Adrenal insufficiency:** initiate immediate life-saving oral hydrocortisone before thyroid replacement",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Secondary hypothyroidism:** initiate oral levothyroxine only after glucocorticoid coverage is established",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Add cyclical estrogen-progestin replacement therapy to maintain bone density and prevent urogenital atrophy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "transfusion of 3 units of blood following the birth of her second child"
+    },
+    {
+     "text": "milk never came in"
+    },
+    {
+     "text": "Menses have not resumed"
+    }
+   ]
+  },
+  "795721": {
+   "task": "Screening",
+   "boardCall": "Preconception Tay-Sachs counseling + French-Canadian ancestry -> test wife first; stop if negative",
+   "hinge": "Autosomal recessive screening starts with the partner from a high-risk group; if negative, offspring have negligible disease risk.",
+   "trap": "If the first partner tests positive, the other partner must be tested; testing only stops if the first partner is negative.",
+   "options": {
+    "A": {
+     "clue": "Testing lower-risk spouse and stopping on positive",
+     "support": "erroneous carrier screening protocol",
+     "fit": "Not here: husband is non-Ashkenazi, wife is high-risk",
+     "tx": "Test high-risk partner first",
+     "tempting": "paternal testing first"
+    },
+    "B": {
+     "clue": "Screen high-risk partner first; stop if non-carrier",
+     "support": "standard autosomal recessive carrier strategy",
+     "fit": "Here: French-Canadian ancestry, cousins died in early childhood",
+     "tx": "Hexosaminidase A enzyme and DNA"
+    },
+    "C": {
+     "clue": "Screening high-risk partner but stopping on positive",
+     "support": "incomplete carrier risk assessment",
+     "fit": "Not here: positive test mandates testing other spouse",
+     "tx": "Test husband if wife positive",
+     "tempting": "tests high-risk partner first"
+    },
+    "D": {
+     "clue": "Omitting genetic screening entirely",
+     "support": "missed carrier screening opportunity",
+     "fit": "Not here: French-Canadian ancestry has elevated Tay-Sachs carrier frequency",
+     "tx": "Offer carrier screening",
+     "tempting": "husband has no known family history"
+    }
+   },
+   "algorithm": {
+    "title": "Preconception carrier screening for autosomal recessive conditions",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Preconception carrier assessment: identify high-risk ancestry (French-Canadian, Ashkenazi Jewish for Tay-Sachs)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Test the higher-risk partner first with serum hexosaminidase A enzymatic assay and DNA analysis",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**First partner tests negative:** risk to future child is exceedingly low; stop carrier screening",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**First partner tests positive (carrier):** test the other partner immediately",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Both partners identified as carriers:** counsel on 25% risk of affected child + offer prenatal testing",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Offer expanded carrier screening panel based on shared clinical decision-making",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "She is French-Canadian and has some distant cousins who died during early childhood"
+    },
+    {
+     "text": "husband is Jewish but not of Ashkenazi descent",
+     "trap": true
+    },
+    {
+     "text": "risk for having a child with Tay-Sachs disease"
+    }
+   ]
+  }
+ }
+}

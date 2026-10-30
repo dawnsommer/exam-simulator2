@@ -1,0 +1,4876 @@
+{
+ "type": "StepRapidReview",
+ "version": 1,
+ "formId": "C-OBGyn-02",
+ "model": "Gemini 3.8 Flash",
+ "promptVersion": "v4",
+ "generatedAt": "2026-10-29",
+ "items": {
+  "c-obgyn-02-q001": {
+   "task": "Diagnosis",
+   "boardCall": "Firm pale vaginal mass + absent uterine fundus + postpartum hypotension -> Uterine inversion",
+   "hinge": "Nonpalpable abdominal fundus with a firm pale mass in the lower vagina identifies uterine inversion.",
+   "trap": "Vaginal bleeding and shock pull toward uterine atony, but the fundus cannot be palpated abdominally.",
+   "options": {
+    "A": {
+     "clue": "Morbidly adherent placenta to myometrium",
+     "support": "placenta accreta",
+     "fit": "Not here: placenta delivers 12 minutes later",
+     "tx": "Hysterectomy",
+     "tempting": "causes severe postpartum hemorrhage"
+    },
+    "B": {
+     "clue": "Incomplete placental delivery with bleeding",
+     "support": "retained tissue",
+     "fit": "Not here: placenta delivers, absent abdominal fundus",
+     "tx": "Manual extraction or curettage",
+     "tempting": "causes postpartum hemorrhage"
+    },
+    "C": {
+     "clue": "Soft, boggy, enlarged uterus",
+     "support": "uterine atony",
+     "fit": "Not here: uterus cannot be palpated",
+     "tx": "Uterotonics + uterine massage",
+     "tempting": "most common cause of postpartum hemorrhage"
+    },
+    "D": {
+     "clue": "Fundal prolapse through cervix into vagina",
+     "support": "uterine inversion",
+     "fit": "Here: firm pale mass in lower vagina, nonpalpable fundus",
+     "tx": "Immediate manual uterine replacement"
+    },
+    "E": {
+     "clue": "Tearing of uterine wall",
+     "support": "uterine rupture",
+     "fit": "Not here: firm pale mass in the lower vagina",
+     "tx": "Emergent laparotomy",
+     "tempting": "presents with sudden postpartum collapse"
+    }
+   },
+   "algorithm": {
+    "title": "Postpartum uterine inversion",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Sudden postpartum hypotension + vaginal bleeding: aggressive IV crystalloid + blood products",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Firm pale vaginal mass with absent abdominal fundus: uterine inversion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Discontinue uterotonics + attempt immediate manual replacement (Johnson maneuver)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Placenta still attached:** replace inverted uterus before removing placenta",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Manual replacement fails:** administer uterine relaxant (terbutaline or nitroglycerin)",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Relaxation achieved:** repeat manual replacement, then administer uterotonics to maintain tone",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Uterine relaxation fails:** surgical repositioning via laparotomy (Huntington or Haultain procedure)",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "firm pale mass is noted in the lower vagina"
+    },
+    {
+     "text": "uterus cannot be palpated"
+    },
+    {
+     "text": "blood pressure is 60/40 mm Hg"
+    },
+    {
+     "text": "moderate vaginal bleeding",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q002": {
+   "task": "Next step",
+   "boardCall": "Secondary amenorrhea + enlarged boggy uterus -> Serum β-hCG",
+   "hinge": "Sexually active reproductive-age woman with secondary amenorrhea requires pregnancy exclusion before endocrine workup.",
+   "trap": "Hot flashes and vaginal dryness pull toward measuring FSH for menopause, but pregnancy must be excluded first.",
+   "options": {
+    "A": {
+     "clue": "Assesses anemia and infection",
+     "support": "general hematology",
+     "fit": "Not here: afebrile, blood pressure 90/50 mm Hg",
+     "tx": "",
+     "tempting": "routine baseline health maintenance test"
+    },
+    "B": {
+     "clue": "Elevated in ovarian insufficiency or menopause",
+     "support": "perimenopause evaluation",
+     "fit": "Not here: enlarged boggy uterus, unexcluded pregnancy",
+     "tx": "Hormone replacement therapy",
+     "tempting": "hot flashes and vaginal dryness suggest menopause"
+    },
+    "C": {
+     "clue": "Detects human chorionic gonadotropin in pregnancy",
+     "support": "pregnancy testing",
+     "fit": "Here: sexually active without contraception, enlarged boggy uterus",
+     "tx": "Prenatal care counseling"
+    },
+    "D": {
+     "clue": "Evaluates galactorrhea and hyperprolactinemia",
+     "support": "pituitary workup",
+     "fit": "Not here: no galactorrhea or headache",
+     "tx": "Dopamine agonist",
+     "tempting": "causes secondary amenorrhea"
+    },
+    "E": {
+     "clue": "Evaluates thyroid dysfunction causing oligomenorrhea",
+     "support": "endocrine testing",
+     "fit": "Not here: normal pulse 70/min, no goiter",
+     "tx": "Levothyroxine",
+     "tempting": "hypothyroidism causes menstrual irregularities"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of secondary amenorrhea",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Secondary amenorrhea (no menses > 3 months): rule out pregnancy with urine or serum β-hCG",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**β-hCG positive:** obstetric ultrasound to date pregnancy and confirm intrauterine location",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**β-hCG negative:** measure serum TSH, prolactin, and FSH concentrations",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Elevated FSH:** diagnosis is primary ovarian insufficiency or perimenopause",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Elevated TSH:** treat hypothyroidism with levothyroxine",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Elevated prolactin:** pituitary MRI to rule out prolactinoma",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Normal endocrine labs:** progestin withdrawal challenge to evaluate endogenous estrogen status",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "last menstrual period was 4 months ago"
+    },
+    {
+     "text": "sexually active with one male partner and they do not use contraception"
+    },
+    {
+     "text": "uterus is enlarged and mildly boggy"
+    },
+    {
+     "text": "feels hot at night and occasionally during the day",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q003": {
+   "task": "Risk factor",
+   "boardCall": "Prior infant birth weight 4540 g -> Gestational diabetes",
+   "hinge": "Prior delivery of a macrosomic newborn is a major clinical risk factor for gestational diabetes in subsequent pregnancies.",
+   "trap": "Cesarean delivery history increases uterine rupture risk, but prior macrosomia specifically indicates gestational diabetes.",
+   "options": {
+    "A": {
+     "clue": "Premature placental separation",
+     "support": "placental abruption",
+     "fit": "Not here: no hypertension, cocaine, or trauma",
+     "tx": "Emergent delivery",
+     "tempting": "major obstetric complication"
+    },
+    "B": {
+     "clue": "Carbohydrate intolerance first recognized during pregnancy",
+     "support": "gestational diabetes risk",
+     "fit": "Here: prior newborn weighing 4540-g",
+     "tx": "Dietary modification + insulin"
+    },
+    "C": {
+     "clue": "Excessive accumulation of amniotic fluid",
+     "support": "polyhydramnios",
+     "fit": "Not here: first prenatal visit at 10 weeks",
+     "tx": "Amnioreduction",
+     "tempting": "associated with fetal macrosomia"
+    },
+    "D": {
+     "clue": "New-onset hypertension and proteinuria after 20 weeks",
+     "support": "preeclampsia",
+     "fit": "Not here: normal baseline risk, prior cesarean",
+     "tx": "Aspirin prophylaxis",
+     "tempting": "common pregnancy-related medical complication"
+    },
+    "E": {
+     "clue": "Membrane rupture prior to labor onset",
+     "support": "PROM",
+     "fit": "Not here: no history of preterm PROM",
+     "tx": "Antibiotics + delivery",
+     "tempting": "common cause of obstetric morbidity"
+    }
+   },
+   "algorithm": {
+    "title": "Gestational diabetes risk factors and screening",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Prior macrosomic infant (birth weight over 4000 grams): strong risk factor for gestational diabetes",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Gestational diabetes results from human placental lactogen causing progressive maternal insulin resistance",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen high-risk women at first prenatal visit with 1-hour glucose challenge or fasting glucose",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Normal early screen:** repeat 1-hour glucose challenge test at 24-28 weeks",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Abnormal early screen:** confirm with diagnostic 3-hour oral glucose tolerance test",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "First-line management: dietary modification, glucose self-monitoring, and exercise",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Elevated fasting or postprandial glucose:** initiate subcutaneous insulin therapy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "4540-g (10-lb) male newborn"
+    },
+    {
+     "text": "cesarean delivery because of an arrest of descent"
+    },
+    {
+     "text": "first prenatal visit"
+    }
+   ]
+  },
+  "c-obgyn-02-q004": {
+   "task": "Next step",
+   "boardCall": "Positive VDRL 1:4 + asymptomatic -> FTA-ABS test",
+   "hinge": "A positive nontreponemal screening test (VDRL) requires confirmation with a treponemal-specific test (FTA-ABS).",
+   "trap": "RPR is another nontreponemal test and cannot confirm a positive VDRL result.",
+   "options": {
+    "A": {
+     "clue": "Screens for systemic lupus erythematosus",
+     "support": "autoimmune testing",
+     "fit": "Not here: no joint pain or malar rash",
+     "tx": "",
+     "tempting": "lupus can cause false-positive VDRL"
+    },
+    "B": {
+     "clue": "Confirmatory treponemal antibody absorption assay",
+     "support": "syphilis confirmation",
+     "fit": "Here: positive VDRL titer of 1:4",
+     "tx": "Intramuscular benzathine penicillin G"
+    },
+    "C": {
+     "clue": "Nontreponemal flocculation screening test",
+     "support": "nontreponemal screening",
+     "fit": "Not here: nontreponemal screen already positive",
+     "tx": "",
+     "tempting": "standard nontreponemal serologic test for syphilis"
+    },
+    "D": {
+     "clue": "Delayed repeat nontreponemal titer",
+     "support": "surveillance",
+     "fit": "Not here: active confirmation required before therapy",
+     "tx": "",
+     "tempting": "avoids immediate treatment for low titer"
+    },
+    "E": {
+     "clue": "Evaluates cerebrospinal fluid for neurosyphilis",
+     "support": "neurosyphilis workup",
+     "fit": "Not here: no neurological, visual, or otic symptoms",
+     "tx": "Intravenous aqueous penicillin G",
+     "tempting": "evaluates central nervous system involvement"
+    }
+   },
+   "algorithm": {
+    "title": "Syphilis screening and diagnostic algorithm",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Asymptomatic sexually active patient: screen with nontreponemal test (VDRL or RPR)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Confirm positive VDRL with treponemal test (FTA-ABS or TP-PA)",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Treponemal test negative:** biological false-positive; no treatment required",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Treponemal test positive:** diagnose syphilis and stage based on history and physical exam",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Early syphilis (primary, secondary, early latent):** intramuscular benzathine penicillin G",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Late latent or unknown duration:** intramuscular benzathine penicillin G weekly for three weeks",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen for co-infections including HIV, gonorrhea, and chlamydia",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "multiple sexual partners"
+    },
+    {
+     "text": "used condoms inconsistently"
+    },
+    {
+     "text": "Serologic testing for VDRL is positive at 1:4"
+    }
+   ]
+  },
+  "c-obgyn-02-q005": {
+   "task": "Mechanism",
+   "boardCall": "Postmenopausal obesity + endometrial cancer risk -> Androstenedione to estrone",
+   "hinge": "Aromatase in adipose tissue converts adrenal androstenedione into estrone, increasing unopposed estrogen.",
+   "trap": "Estradiol is the most potent estrogen, but postmenopausal adipose aromatase specifically synthesizes estrone from androstenedione.",
+   "options": {
+    "A": {
+     "clue": "Synthetic nonsteroidal estrogen agonist",
+     "support": "synthetic estrogen",
+     "fit": "Not here: aldosterone does not convert to synthetic estrogens",
+     "tx": "",
+     "tempting": "associated with clear cell vaginal adenocarcinoma"
+    },
+    "B": {
+     "clue": "Peripheral aromatization in adipose tissue",
+     "support": "postmenopausal estrogen synthesis",
+     "fit": "Here: postmenopausal status, BMI 34 kg/m²",
+     "tx": "Progestins or hysterectomy"
+    },
+    "C": {
+     "clue": "Synthetic estrogen in oral contraceptives",
+     "support": "synthetic estrogen",
+     "fit": "Not here: mestranol is a synthetic pharmaceutical estrogen",
+     "tx": "",
+     "tempting": "involves estrogenic compound"
+    },
+    "D": {
+     "clue": "Early steroidogenic enzymatic precursor step",
+     "support": "adrenal steroidogenesis",
+     "fit": "Not here: normal adrenal pathway, not oncogenic conversion",
+     "tx": "",
+     "tempting": "involves steroid hormone synthesis"
+    },
+    "E": {
+     "clue": "Nonexistent direct steroid biosynthetic conversion",
+     "support": "incorrect pathway",
+     "fit": "Not here: estradiol derives from testosterone aromatization",
+     "tx": "",
+     "tempting": "estradiol is potent mitogen for endometrium"
+    }
+   },
+   "algorithm": {
+    "title": "Adipose aromatization and endometrial cancer risk",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Postmenopausal obesity: adipose aromatase converts adrenal androstenedione to estrone",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Excess estrone causes unopposed endometrial proliferation, hyperplasia, and adenocarcinoma",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Evaluate any postmenopausal vaginal bleeding with transvaginal ultrasound or endometrial biopsy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Endometrial thickness ≤ 4 mm on ultrasound:** low malignancy risk, clinical observation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Endometrial thickness > 4 mm or persistent bleeding:** perform endometrial biopsy",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Endometrial hyperplasia without atypia:** treat with oral or intrauterine progestin",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Atypical hyperplasia or carcinoma:** total hysterectomy with bilateral salpingo-oophorectomy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Menopause occurred at the age of 49 years"
+    },
+    {
+     "text": "BMI is 34 kg/m²"
+    },
+    {
+     "text": "weighs 91 kg (200 lb)"
+    }
+   ]
+  },
+  "c-obgyn-02-q006": {
+   "task": "Diagnosis",
+   "boardCall": "Post-hysterectomy high posterior vaginal vault bulge -> Enterocele",
+   "hinge": "Herniation of the peritoneal pouch of Douglas and small bowel into the apex of the vagina causes an enterocele.",
+   "trap": "A bulging posterior wall mass suggests a rectocele, but originating high in the vault after hysterectomy indicates enterocele.",
+   "options": {
+    "A": {
+     "clue": "Malignant neoplasm of cervix",
+     "support": "cervical cancer",
+     "fit": "Not here: history of prior vaginal hysterectomy",
+     "tx": "Chemoradiation or resection",
+     "tempting": "mass in upper vagina"
+    },
+    "B": {
+     "clue": "Anterior vaginal wall prolapse of bladder",
+     "support": "cystocele",
+     "fit": "Not here: examination shows no anterior vaginal relaxation",
+     "tx": "Pessary or anterior colporrhaphy",
+     "tempting": "common cause of pelvic organ prolapse"
+    },
+    "C": {
+     "clue": "Small bowel herniation into vaginal apex",
+     "support": "apical prolapse",
+     "fit": "Here: bulging posterior mass high in vaginal vault post-hysterectomy",
+     "tx": "Pessary or apical suspension"
+    },
+    "D": {
+     "clue": "Cystic dilation of terminal ureter",
+     "support": "urinary tract anomaly",
+     "fit": "Not here: no urinary tract symptoms, intravesical defect",
+     "tx": "Endoscopic incision",
+     "tempting": "pelvic cystic mass"
+    },
+    "E": {
+     "clue": "Detrusor overactivity causing urinary urgency",
+     "support": "urinary incontinence",
+     "fit": "Not here: no urinary tract symptoms, anatomic mass present",
+     "tx": "Antimuscarinics",
+     "tempting": "causes pelvic pressure symptoms"
+    },
+    "F": {
+     "clue": "Bacterial infection of urinary tract",
+     "support": "cystitis",
+     "fit": "Not here: no dysuria, urgency, or urinary frequency",
+     "tx": "Nitrofurantoin",
+     "tempting": "common postmenopausal urinary tract complaint"
+    },
+    "G": {
+     "clue": "Descent of cervix and uterus into vagina",
+     "support": "uterine prolapse",
+     "fit": "Not here: prior vaginal hysterectomy 10 years ago",
+     "tx": "Pessary or hysterectomy",
+     "tempting": "presents with vaginal bulge worse with standing"
+    }
+   },
+   "algorithm": {
+    "title": "Pelvic organ prolapse evaluation and management",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Vaginal bulge and pelvic pressure: perform pelvic examination with Valsalva maneuver",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Anterior wall defect (cystocele):** bladder herniation into anterior vagina",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Apical defect post-hysterectomy (enterocele):** small bowel herniation into vaginal apex",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Posterior lower defect (rectocele):** rectal herniation into posterior vagina",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initial management: pelvic floor physical therapy or fitting for vaginal pessary",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Symptomatic failure or patient preference:** surgical apical suspension (sacrocolpopexy or uterosacral suspension)",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "feeling of a mass in the vagina for 2 months"
+    },
+    {
+     "text": "vaginal hysterectomy 10 years ago"
+    },
+    {
+     "text": "bulging posterior vaginal mass that has its origin high in the vaginal vault"
+    },
+    {
+     "text": "no anterior vaginal relaxation"
+    }
+   ]
+  },
+  "c-obgyn-02-q007": {
+   "task": "Diagnosis",
+   "boardCall": "Day-care worker + nonimmune hydrops + negative antibody screen -> Parvovirus B19",
+   "hinge": "Maternal parvovirus B19 infection in a day-care worker leads to fetal pure red cell aplasia and nonimmune hydrops.",
+   "trap": "Rh-negative maternal blood type tempts Rh isoimmunization, but the antibody screen is negative.",
+   "options": {
+    "A": {
+     "clue": "Congenital viral infection causing periventricular calcifications",
+     "support": "CMV infection",
+     "fit": "Not here: no intracranial calcifications or microcephaly",
+     "tx": "",
+     "tempting": "day-care workers have high exposure"
+    },
+    "B": {
+     "clue": "CFTR gene mutation causing meconium ileus",
+     "support": "cystic fibrosis",
+     "fit": "Not here: family history, but CF does not cause hydrops",
+     "tx": "",
+     "tempting": "family history of cystic fibrosis"
+    },
+    "C": {
+     "clue": "Erythroid progenitor cytotoxicity causing aplastic anemia",
+     "support": "parvovirus B19",
+     "fit": "Here: day-care worker, negative antibody screen, fetal hydrops",
+     "tx": "Intrauterine blood transfusion"
+    },
+    "D": {
+     "clue": "Genital chlamydial infection causing neonatal conjunctivitis",
+     "support": "chlamydial infection",
+     "fit": "Not here: mucosal STI, does not cause fetal hydrops",
+     "tx": "Azithromycin",
+     "tempting": "common sexually transmitted infection in pregnancy"
+    },
+    "E": {
+     "clue": "Anti-D alloimmunization against Rh-positive fetal erythrocytes",
+     "support": "Rh isoimmunization",
+     "fit": "Not here: antibody screening is negative",
+     "tx": "Intrauterine transfusion + anti-D immunoglobulin",
+     "tempting": "patient is Rh-negative"
+    }
+   },
+   "algorithm": {
+    "title": "Fetal hydrops etiology and management",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fetal hydrops (fluid in ≥ 2 compartments): check maternal blood type and antibody screen",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Antibody screen positive:** immune hydrops secondary to maternal alloimmunization",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Antibody screen negative:** nonimmune hydrops; assess middle cerebral artery Doppler peak systolic velocity",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Elevated MCA velocity + day-care exposure: check maternal parvovirus B19 serology (IgM and IgG)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Severe fetal anemia (elevated MCA velocity):** percutaneous umbilical blood sampling + intrauterine transfusion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Serial ultrasound monitoring to evaluate resolution of fetal ascites and hydrops",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "works in a day-care center"
+    },
+    {
+     "text": "fetal hydrops; no structural abnormalities are noted"
+    },
+    {
+     "text": "Antibody screening is negative"
+    },
+    {
+     "text": "blood group is A, Rh-negative",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q008": {
+   "task": "Screening",
+   "boardCall": "HIV-positive woman + last Pap 2 years ago -> Cervical Pap smear",
+   "hinge": "Women with HIV require cervical cancer screening with cervical cytology at diagnosis and at least every 3 years thereafter.",
+   "trap": "Antiretroviral therapy requires metabolic monitoring, but serum lipids are screened every 5 years if normal, while Pap smear is due.",
+   "options": {
+    "A": {
+     "clue": "Cervical cytology detecting HPV-related dysplasia",
+     "support": "cervical cancer screening",
+     "fit": "Here: HIV infection, last Pap smear 2 years ago",
+     "tx": "Colposcopy if abnormal"
+    },
+    "B": {
+     "clue": "Fasting lipid panel assessing cardiovascular risk",
+     "support": "dyslipidemia screening",
+     "fit": "Not here: normal lipid panel 3 years ago",
+     "tx": "Statin therapy",
+     "tempting": "antiretroviral therapy causes metabolic dyslipidemia"
+    },
+    "C": {
+     "clue": "Plain radiographic imaging of chest",
+     "support": "pulmonary evaluation",
+     "fit": "Not here: asymptomatic, no cough or tuberculosis exposure",
+     "tx": "",
+     "tempting": "HIV patients have pulmonary infection risk"
+    },
+    "D": {
+     "clue": "Twelve-lead electrocardiogram assessing cardiac rhythm",
+     "support": "cardiac screening",
+     "fit": "Not here: asymptomatic, no cardiovascular disease risk",
+     "tx": "",
+     "tempting": "baseline cardiac evaluation in chronic disease"
+    },
+    "E": {
+     "clue": "Radiographic breast screening for microcalcifications",
+     "support": "breast cancer screening",
+     "fit": "Not here: age 37 without familial risk",
+     "tx": "Biopsy if suspicious",
+     "tempting": "routine female cancer screening"
+    }
+   },
+   "algorithm": {
+    "title": "Cervical cancer screening in HIV-positive women",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "HIV diagnosis in women: initiate cervical cytology at diagnosis regardless of CD4 count",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform Pap smear at annual or biennial intervals based on prior normal results",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Pap smear normal for three consecutive years:** extend screening to every 3 years",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Abnormal cytology (ASC-US, LSIL, HSIL):** perform immediate colposcopy with directed cervical biopsy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Maintain effective antiretroviral therapy to optimize immune function and CD4 count",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Administer HPV vaccination up to age 26, or through age 45 with shared decision-making",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "5-year history of HIV infection"
+    },
+    {
+     "text": "Pap smear 2 years ago showed no abnormalities"
+    },
+    {
+     "text": "CD4+ T-lymphocyte count 2 weeks ago was 425/mm³"
+    },
+    {
+     "text": "Serum lipid studies were within normal limits 3 years ago",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q009": {
+   "task": "Next step",
+   "boardCall": "Membrane rupture + unengaged vertex + fetal bradycardia -> Pelvic examination",
+   "hinge": "Sudden fetal bradycardia immediately after rupture of membranes with a high vertex indicates cord prolapse until excluded by pelvic exam.",
+   "trap": "Severe fetal bradycardia tempts urgent operative vaginal delivery, but cervix is only 4 cm and station is -2.",
+   "options": {
+    "A": {
+     "clue": "Digital examination for prolapsed umbilical cord",
+     "support": "cord prolapse evaluation",
+     "fit": "Here: membrane rupture, unengaged vertex, fetal heart rate 90/min",
+     "tx": "Manual elevation of presenting part"
+    },
+    "B": {
+     "clue": "External transabdominal manipulation to cephalic lie",
+     "support": "version procedure",
+     "fit": "Not here: fetus is already vertex, membranes ruptured",
+     "tx": "",
+     "tempting": "manipulation maneuver during labor"
+    },
+    "C": {
+     "clue": "Internal podalic extraction of second twin",
+     "support": "twin extraction maneuver",
+     "fit": "Not here: singleton pregnancy, contraindicated with singleton vertex",
+     "tx": "",
+     "tempting": "emergency intrauterine obstetric maneuver"
+    },
+    "D": {
+     "clue": "Anticholinergic agent increasing maternal heart rate",
+     "support": "anticholinergic therapy",
+     "fit": "Not here: fetal bradycardia, not maternal symptomatic bradycardia",
+     "tx": "",
+     "tempting": "treats acute sinus bradycardia"
+    },
+    "E": {
+     "clue": "Uterotonic peptide stimulating uterine contractions",
+     "support": "labor augmentation",
+     "fit": "Not here: contractions already regular, worsens cord compression",
+     "tx": "",
+     "tempting": "manages protracted labor progress"
+    },
+    "F": {
+     "clue": "Instrumental vaginal delivery with cranial forceps",
+     "support": "operative vaginal delivery",
+     "fit": "Not here: cervix 4 cm dilated, station -2",
+     "tx": "",
+     "tempting": "hastens delivery for severe fetal distress"
+    }
+   },
+   "algorithm": {
+    "title": "Management of acute fetal bradycardia after membrane rupture",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Sudden fetal bradycardia following membrane rupture: perform immediate pelvic examination",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Palpable umbilical cord (cord prolapse):** elevate fetal head manually to relieve cord compression",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**No prolapsed cord:** assess for uterine tachysystole, abruption, or maternal hypotension",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide supportive intrauterine resuscitation: maternal repositioning, IV fluid bolus, and stop oxytocin",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Confirmed cord prolapse:** proceed with emergency cesarean delivery",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Fully dilated with engaged head:** proceed with rapid operative vaginal delivery",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "vertex is at -2 station"
+    },
+    {
+     "text": "cervix is 100% effaced and 4 cm dilated"
+    },
+    {
+     "text": "membranes suddenly rupture yielding a large amount of clear fluid"
+    },
+    {
+     "text": "fetal heart rate decreases to 90/min"
+    }
+   ]
+  },
+  "c-obgyn-02-q010": {
+   "task": "Risk factor",
+   "boardCall": "Preconception valproic acid maintenance -> Neural tube defects",
+   "hinge": "Valproic acid exposure during early embryogenesis specifically carries a high risk of neural tube defects (spina bifida).",
+   "trap": "Lithium causes Ebstein anomaly and phenytoin causes facial clefts, but valproate is classic for spina bifida.",
+   "options": {
+    "A": {
+     "clue": "Craniofacial clefting malformation",
+     "support": "facial cleft defect",
+     "fit": "Not here: associated with topiramate or phenytoin",
+     "tx": "Surgical reconstruction",
+     "tempting": "known anticonvulsant-induced facial anomaly"
+    },
+    "B": {
+     "clue": "Failure of neural tube closure",
+     "support": "neural tube defect risk",
+     "fit": "Here: preconception valproic acid maintenance therapy",
+     "tx": "High-dose folic acid supplementation"
+    },
+    "C": {
+     "clue": "Hereditary retinal photoreceptor dystrophy",
+     "support": "retinal degeneration",
+     "fit": "Not here: inherited genetic retinopathy, not teratogen",
+     "tx": "",
+     "tempting": "congenital neuro-ophthalmic defect"
+    },
+    "D": {
+     "clue": "Fluid cavitation within the spinal cord",
+     "support": "spinal cord lesion",
+     "fit": "Not here: associated with Chiari malformation, not teratogen",
+     "tx": "Surgical decompression",
+     "tempting": "congenital spinal cord pathology"
+    },
+    "E": {
+     "clue": "Cyanotic congenital heart defect with VSD",
+     "support": "conotruncal defect",
+     "fit": "Not here: lithium causes cardiac anomalies (Ebstein anomaly)",
+     "tx": "Surgical repair",
+     "tempting": "lithium for bipolar disorder causes cardiac anomalies"
+    }
+   },
+   "algorithm": {
+    "title": "Preconception valproate exposure and teratogenicity",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "In utero valproic acid exposure: highest teratogenic risk for neural tube defects (spina bifida)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Valproate impairs folate metabolism and alters homeobox gene expression during embryogenesis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Counsel regarding alternative mood stabilizers with lower teratogenic risk (e.g., lamotrigine)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Valproate must be continued:** initiate high-dose oral folic acid therapy prior to conception",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen pregnancy with second-trimester maternal serum alpha-fetoprotein and detailed anatomical ultrasound",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "bipolar disorder"
+    },
+    {
+     "text": "well controlled with valproic acid"
+    },
+    {
+     "text": "preconceptional counseling"
+    }
+   ]
+  },
+  "c-obgyn-02-q011": {
+   "task": "Diagnosis",
+   "boardCall": "Breasts present + absent uterus + no pubic hair -> Complete androgen insensitivity",
+   "hinge": "Primary amenorrhea with breast development, absent uterus, and absent axillary and pubic hair defines complete androgen insensitivity.",
+   "trap": "Müllerian duct agenesis presents with breasts and absent uterus, but patients have normal pubic and axillary hair.",
+   "options": {
+    "A": {
+     "clue": "Cortisol and aldosterone deficiency",
+     "support": "primary adrenal failure",
+     "fit": "Not here: tall stature, normal pigmentation and blood pressure",
+     "tx": "Hydrocortisone + fludrocortisone",
+     "tempting": "causes pubic hair development abnormalities"
+    },
+    "B": {
+     "clue": "X-linked androgen receptor defect with 46,XY karyotype",
+     "support": "androgen receptor resistance",
+     "fit": "Here: breasts present, no uterus, absent pubic hair",
+     "tx": "Gonadectomy after puberty + estrogen"
+    },
+    "C": {
+     "clue": "Obstructing membrane at vaginal introitus",
+     "support": "outflow tract obstruction",
+     "fit": "Not here: ultrasound shows no uterus, shortened vagina",
+     "tx": "Hymenotomy",
+     "tempting": "causes primary amenorrhea with normal breasts"
+    },
+    "D": {
+     "clue": "Congenital absence of uterus and upper vagina",
+     "support": "Müllerian agenesis",
+     "fit": "Not here: absent axillary and pubic hair",
+     "tx": "Vaginal dilation",
+     "tempting": "presents with breasts and absent uterus"
+    },
+    "E": {
+     "clue": "Ovarian follicular depletion before age 40",
+     "support": "hypergonadotropic hypogonadism",
+     "fit": "Not here: breast development present, absent uterus",
+     "tx": "Hormone replacement therapy",
+     "tempting": "causes primary or secondary amenorrhea"
+    }
+   },
+   "algorithm": {
+    "title": "Primary amenorrhea evaluation",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Primary amenorrhea (age ≥ 15 with secondary sex characteristics): pelvic ultrasound for uterus",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Uterus present:** check serum FSH concentration to distinguish central versus gonadal failure",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Uterus absent:** assess axillary and pubic hair to differentiate AIS from Müllerian agenesis",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Absent pubic hair (androgen insensitivity):** check karyotype (46,XY) and serum testosterone",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Normal pubic hair (Müllerian agenesis):** check karyotype (46,XX) and renal ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "AIS management: gonadectomy after puberty to prevent dysgerminoma, plus estrogen replacement",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "never had a menstrual period"
+    },
+    {
+     "text": "Breast development is Tanner stage 3"
+    },
+    {
+     "text": "no axillary or pubic hair"
+    },
+    {
+     "text": "vagina that is 2 cm in length"
+    },
+    {
+     "text": "Pelvic ultrasonography shows no uterus"
+    }
+   ]
+  },
+  "c-obgyn-02-q012": {
+   "task": "Diagnosis",
+   "boardCall": "First-trimester twins + two yolk sacs + thick membrane -> Dichorionic twin gestation",
+   "hinge": "Two yolk sacs and a thick dividing intertwin membrane on first-trimester ultrasound define a dichorionic gestation.",
+   "trap": "Two yolk sacs also occur in monochorionic diamniotic twins, but a thick membrane confirms separate chorions.",
+   "options": {
+    "A": {
+     "clue": "Incomplete embryonic division after day 13",
+     "support": "conjoined twins",
+     "fit": "Not here: thick dividing membrane between viable twins",
+     "tx": "",
+     "tempting": "rare monoamniotic twinning complication"
+    },
+    "B": {
+     "clue": "Two separate placentas and chorionic sacs",
+     "support": "dichorionic twinning",
+     "fit": "Here: two yolk sacs, thick dividing intertwin membrane",
+     "tx": "Serial obstetric ultrasound"
+    },
+    "C": {
+     "clue": "Single shared placenta with thin dividing membrane",
+     "support": "monochorionic-diamniotic",
+     "fit": "Not here: thick dividing membrane between gestational sacs",
+     "tx": "Surveillance for TTTS",
+     "tempting": "has two yolk sacs on ultrasound"
+    },
+    "D": {
+     "clue": "Single shared placenta and amniotic sac",
+     "support": "monochorionic-monoamniotic",
+     "fit": "Not here: dividing membrane present between twins",
+     "tx": "Inpatient surveillance",
+     "tempting": "high-risk twin gestation subtype"
+    },
+    "E": {
+     "clue": "Indeterminate sonographic chorionicity",
+     "support": "inconclusive findings",
+     "fit": "Not here: first-trimester thick dividing membrane is conclusive",
+     "tx": "",
+     "tempting": "ultrasound interpretation uncertainty"
+    }
+   },
+   "algorithm": {
+    "title": "Chorionicity determination in multifetal gestation",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "First-trimester ultrasound: evaluate number of gestational sacs, yolk sacs, and dividing membrane",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Thick dividing membrane (twin-peak sign):** dichorionic-diamniotic gestation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Thin dividing membrane (T-sign):** monochorionic-diamniotic gestation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**No dividing membrane:** monochorionic-monoamniotic gestation (risk for cord entanglement)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monochorionic management: surveillance every 2 weeks for twin-twin transfusion syndrome",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Dichorionic management: serial growth ultrasound every 4-6 weeks and surveillance for preeclampsia",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "viable twin gestation consistent in size with an 8-week gestation"
+    },
+    {
+     "text": "two yolk sacs and a thick dividing membrane"
+    },
+    {
+     "text": "initial prenatal visit"
+    }
+   ]
+  },
+  "c-obgyn-02-q013": {
+   "task": "Next step",
+   "boardCall": "Active labor at term + singleton transverse lie -> Cesarean delivery",
+   "hinge": "Active labor at term with a singleton fetus in persistent transverse lie requires prompt cesarean delivery.",
+   "trap": "Internal podalic version and extraction is indicated for a nonvertex second twin, never for a singleton fetus.",
+   "options": {
+    "A": {
+     "clue": "Expectant labor management for cephalic presentation",
+     "support": "vaginal delivery",
+     "fit": "Not here: transverse lie cannot safely deliver vaginally",
+     "tx": "",
+     "tempting": "normal labor progression strategy"
+    },
+    "B": {
+     "clue": "Uterotonic peptide augmenting uterine contractions",
+     "support": "labor augmentation",
+     "fit": "Not here: transverse lie risks uterine rupture with oxytocin",
+     "tx": "",
+     "tempting": "manages active labor progression"
+    },
+    "C": {
+     "clue": "Uterine relaxants halting preterm labor",
+     "support": "tocolysis",
+     "fit": "Not here: patient is at 40 weeks' gestation",
+     "tx": "",
+     "tempting": "arrests contractions to attempt version"
+    },
+    "D": {
+     "clue": "Intrauterine manipulation for second twin delivery",
+     "support": "podalic version",
+     "fit": "Not here: singleton pregnancy, contraindicated for singleton fetus",
+     "tx": "",
+     "tempting": "corrects fetal malpresentation in labor"
+    },
+    "E": {
+     "clue": "Operative abdominal delivery of fetus",
+     "support": "cesarean delivery",
+     "fit": "Here: active labor at term with transverse lie",
+     "tx": "Cesarean delivery"
+    }
+   },
+   "algorithm": {
+    "title": "Management of fetal transverse lie at term",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Transverse lie at term: assess membrane status, labor contractions, and singleton vs twin",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Pre-labor with intact membranes (> 37 weeks):** offer external cephalic version if no contraindications",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Active labor with persistent transverse lie:** perform urgent cesarean delivery",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Second twin in transverse lie:** attempt internal podalic version followed by breech extraction",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor continuously for umbilical cord prolapse and uterine rupture during labor",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "40 weeks' gestation is admitted in labor"
+    },
+    {
+     "text": "cervix is 100% effaced and 5 cm dilated"
+    },
+    {
+     "text": "fetus in a transverse lie presentation with the back toward the pelvis"
+    }
+   ]
+  },
+  "c-obgyn-02-q014": {
+   "task": "Next step",
+   "boardCall": "Dyspareunia + uterosacral nodularity + adnexal tenderness -> Laparoscopy",
+   "hinge": "Definitive diagnosis of endometriosis requires surgical visualization and histologic biopsy via laparoscopy.",
+   "trap": "Serum CA 125 is frequently elevated in endometriosis, but lacks specificity and cannot confirm the diagnosis.",
+   "options": {
+    "A": {
+     "clue": "Glycoprotein biomarker for ovarian epithelial neoplasms",
+     "support": "tumor marker",
+     "fit": "Not here: nonspecific biomarker, cannot confirm endometriosis diagnosis",
+     "tx": "",
+     "tempting": "biomarker frequently elevated in endometriosis"
+    },
+    "B": {
+     "clue": "Oncofetal protein marker for germ cell tumors",
+     "support": "germ cell marker",
+     "fit": "Not here: no adnexal mass, dysmenorrhea symptoms",
+     "tx": "",
+     "tempting": "ovarian tumor marker evaluation"
+    },
+    "C": {
+     "clue": "Abdominal cross-sectional computerized tomography",
+     "support": "abdominal CT",
+     "fit": "Not here: poor soft tissue resolution for peritoneal implants",
+     "tx": "",
+     "tempting": "evaluates pelvic and abdominal pain"
+    },
+    "D": {
+     "clue": "Pelvic magnetic resonance cross-sectional imaging",
+     "support": "pelvic MRI",
+     "fit": "Not here: noninvasive imaging, cannot provide definitive histology",
+     "tx": "",
+     "tempting": "visualizes deep pelvic endometriosis lesions"
+    },
+    "E": {
+     "clue": "Direct surgical visualization and peritoneal biopsy",
+     "support": "laparoscopic visualization",
+     "fit": "Here: uterosacral nodularity, fixed retroverted uterus, adnexal tenderness",
+     "tx": "Surgical ablation or excision"
+    }
+   },
+   "algorithm": {
+    "title": "Diagnostic and therapeutic pathway for endometriosis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Suspected endometriosis (dysmenorrhea, dyspareunia, uterosacral nodularity): transvaginal ultrasound to rule out endometrioma",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initial empiric management: NSAIDs + continuous combined oral contraceptives or progestins",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Refractory to medical therapy or diagnostic uncertainty:** perform diagnostic laparoscopy with biopsy",
+      "nbs": true
+     },
+     {
+      "level": 2,
+      "text": "**Confirmed implants on laparoscopy:** surgical excision or ablation + post-procedure hormonal suppression",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Severe refractory pelvic pain:** GnRH agonists or antagonists with add-back hormonal therapy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "dyspareunia and dysmenorrhea for 2 years"
+    },
+    {
+     "text": "nodularity over the uterosacral area"
+    },
+    {
+     "text": "uterus is retroverted"
+    },
+    {
+     "text": "Both adnexa are normal-sized but tender"
+    }
+   ]
+  },
+  "c-obgyn-02-q015": {
+   "task": "Next step",
+   "boardCall": "HIV-positive pregnancy + PPD induration 9 mm -> Chest x-ray",
+   "hinge": "In HIV-positive individuals, PPD induration ≥ 5 mm is positive, requiring a chest x-ray with abdominal shielding.",
+   "trap": "Sputum AFB culture is indicated only after chest radiography shows pulmonary disease or if the patient is symptomatic.",
+   "options": {
+    "A": {
+     "clue": "Repeat tuberculin skin test after interval",
+     "support": "delayed skin test",
+     "fit": "Not here: PPD 9 mm is already diagnostic in HIV",
+     "tx": "",
+     "tempting": "avoids immediate intervention in pregnancy"
+    },
+    "B": {
+     "clue": "Postpartum repeat tuberculin skin test",
+     "support": "deferred testing",
+     "fit": "Not here: delayed evaluation risks active tuberculosis progression",
+     "tx": "",
+     "tempting": "defers radiographic exposure until postpartum"
+    },
+    "C": {
+     "clue": "Microbiological culture for Mycobacterium tuberculosis",
+     "support": "sputum diagnostics",
+     "fit": "Not here: asymptomatic with clear lungs, obtain radiograph first",
+     "tx": "",
+     "tempting": "confirms active mycobacterial pulmonary infection"
+    },
+    "D": {
+     "clue": "Plain thoracic radiography with abdominal shielding",
+     "support": "chest radiography",
+     "fit": "Here: HIV-positive, PPD 9 mm, exclude active tuberculosis",
+     "tx": "Isoniazid + pyridoxine if negative"
+    },
+    "E": {
+     "clue": "High-resolution thoracic computed tomography",
+     "support": "chest CT",
+     "fit": "Not here: unnecessary ionizing radiation exposure during pregnancy",
+     "tx": "",
+     "tempting": "detailed imaging for pulmonary pathology"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of positive tuberculin test in HIV-positive pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "HIV-positive patient: PPD induration ≥ 5 mm is diagnostic for tuberculosis infection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain chest radiograph with abdominal shielding to rule out active pulmonary disease",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Abnormal radiograph or pulmonary symptoms:** obtain sputum AFB smears and nucleic acid amplification",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Sputum positive for acid-fast bacilli:** initiate multidrug therapy (rifampin, isoniazid, pyrazinamide, ethambutol)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Normal radiograph and asymptomatic:** diagnose latent TB; treat with isoniazid + pyridoxine",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "10 weeks' gestation"
+    },
+    {
+     "text": "serum HIV antibody testing was positive"
+    },
+    {
+     "text": "lungs are clear to auscultation and percussion"
+    },
+    {
+     "text": "PPD skin test shows 9 mm of induration at 48 hours"
+    }
+   ]
+  },
+  "c-obgyn-02-q016": {
+   "task": "Diagnosis",
+   "boardCall": "Post-cesarean collapse + hypoxemia + cor pulmonale + normal fibrinogen -> Pulmonary embolism",
+   "hinge": "Post-cesarean acute collapse with hypoxemia, cor pulmonale on ECG, and normal fibrinogen indicates pulmonary embolism.",
+   "trap": "Amniotic fluid embolism causes sudden postpartum cardiovascular collapse, but DIC with low fibrinogen and elevated FSPs is absent.",
+   "options": {
+    "A": {
+     "clue": "Anaphylactoid syndrome of pregnancy with DIC",
+     "support": "amniotic fluid embolism",
+     "fit": "Not here: normal plasma fibrinogen and fibrin split products",
+     "tx": "Cardiopulmonary resuscitation",
+     "tempting": "causes sudden postpartum collapse and hypoxemia"
+    },
+    "B": {
+     "clue": "Primary cardiac conduction disturbance",
+     "support": "arrhythmia",
+     "fit": "Not here: tachypnea, hypoxemia, and cor pulmonale present",
+     "tx": "Cardioversion",
+     "tempting": "presents with syncope and tachycardia"
+    },
+    "C": {
+     "clue": "Intracranial vascular rupture causing neurologic deficits",
+     "support": "intracerebral bleed",
+     "fit": "Not here: prominent respiratory failure and cor pulmonale",
+     "tx": "Neurosurgical decompression",
+     "tempting": "causes sudden postpartum loss of consciousness"
+    },
+    "D": {
+     "clue": "Impaired myocardial pump function with pulmonary edema",
+     "support": "heart failure",
+     "fit": "Not here: clear lungs, cor pulmonale on ECG",
+     "tx": "Diuretics",
+     "tempting": "causes shortness of breath and hypoxemia"
+    },
+    "E": {
+     "clue": "Preeclampsia with generalized grand mal seizures",
+     "support": "eclampsia",
+     "fit": "Not here: no hypertension, normal platelets and transaminases",
+     "tx": "Magnesium sulfate",
+     "tempting": "causes postpartum unconsciousness and seizures"
+    },
+    "F": {
+     "clue": "Intravascular volume depletion from hemorrhage",
+     "support": "hypovolemic shock",
+     "fit": "Not here: fundus is firm, normal hemoglobin 11",
+     "tx": "IV crystalloid + blood products",
+     "tempting": "causes profound hypotension and tachycardia"
+    },
+    "G": {
+     "clue": "Infectious or chemical inflammation of lung parenchyma",
+     "support": "pneumonitis",
+     "fit": "Not here: sudden acute collapse, normal leukocyte count",
+     "tx": "Antibiotics",
+     "tempting": "causes fever, wheezing, and hypoxemia"
+    },
+    "H": {
+     "clue": "Collection of air in pleural space",
+     "support": "pneumothorax",
+     "fit": "Not here: bilateral breath sounds present, cor pulmonale",
+     "tx": "Needle decompression",
+     "tempting": "causes acute chest pain and hypoxemia"
+    },
+    "I": {
+     "clue": "Chemical pneumonitis from gastric content aspiration",
+     "support": "Mendelson syndrome",
+     "fit": "Not here: onset 3 days postoperatively, cor pulmonale",
+     "tx": "Suctioning + mechanical ventilation",
+     "tempting": "postoperative respiratory failure and wheezing"
+    },
+    "J": {
+     "clue": "Thrombotic occlusion of pulmonary arterial bed",
+     "support": "pulmonary embolism",
+     "fit": "Here: post-cesarean collapse, hypoxemia, ECG cor pulmonale",
+     "tx": "Heparin anticoagulation or thrombolysis"
+    },
+    "K": {
+     "clue": "Paroxysmal electrical cerebral discharges",
+     "support": "epilepsy",
+     "fit": "Not here: profound hypoxemia, shock, and cor pulmonale",
+     "tx": "Anticonvulsants",
+     "tempting": "causes acute transient loss of consciousness"
+    },
+    "L": {
+     "clue": "Sepsis with persistent hypotension and organ dysfunction",
+     "support": "septic shock",
+     "fit": "Not here: acute collapse, leukocyte count 8000/mm³",
+     "tx": "Broad-spectrum antibiotics + vasopressors",
+     "tempting": "fever with profound hypotension and tachycardia"
+    }
+   },
+   "algorithm": {
+    "title": "Management of acute postpartum pulmonary embolism",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Postoperative collapse with hypotension and hypoxemia: aggressive hemodynamic resuscitation and supplemental oxygen",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "ECG showing cor pulmonale: bedside echocardiography or emergency CT pulmonary angiography",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate anticoagulation with intravenous unfractionated heparin immediately",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Massive PE with persistent hemodynamic instability:** administer systemic thrombolysis (alteplase)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Contraindication to thrombolysis (surgical bleeding risk):** catheter-directed embolectomy or surgical embolectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Transition to therapeutic low-molecular-weight heparin once stabilized, continuing for at least 6 months",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Three days after cesarean delivery"
+    },
+    {
+     "text": "blood pressure is 60/40 mm Hg"
+    },
+    {
+     "text": "ECG shows tachycardia with cor pulmonale"
+    },
+    {
+     "text": "plasma fibrinogen 300 mg/dL (N=200-400)",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q017": {
+   "task": "Diagnosis",
+   "boardCall": "Chronic hypertension + lagging fundal height + EFW 5th percentile -> Uteroplacental insufficiency",
+   "hinge": "Maternal chronic hypertension produces spiral artery vasculopathy and reduced perfusion, causing uteroplacental insufficiency.",
+   "trap": "Abnormal glucose tolerance test tempts gestational diabetes, but diabetes typically produces macrosomia, not growth restriction.",
+   "options": {
+    "A": {
+     "clue": "Maternal hyperglycemia causing fetal hyperinsulinemia",
+     "support": "gestational diabetes",
+     "fit": "Not here: causes fetal macrosomia rather than growth restriction",
+     "tx": "Dietary modification + insulin",
+     "tempting": "abnormal glucose tolerance test during pregnancy"
+    },
+    "B": {
+     "clue": "Inadequate maternal thyroid hormone during embryogenesis",
+     "support": "hypothyroidism",
+     "fit": "Not here: controlled with levothyroxine, causes neurocognitive deficits",
+     "tx": "Levothyroxine",
+     "tempting": "maternal endocrine disease in pregnancy"
+    },
+    "C": {
+     "clue": "Severe maternal nutritional deprivation",
+     "support": "maternal malnutrition",
+     "fit": "Not here: adequate weight gain of 9-kg during pregnancy",
+     "tx": "Nutritional support",
+     "tempting": "lagging fundal height with dietary restriction"
+    },
+    "D": {
+     "clue": "Intermittent mechanical occlusion of umbilical vessels",
+     "support": "cord compression",
+     "fit": "Not here: causes variable decelerations, not chronic FGR",
+     "tx": "Amnioinfusion",
+     "tempting": "obstetric cause of compromised fetal flow"
+    },
+    "E": {
+     "clue": "Impaired maternal-fetal exchange from diseased spiral arteries",
+     "support": "uteroplacental insufficiency",
+     "fit": "Here: poorly controlled hypertension, lagging fundal height, FGR",
+     "tx": "Umbilical Doppler surveillance + delivery"
+    }
+   },
+   "algorithm": {
+    "title": "Fetal growth restriction and uteroplacental insufficiency",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Lagging fundal height (≥ 3 cm discrepancy): perform obstetric ultrasound for estimated fetal weight",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Estimated fetal weight < 10th percentile:** diagnose fetal growth restriction; assess umbilical artery Doppler",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Normal end-diastolic flow:** weekly or biweekly umbilical artery Doppler surveillance",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Absent or reversed end-diastolic flow:** hospital admission, antenatal corticosteroids, and delivery planning",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Optimize maternal chronic disease: control hypertension with nifedipine or labetalol",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform serial biophysical profiles and deliver for nonreassuring fetal status or severe oligohydramnios",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "blood pressure is 160/96 mm Hg"
+    },
+    {
+     "text": "fundal height of 27 cm"
+    },
+    {
+     "text": "estimated fetal weight at the 5th percentile for 32 weeks' gestation"
+    },
+    {
+     "text": "hypertension treated with nifedipine"
+    }
+   ]
+  },
+  "c-obgyn-02-q018": {
+   "task": "Next step",
+   "boardCall": "Post-cesarean fever + uterine tenderness + leukocytosis -> Intravenous ampicillin and gentamicin",
+   "hinge": "Postpartum endometritis presents with fever and uterine tenderness after cesarean delivery, requiring intravenous broad-spectrum antibiotics.",
+   "trap": "Clean incision and abdominal cramping might suggest hematoma or wound issue, but uterine infection is the primary cause of fever.",
+   "options": {
+    "A": {
+     "clue": "Pelvic computed tomography detecting deep abscess",
+     "support": "pelvic imaging",
+     "fit": "Not here: initial presentation responds to broad-spectrum IV antibiotics",
+     "tx": "",
+     "tempting": "evaluates persistent post-cesarean fever"
+    },
+    "B": {
+     "clue": "Ergot alkaloid uterotonic promoting myometrial contraction",
+     "support": "uterotonic agent",
+     "fit": "Not here: no active postpartum hemorrhage",
+     "tx": "",
+     "tempting": "treats uterine atony and postpartum bleeding"
+    },
+    "C": {
+     "clue": "Broad-spectrum intravenous antimicrobial regimen",
+     "support": "antibiotic therapy",
+     "fit": "Here: post-cesarean fever, lower abdominal tenderness, leukocytosis",
+     "tx": "Ampicillin + gentamicin"
+    },
+    "D": {
+     "clue": "Operative evacuation of retained uterine products",
+     "support": "curettage",
+     "fit": "Not here: no heavy vaginal bleeding, risk of uterine perforation",
+     "tx": "",
+     "tempting": "treats retained placental tissue"
+    },
+    "E": {
+     "clue": "Exploratory laparotomy for intra-abdominal surgical complications",
+     "support": "surgical exploration",
+     "fit": "Not here: clean incision, no signs of peritonitis or fascial dehiscence",
+     "tx": "",
+     "tempting": "investigates post-cesarean acute abdomen"
+    }
+   },
+   "algorithm": {
+    "title": "Management of postpartum endometritis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Post-cesarean fever (> 38°C) + uterine tenderness: diagnose postpartum endometritis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate broad-spectrum intravenous antimicrobial therapy (clindamycin + gentamicin or ampicillin + gentamicin)",
+      "nbs": true
+     },
+     {
+      "level": 0,
+      "text": "Continue intravenous antibiotics until patient is afebrile and asymptomatic for 24-48 hours",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Fever persists after 48-72 hours of antibiotics:** evaluate for resistant organism, abscess, or septic pelvic thrombophlebitis",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Suspected septic pelvic thrombophlebitis:** add therapeutic anticoagulation with intravenous heparin",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Pelvic abscess identified on CT:** perform image-guided percutaneous drainage",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Thirty-six hours after cesarean delivery because of prolonged labor"
+    },
+    {
+     "text": "temperature is 38.8°C (101.8°F)"
+    },
+    {
+     "text": "diffuse lower abdominal tenderness with some voluntary guarding"
+    },
+    {
+     "text": "incision is clean, dry, and intact"
+    }
+   ]
+  },
+  "c-obgyn-02-q019": {
+   "task": "Prevention",
+   "boardCall": "Woman age ≥ 35 who smokes cigarettes -> Contraindicated: combined oral contraceptives",
+   "hinge": "Age ≥ 35 years combined with cigarette smoking is an absolute contraindication to estrogen-containing contraceptives.",
+   "trap": "Progestin-only contraceptives (pills, depot, IUD) are safe in smokers over 35, whereas estrogen-containing pills are contraindicated.",
+   "options": {
+    "A": {
+     "clue": "Nonhormonal copper-releasing intrauterine device",
+     "support": "nonhormonal IUD",
+     "fit": "Not here: nonhormonal, safe in smokers over 35",
+     "tx": "",
+     "tempting": "invasive intrauterine method"
+    },
+    "B": {
+     "clue": "Injectable progestin-only contraceptive depot",
+     "support": "progestin injection",
+     "fit": "Not here: progestin-only, safe in smokers over 35",
+     "tx": "",
+     "tempting": "hormonal method with systemic circulation"
+    },
+    "C": {
+     "clue": "Barrier contraceptive placed over cervix",
+     "support": "barrier method",
+     "fit": "Not here: nonhormonal barrier method without vascular risk",
+     "tx": "",
+     "tempting": "less effective contraceptive option"
+    },
+    "D": {
+     "clue": "Oral progestin-only contraceptive formulation",
+     "support": "minipill",
+     "fit": "Not here: progestin-only formulation safe in smokers",
+     "tx": "",
+     "tempting": "oral hormonal contraceptive tablet"
+    },
+    "E": {
+     "clue": "Levonorgestrel-releasing intrauterine system",
+     "support": "hormonal IUD",
+     "fit": "Not here: progestin-only local action safe in smokers",
+     "tx": "",
+     "tempting": "hormone-releasing device"
+    },
+    "F": {
+     "clue": "Combined oral contraceptive containing estrogen and progestin",
+     "support": "combined oral contraceptive",
+     "fit": "Here: age 37 and smoking one pack daily",
+     "tx": "Progestin-only or nonhormonal contraception"
+    }
+   },
+   "algorithm": {
+    "title": "Contraception selection and estrogen contraindications",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Patient seeking contraception: assess medical eligibility criteria (age, smoking status, cardiovascular risk)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Age ≥ 35 and smoking ≥ 15 cigarettes daily:** absolute contraindication to estrogen-containing contraception",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Safe options in smokers ≥ 35:** progestin-only pills, depot medroxyprogesterone, IUDs, or barrier methods",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**History of hypertension, migraine with aura, or VTE:** also contraindicates combined estrogen-progestin formulations",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide smoking cessation counseling and pharmacotherapy (nicotine replacement, bupropion, or varenicline)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen periodically for blood pressure changes and cervical cancer during contraceptive follow-up",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "healthy 37-year-old woman"
+    },
+    {
+     "text": "smoked one pack of cigarettes daily for 20 years"
+    },
+    {
+     "text": "Testing for Neisseria gonorrhoeae and Chlamydia trachomatis is negative"
+    },
+    {
+     "text": "switch to another contraceptive method"
+    }
+   ]
+  },
+  "c-obgyn-02-q020": {
+   "task": "Diagnosis",
+   "boardCall": "Amenorrhea + marathon runner + low BMI -> Decreased estrogen and decreased FSH",
+   "hinge": "Functional hypothalamic amenorrhea due to strenuous exercise and low BMI suppresses GnRH, causing low FSH and low estrogen.",
+   "trap": "Primary ovarian insufficiency causes decreased estrogen, but feedback loss produces increased, rather than decreased, FSH.",
+   "options": {
+    "A": {
+     "clue": "Hypogonadotropic hypogonadism from hypothalamic suppression",
+     "support": "functional hypothalamic amenorrhea",
+     "fit": "Here: low BMI 17 kg/m², heavy marathon training",
+     "tx": "Caloric increase + exercise reduction"
+    },
+    "B": {
+     "clue": "Hypergonadotropic hypogonadism with loss of ovarian feedback",
+     "support": "primary ovarian insufficiency",
+     "fit": "Not here: hypothalamic origin, pituitary gonadotropins are suppressed",
+     "tx": "Hormone replacement therapy",
+     "tempting": "low estrogen state with secondary amenorrhea"
+    },
+    "C": {
+     "clue": "Selective gonadotropin deficiency with intact ovarian steroidogenesis",
+     "support": "discordant gonadotropins",
+     "fit": "Not here: reduced FSH and LH impair ovarian estrogen synthesis",
+     "tx": "",
+     "tempting": "partial central gonadotropin suppression"
+    },
+    "D": {
+     "clue": "Ovarian resistance with preserved follicular estrogen secretion",
+     "support": "gonadotropin resistance",
+     "fit": "Not here: hypothalamic amenorrhea causes low gonadotropins",
+     "tx": "",
+     "tempting": "endocrinopathy pattern"
+    },
+    "E": {
+     "clue": "Hyperprolactinemia suppressing GnRH with normal estrogen",
+     "support": "prolactinoma",
+     "fit": "Not here: low BMI and marathon running suppress hypothalamic axis",
+     "tx": "Cabergoline",
+     "tempting": "hyperprolactinemia causes amenorrhea"
+    }
+   },
+   "algorithm": {
+    "title": "Functional hypothalamic amenorrhea evaluation",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Secondary amenorrhea in athlete or low BMI (< 18.5 kg/m²): check serum β-hCG to rule out pregnancy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Measure serum FSH, LH, estradiol, TSH, and prolactin to evaluate hypothalamic-pituitary-ovarian axis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Low or normal FSH and LH + low estradiol:** confirms hypogonadotropic hypogonadism (functional hypothalamic amenorrhea)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Elevated FSH (> 25 mIU/mL) + low estradiol:** primary ovarian insufficiency",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Management: optimize caloric intake, reduce exercise intensity, and perform DEXA scan for osteopenia",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent amenorrhea with bone loss:** initiate transdermal estradiol + cyclic oral progestin",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "has not had a menstrual period for 1 year"
+    },
+    {
+     "text": "runs 7 miles daily and has completed three marathons in the past year"
+    },
+    {
+     "text": "BMI is 17 kg/m²"
+    },
+    {
+     "text": "weighs 45 kg (100 lb)"
+    }
+   ]
+  },
+  "c-obgyn-02-q021": {
+   "task": "Diagnosis",
+   "boardCall": "Pediatric pruritic vulvovaginitis + rhinorrhea -> Inoculation from upper respiratory tract infection",
+   "hinge": "Auto-inoculation of respiratory pathogens via fingers onto hypoestrogenic vulvar mucosa causes pediatric vulvovaginitis.",
+   "trap": "Blood on underpants and discharge suggest a vaginal foreign body, but polymicrobial infection with concurrent runny nose points to respiratory inoculation.",
+   "options": {
+    "A": {
+     "clue": "Gastrointestinal infection with diarrhea",
+     "support": "gastrointestinal infection",
+     "fit": "Not here: no diarrhea, vomiting, or abdominal pain",
+     "tx": "",
+     "tempting": "fecal contamination can cause vulvovaginitis"
+    },
+    "B": {
+     "clue": "Auto-inoculation of nasopharyngeal pathogens via fingers",
+     "support": "respiratory pathogen inoculation",
+     "fit": "Here: concurrent runny nose, polymicrobial purulent discharge",
+     "tx": "Hygiene measures + oral antibiotics"
+    },
+    "C": {
+     "clue": "Embryonal rhabdomyosarcoma with grape-like lesions",
+     "support": "sarcoma botryoides",
+     "fit": "Not here: intact hymen, no grape-like vaginal mass",
+     "tx": "Chemotherapy + surgery",
+     "tempting": "causes pediatric vaginal bleeding"
+    },
+    "D": {
+     "clue": "Bacterial colonization of urinary tract mucosa",
+     "support": "urinary tract infection",
+     "fit": "Not here: diffuse vulvar erythema and vaginal discharge",
+     "tx": "Antibiotics",
+     "tempting": "causes dysuria and leukocyturia"
+    },
+    "E": {
+     "clue": "Retained foreign object causing persistent discharge",
+     "support": "vaginal foreign body",
+     "fit": "Not here: intact hymen, diffuse vulvitis, concurrent rhinorrhea",
+     "tx": "Foreign body extraction",
+     "tempting": "foul discharge and bleeding in child"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of pediatric vulvovaginitis",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Prepubertal girl with vulvar pruritus and discharge: inspect perineum, hymen, and introitus",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Signs of trauma or suspicious lacerations:** report suspected sexual abuse immediately",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Visible foreign object or foul persistent bloody discharge:** examine under anesthesia or vaginoscopy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Diffuse erythema + concurrent rhinorrhea:** auto-inoculation of respiratory flora onto hypoestrogenic mucosa",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initial management: perineal hygiene education, avoid irritants, and sitz baths",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Persistent purulent discharge or severe infection:** administer targeted oral antibiotic therapy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "rubbing and scratching her genital area"
+    },
+    {
+     "text": "foul-smelling discharge and burning and itching"
+    },
+    {
+     "text": "runny nose during this period"
+    },
+    {
+     "text": "green vaginal discharge and diffuse inflammation of the vulva"
+    },
+    {
+     "text": "Culture of the discharge shows a polymicrobial infection"
+    }
+   ]
+  },
+  "c-obgyn-02-q022": {
+   "task": "Diagnosis",
+   "boardCall": "Urgency followed by involuntary urine loss + normal anatomy -> Detrusor instability",
+   "hinge": "Urinary urgency followed immediately by involuntary urine loss in the setting of normal exam indicates detrusor instability.",
+   "trap": "Incidental 3-cm uterine leiomyoma might seem compressive, but normal physical exam and classic urge symptoms confirm detrusor instability.",
+   "options": {
+    "A": {
+     "clue": "Involuntary detrusor contractions causing sudden urgency",
+     "support": "urge incontinence",
+     "fit": "Here: urinary urgency, nocturia, involuntary urine loss",
+     "tx": "Bladder training + antimuscarinics"
+    },
+    "B": {
+     "clue": "Benign smooth muscle tumor of myometrium",
+     "support": "uterine fibroid",
+     "fit": "Not here: small 3-cm mass, pelvic exam normal",
+     "tx": "Observation or myomectomy",
+     "tempting": "identified on pelvic ultrasound"
+    },
+    "C": {
+     "clue": "Bladder neck descent causing stress incontinence",
+     "support": "stress incontinence",
+     "fit": "Not here: leakage triggered by urgency, not coughing",
+     "tx": "Pelvic exercises or sling",
+     "tempting": "common postmenopausal urinary incontinence"
+    },
+    "D": {
+     "clue": "Bladder overdistension causing continuous dribbling",
+     "support": "overflow incontinence",
+     "fit": "Not here: normal urine stream, no post-void fullness",
+     "tx": "Catheterization or bethanechol",
+     "tempting": "causes involuntary urinary leakage"
+    },
+    "E": {
+     "clue": "Bacterial bladder infection causing urinary urgency",
+     "support": "cystitis",
+     "fit": "Not here: urinalysis shows no abnormalities, afebrile",
+     "tx": "Nitrofurantoin",
+     "tempting": "causes urinary urgency and frequency"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation and management of urinary incontinence",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Urinary incontinence: obtain detailed voiding history, physical examination, and urinalysis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Leakage with coughing or sneezing (stress):** urethral hypermobility; start pelvic floor muscle training",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Urgency preceding involuntary leakage (urge):** detrusor instability; initiate bladder training and lifestyle modifications",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Refractory urge incontinence:** prescribe antimuscarinic therapy (oxybutynin) or beta-3 agonist (mirabegron)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Constant dribbling with elevated post-void residual (overflow):** assess for bladder outlet obstruction or neurogenic bladder",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform multichannel urodynamic testing if diagnosis is uncertain or prior to surgical intervention",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "urinary urgency and loss of urine"
+    },
+    {
+     "text": "typically awakens once each night to void"
+    },
+    {
+     "text": "Urinalysis shows no abnormalities"
+    },
+    {
+     "text": "3-cm, anterior, uterine mass consistent with a benign leiomyoma uteri",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q023": {
+   "task": "Ethics",
+   "boardCall": "Pregnant 17-year-old with capacity refuses post-term induction -> Respect patient's wishes and follow up",
+   "hinge": "Pregnant minors possess legal authority and autonomy to make pregnancy-related decisions, including informed refusal.",
+   "trap": "Minor status tempts obtaining parental consent or paternal input, but pregnant adolescents hold decision-making authority for obstetric care.",
+   "options": {
+    "A": {
+     "clue": "Deferring medical decision to biological father",
+     "support": "paternal deferral",
+     "fit": "Not here: pregnant patient possesses sole legal decision-making authority",
+     "tx": "",
+     "tempting": "involves father of the child"
+    },
+    "B": {
+     "clue": "Overriding minor autonomy via parental proxy",
+     "support": "parental consent",
+     "fit": "Not here: pregnant minors have autonomy over pregnancy care",
+     "tx": "",
+     "tempting": "patient is a seventeen-year-old minor"
+    },
+    "C": {
+     "clue": "Formal psychiatric evaluation of competence",
+     "support": "capacity evaluation",
+     "fit": "Not here: no cognitive impairment, informed refusal is valid",
+     "tx": "",
+     "tempting": "refusing standard medical advice suggests incompetence"
+    },
+    "D": {
+     "clue": "Respecting autonomous informed refusal with continued care",
+     "support": "patient autonomy",
+     "fit": "Here: mature minor with capacity refuses post-term induction",
+     "tx": "Counseling + close follow-up"
+    },
+    "E": {
+     "clue": "Inappropriate abandonment of established care",
+     "support": "patient abandonment",
+     "fit": "Not here: ethical duty to continue providing prenatal care",
+     "tx": "",
+     "tempting": "avoids managing patient refusing medical guidelines"
+    }
+   },
+   "algorithm": {
+    "title": "Informed refusal and adolescent pregnancy autonomy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Pregnant adolescent seeking obstetric care: evaluate decision-making capacity and maturity",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Patient demonstrates capacity:** pregnant minors hold legal authority to consent or refuse pregnancy care",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Patient refuses recommended interventions:** discuss indications, maternal-fetal risks, and alternatives",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Refusal persists despite counseling:** respect autonomous decision; never coerce or seek parental override",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Maintain nonjudgmental therapeutic relationship, provide harm-reduction advice, and arrange close follow-up",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "17-year-old primigravid patient at 41 weeks' gestation"
+    },
+    {
+     "text": "accompanied by the father of the child"
+    },
+    {
+     "text": "planned induction of labor at 42 weeks' gestation"
+    },
+    {
+     "text": "patient refuses the recommendations"
+    }
+   ]
+  },
+  "c-obgyn-02-q024": {
+   "task": "Next step",
+   "boardCall": "PPROM at 28 weeks + first steroid given -> Second corticosteroid dose in 24 hours",
+   "hinge": "Preterm PROM at 28 weeks without infection or labor requires expectant management, completing the two-dose corticosteroid course.",
+   "trap": "Breech presentation tempts cesarean delivery, but delivery is not indicated in the absence of labor, infection, or fetal compromise.",
+   "options": {
+    "A": {
+     "clue": "Completing two-dose betamethasone course for lung maturity",
+     "support": "corticosteroid completion",
+     "fit": "Here: PPROM at 28 weeks, complete 48-hour steroid course",
+     "tx": "Intramuscular betamethasone"
+    },
+    "B": {
+     "clue": "Uterotonic peptide inducing active labor",
+     "support": "labor induction",
+     "fit": "Not here: stable at 28 weeks, expectant management indicated",
+     "tx": "",
+     "tempting": "induces delivery following membrane rupture"
+    },
+    "C": {
+     "clue": "Transabdominal manipulation of fetal presentation",
+     "support": "version procedure",
+     "fit": "Not here: contraindicated with ruptured membranes and oligohydramnios",
+     "tx": "",
+     "tempting": "corrects breech presentation"
+    },
+    "D": {
+     "clue": "Transabdominal aspiration of amniotic fluid",
+     "support": "amniocentesis",
+     "fit": "Not here: invasive, no clinical signs of intraamniotic infection",
+     "tx": "",
+     "tempting": "evaluates fetal lung maturity or infection"
+    },
+    "E": {
+     "clue": "Immediate surgical abdominal delivery",
+     "support": "emergent cesarean",
+     "fit": "Not here: no maternal fever, distress, or uterine tenderness",
+     "tx": "",
+     "tempting": "fetus is in breech presentation"
+    }
+   },
+   "algorithm": {
+    "title": "Preterm premature rupture of membranes management",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Preterm PROM (< 34 weeks): confirm with sterile speculum exam (pooling, nitrazine, ferning)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Rule out chorioamnionitis, abruption, advanced labor, and nonreassuring fetal status",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Chorioamnionitis or fetal compromise:** immediate delivery regardless of gestational age",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Stable preterm PROM (< 34 weeks):** expectant inpatient management with latency antibiotics",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Antenatal corticosteroids:** administer two intramuscular doses 24 hours apart",
+      "nbs": true
+     },
+     {
+      "level": 2,
+      "text": "**Gestational age < 32 weeks:** administer intravenous magnesium sulfate for fetal neuroprotection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Deliver at 34 weeks' gestation or sooner if infection or complications develop",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "felt a sudden gush of fluid from her vagina"
+    },
+    {
+     "text": "Nitrazine testing of the fluid is positive, and ferning is seen under the microscope"
+    },
+    {
+     "text": "uterus is nontender to palpation"
+    },
+    {
+     "text": "amniotic fluid index of 5 cm (N=8-24)"
+    },
+    {
+     "text": "fetus is in a breech presentation",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q025": {
+   "task": "Diagnosis",
+   "boardCall": "Spontaneous bloody nipple discharge + normal mammogram + no mass -> Intraductal papilloma",
+   "hinge": "Spontaneous unilateral serosanguineous discharge from a single duct with normal mammography and exam is intraductal papilloma.",
+   "trap": "Ductal carcinoma in situ causes bloody discharge, but intraductal papilloma is the most common cause in a patient with normal mammography.",
+   "options": {
+    "A": {
+     "clue": "Subareolar duct dilation with thick multicolored discharge",
+     "support": "mammary duct ectasia",
+     "fit": "Not here: discharge is serosanguineous, not thick or multicolored",
+     "tx": "Observation or duct excision",
+     "tempting": "common cause of nipple discharge in perimenopause"
+    },
+    "B": {
+     "clue": "Cyclical breast nodularity and premenstrual mastalgia",
+     "support": "fibrocystic changes",
+     "fit": "Not here: spontaneous unilateral serosanguineous discharge without breast lumps",
+     "tx": "Supportive bra + NSAIDs",
+     "tempting": "common benign breast condition in perimenopause"
+    },
+    "C": {
+     "clue": "Malignant proliferation of ductal epithelial cells",
+     "support": "breast carcinoma",
+     "fit": "Not here: normal mammography and no palpable breast mass",
+     "tx": "Surgical resection + chemoradiation",
+     "tempting": "unilateral bloody nipple discharge suggests malignancy"
+    },
+    "D": {
+     "clue": "Benign fibrovascular papillary tumor within lactiferous duct",
+     "support": "intraductal papilloma",
+     "fit": "Here: spontaneous unilateral bloody discharge, normal mammogram, no mass",
+     "tx": "Complete surgical terminal duct excision"
+    },
+    "E": {
+     "clue": "Squamous metaplasia and infection of lactiferous ducts",
+     "support": "periareolar abscess",
+     "fit": "Not here: no erythema, pain, fever, or subareolar mass",
+     "tx": "Antibiotics + surgical drainage",
+     "tempting": "inflammatory ductal pathology"
+    }
+   },
+   "algorithm": {
+    "title": "Diagnostic approach to pathologic nipple discharge",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Pathologic nipple discharge (spontaneous, unilateral, bloody/serous): perform clinical breast exam",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform diagnostic breast imaging: mammography plus targeted retroareolar breast ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Suspicious mass or architectural distortion:** perform image-guided core needle biopsy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Normal imaging and exam:** intraductal papilloma is the most common etiology",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Definitive management:** duct excision (microdochectomy) to evaluate histology and resolve symptoms",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Exclude physiologic galactorrhea: bilateral, milky, nonspontaneous discharge; check serum prolactin and TSH",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "spontaneous intermittent serosanguineous discharge from the nipple"
+    },
+    {
+     "text": "nipple of the left breast"
+    },
+    {
+     "text": "No mass is palpable"
+    },
+    {
+     "text": "Screening mammography is within normal limits"
+    }
+   ]
+  },
+  "c-obgyn-02-q026": {
+   "task": "Diagnosis",
+   "boardCall": "Pubertal virilization + no uterus + testes without follicles -> 46,XY karyotype",
+   "hinge": "Absent uterus (testicular AMH) combined with pubertal virilization and internal testes confirms a 46,XY disorder of sex development.",
+   "trap": "Virilization in an apparent female might suggest congenital adrenal hyperplasia (46,XX), but CAH patients possess a uterus and ovaries.",
+   "options": {
+    "A": {
+     "clue": "Complete or partial absence of second X chromosome",
+     "support": "Turner syndrome",
+     "fit": "Not here: short stature, streak gonads, uterus present in Turner",
+     "tx": "Growth hormone + estrogen",
+     "tempting": "chromosomal abnormality causing delayed puberty"
+    },
+    "B": {
+     "clue": "Female karyotype with 21-hydroxylase deficiency virilization",
+     "support": "46,XX DSD",
+     "fit": "Not here: ultrasound shows absent uterus and testicular gonads",
+     "tx": "Hydrocortisone",
+     "tempting": "congenital adrenal hyperplasia causes female virilization"
+    },
+    "C": {
+     "clue": "Male karyotype with disorder of sex development",
+     "support": "46,XY DSD",
+     "fit": "Here: absent uterus, testes without follicles, pubertal virilization",
+     "tx": "Multidisciplinary DSD team care"
+    },
+    "D": {
+     "clue": "Klinefelter syndrome with seminiferous tubule dysgenesis",
+     "support": "Klinefelter syndrome",
+     "fit": "Not here: male phenotype with gynecomastia, not female ambiguity",
+     "tx": "Testosterone replacement",
+     "tempting": "sex chromosome aneuploidy"
+    },
+    "E": {
+     "clue": "XYY syndrome with tall stature and macrocephaly",
+     "support": "47,XYY syndrome",
+     "fit": "Not here: normal male genitalia, not genital ambiguity",
+     "tx": "",
+     "tempting": "associated with tall stature and acne"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of pubertal virilization and ambiguous genitalia",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Pubertal virilization with ambiguous genitalia: perform pelvic ultrasound to assess uterus and gonads",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Uterus present:** evaluate for 46,XX DSD (check 17-hydroxyprogesterone for CAH)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Uterus absent (testicular AMH secretion):** evaluate for 46,XY DSD; obtain karyotype",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**46,XY with testes without follicles:** 5-alpha-reductase deficiency or partial androgen insensitivity",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Measure serum testosterone and dihydrotestosterone ratio to evaluate 5-alpha-reductase conversion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Coordinate multidisciplinary management: endocrinology, genetics, psychological support, and gonadectomy counseling",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Breast development is Tanner stage 1"
+    },
+    {
+     "text": "axillary and pubic hair development are Tanner stage 3"
+    },
+    {
+     "text": "significant clitoromegaly, posterior labioscrotal fusion"
+    },
+    {
+     "text": "bilateral gonads without follicles; there is no uterus"
+    }
+   ]
+  },
+  "c-obgyn-02-q027": {
+   "task": "Diagnosis",
+   "boardCall": "Cervical mass + parametrial invasion + hydroureter -> Squamous cell carcinoma of cervix",
+   "hinge": "Large cervical mass invading parametrium with ureteral compression causing hydroureter is classic for invasive cervical squamous carcinoma.",
+   "trap": "Parametrial mass and pelvic extension can mimic advanced endometrial adenocarcinoma, but origin in the cervix identifies cervical cancer.",
+   "options": {
+    "A": {
+     "clue": "Malignant glandular neoplasm of uterine lining",
+     "support": "endometrial cancer",
+     "fit": "Not here: mass arises from cervix with parametrial invasion",
+     "tx": "Hysterectomy + chemoradiation",
+     "tempting": "causes severe vaginal bleeding and pelvic mass"
+    },
+    "B": {
+     "clue": "Epithelial malignancy of ovarian surface",
+     "support": "ovarian cancer",
+     "fit": "Not here: pelvic mass originates from the upper cervix",
+     "tx": "Debulking surgery + chemotherapy",
+     "tempting": "presents with large pelvic mass and compression"
+    },
+    "C": {
+     "clue": "Rare malignant neoplasm of peritoneal mesothelial cells",
+     "support": "peritoneal mesothelioma",
+     "fit": "Not here: associated with asbestos, prominent cervical mass",
+     "tx": "Cytoreductive surgery",
+     "tempting": "diffuse peritoneal and pelvic involvement"
+    },
+    "D": {
+     "clue": "Invasive squamous malignancy originating from transformation zone",
+     "support": "cervical squamous carcinoma",
+     "fit": "Here: 8-cm cervical mass, parametrial extension, hydroureter",
+     "tx": "Concurrent chemoradiation"
+    },
+    "E": {
+     "clue": "Malignant neoplasm of urinary bladder urothelium",
+     "support": "bladder cancer",
+     "fit": "Not here: no hematuria, pelvic mass centered in cervix",
+     "tx": "Cystectomy or chemoradiation",
+     "tempting": "causes ureteral obstruction and hydroureter"
+    }
+   },
+   "algorithm": {
+    "title": "Invasive cervical cancer evaluation and staging",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Suspected invasive cervical cancer (cervical mass, irregular bleeding): perform cervical punch biopsy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform clinical and radiographic staging with pelvic MRI and PET-CT or chest-abdomen-pelvis CT",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Hydroureter or hydronephrosis present:** automatically defines stage IIIB or higher disease",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Early stage (≤ IIA):** radical hysterectomy with bilateral pelvic lymphadenectomy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Locally advanced stage (≥ IIB, parametrial invasion or hydronephrosis):** definitive concurrent chemoradiotherapy",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Ureteral obstruction:** place retrograde ureteral stent or percutaneous nephrostomy to preserve renal function",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "increasing vaginal bleeding over the past 5 hours"
+    },
+    {
+     "text": "8-cm mass of the upper cervix and right parametrium"
+    },
+    {
+     "text": "CT scan shows a right hydroureter above the level of the mass"
+    },
+    {
+     "text": "gravida 8, para 8"
+    }
+   ]
+  },
+  "c-obgyn-02-q028": {
+   "task": "Diagnosis",
+   "boardCall": "Raised crusty vulvar papules + cervical LSIL -> Condylomata acuminata",
+   "hinge": "Multiple raised vulvar papules in a patient with concurrent HPV-induced LSIL on Pap smear represent condylomata acuminata.",
+   "trap": "Molluscum contagiosum produces vulvar papules, but they are dome-shaped with central umbilication, whereas LSIL confirms active HPV.",
+   "options": {
+    "A": {
+     "clue": "Painful necrotizing genital ulcer with inguinal bubo",
+     "support": "Haemophilus ducreyi",
+     "fit": "Not here: no painful genital ulcers or purulent lymphadenopathy",
+     "tx": "Azithromycin or ceftriaxone",
+     "tempting": "sexually transmitted vulvar lesion"
+    },
+    "B": {
+     "clue": "Intracellular bacterium causing cervicitis and urethritis",
+     "support": "chlamydial infection",
+     "fit": "Not here: causes cervical mucopus, not exophytic vulvar papules",
+     "tx": "Doxycycline",
+     "tempting": "common sexually transmitted infection"
+    },
+    "C": {
+     "clue": "Human papillomavirus 6 and 11 genital warts",
+     "support": "anogenital warts",
+     "fit": "Here: raised vulvar papules, concurrent LSIL on Pap",
+     "tx": "Imiquimod, podophyllin, or cryotherapy"
+    },
+    "D": {
+     "clue": "Painful grouped vesicular erosions on erythematous base",
+     "support": "HSV infection",
+     "fit": "Not here: non-vesicular crusty papules, lacks neuropathic pain",
+     "tx": "Acyclovir or valacyclovir",
+     "tempting": "common viral sexually transmitted vulvar lesion"
+    },
+    "E": {
+     "clue": "Chlamydia trachomatis L1-L3 causing suppurative adenitis",
+     "support": "LGV infection",
+     "fit": "Not here: lacks painful grooving sign and suppurative buboes",
+     "tx": "Doxycycline",
+     "tempting": "sexually transmitted vulvar and inguinal disease"
+    },
+    "F": {
+     "clue": "Poxvirus causing umbilicated dome-shaped flesh papules",
+     "support": "poxvirus infection",
+     "fit": "Not here: papules lack central umbilication, Pap shows LSIL",
+     "tx": "Cryotherapy or curettage",
+     "tempting": "multiple raised papules on female genitalia"
+    }
+   },
+   "algorithm": {
+    "title": "Management of anogenital condylomata acuminata",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Flesh-colored or verrucous papules: visual examination confirms condylomata acuminata (HPV 6 and 11)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen for other sexually transmitted infections (HIV, syphilis, gonorrhea, chlamydia)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Offer patient-applied therapy: topical imiquimod or podofilox",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Clinician-administered options:** cryotherapy with liquid nitrogen, trichloroacetic acid, or surgical excision",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Pregnancy:** contraindicated for imiquimod/podofilox; treat with trichloroacetic acid or cryotherapy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide HPV vaccination to protect against oncogenic and wart-associated HPV subtypes",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "bump on her vulva for 1 week"
+    },
+    {
+     "text": "multiple 0.25-cm raised, crusty papules on the posterior fourchette"
+    },
+    {
+     "text": "Pap smear shows low-grade squamous intraepithelial lesions"
+    },
+    {
+     "text": "uses an oral contraceptive"
+    }
+   ]
+  },
+  "c-obgyn-02-q029": {
+   "task": "Prevention",
+   "boardCall": "Unknown GBS status + ruptured membranes 12 hours -> Antibiotics if undelivered at 18 hours",
+   "hinge": "With unknown GBS colonization status at term, intrapartum antibiotic prophylaxis is indicated if rupture of membranes reaches ≥ 18 hours.",
+   "trap": "Pending culture tempts waiting for results or fetal signs, but prolonged ROM ≥ 18 hours is an independent indication for intrapartum prophylaxis.",
+   "options": {
+    "A": {
+     "clue": "Prophylaxis for unknown GBS status",
+     "support": "GBS intrapartum prophylaxis",
+     "fit": "Here: unknown GBS status, membranes ruptured 12 hours ago",
+     "tx": "Intravenous penicillin G"
+    },
+    "B": {
+     "clue": "Fetal tachycardia indicating intraamniotic infection",
+     "support": "chorioamnionitis sign",
+     "fit": "Not here: maternal risk factors determine GBS prophylaxis, not tachycardia",
+     "tx": "",
+     "tempting": "fetal sign of impending neonatal sepsis"
+    },
+    "C": {
+     "clue": "Microscopic examination of amniotic fluid",
+     "support": "amniotic fluid analysis",
+     "fit": "Not here: Gram stain of amniotic fluid not standard for GBS",
+     "tx": "",
+     "tempting": "diagnostic test for intraamniotic infection"
+    },
+    "D": {
+     "clue": "Instrumental delivery for prolonged second stage",
+     "support": "operative delivery",
+     "fit": "Not here: currently first stage of labor (5 cm dilated)",
+     "tx": "",
+     "tempting": "hastens delivery to prevent infection"
+    },
+    "E": {
+     "clue": "Abdominal delivery for active genital herpes lesions",
+     "support": "cesarean delivery",
+     "fit": "Not here: vaginal erythema is not active genital herpes vesicles",
+     "tx": "",
+     "tempting": "erythema mistaken for vesicular viral lesions"
+    }
+   },
+   "algorithm": {
+    "title": "Intrapartum group B streptococcus prophylaxis indications",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Term labor with unknown GBS status: assess intrapartum risk factors for neonatal sepsis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Rupture of membranes ≥ 18 hours:** initiate intravenous penicillin prophylaxis",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Maternal temperature ≥ 38.0°C:** initiate broad-spectrum intrapartum antibiotics for chorioamnionitis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Preterm labor (< 37 weeks):** initiate empiric GBS prophylaxis immediately",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "First-line prophylaxis: intravenous penicillin G (or ampicillin) administered until delivery",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Penicillin allergy without anaphylaxis:** cefazolin; severe allergy: clindamycin (if susceptible) or vancomycin",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "She has not been screened for group B streptococcal infection"
+    },
+    {
+     "text": "membranes ruptured 12 hours ago"
+    },
+    {
+     "text": "Cultures for group B streptococcal infection are pending"
+    },
+    {
+     "text": "cervix is 80% effaced and 5 cm dilated"
+    }
+   ]
+  },
+  "c-obgyn-02-q030": {
+   "task": "Risk factor",
+   "boardCall": "Oligomenorrhea + obesity + acanthosis nigricans -> Type 2 diabetes mellitus",
+   "hinge": "PCOS with chronic anovulation and hyperinsulinemic insulin resistance confers a high long-term risk for type 2 diabetes mellitus.",
+   "trap": "Acanthosis nigricans and obesity might suggest Cushing syndrome, but irregular menses without hypertension or striae points to PCOS and diabetes risk.",
+   "options": {
+    "A": {
+     "clue": "Elevated serum calcium from hyperparathyroidism or malignancy",
+     "support": "hypercalcemia",
+     "fit": "Not here: no hyperparathyroidism or osteolytic bone disease",
+     "tx": "IV hydration + bisphosphonates",
+     "tempting": "endocrine metabolic disturbance"
+    },
+    "B": {
+     "clue": "Cortisol excess causing central obesity and plethoric facies",
+     "support": "Cushing syndrome",
+     "fit": "Not here: normal blood pressure, lacks purple abdominal striae",
+     "tx": "Ketoconazole or adrenalectomy",
+     "tempting": "causes obesity, oligomenorrhea, and insulin resistance"
+    },
+    "C": {
+     "clue": "Excessive circulating thyroid hormone from toxic goiter",
+     "support": "thyrotoxicosis",
+     "fit": "Not here: no weight loss, palpitations, or tremors",
+     "tx": "Methimazole",
+     "tempting": "endocrine cause of menstrual cycle irregularity"
+    },
+    "D": {
+     "clue": "Thyroid hormone deficiency causing fatigue and menorrhagia",
+     "support": "hypothyroidism",
+     "fit": "Not here: lacks constipation, cold intolerance, or heavy bleeding",
+     "tx": "Levothyroxine",
+     "tempting": "causes ovulatory dysfunction and weight gain"
+    },
+    "E": {
+     "clue": "Premature depletion of ovarian oocytes before age 40",
+     "support": "ovarian failure",
+     "fit": "Not here: ultrasound shows polycystic ovaries, not elevated FSH",
+     "tx": "Estrogen-progestin replacement",
+     "tempting": "causes premature secondary amenorrhea and infertility"
+    },
+    "F": {
+     "clue": "Peripheral insulin resistance and pancreatic beta-cell dysfunction",
+     "support": "type 2 diabetes risk",
+     "fit": "Here: obesity, oligomenorrhea, axillary acanthosis nigricans",
+     "tx": "Lifestyle modification + metformin"
+    }
+   },
+   "algorithm": {
+    "title": "Polycystic ovary syndrome and metabolic complications",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "PCOS (oligo-anovulation + hyperandrogenism + polycystic ovaries): peripheral insulin resistance increases type 2 diabetes risk",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Acanthosis nigricans reflects hyperinsulinemia, stimulating ovarian theca cell androgen production",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen all PCOS patients for type 2 diabetes with a 2-hour oral glucose tolerance test or HbA1c",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "First-line management: lifestyle modification with weight loss and structured aerobic exercise",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Impaired glucose tolerance or persistent metabolic derangement:** start metformin therapy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Seeking fertility:** initiate letrozole for ovulation induction (or clomiphene)",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "unable to conceive for 3 years"
+    },
+    {
+     "text": "irregular menses during this time"
+    },
+    {
+     "text": "BMI is 30 kg/m²"
+    },
+    {
+     "text": "velvety pigmented skin over the axillae"
+    }
+   ]
+  },
+  "c-obgyn-02-q031": {
+   "task": "Diagnosis",
+   "boardCall": "Fetal tachycardia + prolonged labor + maternal fever -> Maternal fever",
+   "hinge": "Maternal fever and intraamniotic infection after prolonged labor and multiple exams cause fetal tachycardia on tracing.",
+   "trap": "Uteroplacental insufficiency causes late decelerations, but baseline fetal tachycardia in a febrile mother is driven directly by maternal pyrexia.",
+   "options": {
+    "A": {
+     "clue": "Sinusoidal pattern or severe prolonged decelerations",
+     "support": "fetal anemia",
+     "fit": "Not here: baseline tachycardia in labor with maternal fever",
+     "tx": "Intrauterine transfusion",
+     "tempting": "causes abnormal baseline fetal tracing"
+    },
+    "B": {
+     "clue": "Early decelerations mirroring uterine contractions",
+     "support": "head compression",
+     "fit": "Not here: causes early decelerations, not baseline tachycardia",
+     "tx": "",
+     "tempting": "common normal labor tracing finding"
+    },
+    "C": {
+     "clue": "Pyrexia driving baseline fetal heart rate",
+     "support": "maternal fever",
+     "fit": "Here: temperature 38.4°C, prolonged labor, multiple examinations",
+     "tx": "IV antibiotics + antipyretics"
+    },
+    "D": {
+     "clue": "Variable decelerations with rapid drop and recovery",
+     "support": "cord compression",
+     "fit": "Not here: causes abrupt variable decelerations, not tachycardia",
+     "tx": "Maternal repositioning",
+     "tempting": "frequent intrapartum tracing abnormality"
+    },
+    "E": {
+     "clue": "Late decelerations following contraction peak",
+     "support": "uteroplacental insufficiency",
+     "fit": "Not here: causes late decelerations, not baseline tachycardia",
+     "tx": "Maternal oxygen + hydration",
+     "tempting": "causes nonreassuring intrapartum tracing"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of intrapartum fetal tachycardia and maternal fever",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fetal tachycardia (FHR > 160/min): assess maternal vital signs for fever and tachycardia",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Maternal temperature ≥ 38.0°C (chorioamnionitis):** initiate broad-spectrum intravenous ampicillin plus gentamicin",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Maternal pyrexia:** administer acetaminophen to lower maternal temperature and fetal heart rate",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Augment labor if protracted; expedite delivery for nonreassuring Category III fetal tracing",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Cesarean delivery required:** add clindamycin or metronidazole for anaerobic coverage",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Assess neonate at delivery for sepsis and obtain blood cultures if indicated",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "membranes have been ruptured for 11 hours"
+    },
+    {
+     "text": "had nine vaginal examinations"
+    },
+    {
+     "text": "temperature is 38.4°C (101.1°F)"
+    },
+    {
+     "text": "primigravid woman at term has been in labor for 16 hours"
+    }
+   ]
+  },
+  "c-obgyn-02-q032": {
+   "task": "Diagnosis",
+   "boardCall": "Severe acute unilateral pain + enlarging adnexal mass -> Torsion of an ovarian cyst",
+   "hinge": "Acute-on-intermittent severe unilateral pelvic pain with a large, rapidly enlarging adnexal mass indicates ovarian torsion.",
+   "trap": "Right lower quadrant tenderness and fever tempt appendiceal abscess, but a known and expanding adnexal mass points to adnexal torsion.",
+   "options": {
+    "A": {
+     "clue": "Ruptured appendicitis with inflammatory phlegmon",
+     "support": "appendiceal abscess",
+     "fit": "Not here: ultrasound confirms 10-cm right adnexal mass",
+     "tx": "Percutaneous drainage + antibiotics",
+     "tempting": "right lower quadrant pain with rebound tenderness"
+    },
+    "B": {
+     "clue": "Extrauterine gestational sac with organized hematoma",
+     "support": "chronic ectopic pregnancy",
+     "fit": "Not here: sexually inactive for 6 months",
+     "tx": "Laparoscopic salpingostomy",
+     "tempting": "amenorrhea for 6 weeks with adnexal mass"
+    },
+    "C": {
+     "clue": "Sudden cyst rupture releasing peritoneal fluid",
+     "support": "cyst rupture",
+     "fit": "Not here: persistent expanding mass rather than collapsed cyst",
+     "tx": "Analgesia or laparoscopy",
+     "tempting": "acute onset of lower abdominal pain"
+    },
+    "D": {
+     "clue": "Twisting of ovarian pedicle compromising blood supply",
+     "support": "ovarian torsion",
+     "fit": "Here: acute severe pain, prior adnexal mass, expanding 10-cm mass",
+     "tx": "Diagnostic laparoscopy and detorsion"
+    },
+    "E": {
+     "clue": "Severe pelvic infection with tubo-ovarian complex",
+     "support": "tubo-ovarian abscess",
+     "fit": "Not here: sexually inactive 6 months, no cervical motion tenderness",
+     "tx": "Intravenous broad-spectrum antibiotics",
+     "tempting": "cystic-solid adnexal mass with fever and leukocytosis"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation and management of suspected ovarian torsion",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Acute unilateral pelvic pain with adnexal mass (> 5 cm): transvaginal Doppler ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Decreased or absent ovarian arterial/venous flow:** highly suggestive of ovarian torsion",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Normal Doppler flow:** does not exclude torsion; proceed if clinical suspicion remains high",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Emergency diagnostic laparoscopy: detorsion and ovarian preservation with cystectomy if feasible",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Frankly necrotic ovary or postmenopausal patient:** proceed with salpingo-oophorectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Send resected cyst wall for histopathologic examination to rule out underlying malignancy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "acute onset of intense, right-sided lower abdominal pain for 18 hours"
+    },
+    {
+     "text": "initially intermittent but has been constant for 3 hours"
+    },
+    {
+     "text": "5 × 5 × 4-cm mass in the right adnexa"
+    },
+    {
+     "text": "10 × 8 × 7-cm right-sided mass with cystic and solid components"
+    },
+    {
+     "text": "tenderness in the right lower quadrant with rebound and guarding"
+    }
+   ]
+  },
+  "c-obgyn-02-q033": {
+   "task": "Diagnosis",
+   "boardCall": "Postpartum D&C + amenorrhea + negative progestin challenge -> Asherman syndrome",
+   "hinge": "Secondary amenorrhea following postpartum curettage with normal endocrine labs and negative progestin challenge is Asherman syndrome.",
+   "trap": "Postpartum hemorrhage might suggest Sheehan syndrome, but normal FSH, TSH, and prolactin rule out pituitary necrosis.",
+   "options": {
+    "A": {
+     "clue": "Intrauterine adhesions obliterating endometrial cavity",
+     "support": "Asherman syndrome",
+     "fit": "Here: postpartum curettage, normal endocrine labs, no withdrawal bleeding",
+     "tx": "Hysteroscopic adhesiolysis + estrogen"
+    },
+    "B": {
+     "clue": "Elevated prolactin suppressing hypothalamic GnRH",
+     "support": "hyperprolactinemia",
+     "fit": "Not here: serum prolactin concentration within reference range",
+     "tx": "Dopamine agonist",
+     "tempting": "history of breastfeeding and postpartum amenorrhea"
+    },
+    "C": {
+     "clue": "Deficient GnRH secretion from hypothalamus",
+     "support": "central hypogonadism",
+     "fit": "Not here: normal FSH, bleeding fails to occur with progestin",
+     "tx": "Pulsatile GnRH",
+     "tempting": "common cause of secondary amenorrhea"
+    },
+    "D": {
+     "clue": "Developing intrauterine gestational sac",
+     "support": "pregnancy",
+     "fit": "Not here: qualitative serum β-hCG testing is negative",
+     "tx": "Prenatal care",
+     "tempting": "most common cause of secondary amenorrhea"
+    },
+    "E": {
+     "clue": "Premature ovarian follicular depletion before 40",
+     "support": "primary ovarian insufficiency",
+     "fit": "Not here: serum follicle-stimulating hormone within reference range",
+     "tx": "Hormone replacement therapy",
+     "tempting": "causes amenorrhea and estrogen deficiency"
+    }
+   },
+   "algorithm": {
+    "title": "Diagnostic algorithm for secondary amenorrhea",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Secondary amenorrhea: check urine or serum β-hCG, serum TSH, and prolactin",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Labs normal:** perform progestin withdrawal challenge test",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Positive withdrawal bleeding:** confirms anovulation with intact estrogenized endometrium (e.g., PCOS)",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**No withdrawal bleeding:** administer combined estrogen plus progestin challenge",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**No bleeding after estrogen-progestin:** hysteroscopy to evaluate for Asherman syndrome",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Asherman management: hysteroscopic adhesiolysis followed by oral estrogen and intrauterine stent",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "postpartum hemorrhage requiring dilatation and curettage"
+    },
+    {
+     "text": "not had a menstrual period since the birth of her third child 13 months ago"
+    },
+    {
+     "text": "serum thyroid-stimulating hormone, follicle-stimulating hormone, and prolactin concentrations are within the reference range"
+    },
+    {
+     "text": "progestin challenge test shows no withdrawal bleeding"
+    }
+   ]
+  },
+  "c-obgyn-02-q034": {
+   "task": "Diagnosis",
+   "boardCall": "Postmenopausal vulvar ulcer + chronic itching -> Vulvar carcinoma",
+   "hinge": "Solitary nonhealing ulcerated vulvar lesion with chronic pruritus in a postmenopausal woman is vulvar carcinoma until proven otherwise.",
+   "trap": "Vulvar ulcer tempts infectious etiologies like herpes or syphilis, but a solitary nonhealing ulcer in a postmenopausal woman requires biopsy for carcinoma.",
+   "options": {
+    "A": {
+     "clue": "Painful clustered vesicles eroding into shallow ulcers",
+     "support": "HSV infection",
+     "fit": "Not here: painless solitary ulcer present for 2 months",
+     "tx": "Valacyclovir",
+     "tempting": "causes ulcerated vulvar lesions"
+    },
+    "B": {
+     "clue": "Thickened white plaques from chronic scratching",
+     "support": "lichen simplex chronicus",
+     "fit": "Not here: distinct ulcerated discrete lesion rather than leathery plaque",
+     "tx": "High-potency topical steroids",
+     "tempting": "causes severe chronic vulvar itching"
+    },
+    "C": {
+     "clue": "Thin porcelain-white atrophic plaques with ecchymoses",
+     "support": "lichen sclerosus",
+     "fit": "Not here: solitary ulcerated lesion, no labial resorption or pallor",
+     "tx": "Clobetasol ointment",
+     "tempting": "common postmenopausal vulvar pruritus condition"
+    },
+    "D": {
+     "clue": "Indurated painless chancre with regional lymphadenopathy",
+     "support": "primary syphilis",
+     "fit": "Not here: sexually inactive 10 years, no adenopathy, chronic ulcer",
+     "tx": "Benzathine penicillin G",
+     "tempting": "solitary painless genital ulcer"
+    },
+    "E": {
+     "clue": "Invasive squamous malignancy of vulva",
+     "support": "vulvar carcinoma",
+     "fit": "Here: postmenopausal woman, solitary ulcerated labial lesion, pruritus",
+     "tx": "Vulvar punch biopsy + excision"
+    },
+    "F": {
+     "clue": "Exophytic cauliflower-like genital warts",
+     "support": "condylomata acuminata",
+     "fit": "Not here: solitary ulcerated lesion, not verrucous or papillary",
+     "tx": "Imiquimod or excision",
+     "tempting": "common vulvar neoplasm"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation and management of vulvar lesions",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Solitary vulvar ulcer or mass with pruritus: perform immediate vulvar punch biopsy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Histology shows vulvar intraepithelial neoplasia (VIN):** wide local excision or topical imiquimod",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Histology shows invasive vulvar carcinoma:** assess depth of invasion and staging",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Stage I (≤ 2 cm, invasion ≤ 1 mm):** wide local excision without lymphadenectomy",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Stage I/II (> 1 mm invasion):** radical local excision with sentinel lymph node biopsy or inguinofemoral lymphadenectomy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen for concurrent HPV-associated cervical and anal dysplasia with cytologic screening",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "2-month history of vulvar itching"
+    },
+    {
+     "text": "Menopause occurred 7 years ago"
+    },
+    {
+     "text": "1 × 1.5-cm ulcerated lesion on the inner right labium majus"
+    },
+    {
+     "text": "surrounded by mild erythema; no other lesions are noted"
+    }
+   ]
+  },
+  "c-obgyn-02-q035": {
+   "task": "Diagnosis",
+   "boardCall": "Prior LEEP excisions + second-trimester spotting + tunneled cervix -> Cervical incompetence",
+   "hinge": "Prior cervical excisions presenting at 14 weeks with pressure, shortened cervix, and internal os funneling indicate cervical incompetence.",
+   "trap": "Vaginal spotting and history of CIS might suggest recurrent cervical cancer, but acute internal os dilation and cervical shortening indicate cervical insufficiency.",
+   "options": {
+    "A": {
+     "clue": "Premature placental separation with painful uterine bleeding",
+     "support": "abruption",
+     "fit": "Not here: second trimester, painless spotting, funneling on ultrasound",
+     "tx": "Emergent delivery",
+     "tempting": "causes vaginal bleeding in pregnancy"
+    },
+    "B": {
+     "clue": "Invasive malignancy arising from cervical epithelium",
+     "support": "cervical carcinoma",
+     "fit": "Not here: no visible exophytic cervical mass or friability",
+     "tx": "Staging + chemoradiation",
+     "tempting": "history of two LEEPs for carcinoma in situ"
+    },
+    "C": {
+     "clue": "Structural cervical weakness causing painless dilation",
+     "support": "cervical insufficiency",
+     "fit": "Here: prior LEEPs, second-trimester spotting, internal os dilation",
+     "tx": "Cervical cerclage"
+    },
+    "D": {
+     "clue": "Partial expulsion of products of conception",
+     "support": "incomplete abortion",
+     "fit": "Not here: ultrasound confirms viable intrauterine pregnancy of appropriate size",
+     "tx": "Curettage or misoprostol",
+     "tempting": "vaginal spotting with dilated internal os"
+    },
+    "E": {
+     "clue": "Hematoma between chorion and uterine wall",
+     "support": "subchorionic hematoma",
+     "fit": "Not here: internal os dilated, no retroplacental hematoma noted",
+     "tx": "Expectant management",
+     "tempting": "common sonographic cause of early pregnancy bleeding"
+    }
+   },
+   "algorithm": {
+    "title": "Diagnosis and management of cervical insufficiency",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "High-risk pregnancy (prior LEEP/conization or second-trimester loss): serial transvaginal ultrasound cervical length surveillance",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Cervical length < 25 mm before 24 weeks without history of preterm birth:** vaginal progesterone therapy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Prior spontaneous preterm birth + cervical length < 25 mm:** place cervical cerclage",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Acute cervical dilation with visible prolapsing membranes (cervical incompetence):** perform emergency rescue cerclage",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen for and exclude intraamniotic infection or active labor contractions prior to cerclage placement",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Remove cerclage at 36-37 weeks' gestation or immediately upon onset of active labor",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "14 weeks' gestation"
+    },
+    {
+     "text": "underwent two loop electrosurgical excisions of the cervical transformation zone"
+    },
+    {
+     "text": "closed cervix that is flush against the upper vagina"
+    },
+    {
+     "text": "shows a tunneled lower uterine segment; the internal cervical os measures 2 cm"
+    }
+   ]
+  },
+  "c-obgyn-02-q036": {
+   "task": "Next step",
+   "boardCall": "Perimenopausal anovulatory bleeding + proliferative endometrium + smoker -> Cyclic progestin therapy",
+   "hinge": "Perimenopausal anovulatory bleeding with benign proliferative endometrium in a hypertensive smoker is managed with cyclic progestin.",
+   "trap": "Combination oral contraceptives regulate bleeding, but are contraindicated due to age > 35, heavy smoking, and hypertension.",
+   "options": {
+    "A": {
+     "clue": "Dopamine receptor agonist suppressing prolactin",
+     "support": "dopamine agonist",
+     "fit": "Not here: no galactorrhea, anovulatory perimenopausal bleeding",
+     "tx": "",
+     "tempting": "treats hyperprolactinemic amenorrhea"
+    },
+    "B": {
+     "clue": "Estrogen-progestin combined hormonal regulation",
+     "support": "combined OCPs",
+     "fit": "Not here: contraindicated by age over 35, smoking, hypertension",
+     "tx": "",
+     "tempting": "first-line medical management for anovulatory bleeding"
+    },
+    "C": {
+     "clue": "Progestational agent converting proliferative to secretory endometrium",
+     "support": "progestin therapy",
+     "fit": "Here: anovulatory bleeding, proliferative endometrium, smoker over 35",
+     "tx": "Oral cyclic medroxyprogesterone"
+    },
+    "D": {
+     "clue": "Exogenous estrogen supplementing ovarian deficiency",
+     "support": "estrogen therapy",
+     "fit": "Not here: unopposed estrogen causes further hyperplasia risk",
+     "tx": "",
+     "tempting": "relieves perimenopausal estrogen deficiency"
+    },
+    "E": {
+     "clue": "Minimally invasive abdominal surgical exploration",
+     "support": "laparoscopy",
+     "fit": "Not here: intrauterine mucosal bleeding, normal pelvic examination",
+     "tx": "",
+     "tempting": "evaluates pelvic pathology"
+    },
+    "F": {
+     "clue": "Surgical scraping and evacuation of endometrium",
+     "support": "curettage",
+     "fit": "Not here: office endometrial biopsy already provided adequate tissue",
+     "tx": "",
+     "tempting": "evaluates and temporarily stops uterine bleeding"
+    },
+    "G": {
+     "clue": "Surgical enucleation of uterine leiomyomas",
+     "support": "myomectomy",
+     "fit": "Not here: pelvic exam normal, no fibroids identified",
+     "tx": "",
+     "tempting": "surgical treatment for abnormal uterine bleeding"
+    }
+   },
+   "algorithm": {
+    "title": "Management of perimenopausal abnormal uterine bleeding",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Abnormal uterine bleeding in woman age ≥ 45: perform endometrial biopsy to rule out malignancy",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Biopsy shows endometrial hyperplasia with atypia or carcinoma:** hysterectomy or high-dose progestins",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Biopsy shows benign proliferative endometrium (anovulatory bleeding):** initiate medical cycle control",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Contraindications to estrogen (age ≥ 35 smoker, hypertension):** cyclic oral progestin or levonorgestrel IUD",
+      "nbs": true
+     },
+     {
+      "level": 2,
+      "text": "**No estrogen contraindications:** combined oral contraceptive pills",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Re-evaluate if bleeding persists despite medical therapy; perform sonohysterography or hysteroscopy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "irregular menstrual periods and bleeding between menses"
+    },
+    {
+     "text": "smoked two packs of cigarettes daily for 30 years"
+    },
+    {
+     "text": "blood pressure is 160/90 mm Hg"
+    },
+    {
+     "text": "Results of an endometrial biopsy specimen show proliferative endometrium"
+    }
+   ]
+  },
+  "c-obgyn-02-q037": {
+   "task": "Diagnosis",
+   "boardCall": "Type 1 diabetes + fundal height 38 cm at 33 weeks -> Polyhydramnios",
+   "hinge": "Fundal height 5 cm greater than dates in a diabetic woman with normal early dating and anatomy confirms polyhydramnios.",
+   "trap": "Dating error or twins can cause large fundal height, but early ultrasound at 7 and 24 weeks firmly established single gestation and accurate dates.",
+   "options": {
+    "A": {
+     "clue": "Discrepancy between menstrual dating and true gestation",
+     "support": "dating error",
+     "fit": "Not here: early prenatal care and ultrasound established dating",
+     "tx": "",
+     "tempting": "common cause of fundal height discrepancy"
+    },
+    "B": {
+     "clue": "Twin or higher-order multifetal gestation",
+     "support": "multifetal pregnancy",
+     "fit": "Not here: normal 24-week ultrasound confirmed singleton fetus",
+     "tx": "",
+     "tempting": "causes excessive fundal height growth"
+    },
+    "C": {
+     "clue": "Large pelvic mass elevating uterine fundus",
+     "support": "pelvic neoplasm",
+     "fit": "Not here: prior ultrasound normal, no adnexal mass",
+     "tx": "",
+     "tempting": "compresses uterus and increases height"
+    },
+    "D": {
+     "clue": "Excess amniotic fluid volume (AFI ≥ 24 cm)",
+     "support": "polyhydramnios",
+     "fit": "Here: type 1 diabetes, fundal height 38 cm at 33 weeks",
+     "tx": "Ultrasound AFI + glucose control"
+    },
+    "E": {
+     "clue": "Physiologic variation in fundal measurement",
+     "support": "normal variation",
+     "fit": "Not here: 5-cm discrepancy significantly exceeds normal 2-cm variation",
+     "tx": "",
+     "tempting": "benign explanation for minor size discrepancy"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of fundal height larger than gestational age",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fundal height ≥ 3 cm larger than gestational age: perform obstetric ultrasound",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Assess fetal number and anatomy:** rule out undiagnosed twins or fetal gastrointestinal obstruction",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Assess amniotic fluid volume:** amniotic fluid index ≥ 24 cm defines polyhydramnios",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Maternal diabetes with polyhydramnios: optimize glycemic control to reduce fetal osmotic diuresis",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Severe symptomatic polyhydramnios (maternal respiratory distress):** perform therapeutic amnioreduction",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Monitor antenatal fetal testing (nonstress test, biophysical profile) starting at 32-34 weeks",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "33 weeks' gestation"
+    },
+    {
+     "text": "received prenatal care since 7 weeks' gestation"
+    },
+    {
+     "text": "Ultrasonography at 24 weeks' gestation showed no abnormalities"
+    },
+    {
+     "text": "type 1 diabetes mellitus"
+    },
+    {
+     "text": "Fundal height is 38 cm"
+    }
+   ]
+  },
+  "c-obgyn-02-q038": {
+   "task": "Next step",
+   "boardCall": "Smoking + poor weight gain + fundal height lag -> Nonstress test",
+   "hinge": "Fundal height lag (4 cm) in a heavy smoker with poor weight gain suggests fetal growth restriction, requiring immediate nonstress test to assess fetal well-being.",
+   "trap": "Amniocentesis or cordocentesis assess infection or anemia, but noninvasive fetal assessment with a nonstress test is the primary next step.",
+   "options": {
+    "A": {
+     "clue": "Cardiotocography evaluating fetal heart rate accelerations",
+     "support": "nonstress test",
+     "fit": "Here: fundal height lag, heavy smoking, assess fetal well-being",
+     "tx": "Biophysical profile if nonreactive"
+    },
+    "B": {
+     "clue": "Extracellular matrix protein predicting preterm delivery",
+     "support": "fetal fibronectin",
+     "fit": "Not here: no contractions, asymptomatic for preterm labor",
+     "tx": "",
+     "tempting": "assesses preterm labor risk"
+    },
+    "C": {
+     "clue": "Amniotic fluid aspiration for chorioamnionitis",
+     "support": "amniocentesis for infection",
+     "fit": "Not here: membranes intact, afebrile, no uterine tenderness",
+     "tx": "",
+     "tempting": "investigates intraamniotic infection"
+    },
+    "D": {
+     "clue": "Spectrophotometric delta OD450 measuring bilirubin",
+     "support": "hemolytic disease",
+     "fit": "Not here: evaluates Rh alloimmunization hemolysis, not FGR",
+     "tx": "",
+     "tempting": "monitors fetal hemolytic disease"
+    },
+    "E": {
+     "clue": "Percutaneous umbilical blood sampling for hematocrit",
+     "support": "cordocentesis",
+     "fit": "Not here: invasive procedure, no signs of severe fetal anemia",
+     "tx": "",
+     "tempting": "evaluates fetal anemia directly"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of fundal height lag and suspected fetal growth restriction",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Fundal height lagging by ≥ 3 cm: evaluate immediate fetal well-being and growth",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform nonstress test and biophysical profile to evaluate immediate fetal oxygenation",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Nonreactive nonstress test:** perform complete biophysical profile or contraction stress test",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain comprehensive obstetric ultrasound: measure estimated fetal weight and amniotic fluid volume",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Estimated fetal weight < 10th percentile:** diagnose FGR; perform umbilical artery Doppler velocimetry",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide smoking cessation support and monitor serial growth ultrasounds every 3-4 weeks",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "34 weeks' gestation"
+    },
+    {
+     "text": "smoked two packs of cigarettes daily for 3 years"
+    },
+    {
+     "text": "gained 4.5 kg (10 lb) during her pregnancy"
+    },
+    {
+     "text": "fundal height of 30 cm"
+    }
+   ]
+  },
+  "c-obgyn-02-q039": {
+   "task": "Mechanism",
+   "boardCall": "46,XX fetus + virilized genitalia at birth -> ACTH oversecretion",
+   "hinge": "21-hydroxylase deficiency blocks cortisol synthesis, triggering compensatory ACTH oversecretion that drives adrenal androgen excess and female virilization.",
+   "trap": "Androgen insensitivity causes discordance between karyotype and genitalia, but in 46,XY individuals with female external appearance.",
+   "options": {
+    "A": {
+     "clue": "Compensatory pituitary ACTH hypersecretion driving virilization",
+     "support": "ACTH oversecretion",
+     "fit": "Here: 46,XX karyotype, virilized male-appearing external genitalia",
+     "tx": "Hydrocortisone + fludrocortisone"
+    },
+    "B": {
+     "clue": "Androgen receptor insensitivity in 46,XY males",
+     "support": "androgen insensitivity",
+     "fit": "Not here: produces female external phenotype in 46,XY individual",
+     "tx": "Gonadectomy",
+     "tempting": "causes karyotype-phenotype sex discrepancy"
+    },
+    "C": {
+     "clue": "Chimerism from fusion of two distinct zygotes",
+     "support": "zygotic chimerism",
+     "fit": "Not here: classic presentation of enzymatic adrenal virilization",
+     "tx": "",
+     "tempting": "produces mixed genetic and phenotypic traits"
+    },
+    "D": {
+     "clue": "Random epigenetic inactivation of one X chromosome",
+     "support": "X-inactivation",
+     "fit": "Not here: normal female dosage compensation, not virilization",
+     "tx": "",
+     "tempting": "epigenetic process altering female X-chromosome expression"
+    }
+   },
+   "algorithm": {
+    "title": "Congenital adrenal hyperplasia pathophysiologic mechanism",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "21-hydroxylase deficiency blocks cortisol synthesis: loss of negative feedback causes pituitary ACTH oversecretion",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Excess ACTH drives adrenal androgen overproduction, causing virilization of 46,XX female external genitalia",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Assess newborn for salt wasting: measure serum electrolytes (hyponatremia, hyperkalemia) and 17-hydroxyprogesterone",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Salt-wasting crisis:** aggressive IV fluid resuscitation + hydrocortisone + fludrocortisone replacement",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform pelvic ultrasound confirming presence of normal internal female organs (uterus and ovaries)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide genetic counseling and multidisciplinary family support for disorder of sex development",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "fetal karyotype is 46,XX"
+    },
+    {
+     "text": "At birth, the full-term newborn has a phallus and scrotum"
+    },
+    {
+     "text": "full-term newborn has a phallus and scrotum"
+    }
+   ]
+  },
+  "c-obgyn-02-q040": {
+   "task": "Diagnosis",
+   "boardCall": "Exquisitely tender genital ulcer + undermined margins -> Haemophilus ducreyi",
+   "hinge": "Deep, raw, exquisitely tender genital ulcer with ragged undermined margins and fever represents chancroid caused by Haemophilus ducreyi.",
+   "trap": "Treponema pallidum causes primary genital chancre, but syphilitic chancres are characteristically painless with indurated, clean margins.",
+   "options": {
+    "A": {
+     "clue": "Klebsiella granulomatis causing painless beefy-red granulomas",
+     "support": "granuloma inguinale",
+     "fit": "Not here: lesions are painless without lymphadenopathy",
+     "tx": "Azithromycin",
+     "tempting": "causes tropical genital ulcerations"
+    },
+    "B": {
+     "clue": "L1-L3 serovars causing painless ulcers with buboes",
+     "support": "lymphogranuloma venereum",
+     "fit": "Not here: initial ulcer is small and painless",
+     "tx": "Doxycycline",
+     "tempting": "causes sexually transmitted genital ulcers"
+    },
+    "C": {
+     "clue": "Gram-negative coccobacillus causing chancroid",
+     "support": "Haemophilus ducreyi",
+     "fit": "Here: exquisitely tender ulcer, undermined margins, uneven base",
+     "tx": "Azithromycin or ceftriaxone"
+    },
+    "D": {
+     "clue": "Spirochete causing indurated painless primary chancre",
+     "support": "Treponema pallidum",
+     "fit": "Not here: chancre is characteristically painless with clean base",
+     "tx": "Benzathine penicillin G",
+     "tempting": "classic cause of solitary genital ulcer"
+    },
+    "E": {
+     "clue": "Flagellated protozoan causing frothy malodorous vaginitis",
+     "support": "trichomoniasis",
+     "fit": "Not here: causes diffuse vaginitis with strawberry cervix, not deep ulcers",
+     "tx": "Metronidazole",
+     "tempting": "common sexually transmitted vaginal infection"
+    }
+   },
+   "algorithm": {
+    "title": "Diagnostic approach to genital ulcer disease",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Genital ulcer presentation: differentiate based on presence of pain and ulcer characteristics",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Painful deep ulcer with ragged undermined base (chancroid):** Haemophilus ducreyi",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Chancroid management:** single dose oral azithromycin or intramuscular ceftriaxone",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Painful grouped vesicular lesions or shallow ulcers:** Herpes simplex virus (HSV PCR or culture)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Painless indurated ulcer with clean base:** primary syphilis (Treponema pallidum); obtain darkfield or serology",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Screen all patients with genital ulcers for HIV and co-existing sexually transmitted infections",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "painful sore in her vagina"
+    },
+    {
+     "text": "temperature is 38°C (100.4°F)"
+    },
+    {
+     "text": "raw, deep, exquisitely tender ulcer at the introitus"
+    },
+    {
+     "text": "uneven base and inflamed undermined margins"
+    }
+   ]
+  },
+  "c-obgyn-02-q041": {
+   "task": "Screening",
+   "boardCall": "Young adult + premature family CAD + smoking + obesity -> Fasting serum cholesterol",
+   "hinge": "Young adult with premature coronary disease in a first-degree relative (father died at 39), obesity, and smoking requires lipid screening.",
+   "trap": "Maternal breast cancer at 58 might suggest mammography, but screening starts 10 years before earliest diagnosis or at age 40, not at age 30.",
+   "options": {
+    "A": {
+     "clue": "Twelve-lead electrocardiogram assessing cardiac conduction",
+     "support": "resting ECG",
+     "fit": "Not here: asymptomatic young adult, routine ECG not indicated",
+     "tx": "",
+     "tempting": "strong family history of premature myocardial infarction"
+    },
+    "B": {
+     "clue": "Radiographic breast screening for occult malignancy",
+     "support": "mammography",
+     "fit": "Not here: age 30, mother diagnosed at 58",
+     "tx": "",
+     "tempting": "family history of maternal breast cancer"
+    },
+    "C": {
+     "clue": "Serum glycoprotein biomarker for ovarian cancer",
+     "support": "CA-125 biomarker",
+     "fit": "Not here: asymptomatic, no hereditary ovarian cancer syndrome",
+     "tx": "",
+     "tempting": "cancer screening in female routine examination"
+    },
+    "D": {
+     "clue": "Fasting lipid profile assessing cardiovascular risk",
+     "support": "dyslipidemia screening",
+     "fit": "Here: premature paternal MI at 39, obesity, smoking",
+     "tx": "Statin therapy if elevated"
+    },
+    "E": {
+     "clue": "Pituitary gonadotropin elevated in ovarian failure",
+     "support": "FSH measurement",
+     "fit": "Not here: on oral contraceptives, no menopausal symptoms",
+     "tx": "",
+     "tempting": "evaluates female hormonal status"
+    },
+    "F": {
+     "clue": "Chemical test detecting occult gastrointestinal bleeding",
+     "support": "colorectal cancer screening",
+     "fit": "Not here: age 30 without hereditary polyposis or IBD",
+     "tx": "Colonoscopy if positive",
+     "tempting": "routine adult health maintenance screening"
+    },
+    "G": {
+     "clue": "Nucleic acid amplification for mucosal pathogen",
+     "support": "chlamydial screening",
+     "fit": "Not here: age 30, annual chlamydia recommended under 25",
+     "tx": "Doxycycline",
+     "tempting": "routine screening for sexually active women"
+    },
+    "H": {
+     "clue": "Serum TSH assessing occult thyroid dysfunction",
+     "support": "thyroid screening",
+     "fit": "Not here: asymptomatic, no thyroid enlargement or symptoms",
+     "tx": "Levothyroxine",
+     "tempting": "common metabolic screening test for obesity"
+    },
+    "I": {
+     "clue": "Sonographic visualization of uterus and ovaries",
+     "support": "pelvic ultrasound",
+     "fit": "Not here: routine exam, no pelvic pain or bleeding",
+     "tx": "",
+     "tempting": "routine female reproductive organ imaging"
+    },
+    "J": {
+     "clue": "Radiographic chest imaging for cardiopulmonary pathology",
+     "support": "chest radiograph",
+     "fit": "Not here: young smoker, routine chest x-ray not recommended",
+     "tx": "",
+     "tempting": "six-year smoking history"
+    }
+   },
+   "algorithm": {
+    "title": "Cardiovascular risk assessment and lipid screening",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Adult health maintenance: evaluate cardiovascular risk factors (smoking, obesity, premature family history)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform fasting lipid profile screening to assess atherogenic risk (measurement of serum cholesterol)",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Premature family history (first-degree male < 55):** initiate lipid screening starting at age 20",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Average cardiovascular risk:** initiate universal lipid screening at age 35 for men and 45 for women",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide smoking cessation counseling, dietary intervention, and weight management support",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**High 10-year ASCVD risk or severe dyslipidemia:** initiate statin therapy",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "father died of a myocardial infarction at the age of 39 years"
+    },
+    {
+     "text": "smoked one pack of cigarettes daily for 6 years"
+    },
+    {
+     "text": "36-year-old brother has type 2 diabetes mellitus"
+    },
+    {
+     "text": "mother had breast cancer at the age of 58 years",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q042": {
+   "task": "Screening",
+   "boardCall": "Sexually active female age 16 -> Chlamydia trachomatis testing",
+   "hinge": "All sexually active women younger than 25 years require annual routine screening for Chlamydia trachomatis.",
+   "trap": "Pelvic pain and dysmenorrhea tempt pelvic ultrasound, but normal examination makes secondary causes unlikely, and chlamydia screening is universally recommended.",
+   "options": {
+    "A": {
+     "clue": "Twelve-lead electrocardiogram assessing cardiac rhythm",
+     "support": "resting ECG",
+     "fit": "Not here: healthy adolescent, no cardiac symptoms or indications",
+     "tx": "",
+     "tempting": "baseline physical examination test"
+    },
+    "B": {
+     "clue": "Breast radiography screening for occult microcalcifications",
+     "support": "mammography",
+     "fit": "Not here: age 16, mammography not indicated in adolescents",
+     "tx": "",
+     "tempting": "routine female cancer screening"
+    },
+    "C": {
+     "clue": "Serum glycoprotein biomarker for ovarian malignancy",
+     "support": "CA-125 biomarker",
+     "fit": "Not here: normal pelvic exam, primary dysmenorrhea symptoms",
+     "tx": "",
+     "tempting": "evaluates pelvic pain and endometriosis"
+    },
+    "D": {
+     "clue": "Fasting serum lipid panel assessing atherosclerosis",
+     "support": "lipid screening",
+     "fit": "Not here: normal BMI, no cardiovascular risk factors",
+     "tx": "Statin",
+     "tempting": "routine adolescent wellness laboratory test"
+    },
+    "E": {
+     "clue": "Gonadotropin assessing ovarian follicular function",
+     "support": "FSH measurement",
+     "fit": "Not here: regular menses established, normal pubertal development",
+     "tx": "",
+     "tempting": "evaluates menstrual cycle disorders"
+    },
+    "F": {
+     "clue": "Chemical test detecting microscopic gastrointestinal bleeding",
+     "support": "colorectal screening",
+     "fit": "Not here: healthy adolescent without gastrointestinal symptoms",
+     "tx": "",
+     "tempting": "routine health maintenance screening"
+    },
+    "G": {
+     "clue": "Nucleic acid amplification test for chlamydial infection",
+     "support": "chlamydia screening",
+     "fit": "Here: sexually active adolescent age 16, universal screening indication",
+     "tx": "Oral doxycycline"
+    },
+    "H": {
+     "clue": "Thyroid function panel evaluating endocrine disorders",
+     "support": "thyroid studies",
+     "fit": "Not here: asymptomatic for thyroid disease, normal menses",
+     "tx": "Levothyroxine",
+     "tempting": "evaluates menstrual pain and irregularities"
+    },
+    "I": {
+     "clue": "Sonographic pelvic imaging of uterus and adnexa",
+     "support": "pelvic ultrasound",
+     "fit": "Not here: normal bimanual exam, classic primary dysmenorrhea",
+     "tx": "",
+     "tempting": "evaluates dysmenorrhea refractory to NSAIDs"
+    },
+    "J": {
+     "clue": "Plain thoracic radiography evaluating lung fields",
+     "support": "chest radiograph",
+     "fit": "Not here: healthy adolescent, no cardiopulmonary symptoms",
+     "tx": "",
+     "tempting": "general baseline radiographic study"
+    }
+   },
+   "algorithm": {
+    "title": "Chlamydia screening in sexually active adolescents",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Sexually active female age < 25 years: annual routine screening for Chlamydia trachomatis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform nucleic acid amplification testing (NAAT) on urine or self-collected vaginal swab",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Positive Chlamydia NAAT:** treat with oral doxycycline for 7 days (or azithromycin in pregnancy)",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Co-testing:** screen simultaneously for Neisseria gonorrhoeae, HIV, and syphilis",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Treat all sexual partners within the preceding 60 days to prevent reinfection",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Re-test with NAAT approximately 3 months after treatment completion to ensure eradication",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "healthy 16-year-old girl"
+    },
+    {
+     "text": "painful menses for 3 years"
+    },
+    {
+     "text": "sexually active and has had one male partner"
+    },
+    {
+     "text": "Pelvic examination shows normal findings"
+    }
+   ]
+  },
+  "c-obgyn-02-q043": {
+   "task": "Next step",
+   "boardCall": "Failing early pregnancy + falling β-hCG (450 to 90) -> Serial β-hCG in 1 week",
+   "hinge": "Spontaneously declining β-hCG (from 450 to 90 mIU/mL) in a hemodynamically stable patient indicates resolving early pregnancy loss, followed with serial β-hCG.",
+   "trap": "Declining β-hCG can occur with ectopic pregnancy, but methotrexate is not indicated when β-hCG is already clearing spontaneously.",
+   "options": {
+    "A": {
+     "clue": "Serial outpatient surveillance until levels become undetectable",
+     "support": "serial β-hCG monitoring",
+     "fit": "Here: β-hCG decreased from 450 to 90, hemodynamically stable",
+     "tx": "Serial weekly β-hCG"
+    },
+    "B": {
+     "clue": "Antifolate antimetabolite terminating ectopic pregnancy",
+     "support": "methotrexate therapy",
+     "fit": "Not here: spontaneously resolving pregnancy loss, levels already falling",
+     "tx": "",
+     "tempting": "treats pregnancy of unknown location"
+    },
+    "C": {
+     "clue": "Exogenous progesterone supporting luteal phase",
+     "support": "luteal support",
+     "fit": "Not here: nonviable failing gestation with falling β-hCG",
+     "tx": "",
+     "tempting": "supports threatened early pregnancy"
+    },
+    "D": {
+     "clue": "Inpatient hospital admission for monitoring",
+     "support": "hospitalization",
+     "fit": "Not here: stable vital signs, normal hemoglobin, outpatient safe",
+     "tx": "",
+     "tempting": "ensures close observation for complication"
+    },
+    "E": {
+     "clue": "Office endometrial sampling evaluating endometrium",
+     "support": "endometrial biopsy",
+     "fit": "Not here: young pregnant patient, contraindicated in pregnancy loss",
+     "tx": "",
+     "tempting": "evaluates abnormal uterine bleeding"
+    }
+   },
+   "algorithm": {
+    "title": "Management of spontaneously resolving early pregnancy loss",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Early pregnancy bleeding with unknown location: measure serial quantitative serum β-hCG",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**β-hCG declining appropriately (> 50% drop over 48 hours):** spontaneously resolving pregnancy loss",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Continue expectant management with weekly outpatient serum β-hCG until undetectable",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**β-hCG plateaus or rises:** suspicious for ectopic pregnancy; evaluate for methotrexate vs laparoscopy",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Counsel patient regarding red flags (severe abdominal pain, heavy bleeding, syncope)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Determine maternal Rh status and administer anti-D immune globulin if Rh-negative",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "3-day history of moderate vaginal bleeding"
+    },
+    {
+     "text": "Pelvic examination shows a closed cervix and a nontender uterus"
+    },
+    {
+     "text": "There are no palpable adnexal masses"
+    },
+    {
+     "text": "serum β-hCG concentration was 450 mIU/mL"
+    },
+    {
+     "text": "serum β-hCG concentration is 90 mIU/mL"
+    }
+   ]
+  },
+  "c-obgyn-02-q044": {
+   "task": "Diagnosis",
+   "boardCall": "PPROM at 25 weeks + severe prolonged oligohydramnios -> Pulmonary hypoplasia",
+   "hinge": "Prolonged severe oligohydramnios following PPROM at 25 weeks prevents alveolar development and chest expansion, causing fatal pulmonary hypoplasia.",
+   "trap": "Preterm delivery at 30 weeks causes respiratory distress from surfactant deficiency, but prolonged oligohydramnios specifically leads to hypoplastic lungs.",
+   "options": {
+    "A": {
+     "clue": "Inadequate fetal hemoglobin causing tissue hypoxia",
+     "support": "neonatal anemia",
+     "fit": "Not here: severe respiratory failure from anhydramnios, not hemorrhage",
+     "tx": "Transfusion",
+     "tempting": "causes neonatal depression and pallor"
+    },
+    "B": {
+     "clue": "Trisomy 21 with characteristic dysmorphism",
+     "support": "Down syndrome",
+     "fit": "Not here: acute collapse following prolonged severe oligohydramnios",
+     "tx": "",
+     "tempting": "genetic cause of neonatal depression"
+    },
+    "C": {
+     "clue": "Impaired intrauterine fetal growth velocity",
+     "support": "growth restriction",
+     "fit": "Not here: birth weight 1530 g appropriate for 30 weeks",
+     "tx": "",
+     "tempting": "complication of chronic oligohydramnios"
+    },
+    "D": {
+     "clue": "Monosomy X with gonadal dysgenesis",
+     "support": "Turner syndrome",
+     "fit": "Not here: chromosomal aneuploidy, does not cause acute collapse",
+     "tx": "",
+     "tempting": "congenital genetic disorder"
+    },
+    "E": {
+     "clue": "Fluid accumulation in multiple fetal compartments",
+     "support": "hydrops fetalis",
+     "fit": "Not here: anhydramnios rather than generalized fetal edema",
+     "tx": "",
+     "tempting": "severe neonatal depression with poor Apgars"
+    },
+    "F": {
+     "clue": "Defective alveolar development secondary to severe oligohydramnios",
+     "support": "pulmonary hypoplasia",
+     "fit": "Here: PPROM at 25 weeks, prolonged anhydramnios, low Apgars",
+     "tx": "Endotracheal intubation + ventilation"
+    }
+   },
+   "algorithm": {
+    "title": "Pathophysiology and management of oligohydramnios-induced pulmonary hypoplasia",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Midgestation PPROM (< 26 weeks): prolonged severe oligohydramnios arrests canalicular lung branching",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Lack of amniotic fluid causes alveolar hypoplasia, small thorax, and facial/limb deformities (Potter sequence)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Delivery of infant with pulmonary hypoplasia: immediate resuscitation with endotracheal intubation",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Refractory respiratory failure and severe pulmonary hypertension:** initiate inhaled nitric oxide",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Pneumothorax secondary to stiff hypoplastic lungs:** emergent needle thoracostomy or chest tube placement",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Antenatal counseling: discuss high neonatal mortality risk (> 50%) when prolonged PPROM occurs before 24-26 weeks",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "premature rupture of the membranes at 25 weeks' gestation"
+    },
+    {
+     "text": "observation prior to spontaneous labor showed little to absent amniotic fluid"
+    },
+    {
+     "text": "Apgar scores are 3 and 1 at 1 and 5 minutes, respectively"
+    },
+    {
+     "text": "delivers a 1530-g (3-lb 6-oz) newborn"
+    }
+   ]
+  },
+  "c-obgyn-02-q045": {
+   "task": "Next step",
+   "boardCall": "Severe PID + high fever (39.7°C) + peritonitis + vomiting -> Admit for intravenous antibiotics",
+   "hinge": "Severe pelvic inflammatory disease with high fever (39.7°C), vomiting, and peritoneal signs requires hospital admission and IV broad-spectrum antibiotics.",
+   "trap": "Outpatient intramuscular and oral antibiotics treat mild-to-moderate PID, but high fever, vomiting, and peritonitis mandate hospitalization.",
+   "options": {
+    "A": {
+     "clue": "Inpatient broad-spectrum parenteral antimicrobial therapy",
+     "support": "inpatient IV antibiotics",
+     "fit": "Here: high fever 39.7°C, vomiting, peritonitis, PID",
+     "tx": "Cefotetan + doxycycline IV"
+    },
+    "B": {
+     "clue": "Urgent diagnostic laparoscopy for pelvic pathology",
+     "support": "emergency laparoscopy",
+     "fit": "Not here: initiate IV antibiotics first; laparoscopy if refractory",
+     "tx": "",
+     "tempting": "evaluates acute pelvic peritonitis"
+    },
+    "C": {
+     "clue": "Open abdominal exploratory laparotomy",
+     "support": "laparotomy",
+     "fit": "Not here: invasive surgery premature without ruptured abscess",
+     "tx": "",
+     "tempting": "treats acute surgical peritonitis"
+    },
+    "D": {
+     "clue": "Pelvic computed tomography cross-sectional imaging",
+     "support": "pelvic CT",
+     "fit": "Not here: ultrasound is preferred initial imaging for tubo-ovarian abscess",
+     "tx": "",
+     "tempting": "rules out appendicitis or pelvic abscess"
+    },
+    "E": {
+     "clue": "Symptomatic pain relief without antimicrobial coverage",
+     "support": "analgesia alone",
+     "fit": "Not here: untreated PID risks tubo-ovarian abscess and sepsis",
+     "tx": "",
+     "tempting": "addresses acute lower abdominal pain"
+    },
+    "F": {
+     "clue": "Sole outpatient oral antibiotic treatment",
+     "support": "oral antibiotics",
+     "fit": "Not here: vomiting prevents oral tolerance, high fever present",
+     "tx": "",
+     "tempting": "standard treatment for mild pelvic infection"
+    },
+    "G": {
+     "clue": "Outpatient regimen of intramuscular ceftriaxone plus doxycycline",
+     "support": "outpatient PID regimen",
+     "fit": "Not here: peritonitis, vomiting, and high fever preclude outpatient",
+     "tx": "",
+     "tempting": "standard guideline outpatient PID therapy"
+    },
+    "H": {
+     "clue": "Short-term observation unit monitoring",
+     "support": "observation",
+     "fit": "Not here: severe pelvic infection requires full inpatient admission",
+     "tx": "",
+     "tempting": "monitors response to initial treatment"
+    },
+    "I": {
+     "clue": "Magnetic resonance imaging of female pelvis",
+     "support": "pelvic MRI",
+     "fit": "Not here: unnecessary delay, ultrasound is modality of choice",
+     "tx": "",
+     "tempting": "detailed pelvic soft tissue imaging"
+    },
+    "J": {
+     "clue": "Bedside uterine curettage in emergency setting",
+     "support": "bedside evacuation",
+     "fit": "Not here: not a pregnancy complication, intact uterine lining",
+     "tx": "",
+     "tempting": "evacuates infected uterine contents"
+    },
+    "K": {
+     "clue": "Operating room dilation and evacuation",
+     "support": "operative curettage",
+     "fit": "Not here: PID is not retained products of conception",
+     "tx": "",
+     "tempting": "clears infected endometrial tissue"
+    }
+   },
+   "algorithm": {
+    "title": "Management of severe pelvic inflammatory disease",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Suspected PID (cervical motion, uterine, or adnexal tenderness): assess indications for hospitalization",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Inpatient criteria (high fever, vomiting, peritonitis, adolescent):** admit to hospital",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Initiate intravenous broad-spectrum antimicrobial regimen (cefotetan or cefoxitin plus doxycycline)",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Severe penicillin/cephalosporin allergy:** intravenous clindamycin plus gentamicin",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Obtain pelvic ultrasound to evaluate for concurrent tubo-ovarian abscess",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**No improvement after 48-72 hours of IV therapy:** proceed with laparoscopy or percutaneous drainage",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "temperature is 39.7°C (103.5°F)"
+    },
+    {
+     "text": "nausea, vomiting, and lower abdominal pain for 4 days"
+    },
+    {
+     "text": "bilateral lower abdominal tenderness and peritoneal signs"
+    },
+    {
+     "text": "copious yellow cervical discharge and exquisite uterine tenderness"
+    }
+   ]
+  },
+  "c-obgyn-02-q046": {
+   "task": "Next step",
+   "boardCall": "Frothy green discharge + mucosal petechiae -> Wet mount preparation",
+   "hinge": "Profuse, frothy green, malodorous vaginal discharge with mucosal petechiae (strawberry cervix/vagina) indicates trichomoniasis, diagnosed by wet mount.",
+   "trap": "Cervical ectropion is a normal physiologic finding in adolescents and should not prompt cervical biopsy.",
+   "options": {
+    "A": {
+     "clue": "Expectant observation for benign physiologic leukorrhea",
+     "support": "reassurance",
+     "fit": "Not here: profuse purulent discharge and mucosal petechiae present",
+     "tx": "",
+     "tempting": "assumes physiologic adolescent leukorrhea"
+    },
+    "B": {
+     "clue": "Bacterial culture of vaginal secretions",
+     "support": "vaginal culture",
+     "fit": "Not here: wet mount is faster initial test for motile protozoa",
+     "tx": "",
+     "tempting": "identifies bacterial pathogens"
+    },
+    "C": {
+     "clue": "Papanicolaou smear evaluating cellular dysplasia",
+     "support": "cytology",
+     "fit": "Not here: age 14, Pap smears not indicated before 21",
+     "tx": "",
+     "tempting": "evaluates vaginal mucosal changes"
+    },
+    "D": {
+     "clue": "Saline microscopy visualizing motile flagellated protozoa",
+     "support": "wet mount microscopy",
+     "fit": "Here: frothy green discharge, vaginal petechiae, rule out trichomoniasis",
+     "tx": "Oral metronidazole"
+    },
+    "E": {
+     "clue": "Tissue punch biopsy of cervical transformation zone",
+     "support": "cervical biopsy",
+     "fit": "Not here: cervical ectropion is normal physiologic adolescent variant",
+     "tx": "",
+     "tempting": "evaluates cervical ectropion"
+    },
+    "F": {
+     "clue": "Histologic sampling of vaginal epithelium",
+     "support": "vaginal biopsy",
+     "fit": "Not here: mucosal petechiae represent acute infectious inflammation",
+     "tx": "",
+     "tempting": "evaluates vaginal mucosal petechiae"
+    }
+   },
+   "algorithm": {
+    "title": "Diagnostic algorithm for vaginitis and vaginal discharge",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Abnormal vaginal discharge: inspect vulva, vagina, and cervix, and check vaginal pH",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform saline wet mount preparation and potassium hydroxide (KOH) examination",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Motile flagellated protozoa + pH > 4.5 (trichomoniasis):** treat patient and partner with oral metronidazole",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Clue cells + positive whiff test + pH > 4.5 (BV):** oral or intravaginal metronidazole",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Pseudohyphae or budding yeast + normal pH ≤ 4.5 (candidiasis):** oral fluconazole or topical azoles",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Perform NAAT for chlamydia and gonorrhea, and screen for other sexually transmitted infections",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "profuse, green, foul-smelling vaginal discharge"
+    },
+    {
+     "text": "petechiae on the vaginal mucosa"
+    },
+    {
+     "text": "abundant, foul-smelling, frothy green discharge in the vaginal vault"
+    },
+    {
+     "text": "no foreign body can be visualized"
+    }
+   ]
+  },
+  "c-obgyn-02-q047": {
+   "task": "Next step",
+   "boardCall": "Infertility + regular menses + normal semen analysis -> Hysterosalpingography",
+   "hinge": "Infertility with regular menses (ovulation presumed) and normal semen analysis requires hysterosalpingography to evaluate tubal patency.",
+   "trap": "History of multiple partners increases PID risk, tempting diagnostic laparoscopy, but noninvasive hysterosalpingography is the initial test for tubal patency.",
+   "options": {
+    "A": {
+     "clue": "Histologic sampling evaluating luteal phase defect",
+     "support": "endometrial biopsy",
+     "fit": "Not here: regular menses, no longer recommended for infertility",
+     "tx": "",
+     "tempting": "evaluates luteal phase endometrial adequacy"
+    },
+    "B": {
+     "clue": "Fluoroscopic imaging assessing uterine cavity and tubal patency",
+     "support": "hysterosalpingography",
+     "fit": "Here: ovulatory cycles, normal semen analysis, evaluate tubal factor",
+     "tx": "In vitro fertilization or tuboplasty"
+    },
+    "C": {
+     "clue": "Chromosomal karyotype detecting structural balanced translocations",
+     "support": "karyotype",
+     "fit": "Not here: no history of recurrent pregnancy loss",
+     "tx": "",
+     "tempting": "evaluates genetic causes of infertility"
+    },
+    "D": {
+     "clue": "Direct laparoscopic visualization of pelvic adhesions",
+     "support": "laparoscopy",
+     "fit": "Not here: invasive surgery, perform noninvasive HSG first",
+     "tx": "Lysis of adhesions",
+     "tempting": "evaluates suspected tubal adhesions from PID"
+    },
+    "E": {
+     "clue": "Day 3 FSH evaluating ovarian follicular reserve",
+     "support": "ovarian reserve testing",
+     "fit": "Not here: regular 28-day menses indicate intact ovulatory function",
+     "tx": "",
+     "tempting": "screens for diminished ovarian reserve"
+    },
+    "F": {
+     "clue": "Pituitary gonadotropin triggering ovulatory surge",
+     "support": "LH testing",
+     "fit": "Not here: regular menses establish predictable ovulatory cycles",
+     "tx": "",
+     "tempting": "assesses ovulatory function"
+    },
+    "G": {
+     "clue": "Mid-luteal progesterone confirming ovulation",
+     "support": "progesterone level",
+     "fit": "Not here: regular 28-day cycles already establish ovulatory status",
+     "tx": "",
+     "tempting": "confirms ovulation"
+    },
+    "H": {
+     "clue": "Microscopic exam of cervical mucus after intercourse",
+     "support": "postcoital test",
+     "fit": "Not here: obsolete test, no longer recommended",
+     "tx": "",
+     "tempting": "evaluates sperm-mucus interaction"
+    },
+    "I": {
+     "clue": "Progestin challenge assessing endogenous estrogen status",
+     "support": "progestin challenge",
+     "fit": "Not here: regular menses present, indicates normal estrogen",
+     "tx": "",
+     "tempting": "evaluates ovulatory axis"
+    },
+    "J": {
+     "clue": "Immunologic assay for antisperm antibodies",
+     "support": "antisperm antibodies",
+     "fit": "Not here: normal semen analysis, test rarely useful",
+     "tx": "",
+     "tempting": "investigates immunologic infertility"
+    }
+   },
+   "algorithm": {
+    "title": "Infertility initial evaluation algorithm",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Infertility (> 12 months unprotected intercourse): perform semen analysis and evaluate ovulatory status",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Abnormal semen analysis:** refer male partner to reproductive urologist",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Irregular menses (anovulation):** measure TSH, prolactin, FSH, and assess for PCOS",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Regular menses + normal semen analysis:** perform hysterosalpingography to assess tubal patency",
+      "nbs": true
+     },
+     {
+      "level": 2,
+      "text": "**Bilateral tubal occlusion on HSG:** offer in vitro fertilization (IVF) or tubal reconstructive surgery",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Normal HSG (unexplained infertility):** controlled ovarian stimulation with intrauterine insemination",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "unable to conceive for 3 years"
+    },
+    {
+     "text": "menses occur at regular 28-day intervals"
+    },
+    {
+     "text": "She has had multiple sexual partners"
+    },
+    {
+     "text": "husband's semen analysis is within normal limits"
+    }
+   ]
+  },
+  "c-obgyn-02-q048": {
+   "task": "Diagnosis",
+   "boardCall": "Microcytic hypochromic anemia in pregnancy + normal HbA -> Iron deficiency",
+   "hinge": "Microcytic, hypochromic anemia (MCV 72, MCH 20) with normal hemoglobin A (95%) in pregnancy is iron deficiency anemia.",
+   "trap": "African American ethnicity tempts sickle cell disease, but hemoglobin electrophoresis shows 95% hemoglobin A (normal adult hemoglobin).",
+   "options": {
+    "A": {
+     "clue": "Folate deficiency causing megaloblastic macrocytic anemia",
+     "support": "folate deficiency",
+     "fit": "Not here: anemia is microcytic (MCV 72), not macrocytic",
+     "tx": "Folic acid",
+     "tempting": "common nutritional anemia during pregnancy"
+    },
+    "B": {
+     "clue": "Depleted iron stores causing microcytic hypochromic anemia",
+     "support": "iron deficiency",
+     "fit": "Here: hemoglobin 10.2, MCV 72, normal electrophoresis",
+     "tx": "Oral ferrous sulfate"
+    },
+    "C": {
+     "clue": "Plasma volume expansion with normal red cell indices",
+     "support": "physiologic dilution",
+     "fit": "Not here: produces normocytic indices, not microcytosis",
+     "tx": "",
+     "tempting": "physiologic hemodilution of pregnancy"
+    },
+    "D": {
+     "clue": "Sickle hemoglobin mutation causing sickling crises",
+     "support": "sickle cell disease",
+     "fit": "Not here: electrophoresis shows 95% hemoglobin A, no hemoglobin S",
+     "tx": "Hydroxyurea + transfusion",
+     "tempting": "common hemoglobinopathy in African Americans"
+    },
+    "E": {
+     "clue": "Cobalamin deficiency causing macrocytic anemia and neuropathy",
+     "support": "B12 deficiency",
+     "fit": "Not here: microcytic indices, normal B12 absorption",
+     "tx": "Cyanocobalamin",
+     "tempting": "macrocytic nutritional anemia"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of microcytic anemia in pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "First-trimester anemia (hemoglobin < 11 g/dL) with low MCV (< 80 μm³): check serum ferritin",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Low serum ferritin (< 30 ng/mL):** diagnostic of iron deficiency anemia",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Normal or elevated ferritin:** perform hemoglobin electrophoresis to rule out hemoglobinopathies",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Elevated HbA2 (> 3.5%):** beta-thalassemia minor; partner genetic testing",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Normal electrophoresis with normal ferritin:** alpha-thalassemia trait (DNA testing)",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Iron deficiency management: initiate oral elemental iron therapy daily with vitamin C to enhance absorption",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "hemoglobin 10.2 g/dL"
+    },
+    {
+     "text": "mean corpuscular volume 72 μm³"
+    },
+    {
+     "text": "mean corpuscular hemoglobin 20 pg/cell"
+    },
+    {
+     "text": "hemoglobin electrophoresis with hemoglobin A 95%",
+     "trap": true
+    }
+   ]
+  },
+  "c-obgyn-02-q049": {
+   "task": "Next step",
+   "boardCall": "Fundus 15 cm at 10 weeks' gestation -> Pelvic ultrasonography",
+   "hinge": "Uterine size significantly larger than dates at 10 weeks (fundus 15 cm above symphysis) requires pelvic ultrasound to assess twins, fibroids, or dating.",
+   "trap": "Donor egg conception at age 47 might tempt genetic testing (amniocentesis), but acute fundal enlargement requires immediate ultrasound evaluation.",
+   "options": {
+    "A": {
+     "clue": "Routine prenatal return visit in 4 weeks",
+     "support": "routine return visit",
+     "fit": "Not here: marked size-date discrepancy requires immediate diagnostic evaluation",
+     "tx": "",
+     "tempting": "normal prenatal care schedule"
+    },
+    "B": {
+     "clue": "Screening for impaired glucose tolerance",
+     "support": "glucose testing",
+     "fit": "Not here: screened at 24-28 weeks, does not explain fundus 15 cm",
+     "tx": "",
+     "tempting": "advanced maternal age increases gestational diabetes risk"
+    },
+    "C": {
+     "clue": "Microbiological screening for asymptomatic bacteriuria",
+     "support": "urine culture",
+     "fit": "Not here: routine screening, does not address enlarged uterus",
+     "tx": "Antibiotics",
+     "tempting": "routine first-trimester screening test"
+    },
+    "D": {
+     "clue": "Pelvic obstetric ultrasound evaluating size-date discrepancy",
+     "support": "obstetric ultrasound",
+     "fit": "Here: fundus 15 cm at 10 weeks, rule out twins/fibroids",
+     "tx": "Obstetric ultrasound"
+    },
+    "E": {
+     "clue": "Transabdominal amniotic fluid aspiration for karyotyping",
+     "support": "amniocentesis",
+     "fit": "Not here: performed after 15 weeks, sister was 32",
+     "tx": "",
+     "tempting": "advanced maternal age prompts genetic testing"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of uterine size larger than dates in early pregnancy",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Uterine size larger than dates (fundal height > 3 cm above expected): perform pelvic ultrasonography",
+      "nbs": true
+     },
+     {
+      "level": 1,
+      "text": "**Multifetal gestation identified on ultrasound:** determine chorionicity and establish high-risk twin surveillance",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Inaccurate gestational age:** revise estimated due date based on early crown-rump length",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Uterine leiomyomas on ultrasound:** document size and location; monitor for degeneration pain",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Gestational trophoblastic disease (snowstorm pattern):** check quantitative β-hCG and perform suction curettage",
+      "nbs": false
+     },
+     {
+      "level": 0,
+      "text": "Provide prenatal aneuploidy screening options based on donor oocyte age (32 years)",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "10 weeks' gestation"
+    },
+    {
+     "text": "conceived following oocyte donation from her 32-year-old sister"
+    },
+    {
+     "text": "uterine fundus is 15 cm above the symphysis"
+    },
+    {
+     "text": "fetal heart rate is 160/min"
+    }
+   ]
+  },
+  "c-obgyn-02-q050": {
+   "task": "Diagnosis",
+   "boardCall": "Post-cesarean POD 3 fever + incisional erythema and induration -> Wound infection",
+   "hinge": "Fever on postoperative day 3 with incisional erythema and induration, minimal uterine tenderness, and clear lungs is a surgical wound infection.",
+   "trap": "Post-cesarean fever tempts endometritis, but the incision itself has focal erythema and induration with only minimal uterine tenderness.",
+   "options": {
+    "A": {
+     "clue": "Acute inflammation of vermiform appendix",
+     "support": "appendicitis",
+     "fit": "Not here: abdomen is soft without right lower quadrant peritonitis",
+     "tx": "Appendectomy",
+     "tempting": "causes postoperative fever and leukocytosis"
+    },
+    "B": {
+     "clue": "Gallbladder inflammation from gallstone obstruction",
+     "support": "cholecystitis",
+     "fit": "Not here: no right upper quadrant pain or Murphy sign",
+     "tx": "Cholecystectomy",
+     "tempting": "causes postoperative fever and leukocytosis"
+    },
+    "C": {
+     "clue": "Perforated colonic diverticulum with contained phlegmon",
+     "support": "diverticular abscess",
+     "fit": "Not here: no left lower quadrant pain or peritonitis",
+     "tx": "Antibiotics + drainage",
+     "tempting": "postoperative intra-abdominal infection"
+    },
+    "D": {
+     "clue": "Microbial infection of pulmonary parenchyma",
+     "support": "pneumonia",
+     "fit": "Not here: lungs clear to auscultation, no cough or dyspnea",
+     "tx": "Antibiotics",
+     "tempting": "common postoperative fever cause"
+    },
+    "E": {
+     "clue": "Ascending polymicrobial infection of the endometrium",
+     "support": "postpartum endometritis",
+     "fit": "Not here: minimal uterine tenderness, prominent incisional erythema and induration",
+     "tx": "IV clindamycin + gentamicin",
+     "tempting": "common cause of post-cesarean fever"
+    },
+    "F": {
+     "clue": "Ascending infection of renal parenchyma",
+     "support": "pyelonephritis",
+     "fit": "Not here: no costovertebral angle tenderness, dysuria, or flank pain",
+     "tx": "IV ceftriaxone",
+     "tempting": "postpartum urinary tract complication"
+    },
+    "G": {
+     "clue": "Thrombosis and bacterial infection of ovarian veins",
+     "support": "septic pelvic thrombophlebitis",
+     "fit": "Not here: local wound inflammation present, fever on day 3",
+     "tx": "Anticoagulation + antibiotics",
+     "tempting": "persistent post-cesarean fever"
+    },
+    "H": {
+     "clue": "Bacterial colonization of urinary bladder epithelium",
+     "support": "cystitis",
+     "fit": "Not here: no dysuria, urgency, frequency; pyuria is minimal",
+     "tx": "Nitrofurantoin",
+     "tempting": "common after bladder catheterization in labor"
+    },
+    "I": {
+     "clue": "Enteric viral illness causing nausea and diarrhea",
+     "support": "viral gastroenteritis",
+     "fit": "Not here: no diarrhea or vomiting, localized wound erythema",
+     "tx": "",
+     "tempting": "common acute febrile illness"
+    },
+    "J": {
+     "clue": "Surgical site infection of cesarean incision",
+     "support": "wound infection",
+     "fit": "Here: postoperative day 3 fever, incisional erythema, induration",
+     "tx": "Wound opening and packing"
+    }
+   },
+   "algorithm": {
+    "title": "Evaluation of postoperative cesarean fever and wound infection",
+    "nodes": [
+     {
+      "level": 0,
+      "text": "Post-cesarean fever (POD 3-7): systematically examine lungs, incision, uterus, calves, and urine",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Incisional erythema, induration, and tenderness:** diagnose surgical site infection (wound infection)",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Superficial wound infection without fascial dehiscence:** open, debride, irrigate, and pack wound",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Systemic signs, cellulitis, or purulent drainage:** initiate broad-spectrum intravenous or oral antibiotics",
+      "nbs": false
+     },
+     {
+      "level": 2,
+      "text": "**Fascial dehiscence or necrotizing fasciitis:** emergent surgical re-exploration and debridement in operating room",
+      "nbs": false
+     },
+     {
+      "level": 1,
+      "text": "**Normal incision with exquisite uterine tenderness:** postpartum endometritis; start IV clindamycin + gentamicin",
+      "nbs": false
+     }
+    ]
+   },
+   "triggers": [
+    {
+     "text": "Three days after a cesarean delivery"
+    },
+    {
+     "text": "temperature of 38.4°C (101.1°F)"
+    },
+    {
+     "text": "Examination of the incision shows erythema and induration"
+    },
+    {
+     "text": "minimal tenderness of the uterus on palpation"
+    },
+    {
+     "text": "labor lasted 18 hours",
+     "trap": true
+    }
+   ]
+  }
+ }
+}
