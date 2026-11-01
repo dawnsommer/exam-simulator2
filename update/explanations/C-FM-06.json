@@ -1767,7 +1767,8 @@
     {
      "text": "chest x-ray shows bilateral hilar adenopathy and a reticulogranular appearance"
     }
-   ]
+   ],
+   "topic": "sarcoidosis"
   },
   "FM-06:Q021": {
    "task": "Next step",
@@ -2644,7 +2645,8 @@
     {
      "text": "100 individuals are randomized to be treated for 1 week with a similar looking placebo"
     }
-   ]
+   ],
+   "topic": "measures-of-association"
   },
   "FM-06:Q031": {
    "task": "Mechanism",
@@ -2733,7 +2735,8 @@
      "text": "lives in a wooded area",
      "trap": true
     }
-   ]
+   ],
+   "topic": "multiple-sclerosis"
   },
   "FM-06:Q032": {
    "task": "Diagnosis",
@@ -3271,7 +3274,8 @@
     {
      "text": "A blood smear shows normal morphology."
     }
-   ]
+   ],
+   "topic": "neutropenia"
   },
   "FM-06:Q038": {
    "task": "Diagnosis",
@@ -3806,7 +3810,8 @@
     {
      "text": "Mammography 2 years ago showed normal findings."
     }
-   ]
+   ],
+   "topic": "breast-cancer-screening"
   },
   "FM-06:Q044": {
    "task": "Diagnosis",
@@ -4986,6 +4991,52 @@
     }
    ],
    "evidence": "Checked screening/early referral 2026-10-30: [AAP autism resources](https://www.aap.org/en/patient-care/developmental-behavioral-pediatrics-a-resource-guide-for-general-pediatricians/autism-spectrum-disorder-resources-for-pediatricians/); diagnostic criteria established DSM-5-TR teaching."
+  },
+  "breast-cancer-screening": {
+   "name": "Breast cancer screening",
+   "kind": "screening",
+   "scope": "USPSTF screening mammography recommendations, age-based intervals, high-risk screening (BRCA, prior chest radiation, breast MRI), clinical breast exam, diagnostic evaluation of abnormal screening",
+   "core": "USPSTF recommends biennial mammography from ages 40–74 for average-risk women; symptoms require diagnostic evaluation regardless of screening schedule.",
+   "rows": [
+    {
+     "label": "Who",
+     "items": [
+      "Average risk includes family history or dense breasts without a defined high-risk syndrome",
+      "★ BRCA pathogenic variant, young chest irradiation or lifetime risk **≥20–25%** → high-risk pathway"
+     ]
+    },
+    {
+     "label": "Start/stop",
+     "items": [
+      "Age ≥75: insufficient USPSTF evidence; individualize by health, life expectancy and preference",
+      "High risk: annual MRI plus mammography, typically around age 30; specialist-tailored earlier MRI"
+     ]
+    },
+    {
+     "label": "Test",
+     "items": [
+      "★ Digital mammography/tomosynthesis; **MRI supplements**, not replaces, high-risk mammography",
+      "Clinical breast examination and breast self-examination do not substitute for imaging"
+     ]
+    },
+    {
+     "label": "IF positive",
+     "items": [
+      "★ BI-RADS 0 → **diagnostic views/targeted ultrasound**; 4–5 → core needle biopsy",
+      "BI-RADS 3 → short-interval imaging, usually 6 months; 1–2 → routine interval",
+      "Palpable concerning mass with negative imaging → tissue assessment for clinical–radiologic discordance"
+     ]
+    },
+    {
+     "label": "Traps",
+     "items": [
+      "★ Older USPSTF teaching began routine screening at 50; **2024 update starts at 40**",
+      "Dense breasts alone: insufficient USPSTF evidence for routine supplemental ultrasound/MRI",
+      "Harms: false positives, biopsy, overdiagnosis; concerning mass needs evaluation despite normal mammogram"
+     ]
+    }
+   ],
+   "evidence": "Checked 2026-10-30: [USPSTF 2024](https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening), [NCI high-risk screening](https://www.cancer.gov/grants-training/training/resources-trainees/courses-fellowships/traco-breast-cancer)."
   },
   "carpal-tunnel-syndrome": {
    "name": "Carpal tunnel syndrome",
@@ -6395,6 +6446,86 @@
    },
    "evidence": "Screening checked 2026-10-30: [USPSTF 2021](https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening), [ACS 2023 guideline](https://acsjournals.onlinelibrary.wiley.com/doi/10.3322/caac.21811); treatment: established stage-based framework."
   },
+  "measures-of-association": {
+   "name": "Measures of association",
+   "kind": "concept",
+   "scope": "Relative risk (RR), odds ratio (OR), attributable risk (AR), absolute risk reduction (ARR), number needed to treat (NNT), number needed to harm (NNH), hazard ratio",
+   "core": "Relative measures describe proportional associations; absolute measures incorporate baseline risk and determine treatment benefit or harm.",
+   "rows": [
+    {
+     "label": "Definition",
+     "items": [
+      "CER = control event rate; EER = experimental event rate",
+      "Two-by-two table: exposed events/non-events a/b; unexposed events/non-events c/d"
+     ]
+    },
+    {
+     "label": "Interpret",
+     "items": [
+      "★ Ratio null = **1**; risk-difference null = **0**",
+      "★ Hazard ratio compares instantaneous event rates over time; not cumulative risk ratio",
+      "NNT/NNH require specified outcome and follow-up duration; always round up"
+     ]
+    },
+    {
+     "label": "Use when",
+     "items": [
+      "★ RR: cohort/RCT; OR: case-control and logistic regression",
+      "Attributable risk: excess incidence among exposed attributable to exposure, assuming causality",
+      "HR: survival analysis with censoring; constant interpretation assumes proportional hazards"
+     ]
+    },
+    {
+     "label": "Traps",
+     "items": [
+      "★ Use proportions, not percentage numbers, in reciprocal calculations",
+      "OR approximates RR only with rare outcomes; common outcomes exaggerate relative association",
+      "Association alone cannot establish causality; confounding can distort every measure"
+     ]
+    }
+   ],
+   "table": {
+    "title": "Formulas: CER 20%, EER 15%",
+    "cols": [
+     "Measure",
+     "Formula",
+     "Example"
+    ],
+    "rows": [
+     [
+      "RR",
+      "EER ÷ CER",
+      "0.75"
+     ],
+     [
+      "AR / risk difference",
+      "Risk exposed − risk unexposed",
+      "−0.05"
+     ],
+     [
+      "ARR",
+      "CER − EER",
+      "0.05"
+     ],
+     [
+      "NNT",
+      "1 ÷ ARR",
+      "20"
+     ],
+     [
+      "NNH",
+      "1 ÷ absolute risk increase",
+      "Increase 0.02 → 50"
+     ],
+     [
+      "OR",
+      "ad ÷ bc",
+      "Odds exposed ÷ odds unexposed"
+     ]
+    ]
+   },
+   "evidence": "Statistical definitions; no clinical guideline involved."
+  },
   "motivational-interviewing": {
    "name": "Motivational interviewing",
    "kind": "concept",
@@ -6470,6 +6601,150 @@
     ]
    },
    "evidence": "Established behavioral counseling principles; no guideline-dependent thresholds."
+  },
+  "multiple-sclerosis": {
+   "name": "Multiple sclerosis",
+   "kind": "condition",
+   "scope": "Relapsing-remitting, optic neuritis, transverse myelitis, internuclear ophthalmoplegia (MLF lesion), Uhthoff phenomenon, Lhermitte sign, disease-modifying therapies",
+   "core": "Neurologic deficits separated in location and time, often including optic neuritis, suggest inflammatory CNS demyelination.",
+   "rows": [
+    {
+     "label": "Risk factors",
+     "items": [
+      "Young adulthood, female sex, family history; EBV exposure, smoking and low vitamin D association"
+     ]
+    },
+    {
+     "label": "Clues",
+     "items": [
+      "★ Optic neuritis: **pain with eye movement**, monocular visual loss, impaired color vision, afferent pupillary defect",
+      "Internuclear ophthalmoplegia: **MLF lesion**, impaired adduction with contralateral abducting nystagmus",
+      "Uhthoff: old deficits worsen with heat; Lhermitte: neck flexion triggers electric spinal sensation",
+      "Transverse myelitis: weakness, sensory level, urinary dysfunction; acute relapse generally lasts >24 hours"
+     ]
+    },
+    {
+     "label": "Pathophys",
+     "items": [
+      "Immune-mediated oligodendrocyte/myelin injury → CNS plaques, conduction block and eventual axonal loss",
+      "Relapsing-remitting: attacks with recovery; progressive forms: accumulating disability between or without attacks"
+     ]
+    },
+    {
+     "label": "Dx",
+     "items": [
+      "★ **MRI brain/cord**: periventricular, cortical/juxtacortical, infratentorial, spinal lesions; 2024 criteria add optic nerve",
+      "Classic time dissemination: new follow-up lesion or simultaneous enhancing/nonenhancing lesions; exclude better explanation",
+      "CSF-restricted oligoclonal bands support diagnosis; revised criteria also accept kappa free-light-chain index",
+      "Atypical severe visual loss/long cord lesion → serum AQP4/MOG antibodies; revised criteria permit selected earlier diagnoses",
+      "Suspected relapse → exclude fever, UTI and metabolic triggers before escalating immunosuppression"
+     ]
+    },
+    {
+     "label": "Tx",
+     "items": [
+      "★ Disabling relapse → **high-dose methylprednisolone**; severe steroid-refractory attack → plasma exchange",
+      "★ Relapsing disease → early disease-modifying drug, e.g., **ocrelizumab**, tailored to activity and pregnancy plans",
+      "Lower-activity options include interferon-beta or glatiramer; natalizumab requires JC-virus/PML risk assessment",
+      "Baclofen for spasticity; rehabilitation, bladder care and treatment of neuropathic pain",
+      "Isolated heat/infection-related worsening → treat trigger; not automatically a new inflammatory attack"
+     ]
+    },
+    {
+     "label": "Complications",
+     "items": [
+      "Gait impairment, falls, neurogenic bladder, depression and cognitive dysfunction",
+      "Immunosuppressive treatment → infection; some agents carry PML risk"
+     ]
+    },
+    {
+     "label": "Prevention",
+     "items": [
+      "Smoking cessation, exercise, vaccination; review contraception/pregnancy before disease-modifying drugs"
+     ]
+    },
+    {
+     "label": "Mimics",
+     "items": [
+      "B12 deficiency: symmetric posterior-column dysfunction, macrocytosis",
+      "NMOSD: AQP4-positive, often severe attacks; some MS drugs worsen disease",
+      "Stroke: abrupt maximal deficit, vascular territory"
+     ]
+    }
+   ],
+   "evidence": "Checked 2026-10-30: [McDonald 2024 revision](https://www.sciencedirect.com/science/article/pii/S1474442225002704), [MENACTRIMS relapse guidance](https://menactrims.org/wp-content/uploads/2024/11/Menactrims-2023-guidelines.pdf)."
+  },
+  "neutropenia": {
+   "name": "Neutropenia",
+   "kind": "condition",
+   "scope": "Benign ethnic neutropenia (Duffy-null), drug-induced neutropenia, febrile neutropenia, autoimmune neutropenia, ANC thresholds, evaluation and management",
+   "core": "Infection risk tracks the depth and duration of neutrophil depletion; fever with severe neutropenia is an antibiotic emergency.",
+   "rows": [
+    {
+     "label": "Risk factors",
+     "items": [
+      "Cytotoxic chemotherapy, marrow malignancy, viral infection, autoimmune disease, B12/folate/copper deficiency",
+      "Clozapine, methimazole, propylthiouracil, TMP–SMX and other drugs can cause agranulocytosis",
+      "Duffy-null associated neutrophil counts: stable isolated reduction without increased infection risk"
+     ]
+    },
+    {
+     "label": "Clues",
+     "items": [
+      "Oral ulcers, gingivitis, recurrent bacterial/fungal infections; inflammatory signs and pus may be absent",
+      "Cyclic mouth ulcers/infections suggest cyclic neutropenia; multiple cytopenias suggest marrow disease",
+      "Drug-associated fever or sore throat → urgent CBC, especially with antithyroid drugs"
+     ]
+    },
+    {
+     "label": "Pathophys",
+     "items": [
+      "Reduced marrow production, peripheral destruction or splenic sequestration lowers circulating neutrophils",
+      "Mucosal barrier injury plus impaired innate defense permits rapid invasive bacterial infection"
+     ]
+    },
+    {
+     "label": "Dx",
+     "items": [
+      "★ **ANC = WBC × (% neutrophils + bands)/100**; repeat CBC with differential and smear",
+      "Mild: 1000–1500/µL; moderate: 500–1000; **severe <500**; profound <100",
+      "★ Febrile neutropenia: **≥38.3°C once or ≥38.0°C for ≥1 hour**, ANC <500 or expected decline",
+      "Obtain peripheral/line blood cultures, targeted cultures and imaging without delaying antibiotics",
+      "Persistent unexplained severe counts, abnormal smear or other cytopenias → marrow evaluation"
+     ]
+    },
+    {
+     "label": "Tx",
+     "items": [
+      "★ Febrile severe neutropenia → **IV cefepime**, piperacillin–tazobactam or meropenem promptly",
+      "Add vancomycin for shock, suspected line/skin infection, pneumonia or documented resistant gram-positive infection",
+      "★ Stop culprit drug; G-CSF for selected severe/drug-related cases and high-risk chemotherapy settings",
+      "Carefully selected low-risk stable patients → oral ciprofloxacin + amoxicillin–clavulanate with reliable close follow-up",
+      "High-risk persistent fever 4–7 days → fungal evaluation and empiric **caspofungin**"
+     ]
+    },
+    {
+     "label": "Complications",
+     "items": [
+      "Pseudomonas sepsis, invasive candidiasis/aspergillosis, neutropenic enterocolitis; avoid rectal instrumentation"
+     ]
+    },
+    {
+     "label": "Prevention",
+     "items": [
+      "Hand hygiene, oral care; selected prolonged profound neutropenia → antibacterial/antifungal prophylaxis",
+      "Stable Duffy-null pattern → reassurance after excluding other causes; no unnecessary G-CSF"
+     ]
+    },
+    {
+     "label": "Mimics",
+     "items": [
+      "Lymphopenia: opportunistic infection risk with preserved ANC",
+      "Acute leukemia: blasts and additional cytopenias"
+     ]
+    }
+   ],
+   "evidence": "Checked 2026-10-30: [IDSA fever/neutropenia guideline](https://www.idsociety.org/practice-guideline/neutropenic-patients-with-cancer/)."
   },
   "nonsteroidal-anti-inflammatory-drugs": {
    "name": "Nonsteroidal anti-inflammatory drugs",
@@ -6970,6 +7245,78 @@
     ]
    },
    "evidence": "Not checked online; established salivary disease and mumps isolation teaching."
+  },
+  "sarcoidosis": {
+   "name": "Sarcoidosis",
+   "kind": "condition",
+   "scope": "Noncaseating granulomas, bilateral hilar lymphadenopathy, pulmonary infiltrates, hypercalcemia, extrapulmonary manifestations (uveitis, erythema nodosum, neurosarcoidosis, cardiac), systemic corticosteroids",
+   "core": "Multisystem granulomatous disease, classically a young adult with bilateral hilar adenopathy; treat threatened organ function rather than an abnormal radiograph alone.",
+   "rows": [
+    {
+     "label": "Risk factors",
+     "items": [
+      "Young or middle-aged adults; higher prevalence and disease burden among Black Americans",
+      "Familial predisposition; environmental antigen exposure suspected, without one established infectious cause"
+     ]
+    },
+    {
+     "label": "Clues",
+     "items": [
+      "Dry cough, exertional dyspnea; restrictive physiology and ↓DLCO; upper-lung interstitial infiltrates",
+      "★ **Löfgren syndrome**: erythema nodosum + ankle arthritis + hilar adenopathy; usually favorable prognosis",
+      "Uveitis, lupus pernio, parotid enlargement; facial palsy, hypothalamic dysfunction suggest neurosarcoidosis",
+      "★ Unexplained **AV block, ventricular arrhythmia, syncope** → cardiac involvement"
+     ]
+    },
+    {
+     "label": "Pathophys",
+     "items": [
+      "CD4-mediated granulomas; macrophage 1α-hydroxylase → ↑calcitriol, hypercalcemia/hypercalciuria, suppressed PTH"
+     ]
+    },
+    {
+     "label": "Dx",
+     "items": [
+      "★ **Chest radiograph**, PFTs; baseline calcium, creatinine, liver tests, ECG and eye examination",
+      "Compatible presentation + **noncaseating granulomas** + exclusion of TB/fungi/beryllium exposure",
+      "Sample accessible lesion or EBUS-guided hilar/mediastinal node; classic Löfgren presentation may avoid biopsy",
+      "ACE level neither sensitive nor specific; cardiac symptoms/ECG abnormalities → cardiac MRI ± FDG-PET"
+     ]
+    },
+    {
+     "label": "Tx",
+     "items": [
+      "Asymptomatic stage I disease, preserved function → observation with clinical/PFT follow-up",
+      "★ **Prednisone** for progressive symptomatic pulmonary disease, significant hypercalcemia, cardiac or neurologic disease",
+      "Uveitis → urgent ophthalmology, topical or systemic corticosteroids according to severity",
+      "Steroid-dependent disease → methotrexate; refractory organ-threatening disease → specialist-directed infliximab",
+      "Hypercalcemia → hydration; restrict excess calcium/vitamin D and sunlight exposure"
+     ]
+    },
+    {
+     "label": "Complications",
+     "items": [
+      "Pulmonary fibrosis, pulmonary hypertension, respiratory failure; nephrolithiasis and kidney injury",
+      "Cardiomyopathy, sudden death; visual loss; chronic steroids → infection, osteoporosis, diabetes"
+     ]
+    },
+    {
+     "label": "Prevention",
+     "items": [
+      "No established primary prevention; smoking cessation and vaccination reduce respiratory morbidity",
+      "Monitor treatment toxicity and bone health; individualize vitamin D replacement because calcitriol may already be elevated"
+     ]
+    },
+    {
+     "label": "Mimics",
+     "items": [
+      "TB/fungal infection: organisms or positive microbiology; exclude before immunosuppression",
+      "Berylliosis: aerospace/industrial exposure, positive beryllium lymphocyte proliferation test",
+      "Lymphoma: malignant tissue, constitutional symptoms; granulomas alone do not exclude concurrent cancer"
+     ]
+    }
+   ],
+   "evidence": "Checked 2026-10-30: [ATS diagnosis guideline, 2020](https://www.thoracic.org/statements/guideline-implementation-tools/diagnosis-and-detection-of-sarcoidosis.php); [ERS treatment guideline, 2021](https://publications.ersnet.org/lookup/pmid/34140301)."
   },
   "scrotal-masses": {
    "name": "Scrotal masses",
