@@ -688,7 +688,8 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
   function statusText(){
     if(RS.busy) return 'Checking…';
     const n = RS.count, f = n ? n + ' form' + (n === 1 ? '' : 's') : 'None yet', z = v => String(v).padStart(2, '0'), d = new Date(RS.checkedAt);
-    return RS.offline ? (n ? f + ' · offline, using saved files' : f + ' · offline') : RS.checkedAt ? f + ' · checked ' + z(d.getHours()) + ':' + z(d.getMinutes()) : f;
+    const dv = RS.drive && RS.drive.total ? ' · ' + RS.drive.saved + ' saved to Drive' : '';
+    return RS.offline ? (n ? f + ' · offline, using saved files' : f + ' · offline') + dv : (RS.checkedAt ? f + ' · checked ' + z(d.getHours()) + ':' + z(d.getMinutes()) : f) + dv;
   }
   function setHtml(){
     const s = setState(), split = s.layout === 'split';
@@ -783,6 +784,27 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     if(n < 120) setTimeout(() => boot(n + 1), 500);
   })();
   document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && lastRun && Date.now() - lastRun >= GAP) sync(); });
+  // Drive sync (js/sync3-sync.js syncExplain) reads and writes the stored files through these; key = updatedAt, else generatedAt, as 14 digits
+  const keyOf = d => String((d && (d.updatedAt || d.generatedAt)) || '').replace(/\D/g, '').padEnd(14, '0').slice(0, 14);
+  const files = {
+    installed: () => installed(),
+    async list(){
+      const out = [];
+      for(const id of installed()){
+        try{ const f = await store.read(id); if(!f || f.size > MAXB) continue; const text = await f.text(); out.push({id, key: keyOf(parseFile(text, id)), text}); }catch(e){}
+      }
+      return out;
+    },
+    async write(id, text){
+      if(!/^[A-Za-z0-9_-]+$/.test(id) || !installed().includes(id) || typeof text !== 'string' || text.length > MAXB) return {written: false};
+      if(window.__STEP_FORM_UPDATE_WRITING || window.__STEP_FORM_UPDATE_COMMITTING) return {written: false};
+      const d = parseFile(text, id);
+      await store.write(id, new Blob([text], {type: 'application/json'}), false);
+      cache.set(id, d); countFiles(); schedule();
+      return {written: true};
+    },
+    setDrive(v){ RS.drive = {saved: Number(v.saved) || 0, total: Number(v.total) || 0}; schedule(); }
+  };
   // setData: console preview (any question whose qid is in d.items); sync: manual check (returns a promise)
-  window.RapidReview = {setData: d => { manual = d || null; schedule(); }, sync: () => sync(true), formData};
+  window.RapidReview = {setData: d => { manual = d || null; schedule(); }, sync: () => sync(true), formData, files};
 })();

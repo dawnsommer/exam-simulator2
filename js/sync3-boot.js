@@ -25,7 +25,8 @@
   };
   const engine=Sync.create({store,source});
   const content=Bridge.createContentAdapter({drive,libraryManifestName:R.config&&R.config.LIBRARY_MANIFEST_FILE});
-  const cycle=Sync.createCycle({store,drive,engine,applier,Drive,content,contentInBackground:true,appVersion:String(window.__STEP_SIM_VERSION||'')});
+  const explain=Bridge.createExplainAdapter();
+  const cycle=Sync.createCycle({store,drive,engine,applier,Drive,content,explain,contentInBackground:true,appVersion:String(window.__STEP_SIM_VERSION||'')});
   const state={live:false,lastScan:null,lastCheck:null,lastCycle:null,running:false,error:'',migration:null,bar:null,status:'',migrating:false};
   const rt=()=>{try{return window.StepExamSyncBridge.runtime();}catch(e){return {};}};
   const examOpen=()=>!!rt().examVisible;

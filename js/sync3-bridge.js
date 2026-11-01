@@ -506,5 +506,17 @@
     };
   }
 
-  return {modifiedAtOf,SETTING_KEYS,settingScope,settingApplies,createApplier,createContentAdapter,assetPathsOf,srcOf,sha256Hex,attemptsOf,extractAttempt,extractForm,localizeTm,tmTotal,rebuildAttempts,rebuildProgress,applyUnitsToProgress,applyUnitsToQbank,buildResultFromQuestions,blockFromUnits,qidsOfSession,v2Counts,countsEqual,countsAtLeast,readLocalUnits,countOf};
+  /* Rapid Review explanation files for js/sync3-sync.js syncExplain; rapid-review.js owns the storage (window.RapidReview.files) */
+  function createExplainAdapter(){
+    const F=()=>window.RapidReview&&window.RapidReview.files;
+    return {
+      async list(){const f=F();return f?await f.list():[];},
+      async installedIds(){const f=F();return f?f.installed():[];},
+      async write(id,text){const f=F();return f?await f.write(id,text):{written:false};},
+      report(r){const f=F();if(f&&f.setDrive)f.setDrive({saved:r.saved,total:r.total});},
+      sha256:sha256Hex
+    };
+  }
+
+  return {modifiedAtOf,SETTING_KEYS,settingScope,settingApplies,createApplier,createContentAdapter,createExplainAdapter,assetPathsOf,srcOf,sha256Hex,attemptsOf,extractAttempt,extractForm,localizeTm,tmTotal,rebuildAttempts,rebuildProgress,applyUnitsToProgress,applyUnitsToQbank,buildResultFromQuestions,blockFromUnits,qidsOfSession,v2Counts,countsEqual,countsAtLeast,readLocalUnits,countOf};
 });

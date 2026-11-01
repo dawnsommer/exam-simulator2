@@ -355,6 +355,23 @@ test('form content uploads in the background in the app: the sync returns at onc
   const r2 = await cyc.run({ reason: 'test', content: false }); assert.equal(r2.content, null, 'the upgrade cycles skip content');
 });
 
+test('Rapid Review files ride the cycle: device A uploads in the background, device B (form installed, no file) pulls it', async () => {
+  const Sync = require('../js/sync3-sync.js'), w = mkWorld(), A = new SimDevice(w, 'devA'), B = new SimDevice(w, 'devB');
+  const text = JSON.stringify({ type: 'StepRapidReview', version: 1, formId: 'f1', generatedAt: '2026-10-30', items: { q1: { task: 'T' } } });
+  const mkExplain = (files, installed) => ({ async list() { return Object.entries(files).map(([id, t]) => ({ id, key: '20261030000000', text: t })); }, async installedIds() { return installed; }, async write(id, t) { files[id] = t; return { written: true }; }, sha256 });
+  const fa = { f1: text }, fb = {};
+  A.install('f1', REC, null); B.install('f1', REC, null); A.getCycle(); B.getCycle();
+  const mk = (d, ex) => Sync.createCycle({ store: d.store, drive: d.driveApi, engine: d.engine, applier: d.applier, Drive: D, content: d.content, explain: ex, contentInBackground: true, now: d.now });
+  const ca = mk(A, mkExplain(fa, ['f1'])), cb = mk(B, mkExplain(fb, ['f1']));
+  await A.scan(); const ra = await ca.run({ reason: 'test' });
+  assert.equal(ra.explain.background, true); await ca.explainDone();
+  assert.ok(w.drive.names().some(n => D.parseName(n).type === 'explain'), 'the file is on the Drive');
+  assert.equal((await A.store.getRaw('lastExplain')).saved, 1);
+  await B.scan(); w.advance(5); await cb.run({ reason: 'test' }); await cb.explainDone();
+  assert.equal(fb.f1, text, 'B received the file');
+  const r2 = await ca.run({ reason: 'test', content: false }); assert.equal(r2.explain, undefined, 'the upgrade cycles skip it');
+});
+
 test('"Delete progress" for a form this device does not have: every device that has the form loses that progress; no echo', async () => {
   const Sync = require('../js/sync3-sync.js'), w = mkWorld(), A = new SimDevice(w, 'devA'), B = new SimDevice(w, 'devB');
   A.install('fz', REC, prog(att('a1', { answers: [1, 2, null, null], firstAnswers: [1, 2, null, null] })));      // fz is not available to B

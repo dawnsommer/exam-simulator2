@@ -185,6 +185,53 @@
     const r=await content.install({uid,meta:m.meta||{},text,assets,bankHash:ch});
     return r&&r.installed?{installed:true}:{waiting:r&&r.conflict?'id-taken':r&&r.busy?'busy':'content'};
   }
+  /* ---------------- Rapid Review explanation files (v3.x.*) ----------------
+     explanations/<ID>.json is published through update/, but a device keeps it only locally. Each file is also stored on the Drive as
+     write-once content `v3.x.<formId>.<key>.<sha16>.json` = {type, v, formId, key, sha, text}; key = the file's updatedAt (else generatedAt)
+     as 14 digits. Newest key wins: a device uploads its file when no Drive copy has an equal or newer key (then removes the older copies)
+     and takes the Drive copy when it has no file for an installed form or only an older key. An equal key never moves a file, so the
+     update/ download and the Drive can not undo each other.
+     explain = {list():[{id,key,text}], installedIds():[id], write(id,text):{written}, sha256(text)} */
+  const EXPLAIN_TYPE='step-sync3-explain',EXPLAIN_BUDGET=12*1024*1024;
+  async function syncExplain({files,drive,Drive,explain,budget=EXPLAIN_BUDGET}){
+    const out={uploaded:[],pulled:[],removed:0,deferred:0,errors:{},saved:0,total:0};
+    const remote=new Map();
+    for(const f of files){const p=Drive.parseName(f.name);if(p.type!=='explain')continue;if(!remote.has(p.formId))remote.set(p.formId,[]);remote.get(p.formId).push({key:p.key,sha:p.sha,f});}
+    const best=id=>(remote.get(id)||[]).reduce((a,b)=>!a||b.key>a.key||(b.key===a.key&&b.sha>a.sha)?b:a,null);
+    let used=0;
+    const local=new Map();
+    for(const l of await explain.list()){
+      try{local.set(l.id,{key:l.key,text:l.text,sha:(await explain.sha256(l.text)).slice(0,16)});}catch(e){out.errors[l.id]=String(e&&e.message||e);}
+    }
+    for(const [id,l] of local){
+      const b=best(id);
+      if(b&&b.key>=l.key)continue;
+      if(used+l.text.length>budget){out.deferred++;continue;}
+      try{
+        const name=Drive.N.explain(id,l.key,l.sha);
+        await drive.upload(name,{type:EXPLAIN_TYPE,v:1,formId:id,key:l.key,sha:l.sha,text:l.text});
+        used+=l.text.length;out.uploaded.push(id);
+        const mine={key:l.key,sha:l.sha,f:{name}};
+        for(const o of remote.get(id)||[]){if(o.key<l.key){try{await drive.remove(o.f.id);out.removed++;}catch(e){}}}
+        remote.set(id,[mine]);
+      }catch(e){out.errors[id]=String(e&&e.message||e);}
+    }
+    const have=new Set(await explain.installedIds());
+    for(const id of remote.keys()){
+      const b=best(id),l=local.get(id);
+      if(!b||!have.has(id)||(l&&b.key<=l.key))continue;
+      if(!b.f.id)continue;
+      try{
+        const m=await drive.downloadJson(b.f.id,'Rapid Review file');
+        if(!m||m.type!==EXPLAIN_TYPE||m.formId!==id||typeof m.text!=='string')throw new Error('the Rapid Review file on the Drive is invalid');
+        if((await explain.sha256(m.text)).slice(0,16)!==b.sha)throw new Error('the downloaded Rapid Review file does not match its hash');
+        const r=await explain.write(id,m.text);
+        if(r&&r.written){out.pulled.push(id);local.set(id,{key:b.key,text:m.text,sha:b.sha});}
+      }catch(e){out.errors[id]=String(e&&e.message||e);}
+    }
+    for(const [id,l] of local){const b=best(id);out.total++;if(b&&b.key===l.key&&b.sha===l.sha)out.saved++;}
+    return out;
+  }
   const day=ms=>{const d=new Date(ms);return d.getUTCFullYear()+String(d.getUTCMonth()+1).padStart(2,'0')+String(d.getUTCDate()).padStart(2,'0');};
   /* a device pushes what it authored: whole units it stamped, plus its own share of multi-author units (its log entries, its time) */
   function ownUnits(known,me,test){
@@ -198,13 +245,19 @@
     }
     return out;
   }
-  function createCycle({store,drive,engine,applier,Drive,content=null,contentInBackground=false,now=()=>Date.now(),appVersion='',log=()=>{}}){
+  function createCycle({store,drive,engine,applier,Drive,content=null,explain=null,contentInBackground=false,now=()=>Date.now(),appVersion='',log=()=>{}}){
     const N=Drive.N,parse=Drive.parseName;
     let running=null,contentRunning=null;
     /* form content can be large (many image files): in the app it uploads in the background, so a sync (or the upgrade) never waits for it */
     function startContent(args){
       if(contentRunning)return {background:true,already:true};
       contentRunning=(async()=>{try{const r=await pushContent(args);await store.setRaw('lastContent',{at:new Date(now()).toISOString(),uploaded:r.uploaded.length,copied:r.copied.length,deferred:r.deferred,errors:r.errors});return r;}catch(e){return null;}finally{contentRunning=null;}})();
+      return {background:true};
+    }
+    let explainRunning=null;
+    function startExplain(args){
+      if(explainRunning)return {background:true,already:true};
+      explainRunning=(async()=>{try{const r=await syncExplain(args);await store.setRaw('lastExplain',{at:new Date(now()).toISOString(),saved:r.saved,total:r.total,uploaded:r.uploaded.length,pulled:r.pulled.length,deferred:r.deferred,errors:r.errors});try{if(explain.report)explain.report(r);}catch(e){}return r;}catch(e){return null;}finally{explainRunning=null;}})();
       return {background:true};
     }
     async function run({reason='',push=true,pull=true,content:withContent=true}={}){
@@ -311,6 +364,7 @@
               if(contentInBackground)rep.content=startContent(args);
               else{try{rep.content=await pushContent(args);}catch(e){rep.content={uploaded:[],copied:[],errors:{all:String(e&&e.message||e)},deferred:0};}}
             }
+            if(explain&&withContent)rep.explain=startExplain({files:files||await drive.listV3(),drive,Drive,explain});
             await drive.upload(N.dev(me),{deviceId:me,name:dev.name,class:dev.class,appVersion,lastSeen:rep.at,bootstrapped:true});
             const mineLeases=await store.getRaw('myLeases',{});await drive.upload(N.lease(me),{dev:me,leases:mineLeases});
             void vis;
@@ -339,7 +393,7 @@
       return (last.failed||last.pushError?'Sync will retry · ':'Synced ')+ago+(lastCh&&Date.parse(lastCh.at)>=Date.parse(last.at)-1?` · ${lastCh.count} change${lastCh.count===1?'':'s'}${from}`:'');
     }
     const due=async()=>{const st=await store.getRaw('cycleState',{});return !st.nextAt||now()>=st.nextAt;};
-    return {run,statusLine,due,ownUnits,contentDone:()=>contentRunning||Promise.resolve(null)};
+    return {run,statusLine,due,ownUnits,contentDone:()=>contentRunning||Promise.resolve(null),explainDone:()=>explainRunning||Promise.resolve(null)};
   }
   /* "Delete progress" for a form this device does not have (it waits for its form): the same stamped reset a local delete writes,
      so every device hides that form's progress; restorable from the old-sync archive while it exists */
@@ -350,5 +404,5 @@
     return {uid,at:t};
   }
   function C_attemptIds(vis,uid){return Object.keys(vis).map(Core.parseKey).filter(p=>p.fam==='A'&&p.field===''&&String(vis[K.att(p.att)].v.formUid)===uid).map(p=>p.att);}
-  return {create,createCycle,resetFormProgress,attemptIdsOf:C_attemptIds,ownUnits,diffForm,scopeOf,attFormOf,DEFAULTS,pushContent,fetchContent,syncsContent,CONTENT_TYPE};
+  return {create,createCycle,resetFormProgress,attemptIdsOf:C_attemptIds,ownUnits,diffForm,scopeOf,attFormOf,DEFAULTS,pushContent,fetchContent,syncsContent,syncExplain,CONTENT_TYPE};
 });
