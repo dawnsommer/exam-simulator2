@@ -5,7 +5,7 @@
 (function(){
   'use strict';
   const LT = 'ABCDEFGHIJKLMNOP';
-  const PREF = 'stepReviewTabDefault', PLACE = 'stepReviewPlacement', LAYOUT = 'StepExamReviewExplanationLayout', ZOOM = 'stepRapidZoom';
+  const PREF = 'stepReviewTabDefault', PLACE = 'stepReviewPlacement', LAYOUT = 'StepExamReviewExplanationLayout', ZOOM = 'stepRapidZoom', RULEFIRST = 'stepRuleTrapFirst';
   let rrOn = false, sideTab = 'exp', raf = 0, autoKey = null, sub = 'over', setHint = '', wantTopic = false;
   const ls = {get: k => { try{ return localStorage.getItem(k); }catch(e){ return null; } }, set: (k, v) => { try{ localStorage.setItem(k, v); }catch(e){} }};
   const getPref = () => ls.get(PREF) === 'rapid' ? 'rapid' : 'explanation';
@@ -565,8 +565,24 @@ ${setCss()}`;
     }
     if(below) below.querySelectorAll(':scope > .qbank-tabs > .qbank-tab[data-rr-hid]').forEach(b => hide(b, false));
   }
+  // "Rule + Trap first": the Rapid rule and Trap tested blocks move above Correct Answer (the app renders them last).
+  // Switching it off re-renders the question, which restores the app's own order.
+  const ruleFirst = () => ls.get(RULEFIRST) === '1';
+  function placeRuleTrap(){
+    if(!ruleFirst()) return;
+    document.querySelectorAll('#examScreen .exp-correct').forEach(ec => {
+      const par = ec.parentNode; if(!par) return;
+      const rule = par.querySelector(':scope > .exp-rule');
+      const trap = [...par.querySelectorAll(':scope > .exp-section')].find(n => /^trap tested/i.test((n.querySelector(':scope > h3') || {}).textContent || ''));
+      const want = [rule, trap].filter(Boolean);
+      // already directly above Correct Answer: leave the DOM alone (a move would re-trigger the observer)
+      let prev = ec.previousElementSibling;
+      if([...want].reverse().every(n => n === prev && ((prev = prev.previousElementSibling), true))) return;
+      want.forEach(n => par.insertBefore(n, ec));
+    });
+  }
   function ensure(){
-    raf = 0; addSettings();
+    raf = 0; addSettings(); placeRuleTrap();
     const ws = document.getElementById('workspace'); if(!ws) return;
     // phones always use the Below layout (set in memory only; the saved choice is untouched)
     try{
@@ -689,6 +705,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     const lay = (v, l, d) => `<button type="button" role="radio" aria-checked="${s.layout === v}" data-rr-lay="${v}">${wfHtml(s, v)}<b><span class="rr-dot"></span>${l}</b><small>${d}</small></button>`;
     const first = (v, l) => `<button type="button" role="radio" aria-checked="${s.first === v}" data-rr-first="${v}"${s.together ? '' : ' disabled'}>${l}</button>`;
     return `<div class="tu-sechead"><h2>Review screen</h2><p>Where the explanation and Rapid Review appear when you review a question. The Split/Below switch in the exam’s Settings menu changes the same setting. On phones, Explanation and Rapid Review always sit under the question as tabs, since side by side doesn’t fit.</p></div>
+      <div class="tu-setrow"><div><b>Rule + Trap first</b><span>Show the Rapid rule and Trap tested lines at the start of the explanation instead of the end, on forms that have them.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" role="switch" aria-checked="${ruleFirst()}" aria-label="Rule and Trap first" data-rr-rf><i></i></button></div></div>
       <div class="rr-setgrid"><div class="rr-rows">
         <div class="tu-setrow"><div><b>Layout</b><span>Side by side with the question, or stacked under it.</span></div><div class="tu-setctl"><div class="rr-lay" role="radiogroup" aria-label="Review layout">${lay('split', 'Split', 'All tabs beside the question')}${lay('below', 'Below', 'Reading space under the question')}</div></div></div>
         <div class="tu-setrow rr-placerow"><div><b>Tab placement</b><span>${split ? 'Split keeps every tab in the side panel. Choose Below to place tabs under the question.' : 'Click a tab to move it. Keep at least one under the question.'}</span></div><div class="rr-place">${zone('side', 'Beside the question')}${zone('below', 'Under the question')}</div><div class="rr-hint">${esc(setHint)}</div></div>
@@ -700,7 +717,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     document.querySelectorAll('section.tu-setbody').forEach(sec => {
       const h = sec.querySelector('.tu-sechead h2');
       if(!h || h.textContent.trim() !== 'Appearance') return;
-      const sig = [getLayout(), ls.get(PLACE), getPref(), setHint, statusText()].join('|');
+      const sig = [getLayout(), ls.get(PLACE), getPref(), ruleFirst(), setHint, statusText()].join('|');
       let box = sec.querySelector('[data-rr-set]');
       if(box && box.dataset.sig === sig) return;
       if(!box){ box = document.createElement('div'); box.className = 'rr-set'; box.setAttribute('data-rr-set', ''); sec.appendChild(box); }
@@ -738,6 +755,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     if(sb){ sub = sb.getAttribute('data-rr-sub'); if(sub === 'path') sub = 'over'; wantTopic = sub === 'topic'; schedule(); return; }
     const zb = t.closest('[data-rr-z]');
     if(zb){ const dz = Number(zb.getAttribute('data-rr-z')); ls.set(ZOOM, String(dz === 0 ? 1 : Math.max(0.8, Math.min(1.3, +(getZ() + 0.05 * dz).toFixed(2))))); schedule(); return; }
+    if(t.closest('[data-rr-rf]')){ ls.set(RULEFIRST, ruleFirst() ? '0' : '1'); rerender(); schedule(); return; }
     const lb = t.closest('[data-rr-lay]');
     if(lb){ setHint = ''; setLayout(lb.getAttribute('data-rr-lay')); schedule(); return; }
     const mv = t.closest('[data-rr-mv]');
