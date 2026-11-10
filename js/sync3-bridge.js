@@ -518,5 +518,16 @@
     };
   }
 
-  return {modifiedAtOf,SETTING_KEYS,settingScope,settingApplies,createApplier,createContentAdapter,createExplainAdapter,assetPathsOf,srcOf,sha256Hex,attemptsOf,extractAttempt,extractForm,localizeTm,tmTotal,rebuildAttempts,rebuildProgress,applyUnitsToProgress,applyUnitsToQbank,buildResultFromQuestions,blockFromUnits,qidsOfSession,v2Counts,countsEqual,countsAtLeast,readLocalUnits,countOf};
+  /* ThunderShadow logger files for js/sync3-sync.js syncShadow; shadow-logger.js owns the storage and the merge rule (window.ShadowLogger.files) */
+  function createShadowAdapter(){
+    const F=()=>window.ShadowLogger&&window.ShadowLogger.files;
+    return {
+      async list(){const f=F();return f?await f.list():[];},
+      async write(id,text){const f=F();return f?await f.write(id,text):{written:false};},
+      merge(a,b){return F().merge(a,b);},
+      sha256:sha256Hex
+    };
+  }
+
+  return {modifiedAtOf,SETTING_KEYS,settingScope,settingApplies,createApplier,createContentAdapter,createExplainAdapter,createShadowAdapter,assetPathsOf,srcOf,sha256Hex,attemptsOf,extractAttempt,extractForm,localizeTm,tmTotal,rebuildAttempts,rebuildProgress,applyUnitsToProgress,applyUnitsToQbank,buildResultFromQuestions,blockFromUnits,qidsOfSession,v2Counts,countsEqual,countsAtLeast,readLocalUnits,countOf};
 });

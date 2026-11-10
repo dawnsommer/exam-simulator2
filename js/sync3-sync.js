@@ -232,6 +232,56 @@
     for(const [id,l] of local){const b=best(id);out.total++;if(b&&b.key===l.key&&b.sha===l.sha)out.saved++;}
     return out;
   }
+  /* ThunderShadow logger files (progress/<id>_shadow_log.json): one Drive object per content, `v3.t.<id>.<sha16>.json` = {type, v, id, sha, text}.
+     Unlike Rapid Review files these are edited on every device, so they are MERGED, never replaced: download every Drive copy that differs from the
+     local file, merge them all with the local file (shadow.merge is the logger's own per-question rule: newer updatedAt wins, deletes are tombstones),
+     write the result locally (shadow.write merges again with what is open on screen and returns the final text), upload it when no Drive copy has
+     that exact content, then remove the Drive copies that were merged into it. Identical results on two devices hash to the same name, so the devices converge.
+     A copy that could not be downloaded or checked is never removed.
+     shadow = {list():[{id,text}], write(id,text):{written,text}, merge(a,b):text, sha256(text)} */
+  const SHADOW_TYPE='step-sync3-shadow',SHADOW_MAX=2*1024*1024;
+  async function syncShadow({files,drive,Drive,shadow}){
+    const out={uploaded:[],pulled:[],removed:0,errors:{},total:0,saved:0};
+    const remote=new Map();
+    for(const f of files){const p=Drive.parseName(f.name);if(p.type!=='shadow')continue;if(!remote.has(p.id))remote.set(p.id,[]);remote.get(p.id).push({sha:p.sha,f});}
+    const local=new Map();
+    for(const l of await shadow.list()){
+      try{if(typeof l.text!=='string'||l.text.length>SHADOW_MAX)continue;local.set(l.id,{text:l.text,sha:(await shadow.sha256(l.text)).slice(0,16)});}catch(e){out.errors[l.id]=String(e&&e.message||e);}
+    }
+    for(const id of new Set([...local.keys(),...remote.keys()])){
+      try{
+        const mine=local.get(id)||null,copies=remote.get(id)||[];
+        let text=mine?mine.text:null;const merged=[];
+        for(const c of copies){
+          if(mine&&c.sha===mine.sha){c.text=mine.text;merged.push(c);continue;}
+          if(!c.f.id)continue;
+          let m;
+          try{
+            m=await drive.downloadJson(c.f.id,'ThunderShadow log');
+            if(!m||m.type!==SHADOW_TYPE||m.id!==id||typeof m.text!=='string'||m.text.length>SHADOW_MAX)throw new Error('the ThunderShadow log on the Drive is invalid');
+            if((await shadow.sha256(m.text)).slice(0,16)!==c.sha)throw new Error('the downloaded ThunderShadow log does not match its hash');
+            text=text==null?m.text:shadow.merge(text,m.text);c.text=m.text;
+          }catch(e){out.errors[id]=String(e&&e.message||e);continue;}
+          merged.push(c);
+        }
+        if(text==null)continue;
+        let finalText=mine?mine.text:null;
+        if(!mine||text!==mine.text){
+          const r=await shadow.write(id,text);
+          if(!r||!r.written||typeof r.text!=='string'){out.errors[id]=out.errors[id]||'the ThunderShadow log could not be saved here';continue;}
+          finalText=r.text;if(!mine||r.text!==mine.text)out.pulled.push(id);
+        }
+        if(finalText.length>SHADOW_MAX){out.errors[id]='the ThunderShadow log is too large to sync';continue;}
+        const sha=(await shadow.sha256(finalText)).slice(0,16);
+        if(!copies.some(c=>c.sha===sha)){
+          await drive.upload(Drive.N.shadow(id,sha),{type:SHADOW_TYPE,v:1,id,sha,text:finalText});out.uploaded.push(id);
+        }
+        for(const c of merged){if(c.sha!==sha&&c.f.id&&shadow.merge(finalText,c.text)===finalText){try{await drive.remove(c.f.id);out.removed++;}catch(e){}}}
+        out.total++;out.saved++;
+      }catch(e){out.errors[id]=String(e&&e.message||e);out.total++;}
+    }
+    return out;
+  }
   const day=ms=>{const d=new Date(ms);return d.getUTCFullYear()+String(d.getUTCMonth()+1).padStart(2,'0')+String(d.getUTCDate()).padStart(2,'0');};
   /* a device pushes what it authored: whole units it stamped, plus its own share of multi-author units (its log entries, its time) */
   function ownUnits(known,me,test){
@@ -245,7 +295,7 @@
     }
     return out;
   }
-  function createCycle({store,drive,engine,applier,Drive,content=null,explain=null,contentInBackground=false,now=()=>Date.now(),appVersion='',log=()=>{}}){
+  function createCycle({store,drive,engine,applier,Drive,content=null,explain=null,shadow=null,contentInBackground=false,now=()=>Date.now(),appVersion='',log=()=>{}}){
     const N=Drive.N,parse=Drive.parseName;
     let running=null,contentRunning=null;
     /* form content can be large (many image files): in the app it uploads in the background, so a sync (or the upgrade) never waits for it */
@@ -365,6 +415,10 @@
               else{try{rep.content=await pushContent(args);}catch(e){rep.content={uploaded:[],copied:[],errors:{all:String(e&&e.message||e)},deferred:0};}}
             }
             if(explain&&withContent)rep.explain=startExplain({files:files||await drive.listV3(),drive,Drive,explain});
+            if(shadow){
+              try{const r=await syncShadow({files:files||await drive.listV3(),drive,Drive,shadow});rep.shadow={uploaded:r.uploaded.length,pulled:r.pulled.length,removed:r.removed,errors:r.errors};await store.setRaw('lastShadow',{at:rep.at,...rep.shadow});}
+              catch(e){rep.shadow={uploaded:0,pulled:0,removed:0,errors:{all:String(e&&e.message||e)}};}
+            }
             await drive.upload(N.dev(me),{deviceId:me,name:dev.name,class:dev.class,appVersion,lastSeen:rep.at,bootstrapped:true});
             const mineLeases=await store.getRaw('myLeases',{});await drive.upload(N.lease(me),{dev:me,leases:mineLeases});
             void vis;
@@ -404,5 +458,5 @@
     return {uid,at:t};
   }
   function C_attemptIds(vis,uid){return Object.keys(vis).map(Core.parseKey).filter(p=>p.fam==='A'&&p.field===''&&String(vis[K.att(p.att)].v.formUid)===uid).map(p=>p.att);}
-  return {create,createCycle,resetFormProgress,attemptIdsOf:C_attemptIds,ownUnits,diffForm,scopeOf,attFormOf,DEFAULTS,pushContent,fetchContent,syncsContent,syncExplain,CONTENT_TYPE};
+  return {create,createCycle,resetFormProgress,attemptIdsOf:C_attemptIds,ownUnits,diffForm,scopeOf,attFormOf,DEFAULTS,pushContent,fetchContent,syncsContent,syncExplain,syncShadow,CONTENT_TYPE};
 });

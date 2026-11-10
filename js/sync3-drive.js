@@ -41,10 +41,11 @@
     lease:d=>`v3.r.${d}.lease.json`,
     content:(sha,part)=>part==null?`v3.c.${sha}.json`:`v3.c.${sha}.p${part}.json`,
     explain:(id,key,sha)=>`v3.x.${id}.${key}.${String(sha).slice(0,16)}.json`,
+    shadow:(id,sha)=>`v3.t.${id}.${String(sha).slice(0,16)}.json`,
     snapshot:(d,yyyymmdd,uid)=>`v3.s.${d}.${yyyymmdd}.${encodeURIComponent(uid)}.json`,
     migration:'v3.migration.json'
   };
-  /* what a v3 file name is: {type:'dev'|'lib'|'set'|'form'|'lease'|'content'|'explain'|'snapshot'|'migration', dev, uid, ...} */
+  /* what a v3 file name is: {type:'dev'|'lib'|'set'|'form'|'lease'|'content'|'explain'|'shadow'|'snapshot'|'migration', dev, uid, ...} */
   function parseName(name){
     let m;
     if(name==='v3.migration.json')return {type:'migration'};
@@ -55,6 +56,7 @@
     if((m=/^v3\.r\.([^.]+)\.f\.(.+)\.json$/.exec(name)))return {type:'form',dev:m[1],uid:decodeURIComponent(m[2])};
     if((m=/^v3\.c\.([0-9a-f]+)(?:\.p(\d+))?\.json$/.exec(name)))return {type:'content',sha:m[1],part:m[2]==null?null:Number(m[2])};
     if((m=/^v3\.x\.([A-Za-z0-9_-]+)\.(\d{14})\.([0-9a-f]{16})\.json$/.exec(name)))return {type:'explain',formId:m[1],key:m[2],sha:m[3]};
+    if((m=/^v3\.t\.([A-Za-z0-9_-]+)\.([0-9a-f]{16})\.json$/.exec(name)))return {type:'shadow',id:m[1],sha:m[2]};
     if((m=/^v3\.s\.([^.]+)\.(\d{8})\.(.+)\.json$/.exec(name)))return {type:'snapshot',dev:m[1],day:m[2],uid:decodeURIComponent(m[3])};
     return {type:'other'};
   }

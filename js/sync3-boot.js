@@ -26,7 +26,8 @@
   const engine=Sync.create({store,source});
   const content=Bridge.createContentAdapter({drive,libraryManifestName:R.config&&R.config.LIBRARY_MANIFEST_FILE});
   const explain=Bridge.createExplainAdapter();
-  const cycle=Sync.createCycle({store,drive,engine,applier,Drive,content,explain,contentInBackground:true,appVersion:String(window.__STEP_SIM_VERSION||'')});
+  const shadow=Bridge.createShadowAdapter();
+  const cycle=Sync.createCycle({store,drive,engine,applier,Drive,content,explain,shadow,contentInBackground:true,appVersion:String(window.__STEP_SIM_VERSION||'')});
   const state={live:false,lastScan:null,lastCheck:null,lastCycle:null,running:false,error:'',migration:null,bar:null,status:'',migrating:false};
   const rt=()=>{try{return window.StepExamSyncBridge.runtime();}catch(e){return {};}};
   const examOpen=()=>!!rt().examVisible;
@@ -97,6 +98,8 @@
   });
   setInterval(()=>{if(document.visibilityState==='visible')runCycle({reason:'timer'});},TIMED_CHECK_MS);
   window.addEventListener('stepsim:three-digit-score',()=>{scheduleScan(null);});
+  /* the ThunderShadow logger wrote a log file: sync it soon (the logger merges, so a cycle is always safe) */
+  window.addEventListener('stepsim:shadowlog-write',()=>{if(state.live)scheduleCycle(8000,'shadowlog');});
 
   /* ---------------- leases (section 6) ---------------- */
   let myLeases={},otherLeases={};

@@ -6,7 +6,8 @@
    Exam Settings menu: "ThunderShadow" switch (ShadowLogger.settingHtml(), key ThunderShadowLog.off).
    The form, date and simulator item (block.item) are filled in from the attempt.
    Export: the 13 columns of ThunderShadow's own "Form log TSV" (js/browser-api.js formToTsv), so one importer reads both.
-   Draft storage: localStorage "ThunderShadowLog.v1" on this device only. Nothing is written to DATA or to progress files. */
+   Storage: progress/<id>_shadow_log.json beside the attempt (Local: DATA/progress, iPad: the library, synced by Sync v3 as v3.t.* files),
+   with localStorage "ThunderShadowLog.v1" as the instant cache and first-run source. See the storage section below. */
 (function(){
   'use strict';
   const STORE = 'ThunderShadowLog.v1', OFF = 'ThunderShadowLog.off';
@@ -48,26 +49,138 @@
     bin: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg>'
   };
 
-  /* ---------- storage ---------- */
+  /* ---------- storage ----------
+     Truth = one file per form: progress/<id>_shadow_log.json (Local: DATA/progress; iPad: the same path in the browser library, which Sync v3
+     carries through the Drive). localStorage "ThunderShadowLog.v1" stays as the instant write-through cache and the first-run source:
+     every start merges it into the files, so older logs migrate without loss and without duplicates (merge is keyed per form/attempt/question).
+     Merge rule: per question the newer updatedAt wins; deleting writes a tombstone ({deleted:true, updatedAt}) so a delete is not undone by another device. */
   let db = {forms: {}}, sheetDraw = null; // sheetDraw: redraws the open log sheet
   try{ const v = JSON.parse(ls.get(STORE)); if(v && v.forms && typeof v.forms === 'object') db = v; }catch(e){}
-  // Writes are per form bucket: re-read the stored copy, put our changed buckets on top of it, then write. Another tab's other forms survive.
-  const dirty = new Set();
-  let saveOk = true;
-  const readStore = () => { const raw = ls.get(STORE); if(raw == null) return {forms: {}}; try{ const v = JSON.parse(raw); if(v && v.forms && typeof v.forms === 'object') return v; }catch(e){} return Object.keys(db.forms).length ? db : {forms: {}}; }; // unreadable store: fall back to what we hold so other forms are not wiped
-  function persist(key){
-    if(key) dirty.add(key);
-    const stored = readStore(), forms = Object.assign({}, stored.forms);
-    dirty.forEach(k => { if(db.forms[k]) forms[k] = db.forms[k]; else delete forms[k]; });
-    const next = Object.assign({}, stored, {forms});
-    const ok = ls.set(STORE, JSON.stringify(next));
-    if(ok){ db = next; dirty.clear(); }
-    saveOk = ok; showSaveState();
-    return ok;
-  }
-  function showSaveState(){ const w = byId('tslWarn'); if(w) w.hidden = saveOk; if(sheet && sheetDraw) sheetDraw(); }
+  const dirty = new Set(), fileDirty = new Set();
+  let lsOk = true, fileOk = null; // fileOk: null = not tried yet
+  const isIpad = () => window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
+  let lastStamp = '';
+  const stampAfter = prev => { let t = new Date().toISOString(); if(t <= lastStamp) t = new Date(Date.parse(lastStamp) + 1).toISOString(); if(prev && t <= prev) t = new Date(Date.parse(prev) + 1).toISOString(); return lastStamp = t; };
+  const sortKeys = v => Array.isArray(v) ? v.map(sortKeys) : v && typeof v === 'object' ? Object.keys(v).sort().reduce((o, k) => { o[k] = sortKeys(v[k]); return o; }, {}) : v;
+  const canon = v => JSON.stringify(sortKeys(v));
   const isLogged = e => !!(e && (e.errorCode || e.pattern || (e.note || '').trim() || (e.speedFlags || []).length));
+  const mergeEntry = (a, b) => { if(!a) return b; if(!b) return a; const x = a.updatedAt || '', y = b.updatedAt || ''; return x !== y ? (x > y ? a : b) : (canon(a) >= canon(b) ? a : b); };
+  const stampOf = b => Object.values(b.entries || {}).reduce((m, e) => (e && e.updatedAt && e.updatedAt > m ? e.updatedAt : m), '');
+  function mergeBucket(a, b){
+    if(!a) return b; if(!b) return a;
+    const entries = {};
+    new Set(Object.keys(a.entries || {}).concat(Object.keys(b.entries || {}))).forEach(k => { entries[k] = mergeEntry((a.entries || {})[k], (b.entries || {})[k]); });
+    const sa = stampOf(a), sb = stampOf(b), meta = x => canon({formId: x.formId, form: x.form, date: x.date});
+    const m = sa !== sb ? (sa > sb ? a : b) : (meta(a) >= meta(b) ? a : b);
+    return {formId: m.formId, form: m.form, date: m.date, entries};
+  }
+  function mergeForms(x, y){ const out = {}; new Set(Object.keys(x || {}).concat(Object.keys(y || {}))).forEach(k => { out[k] = mergeBucket((x || {})[k], (y || {})[k]); }); return out; }
+  // file layer: one file per formId; names stay [A-Za-z0-9_-] so they are safe on both platforms and in Drive file names
+  const hash8 = s => { let h = 0x811c9dc5; for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
+  const fileIdOf = formId => { const s = String(formId == null ? '' : formId), safe = s.replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 60) || 'log'; return safe === s ? s : safe + '-' + hash8(s); };
+  const fileText = (id, buckets) => canon({type: 'ThunderShadowLog', v: 2, id, buckets});
+  const MAXB = 2 * 1024 * 1024;
+  function parseFile(text, id){
+    const d = JSON.parse(text);
+    if(!d || d.type !== 'ThunderShadowLog' || String(d.id) !== id || !d.buckets || typeof d.buckets !== 'object' || Array.isArray(d.buckets)) throw new Error('not a ThunderShadow log file for ' + id);
+    const out = {};
+    Object.keys(d.buckets).forEach(k => { const b = d.buckets[k]; if(b && typeof b === 'object' && b.entries && typeof b.entries === 'object' && !Array.isArray(b.entries)) out[k] = {formId: String(b.formId == null ? '' : b.formId), form: String(b.form == null ? '' : b.form), date: String(b.date == null ? '' : b.date), entries: b.entries}; });
+    return out;
+  }
+  const fileIdOfBucket = (k, b) => b && b.formId === 'QBANK_MODE' ? 'QBANK_MODE-' + hash8(String(k)) : fileIdOf(b && b.formId); // one file per Qbank session keeps files small
+  const groupsOfDb = () => { const g = new Map(); Object.keys(db.forms).forEach(k => { const id = fileIdOfBucket(k, db.forms[k]); if(!g.has(id)) g.set(id, {}); g.get(id)[k] = db.forms[k]; }); return g; };
+  const idbOpen = (name, store, opt) => new Promise((ok, no) => {
+    const r = indexedDB.open(name, 1); r.onupgradeneeded = () => { if(!r.result.objectStoreNames.contains(store)) r.result.createObjectStore(store, opt); };
+    r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error);
+  });
+  const EPOCH = '__stepsim_internal__/epoch', FDIR = 'progress', fpath = id => FDIR + '/' + id + '_shadow_log.json', FRE = /^(.+)_shadow_log\.json$/;
+  const ipadTx = (mode, fn) => idbOpen('StepExamSimulatorV784_A4_iPadBrowserLibrary_DB', 'files', {keyPath: 'path'}).then(d => new Promise((ok, no) => {
+    const t = d.transaction('files', mode); let out;
+    try{ out = fn(t.objectStore('files')); }catch(e){ t.abort(); d.close(); no(e); return; }
+    t.oncomplete = () => { d.close(); ok(typeof out === 'function' ? out() : out); }; t.onabort = t.onerror = () => { d.close(); no(t.error); };
+  }));
+  let rootH = null;
+  async function localRoot(){
+    const hook = window.SHADOW_LOG_DIR || window.RAPID_REVIEW_DIR; // tests
+    if(typeof hook === 'function') return await hook();
+    if(rootH) return rootH;
+    const d = await idbOpen('StepExamSimulatorV75_DATA_Handle_DB', 'handles'), h = await new Promise((ok, no) => { const q = d.transaction('handles', 'readonly').objectStore('handles').get('lastDataFolder'); q.onsuccess = () => ok(q.result || null); q.onerror = () => no(q.error); });
+    d.close();
+    if(!h || !h.queryPermission) throw new Error('DATA folder is not connected.');
+    if(await h.queryPermission({mode: 'readwrite'}) !== 'granted') throw new Error('DATA folder permission is not granted.');
+    return rootH = h;
+  }
+  const missing = e => e && e.name === 'NotFoundError';
+  const fstore = {
+    async ids(){
+      if(isIpad()) return await ipadTx('readonly', s => { const q = s.getAllKeys(); return () => q.result.map(k => /^progress\/([^/]+_shadow_log\.json)$/.exec(String(k))).filter(Boolean).map(m => FRE.exec(m[1])[1]); });
+      const out = []; try{ for await (const [name] of (await (await localRoot()).getDirectoryHandle(FDIR)).entries()){ const m = FRE.exec(name); if(m) out.push(m[1]); } }catch(e){ if(!missing(e)) throw e; }
+      return out;
+    },
+    async read(id){
+      if(isIpad()){ const b = await ipadTx('readonly', s => { const q = s.get(fpath(id)); return () => q.result && q.result.blob ? q.result.blob : null; }); return b ? await b.text() : null; }
+      try{ return await (await (await (await (await localRoot()).getDirectoryHandle(FDIR)).getFileHandle(id + '_shadow_log.json')).getFile()).text(); }catch(e){ if(missing(e)) return null; throw e; }
+    },
+    async write(id, text){
+      const blob = new Blob([text], {type: 'application/json'});
+      if(isIpad()){
+        if(window.__STEP_FORM_UPDATE_WRITING || window.__STEP_FORM_UPDATE_COMMITTING) throw new Error('form installation is running');
+        return await ipadTx('readwrite', s => { s.put({path: fpath(id), blob, updatedAt: Date.now(), type: 'application/json'}); const e = s.get(EPOCH); e.onsuccess = () => s.put({path: EPOCH, value: (e.result && e.result.value || 0) + 1}); });
+      }
+      const w = await (await (await (await localRoot()).getDirectoryHandle(FDIR, {create: true})).getFileHandle(id + '_shadow_log.json', {create: true})).createWritable();
+      await w.write(blob); await w.close();
+    }
+  };
+  const fileTexts = new Map(); // what each file held when we last read or wrote it
+  let syncing = null, again = null, retry = false;
+  // Merge the files (all, or just `only`) with what this page holds, adopt what is new, write back what differs. Returns a promise.
+  function syncFiles(only, quiet){
+    if(syncing){ again = {only: again ? (again.only && only ? again.only.concat(only) : null) : only, quiet: !!quiet && (!again || again.quiet)}; return syncing; }
+    syncing = (async () => {
+      let wrote = false, adopted = false, failed = false;
+      try{
+        const ids = only ? new Set(only) : new Set((await fstore.ids()).concat(Array.from(groupsOfDb().keys())));
+        for(const id of ids){
+          fileTexts.delete(id); // set again only when this pass really read/wrote the file
+          let text = null, fileBuckets = {};
+          try{ text = await fstore.read(id); fileBuckets = text ? parseFile(text, id) : {}; }
+          catch(e){ failed = true; continue; } // one unreadable file never blocks the others (it is left untouched)
+          // from here to the write nothing awaits before the merge, so a tap during the write is caught by the next pass (fileDirty)
+          const mine = groupsOfDb().get(id) || {}, merged = mergeForms(fileBuckets, mine);
+          Object.keys(merged).forEach(k => { if(!db.forms[k] || canon(db.forms[k]) !== canon(merged[k])){ db.forms[k] = merged[k]; adopted = true; } });
+          const next = fileText(id, merged);
+          fileDirty.delete(id);
+          if(next !== text){ try{ await fstore.write(id, next); wrote = true; }catch(e){ failed = true; fileDirty.add(id); retry = true; continue; } }
+          fileTexts.set(id, next);
+        }
+      }catch(e){ failed = true; }
+      fileOk = !failed;
+      if(retry){ retry = false; setTimeout(scheduleFlush, 5000); }
+      if(adopted){ lsOk = ls.set(STORE, JSON.stringify({forms: mergeForms(readStore().forms, db.forms)})); curKey = ''; }
+      showSaveState(); if(adopted) schedule();
+      if(wrote && !quiet) try{ window.dispatchEvent(new CustomEvent('stepsim:shadowlog-write', {detail: {kind: 'shadowlog'}})); }catch(e){}
+    })().finally(() => { syncing = null; if(again){ const a = again; again = null; syncFiles(a.only, a.quiet); } });
+    return syncing;
+  }
+  const settled = async p => { await p; while(syncing) await syncing; };
+  let flushTimer = 0;
+  const scheduleFlush = () => { clearTimeout(flushTimer); flushTimer = setTimeout(() => { flushTimer = 0; const ids = Array.from(fileDirty); syncFiles(ids.length ? ids : null); }, 500); };
+  const readStore = () => { const raw = ls.get(STORE); if(raw == null) return {forms: {}}; try{ const v = JSON.parse(raw); if(v && v.forms && typeof v.forms === 'object') return v; }catch(e){} return {forms: {}}; };
+  // Every change: merge it into the cache (keeps another tab's changes), then queue the file write.
+  function persist(key){
+    if(key){ dirty.add(key); const b = db.forms[key]; if(b) fileDirty.add(fileIdOfBucket(key, b)); }
+    const stored = readStore();
+    dirty.forEach(k => { if(db.forms[k]) db.forms[k] = mergeBucket(stored.forms[k], db.forms[k]); });
+    lsOk = ls.set(STORE, JSON.stringify({forms: mergeForms(stored.forms, db.forms)}));
+    if(lsOk) dirty.clear();
+    showSaveState(); scheduleFlush();
+    return lsOk;
+  }
+  const saveOk = () => lsOk || fileOk === true;
+  function showSaveState(){ const w = byId('tslWarn'); if(w) w.hidden = saveOk(); if(sheet && sheetDraw) sheetDraw(); }
+  const whereText = () => isIpad() ? (fileOk === false ? 'saved in this browser' : 'saved on this device and synced through Google Drive') : fileOk ? 'saved in DATA/progress as you tap' : fileOk === false ? 'saved in this browser; connect the DATA folder to save it in DATA/progress' : 'saved on this device as you tap';
   const blank = c => ({examItem: c.code, block: c.block, item: c.item, qid: c.qid, errorCode: '', pattern: '', speedFlags: [], note: '', noteKind: 'clinical', isCorrect: c.isCorrect, createdAt: null, updatedAt: null});
+  const tomb = (e, prev) => ({examItem: e.examItem, block: e.block, item: e.item, entryNumber: e.entryNumber, deleted: true, updatedAt: stampAfter(prev && prev.updatedAt)});
 
   /* ---------- what is on screen ---------- */
   const localDay = iso => { const d = iso ? new Date(iso) : new Date(); const t = isNaN(d) ? new Date() : d; return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); };
@@ -300,12 +413,14 @@
     if(isLogged(cur)){
       const b = db.forms[c.key] || (db.forms[c.key] = {formId: c.formId, form: c.form, date: c.date, entries: {}});
       b.form = c.form; b.date = c.date;
-      cur.createdAt = cur.createdAt || now; cur.updatedAt = now;
+      const prev = b.entries[c.code];
+      delete cur.deleted; // an entry that carries content is live, whatever an older build left on it
+      cur.createdAt = cur.createdAt || now; cur.updatedAt = stampAfter(prev && prev.updatedAt);
       if(!(cur.entryNumber > 0)) cur.entryNumber = c.entryNumber;
       b.entries[c.code] = cur;
     }else{
-      const b = db.forms[c.key];
-      if(b){ delete b.entries[c.code]; if(!Object.keys(b.entries).length) delete db.forms[c.key]; }
+      const b = db.forms[c.key], prev = b && b.entries[c.code];
+      if(prev && (isLogged(prev) || !prev.deleted)) b.entries[c.code] = tomb(prev, prev); // a removed answer stays as a tombstone so other devices do not bring it back
     }
     persist(c.key); if(!quiet) paint(c);
   }
@@ -319,7 +434,7 @@
       curKey = k; showAll = false; view = '';
       dock.dataset.open = '0'; // a new question starts with the thin strip, so the explanation gets the room back
       const b = bucketOf(c), saved = b && b.entries[c.code];
-      cur = saved ? saved : blank(c);
+      cur = saved && (isLogged(saved) || !saved.deleted) ? saved : blank(c);
       try{ Object.defineProperty(cur, '__k', {value: k, writable: true, enumerable: false, configurable: true}); }catch(e){ cur.__k = k; }
       cur.speedFlags = Array.isArray(cur.speedFlags) ? cur.speedFlags : [];
       const t = note(); if(t && t.value !== cur.note) t.value = cur.note || '';
@@ -557,9 +672,9 @@
       const hadFocus = !!(sheet.contains(document.activeElement) && document.activeElement !== sheet);
       const b = db.forms[c.key], list = b ? sorted(b, c.key) : [], forms = Object.values(db.forms).filter(f => f.entries && Object.values(f.entries).some(isLogged)).length;
       const undoBtn = undo ? ' · <button type="button" class="tsl-undo" data-s="undo">Undo</button>' : '';
-      sheet.innerHTML = `<div class="tsl-card"><header><div><h3>ThunderShadow log · ${esc(c.form)}</h3><p>${c.qbank ? 'Qbank review session (mixed forms; items numbered within this session) · ' : ''}${list.length} logged question${list.length === 1 ? '' : 's'} · ${esc(c.date)} · saved on this device as you tap</p></div><button type="button" class="tsl-close" data-s="close" aria-label="Close" title="Close">${I.x}</button></header>
+      sheet.innerHTML = `<div class="tsl-card"><header><div><h3>ThunderShadow log · ${esc(c.form)}</h3><p>${c.qbank ? 'Qbank review session (mixed forms; items numbered within this session) · ' : ''}${list.length} logged question${list.length === 1 ? '' : 's'} · ${esc(c.date)} · ${esc(whereText())}</p></div><button type="button" class="tsl-close" data-s="close" aria-label="Close" title="Close">${I.x}</button></header>
 <div class="tsl-list">${list.length ? `<table><thead><tr><th>Item</th><th>Code</th><th>Pattern</th><th class="c-s">Speed</th><th>Study note</th><th></th></tr></thead><tbody>${list.map(e => { const er = ERR.find(x => x[0] === e.errorCode), p = PAT.find(x => x[0] === e.pattern); return `<tr><td class="n">${esc(e.examItem)}</td><td>${er ? esc(er[0] + ' ' + er[1]) : ''}</td><td>${p ? esc(p[1] + ' ' + p[2]) : ''}</td><td class="c-s">${esc((e.speedFlags || []).map(v => (SPD.find(s => s[0] === v) || [])[1]).filter(Boolean).join(' '))}</td><td class="note">${esc(e.note || '')}${e.note && e.noteKind === 'reasoning' ? ' <em>(Broad)</em>' : ''}</td><td class="act"><button type="button" class="tsl-ib" data-s="go" data-b="${Number(e.block)}" data-i="${Number(e.item)}" title="Open question ${esc(e.examItem)}" aria-label="Open question ${esc(e.examItem)}">${I.go}</button><button type="button" class="tsl-ib" data-s="del" data-k="${esc(e.examItem)}" title="Remove this entry" aria-label="Remove entry ${esc(e.examItem)}">${I.bin}</button></td></tr>`; }).join('')}</tbody></table><ul class="tsl-cards">${list.map(e => { const er = ERR.find(x => x[0] === e.errorCode), p = PAT.find(x => x[0] === e.pattern), sp = (e.speedFlags || []).map(v => (SPD.find(s => s[0] === v) || [])[1]).filter(Boolean).join(' '); return `<li><div class="h"><span class="n">${esc(e.examItem)}</span>${er ? `<span>${esc(er[0] + ' ' + er[1])}</span>` : ''}${p ? `<span>${esc(p[1] + ' ' + p[2])}</span>` : ''}${sp ? `<span class="s">${esc(sp)}</span>` : ''}</div><div class="a"><button type="button" class="tsl-ib" data-s="go" data-b="${Number(e.block)}" data-i="${Number(e.item)}" title="Open question ${esc(e.examItem)}" aria-label="Open question ${esc(e.examItem)}">${I.go}</button><button type="button" class="tsl-ib" data-s="del" data-k="${esc(e.examItem)}" title="Remove this entry" aria-label="Remove entry ${esc(e.examItem)}">${I.bin}</button></div>${e.note ? `<div class="t">${esc(e.note)}${e.noteKind === 'reasoning' ? ' (Broad)' : ''}</div>` : ''}</li>`; }).join('')}</ul>` : '<p class="tsl-empty">Nothing logged for this form yet. Tap an error code under a question to log it.</p>'}</div>
-<footer><span class="tsl-msg" role="status">${!saveOk ? esc('Not saved: this browser refused the write (storage full or blocked). Download the TSV now.') + undoBtn : confirmDel ? esc('Delete all ' + list.length + ' logged question' + (list.length === 1 ? '' : 's') + ' of this form?') : esc(msg || 'Same 13 columns as ThunderShadow’s Form log TSV.') + undoBtn}</span>${list.length ? (confirmDel ? `<button type="button" class="tsl-btn danger pri" data-s="delyes">Yes, delete</button><button type="button" class="tsl-btn" data-s="delno">Cancel</button>` : `<button type="button" class="tsl-btn danger" data-s="delform">Delete this form's log</button>`) : ''}${forms > 1 ? `<button type="button" class="tsl-btn" data-s="all">All ${forms} forms</button>` : ''}<button type="button" class="tsl-btn" data-s="copy" aria-disabled="${!list.length}">Copy TSV</button><button type="button" class="tsl-btn pri" data-s="dl" aria-disabled="${!list.length}">${I.down}Download TSV</button></footer></div>`;
+<footer><span class="tsl-msg" role="status">${!saveOk() ? esc('Not saved: this browser refused the write (storage full or blocked). Download the TSV now.') + undoBtn : confirmDel ? esc('Delete all ' + list.length + ' logged question' + (list.length === 1 ? '' : 's') + ' of this form?') : esc(msg || 'Same 13 columns as ThunderShadow’s Form log TSV.') + undoBtn}</span>${list.length ? (confirmDel ? `<button type="button" class="tsl-btn danger pri" data-s="delyes">Yes, delete</button><button type="button" class="tsl-btn" data-s="delno">Cancel</button>` : `<button type="button" class="tsl-btn danger" data-s="delform">Delete this form's log</button>`) : ''}${forms > 1 ? `<button type="button" class="tsl-btn" data-s="all">All ${forms} forms</button>` : ''}<button type="button" class="tsl-btn" data-s="copy" aria-disabled="${!list.length}">Copy TSV</button><button type="button" class="tsl-btn pri" data-s="dl" aria-disabled="${!list.length}">${I.down}Download TSV</button></footer></div>`;
       if(focus || hadFocus){ const t = (focus && sheet.querySelector('[data-s="' + focus + '"]')) || sheet.querySelector('.tsl-close'); if(t){ try{ t.focus(); }catch(e){} } }
     };
     sheetDraw = draw; draw();
@@ -570,15 +685,15 @@
       if(s !== 'undo' && s !== 'del' && s !== 'delyes') undo = null; // the undo offer lasts until the next action
       if(s !== 'delform') confirmDel = false;
       const takeOut = (label, codes) => { if(noteTimer){ clearTimeout(noteTimer); noteTimer = 0; if(lastC) commit(lastC, true); }
-      const f = db.forms[c.key]; if(!f) return; undo = {label, items: codes.filter(k => f.entries[k]).map(k => [k, f.entries[k]])}; codes.forEach(k => delete f.entries[k]); if(!Object.keys(f.entries).length) delete db.forms[c.key]; persist(c.key); curKey = ''; draw(label, 'undo'); schedule(); };
+      const f = db.forms[c.key]; if(!f) return; const live = codes.filter(k => isLogged(f.entries[k])); undo = {label, items: live.map(k => [k, f.entries[k]])}; live.forEach(k => { f.entries[k] = tomb(f.entries[k], f.entries[k]); }); persist(c.key); curKey = ''; draw(label, 'undo'); schedule(); };
       if(s === 'close') closeSheet();
       else if(s === 'go') jump(Number(b.dataset.b), Number(b.dataset.i));
       else if(s === 'del') takeOut('Removed ' + b.dataset.k, [b.dataset.k]);
       else if(s === 'delform'){ confirmDel = true; draw('', 'delno'); }
       else if(s === 'delno') draw('', 'delform');
-      else if(s === 'delyes'){ const f = db.forms[c.key]; takeOut('Deleted this form\'s log (' + (f ? Object.values(f.entries).filter(isLogged).length : 0) + ')', f ? Object.keys(f.entries) : []); }
+      else if(s === 'delyes'){ const f = db.forms[c.key]; takeOut('Deleted this form\'s log (' + (f ? Object.values(f.entries).filter(isLogged).length : 0) + ')', f ? Object.keys(f.entries).filter(k => isLogged(f.entries[k])) : []); }
       else if(s === 'undo'){
-        if(undo){ const u = undo; undo = null; const f = db.forms[c.key] || (db.forms[c.key] = {formId: c.formId, form: c.form, date: c.date, entries: {}}); u.items.forEach(([k, en]) => { f.entries[k] = en; }); persist(c.key); curKey = ''; draw('Restored ' + (u.items.length === 1 ? u.items[0][0] : u.items.length + ' entries'), 'close'); schedule(); }
+        if(undo){ const u = undo; undo = null; const f = db.forms[c.key] || (db.forms[c.key] = {formId: c.formId, form: c.form, date: c.date, entries: {}}); u.items.forEach(([k, en]) => { const at = f.entries[k]; f.entries[k] = Object.assign({}, en, {updatedAt: stampAfter(at && at.updatedAt)}); }); persist(c.key); curKey = ''; draw('Restored ' + (u.items.length === 1 ? u.items[0][0] : u.items.length + ' entries'), 'close'); schedule(); }
       }
       else if(s === 'dl'){ download(safeName(c.form) + '_ThunderShadow_Log.tsv', tsv(c.key)); draw('Downloaded ' + safeName(c.form) + '_ThunderShadow_Log.tsv', 'dl'); }
       else if(s === 'all'){ download('ThunderShadow_Log_all_forms.tsv', tsv()); draw('Downloaded ThunderShadow_Log_all_forms.tsv', 'all'); }
@@ -615,18 +730,55 @@
   // another tab/window wrote the log: take its forms, keep ours that have unsaved changes
   addEventListener('storage', e => {
     if(e.key !== STORE && e.key !== null) return;
-    const stored = readStore();
-    dirty.forEach(k => { if(db.forms[k]) stored.forms[k] = db.forms[k]; else delete stored.forms[k]; });
-    db = stored; if(sheet && sheetDraw) sheetDraw(); schedule();
+    db = {forms: mergeForms(readStore().forms, db.forms)}; curKey = ''; if(sheet && sheetDraw) sheetDraw(); schedule(); scheduleFlush();
   });
+  // pick up the files when the page comes back (another device's changes arrive through Sync, a DATA folder may have been connected since)
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && fileOk !== null) syncFiles(); });
+  setTimeout(() => syncFiles(), 100); // first run: merges the cache into the files (migration of logs kept only in localStorage)
+  /* Settings page (Settings > Appearance): a ThunderShadow switch next to the Review screen group. Same key as the exam Settings menu row. */
+  function paintSetting(){
+    const panel = byId('settingsPanel'); if(!panel) return;
+    const on = ls.get(OFF) !== '1';
+    panel.querySelectorAll('section.tu-setbody').forEach(sec => {
+      const h = sec.querySelector('.tu-sechead h2'); if(!h || h.textContent.trim() !== 'Appearance') return;
+      let box = sec.querySelector('[data-tsl-set]');
+      if(!box){
+        box = document.createElement('div'); box.className = 'tsl-set'; box.setAttribute('data-tsl-set', ''); box.style.cssText = 'border-top:1px solid var(--tu-line2,#e4e7f0);margin-top:6px';
+        box.innerHTML = '<div class="tu-sechead"><h2>ThunderShadow</h2><p>Log each question with the error code and reasoning pattern while you review a form. Export the log as a TSV for ThunderShadow.</p><div class="tu-setrow"><div><b>ThunderShadow logger</b><span>Show the logging bar on the Review screen. The exam’s Settings menu has the same switch.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" id="tslSetSwitch" role="switch" aria-checked="' + on + '" aria-label="ThunderShadow logger"><i></i></button></div></div></div>';
+        sec.appendChild(box);
+      }
+      const sw = box.querySelector('#tslSetSwitch'); if(sw && sw.getAttribute('aria-checked') !== String(on)) sw.setAttribute('aria-checked', String(on));
+    });
+    const t = byId('shadowLoggerToggle'); if(t && t.checked !== on) t.checked = on;
+  }
+  document.addEventListener('click', e => {
+    const b = e.target && e.target.closest && e.target.closest('#tslSetSwitch'); if(!b) return;
+    e.preventDefault(); if(ls.get(OFF) === '1') window.ShadowLogger.enable(); else window.ShadowLogger.disable();
+  });
+  let setQueued = false;
+  const queueSetting = () => { if(setQueued) return; setQueued = true; setTimeout(() => { setQueued = false; paintSetting(); }, 0); };
+  function watchSettings(){ const p = byId('settingsPanel'); if(p){ new MutationObserver(queueSetting).observe(p, {childList: true, subtree: true}); queueSetting(); } }
   window.ShadowLogger = {
-    version: '1.0', tsv, data: () => JSON.parse(JSON.stringify(db)), refresh: schedule,
+    version: '2.0', tsv, data: () => JSON.parse(JSON.stringify(db)), refresh: schedule,
     get on(){ return ls.get(OFF) !== '1'; },
-    enable(){ ls.set(OFF, '0'); schedule(); }, disable(){ ls.set(OFF, '1'); schedule(); },
-    clear(){ clearTimeout(noteTimer); noteTimer = 0; const n = note(); if(n && document.activeElement === n) n.blur(); noteTimer && clearTimeout(noteTimer); noteTimer = 0; dirty.clear(); db = {forms: {}}; saveOk = ls.set(STORE, JSON.stringify({forms: {}})); showSaveState(); curKey = ''; if(sheet && sheetDraw) sheetDraw(); schedule(); },
+    enable(){ ls.set(OFF, '0'); schedule(); paintSetting(); }, disable(){ ls.set(OFF, '1'); schedule(); paintSetting(); },
+    clear(){ clearTimeout(noteTimer); noteTimer = 0; const n = note(); if(n && document.activeElement === n) n.blur(); noteTimer && clearTimeout(noteTimer); noteTimer = 0; dirty.clear(); Object.keys(db.forms).forEach(k => { const f = db.forms[k]; Object.keys(f.entries).forEach(c => { if(!f.entries[c].deleted) f.entries[c] = tomb(f.entries[c], f.entries[c]); }); dirty.add(k); fileDirty.add(fileIdOfBucket(k, f)); }); persist(); curKey = ''; if(sheet && sheetDraw) sheetDraw(); schedule(); },
+    // Sync v3 (js/sync3-sync.js syncShadow) reads and writes the log files through these. write() merges, it never replaces.
+    files: {
+      merge: (a, b) => { const x = JSON.parse(a), y = JSON.parse(b); if(x.id !== y.id) throw new Error('different log files'); return fileText(x.id, mergeForms(parseFile(a, x.id), parseFile(b, y.id))); },
+      async list(){ await settled(syncFiles()); const out = []; for(const id of await fstore.ids()){ try{ const t = await fstore.read(id); if(t && t.length <= MAXB){ parseFile(t, id); out.push({id, text: t}); } }catch(e){} } return out; },
+      async write(id, text){
+        if(!/^[A-Za-z0-9_-]+$/.test(id) || typeof text !== 'string' || text.length > MAXB) return {written: false};
+        const remote = parseFile(text, id);
+        db = {forms: mergeForms(db.forms, remote)}; Object.keys(remote).forEach(k => dirty.add(k)); fileDirty.add(id);
+        persist();
+        await settled(syncFiles([id], true));
+        return fileTexts.has(id) ? {written: true, text: fileTexts.get(id)} : {written: false};
+      }
+    },
     // Exam Settings menu row, same markup as the item-code row (thunder-ui.js styles every .notes-preference row)
     settingHtml(){ return '<label class="notes-preference shadow-logger-preference" title="ThunderShadow logger in Review mode"><span>ThunderShadow</span><input id="shadowLoggerToggle" type="checkbox" role="switch" ' + (ls.get(OFF) !== '1' ? 'checked' : '') + '></label>'; }
   };
   document.addEventListener('change', e => { if(e.target && e.target.id === 'shadowLoggerToggle'){ if(e.target.checked) window.ShadowLogger.enable(); else window.ShadowLogger.disable(); } });
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { start(); watchSettings(); }); else { start(); watchSettings(); }
 })();

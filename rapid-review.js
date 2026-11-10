@@ -42,7 +42,11 @@ background:var(--rr-bg);color:var(--rr-t);font-family:var(--rr-ff,Arial,Helvetic
 .rr-pane .rr-sub{font:inherit;font-size:.875em;font-weight:600;border:0;border-radius:7px;background:none;color:var(--rr-m);padding:5px 14px;margin:0;cursor:pointer;box-shadow:none;height:auto}
 .rr-pane .rr-sub.on{background:var(--rr-segon);color:var(--rr-t);box-shadow:0 1px 2px rgba(0,0,0,.18)}
 .rr-pane :is(.rr-sub,.rr-zoom button,.rr-more):focus-visible{outline:2px solid var(--rr-at);outline-offset:2px}
-.rr-pane .rr-time{font-size:.8em;color:var(--rr-m);white-space:nowrap}.rr-pane .rr-time b{color:var(--rr-t)}
+.rr-pane .rr-time{font-size:.95em;font-weight:600;color:var(--rr-t);white-space:nowrap}.rr-pane .rr-time b{font-weight:700;color:var(--rr-t)}
+.rr-pane.rr-dark .rr-seg{background:#000;border:1px solid #fff;padding:2px;gap:3px}
+.rr-pane.rr-dark .rr-sub{color:#fff;font-weight:700;border:1px solid transparent}
+.rr-pane.rr-dark .rr-sub:hover{background:#222}
+.rr-pane.rr-dark .rr-sub.on{background:#94eaff;color:#000;border-color:#94eaff;box-shadow:none}
 .rr-pane .rr-zoom{margin-left:auto;display:flex;gap:3px}
 .rr-pane .rr-zoom button{font:inherit;font-size:.75em;border:1px solid var(--rr-b);background:transparent;color:var(--rr-m);border-radius:6px;width:28px;height:24px;cursor:pointer;padding:0;margin:0}
 .rr-pane .rr-zoom button.rr-zr{width:auto;padding:0 7px}
