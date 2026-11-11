@@ -5,7 +5,7 @@
 (function(){
   'use strict';
   const LT = 'ABCDEFGHIJKLMNOP';
-  const PREF = 'stepReviewTabDefault', PLACE = 'stepReviewPlacement', LAYOUT = 'StepExamReviewExplanationLayout', ZOOM = 'stepRapidZoom', RULEFIRST = 'stepRuleTrapFirst';
+  const PREF = 'stepReviewTabDefault', PLACE = 'stepReviewPlacement', LAYOUT = 'StepExamReviewExplanationLayout', ZOOM = 'stepRapidZoom', RULEFIRST = 'stepRuleTrapFirst', OCD = 'stepAleeOcd';
   let rrOn = false, sideTab = 'exp', raf = 0, autoKey = null, sub = 'over', setHint = '', wantTopic = false;
   const ls = {get: k => { try{ return localStorage.getItem(k); }catch(e){ return null; } }, set: (k, v) => { try{ localStorage.setItem(k, v); }catch(e){} }};
   const getPref = () => ls.get(PREF) === 'rapid' ? 'rapid' : 'explanation';
@@ -158,7 +158,8 @@ background:var(--rr-bg);color:var(--rr-t);font-family:var(--rr-ff,Arial,Helvetic
 .qbank-tabs>.tux-layout{order:10!important}
 .below-exp-panel>.rr-pane{overflow:visible}
 @media (max-width:759.98px),(max-height:520px){.explanation-below .below-exp-wrap{max-width:none!important;width:auto!important}}
-${setCss()}`;
+${setCss()}
+${ocdCss()}`;
   const st = document.createElement('style'); st.id = 'rapid-review-css'; st.textContent = css; document.head.appendChild(st);
 
   /* ---------- data: explanations/<ID>.json, one cached object per form ---------- */
@@ -572,6 +573,49 @@ ${setCss()}`;
   // "Rule + Trap first": the Rapid rule and Trap tested blocks move above Correct Answer (the app renders them last).
   // Switching it off re-renders the question, which restores the app's own order.
   const ruleFirst = () => ls.get(RULEFIRST) === '1';
+  // "Alee's OCD Switch" (Settings > Appearance > Review screen): while on, the review shows the answer choices without
+  // spacing, hides "Why the other answers are wrong" and puts Trap tested inside the Rapid rule box (one box).
+  // Switching it off re-renders the question, which restores the app's own explanation.
+  const ocdOn = () => ls.get(OCD) === '1';
+  function ocdCss(){
+    // 6 IDs + !important: beats the NBME (4 IDs) and Modern (3 IDs) review rules
+    const O = ':root[data-ocd]:not(#ocd0):not(#ocd1):not(#ocd2):not(#ocd3) body #examScreen', A = O + ' #workspace .answers:has(.locked-answer)';
+    const M = ':root[data-ocd][data-tu-exam="modern"]:not(#ocd0):not(#ocd1):not(#ocd2):not(#ocd3) body #examScreen';
+    return `${A}{gap:0!important}
+${A} .answer{margin-top:0!important;margin-bottom:0!important;min-height:0!important}
+${A}:not(.choice-table-active) .choice-text{margin-top:0!important;margin-bottom:0!important}
+${A}:not(.choice-table-active) .tun-radio{margin-top:4.7px!important}
+${A}:not(.choice-table-active) .strike-symbol{height:22.4px!important}
+${A}:not(.choice-table-active) .strike-symbol svg{margin-top:-1px!important}
+${A} .strike-symbol::before{top:2px!important}
+${O} .exp-rule>.exp-ocd-trap{all:unset!important;display:block!important;margin:6px 0 0!important;padding:0!important}
+${O} .exp-rule>.exp-ocd-trap>h3{all:unset!important;display:inline!important;font-weight:700!important;font-family:Arial,Helvetica,sans-serif!important}
+${O} .exp-rule>.exp-ocd-trap>h3::after{content:":"}
+${O} .exp-rule>.exp-ocd-trap>div{all:unset!important;display:inline!important;margin-left:4px!important}
+${M} .qbank-body>.exp-rule{grid-column:1/-1!important}
+${M} .exp-rule>.exp-ocd-trap{margin-top:10px!important}
+${M} .exp-rule>.exp-ocd-trap>h3{display:block!important;font:800 11.5px var(--tu-font)!important;letter-spacing:.06em!important;text-transform:uppercase!important;color:var(--tu-warn)!important;margin:0 0 4px!important}
+${M} .exp-rule>.exp-ocd-trap>h3::after{content:none}
+${M} .exp-rule>.exp-ocd-trap>div{display:block!important;margin:0!important}`;
+  }
+  const ocdHide = el => { if(!el.hasAttribute('data-ocd-hid')){ el.setAttribute('data-ocd-hid', ''); el.style.setProperty('display', 'none', 'important'); } };
+  function applyOcd(){
+    const on = ocdOn(), de = document.documentElement;
+    if(on !== de.hasAttribute('data-ocd')){ if(on) de.setAttribute('data-ocd', ''); else de.removeAttribute('data-ocd'); }
+    if(!on) return;
+    document.querySelectorAll('#examScreen .exp-correct').forEach(ec => {
+      const par = ec.parentNode; if(!par) return;
+      const head = n => ((n.querySelector(':scope > h3') || {}).textContent || '').trim();
+      par.querySelectorAll(':scope > .exp-section').forEach(s => { if(s.querySelector(':scope > .exp-wrong') || /^why the other answers/i.test(head(s))) ocdHide(s); });
+      const rule = par.querySelector(':scope > .exp-rule');
+      const trap = [...par.querySelectorAll(':scope > .exp-section')].find(n => /^trap tested/i.test(head(n)));
+      if(!rule || !trap || rule.querySelector(':scope > .exp-ocd-trap')) return;
+      // move (not copy) the heading and text: the explanation text keeps its order, so saved highlights still resolve
+      const box = document.createElement('div'); box.className = 'exp-ocd-trap';
+      while(trap.firstChild) box.appendChild(trap.firstChild);
+      rule.appendChild(box); trap.remove();
+    });
+  }
   function placeRuleTrap(){
     if(!ruleFirst()) return;
     document.querySelectorAll('#examScreen .exp-correct').forEach(ec => {
@@ -586,7 +630,7 @@ ${setCss()}`;
     });
   }
   function ensure(){
-    raf = 0; addSettings(); placeRuleTrap();
+    raf = 0; addSettings(); applyOcd(); placeRuleTrap();
     const ws = document.getElementById('workspace'); if(!ws) return;
     // phones always use the Below layout (set in memory only; the saved choice is untouched)
     try{
@@ -711,6 +755,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     const first = (v, l) => `<button type="button" role="radio" aria-checked="${s.first === v}" data-rr-first="${v}"${s.together ? '' : ' disabled'}>${l}</button>`;
     return `<div class="tu-sechead"><h2>Review screen</h2><p>Where the explanation and Rapid Review appear when you review a question. The Split/Below switch in the exam’s Settings menu changes the same setting. On phones, Explanation and Rapid Review always sit under the question as tabs, since side by side doesn’t fit.</p></div>
       <div class="tu-setrow"><div><b>Rule + Trap first</b><span>Show the Rapid rule and Trap tested lines at the start of the explanation instead of the end, on forms that have them.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" role="switch" aria-checked="${ruleFirst()}" aria-label="Rule and Trap first" data-rr-rf><i></i></button></div></div>
+      <div class="tu-setrow"><div><b>Alee’s OCD Switch</b><span>A tighter Explanation view: answer choices without spacing, no “Why the other answers are wrong” section, and Rapid rule and Trap tested in one box.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" role="switch" aria-checked="${ocdOn()}" aria-label="Alee’s OCD Switch" data-rr-ocd><i></i></button></div></div>
       <div class="rr-setgrid"><div class="rr-rows">
         <div class="tu-setrow"><div><b>Layout</b><span>Side by side with the question, or stacked under it.</span></div><div class="tu-setctl"><div class="rr-lay" role="radiogroup" aria-label="Review layout">${lay('split', 'Split', 'All tabs beside the question')}${lay('below', 'Below', 'Reading space under the question')}</div></div></div>
         <div class="tu-setrow rr-placerow"><div><b>Tab placement</b><span>${split ? 'Split keeps every tab in the side panel. Choose Below to place tabs under the question.' : 'Click a tab to move it. Keep at least one under the question.'}</span></div><div class="rr-place">${zone('side', 'Beside the question')}${zone('below', 'Under the question')}</div><div class="rr-hint">${esc(setHint)}</div></div>
@@ -722,7 +767,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     document.querySelectorAll('section.tu-setbody').forEach(sec => {
       const h = sec.querySelector('.tu-sechead h2');
       if(!h || h.textContent.trim() !== 'Appearance') return;
-      const sig = [getLayout(), ls.get(PLACE), getPref(), ruleFirst(), setHint, statusText()].join('|');
+      const sig = [getLayout(), ls.get(PLACE), getPref(), ruleFirst(), ocdOn(), setHint, statusText()].join('|');
       let box = sec.querySelector('[data-rr-set]');
       if(box && box.dataset.sig === sig) return;
       if(!box){ box = document.createElement('div'); box.className = 'rr-set'; box.setAttribute('data-rr-set', ''); sec.appendChild(box); }
@@ -761,6 +806,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     const zb = t.closest('[data-rr-z]');
     if(zb){ const dz = Number(zb.getAttribute('data-rr-z')); ls.set(ZOOM, String(dz === 0 ? 1 : Math.max(0.8, Math.min(1.3, +(getZ() + 0.05 * dz).toFixed(2))))); schedule(); return; }
     if(t.closest('[data-rr-rf]')){ ls.set(RULEFIRST, ruleFirst() ? '0' : '1'); rerender(); schedule(); return; }
+    if(t.closest('[data-rr-ocd]')){ ls.set(OCD, ocdOn() ? '0' : '1'); applyOcd(); if(!ocdOn()) rerender(); schedule(); return; }
     const lb = t.closest('[data-rr-lay]');
     if(lb){ setHint = ''; setLayout(lb.getAttribute('data-rr-lay')); schedule(); return; }
     const mv = t.closest('[data-rr-mv]');
