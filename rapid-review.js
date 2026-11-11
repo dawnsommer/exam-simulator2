@@ -574,7 +574,7 @@ ${ocdCss()}`;
   // Switching it off re-renders the question, which restores the app's own order.
   const ruleFirst = () => ls.get(RULEFIRST) === '1';
   // "Alee's OCD Switch" (Settings > Appearance > Review screen): while on, the review shows the answer choices without
-  // spacing, hides "Why the other answers are wrong" and puts Trap tested inside the Rapid rule box (one box).
+  // spacing, hides the "Why the other answers are wrong" heading (the wrong choices stay, with no spacing between them) and puts Trap tested inside the Rapid rule box (one box).
   // Switching it off re-renders the question, which restores the app's own explanation.
   const ocdOn = () => ls.get(OCD) === '1';
   function ocdCss(){
@@ -592,6 +592,7 @@ ${O} .exp-rule>.exp-ocd-trap{all:unset!important;display:block!important;margin:
 ${O} .exp-rule>.exp-ocd-trap>h3{all:unset!important;display:inline!important;font-weight:700!important;font-family:Arial,Helvetica,sans-serif!important}
 ${O} .exp-rule>.exp-ocd-trap>h3::after{content:":"}
 ${O} .exp-rule>.exp-ocd-trap>div{all:unset!important;display:inline!important;margin-left:4px!important}
+${O} .exp-wrong{margin-top:0!important;margin-bottom:0!important}
 ${M} .qbank-body>.exp-rule{grid-column:1/-1!important}
 ${M} .exp-rule>.exp-ocd-trap{margin-top:10px!important}
 ${M} .exp-rule>.exp-ocd-trap>h3{display:block!important;font:800 11.5px var(--tu-font)!important;letter-spacing:.06em!important;text-transform:uppercase!important;color:var(--tu-warn)!important;margin:0 0 4px!important}
@@ -606,7 +607,8 @@ ${M} .exp-rule>.exp-ocd-trap>div{display:block!important;margin:0!important}`;
     document.querySelectorAll('#examScreen .exp-correct').forEach(ec => {
       const par = ec.parentNode; if(!par) return;
       const head = n => ((n.querySelector(':scope > h3') || {}).textContent || '').trim();
-      par.querySelectorAll(':scope > .exp-section').forEach(s => { if(s.querySelector(':scope > .exp-wrong') || /^why the other answers/i.test(head(s))) ocdHide(s); });
+      // the wrong-choice explanations stay; only their "Why the other answers are wrong" heading goes
+      par.querySelectorAll(':scope > .exp-section').forEach(s => { const h = s.querySelector(':scope > h3'); if(h && /^why the other answers/i.test(head(s))) ocdHide(h); });
       const rule = par.querySelector(':scope > .exp-rule');
       const trap = [...par.querySelectorAll(':scope > .exp-section')].find(n => /^trap tested/i.test(head(n)));
       if(!rule || !trap || rule.querySelector(':scope > .exp-ocd-trap')) return;
@@ -755,7 +757,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     const first = (v, l) => `<button type="button" role="radio" aria-checked="${s.first === v}" data-rr-first="${v}"${s.together ? '' : ' disabled'}>${l}</button>`;
     return `<div class="tu-sechead"><h2>Review screen</h2><p>Where the explanation and Rapid Review appear when you review a question. The Split/Below switch in the exam’s Settings menu changes the same setting. On phones, Explanation and Rapid Review always sit under the question as tabs, since side by side doesn’t fit.</p></div>
       <div class="tu-setrow"><div><b>Rule + Trap first</b><span>Show the Rapid rule and Trap tested lines at the start of the explanation instead of the end, on forms that have them.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" role="switch" aria-checked="${ruleFirst()}" aria-label="Rule and Trap first" data-rr-rf><i></i></button></div></div>
-      <div class="tu-setrow"><div><b>Alee’s OCD Switch</b><span>A tighter Explanation view: answer choices without spacing, no “Why the other answers are wrong” section, and Rapid rule and Trap tested in one box.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" role="switch" aria-checked="${ocdOn()}" aria-label="Alee’s OCD Switch" data-rr-ocd><i></i></button></div></div>
+      <div class="tu-setrow"><div><b>Alee’s OCD Switch</b><span>A tighter Explanation view: answer choices without spacing, no “Why the other answers are wrong” heading (the wrong choices stay, without spacing), and Rapid rule and Trap tested in one box.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" role="switch" aria-checked="${ocdOn()}" aria-label="Alee’s OCD Switch" data-rr-ocd><i></i></button></div></div>
       <div class="rr-setgrid"><div class="rr-rows">
         <div class="tu-setrow"><div><b>Layout</b><span>Side by side with the question, or stacked under it.</span></div><div class="tu-setctl"><div class="rr-lay" role="radiogroup" aria-label="Review layout">${lay('split', 'Split', 'All tabs beside the question')}${lay('below', 'Below', 'Reading space under the question')}</div></div></div>
         <div class="tu-setrow rr-placerow"><div><b>Tab placement</b><span>${split ? 'Split keeps every tab in the side panel. Choose Below to place tabs under the question.' : 'Click a tab to move it. Keep at least one under the question.'}</span></div><div class="rr-place">${zone('side', 'Beside the question')}${zone('below', 'Under the question')}</div><div class="rr-hint">${esc(setHint)}</div></div>
