@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=52">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=52">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=53">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=53">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=52"></script>
-<script src="./js/form-updates-core.js?v=52"></script>
-<script src="./js/form-update-store.js?v=52"></script>
-<script src="./js/google-auth.js?v=52"></script>
+<script src="./js/sync-config.js?v=53"></script>
+<script src="./js/form-updates-core.js?v=53"></script>
+<script src="./js/form-update-store.js?v=53"></script>
+<script src="./js/google-auth.js?v=53"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=52" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=53" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=52"></script>
-<script src="./js/qid-migration.js?v=52"></script>
+<script src="jszip.min.js?v=53"></script>
+<script src="./js/qid-migration.js?v=53"></script>
 <script>
 
 
@@ -3806,11 +3806,32 @@ document.addEventListener('click', function(e){
       async function readBundle(id){try{return bundleFromData(JSON.parse(await readText(await progressDir(),`${id}_progress_save.json`)),id)}catch(e){return newBundle(id)}}
       function activeAtt(b){b=shapeBundle(b,b?.formSlot||''); return b.attempts.find(a=>a.attemptId===b.activeAttemptId)||b.attempts[0]||null}
       function sumBundle(b,total){const a=activeAtt(b); if(!a)return null; const s=summarizeSession(a.session,total); s.canResume=sessionCanResume(a.session); s.inProgress=!s.completed&&(s.canResume||s.answered||s.completedBlocks); s.activeAttemptLabel=a.label; s.activeAttemptType=a.type; s.activeAttemptId=a.attemptId; s.attemptCount=b.attempts.length; s.completedAt=a.completedAt||s.completedAt; return s}
-      async function writeBundle(id,b){const rec=catalogForm(id); b=shapeBundle(b,id); b.updatedAt=nowIso(); const a=activeAtt(b); const payload={fileType:'StepExamSimulatorV10ProgressBundle',saveVersion:"10.2",exportedAt:nowIso(),formSlot:id,session:a?.session||null,bundle:b}; await writeText(await progressDir(),`${id}_progress_save.json`,JSON.stringify(payload,null,2)); if(rec){rec.progressSummary=sumBundle(b,rec.totalQuestions); rec.progressFile=`progress/${id}_progress_save.json`; upsertCatalogForm(rec); await writeCatalog(); renderLibrary(); renderQbankMode()}}
+      // Perf: a save during an exam used to re-render the hidden Library and Qbank (every wrapper layer) on each answer and
+      // question change. While #examScreen is open the render now waits and runs once when the exam screen closes (any exit
+      // path); outside the exam it runs at once as before. The catalog and progress files are still written on every save.
+      let v10LibraryStale=false, v10StaleWatch=null;
+      const v10ExamScreenOpen=()=>{const e=document.getElementById('examScreen'); return !!(e&&!e.classList.contains('hidden'))};
+      function v10LibraryAfterSave(){
+        if(!v10ExamScreenOpen()){renderLibrary(); renderQbankMode(); return}
+        v10LibraryStale=true;
+        if(!v10StaleWatch){v10StaleWatch=new MutationObserver(()=>{if(v10LibraryStale&&!v10ExamScreenOpen()){v10LibraryStale=false; renderLibrary(); renderQbankMode()}}); v10StaleWatch.observe(document.getElementById('examScreen'),{attributes:true,attributeFilter:['class']})}
+      }
+      async function writeBundle(id,b){const rec=catalogForm(id); b=shapeBundle(b,id); b.updatedAt=nowIso(); const a=activeAtt(b); const payload={fileType:'StepExamSimulatorV10ProgressBundle',saveVersion:"10.2",exportedAt:nowIso(),formSlot:id,session:a?.session||null,bundle:b}; await writeText(await progressDir(),`${id}_progress_save.json`,JSON.stringify(payload,null,2)); if(rec){rec.progressSummary=sumBundle(b,rec.totalQuestions); rec.progressFile=`progress/${id}_progress_save.json`; upsertCatalogForm(rec); await writeCatalog(); v10LibraryAfterSave()}}
 
       readProgress=async function(id){const b=await readBundle(id); let s=activeAtt(b)?.session||null; const t=await readSuspendedTemp(id); if(t){const st=Date.parse(s?.updatedAt||s?.startedAt||0)||0, tt=Date.parse(t.updatedAt||t.resumeState?.capturedAt||t.startedAt||0)||0; if(tt>=st)s=t} return s};
       writeProgress=async function(id,s){if(!dataDirHandle||!id||!s)return; const rec=catalogForm(id); if(rec){s.libraryFormId=id; s.libraryFormName=rec.displayName||id; s.bankHash=rec.bankHash||s.bankHash} s.updatedAt=nowIso(); let b=await readBundle(id); let aid=s.attemptId||activeRunContext.v9AttemptId||b.activeAttemptId||'attempt_1'; let a=b.attempts.find(x=>x.attemptId===aid); if(!a){const type=activeRunContext.v9AttemptType||(b.attempts.length?'new_attempt':'initial'); const label=activeRunContext.v9AttemptLabel||(type==='initial'?'1st Attempt':`${typeLabel(type)} ${b.attempts.length+1}`); a={attemptId:aid,label,type,createdAt:s.startedAt||nowIso(),completedAt:null,sourceAttemptId:activeRunContext.v9SourceAttemptId||null,sourceFilter:activeRunContext.v9SourceFilter||'all',session:null}; b.attempts.push(a)} s.attemptId=aid; s.attemptLabel=a.label; s.attemptType=a.type; s.saveVersion="10.2"; a.session=cloneJson(s); a.completedAt=s.completedAt||(sessionDone(s)?nowIso():null); a.updatedAt=s.updatedAt; b.activeAttemptId=aid; await writeBundle(id,b)};
-      refreshProgressSummaries=async function(){if(!dataDirHandle)return; let changed=false; for(const rec of catalog.forms||[]){const b=await readBundle(rec.id); const n=b.attempts.length?sumBundle(b,rec.totalQuestions):null; if(JSON.stringify(rec.progressSummary||null)!==JSON.stringify(n)){rec.progressSummary=n; changed=true}} if(changed) await writeCatalog()};
+      // Perf: every progress save re-renders the Library, and renderLibrary starts with this refresh, which used to
+      // re-read and re-parse every form's progress file (twice per question change). Each form's summary is now cached
+      // and reused while its progress file is unchanged (same size + lastModified, no in-app write or delete since,
+      // same DATA folder and question total). A form whose file is written in-app while it is being read is skipped this
+      // round: that writer (writeBundle) sets its summary itself, so a half-finished save can no longer overwrite it.
+      const v10SummaryCache=new Map(), v10SummaryGen=new Map();
+      const v10ProgressId=name=>{const m=/^(.+)_progress_save\.json$/.exec(String(name||'')); return m?m[1]:null};
+      const v10DropSummary=name=>{const id=v10ProgressId(name); if(id!==null){v10SummaryGen.set(id,(v10SummaryGen.get(id)||0)+1); v10SummaryCache.delete(id)}};
+      const v10WriteTextBase=writeText; writeText=async function(dir,filename,text){v10DropSummary(filename); try{return await v10WriteTextBase(dir,filename,text)}finally{v10DropSummary(filename)}};
+      const v10RemoveFileBase=removeFile; removeFile=async function(dir,filename){v10DropSummary(filename); try{return await v10RemoveFileBase(dir,filename)}finally{v10DropSummary(filename)}};
+      async function v10BundleStamp(id){try{const f=await (await (await progressDir()).getFileHandle(`${id}_progress_save.json`)).getFile(); return f.size+':'+f.lastModified}catch(e){return 'none'}}
+      refreshProgressSummaries=async function(){if(!dataDirHandle)return; let changed=false; for(const rec of catalog.forms||[]){const dir=dataDirHandle, gen=v10SummaryGen.get(rec.id)||0, stamp=(await v10BundleStamp(rec.id))+'|'+rec.totalQuestions; const c=v10SummaryCache.get(rec.id); let json; if(c&&c.dir===dir&&c.stamp===stamp&&c.gen===gen) json=c.json; else {const b=await readBundle(rec.id); const n=b.attempts.length?sumBundle(b,rec.totalQuestions):null; json=JSON.stringify(n); if((v10SummaryGen.get(rec.id)||0)!==gen||dir!==dataDirHandle){v10SummaryCache.delete(rec.id); continue} v10SummaryCache.set(rec.id,{dir,stamp,gen,json})} if(JSON.stringify(rec.progressSummary||null)!==json){rec.progressSummary=JSON.parse(json); changed=true}} if(changed) await writeCatalog()};
       exportSave=async id=>{const b=await readBundle(id); if(!b.attempts.length)throw new Error('No progress save exists for this form.'); const blob=new Blob([JSON.stringify({fileType:'StepExamSimulatorV10ProgressBundle',saveVersion:"10.2",exportedAt:nowIso(),formSlot:id,session:activeAtt(b)?.session||null,bundle:b},null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${id}_v10_2_progress_bundle.json`; a.click(); URL.revokeObjectURL(a.href)};
       importSaveToForm=async function(id,file){const rec=catalogForm(id); if(!rec)throw new Error('Load the form JSON first.'); const b=bundleFromData(JSON.parse(await file.text()),id); b.attempts.forEach(a=>{a.session.bankHash=rec.bankHash; a.session.libraryFormId=id; a.session.libraryFormName=rec.displayName||id}); await writeBundle(id,b); alert('Progress save imported.')};
 
@@ -9457,6 +9478,46 @@ span[data-v15-highlight-id]:hover{outline:0!important;box-shadow:none!important;
 </style>
 
 
+<script id="hopi-shared-observer">
+// Perf: the six HOPI/patient-chart layout layers (v22.3, v22.4, v22.11-v22.14) each had their own
+// page-wide MutationObserver that re-scanned every mutated node. They now register here: one observer
+// scans each batch once and runs each pass at most once per batch, in registration order, under the
+// same per-pass condition as before (A: a .patient-chart under the target; B: v22.12, also #statusRows;
+// C: a chart inside #examScreen .stem). The renderQuestion wrappers still run every pass after a render.
+(function(){
+  if(window.__stepHopiObserve) return;
+  var passes=[], mo=null;
+  function run(muts){
+    var want=new Array(passes.length), left=passes.length;
+    for(var i=0;i<muts.length && left;i++){
+      var t=muts[i].target; if(!t || !t.querySelector) continue;
+      var self=!!(t.matches && t.matches('#examScreen,.stem,.patient-chart'));
+      var any=null, stem=null, rows=null; // lazily computed: chart anywhere / chart in exam stem / status rows
+      for(var j=0;j<passes.length;j++){
+        if(want[j]) continue;
+        var k=passes[j].kind, hit=self;
+        if(!hit && k==='A'){ if(any===null) any=!!t.querySelector('.patient-chart'); hit=any; }
+        else if(!hit){
+          if(any===null) any=!!t.querySelector('.patient-chart');
+          if(stem===null) stem=any && !!t.querySelector('#examScreen .stem .patient-chart');
+          hit=stem;
+          if(!hit && k==='B'){ if(rows===null) rows=!!((t.matches && t.matches('#statusRows')) || t.querySelector('#statusRows')); hit=rows; }
+        }
+        if(hit){ want[j]=true; left--; }
+      }
+    }
+    for(var n=0;n<passes.length;n++){
+      if(!want[n]) continue;
+      try{ passes[n].fn(document); }catch(e){ setTimeout(function(err){ return function(){ throw err; }; }(e), 0); }
+    }
+  }
+  window.__stepHopiObserve=function(fn, kind){
+    if(typeof fn!=='function') return;
+    passes.push({fn:fn, kind:kind||'A'});
+    if(!mo){ mo=new MutationObserver(run); mo.observe(document.documentElement,{childList:true,subtree:true}); }
+  };
+})();
+</script>
 <script id="v22-3-hopi-normalizer-js">
 (function(){
   if(window.__STEP_SIM_V223_HOPI_PATCH) return;
@@ -9585,18 +9646,8 @@ span[data-v15-highlight-id]:hover{outline:0!important;box-shadow:none!important;
       renderQuestion.__v223PatientChart = true;
     }
   }catch(e){console.warn('v22.3 renderQuestion HOPI patch failed',e);}
-  try{
-    var mo = new MutationObserver(function(muts){
-      for(var i=0;i<muts.length;i++){
-        var t=muts[i].target;
-        if(t && t.querySelector && (t.matches && (t.matches('#examScreen') || t.matches('.stem') || t.matches('.patient-chart')) || t.querySelector('#examScreen .stem .patient-chart,.patient-chart'))){
-          normalizePatientChartsV223(document);
-          break;
-        }
-      }
-    });
-    mo.observe(document.documentElement,{childList:true,subtree:true});
-  }catch(e){}
+  // one shared page observer for all HOPI layout passes (see hopi-shared-observer)
+  try{ window.__stepHopiObserve(normalizePatientChartsV223, 'A'); }catch(e){}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){normalizePatientChartsV223(document);}); else normalizePatientChartsV223(document);
 })();
 </script>
@@ -9698,18 +9749,8 @@ try{
       renderQuestion.__v224HopiDemographics = true;
     }
   }catch(e){}
-  try{
-    var mo = new MutationObserver(function(muts){
-      for(var i=0;i<muts.length;i++){
-        var t=muts[i].target;
-        if(t && t.querySelector && (t.matches && (t.matches('#examScreen') || t.matches('.stem') || t.matches('.patient-chart')) || t.querySelector('#examScreen .stem .patient-chart,.patient-chart'))){
-          normalizeDemographicsV224(document);
-          break;
-        }
-      }
-    });
-    mo.observe(document.documentElement,{childList:true,subtree:true});
-  }catch(e){}
+  // one shared page observer for all HOPI layout passes (see hopi-shared-observer)
+  try{ window.__stepHopiObserve(normalizeDemographicsV224, 'A'); }catch(e){}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){normalizeDemographicsV224(document);}); else normalizeDemographicsV224(document);
 })();
 </script>
@@ -10084,18 +10125,8 @@ try{
       renderQuestion.__v2211HopiSubheadingLayout = true;
     }
   }catch(e){ console.warn('v22.11 renderQuestion HOPI subheading patch failed', e); }
-  try{
-    var mo = new MutationObserver(function(muts){
-      for(var i=0;i<muts.length;i++){
-        var t=muts[i].target;
-        if(t && t.querySelector && (t.matches && (t.matches('#examScreen') || t.matches('.stem') || t.matches('.patient-chart')) || t.querySelector('#examScreen .stem .patient-chart,.patient-chart'))){
-          normalizeHopiSubheadingLayoutV2211(document);
-          break;
-        }
-      }
-    });
-    mo.observe(document.documentElement,{childList:true,subtree:true});
-  }catch(e){}
+  // one shared page observer for all HOPI layout passes (see hopi-shared-observer)
+  try{ window.__stepHopiObserve(normalizeHopiSubheadingLayoutV2211, 'A'); }catch(e){}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){normalizeHopiSubheadingLayoutV2211(document);}); else normalizeHopiSubheadingLayoutV2211(document);
   try{
     window.__STEP_SIM_VERSION=(window.__STEP_SIM_STORAGE_PROFILE==='ipad-browser-library-primary')?'A22.11':'22.11';
@@ -10294,17 +10325,8 @@ try{
       renderStatus.__v2212NoKey = true;
     }
   }catch(e){}
-  try{
-    var mo = new MutationObserver(function(muts){
-      for(var i=0;i<muts.length;i++){
-        var t = muts[i].target;
-        if(t && t.querySelector && (t.matches && (t.matches('#examScreen') || t.matches('.stem') || t.matches('.patient-chart') || t.matches('#statusRows')) || t.querySelector('#examScreen .stem .patient-chart,#statusRows'))){
-          normalizeHopiLineLayoutV2212(document); break;
-        }
-      }
-    });
-    mo.observe(document.documentElement,{childList:true,subtree:true});
-  }catch(e){}
+  // one shared page observer for all HOPI layout passes (see hopi-shared-observer)
+  try{ window.__stepHopiObserve(normalizeHopiLineLayoutV2212, 'B'); }catch(e){}
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ normalizeHopiLineLayoutV2212(document); }); else normalizeHopiLineLayoutV2212(document);
   try{
     var ipad = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
@@ -10419,17 +10441,8 @@ try{
       renderQuestion.__v2213HopiInvisibleBorders = true;
     }
   }catch(e){ console.warn('v22.13 renderQuestion HOPI invisible table border patch failed', e); }
-  try{
-    var mo = new MutationObserver(function(muts){
-      for(var i=0;i<muts.length;i++){
-        var t = muts[i].target;
-        if(t && t.querySelector && (t.matches && (t.matches('#examScreen') || t.matches('.stem') || t.matches('.patient-chart')) || t.querySelector('#examScreen .stem .patient-chart'))){
-          normalizeHopiInvisibleTableBordersV2213(document); break;
-        }
-      }
-    });
-    mo.observe(document.documentElement,{childList:true,subtree:true});
-  }catch(e){}
+  // one shared page observer for all HOPI layout passes (see hopi-shared-observer)
+  try{ window.__stepHopiObserve(normalizeHopiInvisibleTableBordersV2213, 'C'); }catch(e){}
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ normalizeHopiInvisibleTableBordersV2213(document); }); else normalizeHopiInvisibleTableBordersV2213(document);
   try{
     var ipad = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
@@ -10638,17 +10651,8 @@ try{
       renderQuestion.__v2214HopiFinalLayout = true;
     }
   }catch(e){ console.warn('v22.14 renderQuestion patch failed', e); }
-  try{
-    var mo = new MutationObserver(function(muts){
-      for(var i=0;i<muts.length;i++){
-        var t = muts[i].target;
-        if(t && t.querySelector && (t.matches && (t.matches('#examScreen') || t.matches('.stem') || t.matches('.patient-chart')) || t.querySelector('#examScreen .stem .patient-chart'))){
-          normalizeHopiFinalLayoutV2214(document); break;
-        }
-      }
-    });
-    mo.observe(document.documentElement,{childList:true,subtree:true});
-  }catch(e){}
+  // one shared page observer for all HOPI layout passes (see hopi-shared-observer)
+  try{ window.__stepHopiObserve(normalizeHopiFinalLayoutV2214, 'C'); }catch(e){}
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ normalizeHopiFinalLayoutV2214(document); }); else normalizeHopiFinalLayoutV2214(document);
   try{
     var ipad = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
@@ -10659,18 +10663,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=52"></script>
-<script src="./js/sync-storage.js?v=52"></script>
-<script src="./js/progress-sync.js?v=52"></script>
-<script src="./js/library-backup.js?v=52"></script>
-<script src="./js/qid-settings.js?v=52"></script>
-<script src="./js/sync3-core.js?v=52"></script>
-<script src="./js/sync3-bridge.js?v=52"></script>
-<script src="./js/sync3-store.js?v=52"></script>
-<script src="./js/sync3-drive.js?v=52"></script>
-<script src="./js/sync3-sync.js?v=52"></script>
-<script src="./js/sync3-migrate.js?v=52"></script>
-<script src="./js/sync3-boot.js?v=52"></script>
+<script src="./js/sync-merge.js?v=53"></script>
+<script src="./js/sync-storage.js?v=53"></script>
+<script src="./js/progress-sync.js?v=53"></script>
+<script src="./js/library-backup.js?v=53"></script>
+<script src="./js/qid-settings.js?v=53"></script>
+<script src="./js/sync3-core.js?v=53"></script>
+<script src="./js/sync3-bridge.js?v=53"></script>
+<script src="./js/sync3-store.js?v=53"></script>
+<script src="./js/sync3-drive.js?v=53"></script>
+<script src="./js/sync3-sync.js?v=53"></script>
+<script src="./js/sync3-migrate.js?v=53"></script>
+<script src="./js/sync3-boot.js?v=53"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11149,10 +11153,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=52"></script>
-<script src="./exam-notes.js?v=52"></script>
-<script src="./app-update.js?v=52"></script>
-<script src="./js/form-updates.js?v=52"></script>
+<script src="./bulk-import.js?v=53"></script>
+<script src="./exam-notes.js?v=53"></script>
+<script src="./app-update.js?v=53"></script>
+<script src="./js/form-updates.js?v=53"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11579,10 +11583,10 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=52"></script>
-<script src="./nav-delay.js?v=52"></script>
-<script src="./thunder-ui.js?v=52"></script>
-<script src="./rapid-review.js?v=52"></script>
-<script src="./shadow-logger.js?v=52"></script>
+<script src="./item-code.js?v=53"></script>
+<script src="./nav-delay.js?v=53"></script>
+<script src="./thunder-ui.js?v=53"></script>
+<script src="./rapid-review.js?v=53"></script>
+<script src="./shadow-logger.js?v=53"></script>
 </body>
 </html>
