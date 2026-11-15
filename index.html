@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=54">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=54">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=55">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=55">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=54"></script>
-<script src="./js/form-updates-core.js?v=54"></script>
-<script src="./js/form-update-store.js?v=54"></script>
-<script src="./js/google-auth.js?v=54"></script>
+<script src="./js/sync-config.js?v=55"></script>
+<script src="./js/form-updates-core.js?v=55"></script>
+<script src="./js/form-update-store.js?v=55"></script>
+<script src="./js/google-auth.js?v=55"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=54" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=55" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=54"></script>
-<script src="./js/qid-migration.js?v=54"></script>
+<script src="jszip.min.js?v=55"></script>
+<script src="./js/qid-migration.js?v=55"></script>
 <script>
 
 
@@ -4371,6 +4371,17 @@ document.addEventListener('click', function(e){
               try{ shadow[f.id]=JSON.parse(await readText(dir,`${f.id}_shadow_log.json`)); }catch(e){}
             }
             return {catalog:{forms}, progress, shadow};
+          },
+          /* Analysis tab: save the real 3-digit score from an assessment card (same catalog field and rule as the Library's
+             "Set 3-digit score": exactly 3 digits, '' clears it). */
+          setThreeDigitScore:async(id,value)=>{
+            const v=String(value==null?'':value).trim();
+            if(v && !(/^\d{3}$/.test(v) && +v<=300)) throw new Error('Enter exactly 3 digits, e.g. 245.');
+            const S=window.StepExamSyncBridge; // stamps updatedAt and fires stepsim:three-digit-score so Sync carries it
+            if(S && typeof S.setThreeDigitScore==='function') return S.setThreeDigitScore(id,v);
+            const rec=catalogForm(id); if(!rec) throw new Error(`Form ${id} is not loaded.`);
+            rec.threeDigitScore=v; upsertCatalogForm(rec); await writeCatalog(); try{ await renderLibrary(); }catch(e){}
+            return true;
           },
           /* A23 Phase D: Settings (library tab rows in the user's order, future custom-tab defaults, Qbank settings) and the
              recovery copies in DATA/progress/backups. Read-only; the Settings and Backup & sync views change them through the legacy controls. */
@@ -10673,18 +10684,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=54"></script>
-<script src="./js/sync-storage.js?v=54"></script>
-<script src="./js/progress-sync.js?v=54"></script>
-<script src="./js/library-backup.js?v=54"></script>
-<script src="./js/qid-settings.js?v=54"></script>
-<script src="./js/sync3-core.js?v=54"></script>
-<script src="./js/sync3-bridge.js?v=54"></script>
-<script src="./js/sync3-store.js?v=54"></script>
-<script src="./js/sync3-drive.js?v=54"></script>
-<script src="./js/sync3-sync.js?v=54"></script>
-<script src="./js/sync3-migrate.js?v=54"></script>
-<script src="./js/sync3-boot.js?v=54"></script>
+<script src="./js/sync-merge.js?v=55"></script>
+<script src="./js/sync-storage.js?v=55"></script>
+<script src="./js/progress-sync.js?v=55"></script>
+<script src="./js/library-backup.js?v=55"></script>
+<script src="./js/qid-settings.js?v=55"></script>
+<script src="./js/sync3-core.js?v=55"></script>
+<script src="./js/sync3-bridge.js?v=55"></script>
+<script src="./js/sync3-store.js?v=55"></script>
+<script src="./js/sync3-drive.js?v=55"></script>
+<script src="./js/sync3-sync.js?v=55"></script>
+<script src="./js/sync3-migrate.js?v=55"></script>
+<script src="./js/sync3-boot.js?v=55"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11163,10 +11174,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=54"></script>
-<script src="./exam-notes.js?v=54"></script>
-<script src="./app-update.js?v=54"></script>
-<script src="./js/form-updates.js?v=54"></script>
+<script src="./bulk-import.js?v=55"></script>
+<script src="./exam-notes.js?v=55"></script>
+<script src="./app-update.js?v=55"></script>
+<script src="./js/form-updates.js?v=55"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11593,11 +11604,11 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=54"></script>
-<script src="./nav-delay.js?v=54"></script>
-<script src="./thunder-ui.js?v=54"></script>
-<script src="./rapid-review.js?v=54"></script>
-<script src="./shadow-logger.js?v=54"></script>
-<script src="./analysis.js?v=54"></script>
+<script src="./item-code.js?v=55"></script>
+<script src="./nav-delay.js?v=55"></script>
+<script src="./thunder-ui.js?v=55"></script>
+<script src="./rapid-review.js?v=55"></script>
+<script src="./shadow-logger.js?v=55"></script>
+<script src="./analysis.js?v=55"></script>
 </body>
 </html>

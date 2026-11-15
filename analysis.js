@@ -199,7 +199,7 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
       const qmap = {};
       (f.questionIndex || []).forEach((q) => { if (q.qid != null) qmap[q.qid] = q; });
       const rec = Object.assign({ id: f.id, title: f.displayName || f.id, total: f.totalQuestions || 0, status: 'new',
-        answered: 0, graded: 0, correct: 0, pct: null, score: null, scoreEst: false, date: '', retakes: [], marked: 0, secPerQ: null }, k);
+        answered: 0, graded: 0, correct: 0, pct: null, score: null, scoreEst: false, scoreSaved: null, date: '', retakes: [], marked: 0, secPerQ: null }, k);
       const atts = doc ? (doc.attempts || []).filter((a) => a && a.session) : [];
       const first = atts.find((a) => a.type === 'initial') || atts[0];
       if (first) {
@@ -230,7 +230,7 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
       }
       // 3-digit score: the one saved on the form, else an unofficial estimate (ThunderTracker's conversions) from first-attempt %.
       const saved = Number(f.threeDigitScore);
-      if (saved >= 1 && saved <= 300) rec.score = Math.round(saved);
+      if (saved >= 1 && saved <= 300) { rec.score = Math.round(saved); rec.scoreSaved = rec.score; }
       else if (rec.status === 'done' && k.model && rec.pct != null && SM && SM.modelsFor(k.model).length) {
         const r = SM.scoreAtPct(SM.modelsFor(k.model)[0], rec.pct, rec.graded);
         if (r && r.score) { rec.score = r.score; rec.scoreEst = true; }
@@ -386,7 +386,20 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
       behaviour, activity, streak, last7, assess, cms, next, shadow };
   }
 
-  const api = { compute, systemOf, kindOf, SYSTEMS, CMS };
+  // Score converter: the forms with a built-in conversion, and the unofficial 3-digit score for a % correct.
+  function convertible() {
+    return SM ? Object.keys(SM.SCORE_MODELS).map((key) => {
+      const m = /^(nbme|uwsa|f120)-(\d+)$/.exec(key); if (!m) return null;
+      return { key, kind: m[1], n: +m[2], name: m[1] === 'nbme' ? 'NBME ' + m[2] : m[1] === 'uwsa' ? 'UWSA ' + m[2] : 'Free 120 (' + m[2] + ')' };
+    }).filter(Boolean) : [];
+  }
+  function convert(key, p) {
+    if (!SM || !SM.modelsFor(key).length || !(p >= 0 && p <= 100)) return null;
+    return SM.scoreAtPct(SM.modelsFor(key)[0], p, SM.SCORE_MODELS[key].qs); // { score } or { error, range: [lo, hi] % }
+  }
+  const scoreOk = (v) => v === '' || (/^\d{3}$/.test(v) && +v <= 300); // same rule as the Library's "Set 3-digit score"
+
+  const api = { compute, systemOf, kindOf, convertible, convert, scoreOk, SYSTEMS, CMS };
   root.ThunderAnalysis = api;
   if (typeof module === 'object' && module.exports) module.exports = api;
 })(typeof self !== 'undefined' ? self : globalThis);
@@ -418,10 +431,13 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
     up: '<svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M7 14l5-5 5 5z"/></svg>',
     weak: '<svg viewBox="0 0 24 24" width="12" height="12"><path fill="currentColor" d="M12 2 1 21h22zm1 15h-2v-2h2zm0-4h-2V9h2z"/></svg>',
     close: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>',
+    pen: '<svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="M3 17.2V21h3.8l11-11-3.8-3.8zM20.7 7a1 1 0 0 0 0-1.4l-2.3-2.3a1 1 0 0 0-1.4 0l-1.8 1.8 3.8 3.8z"/></svg>',
+    check: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>',
   };
 
   function mount(el, getInput, opts) {
-    const st = { mode: 'score', sys: null, mx: 'assess' };
+    const st = { mode: 'score', sys: null, mx: 'assess', cv: null, edit: null };
     const actions = (opts && opts.onAction) || (() => {});
     let m = null;
 
@@ -491,6 +507,7 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
   <article class="ta-card s6">
     <div class="ta-ch"><div><h2>Self-assessments</h2><p>${m.assess.map((g) => g.forms.filter((f) => f.status === 'done').length + '/' + g.forms.length + ' ' + KIND[g.kind].label).join(' · ')}</p></div></div>
     <div class="ta-assess">${m.assess.filter((g) => g.forms.length).map((g) => `<div class="ta-ag"><h3>${KIND[g.kind].label}</h3><div class="ta-chips">${g.forms.map(formChip).join('')}</div></div>`).join('')}</div>
+    ${converter()}
   </article>
 
   <article class="ta-card s6">
@@ -537,10 +554,44 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
     function tile(label, big, small, note, tone) {
       return `<div class="ta-tile"><span class="ta-tl">${label}</span><span class="ta-big ${tone || ''}">${big}<small>${small}</small></span><span class="ta-tn">${note || ''}</span></div>`;
     }
+    // Assessment score card: tap opens the form; finished forms get "Add score" (or a pencil once saved) for the real 3-digit score.
     function formChip(f) {
-      const v = f.status === 'done' ? (f.score != null ? (f.scoreEst ? '≈' : '') + f.score : p0(f.pct)) : f.status === 'progress' ? Math.round(f.progressPct) + '%' : '';
-      const sub = f.status === 'done' ? p0(f.pct) + (f.retakes.length ? ' · ↻' : '') : f.status === 'progress' ? 'in progress' : 'not taken';
-      return `<button type="button" class="ta-fc ${f.status}" data-a="form" data-id="${esc(f.id)}" title="${esc(f.name)}${f.date && f.status === 'done' ? ' · ' + fmtDY(f.date) : ''}"><b>${esc(f.kind === 'f120' ? String(f.n) : String(f.n))}</b>${v ? `<span>${v}</span>` : ''}${sub ? `<small>${sub}</small>` : ''}</button>`;
+      const done = f.status === 'done', id = esc(f.id);
+      const v = done ? (f.score != null ? (f.scoreEst ? '≈' : '') + f.score : p0(f.pct)) : f.status === 'progress' ? Math.round(f.progressPct) + '%' : '';
+      const sub = done ? (f.score != null ? p0(f.pct) : '% correct') + (f.retakes.length ? ' · ↻' : '') : f.status === 'progress' ? 'in progress' : 'not taken';
+      let foot = '';
+      if (done && st.edit === f.id) foot = `<form class="ta-sf" data-id="${id}"><input name="s" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" placeholder="245" value="${f.scoreSaved || ''}" aria-label="3-digit score for ${esc(f.name)}"><button type="submit" aria-label="Save score">${I.check}</button></form>`;
+      else if (done && f.scoreSaved == null) foot = `<button type="button" class="ta-add" data-a="score" data-id="${id}">${I.plus}Add score</button>`;
+      else if (done) foot = `<button type="button" class="ta-sedit" data-a="score" data-id="${id}" aria-label="Edit 3-digit score for ${esc(f.name)}" title="Edit score">${I.pen}</button>`;
+      return `<div class="ta-fc ${f.status}${st.edit === f.id ? ' editing' : ''}"><button type="button" class="ta-fcm" data-a="form" data-id="${id}" title="${esc(f.name)}${f.date && done ? ' · ' + fmtDY(f.date) : ''}${f.scoreEst ? ' · ≈ estimate from % correct' : ''}"><b>${f.n}</b>${v ? `<span>${v}</span>` : ''}${sub ? `<small>${sub}</small>` : ''}</button>${foot}</div>`;
+    }
+    // Score converter: one row, form + % correct → unofficial 3-digit. Starts on your latest finished assessment.
+    function converter() {
+      const list = A.convertible ? A.convertible() : []; if (!list.length) return '';
+      if (!st.cv || !list.some((c) => c.key === st.cv.key)) {
+        const last = [...m.done].reverse().find((f) => f.model && f.pct != null && list.some((c) => c.key === f.model));
+        st.cv = { key: last ? last.model : list[0].key, pct: last ? String(Math.round(last.pct * 10) / 10) : '' };
+      }
+      const opts = [['nbme', 'NBME'], ['uwsa', 'UWSA'], ['f120', 'Free 120']].map(([kd, l]) => {
+        const xs = list.filter((c) => c.kind === kd);
+        return xs.length ? `<optgroup label="${l}">${xs.map((c) => `<option value="${c.key}"${c.key === st.cv.key ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}</optgroup>` : '';
+      }).join('');
+      return `<div class="ta-conv"><span class="ta-cvl">Convert</span><select id="taCvForm" aria-label="Form to convert">${opts}</select><label class="ta-cvp"><input id="taCvPct" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="${esc(st.cv.pct)}" placeholder="75" aria-label="% correct"><span>%</span></label><output id="taCvOut" class="ta-cvo" for="taCvForm taCvPct">${cvOut()}</output></div>`;
+    }
+    function cvOut() {
+      const p = parseFloat(st.cv.pct);
+      if (isNaN(p)) return '<b class="mut">—</b><small>3-digit</small>';
+      const r = A.convert(st.cv.key, p);
+      if (!r || r.error) return `<b class="mut">—</b><small>${r && r.range ? 'only ' + r.range.map((x) => Math.round(x)).join('–') + '%' : 'no conversion'}</small>`;
+      return `<b>${r.score}</b><small>3-digit</small>`;
+    }
+    function openScore(id) { st.edit = id; draw(); const i = el.querySelector('.ta-sf input'); if (i) { i.focus(); i.select(); } }
+    function saveScore(form) {
+      const i = form.querySelector('input'), v = i.value.trim();
+      if (!A.scoreOk(v)) { form.classList.remove('bad'); void form.offsetWidth; form.classList.add('bad'); i.focus(); return; }
+      form.classList.add('busy');
+      Promise.resolve(actions({ type: 'score', id: form.dataset.id, value: v })).then(() => { st.edit = null; draw(); },
+        () => { form.classList.remove('busy'); form.classList.add('bad'); i.focus(); });
     }
     function cmsRow(s) {
       const segs = s.forms.map((f) => `<i class="${f.status}" title="${esc(f.name)}${f.status === 'done' ? ' · ' + p0(f.pct) : f.status === 'progress' ? ' · ' + Math.round(f.progressPct) + '% done' : ''}"></i>`).join('');
@@ -701,8 +752,19 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
       else if (a === 'exam') { const p = el.querySelector('#taExamPop'); p.hidden = !p.hidden; if (!p.hidden) el.querySelector('#taExamDate').focus(); }
       else if (a === 'exam-cancel') el.querySelector('#taExamPop').hidden = true;
       else if (a === 'exam-save') { actions({ type: 'prefs', prefs: { examDate: el.querySelector('#taExamDate').value, target: Number(el.querySelector('#taTarget').value) || '' } }); draw(); }
+      else if (a === 'score') openScore(b.dataset.id);
       else if (a === 'next' && b.dataset.type === 'focus') { st.sys = b.dataset.id || null; draw(); el.querySelector('#taTopicsCard').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
       else actions({ type: a, kind: b.dataset.type, id: b.dataset.id, el: b });
+    });
+    el.addEventListener('submit', (e) => { const f = e.target.closest('.ta-sf'); if (!f) return; e.preventDefault(); saveScore(f); });
+    el.addEventListener('keydown', (e) => { if (e.key === 'Escape' && e.target.closest('.ta-sf')) { st.edit = null; draw(); } });
+    el.addEventListener('input', (e) => {
+      if (e.target.closest('.ta-sf')) { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3); e.target.closest('.ta-sf').classList.remove('bad'); return; }
+      if (e.target.id === 'taCvPct' || e.target.id === 'taCvForm') {
+        st.cv[e.target.id === 'taCvPct' ? 'pct' : 'key'] = e.target.value;
+        if (e.target.id === 'taCvForm') { const f = m.done.find((x) => x.model === e.target.value && x.pct != null); if (f) el.querySelector('#taCvPct').value = st.cv.pct = String(Math.round(f.pct * 10) / 10); }
+        el.querySelector('#taCvOut').innerHTML = cvOut();
+      }
     });
     // tooltip
     const tip = document.createElement('div'); tip.className = 'ta-tip'; tip.hidden = true; (el.parentNode || document.body).appendChild(tip);
@@ -846,14 +908,33 @@ ${A} .ta-mxc{text-align:center;font-variant-numeric:tabular-nums;min-width:34px;
 ${A} .ta-note{font-size:12px;color:var(--a-on3);margin:0}
 ${A} .ta-assess{display:flex;flex-direction:column;gap:12px}
 ${A} .ta-ag h3{margin:0 0 6px!important;font-size:12px!important;text-transform:uppercase!important;letter-spacing:.06em!important;color:var(--a-on3)!important;font-weight:700!important}
-${A} .ta-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
-${A} .ta-fc{display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:7px 9px!important;border-radius:12px!important;border:1px solid var(--a-line2)!important;background:var(--a-s1)!important;color:var(--a-on)!important;text-align:left;min-height:56px!important;height:auto!important}
+${A} .ta-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}
+${A} .ta-fc{position:relative;display:flex;flex-direction:column;border-radius:12px;border:1px solid var(--a-line2);background:var(--a-s1);color:var(--a-on);overflow:hidden}
+${A} .ta-fcm{display:flex;flex-direction:column;align-items:flex-start;gap:0;width:100%;padding:7px 9px!important;border:0!important;border-radius:0!important;background:transparent!important;color:inherit!important;text-align:left;min-height:56px!important;height:auto!important}
 ${A} .ta-fc b{font-size:12px;color:var(--a-on3);font-weight:700}
 ${A} .ta-fc span{font-size:17px;font-weight:800;letter-spacing:-.01em}
 ${A} .ta-fc small{font-size:11px;color:var(--a-on3)}
-${A} .ta-fc.done{background:var(--a-surface)!important;border-color:var(--a-line)!important}
-${A} .ta-fc.progress{border-style:dashed!important;border-color:var(--a-p)!important}${A} .ta-fc.progress span{color:var(--a-p)}
-${A} .ta-fc.new{opacity:.7}${A} .ta-fc:hover{border-color:var(--a-p)!important}
+${A} .ta-fc.done{background:var(--a-surface);border-color:var(--a-line)}
+${A} .ta-fc.progress{border-style:dashed;border-color:var(--a-p)}${A} .ta-fc.progress span{color:var(--a-p)}
+${A} .ta-fc.new{opacity:.7}${A} .ta-fc:hover,${A} .ta-fc.editing{border-color:var(--a-p)}
+${A} .ta-add{display:flex;align-items:center;justify-content:center;gap:3px;height:28px!important;margin:0 6px 6px!important;padding:0 6px!important;border:0!important;border-radius:999px!important;background:var(--a-p)!important;color:var(--a-onp)!important;font-size:12px!important;font-weight:700!important;white-space:nowrap}
+${A} .ta-add:hover{filter:brightness(1.08)}
+${A} .ta-sedit{position:absolute;top:4px;right:4px;width:24px;height:24px!important;display:grid;place-items:center;padding:0!important;border:0!important;border-radius:999px!important;background:transparent!important;color:var(--a-on3)!important}
+${A} .ta-sedit:hover{background:var(--a-s2)!important;color:var(--a-on)!important}
+${A} .ta-sf{display:flex;gap:4px;margin:0 6px 6px;padding:0}
+${A} .ta-sf input{flex:1;min-width:0;width:100%;height:30px;padding:0 6px;border-radius:8px;border:1.5px solid var(--a-p);background:var(--a-surface);color:var(--a-on);font:700 15px var(--a-font);text-align:center;letter-spacing:.04em}
+${A} .ta-sf input:focus{outline:2px solid var(--a-pc);outline-offset:0}
+${A} .ta-sf button{flex:none;width:30px;height:30px!important;display:grid;place-items:center;padding:0!important;border:0!important;border-radius:8px!important;background:var(--a-p)!important;color:var(--a-onp)!important}
+${A} .ta-sf.bad input{border-color:var(--a-bad);animation:ta-shake .3s}${A} .ta-sf.busy{opacity:.6;pointer-events:none}
+@keyframes ta-shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+${A} .ta-conv{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding:10px 12px;border-radius:14px;background:var(--a-s1)}
+${A} .ta-cvl{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--a-on3);font-weight:700;margin-right:2px}
+${A} .ta-conv select,${A} .ta-cvp input{height:36px;border-radius:10px;border:1px solid var(--a-line);background:var(--a-surface);color:var(--a-on);font:600 14px var(--a-font);padding:0 10px;color-scheme:light dark}
+${A} .ta-cvp{display:inline-flex;align-items:center;gap:4px;color:var(--a-on3);font-weight:600}
+${A} .ta-cvp input{width:76px;text-align:right}
+${A} .ta-cvo{margin-left:auto;display:inline-flex;align-items:baseline;gap:6px}
+${A} .ta-cvo b{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1}${A} .ta-cvo b.mut{color:var(--a-on3)}
+${A} .ta-cvo small{font-size:12px;color:var(--a-on3)}
 ${A} .ta-cms{display:flex;flex-direction:column;gap:8px}
 ${A} .ta-cr{display:grid;grid-template-columns:140px minmax(0,1fr) 92px;gap:10px;align-items:center}
 ${A} .ta-cn{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -943,6 +1024,13 @@ ${A} .ta-loading{color:var(--a-on3);padding:40px 0;text-align:center}
   }
   async function onAction(a) {
     if (a.type === 'prefs') { prefs = Object.assign({}, prefs, a.prefs); store.set(prefs); return; }
+    if (a.type === 'score') { // same record the Library's "Set 3-digit score" writes (catalog threeDigitScore)
+      const B = window.StepLibraryBridge;
+      if (!B || typeof B.setThreeDigitScore !== 'function') throw new Error('no bridge');
+      await B.setThreeDigitScore(a.id, a.value);
+      const f = data && data.catalog.forms.find((x) => x.id === a.id); if (f) f.threeDigitScore = a.value;
+      return;
+    }
     const TUI = window.ThunderUI;
     if (a.type === 'form') { await toLibrary(); if (TUI && TUI.openForm) TUI.openForm(a.id, byId('tuAnalysisTab')); return; }
     if (a.type === 'next') {

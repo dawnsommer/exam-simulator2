@@ -72,3 +72,28 @@ test('Local and iPad copies are byte-identical', (t) => {
   if (!other) { t.skip('other app not next to this one'); return; }
   assert.equal(fs.readFileSync(here, 'utf8'), fs.readFileSync(other, 'utf8'));
 });
+
+test('a saved 3-digit score wins over the estimate and is marked saved', () => {
+  const f = form('N-10', ['Cardiology', 'Psychiatry'], [ans(1, true, 'Cardiology'), ans(2, false, 'Psychiatry')]);
+  f.cat.threeDigitScore = '247';
+  const m = A.compute({ catalog: { forms: [f.cat] }, progress: { 'N-10': f.doc } });
+  assert.equal(m.forms[0].score, 247);
+  assert.equal(m.forms[0].scoreSaved, 247);
+  assert.equal(m.forms[0].scoreEst, false);
+  f.cat.threeDigitScore = '';
+  const e = A.compute({ catalog: { forms: [f.cat] }, progress: { 'N-10': f.doc } });
+  assert.equal(e.forms[0].scoreSaved, null);
+  assert.equal(e.forms[0].scoreEst, true);
+});
+
+test('score converter: forms, % → 3-digit, out of range, input rule', () => {
+  const keys = A.convertible().map((c) => c.key);
+  assert.ok(keys.includes('nbme-13') && keys.includes('uwsa-2') && keys.includes('f120-2023'));
+  assert.equal(A.convertible().find((c) => c.key === 'f120-2023').name, 'Free 120 (2023)');
+  assert.equal(A.convert('nbme-13', 78).score, 252); // 298.8 − 1.07 × 44 wrong
+  assert.deepEqual(A.convert('nbme-16', 40), { error: 'range', range: [50, 90] });
+  assert.equal(A.convert('uwsa-3', 70), null); // no conversion
+  assert.equal(A.convert('nbme-13', NaN), null);
+  for (const ok of ['', '245', '300']) assert.equal(A.scoreOk(ok), true, ok);
+  for (const bad of ['24', '2450', '301', '24a']) assert.equal(A.scoreOk(bad), false, bad);
+});
