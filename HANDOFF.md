@@ -2,7 +2,7 @@
 
 Last inspected: 2026-11-10  
 Effective simulator UI version: `A22.14` (final script in `index.html`)  
-Cloud sync: **Sync v3 is live** (since release 24; `js/sync3-*.js`, resume file `../SYNC_V3_PROGRESS.md`), V2 modules remain as the fallback/archive path. App-shell release: numeric `VERSION` in `sw.js` (**51**, bumped by `tools/release.mjs`)  
+Cloud sync: **Sync v3 is live** (since release 24; `js/sync3-*.js`, resume file `../SYNC_V3_PROGRESS.md`), V2 modules remain as the fallback/archive path. App-shell release: numeric `VERSION` in `sw.js` (**52**, bumped by `tools/release.mjs`)  
 Scope: this nested repository only; do not inspect the parent LOCAL simulator for iPad-only work.
 
 ## Start here
@@ -217,6 +217,7 @@ Newest first, compact. Full history (64 rows from 2026-08-12 plus releases 22–
 
 | Date | Change | Files | Verification | Follow-up |
 |---|---|---|---|---|
+| 2026-11-15 | **iPad release 52: Hide Highlights.** With Alee's OCD Switch on, the exam Settings menu gets "Hide Highlights" (`#hlHideToggle`) and, while on, "Hide in Explanations Too" (`#hlHideExpToggle`, key `stepHlHideExp`). Highlights present when hiding starts get `data-hl-old` and draw as plain text (root `data-hl-hide`); new ones show. Display only, not remembered. Commit `556ed49`, Publish success, live files = repo. | `rapid-review.js` (+ Local copy), release files | probe-hlhide 18/18 Local + iPad; all.sh 12/12; unit 298/299 (known) | Not checked on a real iPad (touch), dark themes, phones. |
 | 2026-11-11 | **iPad release 51: OCD Switch fix.** The user wanted the wrong-choice explanations kept: now only the "Why the other answers are wrong" heading is hidden and the `.exp-wrong` blocks have no spacing between them. Commit `42f366a`, Publish success, live files = repo. | `rapid-review.js` (+ Local copy), `tools/headless/v3-probe-ocd.js` | probe-ocd 11/11 Local + iPad, all.sh 12/12 files, unit 298/299 (known) | — |
 | 2026-11-11 | **iPad release 50: Alee's OCD Switch.** Settings → Appearance → Review screen switch (key `stepAleeOcd`, root `data-ocd`): revealed answer choices without spacing (`.answers:has(.locked-answer)`, live exam untouched), "Why the other answers are wrong" hidden, Trap tested moved into the Rapid rule box (`.exp-ocd-trap`). Off re-renders. Commit `2a5e4e3`, Publish success, live files = repo. | `rapid-review.js` (Local copy identical), release shell files | Unit 298/299 (known publisher test); all.sh 12/12 files; probe-ocd 11/11 Local + iPad | Not checked on a real iPad, dark themes, Below layout. |
 | 2026-11-10 | **iPad release 49: Rapid Review dark tabs + time spent.** Dark theme: section tabs (Overview/Options/Stem/Topic) get a white outline, white bold labels and a cyan active tab, matching the exam's explanation tabs; "Time spent" is larger and bold like the explanation header (`rapid-review.js` CSS only; mirrored to Local). Version 49 also carries release 48 (ThunderShadow files + Sync v3, same commit). Suites: iPad 298/299 (known `publisher validates`), Local only the known CKNotes4 fixture failures; all.sh 12/12 file runs pass. |
