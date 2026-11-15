@@ -159,7 +159,8 @@ background:var(--rr-bg);color:var(--rr-t);font-family:var(--rr-ff,Arial,Helvetic
 .below-exp-panel>.rr-pane{overflow:visible}
 @media (max-width:759.98px),(max-height:520px){.explanation-below .below-exp-wrap{max-width:none!important;width:auto!important}}
 ${setCss()}
-${ocdCss()}`;
+${ocdCss()}
+${hlHideCss()}`;
   const st = document.createElement('style'); st.id = 'rapid-review-css'; st.textContent = css; document.head.appendChild(st);
 
   /* ---------- data: explanations/<ID>.json, one cached object per form ---------- */
@@ -618,6 +619,65 @@ ${M} .exp-rule>.exp-ocd-trap>div{display:block!important;margin:0!important}`;
       rule.appendChild(box); trap.remove();
     });
   }
+  // Hide highlights (exam Settings menu; the rows show only while Alee's OCD Switch is on), for clean screenshots.
+  // Turning it on lists the ids of every stem/explanation highlight in the session; those draw as plain text, and highlights
+  // made afterwards show as usual. Display only: no saved anchor changes. Not remembered: a reload, another session or the
+  // OCD Switch off ends it. "Explanations too" (stepHlHideExp) is the one saved choice; off = stem only.
+  const HLX = 'stepHlHideExp';
+  let hlOld = null, hlSess = null;
+  const curSess = () => { try{ return activeSession || null; }catch(e){ return null; } };
+  function hlSnapshot(){
+    const ids = new Set();
+    ((curSess() || {}).blocks || []).forEach(bp => ['stemHighlightAnchors', 'explanationHighlightAnchors'].forEach(k => {
+      const o = bp && bp[k]; if(!o || typeof o !== 'object') return;
+      Object.keys(o).forEach(i => (Array.isArray(o[i]) ? o[i] : []).forEach(a => { if(a && a.id != null) ids.add(String(a.id)); }));
+    }));
+    // highlights on screen too (an anchor kept outside the session's stores still gets hidden)
+    document.querySelectorAll('#examScreen [data-v15-highlight-id]').forEach(n => ids.add(n.getAttribute('data-v15-highlight-id')));
+    return ids;
+  }
+  function setHlHide(on){
+    if(on){ hlSess = curSess(); hlOld = hlSnapshot(); } else { hlOld = null; hlSess = null; }
+    applyHlHide();
+  }
+  function hlHideCss(){
+    // 7 IDs + !important: beats the NBME, Modern, dark and patient-chart highlight rules
+    const R = ':root[data-hl-hide]:not(#hh0):not(#hh1):not(#hh2):not(#hh3):not(#hh4):not(#hh5) body #examScreen';
+    const S = `:is(${R} [data-hl-old][data-v15-highlight-type="stem"],:root[data-hl-hide="all"]:not(#hh0):not(#hh1):not(#hh2):not(#hh3):not(#hh4):not(#hh5) body #examScreen [data-hl-old])`;
+    return `${S},${S}:hover{background:transparent!important;background-color:transparent!important;color:inherit!important;box-shadow:none!important;border:0!important;border-radius:0!important;outline:0!important;padding:0!important;text-decoration:inherit!important;cursor:inherit!important;pointer-events:none!important;user-select:text!important;-webkit-user-select:text!important}
+${S} :not([data-v15-highlight-id]){color:inherit!important}`;
+  }
+  function hlMenu(){
+    const box = document.getElementById('referenceSettingsDropdown'); if(!box) return;
+    const on = !!hlOld, row = box.querySelector('.hlhide-preference'), sub = box.querySelector('.hlhide-exp-preference');
+    if(!ocdOn()){ if(row) row.remove(); if(sub) sub.remove(); return; }
+    const after = box.querySelector('.shadow-logger-preference') || [...box.querySelectorAll('.notes-preference')].pop();
+    if(!after) return; // the break-screen menu has no switches
+    let r = row;
+    if(!r){
+      after.insertAdjacentHTML('afterend', '<label class="notes-preference hlhide-preference" title="Show the highlights you already made as plain text, for a clean screenshot. New highlights still show."><span>Hide Highlights</span><input id="hlHideToggle" type="checkbox" role="switch"></label>');
+      r = box.querySelector('.hlhide-preference');
+    }
+    const t = r.querySelector('input'); if(t.checked !== on) t.checked = on;
+    if(on && !sub) r.insertAdjacentHTML('afterend', '<label class="notes-preference hlhide-exp-preference" title="Off: only stem highlights are hidden. On: explanation highlights too."><span>Hide in Explanations Too</span><input id="hlHideExpToggle" type="checkbox" role="switch"></label>');
+    else if(!on && sub) sub.remove();
+    const x = box.querySelector('#hlHideExpToggle'); if(x && x.checked !== (ls.get(HLX) === '1')) x.checked = ls.get(HLX) === '1';
+  }
+  function applyHlHide(){
+    if(hlOld && (!ocdOn() || curSess() !== hlSess)){ hlOld = null; hlSess = null; }
+    const de = document.documentElement, want = hlOld ? (ls.get(HLX) === '1' ? 'all' : 'stem') : null;
+    if(de.getAttribute('data-hl-hide') !== want){ if(want) de.setAttribute('data-hl-hide', want); else de.removeAttribute('data-hl-hide'); }
+    document.querySelectorAll('#examScreen [data-v15-highlight-id]').forEach(n => {
+      const old = !!hlOld && hlOld.has(n.getAttribute('data-v15-highlight-id'));
+      if(old !== n.hasAttribute('data-hl-old')){ if(old) n.setAttribute('data-hl-old', ''); else n.removeAttribute('data-hl-old'); }
+    });
+    hlMenu();
+  }
+  document.addEventListener('change', e => {
+    const id = e.target && e.target.id;
+    if(id === 'hlHideToggle'){ setHlHide(e.target.checked); return; }
+    if(id === 'hlHideExpToggle'){ ls.set(HLX, e.target.checked ? '1' : '0'); applyHlHide(); }
+  });
   function placeRuleTrap(){
     if(!ruleFirst()) return;
     document.querySelectorAll('#examScreen .exp-correct').forEach(ec => {
@@ -632,7 +692,7 @@ ${M} .exp-rule>.exp-ocd-trap>div{display:block!important;margin:0!important}`;
     });
   }
   function ensure(){
-    raf = 0; addSettings(); applyOcd(); placeRuleTrap();
+    raf = 0; addSettings(); applyOcd(); applyHlHide(); placeRuleTrap();
     const ws = document.getElementById('workspace'); if(!ws) return;
     // phones always use the Below layout (set in memory only; the saved choice is untouched)
     try{
@@ -808,7 +868,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     const zb = t.closest('[data-rr-z]');
     if(zb){ const dz = Number(zb.getAttribute('data-rr-z')); ls.set(ZOOM, String(dz === 0 ? 1 : Math.max(0.8, Math.min(1.3, +(getZ() + 0.05 * dz).toFixed(2))))); schedule(); return; }
     if(t.closest('[data-rr-rf]')){ ls.set(RULEFIRST, ruleFirst() ? '0' : '1'); rerender(); schedule(); return; }
-    if(t.closest('[data-rr-ocd]')){ ls.set(OCD, ocdOn() ? '0' : '1'); applyOcd(); if(!ocdOn()) rerender(); schedule(); return; }
+    if(t.closest('[data-rr-ocd]')){ ls.set(OCD, ocdOn() ? '0' : '1'); applyOcd(); applyHlHide(); if(!ocdOn()) rerender(); schedule(); return; }
     const lb = t.closest('[data-rr-lay]');
     if(lb){ setHint = ''; setLayout(lb.getAttribute('data-rr-lay')); schedule(); return; }
     const mv = t.closest('[data-rr-mv]');
