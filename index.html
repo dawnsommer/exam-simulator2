@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=53">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=53">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=54">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=54">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=53"></script>
-<script src="./js/form-updates-core.js?v=53"></script>
-<script src="./js/form-update-store.js?v=53"></script>
-<script src="./js/google-auth.js?v=53"></script>
+<script src="./js/sync-config.js?v=54"></script>
+<script src="./js/form-updates-core.js?v=54"></script>
+<script src="./js/form-update-store.js?v=54"></script>
+<script src="./js/google-auth.js?v=54"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=53" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=54" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,8 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=53"></script>
-<script src="./js/qid-migration.js?v=53"></script>
+<script src="jszip.min.js?v=54"></script>
+<script src="./js/qid-migration.js?v=54"></script>
 <script>
 
 
@@ -4361,6 +4361,16 @@ document.addEventListener('click', function(e){
             const forms=(catalog.forms||[]).map(f=>{ const idx=Array.isArray(f.questionIndex)?f.questionIndex:[]; return {id:f.id, questions:idx.length, total:Number(f.totalQuestions)||idx.length, used:idx.filter(r=>r&&used[r.key]).length}; }); // questions = pool rows
             const tests=(qp.sessions||[]).filter(t=>t&&t.session).map(t=>({id:t.qbankTestId, name:t.name||'', mode:t.mode==='tutor'?'tutor':'testing', done:t.status==='completed', total:Number(t.total)||0, blocks:((t.session&&t.session.blocks)||[]).length, percent:t.summary&&t.summary.percent!=null?Number(t.summary.percent):null, sourceMode:t.sourceMode||'', poolType:t.poolType||'', attemptSource:t.attemptSource||'', formIds:(t.formIds||[]).slice(), createdAt:t.createdAt||null, updatedAt:t.updatedAt||null, completedAt:t.completedAt||null}));
             return {used:Object.keys(used).length, forms, tests};
+          },
+          /* Analysis tab (analysis.js): catalog + every form's raw progress bundle + ThunderShadow logs, read-only.
+             Reads the progress files directly (not readBundle, whose later wrapper also loads the whole form bank). */
+          analysis:async()=>{
+            const forms=(catalog.forms||[]).slice(), progress={}, shadow={}, dir=await progressDir();
+            for(const f of forms){
+              try{ progress[f.id]=bundleFromData(JSON.parse(await readText(dir,`${f.id}_progress_save.json`)),f.id); }catch(e){}
+              try{ shadow[f.id]=JSON.parse(await readText(dir,`${f.id}_shadow_log.json`)); }catch(e){}
+            }
+            return {catalog:{forms}, progress, shadow};
           },
           /* A23 Phase D: Settings (library tab rows in the user's order, future custom-tab defaults, Qbank settings) and the
              recovery copies in DATA/progress/backups. Read-only; the Settings and Backup & sync views change them through the legacy controls. */
@@ -10663,18 +10673,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=53"></script>
-<script src="./js/sync-storage.js?v=53"></script>
-<script src="./js/progress-sync.js?v=53"></script>
-<script src="./js/library-backup.js?v=53"></script>
-<script src="./js/qid-settings.js?v=53"></script>
-<script src="./js/sync3-core.js?v=53"></script>
-<script src="./js/sync3-bridge.js?v=53"></script>
-<script src="./js/sync3-store.js?v=53"></script>
-<script src="./js/sync3-drive.js?v=53"></script>
-<script src="./js/sync3-sync.js?v=53"></script>
-<script src="./js/sync3-migrate.js?v=53"></script>
-<script src="./js/sync3-boot.js?v=53"></script>
+<script src="./js/sync-merge.js?v=54"></script>
+<script src="./js/sync-storage.js?v=54"></script>
+<script src="./js/progress-sync.js?v=54"></script>
+<script src="./js/library-backup.js?v=54"></script>
+<script src="./js/qid-settings.js?v=54"></script>
+<script src="./js/sync3-core.js?v=54"></script>
+<script src="./js/sync3-bridge.js?v=54"></script>
+<script src="./js/sync3-store.js?v=54"></script>
+<script src="./js/sync3-drive.js?v=54"></script>
+<script src="./js/sync3-sync.js?v=54"></script>
+<script src="./js/sync3-migrate.js?v=54"></script>
+<script src="./js/sync3-boot.js?v=54"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11153,10 +11163,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=53"></script>
-<script src="./exam-notes.js?v=53"></script>
-<script src="./app-update.js?v=53"></script>
-<script src="./js/form-updates.js?v=53"></script>
+<script src="./bulk-import.js?v=54"></script>
+<script src="./exam-notes.js?v=54"></script>
+<script src="./app-update.js?v=54"></script>
+<script src="./js/form-updates.js?v=54"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11583,10 +11593,11 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=53"></script>
-<script src="./nav-delay.js?v=53"></script>
-<script src="./thunder-ui.js?v=53"></script>
-<script src="./rapid-review.js?v=53"></script>
-<script src="./shadow-logger.js?v=53"></script>
+<script src="./item-code.js?v=54"></script>
+<script src="./nav-delay.js?v=54"></script>
+<script src="./thunder-ui.js?v=54"></script>
+<script src="./rapid-review.js?v=54"></script>
+<script src="./shadow-logger.js?v=54"></script>
+<script src="./analysis.js?v=54"></script>
 </body>
 </html>

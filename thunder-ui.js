@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 53;
+  const TU_RELEASE = 54;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -1504,7 +1504,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
 
   const TAB_LABELS = {quickTab:['Quick practice','quick'], libraryTab:['Library','library'], qbankTab:['Qbank','qbank'], qbankTestsTab:['Qbank tests','tests'], progressSyncTab:['Backup & sync','sync'], settingsTab:['Settings','settings']};
-  const TITLES = {quickTab:'Quick practice', libraryTab:'Library', qbankTab:'Qbank', qbankTestsTab:'Qbank tests', progressSyncTab:'Backup & sync', tuSyncTab:'Backup & sync', settingsTab:'Settings'};
+  const TITLES = {quickTab:'Quick practice', libraryTab:'Library', qbankTab:'Qbank', qbankTestsTab:'Qbank tests', progressSyncTab:'Backup & sync', tuSyncTab:'Backup & sync', settingsTab:'Settings', tuAnalysisTab:'Analysis'};
   function brand(){
     if(document.title !== 'ThunderUSMLE') document.title = 'ThunderUSMLE';
     const side = document.querySelector('#menu aside.modern-sidebar'); if(!side) return;
@@ -5727,6 +5727,6 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     // late modules (progress sync, form updates) add their tabs and panels after load
     let tries = 0; const late = setInterval(() => { brand(); wrapReport(); wrapPreview(); wrapMedia(); watchCloud(); scheduleLibrary(); qbWatch(); scheduleSettings(true); if(++tries > 20) clearInterval(late); }, 500);
   }
-  window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), examStyle, setExamStyle, refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); scheduleExam(); }};
+  window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), examStyle, setExamStyle, openForm:(id, from) => openSheet(id, from), formAction:(id, act) => cardAction(id, `[data-action="${CSS.escape(String(act))}"]`), refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); scheduleExam(); }};
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
