@@ -31,16 +31,16 @@ test('both apps carry the identical Qbanks data block and bridge spread', () => 
   }
 });
 
-test('script tags: core after qid-migration, qbanks.js after analysis.js (iPad with ?v=55)', () => {
+test('script tags: core after qid-migration, qbanks.js after analysis.js (iPad with the release ?v=)', () => {
   if (html.local) {
     const h = html.local, q = h.indexOf('<script src="./qid-migration.js"></script>');
     assert.ok(q > 0 && h.indexOf('<script src="./qbanks-core.js"></script>') === q + '<script src="./qid-migration.js"></script>\n'.length);
     assert.ok(h.indexOf('<script src="./qbanks.js"></script>') > h.indexOf('<script src="./analysis.js"></script>'));
   }
   if (html.ipad) {
-    const h = html.ipad;
-    assert.ok(h.indexOf('<script src="./qbanks-core.js?v=55"></script>') > h.indexOf('<script src="./js/qid-migration.js?v=55"></script>'));
-    assert.ok(h.indexOf('<script src="./qbanks.js?v=55"></script>') > h.indexOf('<script src="./analysis.js?v=55"></script>'));
+    const h = html.ipad, v = (h.match(/analysis\.js\?v=(\d+)/) || [])[1], at = f => h.indexOf('<script src="./' + f + '?v=' + v + '"></script>');
+    assert.ok(v && at('qbanks-core.js') > at('js/qid-migration.js') && at('js/qid-migration.js') > 0);
+    assert.ok(at('qbanks.js') > at('analysis.js') && at('analysis.js') > 0);
     const root = path.dirname(IPAD);
     for (const f of ['sw.js', 'app-update.js']) { const t = fs.readFileSync(path.join(root, f), 'utf8'); assert.ok(t.includes('"./qbanks-core.js?v=') && t.includes('"./qbanks.js?v='), f); }
     assert.ok(/'qbanks-core\.js','qbanks\.js'/.test(fs.readFileSync(path.join(root, 'tools', 'publish.mjs'), 'utf8')));
