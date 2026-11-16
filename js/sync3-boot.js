@@ -100,6 +100,8 @@
   window.addEventListener('stepsim:three-digit-score',()=>{scheduleScan(null);});
   /* the ThunderShadow logger wrote a log file: sync it soon (the logger merges, so a cycle is always safe) */
   window.addEventListener('stepsim:shadowlog-write',()=>{if(state.live)scheduleCycle(8000,'shadowlog');});
+  /* the Qbanks tag file changed (a tag was set): same path, the adapter merges it with the Drive copy */
+  window.addEventListener('stepsim:qbanktags-write',()=>{if(state.live)scheduleCycle(8000,'qbanktags');});
 
   /* ---------------- leases (section 6) ---------------- */
   let myLeases={},otherLeases={};

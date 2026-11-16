@@ -462,7 +462,7 @@
   /* form content for custom / imported forms (v3.c.*, js/sync3-sync.js pushContent / fetchContent): the form file text exactly as
      stored (its sha256 is the record's bankHash) plus every asset it references (`DATA/assets/...` / `assets/...` strings) */
   const ASSET_RE=[/(?:DATA\/)?assets\/[^"'\\\s)<>?#]+/g,/(?:DATA\/)?assets\/[^"'\\)<>?#]+/g];      // names with spaces too (a candidate without a file is skipped)
-  const CONTENT_META=['id','defaultName','displayName','type','group','filter','subject','expectedQuestions','suggestedBlockSize','formUid','qidSchemaVersion','legacyBankHashes','optimized','imageAssets','sourceFiles'];
+  const CONTENT_META=['id','defaultName','displayName','type','group','filter','subject','expectedQuestions','suggestedBlockSize','formUid','qidSchemaVersion','legacyBankHashes','optimized','imageAssets','sourceFiles','libraryHidden','qbank'];
   function assetPathsOf(text){
     const out=new Set();
     for(const re of ASSET_RE)for(const m of String(text).matchAll(re)){const p=m[0].replace(/^DATA\//,'').trim(),parts=p.split('/');if(parts.length>=3&&!parts.includes('..')&&!parts.includes('.'))out.add(p);}
@@ -518,13 +518,16 @@
     };
   }
 
-  /* ThunderShadow logger files for js/sync3-sync.js syncShadow; shadow-logger.js owns the storage and the merge rule (window.ShadowLogger.files) */
+  /* ThunderShadow logger files for js/sync3-sync.js syncShadow; shadow-logger.js owns the storage and the merge rule (window.ShadowLogger.files).
+     The Qbanks tag file (progress/QBANK_tags.json, window.__stepQbankTags from index.html) rides the same Drive objects under the fixed id QBANKTAGS
+     (v3.t.QBANKTAGS.<sha16>.json); its merge rule is ThunderQbanksCore.mergeTags (newest tag per question wins, system:null = delete). */
+  const TAGS_ID='QBANKTAGS',isTagsText=t=>typeof t==='string'&&t.indexOf('"ThunderQbankTags"')>=0;
   function createShadowAdapter(){
-    const F=()=>window.ShadowLogger&&window.ShadowLogger.files;
+    const F=()=>window.ShadowLogger&&window.ShadowLogger.files,T=()=>window.__stepQbankTags;
     return {
-      async list(){const f=F();return f?await f.list():[];},
-      async write(id,text){const f=F();return f?await f.write(id,text):{written:false};},
-      merge(a,b){return F().merge(a,b);},
+      async list(){const f=F();const out=f?await f.list():[];const t=T();if(t){try{const x=await t.read();if(typeof x==='string'&&x)out.push({id:TAGS_ID,text:x});}catch(e){}}return out;},
+      async write(id,text){if(id===TAGS_ID){const t=T();return t?await t.write(text):{written:false};}const f=F();return f?await f.write(id,text):{written:false};},
+      merge(a,b){if(isTagsText(a)||isTagsText(b)){const t=T();if(!t)throw new Error('Qbank tags are not available here');return t.merge(a,b);}return F().merge(a,b);},
       sha256:sha256Hex
     };
   }

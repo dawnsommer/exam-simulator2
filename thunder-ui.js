@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 55;
+  const TU_RELEASE = 56;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -1503,8 +1503,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     else delete document.documentElement.dataset.tuDark;
   }
 
-  const TAB_LABELS = {quickTab:['Quick practice','quick'], libraryTab:['Library','library'], qbankTab:['Qbank','qbank'], qbankTestsTab:['Qbank tests','tests'], progressSyncTab:['Backup & sync','sync'], settingsTab:['Settings','settings']};
-  const TITLES = {quickTab:'Quick practice', libraryTab:'Library', qbankTab:'Qbank', qbankTestsTab:'Qbank tests', progressSyncTab:'Backup & sync', tuSyncTab:'Backup & sync', settingsTab:'Settings', tuAnalysisTab:'Analysis'};
+  const TAB_LABELS = {quickTab:['Quick practice','quick'], libraryTab:['Library','library'], qbankTab:['Qbanks','qbank'], qbankTestsTab:['Qbank tests','tests'], progressSyncTab:['Backup & sync','sync'], settingsTab:['Settings','settings']};
+  const TITLES = {quickTab:'Quick practice', libraryTab:'Library', qbankTab:'Qbanks', qbankTestsTab:'Qbank tests', progressSyncTab:'Backup & sync', tuSyncTab:'Backup & sync', settingsTab:'Settings', tuAnalysisTab:'Analysis'};
   function brand(){
     if(document.title !== 'ThunderUSMLE') document.title = 'ThunderUSMLE';
     const side = document.querySelector('#menu aside.modern-sidebar'); if(!side) return;
@@ -2555,6 +2555,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const s = v.querySelector('[data-tu-qtfind]'); if(s && s !== document.activeElement && s.value !== (qbVal('qTestSearch') || '')) s.value = qbVal('qTestSearch') || '';
   }
   async function paintQbank(){
+    if(window.ThunderQbanksUI) return; // qbanks.js draws the Qbanks view (same legacy panels); this painter stands down
     const B = bridge(); if(!B || !B.qbank) return;
     qbWatch();
     const build = byId('qbankModePanel'), tests = byId('qbankTestsPanel');

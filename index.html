@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=55">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=55">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=56">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=56">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=55"></script>
-<script src="./js/form-updates-core.js?v=55"></script>
-<script src="./js/form-update-store.js?v=55"></script>
-<script src="./js/google-auth.js?v=55"></script>
+<script src="./js/sync-config.js?v=56"></script>
+<script src="./js/form-updates-core.js?v=56"></script>
+<script src="./js/form-update-store.js?v=56"></script>
+<script src="./js/google-auth.js?v=56"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=55" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=56" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,8 +635,9 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=55"></script>
-<script src="./js/qid-migration.js?v=55"></script>
+<script src="jszip.min.js?v=56"></script>
+<script src="./js/qid-migration.js?v=56"></script>
+<script src="./qbanks-core.js?v=56"></script>
 <script>
 
 
@@ -2570,7 +2571,7 @@ document.addEventListener('click', function(e){
   function releaseActiveMemory(){ if(activeRunContext.type==='library' || activeRunContext.qbank){ importedBank=null; currentBankHash=''; currentBankRawText=''; configuredBlocks=[]; activeBlocks=[]; questions=[]; loadedFormCache.clear(); revokeDataAssetObjectUrls(); } activeRunContext={type:'quick',formId:'',qbank:false}; }
 
   function makeQuestionIndex(bank, formId){
-    const out=[],formUid=window.StepQidMigration?StepQidMigration.resolveFormUid(bank,formId):formId; (bank.blocks||[]).forEach((b,bi)=>{ (b.questions||[]).forEach((q,qi)=>{ const stem=String(q.stem ?? q.question ?? q.prompt ?? q.vignette ?? '').replace(/\s+/g,' ').trim(),qid=String(q.qid||''),key=window.StepQidMigration&&StepQidMigration.validQid(qid)?StepQidMigration.keyFor(formUid,qid):`${formId}:${bi}:${qi}`; out.push({key,qid:StepQidMigration?.validQid(qid)?qid:'',formUid,formId,blockIndex:bi,questionIndex:qi,subject:canonicalSubject(q.subject||q.system||q.topic||''),topic:String(q.topic||q.subject||q.system||'').trim(),recognizer:stem.slice(0,80)}); }); }); return out;
+    const out=[],formUid=window.StepQidMigration?StepQidMigration.resolveFormUid(bank,formId):formId; (bank.blocks||[]).forEach((b,bi)=>{ (b.questions||[]).forEach((q,qi)=>{ const stem=String(q.stem ?? q.question ?? q.prompt ?? q.vignette ?? '').replace(/\s+/g,' ').trim(),qid=String(q.qid||''),key=window.StepQidMigration&&StepQidMigration.validQid(qid)?StepQidMigration.keyFor(formUid,qid):`${formId}:${bi}:${qi}`; out.push({key,qid:StepQidMigration?.validQid(qid)?qid:'',formUid,formId,blockIndex:bi,questionIndex:qi,subject:canonicalSubject(q.subject||q.system||q.topic||''),topic:String(q.topic||q.subject||q.system||'').trim(),system:String(q.system==null?'':q.system).trim(),discipline:String(q.discipline==null?'':q.discipline).trim(),recognizer:stem.slice(0,80)}); }); }); return out;
   }
 
   function questionCountFromBank(bank){
@@ -4329,12 +4330,388 @@ document.addEventListener('click', function(e){
             renderMenu();
           }catch(err){ alert(err.message||String(err)); }
         },true);
+        /* Qbanks data layer (qbanks-core.js + qbanks.js): bank/row model for StepLibraryBridge.qbanks(), the filter-driven qbankPool,
+           imported banks as hidden forms (libraryHidden + qbank block), QBANK_tags.json. Keep identical in the Local and iPad apps.
+           Pure helpers sit between the PURE markers (tests/qbanks-data.test.cjs evaluates exactly that text). */
+        const QB=(function(){
+          /* QBDATA-PURE-BEGIN */
+          const QBP=(function(){
+            const str=v=>v==null?'':String(v).trim();
+            const IMG_RX=/\.(png|jpe?g|gif|webp|svg|mp3|m4a|aac|wav|oga|ogg|opus|flac|mp4|m4v|mov|webm|ogv)$/i;
+            const normPath=p=>String(p||'').replace(/\\/g,'/').replace(/^\/+/,'').split('/').filter(Boolean).join('/');
+            const isJunk=p=>{ const parts=normPath(p).split('/'); return parts.some(x=>x==='__MACOSX'||x==='.DS_Store'||x.startsWith('._')||x==='Thumbs.db'); };
+            const skipJson=p=>/(^|\/)(catalog|manifest|package-lock|audit_report|answer_key)[^/]*\.json$/i.test(normPath(p));
+            const natCmp=(a,b)=>String(a).localeCompare(String(b),undefined,{numeric:true,sensitivity:'base'});
+            function slugOf(name){ const s=String(name||'').toUpperCase().replace(/[^A-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,12).replace(/-+$/,''); return s||'BANK'; }
+            const bankIdOfSlug=slug=>'qb-'+String(slug).toLowerCase();
+            function nextFormId(slug,ids){ const used=new Set(ids||[]); for(let n=1;n<100;n++){ const id='QB-'+slug+'-'+String(n).padStart(2,'0'); if(!used.has(id)) return id; } throw new Error('This bank already has 99 import files.'); }
+            function slugFromFormId(id){ const m=/^QB-([A-Z0-9-]+?)-(\d{2})$/.exec(String(id||'')); return m?m[1]:''; }
+            /* a slug no other bank uses: QB-<slug>-NN ids and qb-<slug> bank ids stay unique per bank */
+            function freeSlug(base,formIds,bankIds){ const fi=Array.from(formIds||[]),bi=new Set(bankIds||[]); for(let n=1;n<100;n++){ const slug=n===1?base:(base.slice(0,Math.max(1,11-String(n).length))+n); if(!bi.has(bankIdOfSlug(slug))&&!fi.some(f=>String(f).startsWith('QB-'+slug+'-'))) return slug; } throw new Error('Could not pick a unique bank name.'); }
+            const getPath=(q,k)=>k?String(k).split('.').reduce((o,p)=>o==null?o:o[p],q):undefined;
+            function extractQuestions(j){ if(Array.isArray(j)) return j; if(j&&Array.isArray(j.questions)) return j.questions; if(j&&Array.isArray(j.blocks)) return j.blocks.flatMap(b=>Array.isArray(b)?b:(b&&(b.questions||b.items))||[]); return []; }
+            /* string fields (dotted for nested objects) that look like labels: the wizard's field pickers */
+            function detectFields(qs){
+              const stat={};
+              (qs||[]).forEach(q=>{ const scan=(o,pre,d)=>{ if(!o||typeof o!=='object'||Array.isArray(o)||d>2) return; for(const k of Object.keys(o)){ const v=o[k]; if(typeof v==='string'&&v.length&&v.length<70){ const s=stat[pre+k]||(stat[pre+k]={n:0,vals:new Map()}); s.n++; s.vals.set(v,(s.vals.get(v)||0)+1); } else if(v&&typeof v==='object'&&!Array.isArray(v)) scan(v,pre+k+'.',d+1); } }; scan(q,'',0); });
+              const n=(qs||[]).length;
+              return Object.entries(stat).filter(([k,s])=>s.vals.size>=1&&s.vals.size<=Math.max(60,n*.5)&&!/^(_|source|id$|qid|qbSrc|image|layout|correct|answer|choice|stem|explanation)/i.test(k)).map(([k,s])=>({k,n:s.n,distinct:s.vals.size})).sort((a,b)=>b.n-a.n||natCmp(a.k,b.k));
+            }
+            function valueCounts(qs,k,limit){ const m=new Map(); (qs||[]).forEach(q=>{ const v=str(getPath(q,k)); if(v) m.set(v,(m.get(v)||0)+1); }); return Array.from(m.entries()).sort((a,b)=>b[1]-a[1]||natCmp(a[0],b[0])).slice(0,limit||40); }
+            function guessOne(fields,names){ for(const nm of names){ const f=fields.find(f=>f.k.toLowerCase()===nm||f.k.toLowerCase().endsWith('.'+nm)); if(f) return f.k; } return ''; }
+            function guess(fields){ return {system:guessOne(fields,['system','organsystem','organ_system','subject','category']),subject:guessOne(fields,['discipline','specialty','clinicalsubject','subjectarea','course']),topic:guessOne(fields,['topic','subtopic','concept','educationalobjective'])}; }
+            /* the id a question had in its source file: duplicate skip compares these */
+            function srcId(q){ q=q||{}; const id=str(q.qbSrc||q.qid||q.id||q.qbankQuestionId); if(id) return id; const t=str(q.stem??q.question??q.prompt??q.vignette).replace(/\s+/g,' ').toLowerCase(); let h=2166136261; for(let i=0;i<t.length;i++){ h^=t.charCodeAt(i); h=Math.imul(h,16777619); } return 'h:'+(h>>>0).toString(36)+':'+t.length; }
+            /* the tag map: which question fields hold system / subject / topic (dotted paths) */
+            function mappedTags(q,tm){ tm=tm||{}; const g=k=>k?str(getPath(q,k)):''; return {system:g(tm.system),subject:g(tm.subject),topic:g(tm.topic)}; }
+            function applyTagMap(row,q,tm){ if(!tm||!row) return row; const t=mappedTags(q,tm); if(t.system){ row.system=t.system; row.subject=t.system; } if(t.subject) row.discipline=t.subject; if(t.topic) row.topic=t.topic; return row; }
+            /* imported banks: only the mapped system field counts (no fallback to the legacy subject, which is a topic guess there); built-in forms use the core rule */
+            function systemFor(row,rec,Core){ if(rec&&rec.qbank){ const tm=rec.qbank.tagMap, raw=str(row.system); if(tm&&tm.normalize===false&&raw) return {system:raw,from:'system'}; return Core.systemOf({system:raw}); } return Core.systemOf(row); }
+            /* ---- Qbank history (mirrors the legacy qHist / qbankUsedFromSessions) ---- */
+            function usedFromSessions(qp){ const used={}; ((qp&&qp.sessions)||[]).forEach(t=>{ const keys=t.qbankKeys||(t.session&&t.session.qbankKeys)||[]; keys.forEach(k=>{ if(k) used[k]=true; }); }); return used; }
+            function histFromSessions(qp,mode,sessionDone){
+              let sessions=((qp&&qp.sessions)||[]).filter(t=>t&&t.session);
+              if(mode==='latest_qbank') sessions=sessions.slice(0,1); else if(mode!=='all_qbank') sessions=sessions.filter(t=>t.status==='completed'||(sessionDone&&sessionDone(t.session)));
+              /* latest attempt wins (like UWorld): oldest test first, so a later answer replaces an earlier one; marked stays once set */
+              const tOf=t=>String(t.completedAt||t.updatedAt||t.createdAt||(t.session&&t.session.startedAt)||'');
+              sessions=sessions.map((t,i)=>({t,i})).sort((a,b)=>tOf(a.t).localeCompare(tOf(b.t))||(b.i-a.i)).map(x=>x.t);
+              const hist={};
+              sessions.forEach(t=>{ const s=t.session,keys=s.qbankKeys||[],blocks=s.blocks||[]; let pos=0;
+                blocks.forEach(bp=>{ const resultMap={}; ((bp.result&&bp.result.answers)||[]).forEach(a=>{ resultMap[(a.item||1)-1]=a; }); const n=bp.total||(bp.answers&&bp.answers.length)||0;
+                  for(let qi=0;qi<n;qi++,pos++){ const k=keys[pos]; if(!k) continue; const ra=resultMap[qi]||{}; const chosen=bp.answers&&bp.answers[qi]!=null?bp.answers[qi]:ra.chosen;
+                    const ok=ra.isCorrect===true||(chosen!=null&&ra.correct!=null&&chosen===ra.correct), answered=chosen!=null||ra.chosen!=null, marked=!!((bp.flagged&&bp.flagged[qi])||ra.flagged), prev=hist[k]||{used:false,wrong:false,marked:false,answered:false};
+                    hist[k]={used:true,wrong:answered&&!ok,marked:prev.marked||marked,answered}; } }); });
+              return hist;
+            }
+            const histMode=a=>(a==='all_qbank'||a==='latest_qbank')?a:'completed_qbank';
+            /* ---- form attempts ---- */
+            function pickAttempt(bundle,mode,sessionDone,activeAtt){
+              const at=(bundle&&bundle.attempts)||[]; if(!at.length) return null;
+              if(mode==='first') return at.slice().sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)))[0];
+              if(mode==='latest_completed') return at.filter(a=>sessionDone(a.session)).sort((a,b)=>String(b.completedAt||a.session.updatedAt||'').localeCompare(String(a.completedAt||b.session.updatedAt||'')))[0]||activeAtt(bundle);
+              return activeAtt(bundle);
+            }
+            /* one attempt session -> {key: {used, answered, ok (null = graded block missing), marked}}, plus keys whose correctness needs the form */
+            function attemptMap(session,o){
+              const out={},unknown=[]; const formId=o.formId,uid=o.formUid||formId;
+              ((session&&session.blocks)||[]).forEach((bp,bi)=>{ if(!bp) return;
+                const qids=Array.isArray(bp.questionQids)?bp.questionQids:null, resultMap={}; ((bp.result&&bp.result.answers)||[]).forEach(a=>{ resultMap[(a.item||1)-1]=a; });
+                const n=bp.total||(bp.answers&&bp.answers.length)||0, graded=!!(bp.result||bp.blockCompleted);
+                for(let qi=0;qi<n;qi++){ const qid=qids&&qids[qi]; const key=qid?uid+'::'+qid:((o.posMap&&o.posMap[bi+':'+qi])||formId+':'+bi+':'+qi); const ra=resultMap[qi]; const chosen=bp.answers&&bp.answers[qi]!=null?bp.answers[qi]:(ra?ra.chosen:null);
+                  const answered=chosen!=null, marked=!!((bp.flagged&&bp.flagged[qi])||(ra&&ra.flagged)); let ok=null;
+                  if(answered){ if(ra&&ra.isCorrect!=null) ok=ra.isCorrect===true; else if(ra&&ra.correct!=null) ok=chosen===ra.correct; }
+                  if(!answered&&!graded&&!marked) continue;
+                  out[key]={used:answered||graded,answered,ok,marked,bi,qi,chosen}; if(answered&&ok==null) unknown.push(key); }
+              });
+              return {map:out,unknown};
+            }
+            /* the status of one question, source 'forms': the form attempt first, then the Qbank test history */
+            function mergeStatus(fa,qUsed,qh){
+              if(fa&&fa.answered&&fa.ok!=null) return {used:true,answered:true,correct:fa.ok,marked:!!(fa.marked||(qh&&qh.marked))};
+              if(fa&&fa.used&&!fa.answered) return {used:true,answered:false,correct:false,marked:!!(fa.marked||(qh&&qh.marked))};
+              if(qUsed||(qh&&qh.used)) return {used:true,answered:!!(qh&&qh.answered),correct:!!(qh&&qh.answered&&!qh.wrong),marked:!!((fa&&fa.marked)||(qh&&qh.marked))};
+              return {used:false,answered:false,correct:false,marked:!!(fa&&fa.marked)};
+            }
+            function qbankStatus(qUsed,qh){ return {used:!!qUsed,answered:!!(qh&&qh.answered),correct:!!(qh&&qh.answered&&!qh.wrong),marked:!!(qh&&qh.marked)}; }
+            /* ---- asset references (same rules as the library ZIP import) ---- */
+            const cleanAssetKey=p=>normPath(String(p||'').split('#')[0].split('?')[0].replace(/^\.\//,''));
+            function safeAssetRel(path){ const parts=normPath(path).split('/').filter(Boolean),idx=parts.lastIndexOf('assets'); const rel=(idx>=0&&idx<parts.length-1?parts.slice(idx+1):parts.slice(-1)).filter(x=>x&&x!=='.'&&x!=='..'&&!x.startsWith('._')&&x!=='.DS_Store'); return rel.join('/'); }
+            /* every path suffix of the image's path in the ZIP (bank/images/a.png, images/a.png, a.png) and assets/<rel> point at the stored file; clashing suffixes are ambiguous and skipped */
+            function addAssetMapKeys(map,original,stored){
+              const dest='assets/'+stored, p=cleanAssetKey(original), rel=safeAssetRel(original), parts=p.split('/').filter(Boolean), keys=['assets/'+rel,rel];
+              for(let i=0;i<parts.length;i++) keys.push(parts.slice(i).join('/'));
+              keys.filter(Boolean).forEach(k=>{ const cur=map[k]; map[k]=cur&&cur!==dest?'__ambiguous__':dest; });
+              const base=rel.split('/').pop(); if(base){ const key='__base__/'+base; map[key]=map[key]&&map[key]!==dest?'__ambiguous__':dest; }
+            }
+            function lookupAsset(map,value){ const key=cleanAssetKey(value),direct=map[key]||map[key.replace(/^assets\//,'')]; if(direct&&direct!=='__ambiguous__') return direct; const hit=map['__base__/'+key.split('/').pop()]; return hit&&hit!=='__ambiguous__'?hit:null; }
+            const reEsc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+            /* one pass: a reference is replaced once even when several keys (assets/x.png, x.png) match inside it */
+            function rewriteAssetRefs(bank,map){
+              const keys=Object.keys(map).filter(k=>map[k]&&map[k]!=='__ambiguous__'&&!k.startsWith('__base__/')).sort((a,b)=>b.length-a.length);
+              const re=keys.length?new RegExp('(^|[^A-Za-z0-9_./-])('+keys.map(reEsc).join('|')+')(?![A-Za-z0-9_-])','g'):null;
+              function walk(v){ if(typeof v==='string'){ if(/^data:image\//i.test(v)||/^blob:/i.test(v)||/^https?:/i.test(v)) return v; const exact=lookupAsset(map,v); if(exact) return 'DATA/'+exact; if(re&&(/assets\//i.test(v)||/src=|href=|url\(/i.test(v))) return v.replace(re,(m,pre,k)=>pre+'DATA/'+map[k]); return v; }
+                if(Array.isArray(v)) return v.map(walk); if(v&&typeof v==='object'){ Object.keys(v).forEach(k=>{ v[k]=walk(v[k]); }); return v; } return v; }
+              return walk(bank);
+            }
+            return {str,IMG_RX,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs};
+          })();
+          /* QBDATA-PURE-END */
+
+          const Core=()=>window.ThunderQbanksCore;
+          const needCore=()=>{ const c=Core(); if(!c) throw new Error('The Qbanks module (qbanks-core.js) is not loaded.'); return c; };
+          let filter=null;
+          const hiddenRec=r=>!!(r&&r.libraryHidden);
+          const bankRecs=id=>(catalog.forms||[]).filter(f=>f&&f.qbank&&f.qbank.id===id);
+          const stampNow=()=>{ const d=new Date(),z=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}_${z(d.getHours())}${z(d.getMinutes())}${z(d.getSeconds())}`; };
+          const needData=()=>{ if(!dataDirHandle) throw new Error('Connect the DATA folder first.'); };
+
+          /* ---------- tags (progress/QBANK_tags.json) ---------- */
+          const TAGS_FILE='QBANK_tags.json'; let tagsCache=null, tagChain=Promise.resolve();
+          const emptyTags=()=>({fileType:'ThunderQbankTags',v:1,tags:{}});
+          function parseTags(text){ try{ const o=JSON.parse(text); if(o&&o.fileType==='ThunderQbankTags'&&o.tags&&typeof o.tags==='object') return o; }catch(e){} return emptyTags(); }
+          function canonTags(o){ const tags={}; Object.keys((o&&o.tags)||{}).sort().forEach(k=>{ const t=o.tags[k]; if(t&&typeof t==='object') tags[k]={system:t.system==null?null:t.system,at:t.at}; }); return {fileType:'ThunderQbankTags',v:1,tags}; }
+          const tagsText=o=>JSON.stringify(canonTags(o));
+          async function readTagsText(){ if(!dataDirHandle) return null; try{ return await readText(await progressDir(),TAGS_FILE); }catch(e){ return null; } }
+          async function loadTags(){ const t=await readTagsText(); tagsCache=t==null?emptyTags():parseTags(t); return tagsCache; }
+          async function writeTagsObject(obj,quiet){ needData(); const text=tagsText(obj); await writeText(await progressDir(),TAGS_FILE,text); tagsCache=parseTags(text); if(!quiet){ try{ window.dispatchEvent(new CustomEvent('stepsim:qbanktags-write',{detail:{kind:'qbanktags'}})); }catch(e){} } return text; }
+          /* serialized read-merge-write so two quick taps never lose each other */
+          function changeTags(fn){ const run=tagChain.then(async()=>{ const cur=await loadTags(); const patch=fn(cur); if(!patch||!Object.keys(patch).length) return 0; const incoming={fileType:'ThunderQbankTags',v:1,tags:patch}; await writeTagsObject(needCore().mergeTags(cur,incoming)); return Object.keys(patch).length; }); tagChain=run.catch(()=>{}); return run; }
+          /* the Sync v3 adapter reads/writes the same file (js/sync3-bridge.js createShadowAdapter) */
+          window.__stepQbankTags={
+            async read(){ return await readTagsText(); },
+            async write(text){ const C=Core(); if(!C||!dataDirHandle) return {written:false}; const run=tagChain.then(async()=>{ const cur=parseTags(await readTagsText()||''); const merged=tagsText(C.mergeTags(cur,parseTags(text))); if(merged!==tagsText(cur)) await writeTagsObject(parseTags(merged),true); else tagsCache=cur; return {written:true,text:merged}; }); tagChain=run.catch(()=>{}); try{ return await run; }catch(e){ return {written:false}; } },
+            merge(a,b){ return tagsText(needCore().mergeTags(parseTags(a),parseTags(b))); }
+          };
+
+          /* ---------- rows ---------- */
+          const faCache=new Map();
+          async function rawCorrectMap(rec){
+            const text=await readText(await formsDir(),`${rec.id}.json`), bank=normalizeBank(JSON.parse(text)), uid=rec.formUid||rec.id, out={};
+            bank.blocks.forEach((b,bi)=>b.questions.forEach((q,qi)=>{ const key=(window.StepQidMigration&&StepQidMigration.validQid(String(q.qid||'')))?StepQidMigration.keyFor(uid,String(q.qid)):`${rec.id}:${bi}:${qi}`; out[key]=q.correct; }));
+            return out;
+          }
+          async function formAttemptMap(rec,mode){
+            let file; try{ file=await (await (await progressDir()).getFileHandle(`${rec.id}_progress_save.json`)).getFile(); }catch(e){ return null; }
+            const stamp=file.size+':'+file.lastModified+':'+(rec.bankHash||''), ck=rec.id+'|'+mode, c=faCache.get(ck); if(c&&c.stamp===stamp) return c.map;
+            let doc; try{ doc=bundleFromData(JSON.parse(await file.text()),rec.id); }catch(e){ return null; }
+            const att=QBP.pickAttempt(doc,mode,sessionDone,activeAtt); let map=null;
+            if(att&&att.session){
+              const posMap={}; (rec.questionIndex||[]).forEach(x=>{ if(x&&x.key) posMap[x.blockIndex+':'+x.questionIndex]=x.key; }); const r=QBP.attemptMap(att.session,{formId:rec.id,formUid:rec.formUid||rec.id,posMap}); map=r.map;
+              if(r.unknown.length){ let cm=null; try{ cm=await rawCorrectMap(rec); }catch(e){} r.unknown.forEach(k=>{ const e=map[k]; if(cm&&cm[k]!=null) e.ok=e.chosen===cm[k]; else e.ok=false; }); }
+            }
+            faCache.set(ck,{stamp,map}); return map;
+          }
+          async function computeRows(opt){
+            opt=opt||{}; const C=needCore(), source=opt.source==='forms'?'forms':'qbank';
+            const qp=await readQbankProgress(), used=QBP.usedFromSessions(qp);
+            const hist=QBP.histFromSessions(qp,QBP.histMode(source==='qbank'?opt.attempt:null),sessionDone);
+            const amode=['first','latest_completed','active'].includes(opt.attempt)?opt.attempt:'active';
+            const tags=(await loadTags()).tags, want=opt.formIds?new Set(opt.formIds):null, rows=[], prov={}, forms=[];
+            for(const rec of (catalog.forms||[])){
+              if(!rec) continue;
+              const idx=Array.isArray(rec.questionIndex)?rec.questionIndex:[]; forms.push({id:rec.id,name:rec.displayName||rec.id,bank:C.bankOf(rec),tab:getFormTabKey(rec),n:idx.length,hidden:hiddenRec(rec)});
+              if(want&&!want.has(rec.id)) continue;
+              const bank=C.bankOf(rec), fmap=source==='forms'?await formAttemptMap(rec,amode):null, pv=prov[bank]||(prov[bank]={question:0,form:0,inferred:0});
+              for(const r of idx){
+                if(!r||!r.key) continue;
+                const sy=QBP.systemFor(r,rec,C), tg=tags[r.key]; let system=sy.system, tag=sy.from==='missing'?'missing':'question';
+                if(tg&&tg.system){ system=tg.system; tag='override'; }
+                const sj=C.subjectOf(r,rec); pv[sj.from==='question'?'question':sj.from==='form'?'form':'inferred']++;
+                const qh=hist[r.key], qUsed=!!used[r.key], st=source==='forms'?QBP.mergeStatus(fmap&&fmap[r.key],qUsed,qh):QBP.qbankStatus(qUsed,qh), s=C.statusOf(st);
+                rows.push({key:r.key,formId:rec.id,bank,subject:sj.subject,system,status:s.status,marked:s.marked,sug:system===C.UNASSIGNED?(C.suggestFromTopic(r.topic)||null):null,tag});
+              }
+            }
+            return {rows,prov,forms,tags};
+          }
+          async function qbanksModel(opt){
+            const C=needCore(); const m=await computeRows(opt), qp=await readQbankProgress();
+            const byBank={}; m.forms.forEach(f=>{ (byBank[f.bank]||(byBank[f.bank]=[])).push(f.id); });
+            const banks=[]; C.BUILTIN_BANKS.forEach(b=>{ const ids=(byBank[b.id]||[]).filter(id=>!hiddenRec(catalogForm(id))); if(ids.length) banks.push(Object.assign({},b,{kind:'library',formIds:ids})); });
+            const seen=new Set(); (catalog.forms||[]).forEach(f=>{ const q=f&&f.qbank; if(!q||!q.id||seen.has(q.id)) return; seen.add(q.id); banks.push({id:q.id,name:q.name||q.id,code:q.code||'QB',color:q.color||'#5c5f66',sub:'Imported Qbank',kind:'imported',formIds:bankRecs(q.id).map(x=>x.id)}); });
+            const tests=(qp.sessions||[]).filter(t=>t&&t.session).map(t=>{ const ids=(t.formIds||[]).slice(), bs=Array.from(new Set(ids.map(id=>{ const r=catalogForm(id); return r?C.bankOf(r):null; }).filter(Boolean)));
+              return {id:t.qbankTestId,name:t.name||'',mode:t.mode==='tutor'?'tutor':'testing',done:t.status==='completed',total:Number(t.total)||0,blocks:((t.session&&t.session.blocks)||[]).length,percent:t.summary&&t.summary.percent!=null?Number(t.summary.percent):null,sourceMode:t.sourceMode||'',poolType:t.poolType||'',attemptSource:t.attemptSource||'',formIds:ids,banks:bs,filter:t.filter||(t.session&&t.session.qbankFilter)||null,createdAt:t.createdAt||null,updatedAt:t.updatedAt||null,completedAt:t.completedAt||null}; });
+            let at=''; Object.keys(m.tags||{}).forEach(k=>{ const a=m.tags[k]&&m.tags[k].at; if(a&&String(a)>at) at=String(a); });
+            return {banks,forms:m.forms,rows:m.rows,prov:m.prov,tests,tagsUpdatedAt:at||null};
+          }
+
+          /* ---------- the filter pool ---------- */
+          async function pool(){
+            const f=filter, C=needCore(), ids=qbankSelectedIds(), m=await computeRows({source:f.source,attempt:f.attempt,formIds:ids}), ok=new Set();
+            m.rows.forEach(r=>{ if(C.matches(r,f)) ok.add(r.key); });
+            return (catalog.forms||[]).filter(x=>ids.includes(x.id)).flatMap(x=>x.questionIndex||[]).filter(r=>ok.has(r.key));
+          }
+          let rbk={sig:'',map:new Map()};
+          function rowByKey(key){
+            const sig=(catalog.forms||[]).length+'|'+(catalog.updatedAt||'')+'|'+(catalog.forms||[]).reduce((n,f)=>n+((f&&f.questionIndex)||[]).length,0);
+            if(rbk.sig!==sig){ const map=new Map(); (catalog.forms||[]).forEach(f=>(f.questionIndex||[]).forEach(r=>{ if(r&&r.key) map.set(r.key,{r,f}); })); rbk={sig,map}; }
+            return rbk.map.get(key)||null;
+          }
+          function examQuestion(){
+            if(!activeRunContext||!activeRunContext.qbank) return null;
+            const scr=document.getElementById('examScreen'); if(!scr||scr.classList.contains('hidden')||!Array.isArray(questions)||!questions.length) return null;
+            const cur=Math.max(0,Math.min(questions.length-1,Number(state.current)||0)); let key=(questions[cur]&&questions[cur]._qbankKey)||'';
+            if(!key&&activeSession&&Array.isArray(activeSession.qbankKeys)){ let pos=cur; const bl=activeSession.blocks||[]; for(let i=0;i<(Number(blockPointer)||0)&&i<bl.length;i++) pos+=Number(bl[i]&&bl[i].total)||0; key=activeSession.qbankKeys[pos]||''; }
+            if(!key) return null;
+            const C=Core(); if(!C) return null;
+            if(!tagsCache) loadTags().catch(()=>{});
+            const hit=rowByKey(key); let system=C.UNASSIGNED;
+            if(hit){ system=QBP.systemFor(hit.r,hit.f,C).system; const tg=tagsCache&&tagsCache.tags[key]; if(tg&&tg.system) system=tg.system; }
+            return {key,system,untagged:system===C.UNASSIGNED,qbank:true};
+          }
+
+          /* ---------- imported banks ---------- */
+          async function readSource(file){
+            if(!file) throw new Error('Choose a JSON or ZIP file.');
+            const name=String(file.name||'');
+            if(/\.zip$/i.test(name)){
+              if(!window.JSZip) throw new Error('ZIP import requires JSZip (jszip.min.js).');
+              const zip=await JSZip.loadAsync(file), entries=Object.values(zip.files||{}).filter(e=>!e.dir&&!QBP.isJunk(e.name));
+              const jsons=entries.filter(e=>/\.json$/i.test(e.name)&&!QBP.skipJson(e.name)).sort((a,b)=>QBP.normPath(a.name).split('/').length-QBP.normPath(b.name).split('/').length||QBP.natCmp(a.name,b.name));
+              if(!jsons.length) throw new Error('The ZIP has no question .json file.');
+              return {name,inner:jsons[0].name,text:await jsons[0].async('text'),images:entries.filter(e=>QBP.IMG_RX.test(e.name)),zip};
+            }
+            if(!/\.json$/i.test(name)) throw new Error('Choose a .json or .zip file.');
+            return {name,inner:'',text:await file.text(),images:[],zip:null};
+          }
+          async function srcIdsOfBank(recs){
+            const set=new Set();
+            for(const rec of recs){ try{ const b=normalizeBank(JSON.parse(await readText(await formsDir(),`${rec.id}.json`))); b.blocks.forEach(bl=>bl.questions.forEach(q=>set.add(QBP.srcId(q)))); }catch(e){} }
+            return set;
+          }
+          async function importPreview(file,opt){
+            try{
+              const src=await readSource(file); let j; try{ j=JSON.parse(src.text); }catch(e){ throw new Error('That file is not valid JSON.'); }
+              const qs=QBP.extractQuestions(j); if(!qs.length) throw new Error('No questions found (expected an array, {questions:[...]} or {blocks:[...]}).');
+              try{ normalizeBank(j); }catch(e){ throw new Error(String(e&&e.message||e)); }
+              const fields=QBP.detectFields(qs), guess=QBP.guess(fields), values={}; fields.forEach(f=>{ values[f.k]=QBP.valueCounts(qs,f.k,40); });
+              const title=String((j&&!Array.isArray(j)&&(j.title||j.name))||String(file.name||'').replace(/\.(json|zip)$/i,'')||'Imported Qbank').slice(0,40);
+              const out={ok:true,error:'',file:src.inner?src.name+' > '+src.inner:src.name,questions:qs.length,images:src.images.length,fields,guess,title,values};
+              if(opt&&opt.into){ const set=await srcIdsOfBank(bankRecs(opt.into)); const dup=qs.filter(q=>set.has(QBP.srcId(q))).length; out.duplicates=dup; out.newQuestions=qs.length-dup; }
+              return out;
+            }catch(err){ return {ok:false,error:String(err&&err.message||err),file:String(file&&file.name||''),questions:0,images:0,fields:[],guess:{system:'',subject:'',topic:''},title:''}; }
+          }
+          async function addDirToZip(dir,zip){ for await(const [name,h] of dir.entries()){ if(h.kind==='file') zip.file(name,await h.getFile()); else if(h.kind==='directory') await addDirToZip(h,zip.folder(name)); } }
+          async function writeBlobPath(root,path,blob){ const parts=QBP.normPath(path).split('/').filter(Boolean); let dir=root; for(let i=0;i<parts.length-1;i++) dir=await dir.getDirectoryHandle(parts[i],{create:true}); await writeBinary(dir,parts[parts.length-1],blob); }
+          async function removeAssetDir(id){ try{ await (await getSubdir('assets')).removeEntry(id,{recursive:true}); }catch(e){} }
+          /* recovery ZIP in progress/backups: catalog.json always, the named forms + their assets when asked */
+          async function makeRecovery(prefix,ids,withForms){
+            if(!window.JSZip) throw new Error('A recovery ZIP needs JSZip (jszip.min.js).');
+            const zip=new JSZip(); let catalogText=null; try{ catalogText=await readText(dataDirHandle,'catalog.json'); }catch(e){}
+            zip.file('QBANK_RECOVERY.json',JSON.stringify({fileType:'ThunderQbankRecovery',createdAt:nowIso(),prefix,formIds:ids},null,2)); if(catalogText!==null) zip.file('catalog.json',catalogText);
+            if(withForms) for(const id of ids){ try{ zip.file(`forms/${id}.json`,await readText(await formsDir(),`${id}.json`)); }catch(e){} try{ const ad=await (await getSubdir('assets')).getDirectoryHandle(id); await addDirToZip(ad,zip.folder(`assets/${id}`)); }catch(e){} }
+            const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}}), name=`${prefix}_${stampNow()}.zip`, bd=await (await progressDir()).getDirectoryHandle('backups',{create:true});
+            await writeBinary(bd,name,blob); return {blob,name,path:`progress/backups/${name}`,catalogText};
+          }
+          async function restoreRecovery(rec,ids){
+            try{ for(const id of ids){ await removeFile(await formsDir(),`${id}.json`); await removeAssetDir(id); }
+              const zip=await JSZip.loadAsync(rec.blob);
+              for(const e of Object.values(zip.files||{})){ if(e.dir) continue; const p=QBP.normPath(e.name); if(/^forms\/[^/]+\.json$/i.test(p)||/^assets\//i.test(p)) await writeBlobPath(dataDirHandle,p,await e.async('blob')); }
+              if(rec.catalogText!==null) await writeText(dataDirHandle,'catalog.json',rec.catalogText);
+            }catch(e){ console.warn('Qbank recovery restore failed',e); }
+            try{ await loadCatalog(); }catch(e){}
+          }
+          async function afterLibraryChange(ids){ (ids||[]).forEach(id=>{ try{ loadedFormCache.delete(id); }catch(e){} }); try{ revokeDataAssetObjectUrls(); }catch(e){} try{ await renderLibrary(); }catch(e){} try{ await renderQbankMode(); }catch(e){} }
+          async function importBank(o){
+            o=o||{}; needData(); const C=needCore();
+            if(window.__STEP_FORM_UPDATE_COMMITTING) throw new Error('Wait for form installation to finish.');
+            if(window.__STEP_NATIVE_IMPORT_BUSY) throw new Error('Another import is running.');
+            window.__STEP_NATIVE_IMPORT_BUSY=true; let recovery=null, formId='', wrote=false;
+            try{
+              const src=await readSource(o.file); let j; try{ j=JSON.parse(src.text); }catch(e){ throw new Error('That file is not valid JSON.'); }
+              const bank0=normalizeBank(j), map=o.map||{}, tagMap={system:String(map.system||''),subject:String(map.subject||''),topic:String(map.topic||''),normalize:o.normalize!==false};
+              let into=null,qb; if(o.into){ const recs=bankRecs(o.into); if(!recs.length) throw new Error('That bank no longer exists.'); into=recs; qb=Object.assign({},recs[0].qbank); qb.tagMap=Object.assign({},qb.tagMap,tagMap); }
+              else{ const name=String(o.name||'').trim().slice(0,40)||'Imported Qbank', slug=QBP.freeSlug(QBP.slugOf(name),(catalog.forms||[]).map(f=>f.id),(catalog.forms||[]).map(f=>f.qbank&&f.qbank.id).filter(Boolean)); qb={id:QBP.bankIdOfSlug(slug),name,code:String(o.code||name.replace(/[^A-Za-z0-9]/g,'').slice(0,3)||'QB').toUpperCase().slice(0,3),color:/^#[0-9a-f]{3,8}$/i.test(String(o.color||''))?String(o.color):'#e4572e',tagMap}; }
+              const slug=(into&&QBP.slugFromFormId(into[0].id))||qb.id.slice(3).toUpperCase();
+              formId=QBP.nextFormId(slug,(catalog.forms||[]).map(f=>f.id));
+              const have=into?await srcIdsOfBank(into):new Set(); let added=0,skipped=0; const blocks=[];
+              bank0.blocks.forEach(b=>{ const qs=[]; b.questions.forEach(q0=>{ const sid=QBP.srcId(q0); if(into&&have.has(sid)){ skipped++; return; } if(into) have.add(sid);
+                const q=Object.assign({},q0), t=QBP.mappedTags(q0,tagMap); if(t.system) q.system=t.system; if(t.subject) q.discipline=t.subject; if(t.topic) q.topic=t.topic; q.qbSrc=sid; delete q.qid; qs.push(q); added++; }); if(qs.length) blocks.push(Object.assign({},b,{questions:qs})); });
+              if(!added){ if(!into) throw new Error('No questions to import.'); return {bankId:qb.id,added:0,skipped}; }
+              const assets=[],assetMap={};
+              if(src.zip) for(const e of src.images){ const rel=QBP.safeAssetRel(e.name); if(!rel) continue; assets.push({rel,blob:await e.async('blob')}); QBP.addAssetMapKeys(assetMap,e.name,`${formId}/${rel}`); }
+              let bank={title:into?`${qb.name} (${formId.slice(-2)})`:qb.name,description:`Qbank import for ${qb.name}; source: ${src.inner||src.name}`,sourceFiles:[src.inner||src.name],librarySlotId:formId,qbank:qb,blocks};
+              if(Object.keys(assetMap).length) bank=QBP.rewriteAssetRefs(bank,assetMap);
+              if(window.StepQidMigration){ const uid=StepQidMigration.resolveFormUid(bank,formId); bank.blocks.forEach((b,bi)=>b.questions.forEach((q,qi)=>{ q.qid=StepQidMigration.generatedQid(uid,bi,qi); })); bank=StepQidMigration.migrateForm(bank,formId).bank; }
+              const raw=JSON.stringify(bank,null,2), hash=await sha256Hex(raw);
+              recovery=await makeRecovery('PRE_QBANK_IMPORT',[formId],false);
+              const ad=assets.length?await assetsDir(formId):null; for(const a of assets) await writeBlobPath(ad,a.rel,a.blob);
+              wrote=true; await writeText(await formsDir(),`${formId}.json`,raw);
+              const rec=makeCatalogRecord(formId,{id:formId,type:'Custom',group:'Custom',filter:'Custom',subject:'Custom',defaultName:bank.title,displayName:bank.title},bank,raw,hash,bank.sourceFiles,{qbank:qb,libraryHidden:true,displayName:bank.title});
+              rec.optimized=assets.length>0; rec.imageAssets=assets.length; rec.libraryHidden=true; rec.qbank=qb;
+              upsertCatalogForm(rec); await writeCatalog(); wrote=false;
+              await afterLibraryChange([formId]);
+              return {bankId:qb.id,added,skipped,formId,recovery:recovery.path};
+            }catch(err){
+              if(recovery&&(wrote||formId)){ await restoreRecovery(recovery,formId?[formId]:[]); await afterLibraryChange([formId]); }
+              throw err;
+            }finally{ window.__STEP_NATIVE_IMPORT_BUSY=false; }
+          }
+          async function updateBank(id,patch){
+            needData(); const recs=bankRecs(id); if(!recs.length) throw new Error('That bank no longer exists.'); patch=patch||{};
+            recs.forEach(rec=>{ const q=Object.assign({},rec.qbank);
+              if(typeof patch.name==='string'&&patch.name.trim()) q.name=patch.name.trim().slice(0,40);
+              if(typeof patch.code==='string'&&patch.code.trim()) q.code=patch.code.trim().toUpperCase().slice(0,3);
+              if(typeof patch.color==='string'&&/^#[0-9a-f]{3,8}$/i.test(patch.color)) q.color=patch.color;
+              rec.qbank=q; upsertCatalogForm(rec); });
+            await writeCatalog(); try{ await renderQbankMode(); }catch(e){} return {ok:true};
+          }
+          async function deleteBank(id){
+            needData(); const recs=bankRecs(id); if(!recs.length) throw new Error('That bank no longer exists.');
+            if(window.__STEP_NATIVE_IMPORT_BUSY) throw new Error('Another import is running.');
+            window.__STEP_NATIVE_IMPORT_BUSY=true; const ids=recs.map(r=>r.id); let recovery=null;
+            try{
+              recovery=await makeRecovery('PRE_QBANK_DELETE',ids,true);
+              const pd=await progressDir();
+              for(const fid of ids){ await removeFile(await formsDir(),`${fid}.json`); await removeAssetDir(fid); for(const n of [`${fid}_progress_save.json`,`${fid}_suspended_test.json`,`${fid}_shadow_log.json`]) await removeFile(pd,n); }
+              catalog.forms=(catalog.forms||[]).filter(f=>!ids.includes(f.id)); await writeCatalog();
+              recs.forEach(r=>{ try{ window.dispatchEvent(new CustomEvent('stepsim:progress-write',{detail:{filename:`${r.id}_progress_save.json`,operation:'delete',formId:r.id,bankHash:r.bankHash||''}})); }catch(e){} }); /* same signal as Remove Form */
+              await afterLibraryChange(ids); return {ok:true,removed:ids.length,recovery:recovery.path};
+            }catch(err){ if(recovery){ await restoreRecovery(recovery,[]); await afterLibraryChange(ids); } throw err; }
+            finally{ window.__STEP_NATIVE_IMPORT_BUSY=false; }
+          }
+          async function acceptSuggestions(bankId){
+            const C=needCore(); const ids=(catalog.forms||[]).filter(f=>C.bankOf(f)===bankId).map(f=>f.id); if(!ids.length) return {tagged:0};
+            const m=await computeRows({source:'qbank',formIds:ids}), at=nowIso(), patch={};
+            m.rows.forEach(r=>{ if(r.system===C.UNASSIGNED&&r.sug) patch[r.key]={system:r.sug,at}; });
+            const n=await changeTags(()=>patch); return {tagged:n};
+          }
+          function setTag(key,system){ if(!key) return Promise.resolve({ok:false}); const at=nowIso(), C=needCore(); const sys=system==null?null:String(system); if(sys!==null&&!C.SYSTEMS.includes(sys)&&sys!==C.UNASSIGNED) return Promise.reject(new Error('Unknown system.')); return changeTags(()=>({[key]:{system:sys===C.UNASSIGNED?null:sys,at}})).then(()=>({ok:true})); }
+
+          /* ---------- wrappers: hidden forms, filter pool, start, saved test filter, catalog flags ---------- */
+          function install(){
+            if(window.__stepQbanksDataInstalled) return; window.__stepQbanksDataInstalled=true;
+            const prevFilterRecs=filterRecs; filterRecs=function(){ return prevFilterRecs.apply(this,arguments).filter(r=>!hiddenRec(r)); };
+            const prevPool=qbankPool; qbankPool=async function(){ if(!filter) return await prevPool.apply(this,arguments); return await pool(); };
+            const prevStart=startQbankMode;
+            startQbankMode=async function(){
+              if(!filter) return await prevStart.apply(this,arguments);
+              const mode=$id('qbankQuestionMode'), spq=$id('secondsPerQuestion'), pm=mode?mode.value:null, ps=spq?spq.value:null;
+              try{ if(mode) mode.value='all'; if(filter.secondsPerQuestion>0&&spq) spq.value=String(filter.secondsPerQuestion); return await prevStart.apply(this,arguments); }
+              finally{ if(mode&&pm!=null) mode.value=pm; if(spq&&ps!=null) spq.value=ps; }
+            };
+            const prevCreate=createSession; createSession=function(){ const s=prevCreate.apply(this,arguments); try{ if(s&&activeRunContext&&activeRunContext.qbank&&filter) s.qbankFilter={statuses:filter.statuses?filter.statuses.slice():null,subjects:filter.subjects?filter.subjects.slice():null,systems:filter.systems?filter.systems.slice():null}; }catch(e){} return s; };
+            const prevUpsert=upsertQSession; upsertQSession=function(qp,s){ const out=prevUpsert.apply(this,arguments); try{ if(s&&s.qbankFilter&&out&&out.sessions){ const t=out.sessions.find(x=>x.qbankTestId===s.qbankTestId); if(t) t.filter=s.qbankFilter; } }catch(e){} return out; };
+            /* a catalog rebuild keeps the Qbank flags and re-applies the tag map to the index */
+            const prevMake=makeCatalogRecord;
+            makeCatalogRecord=function(id,meta,bank,rawText,bankHash,sourceFiles,prev){
+              const rec=prevMake.apply(this,arguments); let qb=prev&&prev.qbank;
+              if(!qb&&/^QB-/.test(String(id))){ try{ const o=JSON.parse(rawText); if(o&&o.qbank&&o.qbank.id) qb=o.qbank; }catch(e){} }
+              if(qb){ rec.qbank=qb; rec.libraryHidden=true; try{ const tm=qb.tagMap; if(tm&&bank&&bank.blocks&&Array.isArray(rec.questionIndex)){ const flat=[]; bank.blocks.forEach(b=>(b.questions||[]).forEach(q=>flat.push(q))); rec.questionIndex.forEach((row,i)=>QBP.applyTagMap(row,flat[i]||{},tm)); } }catch(e){} }
+              return rec;
+            };
+          }
+          const bridge={
+            qbanks:async opt=>await qbanksModel(opt),
+            qbanksSetFilter:sel=>{ if(!sel||typeof sel!=='object'){ filter=null; return true; } const arr=v=>v==null?null:Array.from(v); filter={statuses:arr(sel.statuses),subjects:arr(sel.subjects),systems:arr(sel.systems),source:sel.source==='forms'?'forms':'qbank',attempt:sel.attempt||null,secondsPerQuestion:Math.max(0,Math.round(Number(sel.secondsPerQuestion)||0))}; return true; },
+            qbanksAvailable:async()=>(await qbankPool()).length,
+            qbanksImportPreview:async(file,opt)=>await importPreview(file,opt),
+            qbanksImport:async o=>await importBank(o),
+            qbanksUpdateBank:async(id,patch)=>await updateBank(id,patch),
+            qbanksDeleteBank:async id=>await deleteBank(id),
+            qbanksAcceptSuggestions:async bankId=>await acceptSuggestions(bankId),
+            qbanksSetTag:async(key,system)=>await setTag(key,system),
+            qbanksExamQuestion:()=>examQuestion()
+          };
+          /* read-only helpers for the headless probes / unit tests */
+          const walk=async(path,make)=>{ const parts=String(path).split('/').filter(Boolean); let d=dataDirHandle; for(let i=0;i<(make?parts.length:parts.length-1);i++) d=await d.getDirectoryHandle(parts[i]); return {d,name:parts[parts.length-1]}; };
+          const testIO={
+            exists:async p=>{ try{ const w=await walk(p); await w.d.getFileHandle(w.name); return true; }catch(e){ return false; } },
+            dirExists:async p=>{ try{ await walk(p,true); return true; }catch(e){ return false; } },
+            text:async p=>{ const w=await walk(p); return await (await (await w.d.getFileHandle(w.name)).getFile()).text(); },
+            file:async p=>{ const w=await walk(p); return await (await w.d.getFileHandle(w.name)).getFile(); },
+            list:async p=>{ const w=await walk(p,true), out=[]; for await(const [n] of w.d.entries()) out.push(n); return out; },
+            qbankProgress:()=>readQbankProgress()
+          };
+          return {install,bridge,QBP,computeRows,pool,loadTags,hiddenRec,formAttemptMap,testIO,getFilter:()=>filter};
+        })();
+        QB.install(); window.__stepQbanksData=QB; /* probes/tests only */
         /* A23 Phase A: read-only library bridge for the ThunderUSMLE UI layer. Getters only; every
            action still goes through the existing card controls. Keep the keys identical in the Local and iPad apps. */
         const a23SetupTokens=new WeakMap(); let a23SetupTokenN=0; // one token per opened setup (stable across pool changes)
         window.StepLibraryBridge=Object.freeze({
           version:1,
-          forms:()=>(catalog.forms||[]).slice(),
+          ...QB.bridge, /* Qbanks data layer (see the QB block above) */
+          forms:()=>(catalog.forms||[]).filter(f=>!f.libraryHidden),
           form:id=>catalogForm(id)||null,
           filter:()=>activeLibraryFilter,
           tabKey:rec=>getFormTabKey(rec),
@@ -4358,14 +4735,14 @@ document.addEventListener('click', function(e){
              Qbank layers (the iPad's v16 linked-pool layer never installs); the pool itself stays in the legacy panel. */
           qbank:async()=>{
             const qp=await readQbankProgress(), used=qp.used||{};
-            const forms=(catalog.forms||[]).map(f=>{ const idx=Array.isArray(f.questionIndex)?f.questionIndex:[]; return {id:f.id, questions:idx.length, total:Number(f.totalQuestions)||idx.length, used:idx.filter(r=>r&&used[r.key]).length}; }); // questions = pool rows
+            const forms=(catalog.forms||[]).filter(f=>!f.libraryHidden).map(f=>{ const idx=Array.isArray(f.questionIndex)?f.questionIndex:[]; return {id:f.id, questions:idx.length, total:Number(f.totalQuestions)||idx.length, used:idx.filter(r=>r&&used[r.key]).length}; }); // questions = pool rows
             const tests=(qp.sessions||[]).filter(t=>t&&t.session).map(t=>({id:t.qbankTestId, name:t.name||'', mode:t.mode==='tutor'?'tutor':'testing', done:t.status==='completed', total:Number(t.total)||0, blocks:((t.session&&t.session.blocks)||[]).length, percent:t.summary&&t.summary.percent!=null?Number(t.summary.percent):null, sourceMode:t.sourceMode||'', poolType:t.poolType||'', attemptSource:t.attemptSource||'', formIds:(t.formIds||[]).slice(), createdAt:t.createdAt||null, updatedAt:t.updatedAt||null, completedAt:t.completedAt||null}));
             return {used:Object.keys(used).length, forms, tests};
           },
           /* Analysis tab (analysis.js): catalog + every form's raw progress bundle + ThunderShadow logs, read-only.
              Reads the progress files directly (not readBundle, whose later wrapper also loads the whole form bank). */
           analysis:async()=>{
-            const forms=(catalog.forms||[]).slice(), progress={}, shadow={}, dir=await progressDir();
+            const forms=(catalog.forms||[]).filter(f=>!f.libraryHidden), progress={}, shadow={}, dir=await progressDir();
             for(const f of forms){
               try{ progress[f.id]=bundleFromData(JSON.parse(await readText(dir,`${f.id}_progress_save.json`)),f.id); }catch(e){}
               try{ shadow[f.id]=JSON.parse(await readText(dir,`${f.id}_shadow_log.json`)); }catch(e){}
@@ -4812,7 +5189,7 @@ document.addEventListener('click', function(e){
         function v195CustomTabsHtml(){
           const tabs = customLibraryTabs();
           if(!tabs.length) return `<div class="v195-empty-note">No removable custom tabs exist. Built-in tabs cannot be deleted.</div>`;
-          return `<div class="v195-danger-zone"><p>Deleting a custom tab only moves its forms back to the base Custom tab. Form JSON and progress files are preserved.</p><div class="settings-list">${tabs.map(f=>{ const n=(catalog.forms||[]).filter(r=>r.filter===f).length; return `<div class="v195-custom-delete-row"><div><b>${escapeHtml(f)}</b><span>${n} form(s) will move to Custom.</span></div><button class="danger" data-v195-delete-tab="${escapeAttr(f)}">Delete tab</button></div>`; }).join('')}</div></div>`;
+          return `<div class="v195-danger-zone"><p>Deleting a custom tab only moves its forms back to the base Custom tab. Form JSON and progress files are preserved.</p><div class="settings-list">${tabs.map(f=>{ const n=(catalog.forms||[]).filter(r=>r.filter===f&&!r.libraryHidden).length; return `<div class="v195-custom-delete-row"><div><b>${escapeHtml(f)}</b><span>${n} form(s) will move to Custom.</span></div><button class="danger" data-v195-delete-tab="${escapeAttr(f)}">Delete tab</button></div>`; }).join('')}</div></div>`;
         }
         function v195SettingsNav(active){
           const tabs = [['library','Library meters'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup'],['admin','Admin']];
@@ -5029,7 +5406,7 @@ document.addEventListener('click', function(e){
         function v195BCustomTabsHtml(){
           const tabs = customLibraryTabs();
           if(!tabs.length) return `<div class="v195-empty-note">No removable custom tabs exist. Built-in tabs cannot be deleted.</div>`;
-          return `<div class="v195-danger-zone"><p>Deleting a custom tab only moves its forms back to the base Custom tab. Form JSON and progress files are preserved.</p><div class="settings-list">${tabs.map(f=>{ const n=(catalog.forms||[]).filter(r=>r.filter===f).length; return `<div class="v195-custom-delete-row"><div><b>${escapeHtml(f)}</b><span>${n} form(s) will move to Custom.</span></div><button class="danger" data-v195-delete-tab="${escapeAttr(f)}">Delete tab</button></div>`; }).join('')}</div></div>`;
+          return `<div class="v195-danger-zone"><p>Deleting a custom tab only moves its forms back to the base Custom tab. Form JSON and progress files are preserved.</p><div class="settings-list">${tabs.map(f=>{ const n=(catalog.forms||[]).filter(r=>r.filter===f&&!r.libraryHidden).length; return `<div class="v195-custom-delete-row"><div><b>${escapeHtml(f)}</b><span>${n} form(s) will move to Custom.</span></div><button class="danger" data-v195-delete-tab="${escapeAttr(f)}">Delete tab</button></div>`; }).join('')}</div></div>`;
         }
         function v195BSettingsNav(active){
           const tabs = [['library','Library progress'],['order','Order & colors'],['custom','Custom tabs'],['qbank','Qbank'],['safety','Safety/defaults'],['backup','Backup'],['admin','Admin']];
@@ -5698,7 +6075,7 @@ document.addEventListener('click', function(e){
       const bank=normalizeBank(JSON.parse(text));
       for(const a of (p.assets||[])){ const path=normalizeZipPath(a.path); if(!path.startsWith('assets/') || path.split('/').includes('..')) continue; const r=await stepSyncResolveLibraryPath(path,true); await writeBinary(r.dir,r.name,a.blob); }
       await writeText(await formsDir(), `${id}.json`, text);
-      const rec=makeCatalogRecord(id,{...m,defaultName:m.defaultName||id},bank,text,bankHash,Array.isArray(m.sourceFiles)?m.sourceFiles:[],{formUid:p.formUid||m.formUid,qidSchemaVersion:m.qidSchemaVersion,legacyBankHashes:m.legacyBankHashes,displayName:m.displayName});
+      const rec=makeCatalogRecord(id,{...m,defaultName:m.defaultName||id},bank,text,bankHash,Array.isArray(m.sourceFiles)?m.sourceFiles:[],{formUid:p.formUid||m.formUid,qidSchemaVersion:m.qidSchemaVersion,legacyBankHashes:m.legacyBankHashes,displayName:m.displayName,qbank:m.qbank,libraryHidden:!!m.libraryHidden});
       rec.optimized=!!m.optimized; rec.imageAssets=Number(m.imageAssets)||0;
       upsertCatalogForm(rec); loadedFormCache.delete(id); revokeDataAssetObjectUrls(); await writeCatalog();
       try{ await renderLibrary(); }catch(e){} try{ await renderQbankMode(); }catch(e){}
@@ -10684,18 +11061,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=55"></script>
-<script src="./js/sync-storage.js?v=55"></script>
-<script src="./js/progress-sync.js?v=55"></script>
-<script src="./js/library-backup.js?v=55"></script>
-<script src="./js/qid-settings.js?v=55"></script>
-<script src="./js/sync3-core.js?v=55"></script>
-<script src="./js/sync3-bridge.js?v=55"></script>
-<script src="./js/sync3-store.js?v=55"></script>
-<script src="./js/sync3-drive.js?v=55"></script>
-<script src="./js/sync3-sync.js?v=55"></script>
-<script src="./js/sync3-migrate.js?v=55"></script>
-<script src="./js/sync3-boot.js?v=55"></script>
+<script src="./js/sync-merge.js?v=56"></script>
+<script src="./js/sync-storage.js?v=56"></script>
+<script src="./js/progress-sync.js?v=56"></script>
+<script src="./js/library-backup.js?v=56"></script>
+<script src="./js/qid-settings.js?v=56"></script>
+<script src="./js/sync3-core.js?v=56"></script>
+<script src="./js/sync3-bridge.js?v=56"></script>
+<script src="./js/sync3-store.js?v=56"></script>
+<script src="./js/sync3-drive.js?v=56"></script>
+<script src="./js/sync3-sync.js?v=56"></script>
+<script src="./js/sync3-migrate.js?v=56"></script>
+<script src="./js/sync3-boot.js?v=56"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11174,10 +11551,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=55"></script>
-<script src="./exam-notes.js?v=55"></script>
-<script src="./app-update.js?v=55"></script>
-<script src="./js/form-updates.js?v=55"></script>
+<script src="./bulk-import.js?v=56"></script>
+<script src="./exam-notes.js?v=56"></script>
+<script src="./app-update.js?v=56"></script>
+<script src="./js/form-updates.js?v=56"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11604,11 +11981,12 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=55"></script>
-<script src="./nav-delay.js?v=55"></script>
-<script src="./thunder-ui.js?v=55"></script>
-<script src="./rapid-review.js?v=55"></script>
-<script src="./shadow-logger.js?v=55"></script>
-<script src="./analysis.js?v=55"></script>
+<script src="./item-code.js?v=56"></script>
+<script src="./nav-delay.js?v=56"></script>
+<script src="./thunder-ui.js?v=56"></script>
+<script src="./rapid-review.js?v=56"></script>
+<script src="./shadow-logger.js?v=56"></script>
+<script src="./analysis.js?v=56"></script>
+<script src="./qbanks.js?v=56"></script>
 </body>
 </html>
