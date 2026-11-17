@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=56">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=56">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=57">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=57">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=56"></script>
-<script src="./js/form-updates-core.js?v=56"></script>
-<script src="./js/form-update-store.js?v=56"></script>
-<script src="./js/google-auth.js?v=56"></script>
+<script src="./js/sync-config.js?v=57"></script>
+<script src="./js/form-updates-core.js?v=57"></script>
+<script src="./js/form-update-store.js?v=57"></script>
+<script src="./js/google-auth.js?v=57"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=56" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=57" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,9 +635,9 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=56"></script>
-<script src="./js/qid-migration.js?v=56"></script>
-<script src="./qbanks-core.js?v=56"></script>
+<script src="jszip.min.js?v=57"></script>
+<script src="./js/qid-migration.js?v=57"></script>
+<script src="./qbanks-core.js?v=57"></script>
 <script>
 
 
@@ -4433,7 +4433,41 @@ document.addEventListener('click', function(e){
                 if(Array.isArray(v)) return v.map(walk); if(v&&typeof v==='object'){ Object.keys(v).forEach(k=>{ v[k]=walk(v[k]); }); return v; } return v; }
               return walk(bank);
             }
-            return {str,IMG_RX,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs};
+            /* ---- import v2 (many question files, manifest, one shared assets folder) ---- */
+            const isManifest=p=>/(^|\/)qbank\.json$/i.test(normPath(p));
+            /* every non-junk .json except skipJson names and qbank.json, natural order on the normalized path */
+            const questionFiles=names=>(names||[]).filter(n=>/\.json$/i.test(n)&&!isJunk(n)&&!skipJson(n)&&!isManifest(n)).sort((a,b)=>natCmp(normPath(a),normPath(b)));
+            const pickManifest=names=>(names||[]).filter(n=>!isJunk(n)&&isManifest(n)).sort((a,b)=>normPath(a).split('/').length-normPath(b).split('/').length||natCmp(a,b))[0]||null;
+            function parseManifest(text){
+              let j; try{ j=JSON.parse(text); }catch(e){ return null; } if(!j||typeof j!=='object'||Array.isArray(j)) return null;
+              const tm=j.tagMap&&typeof j.tagMap==='object'?j.tagMap:null, color=str(j.color);
+              return {name:str(j.name).slice(0,40),code:str(j.code).toUpperCase().slice(0,3),color:/^#[0-9a-f]{3,8}$/i.test(color)?color:'',tagMap:tm?{system:str(tm.system),subject:str(tm.subject),topic:str(tm.topic),normalize:tm.normalize!==false}:null};
+            }
+            const fileBase=p=>normPath(p).split('/').pop().replace(/\.json$/i,'');
+            /* same rule as choice-epc.js values(): numbers or "62%" strings, at least one > 0 */
+            function epcNum(v){ if(typeof v==='number') return isFinite(v)&&v>=0?v:null; if(typeof v==='string'){ const m=v.trim().match(/^(\d+(?:\.\d+)?)\s*%?$/); return m?Number(m[1]):null; } return null; }
+            function epcHas(q){
+              const src=q&&q.choicesEPC; if(!src||typeof src!=='object') return false; const L='ABCDEFGHIJKLMNO', arr=Array.isArray(src), n=Array.isArray(q.choices)?q.choices.length:0, count=n||(arr?src.length:Object.keys(src).length);
+              for(let i=0;i<count;i++){ const v=arr?src[i]:(src[L[i]]!==undefined?src[L[i]]:(src[(L[i]||'').toLowerCase()]!==undefined?src[L[i].toLowerCase()]:src[String(i)])); const x=epcNum(v); if(x!=null&&x>0) return true; }
+              return false;
+            }
+            const epcCount=qs=>(qs||[]).reduce((n,q)=>n+(epcHas(q)?1:0),0);
+            /* pic.png -> pic~2.png (same folder, before the extension) */
+            function altName(rel,n){ const i=rel.lastIndexOf('.'),s=rel.lastIndexOf('/'); return i>s+1?rel.slice(0,i)+'~'+n+rel.slice(i):rel+'~'+n; }
+            function renameFree(rel,taken){ if(!taken(rel)) return rel; for(let n=2;n<10000;n++){ const r=altName(rel,n); if(!taken(r)) return r; } throw new Error('Too many images with the same name.'); }
+            /* asset-looking references in the questions that match no image: distinct count */
+            function missingRefs(objs,map){
+              const miss=new Set(), rx=/[A-Za-z0-9_\-./~%]+\.(?:png|jpe?g|gif|webp|svg|mp3|m4a|aac|wav|oga|ogg|opus|flac|mp4|m4v|mov|webm|ogv)(?![A-Za-z0-9])/gi;
+              const walk=v=>{ if(typeof v==='string'){ if(/^(data|blob):/i.test(v)) return; let m; rx.lastIndex=0; while((m=rx.exec(v))){ if(m.index>0&&v[m.index-1]===':') continue; const c=cleanAssetKey(m[0]); if(!c||/^DATA\//.test(c)||/^\/\//.test(m[0])) continue; if(!lookupAsset(map,c)) miss.add(c.replace(/^assets\//,'')); } } else if(Array.isArray(v)) v.forEach(walk); else if(v&&typeof v==='object') Object.keys(v).forEach(k=>walk(v[k])); };
+              walk(objs); return miss.size;
+            }
+            /* export: DATA/assets/<dir>/<rel> -> assets/<map(dir,rel)>; deep copy, strings only */
+            function exportRewrite(obj,dirs,mapFn){
+              const rx=new RegExp('DATA/assets/('+dirs.map(reEsc).join('|')+')/([^"\'\\s)<>?#]+)','g');
+              const walk=v=>{ if(typeof v==='string') return v.indexOf('DATA/assets/')<0?v:v.replace(rx,(m,d,r)=>'assets/'+(mapFn?mapFn(d,r):r)); if(Array.isArray(v)) return v.map(walk); if(v&&typeof v==='object'){ const o={}; Object.keys(v).forEach(k=>{ o[k]=walk(v[k]); }); return o; } return v; };
+              return dirs.length?walk(obj):JSON.parse(JSON.stringify(obj));
+            }
+            return {str,IMG_RX,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs,isManifest,questionFiles,pickManifest,parseManifest,fileBase,epcHas,epcCount,altName,renameFree,missingRefs,exportRewrite};
           })();
           /* QBDATA-PURE-END */
 
@@ -4545,40 +4579,65 @@ document.addEventListener('click', function(e){
             const name=String(file.name||'');
             if(/\.zip$/i.test(name)){
               if(!window.JSZip) throw new Error('ZIP import requires JSZip (jszip.min.js).');
-              const zip=await JSZip.loadAsync(file), entries=Object.values(zip.files||{}).filter(e=>!e.dir&&!QBP.isJunk(e.name));
-              const jsons=entries.filter(e=>/\.json$/i.test(e.name)&&!QBP.skipJson(e.name)).sort((a,b)=>QBP.normPath(a.name).split('/').length-QBP.normPath(b.name).split('/').length||QBP.natCmp(a.name,b.name));
-              if(!jsons.length) throw new Error('The ZIP has no question .json file.');
-              return {name,inner:jsons[0].name,text:await jsons[0].async('text'),images:entries.filter(e=>QBP.IMG_RX.test(e.name)),zip};
+              const zip=await JSZip.loadAsync(file), entries=Object.values(zip.files||{}).filter(e=>!e.dir&&!QBP.isJunk(e.name)), by=new Map(entries.map(e=>[e.name,e]));
+              const names=QBP.questionFiles(entries.map(e=>e.name)); if(!names.length) throw new Error('The ZIP has no question .json file.');
+              const files=[]; for(const n of names) files.push({path:QBP.normPath(n),text:await by.get(n).async('text')});
+              const mn=QBP.pickManifest(entries.map(e=>e.name)), manifest=mn?QBP.parseManifest(await by.get(mn).async('text')):null;
+              return {name,inner:files[0].path,files,manifest,images:entries.filter(e=>QBP.IMG_RX.test(e.name)),zip};
             }
             if(!/\.json$/i.test(name)) throw new Error('Choose a .json or .zip file.');
-            return {name,inner:'',text:await file.text(),images:[],zip:null};
+            return {name,inner:'',files:[{path:name,text:await file.text()}],manifest:null,images:[],zip:null};
           }
+          /* parse every question file; a failure is kept per file (preview) or thrown naming the files (import) */
+          function parseFiles(src){
+            return src.files.map(f=>{ const it={path:f.path,base:QBP.fileBase(f.path),j:null,qs:[],error:''};
+              try{ try{ it.j=JSON.parse(f.text); }catch(e){ throw new Error('That file is not valid JSON.'); }
+                it.qs=QBP.extractQuestions(it.j); if(!it.qs.length) throw new Error('No questions found (expected an array, {questions:[...]} or {blocks:[...]}).');
+                try{ normalizeBank(it.j); }catch(e){ throw new Error(String(e&&e.message||e)); }
+              }catch(e){ it.error=String(e&&e.message||e); it.qs=[]; }
+              return it; });
+          }
+          const badFilesMsg=items=>{ const bad=items.filter(x=>x.error); return items.length===1?bad[0].error:`${bad.length} file(s) could not be read: ${bad.map(x=>x.path).join(', ')}`; };
           async function srcIdsOfBank(recs){
             const set=new Set();
             for(const rec of recs){ try{ const b=normalizeBank(JSON.parse(await readText(await formsDir(),`${rec.id}.json`))); b.blocks.forEach(bl=>bl.questions.forEach(q=>set.add(QBP.srcId(q)))); }catch(e){} }
             return set;
           }
           async function importPreview(file,opt){
+            let files=[],manifest=null;
             try{
-              const src=await readSource(file); let j; try{ j=JSON.parse(src.text); }catch(e){ throw new Error('That file is not valid JSON.'); }
-              const qs=QBP.extractQuestions(j); if(!qs.length) throw new Error('No questions found (expected an array, {questions:[...]} or {blocks:[...]}).');
-              try{ normalizeBank(j); }catch(e){ throw new Error(String(e&&e.message||e)); }
-              const fields=QBP.detectFields(qs), guess=QBP.guess(fields), values={}; fields.forEach(f=>{ values[f.k]=QBP.valueCounts(qs,f.k,40); });
-              const title=String((j&&!Array.isArray(j)&&(j.title||j.name))||String(file.name||'').replace(/\.(json|zip)$/i,'')||'Imported Qbank').slice(0,40);
-              const out={ok:true,error:'',file:src.inner?src.name+' > '+src.inner:src.name,questions:qs.length,images:src.images.length,fields,guess,title,values};
-              if(opt&&opt.into){ const set=await srcIdsOfBank(bankRecs(opt.into)); const dup=qs.filter(q=>set.has(QBP.srcId(q))).length; out.duplicates=dup; out.newQuestions=qs.length-dup; }
+              const src=await readSource(file); manifest=src.manifest; const items=parseFiles(src);
+              files=items.map(x=>({path:x.path,questions:x.qs.length,error:x.error}));
+              if(items.some(x=>x.error)) throw new Error(badFilesMsg(items));
+              const qs=items.flatMap(x=>x.qs), fields=QBP.detectFields(qs), guess=QBP.guess(fields), values={}; fields.forEach(f=>{ values[f.k]=QBP.valueCounts(qs,f.k,40); });
+              if(manifest&&manifest.tagMap) ['system','subject','topic'].forEach(k=>{ if(manifest.tagMap[k]) guess[k]=manifest.tagMap[k]; });
+              const j0=items[0].j, title=String((manifest&&manifest.name)||(j0&&!Array.isArray(j0)&&(j0.title||j0.name))||String(file.name||'').replace(/\.(json|zip)$/i,'')||'Imported Qbank').slice(0,40);
+              let missingImages=0; if(src.zip){ const map={}; src.images.forEach(e=>{ const rel=QBP.safeAssetRel(e.name); if(rel) QBP.addAssetMapKeys(map,e.name,'x/'+rel); }); missingImages=QBP.missingRefs(qs,map); }
+              const out={ok:true,error:'',file:src.inner?src.name+' > '+src.inner:src.name,questions:qs.length,images:src.images.length,fields,guess,title,values,files,manifest,missingImages,bytes:Number(file.size)||0};
+              let newFiles=items.length;
+              if(opt&&opt.into){ const set=await srcIdsOfBank(bankRecs(opt.into)); const dup=qs.filter(q=>set.has(QBP.srcId(q))).length; out.duplicates=dup; out.newQuestions=qs.length-dup; newFiles=items.filter(x=>x.qs.some(q=>!set.has(QBP.srcId(q)))).length; }
+              const used=opt&&opt.into?bankRecs(opt.into).length:0;
+              if(used+newFiles>99) throw new Error(`This bank holds up to 99 import files: it has ${used}, this import adds ${newFiles}.`);
               return out;
-            }catch(err){ return {ok:false,error:String(err&&err.message||err),file:String(file&&file.name||''),questions:0,images:0,fields:[],guess:{system:'',subject:'',topic:''},title:''}; }
+            }catch(err){ return {ok:false,error:String(err&&err.message||err),file:String(file&&file.name||''),questions:0,images:0,fields:[],guess:{system:'',subject:'',topic:''},title:'',values:{},files,manifest,missingImages:0,bytes:Number(file&&file.size)||0}; }
           }
           async function addDirToZip(dir,zip){ for await(const [name,h] of dir.entries()){ if(h.kind==='file') zip.file(name,await h.getFile()); else if(h.kind==='directory') await addDirToZip(h,zip.folder(name)); } }
           async function writeBlobPath(root,path,blob){ const parts=QBP.normPath(path).split('/').filter(Boolean); let dir=root; for(let i=0;i<parts.length-1;i++) dir=await dir.getDirectoryHandle(parts[i],{create:true}); await writeBinary(dir,parts[parts.length-1],blob); }
+          async function dirAt(root,path,make){ let d=root; for(const p of QBP.normPath(path).split('/').filter(Boolean)) d=await d.getDirectoryHandle(p,make?{create:true}:undefined); return d; }
+          async function fileAt(root,path){ const parts=QBP.normPath(path).split('/').filter(Boolean); try{ const d=await dirAt(root,parts.slice(0,-1).join('/')); return await (await d.getFileHandle(parts[parts.length-1])).getFile(); }catch(e){ return null; } }
+          const shaOfBlob=async b=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await b.arrayBuffer()))).map(x=>x.toString(16).padStart(2,'0')).join('');
+          async function removeAssetFile(root,rel){ try{ const parts=QBP.normPath(rel).split('/'); await removeFile(await dirAt(root,parts.slice(0,-1).join('/')),parts[parts.length-1]); }catch(e){} }
+          /* every file under a directory: [{rel, file}] */
+          async function listFiles(dir,pre){ const out=[]; try{ for await(const [n,h] of dir.entries()){ if(h.kind==='file') out.push({rel:(pre||'')+n,file:await h.getFile()}); else if(h.kind==='directory') out.push(...await listFiles(h,(pre||'')+n+'/')); } }catch(e){} return out; }
+          async function assetFiles(dirName){ try{ return await listFiles(await (await getSubdir('assets')).getDirectoryHandle(dirName),''); }catch(e){ return []; } }
           async function removeAssetDir(id){ try{ await (await getSubdir('assets')).removeEntry(id,{recursive:true}); }catch(e){} }
           /* recovery ZIP in progress/backups: catalog.json always, the named forms + their assets when asked */
-          async function makeRecovery(prefix,ids,withForms){
+          async function makeRecovery(prefix,ids,withForms,assetDirs){
             if(!window.JSZip) throw new Error('A recovery ZIP needs JSZip (jszip.min.js).');
             const zip=new JSZip(); let catalogText=null; try{ catalogText=await readText(dataDirHandle,'catalog.json'); }catch(e){}
             zip.file('QBANK_RECOVERY.json',JSON.stringify({fileType:'ThunderQbankRecovery',createdAt:nowIso(),prefix,formIds:ids},null,2)); if(catalogText!==null) zip.file('catalog.json',catalogText);
             if(withForms) for(const id of ids){ try{ zip.file(`forms/${id}.json`,await readText(await formsDir(),`${id}.json`)); }catch(e){} try{ const ad=await (await getSubdir('assets')).getDirectoryHandle(id); await addDirToZip(ad,zip.folder(`assets/${id}`)); }catch(e){} }
+            if(withForms) for(const dn of (assetDirs||[])){ try{ const ad=await (await getSubdir('assets')).getDirectoryHandle(dn); await addDirToZip(ad,zip.folder(`assets/${dn}`)); }catch(e){} }
             const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}}), name=`${prefix}_${stampNow()}.zip`, bd=await (await progressDir()).getDirectoryHandle('backups',{create:true});
             await writeBinary(bd,name,blob); return {blob,name,path:`progress/backups/${name}`,catalogText};
           }
@@ -4595,34 +4654,49 @@ document.addEventListener('click', function(e){
             o=o||{}; needData(); const C=needCore();
             if(window.__STEP_FORM_UPDATE_COMMITTING) throw new Error('Wait for form installation to finish.');
             if(window.__STEP_NATIVE_IMPORT_BUSY) throw new Error('Another import is running.');
-            window.__STEP_NATIVE_IMPORT_BUSY=true; let recovery=null, formId='', wrote=false;
+            window.__STEP_NATIVE_IMPORT_BUSY=true; let recovery=null, ids=[], wroteAssets=[], assetDir='', dirExisted=true, assets=null;
             try{
-              const src=await readSource(o.file); let j; try{ j=JSON.parse(src.text); }catch(e){ throw new Error('That file is not valid JSON.'); }
-              const bank0=normalizeBank(j), map=o.map||{}, tagMap={system:String(map.system||''),subject:String(map.subject||''),topic:String(map.topic||''),normalize:o.normalize!==false};
+              const src=await readSource(o.file), items=parseFiles(src); if(items.some(x=>x.error)) throw new Error(badFilesMsg(items));
+              const mf=src.manifest, mm=o.map&&(o.map.system||o.map.subject||o.map.topic)?o.map:((mf&&mf.tagMap)||o.map||{});
+              const tagMap={system:String(mm.system||''),subject:String(mm.subject||''),topic:String(mm.topic||''),normalize:o.normalize!==undefined?o.normalize!==false:!(mf&&mf.tagMap&&mf.tagMap.normalize===false)};
               let into=null,qb; if(o.into){ const recs=bankRecs(o.into); if(!recs.length) throw new Error('That bank no longer exists.'); into=recs; qb=Object.assign({},recs[0].qbank); qb.tagMap=Object.assign({},qb.tagMap,tagMap); }
-              else{ const name=String(o.name||'').trim().slice(0,40)||'Imported Qbank', slug=QBP.freeSlug(QBP.slugOf(name),(catalog.forms||[]).map(f=>f.id),(catalog.forms||[]).map(f=>f.qbank&&f.qbank.id).filter(Boolean)); qb={id:QBP.bankIdOfSlug(slug),name,code:String(o.code||name.replace(/[^A-Za-z0-9]/g,'').slice(0,3)||'QB').toUpperCase().slice(0,3),color:/^#[0-9a-f]{3,8}$/i.test(String(o.color||''))?String(o.color):'#e4572e',tagMap}; }
+              else{ const name=String(o.name||(mf&&mf.name)||'').trim().slice(0,40)||'Imported Qbank', slug=QBP.freeSlug(QBP.slugOf(name),(catalog.forms||[]).map(f=>f.id),(catalog.forms||[]).map(f=>f.qbank&&f.qbank.id).filter(Boolean)), color=String(o.color||(mf&&mf.color)||''); qb={id:QBP.bankIdOfSlug(slug),name,code:String(o.code||(mf&&mf.code)||name.replace(/[^A-Za-z0-9]/g,'').slice(0,3)||'QB').toUpperCase().slice(0,3),color:/^#[0-9a-f]{3,8}$/i.test(color)?color:'#e4572e',tagMap}; }
               const slug=(into&&QBP.slugFromFormId(into[0].id))||qb.id.slice(3).toUpperCase();
-              formId=QBP.nextFormId(slug,(catalog.forms||[]).map(f=>f.id));
-              const have=into?await srcIdsOfBank(into):new Set(); let added=0,skipped=0; const blocks=[];
-              bank0.blocks.forEach(b=>{ const qs=[]; b.questions.forEach(q0=>{ const sid=QBP.srcId(q0); if(into&&have.has(sid)){ skipped++; return; } if(into) have.add(sid);
-                const q=Object.assign({},q0), t=QBP.mappedTags(q0,tagMap); if(t.system) q.system=t.system; if(t.subject) q.discipline=t.subject; if(t.topic) q.topic=t.topic; q.qbSrc=sid; delete q.qid; qs.push(q); added++; }); if(qs.length) blocks.push(Object.assign({},b,{questions:qs})); });
-              if(!added){ if(!into) throw new Error('No questions to import.'); return {bankId:qb.id,added:0,skipped}; }
-              const assets=[],assetMap={};
-              if(src.zip) for(const e of src.images){ const rel=QBP.safeAssetRel(e.name); if(!rel) continue; assets.push({rel,blob:await e.async('blob')}); QBP.addAssetMapKeys(assetMap,e.name,`${formId}/${rel}`); }
-              let bank={title:into?`${qb.name} (${formId.slice(-2)})`:qb.name,description:`Qbank import for ${qb.name}; source: ${src.inner||src.name}`,sourceFiles:[src.inner||src.name],librarySlotId:formId,qbank:qb,blocks};
-              if(Object.keys(assetMap).length) bank=QBP.rewriteAssetRefs(bank,assetMap);
-              if(window.StepQidMigration){ const uid=StepQidMigration.resolveFormUid(bank,formId); bank.blocks.forEach((b,bi)=>b.questions.forEach((q,qi)=>{ q.qid=StepQidMigration.generatedQid(uid,bi,qi); })); bank=StepQidMigration.migrateForm(bank,formId).bank; }
-              const raw=JSON.stringify(bank,null,2), hash=await sha256Hex(raw);
-              recovery=await makeRecovery('PRE_QBANK_IMPORT',[formId],false);
-              const ad=assets.length?await assetsDir(formId):null; for(const a of assets) await writeBlobPath(ad,a.rel,a.blob);
-              wrote=true; await writeText(await formsDir(),`${formId}.json`,raw);
-              const rec=makeCatalogRecord(formId,{id:formId,type:'Custom',group:'Custom',filter:'Custom',subject:'Custom',defaultName:bank.title,displayName:bank.title},bank,raw,hash,bank.sourceFiles,{qbank:qb,libraryHidden:true,displayName:bank.title});
-              rec.optimized=assets.length>0; rec.imageAssets=assets.length; rec.libraryHidden=true; rec.qbank=qb;
-              upsertCatalogForm(rec); await writeCatalog(); wrote=false;
-              await afterLibraryChange([formId]);
-              return {bankId:qb.id,added,skipped,formId,recovery:recovery.path};
+              const have=into?await srcIdsOfBank(into):new Set(); let added=0,skipped=0; const plans=[];
+              for(const it of items){ const bank0=normalizeBank(it.j), blocks=[]; let n=0;
+                bank0.blocks.forEach(b=>{ const qs=[]; b.questions.forEach(q0=>{ const sid=QBP.srcId(q0); if(into&&have.has(sid)){ skipped++; return; } if(into) have.add(sid);
+                  const q=Object.assign({},q0), t=QBP.mappedTags(q0,tagMap); if(t.system) q.system=t.system; if(t.subject) q.discipline=t.subject; if(t.topic) q.topic=t.topic; q.qbSrc=sid; delete q.qid; qs.push(q); n++; }); if(qs.length) blocks.push(Object.assign({},b,{questions:qs})); });
+                if(n){ added+=n; plans.push({path:it.path,base:it.base,blocks}); } }
+              if(!added){ if(!into) throw new Error('No questions to import.'); return {bankId:qb.id,added:0,skipped,formIds:[],formId:'',files:0,images:0,recovery:''}; }
+              const used=(catalog.forms||[]).map(f=>f.id); plans.forEach(p=>{ p.formId=QBP.nextFormId(slug,used); used.push(p.formId); }); ids=plans.map(p=>p.formId);
+              assetDir=(into&&into[0].qbank&&into[0].qbank.assetDir)||('QB-'+slug); qb.assetDir=assetDir;
+              recovery=await makeRecovery('PRE_QBANK_IMPORT',ids,false);
+              const assetMap={}; let written=0;
+              if(src.zip&&src.images.length){
+                try{ await (await getSubdir('assets')).getDirectoryHandle(assetDir); }catch(e){ dirExisted=false; }
+                const ad=await assetsDir(assetDir);
+                for(const e of src.images.slice().sort((x,y)=>QBP.natCmp(x.name,y.name))){ const rel=QBP.safeAssetRel(e.name); if(!rel) continue; const blob=await e.async('blob'); let fin=rel,n=1,sha=null;
+                  for(;;){ const ex=await fileAt(ad,fin); if(!ex){ await writeBlobPath(ad,fin,blob); wroteAssets.push(fin); written++; break; }
+                    if(ex.size===blob.size){ sha=sha||await shaOfBlob(blob); if(sha===await shaOfBlob(ex)) break; } fin=QBP.altName(rel,++n); }
+                  QBP.addAssetMapKeys(assetMap,e.name,`${assetDir}/${fin}`); }
+              }
+              for(const p of plans){
+                const qbf=Object.assign({},qb,{source:src.name});
+                let bank={title:`${qb.name} · ${p.base}`,description:`Qbank import for ${qb.name}; source: ${src.zip?src.name+' > ':''}${p.path}`,sourceFiles:[p.path],librarySlotId:p.formId,qbank:qbf,blocks:p.blocks};
+                if(Object.keys(assetMap).length) bank=QBP.rewriteAssetRefs(bank,assetMap);
+                if(window.StepQidMigration){ const uid=StepQidMigration.resolveFormUid(bank,p.formId); bank.blocks.forEach((b,bi)=>b.questions.forEach((q,qi)=>{ q.qid=StepQidMigration.generatedQid(uid,bi,qi); })); bank=StepQidMigration.migrateForm(bank,p.formId).bank; }
+                const raw=JSON.stringify(bank,null,2), hash=await sha256Hex(raw);
+                await writeText(await formsDir(),`${p.formId}.json`,raw);
+                const rec=makeCatalogRecord(p.formId,{id:p.formId,type:'Custom',group:'Custom',filter:'Custom',subject:'Custom',defaultName:bank.title,displayName:bank.title},bank,raw,hash,bank.sourceFiles,{qbank:qbf,libraryHidden:true,displayName:bank.title});
+                const refd=Object.values(assetMap).filter(d=>d&&d!=='__ambiguous__'&&!d.startsWith('__base__')&&raw.includes('DATA/'+d)).length;
+                rec.optimized=refd>0; rec.imageAssets=refd; rec.libraryHidden=true; rec.qbank=qbf; upsertCatalogForm(rec);
+              }
+              if(into) into.forEach(r=>{ if(!(r.qbank&&r.qbank.assetDir)){ r.qbank=Object.assign({},r.qbank,{assetDir}); upsertCatalogForm(r); } });
+              await writeCatalog();
+              await afterLibraryChange(ids);
+              return {bankId:qb.id,added,skipped,formIds:ids.slice(),formId:ids[0],files:ids.length,images:written,recovery:recovery.path};
             }catch(err){
-              if(recovery&&(wrote||formId)){ await restoreRecovery(recovery,formId?[formId]:[]); await afterLibraryChange([formId]); }
+              if(recovery){ try{ const root=assetDir?await (await getSubdir('assets')).getDirectoryHandle(assetDir):null; if(root) for(const rel of wroteAssets) await removeAssetFile(root,rel); }catch(e){} if(assetDir&&!dirExisted) await removeAssetDir(assetDir); await restoreRecovery(recovery,ids); await afterLibraryChange(ids); }
               throw err;
             }finally{ window.__STEP_NATIVE_IMPORT_BUSY=false; }
           }
@@ -4640,14 +4714,51 @@ document.addEventListener('click', function(e){
             if(window.__STEP_NATIVE_IMPORT_BUSY) throw new Error('Another import is running.');
             window.__STEP_NATIVE_IMPORT_BUSY=true; const ids=recs.map(r=>r.id); let recovery=null;
             try{
-              recovery=await makeRecovery('PRE_QBANK_DELETE',ids,true);
-              const pd=await progressDir();
+              const dirs=Array.from(new Set(recs.map(r=>r.qbank&&r.qbank.assetDir).filter(Boolean)));
+              recovery=await makeRecovery('PRE_QBANK_DELETE',ids,true,dirs);
+              const pd=await progressDir(); for(const dn of dirs) await removeAssetDir(dn);
               for(const fid of ids){ await removeFile(await formsDir(),`${fid}.json`); await removeAssetDir(fid); for(const n of [`${fid}_progress_save.json`,`${fid}_suspended_test.json`,`${fid}_shadow_log.json`]) await removeFile(pd,n); }
               catalog.forms=(catalog.forms||[]).filter(f=>!ids.includes(f.id)); await writeCatalog();
               recs.forEach(r=>{ try{ window.dispatchEvent(new CustomEvent('stepsim:progress-write',{detail:{filename:`${r.id}_progress_save.json`,operation:'delete',formId:r.id,bankHash:r.bankHash||''}})); }catch(e){} }); /* same signal as Remove Form */
               await afterLibraryChange(ids); return {ok:true,removed:ids.length,recovery:recovery.path};
             }catch(err){ if(recovery){ await restoreRecovery(recovery,[]); await afterLibraryChange(ids); } throw err; }
             finally{ window.__STEP_NATIVE_IMPORT_BUSY=false; }
+          }
+          /* ---------- bank details + export ---------- */
+          async function formQuestions(rec){ try{ return normalizeBank(JSON.parse(await readText(await formsDir(),`${rec.id}.json`))).blocks.flatMap(b=>b.questions); }catch(e){ return []; } }
+          async function bankDetails(id){
+            const C=needCore(), recs=bankRecs(id).slice().sort((x,y)=>QBP.natCmp(x.id,y.id));
+            if(recs.length){
+              const qb=recs[0].qbank, files=[]; let epc=0,bytes=0,images=0,at=null; const srcs=[], dirs=new Set(recs.map(r=>r.qbank&&r.qbank.assetDir).filter(Boolean)); recs.forEach(r=>dirs.add(r.id));
+              for(const r of recs){ files.push({formId:r.id,source:(r.sourceFiles&&r.sourceFiles[0])||r.displayName||r.id,questions:(r.questionIndex||[]).length}); epc+=QBP.epcCount(await formQuestions(r));
+                try{ const f=await (await (await formsDir()).getFileHandle(`${r.id}.json`)).getFile(); bytes+=f.size; }catch(e){}
+                const s=(r.qbank&&r.qbank.source)||(r.sourceFiles&&r.sourceFiles[0])||''; if(s&&!srcs.includes(s)) srcs.push(s);
+                const t=r.addedAt||r.createdAt||r.installedAt||r.importedAt||null; if(t&&(!at||String(t)<String(at))) at=t; }
+              for(const d of dirs){ const fl=await assetFiles(d); images+=fl.length; fl.forEach(x=>{ bytes+=x.file.size; }); }
+              return {id,kind:'imported',name:qb.name||id,code:qb.code||'QB',color:qb.color||'#5c5f66',assetDir:qb.assetDir||'',questions:files.reduce((n,f)=>n+f.questions,0),files,images,bytes,epc,importedAt:at,sources:srcs};
+            }
+            const b=C.BUILTIN_BANKS.find(x=>x.id===id), lib=b?(catalog.forms||[]).filter(f=>f&&!hiddenRec(f)&&C.bankOf(f)===id):[];
+            if(!lib.length) throw new Error('That bank no longer exists.');
+            const files=lib.map(r=>({formId:r.id,source:r.displayName||r.id,questions:(r.questionIndex||[]).length})); let epc=0; for(const r of lib) epc+=QBP.epcCount(await formQuestions(r));
+            return {id,kind:'library',name:b.name,code:b.code,color:b.color,questions:files.reduce((n,f)=>n+f.questions,0),files,images:null,bytes:null,epc,importedAt:null,sources:[]};
+          }
+          async function exportBank(id){
+            needData(); if(!window.JSZip) throw new Error('Export needs JSZip (jszip.min.js).');
+            const recs=bankRecs(id).slice().sort((x,y)=>QBP.natCmp(x.id,y.id)); if(!recs.length) throw new Error('That bank no longer exists.');
+            const qb=recs[0].qbank, zip=new JSZip(), tm=qb.tagMap||{};
+            zip.file('qbank.json',JSON.stringify({fileType:'ThunderQbank',version:2,name:qb.name,code:qb.code,color:qb.color,tagMap:{system:tm.system||'',subject:tm.subject||'',topic:tm.topic||'',normalize:tm.normalize!==false}},null,2));
+            /* one shared assets/ folder: the bank dir first, then legacy per-form dirs; a clash with different bytes gets ~2 */
+            const dirOrder=[]; recs.forEach(r=>{ const d=r.qbank&&r.qbank.assetDir; if(d&&!dirOrder.includes(d)) dirOrder.push(d); }); recs.forEach(r=>dirOrder.push(r.id));
+            const taken=new Map(), out=new Map(), items=[]; let images=0;
+            for(const d of dirOrder) for(const f of await assetFiles(d)){ let rel=f.rel,n=1,reuse=false,sha=null;
+              for(;;){ const t=taken.get(rel.toLowerCase()); if(!t) break; if(t.file.size===f.file.size){ sha=sha||await shaOfBlob(f.file); if(sha===await shaOfBlob(t.file)){ reuse=true; break; } } rel=QBP.altName(f.rel,++n); }
+              out.set(d+'/'+f.rel,rel); if(!reuse){ taken.set(rel.toLowerCase(),f); zip.file('assets/'+rel,f.file); images++; } }
+            let idx=0;
+            for(const r of recs){ const b=JSON.parse(await readText(await formsDir(),`${r.id}.json`)), dirs=[r.qbank&&r.qbank.assetDir,r.id].filter(Boolean);
+              const body=QBP.exportRewrite({title:b.title,blocks:b.blocks},dirs,(d,rel)=>out.get(d+'/'+rel)||rel);
+              idx++; const base=QBP.fileBase((r.sourceFiles&&r.sourceFiles[0])||r.id).replace(/[^A-Za-z0-9._ -]+/g,'_')||r.id; zip.file(`questions/${String(idx).padStart(2,'0')}-${base}.json`,JSON.stringify(body,null,2)); }
+            const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
+            return {blob,name:`${String(qb.name||'Qbank').replace(/[\\/:*?"<>|]+/g,'_')}.zip`,files:recs.length,images};
           }
           async function acceptSuggestions(bankId){
             const C=needCore(); const ids=(catalog.forms||[]).filter(f=>C.bankOf(f)===bankId).map(f=>f.id); if(!ids.length) return {tagged:0};
@@ -4688,6 +4799,8 @@ document.addEventListener('click', function(e){
             qbanksImport:async o=>await importBank(o),
             qbanksUpdateBank:async(id,patch)=>await updateBank(id,patch),
             qbanksDeleteBank:async id=>await deleteBank(id),
+            qbanksBankDetails:async id=>await bankDetails(id),
+            qbanksExportBank:async id=>await exportBank(id),
             qbanksAcceptSuggestions:async bankId=>await acceptSuggestions(bankId),
             qbanksSetTag:async(key,system)=>await setTag(key,system),
             qbanksExamQuestion:()=>examQuestion()
@@ -11061,18 +11174,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=56"></script>
-<script src="./js/sync-storage.js?v=56"></script>
-<script src="./js/progress-sync.js?v=56"></script>
-<script src="./js/library-backup.js?v=56"></script>
-<script src="./js/qid-settings.js?v=56"></script>
-<script src="./js/sync3-core.js?v=56"></script>
-<script src="./js/sync3-bridge.js?v=56"></script>
-<script src="./js/sync3-store.js?v=56"></script>
-<script src="./js/sync3-drive.js?v=56"></script>
-<script src="./js/sync3-sync.js?v=56"></script>
-<script src="./js/sync3-migrate.js?v=56"></script>
-<script src="./js/sync3-boot.js?v=56"></script>
+<script src="./js/sync-merge.js?v=57"></script>
+<script src="./js/sync-storage.js?v=57"></script>
+<script src="./js/progress-sync.js?v=57"></script>
+<script src="./js/library-backup.js?v=57"></script>
+<script src="./js/qid-settings.js?v=57"></script>
+<script src="./js/sync3-core.js?v=57"></script>
+<script src="./js/sync3-bridge.js?v=57"></script>
+<script src="./js/sync3-store.js?v=57"></script>
+<script src="./js/sync3-drive.js?v=57"></script>
+<script src="./js/sync3-sync.js?v=57"></script>
+<script src="./js/sync3-migrate.js?v=57"></script>
+<script src="./js/sync3-boot.js?v=57"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11551,10 +11664,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=56"></script>
-<script src="./exam-notes.js?v=56"></script>
-<script src="./app-update.js?v=56"></script>
-<script src="./js/form-updates.js?v=56"></script>
+<script src="./bulk-import.js?v=57"></script>
+<script src="./exam-notes.js?v=57"></script>
+<script src="./app-update.js?v=57"></script>
+<script src="./js/form-updates.js?v=57"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -11981,12 +12094,13 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=56"></script>
-<script src="./nav-delay.js?v=56"></script>
-<script src="./thunder-ui.js?v=56"></script>
-<script src="./rapid-review.js?v=56"></script>
-<script src="./shadow-logger.js?v=56"></script>
-<script src="./analysis.js?v=56"></script>
-<script src="./qbanks.js?v=56"></script>
+<script src="./item-code.js?v=57"></script>
+<script src="./nav-delay.js?v=57"></script>
+<script src="./thunder-ui.js?v=57"></script>
+<script src="./rapid-review.js?v=57"></script>
+<script src="./shadow-logger.js?v=57"></script>
+<script src="./analysis.js?v=57"></script>
+<script src="./qbanks.js?v=57"></script>
+<script src="./choice-epc.js?v=57"></script>
 </body>
 </html>

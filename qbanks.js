@@ -1,5 +1,6 @@
 /* ThunderUSMLE Qbanks view: Create test · Previous tests · Performance · Manage banks, the Import wizard, the Re-tag sheet
    and the Re-tag chip row on the exam screen. Shared by Local (../qbanks.js) and iPad (qbanks.js); keep the two copies byte-identical.
+   Also draws Settings > Qbanks (ThunderQbanksUI.mountSettings(host), called by thunder-ui.js after each Settings paint).
    This root copy is the master: edit it, then `cp qbanks.js "Step Simulator IPAD/qbanks.js"`.
    Needs ThunderQbanksCore (qbanks-core.js) and StepLibraryBridge.qbanks* (see _draft_qbanks/CONTRACT.md). Styles itself with the
    app's --tu-* tokens (theme + accent follow the app). The legacy Qbank panels stay in the DOM, hidden; every start and history
@@ -274,20 +275,95 @@ function perfHtml(m) {
     <p class="tq-foot">Numbers come from your answers in the selected banks (${trackNow() === 'forms' ? 'form attempts' : 'Qbank tests'}). Tap a row to build a test on just that subject or system (unused + incorrect).</p>`;
 }
 
-/* manage banks */
+/* manage banks: moved to Settings > Qbanks; this view is a signpost */
 function manageHtml() {
-  const rows = D.banks.map(b => {
-    const s = bankStats(b.id), fs = D.forms.filter(f => f.bank === b.id), un = D.rows.filter(r => r.bank === b.id && r.system === UNAS).length;
-    const tabs = [...new Set(fs.map(f => f.tab).filter(Boolean))].join(', ');
-    const lib = b.kind !== 'imported';
-    return `<div class="tq-mrow">${badge(b)}<div><b>${esc(b.name)}</b><small>${fmt(s.n)} questions · ${lib ? `${plural(fs.length, 'form')} from Library tabs ${esc(tabs)}` : esc(b.sub || plural(fs.length, 'file'))}${un ? ` · <span class="tq-unas">${fmt(un)} untagged</span>` : ' · all tagged'}</small></div>
-      <span class="tq-src">${lib ? 'Follows your Library' : 'Imported file'}</span>
-      <div class="tq-acts">${lib ? `<button type="button" class="tq-btn tq-small" data-a="retag" data-v="${esc(b.id)}">${ICON.tag}Re-tag</button>` :
-        `<button type="button" class="tq-btn tq-small" data-a="import" data-into="${esc(b.id)}">${ICON.plus}Add questions</button><button type="button" class="tq-btn tq-small" data-a="retag" data-v="${esc(b.id)}">${ICON.tag}Re-tag</button><button type="button" class="tq-ib" data-a="rename" data-v="${esc(b.id)}" title="Rename or recolour" aria-label="Rename ${esc(b.name)}">${ICON.pencil}</button><button type="button" class="tq-ib tq-bad" data-a="delbank" data-v="${esc(b.id)}" title="Delete" aria-label="Delete ${esc(b.name)}">${ICON.trash}</button>`}</div></div>`;
-  }).join('');
-  return `<div class="tq-card">${rows}
-    <div class="tq-mrow"><span class="tq-badge tq-plusbadge">${ICON.plus}</span><div><b>Import a new Qbank</b><small>JSON or ZIP (questions + images). Subjects and systems are read from the questions.</small></div><span></span><div class="tq-acts"><button type="button" class="tq-btn tq-fill tq-small" data-a="import">Import</button></div></div></div>
-    <p class="tq-foot">Built-in banks follow the Library: a form added to the NBME, F120, CMS subject or UWSA tabs joins its bank automatically. Imported banks never touch your form attempts.</p>`;
+  return `<div class="tq-card"><div class="tq-mrow"><span class="tq-badge tq-plusbadge">${ICON.tag}</span><div><b>Manage banks in Settings → Qbanks</b><small>Rename, re-tag, add files, export a ZIP or remove a bank. Built-in banks follow your Library.</small></div><span></span><div class="tq-acts"><button type="button" class="tq-btn tq-fill tq-small" data-a="opensettings">Open Settings</button></div></div></div>
+    <p class="tq-foot">Imported banks never touch your form attempts.</p>`;
+}
+
+/* ---------- Settings > Qbanks (bank list with expandable details) ----------
+   Drawn into the host thunder-ui gives us (#tuSetQbanks). Idempotent: mountSettings only paints from cached data; the banks
+   come from the same qbanks() read as the tab (fetched once), details per bank from qbanksBankDetails (cached by bank id,
+   dropped after import / rename / delete / re-tag). Nothing here asks Settings to repaint, so there is no refetch loop. */
+const ST = { open: '', det: {}, load: {}, more: {}, exp: '' };
+let setHost = null, setFetching = false;
+const fmtBytes = n => (n == null ? '—' : n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(0) + ' KB' : n < 1073741824 ? (n / 1048576).toFixed(n < 10485760 ? 1 : 0) + ' MB' : (n / 1073741824).toFixed(1) + ' GB');
+const hasDet = () => { const B = bridge(); return !!B && typeof B.qbanksBankDetails === 'function'; };
+function invalDet(id) { if (id) { delete ST.det[id]; delete ST.load[id]; } else { ST.det = {}; ST.load = {}; } }
+/* what we know without the details call (an older bridge, or while it loads) */
+function basicDet(b) {
+  const fs = D ? D.forms.filter(f => f.bank === b.id) : [];
+  return { id: b.id, kind: b.kind, name: b.name, code: b.code, color: b.color, questions: bankStats(b.id).n, files: fs.map(f => ({ formId: f.id, source: f.name || f.id, questions: null })), images: null, bytes: null, epc: 0, importedAt: null, sources: [], basic: true };
+}
+async function loadDetails(id) {
+  const B = bridge(); if (!hasDet() || ST.det[id] || ST.load[id]) return;
+  ST.load[id] = true;
+  try { ST.det[id] = await B.qbanksBankDetails(id); } catch (e) { ST.det[id] = { err: String((e && e.message) || e) }; }
+  delete ST.load[id]; paintSet();
+  if (D) { const nx = D.banks.find(b => !ST.det[b.id] && !ST.load[b.id]); if (nx && setHost && setHost.isConnected) loadDetails(nx.id); }
+}
+const detOf = b => { const d = ST.det[b.id]; return d && !d.err ? d : basicDet(b); };
+function setBankHtml(b) {
+  const d = detOf(b), open = ST.open === b.id, imp = b.kind === 'imported', s = bankStats(b.id);
+  const nf = d.files.length, parts = [plural(s.n, 'question'), plural(nf, 'file')];
+  if (d.images != null) parts.push(plural(d.images, 'image')); if (d.epc > 0) parts.push('choice % on');
+  let det = '';
+  if (open) {
+    const un = D.rows.filter(r => r.bank === b.id && r.system === UNAS).length, raw = ST.det[b.id], more = ST.more[b.id];
+    const fl = more ? d.files : d.files.slice(0, 3);
+    const tile = (n, l) => `<div class="tq-tile"><b>${n}</b><span>${l}</span></div>`;
+    const busy = ST.exp === b.id;
+    det = `<div class="tq-sdet" id="tqDet-${esc(b.id)}">
+      ${raw && raw.err ? `<div class="tq-hint" role="alert">${ICON.warn}<span>Could not read the details: ${esc(raw.err)} <button type="button" class="tq-link tq-inline" data-a="sretry" data-v="${esc(b.id)}">Retry</button></span></div>` : ''}
+      <div class="tq-tiles">${tile(fmt(s.n), 'Questions')}${tile(fmt(s.used), 'Used')}${tile(un ? `<i class="tq-unas">${fmt(un)}</i>` : '0', 'Untagged')}${tile(d.basic ? '—' : fmtBytes(d.bytes), 'Storage')}</div>
+      <p class="tq-smeta">${imp ? `${d.importedAt && when(d.importedAt) ? 'Imported ' + esc(new Date(d.importedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })) : 'Imported bank'}${d.sources && d.sources.length ? ' · from ' + esc(d.sources.slice(0, 3).join(', ')) + (d.sources.length > 3 ? ` and ${d.sources.length - 3} more` : '') : ''}` : 'Follows your Library: a form added to its tabs joins this bank.'}</p>
+      ${fl.length ? `<div class="tq-sfl" role="list" aria-label="Files in ${esc(b.name)}">${fl.map(f => `<div role="listitem"><span>${esc(f.source || f.formId)}</span><em>${f.questions == null ? '' : fmt(f.questions)}</em></div>`).join('')}</div>${d.files.length > 3 ? `<button type="button" class="tq-link" data-a="smore" data-v="${esc(b.id)}">${more ? 'Show fewer' : `${d.files.length - 3} more`}</button>` : ''}` : ''}
+      ${d.epc > 0 ? `<p class="tq-smeta"><b>Choice %</b> · ${fmt(d.epc)} of ${fmt(s.n)} questions</p>` : ''}
+      <div class="tq-acts tq-sacts">${imp ? `<button type="button" class="tq-btn tq-small" data-a="import" data-into="${esc(b.id)}">${ICON.plus}Add files</button>` : ''}<button type="button" class="tq-btn tq-small" data-a="retag" data-v="${esc(b.id)}">${ICON.tag}Re-tag</button>${imp ? `<button type="button" class="tq-btn tq-small" data-a="rename" data-v="${esc(b.id)}">${ICON.pencil}Rename</button>${typeof bridge().qbanksExportBank === 'function' ? `<button type="button" class="tq-btn tq-small" data-a="sexport" data-v="${esc(b.id)}" ${busy ? 'disabled' : ''}>${ICON.dl}${busy ? 'Exporting…' : 'Export ZIP'}</button>` : ''}<button type="button" class="tq-btn tq-small tq-bad" data-a="delbank" data-v="${esc(b.id)}">${ICON.trash}Remove</button>` : ''}</div></div>`;
+  }
+  return `<div class="tq-sbk" data-bank="${esc(b.id)}"><button type="button" class="tq-srow" data-a="sbank" data-v="${esc(b.id)}" aria-expanded="${open}" ${open ? `aria-controls="tqDet-${esc(b.id)}"` : ''}>${badge(b)}<span class="tq-snm"><b>${esc(b.name)}</b><small>${esc(parts.join(' · '))}</small></span><span class="tq-schip">${imp ? 'Imported' : 'Built-in'}</span><span class="tq-chv">${chev}</span></button>${det}</div>`;
+}
+function settingsHtml() {
+  const need = !!bridge() && !!core();
+  const head = (sub, btn) => `<div class="tq-shd"><div><h2>Qbanks</h2><p>${sub}</p></div>${btn ? `<button type="button" class="tq-btn tq-fill" data-a="import">${ICON.plus}Import Qbank</button>` : ''}</div>`;
+  if (!need) return head('Qbanks needs the form library. Open the Library once and try again.', false);
+  if (!D) return head(S.err ? `Could not read your banks: ${esc(S.err)}` : 'Reading your banks…', false) + (S.err ? `<div class="tq-sbody0"><button type="button" class="tq-btn tq-small" data-a="sreload">Try again</button></div>` : '');
+  const imgs = D.banks.reduce((a, b) => a + ((ST.det[b.id] && ST.det[b.id].images) || 0), 0), nq = D.rows.length;
+  const sub = [plural(D.banks.length, 'bank'), plural(nq, 'question'), imgs ? plural(imgs, 'image') : ''].filter(Boolean).join(' · ');
+  return head(sub, true) + D.banks.map(setBankHtml).join('');
+}
+function paintSet() { if (setHost && setHost.isConnected) setHtml(setHost, settingsHtml()); }
+function mountSettings(host) {
+  if (!host) return;
+  if (!host.classList.contains('tq-scope')) host.classList.add('tq-scope', 'tq-setq');
+  injectStyle();
+  if (!host._tq) { host._tq = 1; host.addEventListener('click', onSetHostClick); }
+  setHost = host;
+  const B = bridge();
+  if (B && core() && B.qbanks && !setFetching && (!D && !S.err || S.stale && D)) { setFetching = true; fetchData().then(() => { setFetching = false; paintSet(); }, () => { setFetching = false; }); }
+  paintSet();
+  if (D && ST.open) loadDetails(ST.open);
+  if (D) { const nx = D.banks.find(b => !ST.det[b.id] && !ST.load[b.id]); if (nx && !Object.keys(ST.load).length) loadDetails(nx.id); }
+}
+function onSetHostClick(e) {
+  const t = e.target.closest('[data-a]'); if (!t || t.disabled || !setHost.contains(t)) return; const a = t.dataset.a, v = t.dataset.v;
+  if (a === 'sbank') { ST.open = ST.open === v ? '' : v; paintSet(); if (ST.open) loadDetails(v); return; }
+  if (a === 'smore') { ST.more[v] = !ST.more[v]; paintSet(); return; }
+  if (a === 'sretry') { invalDet(v); paintSet(); loadDetails(v); return; }
+  if (a === 'sreload') { S.err = ''; S.stale = true; mountSettings(setHost); return; }
+  if (a === 'sexport') { exportBank(v); return; }
+  bankAct(a, v, t);
+}
+function saveBlob(blob, name) {
+  const a = doc.createElement('a'); a.href = root.URL.createObjectURL(blob); a.download = name; doc.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => root.URL.revokeObjectURL(a.href), 4000);
+}
+async function exportBank(id) {
+  const B = bridge(), b = bankById(id); if (!B || !b || typeof B.qbanksExportBank !== 'function' || ST.exp) return;
+  ST.exp = id; paintSet();
+  try { const r = await B.qbanksExportBank(id); saveBlob(r.blob, r.name || `${b.name}.zip`); toast(`Exported ${b.name}: ${plural(r.files || 0, 'question file')}, ${plural(r.images || 0, 'image')}`); }
+  catch (err) { toast('Could not export: ' + ((err && err.message) || err)); }
+  ST.exp = ''; paintSet();
 }
 function barHtml(m) {
   if (S.tab !== 'create' || !D) return '';
@@ -298,6 +374,7 @@ function barHtml(m) {
 /* ---------- paint ---------- */
 let rootEl = null;
 function render() {
+  paintSet();
   if (!rootEl || !rootEl.isConnected) return;
   const need = !!bridge() && !!core();
   setHtml(rootEl.querySelector('[data-r="head"]'), headHtml());
@@ -318,7 +395,7 @@ function render() {
 
 /* ---------- sheets: import wizard, Re-tag, rename ---------- */
 let layer = null, SH = null, lastFocus = null;
-const IMP = { step: 1, file: null, label: '', pv: null, qs: null, map: { system: '', subject: '', topic: '' }, norm: true, name: '', code: '', color: COLORS[0], err: '', into: '', busy: false };
+const IMP = { step: 1, file: null, label: '', pv: null, bad: [], more: false, map: { system: '', subject: '', topic: '' }, norm: true, name: '', code: '', color: COLORS[0], err: '', into: '', busy: false };
 function ensureLayer() {
   if (layer && layer.isConnected) return layer;
   layer = doc.createElement('div'); layer.className = 'tq-scope tq-scrim'; layer.id = 'tuQbanksSheet'; layer.hidden = true;
@@ -360,42 +437,41 @@ function paintSheet() {
 const sheetHead = (title, sub, steps) => `<div class="tq-shead"><div><h2 id="tqSheetTitle">${title}</h2><p>${sub}</p></div><button type="button" class="tq-ib" data-a="close" aria-label="Close">${ICON.x}</button></div>${steps ? `<div class="tq-steps">${[1, 2, 3].map(i => `<i class="${i <= steps ? 'tq-on' : ''}"></i>`).join('')}</div>` : ''}`;
 
 /* import */
-const extractQs = j => (Array.isArray(j) ? j : j && Array.isArray(j.questions) ? j.questions : j && Array.isArray(j.blocks) ? j.blocks.flatMap(b => b.questions || []) : []);
-const getPath = (q, k) => String(k).split('.').reduce((o, p) => (o == null ? o : o[p]), q);
-async function localQuestions(f) {
-  try {
-    if (f.size > 80 * 1024 * 1024) return null;
-    let text;
-    if (/\.zip$/i.test(f.name)) {
-      if (!root.JSZip) return null;
-      const zip = await root.JSZip.loadAsync(f), names = Object.keys(zip.files).filter(n => !zip.files[n].dir && !/(^|\/)(__MACOSX|\.)/.test(n) && /\.json$/i.test(n)).sort((a, b) => a.split('/').length - b.split('/').length);
-      if (!names.length) return null; text = await zip.file(names[0]).async('string');
-    } else text = await f.text();
-    const qs = extractQs(JSON.parse(text)); return qs.length ? qs : null;
-  } catch (e) { return null; }
-}
 function valsFor(k, sys) {
-  if (!IMP.qs || !k) return null;
-  const m = new Map();
-  IMP.qs.forEach(q => { let v = getPath(q, k); v = sys && IMP.norm ? core().normSystem(v) : (v == null || v === '' ? UNAS : String(v)); if (sys && !IMP.norm && (v === 'undefined' || v === '')) v = UNAS; m.set(v, (m.get(v) || 0) + 1); });
+  const pv = IMP.pv, raw = pv && pv.values && pv.values[k]; if (!k || !raw) return null;
+  const m = new Map(); let seen = 0;
+  raw.forEach(([v, n]) => { seen += n; const x = sys && IMP.norm ? core().normSystem(v) : String(v); m.set(x, (m.get(x) || 0) + n); });
+  const rest = (pv.questions || 0) - seen, f = (pv.fields || []).find(x => x.k === k);
+  if (rest > 0) { const lbl = f && f.distinct > raw.length ? 'Other values' : UNAS; m.set(lbl, (m.get(lbl) || 0) + rest); }
   return [...m.entries()].sort((a, b) => b[1] - a[1]);
 }
 async function readImportFile(f) {
   const B = bridge(); if (!B || !B.qbanksImportPreview) return;
-  IMP.file = f; IMP.label = f.name; IMP.err = ''; IMP.busy = true; paintSheet();
+  IMP.file = f; IMP.label = f.name; IMP.err = ''; IMP.bad = []; IMP.pv = null; IMP.more = false; IMP.busy = true; paintSheet();
   try {
-    const r = await B.qbanksImportPreview(f);
-    if (!r || !r.ok) throw new Error((r && r.error) || 'No questions found (expected an array, {questions:[…]} or {blocks:[…]}).');
+    const r = await B.qbanksImportPreview(f, IMP.into ? { into: IMP.into } : undefined);
+    if (!r || !r.ok) { IMP.bad = ((r && r.files) || []).filter(x => x.error); throw new Error((r && r.error) || 'No questions found (expected an array, {questions:[…]} or {blocks:[…]}).'); }
     IMP.pv = r; IMP.label = r.file || f.name;
     const g = r.guess || {}; IMP.map = { system: g.system || '', subject: g.subject || '', topic: g.topic || '' };
-    IMP.qs = await localQuestions(f);
+    const mf = r.manifest || null; IMP.norm = !(mf && mf.tagMap && mf.tagMap.normalize === false);
     const tgt = bankById(IMP.into);
-    IMP.name = tgt ? tgt.name : String(r.title || f.name.replace(/\.(json|zip)$/i, '')).slice(0, 40);
-    IMP.code = tgt ? tgt.code : (IMP.name.replace(/[^A-Za-z0-9]/g, '').slice(0, 3).toUpperCase() || 'QB');
-    if (tgt) IMP.color = tgt.color;
-    IMP.step = 2;
+    IMP.name = tgt ? tgt.name : String((mf && mf.name) || r.title || f.name.replace(/\.(json|zip)$/i, '')).slice(0, 40);
+    IMP.code = tgt ? tgt.code : String((mf && mf.code) || IMP.name.replace(/[^A-Za-z0-9]/g, '').slice(0, 3)).toUpperCase().slice(0, 3) || 'QB';
+    IMP.color = tgt ? tgt.color : (mf && /^#[0-9a-f]{6}$/i.test(mf.color || '') ? mf.color : COLORS[0]);
+    IMP.step = 1;
   } catch (e) { IMP.err = 'Could not read this file: ' + ((e && e.message) || e); }
   IMP.busy = false; paintSheet();
+}
+/* step 1 summary of what the file holds (ZIP v2: manifest, question files, assets, problems) */
+function fileSummaryHtml() {
+  const pv = IMP.pv, fl = pv.files || [], nf = fl.length, zip = /\.zip/i.test(IMP.label) || nf > 1, mf = pv.manifest;
+  const bits = [esc(IMP.label)]; if (zip && nf) bits.push(plural(nf, 'question file')); bits.push(plural(pv.questions || 0, 'question')); if (pv.images) bits.push(plural(pv.images, 'image'));
+  const shown = IMP.more ? fl : fl.slice(0, 3);
+  return `<div class="tq-okline" id="tqPvOk">${tick}<span>${bits.join(' · ')}</span></div>
+    ${mf ? `<div class="tq-pvrow" id="tqPvManifest"><b>qbank.json</b><span>${[mf.name ? esc(mf.name) : '', mf.code || mf.color ? `${mf.code ? 'badge ' + esc(mf.code) : ''}${mf.color ? ` <i class="tq-dot" style="background:${esc(mf.color)}"></i>` : ''}` : '', mf.tagMap && (mf.tagMap.system || mf.tagMap.subject) ? 'tags: ' + esc([mf.tagMap.system && 'system=' + mf.tagMap.system, mf.tagMap.subject && 'subject=' + mf.tagMap.subject].filter(Boolean).join(', ')) : ''].filter(Boolean).join(' · ')}</span></div>` : ''}
+    ${nf > 1 ? `<div class="tq-pvfiles" id="tqPvFiles">${shown.map(x => `<div><span>${esc(x.path)}</span><em>${fmt(x.questions)}</em></div>`).join('')}${nf > 3 ? `<button type="button" class="tq-link" data-a="pvmore">${IMP.more ? 'Show fewer' : `${nf - 3} more`}</button>` : ''}</div>` : ''}
+    ${pv.images ? `<div class="tq-pvrow"><b>assets/</b><span>${plural(pv.images, 'image')}</span></div>` : ''}
+    ${pv.missingImages > 0 ? `<div class="tq-hint" id="tqPvMissing">${ICON.warn}<span><b>${plural(pv.missingImages, 'image')} not found in the ZIP.</b> Those questions import without them.</span></div>` : ''}`;
 }
 function importHtml() {
   const tgt = D && D.banks.find(b => b.id === IMP.into && b.kind === 'imported');
@@ -403,17 +479,17 @@ function importHtml() {
   const head = sheetHead(tgt ? 'Add questions to ' + esc(tgt.name) : 'Import a Qbank', sub, IMP.step);
   let body = '', foot = '';
   if (IMP.step === 1) {
-    body = `<label class="tq-drop" id="tqDrop"><span class="tq-dropic">${ICON.file}</span><b>${IMP.busy ? 'Reading ' + esc(IMP.label) + '…' : 'Drop a JSON or ZIP here'}</b><span>or click to choose · same question format as your forms</span><input type="file" accept=".json,.zip,application/json,application/zip" class="tq-sr" data-a="file"></label>
-      ${IMP.err ? `<div class="tq-hint" role="alert">${ICON.warn}<span>${esc(IMP.err)}</span></div>` : ''}
-      <div class="tq-fmts"><div class="tq-fmt"><b>JSON</b>Array of questions, {questions:[…]} or {blocks:[…]}</div><div class="tq-fmt"><b>ZIP</b>One JSON + an assets/ folder for images</div><div class="tq-fmt"><b>Tags</b>Any field works: subject, system, topic. You map them next</div></div>`;
-    foot = `<span class="tq-note">Nothing is saved until the last step.</span><button type="button" class="tq-btn" data-a="close">Cancel</button>`;
+    const has = !!IMP.pv;
+    body = (has ? fileSummaryHtml() : '') + `<label class="tq-drop${has ? ' tq-compact' : ''}" id="tqDrop"><span class="tq-dropic">${ICON.file}</span><b>${IMP.busy ? 'Reading ' + esc(IMP.label) + '…' : has ? 'Choose a different file' : 'Drop a JSON or ZIP here'}</b><span>${has ? 'or drop it here' : 'or click to choose · same question format as your forms'}</span><input type="file" accept=".json,.zip,application/json,application/zip" class="tq-sr" data-a="file"></label>
+      ${IMP.err ? `<div class="tq-hint" role="alert">${ICON.warn}<span>${esc(IMP.err)}${IMP.bad.length ? `<span class="tq-badfiles">${IMP.bad.slice(0, 5).map(x => `<span>${esc(x.path)}: ${esc(x.error)}</span>`).join('')}${IMP.bad.length > 5 ? `<span>and ${IMP.bad.length - 5} more</span>` : ''}</span>` : ''}</span></div>` : ''}
+      ${has ? '' : `<div class="tq-fmts"><div class="tq-fmt"><b>JSON</b>Array of questions, {questions:[…]} or {blocks:[…]}</div><div class="tq-fmt"><b>ZIP</b>Question JSON files in any folders + one assets/ folder, optional qbank.json</div><div class="tq-fmt"><b>Tags</b>Any field works: subject, system, topic. You map them next</div></div>`}`;
+    foot = has ? `<button type="button" class="tq-btn" data-a="close">Cancel</button><button type="button" class="tq-btn tq-fill" data-a="go2" ${IMP.busy ? 'disabled' : ''}>Continue</button>` : `<span class="tq-note">Nothing is saved until the last step.</span><button type="button" class="tq-btn" data-a="close">Cancel</button>`;
   } else if (IMP.step === 2) {
     const pv = IMP.pv, opts = sel => `<option value="">— none —</option>` + pv.fields.map(f => `<option value="${esc(f.k)}"${f.k === sel ? ' selected' : ''}>${esc(f.k)} (${f.distinct} values)</option>`).join('');
     const fdist = k => { const f = pv.fields.find(x => x.k === k); return f ? f.distinct : 0; };
     const sysV = valsFor(IMP.map.system, true), subV = valsFor(IMP.map.subject, false), un = sysV ? (sysV.find(([v]) => v === UNAS) || [0, 0])[1] : 0;
     const vals = v => v ? `<div class="tq-vals" tabindex="0" aria-label="Values found">${v.map(([x, n]) => `<div><span class="${x === UNAS ? 'tq-unas' : ''}">${esc(x)}</span><em>${n}</em></div>`).join('')}</div>` : '';
-    body = `<div class="tq-okline">${tick} ${plural(pv.questions || 0, 'question')}${pv.images ? ` and ${plural(pv.images, 'image')}` : ''} found in ${esc(IMP.label)}</div>
-      <div class="tq-map"><div class="tq-mapc"><h4>System <span class="tq-note">${sysV ? plural(sysV.length, 'group') : (IMP.map.system ? plural(fdist(IMP.map.system), 'value') : '')}</span></h4><select class="tq-inp" data-a="map" data-f="system" aria-label="Field to read systems from">${opts(IMP.map.system)}</select>
+    body = `<div class="tq-map"><div class="tq-mapc"><h4>System <span class="tq-note">${sysV ? plural(sysV.length, 'group') : (IMP.map.system ? plural(fdist(IMP.map.system), 'value') : '')}</span></h4><select class="tq-inp" data-a="map" data-f="system" aria-label="Field to read systems from">${opts(IMP.map.system)}</select>
         <label class="tq-chk2"><input type="checkbox" data-a="norm" ${IMP.norm ? 'checked' : ''}> Map to the standard system list</label>${vals(sysV)}</div>
       <div class="tq-mapc"><h4>Subject <span class="tq-note">${subV ? plural(subV.length, 'group') : (IMP.map.subject ? plural(fdist(IMP.map.subject), 'value') : '')}</span></h4><select class="tq-inp" data-a="map" data-f="subject" aria-label="Field to read subjects from">${opts(IMP.map.subject)}</select>${vals(subV)}</div></div>
       <label class="tq-field"><span>Topic (optional, used for search and Re-tag suggestions)</span><select class="tq-inp" data-a="map" data-f="topic">${opts(IMP.map.topic)}</select></label>
@@ -429,7 +505,7 @@ function importHtml() {
   } else {
     body = `<label class="tq-field"><span>Bank name</span><input class="tq-inp" data-a="impname" value="${esc(IMP.name)}" maxlength="40"></label>
       <div class="tq-nums2"><label class="tq-field"><span>Badge (max 3 letters)</span><input class="tq-inp" data-a="impcode" value="${esc(IMP.code)}" maxlength="3"></label>
-      <div class="tq-field"><span>Colour</span><div class="tq-swatches" role="radiogroup" aria-label="Colour">${COLORS.map(c => `<button type="button" class="tq-swatch" role="radio" aria-checked="${IMP.color === c}" data-a="color" data-v="${c}" style="background:${c}" aria-label="Colour ${c}"></button>`).join('')}</div></div></div>
+      <div class="tq-field"><span>Colour</span><div class="tq-swatches" role="radiogroup" aria-label="Colour">${COLORS.concat(COLORS.includes(IMP.color) ? [] : [IMP.color]).map(c => `<button type="button" class="tq-swatch" role="radio" aria-checked="${IMP.color === c}" data-a="color" data-v="${c}" style="background:${c}" aria-label="Colour ${c}"></button>`).join('')}</div></div></div>
       <p class="tq-foot tq-gap">Imported questions are stored with your forms (hidden from the Library), so they are backed up and synced the same way.</p>
       ${IMP.err ? `<div class="tq-hint" role="alert">${ICON.warn}<span>${esc(IMP.err)}</span></div>` : ''}`;
     foot = `<button type="button" class="tq-btn" data-a="back" ${IMP.busy ? 'disabled' : ''}>Back</button><button type="button" class="tq-btn tq-fill" data-a="finish" ${IMP.busy || !IMP.name.trim() ? 'disabled' : ''}>${ICON.dl}${IMP.busy ? 'Importing…' : `Import ${plural(IMP.pv.questions || 0, 'question')}`}</button>`;
@@ -444,11 +520,11 @@ async function finishImport() {
     const res = await B.qbanksImport({ file: IMP.file, map: { system: IMP.map.system || '', subject: IMP.map.subject || '', topic: IMP.map.topic || '' }, normalize: !!IMP.norm, into: tgt ? tgt.id : undefined,
       name: (IMP.name || '').trim(), code: (IMP.code || '').trim().toUpperCase().slice(0, 3), color: IMP.color });
     IMP.busy = false;
-    await fetchData();
+    invalDet(); await fetchData();
     const id = (res && res.bankId) || (tgt && tgt.id);
     if (id && D && D.banks.some(b => b.id === id)) { S.sel = new Set([id]); S.subs = null; S.syss = null; S.formsOff = new Set(); S.want = 40; savePrefs(); }
     S.tab = 'create'; closeSheet(); render();
-    toast(`${tgt ? 'Added to' : 'Imported'} ${(bankById(id) || { name: 'bank' }).name}: ${plural((res && res.added) || 0, 'question')}${res && res.skipped ? `, ${fmt(res.skipped)} skipped` : ''}`);
+    toast(`${tgt ? 'Added to' : 'Imported'} ${(bankById(id) || { name: 'bank' }).name}: ${plural((res && res.added) || 0, 'question')}${res && res.files > 1 ? ` from ${fmt(res.files)} files` : ''}${res && res.images ? `, ${plural(res.images, 'image')}` : ''}${res && res.skipped ? `, ${fmt(res.skipped)} skipped` : ''}`);
   } catch (e) { IMP.busy = false; IMP.err = 'Import failed: ' + ((e && e.message) || e); paintSheet(); }
 }
 
@@ -481,19 +557,21 @@ async function onSheetClick(e) {
   const t = e.target.closest('button'); if (!t || t.disabled) return; const a = t.dataset.a, B = bridge();
   if (a === 'close') closeSheet();
   else if (a === 'back') { if (IMP.step > 1) { IMP.step--; IMP.err = ''; paintSheet(); } }
+  else if (a === 'go2') { if (IMP.pv) { IMP.step = 2; paintSheet(); } }
+  else if (a === 'pvmore') { IMP.more = !IMP.more; paintSheet(); }
   else if (a === 'next') { IMP.step = 3; paintSheet(); }
   else if (a === 'color') { IMP.color = t.dataset.v; paintSheet(); }
   else if (a === 'finish') finishImport();
   else if (a === 'rtsw') { S.reviewTag = !S.reviewTag; savePrefs(); paintSheet(); examTick(); }
   else if (a === 'accept') {
     if (!B || !B.qbanksAcceptSuggestions || SH.busy) return; SH.busy = true; paintSheet();
-    try { const r = await B.qbanksAcceptSuggestions(SH.bank); SH.busy = false; S.subs = null; S.syss = null; await fetchData(); paintSheet(); toast(`${fmt((r && r.tagged) || 0)} questions tagged`); }
+    try { const r = await B.qbanksAcceptSuggestions(SH.bank); SH.busy = false; S.subs = null; S.syss = null; invalDet(SH.bank); await fetchData(); paintSheet(); toast(`${fmt((r && r.tagged) || 0)} questions tagged`); }
     catch (err) { SH.busy = false; paintSheet(); toast('Could not save the tags: ' + ((err && err.message) || err)); }
   }
   else if (a === 'rncolor') { SH.color = t.dataset.v; paintSheet(); }
   else if (a === 'rnsave') {
     if (!B || !B.qbanksUpdateBank) return; SH.busy = true; SH.err = ''; paintSheet();
-    try { await B.qbanksUpdateBank(SH.id, { name: SH.name.trim(), code: SH.code.trim().toUpperCase().slice(0, 3), color: SH.color }); SH.busy = false; await fetchData(); closeSheet(); toast('Bank updated'); }
+    try { await B.qbanksUpdateBank(SH.id, { name: SH.name.trim(), code: SH.code.trim().toUpperCase().slice(0, 3), color: SH.color }); SH.busy = false; invalDet(SH.id); await fetchData(); closeSheet(); toast('Bank updated'); }
     catch (err) { SH.busy = false; SH.err = 'Could not save: ' + ((err && err.message) || err); paintSheet(); }
   }
 }
@@ -511,7 +589,7 @@ function onSheetInput(e) {
   else if (a === 'rncode') SH.code = t.value;
 }
 function openImport(into) {
-  Object.assign(IMP, { step: 1, file: null, label: '', pv: null, qs: null, map: { system: '', subject: '', topic: '' }, err: '', name: '', code: '', into: into || '', busy: false });
+  Object.assign(IMP, { step: 1, file: null, label: '', pv: null, bad: [], more: false, map: { system: '', subject: '', topic: '' }, err: '', name: '', code: '', into: into || '', busy: false });
   if (!bridge() || !bridge().qbanksImportPreview) { toast('Import is not available in this build'); return; }
   openSheet('import');
 }
@@ -590,13 +668,23 @@ function goTab(k) {
   if (tests && tests.classList.contains('active')) { const b = byId('qbankTab'); if (b) { b.click(); return; } }
   render();
 }
+async function bankAct(a, v, t) {
+  if (a === 'import') { openImport(t.dataset.into || ''); return; }
+  if (a === 'retag') { if (v) openSheet('retag', { bank: v }); return; }
+  if (a === 'rename') { const b = bankById(v); if (b) openSheet('rename', { id: b.id, name: b.name, code: b.code, color: b.color }); return; }
+  if (a === 'delbank') {
+    const b = bankById(v), B = bridge(); if (!b || !B || !B.qbanksDeleteBank) return;
+    if (!await askOk(`Delete “${b.name}” and its ${plural(bankStats(b.id).n, 'question')}?\n\nA recovery ZIP is saved first. Your Qbank tests stay in history.`, 'Delete bank', 'Delete')) return;
+    try { await B.qbanksDeleteBank(b.id); S.sel.delete(b.id); if (ST.open === b.id) ST.open = ''; invalDet(); resetFacets(); savePrefs(); await fetchData(); toast(`Deleted ${b.name}`); } catch (err) { toast('Could not delete: ' + ((err && err.message) || err)); }
+  }
+}
 async function onClick(e) {
   const t = e.target.closest('[data-a]'); if (!t || t.disabled || !rootEl.contains(t)) return; const a = t.dataset.a, v = t.dataset.v;
   if (t.tagName === 'INPUT' || t.tagName === 'SELECT') return;
   const m = () => model();
   switch (a) {
     case 'tab': goTab(v); return;
-    case 'import': openImport(t.dataset.into || ''); return;
+    case 'import': bankAct(a, v, t); return;
     case 'preset': { const p = core().presets(m()).find(x => x.id === v); if (p && !p.disabled) { applyPreset(p); render(); toast(`${p.title}: filters set below. Change anything before you start`); } return; }
     case 'sort': S.sort = v; savePrefs(); render(); return;
     case 'bank': S.sel.has(v) ? S.sel.delete(v) : S.sel.add(v); resetFacets(); savePrefs(); render(); return;
@@ -618,14 +706,8 @@ async function onClick(e) {
       return;
     }
     case 'go': start(); return;
-    case 'retag': if (v) openSheet('retag', { bank: v }); return;
-    case 'rename': { const b = bankById(v); if (b) openSheet('rename', { id: b.id, name: b.name, code: b.code, color: b.color }); return; }
-    case 'delbank': {
-      const b = bankById(v), B = bridge(); if (!b || !B || !B.qbanksDeleteBank) return;
-      if (!await askOk(`Delete “${b.name}” and its ${plural(bankStats(b.id).n, 'question')}?\n\nA recovery ZIP is saved first. Your Qbank tests stay in history.`, 'Delete bank', 'Delete')) return;
-      try { await B.qbanksDeleteBank(b.id); S.sel.delete(b.id); resetFacets(); savePrefs(); await fetchData(); toast(`Deleted ${b.name}`); } catch (err) { toast('Could not delete: ' + ((err && err.message) || err)); }
-      return;
-    }
+    case 'opensettings': { const T = root.ThunderUI; S.tab = 'create'; S.prevTab = 'create'; if (T && T.openSettings && T.openSettings('qbank')) return; render(); toast('Settings is not available in this build'); return; }
+    case 'retag': case 'rename': case 'delbank': bankAct(a, v, t); return;
     case 'pick': pick(v); return;
     default:
   }
@@ -955,7 +1037,7 @@ ${R} .tq-swatch[aria-checked=true]{border-color:var(--q-on)}
 
 ${R} svg{flex:none}
 ${R}.tq-root{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:0;color:var(--q-on);font:14px/1.45 var(--q-font);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;text-align:left}
-${R}.tq-root,${R}.tq-scrim,${R}.tq-toast{--q-bg:var(--tu-bg,#F6F7FB);--q-sf:var(--tu-surface,#fff);--q-s1:var(--tu-s1,#EFF1F7);--q-s2:var(--tu-s2,#E7EAF3);--q-s3:var(--tu-s3,#DCE0EC);--q-line:var(--tu-line,#D3D8E5);--q-line2:var(--tu-line2,#E4E7F0);--q-on:var(--tu-on,#161A25);--q-on2:var(--tu-on2,#474E62);--q-on3:var(--tu-on3,#5F6679);--q-ok:var(--tu-ok,#17683D);--q-okc:var(--tu-okc,#D3EFDD);--q-warn:var(--tu-warn,#7D4B00);--q-warnc:var(--tu-warnc,#FFE3B8);--q-bad:var(--tu-bad,#A8231B);--q-badc:var(--tu-badc,#FBDAD6);--q-p:var(--tu-p,#A2283A);--q-onp:var(--tu-onp,#fff);--q-pc:var(--tu-pc,#FFDADC);--q-onpc:var(--tu-onpc,#40000D);--q-shadow:var(--tu-shadow,0 1px 2px rgba(20,26,40,.06),0 3px 10px rgba(20,26,40,.06));--q-font:var(--tu-font,"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif);--q-mark:#2F5BD3;--q-markc:#DCE4FF}
+${R}.tq-root,${R}.tq-scrim,${R}.tq-toast,${R}.tq-setq{--q-bg:var(--tu-bg,#F6F7FB);--q-sf:var(--tu-surface,#fff);--q-s1:var(--tu-s1,#EFF1F7);--q-s2:var(--tu-s2,#E7EAF3);--q-s3:var(--tu-s3,#DCE0EC);--q-line:var(--tu-line,#D3D8E5);--q-line2:var(--tu-line2,#E4E7F0);--q-on:var(--tu-on,#161A25);--q-on2:var(--tu-on2,#474E62);--q-on3:var(--tu-on3,#5F6679);--q-ok:var(--tu-ok,#17683D);--q-okc:var(--tu-okc,#D3EFDD);--q-warn:var(--tu-warn,#7D4B00);--q-warnc:var(--tu-warnc,#FFE3B8);--q-bad:var(--tu-bad,#A8231B);--q-badc:var(--tu-badc,#FBDAD6);--q-p:var(--tu-p,#A2283A);--q-onp:var(--tu-onp,#fff);--q-pc:var(--tu-pc,#FFDADC);--q-onpc:var(--tu-onpc,#40000D);--q-shadow:var(--tu-shadow,0 1px 2px rgba(20,26,40,.06),0 3px 10px rgba(20,26,40,.06));--q-font:var(--tu-font,"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif);--q-mark:#2F5BD3;--q-markc:#DCE4FF}
 :root body #menu.theme-dark .tq-scope{--q-mark:#B3C5FF;--q-markc:#1F2E63}
 ${R}.tq-root *{box-sizing:border-box}
 ${R} :is(span,label,p,h1,h2,h3,h4){color:inherit!important}
@@ -1083,6 +1165,56 @@ ${R} .tq-ptab .tq-go1{display:none}
 ${R} .tq-pbar{min-width:40px}
 ${R} .tq-card .tq-sech{align-items:flex-start}
 }
+/* Settings > Qbanks + import step 1 summary */
+${R}.tq-setq{color:var(--q-on);font:14px/1.45 var(--q-font);-webkit-font-smoothing:antialiased;text-align:left}
+${R}.tq-setq *{box-sizing:border-box}
+${R} .tq-shd{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 16px;padding:18px 22px 14px}
+${R} .tq-shd h2{margin:0!important;font-size:19px!important;font-weight:800!important;color:var(--q-on)!important}
+${R} .tq-shd p{margin:3px 0 0!important;font-size:13px!important;color:var(--q-on3)!important}
+${R} .tq-sbody0{padding:0 22px 16px}
+${R} .tq-sbk{border-top:1px solid var(--q-line2)}
+${R} .tq-srow{display:grid;grid-template-columns:40px minmax(0,1fr) auto 24px;gap:12px;align-items:center;width:100%;padding:12px 22px;border:0;background:none;text-align:left;color:var(--q-on)!important}
+${R} .tq-srow:hover{background:var(--q-s1)}
+${R} .tq-snm{min-width:0}
+${R} .tq-snm b{display:block;font-size:15px;font-weight:700;color:var(--q-on)!important}
+${R} .tq-snm small{display:block;font-size:12.5px;color:var(--q-on3)!important;line-height:1.35}
+${R} .tq-schip{font-size:11px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--q-s2);color:var(--q-on2)!important;white-space:nowrap}
+${R} .tq-chv{display:grid;place-items:center;color:var(--q-on3)!important}
+${R} .tq-srow[aria-expanded=true] .tq-chv svg{transform:rotate(180deg)}
+${R} .tq-sdet{padding:2px 22px 18px 74px;display:flex;flex-direction:column;gap:10px}
+${R} .tq-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+${R} .tq-tile{background:var(--q-s1);border-radius:12px;padding:8px 12px;min-width:0}
+${R} .tq-tile b{display:block;font-size:18px;font-weight:800;line-height:1.2;color:var(--q-on)!important}
+${R} .tq-tile i{font-style:normal}
+${R} .tq-tile span{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--q-on3)!important;font-weight:600}
+${R} .tq-smeta{margin:0!important;font-size:13px;color:var(--q-on2)!important}
+${R} .tq-smeta b{color:var(--q-on)!important}
+${R} .tq-sfl{display:flex;flex-direction:column;gap:2px}
+${R} .tq-sfl>div,${R} .tq-pvfiles>div{display:flex;justify-content:space-between;gap:10px;padding:4px 8px;border-radius:8px;font-size:12.5px}
+${R} .tq-sfl>div:nth-child(odd),${R} .tq-pvfiles>div:nth-child(odd){background:var(--q-s1)}
+${R} .tq-sfl span,${R} .tq-pvfiles span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+${R} .tq-sfl em,${R} .tq-pvfiles em{font-style:normal;color:var(--q-on3)!important;font-variant-numeric:tabular-nums}
+${R} .tq-sacts{flex-wrap:wrap;gap:8px;margin-top:2px}
+${R} .tq-sacts .tq-btn.tq-bad{color:var(--q-bad)!important}
+${R} .tq-pvfiles{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+${R} .tq-pvrow{display:flex;gap:10px;align-items:center;font-size:13px;border:1px solid var(--q-line2);border-radius:12px;padding:8px 12px;margin-bottom:8px;min-width:0}
+${R} .tq-pvrow b{flex:none}
+${R} .tq-pvrow span{color:var(--q-on2)!important;min-width:0;overflow:hidden;text-overflow:ellipsis}
+${R} .tq-pvrow .tq-dot{vertical-align:-1px}
+${R} .tq-dot{display:inline-block;width:12px;height:12px;border-radius:50%;flex:none}
+${R} .tq-drop.tq-compact{padding:14px 16px;margin-top:10px}
+${R} .tq-drop.tq-compact .tq-dropic{display:none}
+${R} .tq-badfiles{display:flex;flex-direction:column;gap:2px;margin-top:6px;font-weight:400;word-break:break-all}
+@media (max-width:640px){
+${R} .tq-shd{padding:16px 14px 12px}
+${R} .tq-shd .tq-btn{width:100%;justify-content:center}
+${R} .tq-srow{grid-template-columns:36px minmax(0,1fr) 20px;padding:10px 14px;gap:10px}
+${R} .tq-srow .tq-schip{display:none}
+${R} .tq-sdet{padding:2px 14px 16px}
+${R} .tq-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+${R} .tq-sacts .tq-btn{flex:1 1 40%;justify-content:center}
+${R} .tq-sbody0{padding:0 14px 14px}
+}
 /* Re-tag chip row on the exam screen: neutral, compact, inherits the exam's colours */
 .tq-retag{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 4px;padding:8px 0 0;font:12px/1.3 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:inherit;border-top:1px solid rgba(128,128,128,.35)}
 .tq-retag>b{font-weight:700;margin-right:2px;color:inherit}
@@ -1110,7 +1242,8 @@ function init() {
 }
 const api = {
   version: 1,
-  refresh() { S.stale = true; if (activePanel()) sync(); examTick(); },
+  refresh() { S.stale = true; invalDet(); if (activePanel()) sync(); else paintSet(); examTick(); },
+  mountSettings,
   _state: S
 };
 root.ThunderQbanksUI = api;

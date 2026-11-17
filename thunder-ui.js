@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 56;
+  const TU_RELEASE = 57;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -905,6 +905,7 @@ ${H} .tu-setnav button[aria-current="page"]{background:var(--tu-pc);color:var(--
 .tu-setnav small{font-size:11px;font-weight:800}
 .tu-setbody{min-width:0;overflow:hidden;border-radius:28px;padding-bottom:6px}
 .tu-sechead{padding:18px 22px 14px;display:flex;flex-direction:column;gap:5px}
+.tu-sechead.tu-qdefs{border-top:1px solid var(--tu-line2);margin-top:6px;padding-top:16px}
 ${H} .tu-sechead h2{font-size:19px!important;font-weight:800!important}
 ${H} .tu-setview .tu-sechead p{margin:0!important;font-size:13px!important;line-height:1.5!important}
 .tu-sechead p b{color:var(--tu-on);font-weight:700}
@@ -2811,7 +2812,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
      iPad: #tuSync sits over #progressSyncPanel. Local: Backup & sync is its own sidebar page (#tuSyncTab) drawn over the
      legacy Settings › Backup tab, whose buttons it proxies. */
   const SET_KEY = 'ThunderUSMLE.settingsSection', THEME_MODE = 'ThunderUSMLE.themeMode';
-  const SET_SECTIONS = [['appearance', 'Appearance'], ['tabs', 'Library tabs'], ['qbank', 'Qbank'], ['safety', 'Safety'], ['advanced', 'Advanced'], ['admin', 'Admin'], ['about', 'About & updates']];
+  const SET_SECTIONS = [['appearance', 'Appearance'], ['tabs', 'Library tabs'], ['qbank', 'Qbanks'], ['safety', 'Safety'], ['advanced', 'Advanced'], ['admin', 'Admin'], ['about', 'About & updates']];
   const SET_LEGACY = {tabs:'library', qbank:'qbank', safety:'safety', admin:'admin'}; // the hidden legacy tab that holds each section's controls
   const SET_READY = {
     library:'[data-lib-meter]', order:'[data-v195-drag-tab]', custom:'.settings-panel-v195', qbank:'#setLinkQbank', safety:'#setDefaultMode', admin:'.fu-admin',
@@ -2941,7 +2942,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       setRow('Seconds per question', '', `<input type="number" min="15" step="5" inputmode="numeric" class="tu-setnum" aria-label="Default seconds per question" data-tu-setin="setDefaultSpq">`) +
       setRow('Questions per block', '', `<input type="number" min="1" inputmode="numeric" class="tu-setnum" aria-label="Default questions per block" data-tu-setin="setDefaultBlock">`) +
       setRow('Linked attempt source', 'Used when a test counts progress from Form Library attempts', `<label class="tu-setselect"><span class="tu-sr">Linked attempt source</span><select data-tu-setsel="setAttemptSource">${ATTEMPT_SOURCES.map(([v, l]) => `<option value="${v}"${v === (q.defaultAttemptSource || 'first') ? ' selected' : ''}>${l}</option>`).join('')}</select></label>`) + '</div>' : '';
-    return `<div class="tu-sechead"><h2>Qbank</h2></div>` +
+    return (window.ThunderQbanksUI && window.ThunderQbanksUI.mountSettings ? `<div id="tuSetQbanks" class="tq-scope tq-setq"></div>` : `<div class="tu-sechead"><h2>Qbanks</h2></div>`) +
+      `<div class="tu-sechead tu-qdefs"><h2>Qbank defaults</h2></div>` +
       swRow('Default to Form Library attempts', 'New Qbank tests start with “Form Library attempts” as the source', 'data-tu-setsw="setLinkQbank" data-tab="qbank"', q.linkToLibrary) +
       setRow('Library is read-only for Qbank', 'Always on: Qbank reads form attempts but never writes to them', `<span class="tu-lockchip">${icon(SET_ICONS.lock, 15)}Locked on</span>`) +
       setRow('Defaults for new tests', esc(summary), `<button type="button" class="tu-btn outline small" data-tu-defaults aria-expanded="${setUi.defaults}">${setUi.defaults ? 'Done' : 'Edit'}</button>`) + edit +
@@ -3151,6 +3153,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     swapHtml(setRegion_(v, 'nav'), secs.map(([id, l]) => `<button type="button" data-tu-sec="${id}" aria-current="${setUi.sec === id ? 'page' : 'false'}">${esc(l)}${id === 'admin' ? '<small>iPad</small>' : ''}</button>`).join(''));
     swapHtml(setRegion_(v, 'body'), SET_BODIES[setUi.sec]());
     setSyncInputs(v);
+    if(setUi.sec === 'qbank'){ const h = byId('tuSetQbanks'); if(h && window.ThunderQbanksUI && window.ThunderQbanksUI.mountSettings) window.ThunderQbanksUI.mountSettings(h); }
     const want = SET_LEGACY[setUi.sec];
     if(want && !setUi.switching && !legacyReady(want) && !(setUi.sec === 'tabs' && ['order', 'custom'].includes(legacyActive()))) legacySetTab(want).then(() => scheduleSettings(true));
   }
@@ -3253,6 +3256,13 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     setUi.sec = id; setUi.color = ''; store.set(SET_KEY, id);
     scheduleSettings(true);
     const want = SET_LEGACY[id]; if(want && !legacyReady(want)) legacySetTab(want).then(() => scheduleSettings(true));
+  }
+  // opens Settings on one section (used by the Qbanks tab: "Manage banks in Settings → Qbanks")
+  function openSettingsSection(id){
+    if(!sections().some(([s]) => s === id)) return false;
+    if(!byId('settingsPanel')?.classList.contains('active')) byId('settingsTab')?.click();
+    if(!IPAD && setUi.page === 'sync') setSyncPage(false);
+    goSection(id); return true;
   }
   function onSetClick(e){
     const t = e.target.closest('button,a'); if(!t || t.disabled || t.tagName === 'A') return;
@@ -5728,6 +5738,6 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
     // late modules (progress sync, form updates) add their tabs and panels after load
     let tries = 0; const late = setInterval(() => { brand(); wrapReport(); wrapPreview(); wrapMedia(); watchCloud(); scheduleLibrary(); qbWatch(); scheduleSettings(true); if(++tries > 20) clearInterval(late); }, 500);
   }
-  window.ThunderUI = {version:1, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), examStyle, setExamStyle, openForm:(id, from) => openSheet(id, from), formAction:(id, act) => cardAction(id, `[data-action="${CSS.escape(String(act))}"]`), refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); scheduleExam(); }};
+  window.ThunderUI = {version:1, openSettings:openSettingsSection, setAccent, accent:currentAccent, accents:Object.keys(ACCENTS), examStyle, setExamStyle, openForm:(id, from) => openSheet(id, from), formAction:(id, act) => cardAction(id, `[data-action="${CSS.escape(String(act))}"]`), refresh:() => { brand(); scheduleLibrary(); scheduleSettings(true); scheduleExam(); }};
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

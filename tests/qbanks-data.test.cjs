@@ -262,3 +262,57 @@ test('Qbank history: the latest attempt decides the status (UWorld rule), marked
   h = QBP.histFromSessions({ sessions: [t('2026-11-02', null, false), t('2026-11-01', 'A', false)] }, 'completed_qbank');
   assert.equal(h['F::1'].answered, false, 'latest attempt omitted -> omitted');
 });
+
+/* ---- import v2: question files, manifest, epc rule, shared-asset renames, export refs ---- */
+test('v2 question files: junk, skip names, qbank.json excluded at any depth, natural order on the path', () => {
+  const names = ['b/q10.json', 'b/q2.json', 'qbank.json', 'x/qbank.json', '__MACOSX/b/q1.json', 'a/catalog.json', 'a/._x.json', 'assets/pic.png', 'Z.JSON', 'b/q1.json'];
+  assert.deepEqual(QBP.questionFiles(names), ['b/q1.json', 'b/q2.json', 'b/q10.json', 'Z.JSON']);
+  assert.equal(QBP.pickManifest(['x/qbank.json', 'qbank.json', 'a.json']), 'qbank.json', 'shallowest manifest wins');
+  assert.equal(QBP.pickManifest(['a.json']), null); assert.equal(QBP.pickManifest(['__MACOSX/qbank.json']), null);
+  assert.equal(QBP.fileBase('dir/Part 1.json'), 'Part 1');
+});
+
+test('v2 manifest: optional fields, color and code cleaned, bad JSON ignored', () => {
+  assert.equal(QBP.parseManifest('nope'), null); assert.equal(QBP.parseManifest('[1]'), null);
+  assert.deepEqual(QBP.parseManifest('{}'), { name: '', code: '', color: '', tagMap: null });
+  assert.deepEqual(QBP.parseManifest(JSON.stringify({ fileType: 'ThunderQbank', version: 2, name: 'My Bank', code: 'abcd', color: '#2f9e44', tagMap: { system: 'sys', normalize: false } })),
+    { name: 'My Bank', code: 'ABC', color: '#2f9e44', tagMap: { system: 'sys', subject: '', topic: '', normalize: false } });
+  assert.equal(QBP.parseManifest('{"color":"red"}').color, '');
+});
+
+test('v2 choice % rule matches choice-epc.js values(): numbers or "62%" strings, at least one > 0', () => {
+  const EPC = require(find('../choice-epc.js')); const mk = (e, n) => ({ choices: new Array(n || 4).fill('c'), choicesEPC: e });
+  const cases = [mk([10, 20, 60, 10]), mk(['62%', '10%', 0, 5]), mk({ A: 0, B: 0, C: 0, D: 0 }), mk({ a: '5', B: 0 }), mk({ 0: 1 }), mk([null, 'x', -3, 0]), mk('62'), { choices: ['a'] }, mk([0, 0], 2), mk({ A: 1, B: 2 }, 0)];
+  for (const q of cases) assert.equal(QBP.epcHas(q), !!EPC.values(q, Array.isArray(q.choices) ? q.choices.length : 0), JSON.stringify(q.choicesEPC));
+  assert.equal(QBP.epcCount(cases), cases.filter((q) => QBP.epcHas(q)).length); assert.equal(QBP.epcCount(null), 0);
+});
+
+test('v2 asset rename: pic.png -> pic~2.png, ~3 and so on, dotless and nested names', () => {
+  assert.equal(QBP.altName('pic.png', 2), 'pic~2.png'); assert.equal(QBP.altName('a/b.c/pic', 3), 'a/b.c/pic~3'); assert.equal(QBP.altName('a/.hid', 2), 'a/.hid~2');
+  assert.equal(QBP.renameFree('x/pic.png', () => false), 'x/pic.png');
+  const taken = new Set(['x/pic.png', 'x/pic~2.png']); assert.equal(QBP.renameFree('x/pic.png', (r) => taken.has(r)), 'x/pic~3.png');
+});
+
+test('v2 missing images: asset-looking refs without a matching ZIP image', () => {
+  const map = {}; QBP.addAssetMapKeys(map, 'bank/images/a.png', 'x/a.png');
+  const qs = [{ stem: '<img src="images/a.png"> <img src="images/gone.png">', e: 'see assets/gone.png and https://e.com/z.png and DATA/assets/Q/k.png' }, { stem: 'data:image/png;base64,AAAA', x: ['images/b.jpg', 'images/a.png'] }];
+  assert.equal(QBP.missingRefs(qs, map), 3, 'images/gone.png, gone.png (assets/ stripped), images/b.jpg; urls, data and DATA refs ignored');
+  assert.equal(QBP.missingRefs([{ stem: 'plain text' }], {}), 0);
+});
+
+test('v2 export refs: DATA/assets/<dir>/<rel> -> assets/<rel> for the bank dir and the legacy form dir, copy not in place', () => {
+  const b = { title: 'T', blocks: [{ questions: [{ stem: '<img src="DATA/assets/QB-X/a/p.png"> <img src="DATA/assets/QB-X-01/q.png">', img: 'DATA/assets/QB-X/z.png', other: 'DATA/assets/QB-Y/z.png', n: 3, ext: 'https://e.com/assets/z.png' }] }] };
+  const keep = JSON.stringify(b), out = QBP.exportRewrite(b, ['QB-X', 'QB-X-01'], null);
+  assert.equal(JSON.stringify(b), keep);
+  const q = out.blocks[0].questions[0]; assert.equal(q.stem, '<img src="assets/a/p.png"> <img src="assets/q.png">'); assert.equal(q.img, 'assets/z.png'); assert.equal(q.other, 'DATA/assets/QB-Y/z.png', 'another bank folder left alone'); assert.equal(q.n, 3);
+  assert.equal(QBP.exportRewrite({ s: 'DATA/assets/QB-X/a.png' }, ['QB-X'], (d, r) => r.replace('a', 'a~2')).s, 'assets/a~2.png');
+  /* an exported ref re-imports through the same map rules */
+  const m = {}; QBP.addAssetMapKeys(m, 'assets/a/p.png', 'QB-X/a/p.png'); assert.equal(QBP.rewriteAssetRefs({ s: '<img src="assets/a/p.png">' }, m).s, '<img src="DATA/assets/QB-X/a/p.png">');
+});
+
+test('v2 bridge: details and export members, shared asset folder, deleteBank removes it', () => {
+  for (const h of Object.values(html)) {
+    const br = h.slice(h.indexOf('const bridge={')); assert.ok(/qbanksBankDetails:async id=>/.test(br) && /qbanksExportBank:async id=>/.test(br));
+    assert.ok(h.includes("makeRecovery('PRE_QBANK_DELETE',ids,true,dirs)") && h.includes('for(const dn of dirs) await removeAssetDir(dn)'));
+  }
+});
