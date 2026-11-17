@@ -74,16 +74,54 @@ test('bank rows and details: Built-in / Imported chip, tiles, files, Choice %, a
   assert.match(ui, /a\.download = name/);   // same a[download] save the iPad Progress ZIP export uses
 });
 
-test('Manage banks tab is a signpost card to Settings; the Create-tab Import card stays', () => {
-  assert.match(ui, /Manage banks in Settings → Qbanks/);
-  assert.match(ui, /data-a="opensettings"/);
+test('Qbanks tab v2: three view tabs, no Import/Manage entry points in the tab, a Manage in Settings link, import sheet kept for Settings', () => {
+  const head = ui.slice(ui.indexOf('function headHtml'), ui.indexOf('function rowHtml'));
+  assert.match(head, /\['create', 'Create test'/); assert.match(head, /\['history', 'Previous tests'/); assert.match(head, /\['performance', 'Performance'/);
+  assert.doesNotMatch(head, /Manage banks|data-a="import"|tq-imp|<b>Import a Qbank<\/b>/, 'no Import button / card / Manage tab in the tab');
+  assert.doesNotMatch(ui, /function manageHtml|Manage banks in Settings → Qbanks/);
+  assert.match(head, /data-a="opensettings"[^>]*>.*Manage in Settings/);
+  assert.match(head, /typeof T\.openSettings === 'function'/, 'link is feature-detected');
   assert.match(ui, /T\.openSettings\('qbank'\)/);
-  assert.match(ui, /<b>Import a Qbank<\/b>/);
-  assert.doesNotMatch(ui, /data-a="delbank" data-v="\$\{esc\(b\.id\)\}" title="Delete"/, 'old Manage row actions are gone');
+  assert.match(ui, /if \(S\.tab !== 'history' && S\.tab !== 'performance'\) S\.tab = 'create'/, 'a saved banks tab falls back to create');
+  assert.match(ui, /function openImport/); assert.match(ui, /data-a="import" data-into=/, 'Settings still imports');
+});
+
+test('Create builder v2: bank cards, quick start row, facet columns/switch, +N more, count stepper (no range slider), collapsed name', () => {
+  for (const s of ['role="${S.combine ? \'checkbox\' : \'radio\'}" aria-checked="${on}" data-a="bank"', 'data-a="combine"', 'Pick a Qbank', 'banks combined', 'class="tq-meter"', 'function progressHtml', 'data-r="progress"', "'new'", 'class="tq-qs">Quick start', 'data-a="preset"', 'data-a="facet"', "data-a=\"more\"", 'data-a="cdec"', 'data-a="cinc"', 'data-a="cmax"', 'data-a="countn"', 'data-a="nameopen"', 'data-a="name"', 'data-a="allsub"', 'data-a="allsys"', '@container tqb'])
+    assert.ok(ui.includes(s), 'has ' + s);
+  assert.doesNotMatch(ui, /data-a="count"|type="range"/, 'range slider is gone');
+  assert.match(ui, /facet: P\.facet === 'sys'/); assert.match(ui, /facet: S\.facet/, 'facet is saved in prefs');
+  assert.doesNotMatch(ui.slice(ui.indexOf('function savePrefs'), ui.indexOf('let D = null')), /more|nameOpen/, 'expand state is not saved');
+});
+
+test('Previous tests shows every test (bank filter chip row, not S.sel); Performance has its own bank filter and model', () => {
+  const hist = ui.slice(ui.indexOf('function testsFiltered'), ui.indexOf('function historyHtml'));
+  assert.doesNotMatch(hist, /S\.sel/, 'history ignores the Create bank selection');
+  assert.match(hist, /S\.hb/);
+  assert.match(ui, /data-a="hb"|bankChips\('hb'/); assert.match(ui, /bankChips\('pb'/);
+  const perf = ui.slice(ui.indexOf('function perfModel'), ui.indexOf('function perfHtml'));
+  assert.match(perf, /core\(\)\.facets\(/); assert.doesNotMatch(perf, /S\.sel/);
+  assert.match(ui, /S\.sel = new Set\(perfIds\(\)\)/, 'tap a row selects that bank set for Create');
 });
 
 test('import sheet v2: step 1 summary, values from pv.values, manifest prefill, no local ZIP re-read or 80 MB cap', () => {
   for (const s of ['tqPvOk', 'tqPvManifest', 'tqPvFiles', 'tqPvMissing', 'missingImages', 'pv.manifest', 'mf.name', 'mf.code', 'mf.color', 'pv.values', 'go2', 'tq-badfiles'])
     assert.ok(ui.includes(s), 'has ' + s);
   assert.doesNotMatch(ui, /localQuestions|80 \* 1024 \* 1024|JSZip\.loadAsync/);
+});
+
+test('bank cards: single select by default, Combine toggles, last bank stays, order numbers, no tick marks; progress card follows the status source', () => {
+  const card = ui.slice(ui.indexOf('function bankCard'), ui.indexOf('function banksHtml'));
+  assert.doesNotMatch(card, /tick/, 'cards have no tick marks');
+  assert.match(card, /tq-ord/, 'combined cards show an order number');
+  assert.match(ui, /combine: P\.combine === true \|\| \(Array\.isArray\(P\.sel\) && P\.sel\.length > 1\)/, 'saved multi-bank selection turns Combine on');
+  assert.match(ui, /JSON\.stringify\(\{ sel: \[\.\.\.S\.sel\], combine: S\.combine/, 'combine is saved');
+  const click = ui.slice(ui.indexOf("case 'bank': {"), ui.indexOf("case 'mode':"));
+  assert.match(click, /if \(!S\.combine\) \{ S\.sel = new Set\(\[v\]\)/, 'single click selects only that bank');
+  assert.match(click, /S\.sel\.size > 1\) S\.sel\.delete/, 'cannot deselect the last bank');
+  assert.match(click, /S\.lastBank/, 'Combine off keeps the last clicked bank');
+  assert.match(ui.slice(ui.indexOf('function pick('), ui.indexOf('function goTab')), /S\.combine = true/, 'perf pick over several banks turns Combine on');
+  const prog = ui.slice(ui.indexOf('function progressHtml'), ui.indexOf('function rowHtml'));
+  assert.match(prog, /r\.status === 'correct'/); assert.match(prog, /D\.tests\.filter/); assert.match(prog, /when\(last\)/);
+  assert.match(ui.slice(ui.indexOf('function perfHtml')), /progressHtml\(perfIds\(\)\)/, 'Performance progress follows S.pb');
 });
