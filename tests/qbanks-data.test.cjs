@@ -316,3 +316,67 @@ test('v2 bridge: details and export members, shared asset folder, deleteBank rem
     assert.ok(h.includes("makeRecovery('PRE_QBANK_DELETE',ids,true,dirs)") && h.includes('for(const dn of dirs) await removeAssetDir(dn)'));
   }
 });
+
+test('exam mix: tag precedence is user tag, then built-in tag, then the question system; built-ins are never written', () => {
+  const sy = { system: 'Cardiovascular', from: 'question' };
+  assert.deepEqual(QBP.resolveSystem(sy, { system: 'Renal & Urinary' }, 'Nervous System'), { system: 'Renal & Urinary', tag: 'override' });
+  assert.deepEqual(QBP.resolveSystem(sy, undefined, 'Nervous System'), { system: 'Nervous System', tag: 'builtin' });
+  assert.deepEqual(QBP.resolveSystem(sy, { system: null, at: 'x' }, 'Nervous System'), { system: 'Nervous System', tag: 'builtin' }, 'a cleared user tag falls through to the built-in');
+  assert.deepEqual(QBP.resolveSystem(sy, undefined, null), { system: 'Cardiovascular', tag: 'question' });
+  assert.deepEqual(QBP.resolveSystem({ system: Core.UNASSIGNED, from: 'missing' }, undefined, undefined), { system: Core.UNASSIGNED, tag: 'missing' });
+  for (const h of Object.values(html)) {
+    const qb = h.slice(h.indexOf('const QB=(function(){'), h.indexOf('QB.install();'));
+    const uses = qb.split('\n').filter((l) => l.includes('builtinTag(')).map((l) => l.trim().slice(0, 40));
+    assert.ok(uses.length >= 2, 'computeRows and examQuestion read built-ins');
+    for (const w of ['function canonTags', 'const tagsText', 'async function writeTagsObject', 'function changeTags', 'function setTag']) assert.ok(!line(qb, w).includes('builtinTag'), w + ' never touches built-ins');
+    assert.ok(!line(qb, 'async function acceptSuggestions').includes('builtin'));
+  }
+  const BT = require(find('../qbank-builtin-tags.js'));
+  const tags = (BT.tags || (BT.ThunderQbankBuiltinTags && BT.ThunderQbankBuiltinTags.tags)); const keys = Object.keys(tags);
+  assert.ok(keys.length > 0 && keys.every((k) => Core.SYSTEMS.includes(tags[k]) || (Core.BLUEPRINT_STEP2 && Core.BLUEPRINT_STEP2.rows.some((r) => r.systems.includes(tags[k])))), 'every built-in value is a system name the core or the blueprint knows');
+});
+
+test('exam mix: pull mix follows the planner (rows, sizes, blocks); no planner or no pull keeps today\'s pick', () => {
+  const mk = (i, sys) => ({ key: 'F::' + i, formId: 'F', blockIndex: 0, questionIndex: i, subject: 'Internal Medicine', topic: 't', recognizer: 'r' });
+  const rows = [0, 1, 2, 3, 4, 5].map((i) => mk(i)), sizes = [1, 2, 1, 2], sysOf = (k) => (Number(k.split('::')[1]) % 2 ? 'Cardiovascular' : 'Nervous System');
+  const setOf = { 'F::1': { id: 'S', position: 1, total: 2 }, 'F::2': { id: 'S', position: 2, total: 2 }, 'F::5': { id: 'T', position: 2, total: 2 } };
+  const seen = {};
+  const C = Object.assign({}, Core, {
+    blueprintRow: (s) => (s === 'Cardiovascular' ? 'cardio' : s === 'Nervous System' ? 'neuro' : null),
+    clinicalSciencesOf: () => ['medicine'],
+    planMix(units, n, per, opts) { seen.units = units; seen.opts = opts; const u = units.slice().reverse(); return { keys: u.flatMap((x) => x.keys), sizes: u.map((x) => x.keys.length), blocks: [[0, 3], [3, 6]], perBlock: [{ cardio: 2 }, { neuro: 1 }], notes: ['n1'] }; },
+  });
+  const all = { rows, sizes, setOf };
+  const res = QBP.planPick(C, 'mix', all, 6, 3, { systems: null }, sysOf, () => null);
+  assert.deepEqual(seen.units.map((u) => u.keys), [['F::0'], ['F::1', 'F::2'], ['F::3'], ['F::4', 'F::5']], 'linked sets stay together as one unit');
+  assert.deepEqual(seen.units.map((u) => u.row), ['neuro', 'cardio', 'cardio', 'neuro']);
+  assert.deepEqual(seen.units.map((u) => u.sci), [['medicine'], ['medicine'], ['medicine'], ['medicine']]);
+  assert.deepEqual(res.rows.map((r) => r.key), ['F::4', 'F::5', 'F::3', 'F::1', 'F::2', 'F::0']);
+  assert.deepEqual(res.sizes, [2, 1, 2, 1]);
+  assert.deepEqual(res.plan.blocks, [[0, 3], [3, 6]]);
+  assert.deepEqual(Object.keys(res.setOf).sort(), ['F::1', 'F::2', 'F::5'], 'set info kept for the chosen units');
+  assert.equal(seen.opts.rows, undefined, 'no rows option when the systems filter is not narrowed');
+  const narrow = QBP.planPick(C, 'mix', all, 6, 3, { systems: ['Cardiovascular', 'Dermatology'] }, sysOf, () => null);
+  assert.ok(narrow && Array.isArray(seen.opts.rows) && seen.opts.rows.includes('cardio') && seen.opts.rows.includes('msk') && !seen.opts.rows.includes('neuro'));
+  assert.equal(QBP.planPick(Object.assign({}, C, { planMix: undefined }), 'mix', all, 6, 3, {}, sysOf, () => null), null, 'planner missing -> caller keeps the old pick');
+  assert.equal(QBP.planPick(Object.assign({}, C, { planRandomCapped: undefined }), 'random', all, 6, 3, {}, sysOf, () => null), null, 'random without planRandomCapped -> old pick');
+  assert.equal(QBP.planPick(C, 'order', all, 6, 3, {}, sysOf, () => null), null, 'order never plans');
+  assert.equal(QBP.planPick(Object.assign({}, C, { planMix() { throw new Error('x'); } }), 'mix', all, 6, 3, {}, sysOf, () => null), null, 'a failing planner falls back');
+});
+
+test('exam mix: wiring - filter pull, qbankPickUnits rebind, plan bridge, pull saved on the test record', () => {
+  for (const h of Object.values(html)) {
+    const qb = h.slice(h.indexOf('const QB=(function(){'), h.indexOf('QB.install();'));
+    assert.ok(/pull:PULLS\.includes\(sel\.pull\)\?sel\.pull:null/.test(qb), 'filter carries pull; missing = null (today\'s behaviour)');
+    assert.ok(/const prevPick=qbankPickUnits; qbankPickUnits=async function/.test(qb));
+    assert.ok(/if\(!pull\) return await prevPick\.apply\(self,args\)/.test(qb), 'no pull = untouched legacy pick');
+    assert.ok(/qbanksPlan:async\(sel,n,perBlock\)/.test(qb));
+    assert.ok(/s\.qbankPullMode=activeRunContext\.qbankPullMode/.test(qb) && /t\.qbankPullMode=s\.qbankPullMode/.test(qb), 'pull mode and notes saved on session and test record');
+    assert.ok(/qbankPullMode:t\.qbankPullMode/.test(qb), 'model tests expose it');
+    assert.ok(/const prevStartTest=startTest; startTest=function/.test(qb), 'blocks follow the planner');
+  }
+  if (html.local) assert.ok(html.local.indexOf('<script src="./qbank-builtin-tags.js"></script>') > 0 && html.local.indexOf('qbank-builtin-tags.js') < html.local.indexOf('<script src="./qbanks-core.js"></script>'));
+  if (html.ipad) { const h = html.ipad, v = (h.match(/analysis\.js\?v=(\d+)/) || [])[1]; assert.ok(h.indexOf('./qbank-builtin-tags.js?v=' + v) > 0 && h.indexOf('./qbank-builtin-tags.js?v=' + v) < h.indexOf('./qbanks-core.js?v=' + v));
+    const root = path.dirname(IPAD); for (const f of ['sw.js', 'app-update.js']) assert.ok(fs.readFileSync(path.join(root, f), 'utf8').includes('"./qbank-builtin-tags.js?v='), f);
+    assert.ok(fs.readFileSync(path.join(root, 'tools', 'publish.mjs'), 'utf8').includes("'qbank-builtin-tags.js'")); }
+});

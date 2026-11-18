@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=58">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=58">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=59">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=59">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=58"></script>
-<script src="./js/form-updates-core.js?v=58"></script>
-<script src="./js/form-update-store.js?v=58"></script>
-<script src="./js/google-auth.js?v=58"></script>
+<script src="./js/sync-config.js?v=59"></script>
+<script src="./js/form-updates-core.js?v=59"></script>
+<script src="./js/form-update-store.js?v=59"></script>
+<script src="./js/google-auth.js?v=59"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=58" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=59" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,9 +635,10 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=58"></script>
-<script src="./js/qid-migration.js?v=58"></script>
-<script src="./qbanks-core.js?v=58"></script>
+<script src="jszip.min.js?v=59"></script>
+<script src="./qbank-builtin-tags.js?v=59"></script>
+<script src="./js/qid-migration.js?v=59"></script>
+<script src="./qbanks-core.js?v=59"></script>
 <script>
 
 
@@ -4467,7 +4468,33 @@ document.addEventListener('click', function(e){
               const walk=v=>{ if(typeof v==='string') return v.indexOf('DATA/assets/')<0?v:v.replace(rx,(m,d,r)=>'assets/'+(mapFn?mapFn(d,r):r)); if(Array.isArray(v)) return v.map(walk); if(v&&typeof v==='object'){ const o={}; Object.keys(v).forEach(k=>{ o[k]=walk(v[k]); }); return o; } return v; };
               return dirs.length?walk(obj):JSON.parse(JSON.stringify(obj));
             }
-            return {str,IMG_RX,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs,isManifest,questionFiles,pickManifest,parseManifest,fileBase,epcHas,epcCount,altName,renameFree,missingRefs,exportRewrite};
+            /* ---- exam mix glue (pure; planners live in qbanks-core.js) ---- */
+            function resolveSystem(sy,userTag,builtin){ if(userTag&&userTag.system) return {system:userTag.system,tag:'override'}; if(typeof builtin==='string'&&builtin) return {system:builtin,tag:'builtin'}; return {system:sy.system,tag:sy.from==='missing'?'missing':'question'}; }
+            function planRowsOf(C,f){
+              const bp=C&&C.BLUEPRINT_STEP2; if(!bp||!Array.isArray(bp.rows)||!f||!Array.isArray(f.systems)) return undefined;
+              const keep=new Set(f.systems), ids=bp.rows.filter(r=>(r.systems||[]).some(x=>keep.has(x))).map(r=>r.id);
+              return ids.length&&ids.length<bp.rows.length?ids:undefined;
+            }
+            function planUnits(C,rows,sizes,sysOf,recOf){
+              const units=[], rowOf=new Map(); let at=0;
+              for(const len of sizes){ const part=rows.slice(at,at+len); at+=len; if(!part.length) continue;
+                const r0=part[0], sys=sysOf(r0.key), rec=recOf(r0.key);
+                const row=(sys&&typeof C.blueprintRow==='function')?C.blueprintRow(sys):null;
+                let sci=[]; try{ if(typeof C.clinicalSciencesOf==='function') sci=C.clinicalSciencesOf(Object.assign({},r0,{system:sys}),rec)||[]; }catch(e){}
+                units.push({keys:part.map(x=>x.key),row:row||null,sci}); part.forEach(x=>rowOf.set(x.key,x)); }
+              return {units,rowOf};
+            }
+            /* all = {rows,sizes,setOf} with every pool unit in form order; null = planner missing/failed (caller keeps today's pick) */
+            function planPick(C,pull,all,n,per,f,sysOf,recOf,rand){
+              const fn=C?(pull==='mix'?C.planMix:pull==='random'?C.planRandomCapped:null):null; if(typeof fn!=='function') return null;
+              try{
+                const b=planUnits(C,all.rows,all.sizes,sysOf,recOf), opts={rows:planRowsOf(C,f)}; if(typeof rand==='function') opts.rand=rand;
+                const plan=fn.call(C,b.units,n,per,opts); if(!plan||!Array.isArray(plan.keys)||!Array.isArray(plan.sizes)) return null;
+                const keep=new Set(plan.keys), setOf={}; Object.keys(all.setOf||{}).forEach(k=>{ if(keep.has(k)) setOf[k]=all.setOf[k]; });
+                return {rows:plan.keys.map(k=>b.rowOf.get(k)).filter(Boolean),sizes:plan.sizes.slice(),setOf,plan};
+              }catch(e){ return null; }
+            }
+            return {str,IMG_RX,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs,isManifest,questionFiles,pickManifest,parseManifest,fileBase,epcHas,epcCount,altName,renameFree,missingRefs,exportRewrite,resolveSystem,planRowsOf,planUnits,planPick};
           })();
           /* QBDATA-PURE-END */
 
@@ -4528,8 +4555,7 @@ document.addEventListener('click', function(e){
               const bank=C.bankOf(rec), fmap=source==='forms'?await formAttemptMap(rec,amode):null, pv=prov[bank]||(prov[bank]={question:0,form:0,inferred:0});
               for(const r of idx){
                 if(!r||!r.key) continue;
-                const sy=QBP.systemFor(r,rec,C), tg=tags[r.key]; let system=sy.system, tag=sy.from==='missing'?'missing':'question';
-                if(tg&&tg.system){ system=tg.system; tag='override'; }
+                const sy=QBP.systemFor(r,rec,C), rs=QBP.resolveSystem(sy,tags[r.key],builtinTag(r.key)); let system=rs.system, tag=rs.tag;
                 const sj=C.subjectOf(r,rec); pv[sj.from==='question'?'question':sj.from==='form'?'form':'inferred']++;
                 const qh=hist[r.key], qUsed=!!used[r.key], st=source==='forms'?QBP.mergeStatus(fmap&&fmap[r.key],qUsed,qh):QBP.qbankStatus(qUsed,qh), s=C.statusOf(st);
                 rows.push({key:r.key,formId:rec.id,bank,subject:sj.subject,system,status:s.status,marked:s.marked,sug:system===C.UNASSIGNED?(C.suggestFromTopic(r.topic)||null):null,tag});
@@ -4543,16 +4569,51 @@ document.addEventListener('click', function(e){
             const banks=[]; C.BUILTIN_BANKS.forEach(b=>{ const ids=(byBank[b.id]||[]).filter(id=>!hiddenRec(catalogForm(id))); if(ids.length) banks.push(Object.assign({},b,{kind:'library',formIds:ids})); });
             const seen=new Set(); (catalog.forms||[]).forEach(f=>{ const q=f&&f.qbank; if(!q||!q.id||seen.has(q.id)) return; seen.add(q.id); banks.push({id:q.id,name:q.name||q.id,code:q.code||'QB',color:q.color||'#5c5f66',sub:'Imported Qbank',kind:'imported',formIds:bankRecs(q.id).map(x=>x.id)}); });
             const tests=(qp.sessions||[]).filter(t=>t&&t.session).map(t=>{ const ids=(t.formIds||[]).slice(), bs=Array.from(new Set(ids.map(id=>{ const r=catalogForm(id); return r?C.bankOf(r):null; }).filter(Boolean)));
-              return {id:t.qbankTestId,name:t.name||'',mode:t.mode==='tutor'?'tutor':'testing',done:t.status==='completed',total:Number(t.total)||0,blocks:((t.session&&t.session.blocks)||[]).length,percent:t.summary&&t.summary.percent!=null?Number(t.summary.percent):null,sourceMode:t.sourceMode||'',poolType:t.poolType||'',attemptSource:t.attemptSource||'',formIds:ids,banks:bs,filter:t.filter||(t.session&&t.session.qbankFilter)||null,createdAt:t.createdAt||null,updatedAt:t.updatedAt||null,completedAt:t.completedAt||null}; });
+              return {id:t.qbankTestId,name:t.name||'',mode:t.mode==='tutor'?'tutor':'testing',done:t.status==='completed',total:Number(t.total)||0,blocks:((t.session&&t.session.blocks)||[]).length,percent:t.summary&&t.summary.percent!=null?Number(t.summary.percent):null,sourceMode:t.sourceMode||'',poolType:t.poolType||'',attemptSource:t.attemptSource||'',formIds:ids,banks:bs,filter:t.filter||(t.session&&t.session.qbankFilter)||null,qbankPullMode:t.qbankPullMode||(t.session&&t.session.qbankPullMode)||null,qbankPlanNotes:t.qbankPlanNotes||(t.session&&t.session.qbankPlanNotes)||null,createdAt:t.createdAt||null,updatedAt:t.updatedAt||null,completedAt:t.completedAt||null}; });
             let at=''; Object.keys(m.tags||{}).forEach(k=>{ const a=m.tags[k]&&m.tags[k].at; if(a&&String(a)>at) at=String(a); });
             return {banks,forms:m.forms,rows:m.rows,prov:m.prov,tests,tagsUpdatedAt:at||null};
           }
 
           /* ---------- the filter pool ---------- */
-          async function pool(){
-            const f=filter, C=needCore(), ids=qbankSelectedIds(), m=await computeRows({source:f.source,attempt:f.attempt,formIds:ids}), ok=new Set();
-            m.rows.forEach(r=>{ if(C.matches(r,f)) ok.add(r.key); });
+          async function pool(f0,ids0){
+            const f=f0||filter, C=needCore(), ids=Array.isArray(ids0)?ids0:qbankSelectedIds(), m=await computeRows({source:f.source,attempt:f.attempt,formIds:ids}), ok=new Set();
+            poolSys=new Map(); m.rows.forEach(r=>{ poolSys.set(r.key,r.system); if(C.matches(r,f)) ok.add(r.key); });
             return (catalog.forms||[]).filter(x=>ids.includes(x.id)).flatMap(x=>x.questionIndex||[]).filter(r=>ok.has(r.key));
+          }
+          /* ---------- exam mix: built-in tags, pull planner glue ---------- */
+          const builtinTag=key=>{ try{ const b=window.ThunderQbankBuiltinTags, t=b&&b.tags&&b.tags[key]; return typeof t==='string'&&t?t:null; }catch(e){ return null; } };
+          const PULLS=['mix','random','order'];
+          let poolSys=new Map(), pendingPlan=null;
+          const blockSizeNow=()=>Math.max(1,parseInt(($id('qbankBlockSize')&&$id('qbankBlockSize').value)||'40',10)||40);
+          async function pickWithPlan(prevPick,self,args){
+            const poolRows=args[0], n=args[1], C=Core(), pull=filter&&PULLS.includes(filter.pull)?filter.pull:null;
+            pendingPlan=null;
+            if(!pull) return await prevPick.apply(self,args);
+            if(pull==='order'){ pendingPlan={pull,notes:[],blocks:null,keys:null}; return await prevPick.call(self,poolRows,n,false); }
+            const all=await prevPick.call(self,poolRows,poolRows.length+1,false);
+            const res=QBP.planPick(C,pull,all,n,blockSizeNow(),filter,k=>poolSys.get(k),k=>{ const h=rowByKey(k); return h?h.f:null; });
+            if(!res) return await prevPick.apply(self,args);
+            pendingPlan={pull,notes:(res.plan.notes||[]).slice(),blocks:res.plan.blocks||null,keys:res.plan.keys.slice()};
+            return {rows:res.rows,sizes:res.sizes,setOf:res.setOf};
+          }
+          /* follow the planner's blocks (startQbankMode splits greedily by size), then stamp the run context */
+          function applyPlanToStart(){
+            const p=pendingPlan; if(!p||!activeRunContext||!activeRunContext.qbank) return;
+            activeRunContext.qbankPullMode=p.pull; activeRunContext.qbankPlanNotes=p.notes.slice();
+            if(!p.blocks||!importedBank||importedBank.librarySlotId!=='QBANK_MODE') return;
+            const flat=[]; (importedBank.blocks||[]).forEach(b=>(b.questions||[]).forEach(q=>flat.push(q)));
+            if(flat.length!==p.keys.length||flat.some((q,i)=>q._qbankKey!==p.keys[i])) return;
+            importedBank.blocks=p.blocks.filter(r=>r[1]>r[0]).map((r,i)=>({name:`Qbank Block ${i+1}`,questions:flat.slice(r[0],r[1])}));
+          }
+          const mkFilter=sel=>{ const arr=v=>v==null?null:Array.from(v); return {statuses:arr(sel.statuses),subjects:arr(sel.subjects),systems:arr(sel.systems),source:sel.source==='forms'?'forms':'qbank',attempt:sel.attempt||null,secondsPerQuestion:Math.max(0,Math.round(Number(sel.secondsPerQuestion)||0)),pull:PULLS.includes(sel.pull)?sel.pull:null}; };
+          async function planPreview(sel,n,per){
+            const C=Core(), f=sel&&typeof sel==='object'?mkFilter(sel):filter, out={pull:f?f.pull:null,perBlock:null,notes:[],available:0};
+            if(!f||!C) return out;
+            const rows=await pool(f,sel&&Array.isArray(sel.formIds)?sel.formIds:null); out.available=rows.length;
+            if(f.pull!=='mix'&&f.pull!=='random') return out;
+            const res=QBP.planPick(C,f.pull,{rows,sizes:rows.map(()=>1),setOf:{}},Math.max(1,parseInt(n,10)||40),Math.max(1,parseInt(per,10)||40),f,k=>poolSys.get(k),k=>{ const h=rowByKey(k); return h?h.f:null; });
+            if(res){ out.perBlock=(res.plan.perBlock&&res.plan.perBlock[0])||{}; out.notes=(res.plan.notes||[]).slice(); }
+            return out;
           }
           let rbk={sig:'',map:new Map()};
           function rowByKey(key){
@@ -4569,7 +4630,7 @@ document.addEventListener('click', function(e){
             const C=Core(); if(!C) return null;
             if(!tagsCache) loadTags().catch(()=>{});
             const hit=rowByKey(key); let system=C.UNASSIGNED;
-            if(hit){ system=QBP.systemFor(hit.r,hit.f,C).system; const tg=tagsCache&&tagsCache.tags[key]; if(tg&&tg.system) system=tg.system; }
+            if(hit){ system=QBP.systemFor(hit.r,hit.f,C).system; const tg=tagsCache&&tagsCache.tags[key]; if(tg&&tg.system) system=tg.system; else{ const bt=builtinTag(key); if(bt) system=bt; } }
             return {key,system,untagged:system===C.UNASSIGNED,qbank:true};
           }
 
@@ -4777,11 +4838,15 @@ document.addEventListener('click', function(e){
             startQbankMode=async function(){
               if(!filter) return await prevStart.apply(this,arguments);
               const mode=$id('qbankQuestionMode'), spq=$id('secondsPerQuestion'), pm=mode?mode.value:null, ps=spq?spq.value:null;
+              pendingPlan=null;
               try{ if(mode) mode.value='all'; if(filter.secondsPerQuestion>0&&spq) spq.value=String(filter.secondsPerQuestion); return await prevStart.apply(this,arguments); }
-              finally{ if(mode&&pm!=null) mode.value=pm; if(spq&&ps!=null) spq.value=ps; }
+              finally{ pendingPlan=null; if(mode&&pm!=null) mode.value=pm; if(spq&&ps!=null) spq.value=ps; }
             };
-            const prevCreate=createSession; createSession=function(){ const s=prevCreate.apply(this,arguments); try{ if(s&&activeRunContext&&activeRunContext.qbank&&filter) s.qbankFilter={statuses:filter.statuses?filter.statuses.slice():null,subjects:filter.subjects?filter.subjects.slice():null,systems:filter.systems?filter.systems.slice():null}; }catch(e){} return s; };
-            const prevUpsert=upsertQSession; upsertQSession=function(qp,s){ const out=prevUpsert.apply(this,arguments); try{ if(s&&s.qbankFilter&&out&&out.sessions){ const t=out.sessions.find(x=>x.qbankTestId===s.qbankTestId); if(t) t.filter=s.qbankFilter; } }catch(e){} return out; };
+            /* pull: the filter's exam-mix / capped-random / form-order pick replaces qbankPickUnits (missing pull = today's behaviour) */
+            const prevPick=qbankPickUnits; qbankPickUnits=async function(){ if(!filter) return await prevPick.apply(this,arguments); return await pickWithPlan(prevPick,this,arguments); };
+            const prevStartTest=startTest; startTest=function(){ try{ applyPlanToStart(); }catch(e){} return prevStartTest.apply(this,arguments); };
+            const prevCreate=createSession; createSession=function(){ const s=prevCreate.apply(this,arguments); try{ if(s&&activeRunContext&&activeRunContext.qbank&&filter) s.qbankFilter={statuses:filter.statuses?filter.statuses.slice():null,subjects:filter.subjects?filter.subjects.slice():null,systems:filter.systems?filter.systems.slice():null}; if(s&&activeRunContext&&activeRunContext.qbank&&activeRunContext.qbankPullMode){ s.qbankPullMode=activeRunContext.qbankPullMode; s.qbankPlanNotes=(activeRunContext.qbankPlanNotes||[]).slice(); } }catch(e){} return s; };
+            const prevUpsert=upsertQSession; upsertQSession=function(qp,s){ const out=prevUpsert.apply(this,arguments); try{ if(s&&s.qbankFilter&&out&&out.sessions){ const t=out.sessions.find(x=>x.qbankTestId===s.qbankTestId); if(t){ t.filter=s.qbankFilter; if(s.qbankPullMode){ t.qbankPullMode=s.qbankPullMode; t.qbankPlanNotes=s.qbankPlanNotes||[]; } } } }catch(e){} return out; };
             /* a catalog rebuild keeps the Qbank flags and re-applies the tag map to the index */
             const prevMake=makeCatalogRecord;
             makeCatalogRecord=function(id,meta,bank,rawText,bankHash,sourceFiles,prev){
@@ -4793,7 +4858,8 @@ document.addEventListener('click', function(e){
           }
           const bridge={
             qbanks:async opt=>await qbanksModel(opt),
-            qbanksSetFilter:sel=>{ if(!sel||typeof sel!=='object'){ filter=null; return true; } const arr=v=>v==null?null:Array.from(v); filter={statuses:arr(sel.statuses),subjects:arr(sel.subjects),systems:arr(sel.systems),source:sel.source==='forms'?'forms':'qbank',attempt:sel.attempt||null,secondsPerQuestion:Math.max(0,Math.round(Number(sel.secondsPerQuestion)||0))}; return true; },
+            qbanksSetFilter:sel=>{ if(!sel||typeof sel!=='object'){ filter=null; return true; } filter=mkFilter(sel); return true; },
+            qbanksPlan:async(sel,n,perBlock)=>await planPreview(sel,n,perBlock),
             qbanksAvailable:async()=>(await qbankPool()).length,
             qbanksImportPreview:async(file,opt)=>await importPreview(file,opt),
             qbanksImport:async o=>await importBank(o),
@@ -11174,18 +11240,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=58"></script>
-<script src="./js/sync-storage.js?v=58"></script>
-<script src="./js/progress-sync.js?v=58"></script>
-<script src="./js/library-backup.js?v=58"></script>
-<script src="./js/qid-settings.js?v=58"></script>
-<script src="./js/sync3-core.js?v=58"></script>
-<script src="./js/sync3-bridge.js?v=58"></script>
-<script src="./js/sync3-store.js?v=58"></script>
-<script src="./js/sync3-drive.js?v=58"></script>
-<script src="./js/sync3-sync.js?v=58"></script>
-<script src="./js/sync3-migrate.js?v=58"></script>
-<script src="./js/sync3-boot.js?v=58"></script>
+<script src="./js/sync-merge.js?v=59"></script>
+<script src="./js/sync-storage.js?v=59"></script>
+<script src="./js/progress-sync.js?v=59"></script>
+<script src="./js/library-backup.js?v=59"></script>
+<script src="./js/qid-settings.js?v=59"></script>
+<script src="./js/sync3-core.js?v=59"></script>
+<script src="./js/sync3-bridge.js?v=59"></script>
+<script src="./js/sync3-store.js?v=59"></script>
+<script src="./js/sync3-drive.js?v=59"></script>
+<script src="./js/sync3-sync.js?v=59"></script>
+<script src="./js/sync3-migrate.js?v=59"></script>
+<script src="./js/sync3-boot.js?v=59"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11664,10 +11730,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=58"></script>
-<script src="./exam-notes.js?v=58"></script>
-<script src="./app-update.js?v=58"></script>
-<script src="./js/form-updates.js?v=58"></script>
+<script src="./bulk-import.js?v=59"></script>
+<script src="./exam-notes.js?v=59"></script>
+<script src="./app-update.js?v=59"></script>
+<script src="./js/form-updates.js?v=59"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -12094,13 +12160,13 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=58"></script>
-<script src="./nav-delay.js?v=58"></script>
-<script src="./thunder-ui.js?v=58"></script>
-<script src="./rapid-review.js?v=58"></script>
-<script src="./shadow-logger.js?v=58"></script>
-<script src="./analysis.js?v=58"></script>
-<script src="./qbanks.js?v=58"></script>
-<script src="./choice-epc.js?v=58"></script>
+<script src="./item-code.js?v=59"></script>
+<script src="./nav-delay.js?v=59"></script>
+<script src="./thunder-ui.js?v=59"></script>
+<script src="./rapid-review.js?v=59"></script>
+<script src="./shadow-logger.js?v=59"></script>
+<script src="./analysis.js?v=59"></script>
+<script src="./qbanks.js?v=59"></script>
+<script src="./choice-epc.js?v=59"></script>
 </body>
 </html>

@@ -125,3 +125,62 @@ test('bank cards: single select by default, Combine toggles, last bank stays, or
   assert.match(prog, /r\.status === 'correct'/); assert.match(prog, /D\.tests\.filter/); assert.match(prog, /when\(last\)/);
   assert.match(ui.slice(ui.indexOf('function perfHtml')), /progressHtml\(perfIds\(\)\)/, 'Performance progress follows S.pb');
 });
+
+/* ---- Exam mix: "Question order" control (pull = mix | random | order) ---- */
+const vm = require('node:vm');
+function loadUi(saved) {
+  const root = { document: { readyState: 'loading', addEventListener() {}, getElementById: () => null }, localStorage: { getItem: () => (saved == null ? null : JSON.stringify(saved)), setItem() {} } };
+  root.window = root; root.setTimeout = () => 0; root.console = console;
+  root.ThunderQbanksCore = { BLUEPRINT_STEP2: { rows: [{ id: 'social', short: 'Ethics' }, { id: 'renal', short: 'Renal/Repro' }, { id: 'cardio', short: 'Cardio' }, { id: 'msk', short: 'MSK/Skin' }, { id: 'behav', short: 'Behavioral' }, { id: 'blood', short: 'Blood/Immune' }, { id: 'gi', short: 'GI' }, { id: 'neuro', short: 'Neuro' }] } };
+  vm.runInNewContext(ui.replace('_state: S', '_state: S, _t: { pvInner, pullSub, PV, PULL_OPTS, PULL_LABEL }'), root);
+  return root.ThunderQbanksUI;
+}
+
+test('S.pull migration: saved pull wins, else saved shuffle true to Random / false to Form order, nothing saved to Exam mix', () => {
+  for (const [saved, want] of [[null, 'mix'], [{}, 'mix'], [{ sel: ['x'] }, 'random'], [{ pull: 'order' }, 'order'], [{ pull: 'random', shuffle: false }, 'random'], [{ shuffle: true }, 'random'], [{ shuffle: false }, 'order'], [{ pull: 'bogus', shuffle: false }, 'order'], [{ pull: 'bogus' }, 'random']])
+    assert.equal(loadUi(saved)._state.pull, want, JSON.stringify(saved));
+  assert.match(ui.slice(ui.indexOf('function savePrefs'), ui.indexOf('let D = null')), /pull: S\.pull/, 'pull is saved');
+});
+
+test('Question order segment: 3 radios with data-a="pull" and data-v, phone short labels, aria-checked follows S.pull, sub-line per mode', () => {
+  const U = loadUi({ pull: 'random' }), T = U._t;
+  assert.deepEqual(Array.from(T.PULL_OPTS, (o) => o.join('|')), ['mix|Exam mix|Mix', 'random|Random|Random', 'order|Form order|Order']);
+  assert.ok(ui.includes('role="radiogroup" aria-labelledby="tqPullL"') && ui.includes('aria-checked="${S.pull === k}"') && ui.includes('data-a="pull" data-v="${k}"'));
+  assert.ok(ui.includes('<span class="tq-wl">${l}</span><span class="tq-wn">${w}</span>'), 'long + short label spans (swap at max-width 640)');
+  assert.doesNotMatch(ui, /<b>Shuffle<\/b>/, 'Shuffle switch is gone');
+  U._state.perBlock = 40; U._state.pull = 'mix'; assert.equal(T.pullSub(), 'USMLE Step 2 CK spread · 40 per block');
+  U._state.pull = 'random'; assert.equal(T.pullSub(), 'Random, no system over its USMLE max');
+  U._state.pull = 'order'; assert.equal(T.pullSub(), 'In form order');
+});
+
+test('start() hands pull to the filter and keeps the legacy qbankShuffle; legacy shuffle case toggles Random / Form order; sim preset is Exam mix', () => {
+  const start = ui.slice(ui.indexOf('async function start()'), ui.indexOf('/* ---------- events'));
+  assert.match(start, /setLegacy\('qbankShuffle', S\.pull !== 'order'\)/);
+  assert.ok(start.indexOf('sel.pull = S.pull') > 0 && start.indexOf('sel.pull = S.pull') < start.indexOf('B.qbanksSetFilter(sel)'), 'pull is on sel before qbanksSetFilter');
+  assert.match(ui, /case 'pull':/); assert.match(ui, /case 'shuffle': S\.pull = S\.pull === 'order' \? 'random' : 'order'/);
+  assert.match(ui.slice(ui.indexOf('function applyPreset'), ui.indexOf('function toggleIn')), /PULLS\.includes\(a\.pull\)[^;]*;[^;]*p\.id === 'sim'\) S\.pull = 'mix'/);
+});
+
+test('"This block" preview: stacked bar, up to 6 items + "+N more", notes as .tq-hint; empty for Form order or no plan; qbanksPlan is guarded and debounced', () => {
+  const U = loadUi(null), T = U._t, S = U._state;
+  assert.equal(T.pvInner(), '', 'no plan yet: nothing');
+  T.PV.res = { pull: 'mix', perBlock: { social: 5, renal: 4, cardio: 4, msk: 4, behav: 3, blood: 3, gi: 3, neuro: 3, zero: 0 }, notes: ['Only 2 Neuro questions left <b>'], available: 100 };
+  const h = T.pvInner();
+  assert.match(h, /This block/); assert.match(h, /class="tq-pvbar"/);
+  assert.equal((h.match(/<span><b>/g) || []).length, 6, 'max 6 items'); assert.match(h, /<b>Ethics<\/b> 5/); assert.match(h, /\+2 more/);
+  assert.equal((h.match(/<i style=/g) || []).length, 8, 'bar has a segment per non-empty row');
+  assert.match(h, /<div class="tq-hint">[\s\S]*Only 2 Neuro questions left &lt;b&gt;/, 'notes escaped, warning style');
+  S.pull = 'order'; assert.equal(T.pvInner(), '');
+  const sp = ui.slice(ui.indexOf('function schedulePlan'), ui.indexOf('/* ---------- small helpers'));
+  assert.match(sp, /typeof B\.qbanksPlan !== 'function'/); assert.match(sp, /setTimeout/); assert.match(sp, /n !== PV\.seq\) return/, 'stale answers ignored');
+  assert.match(sp, /await B\.qbanksPlan\(sel, Math\.max\(1, m\.count\), Math\.max\(1, S\.perBlock\)\)/);
+  assert.match(ui, /schedulePlan\(S\.tab === 'create'/, 'render schedules, never awaits');
+});
+
+test('Previous tests chip from test.qbankPullMode (Exam mix / Random / Form order) and token-only styling', () => {
+  const hist = ui.slice(ui.indexOf('function historyHtml'), ui.indexOf('/* performance */'));
+  assert.match(hist, /PULL_LABEL\[t\.qbankPullMode\]/); assert.match(hist, /class="tq-pchip"/);
+  assert.equal(JSON.stringify(loadUi(null)._t.PULL_LABEL), JSON.stringify({ mix: 'Exam mix', random: 'Random', order: 'Form order' }));
+  const css = ui.split('\n').filter((l) => /tq-pull|tq-pv|tq-pchip/.test(l) && /^\$\{R\}/.test(l)).join('\n');
+  assert.ok(css.length > 200); assert.doesNotMatch(css, /#[0-9a-fA-F]{3,6}\b/, 'no raw colours: --q-* tokens only');
+});

@@ -49,6 +49,9 @@ const COLORS = ['#e4572e', '#2f9e44', '#1971c2', '#ae3ec9', '#f08c00', '#0c8599'
 /* ---------- state ---------- */
 function loadPrefs() { try { return JSON.parse(root.localStorage.getItem(KEY) || 'null') || {}; } catch (e) { return {}; } }
 const P = loadPrefs();
+const PULLS = ['mix', 'random', 'order'];
+// Existing users keep today's behaviour: Shuffle was always on and never saved, so any saved prefs without `pull` = Random. Only a fresh profile starts on Exam mix.
+const pullFromPrefs = p => (PULLS.includes(p.pull) ? p.pull : typeof p.shuffle === 'boolean' ? (p.shuffle ? 'random' : 'order') : Object.keys(p || {}).length ? 'random' : 'mix');
 const S = {
   tab: 'create', prevTab: 'create',
   sel: new Set(Array.isArray(P.sel) ? P.sel : []), selFromPrefs: Array.isArray(P.sel), combine: P.combine === true || (Array.isArray(P.sel) && P.sel.length > 1), lastBank: '',
@@ -57,14 +60,49 @@ const S = {
   reviewTag: P.reviewTag !== false,
   mode: P.mode === 'timed' ? 'timed' : 'tutor', secs: Math.max(15, Math.min(600, Number(P.secs) || 90)),
   track: P.track === 'forms' ? 'forms' : P.track === 'qbank' ? 'qbank' : '', attempt: typeof P.attempt === 'string' ? P.attempt : '',
-  subs: null, syss: null, fq: '', formsOff: new Set(), want: 40, perBlock: 40, shuffle: true, name: '', preset: '',
+  subs: null, syss: null, fq: '', formsOff: new Set(), want: 40, perBlock: 40, pull: pullFromPrefs(P), name: '', preset: '',
   hf: 'all', hq: '', hb: '', pb: null, more: { sub: false, sys: false }, nameOpen: false, open: {}, stale: true, busy: false
 };
 function savePrefs() {
-  try { root.localStorage.setItem(KEY, JSON.stringify({ sel: [...S.sel], combine: S.combine, statuses: [...S.statuses], sort: S.sort, facet: S.facet, reviewTag: S.reviewTag, mode: S.mode, secs: S.secs, track: S.track, attempt: S.attempt })); } catch (e) {}
+  try { root.localStorage.setItem(KEY, JSON.stringify({ sel: [...S.sel], combine: S.combine, statuses: [...S.statuses], sort: S.sort, facet: S.facet, reviewTag: S.reviewTag, mode: S.mode, secs: S.secs, track: S.track, attempt: S.attempt, pull: S.pull })); } catch (e) {}
 }
 let D = null;      // bridge qbanks() result
 let seq = 0;
+
+/* ---------- Question order: Exam mix / Random / Form order, with a "This block" preview from B.qbanksPlan ---------- */
+const PULL_OPTS = [['mix', 'Exam mix', 'Mix'], ['random', 'Random', 'Random'], ['order', 'Form order', 'Order']];
+const PULL_LABEL = { mix: 'Exam mix', random: 'Random', order: 'Form order' };
+function pullSub() { return S.pull === 'mix' ? `USMLE Step 2 CK spread · ${S.perBlock} per block` : S.pull === 'random' ? 'Random, no system over its USMLE max' : 'In form order'; }
+const PV = { key: '', res: null, seq: 0, t: 0 };
+function pvInner() {
+  if (S.pull === 'order' || !PV.res) return '';
+  const r = PV.res, pb = r.perBlock || {}, C = core(), rows = (C && C.BLUEPRINT_STEP2 && C.BLUEPRINT_STEP2.rows) || [];
+  const lab = id => { if (id === 'none') return 'Untagged'; const x = rows.find(y => y.id === id); return x ? (x.short || x.label || id) : id; };
+  const ids = Object.keys(pb).filter(k => pb[k] > 0).sort((a, b) => pb[b] - pb[a] || (rows.findIndex(x => x.id === a) - rows.findIndex(x => x.id === b)));
+  const tot = ids.reduce((n, k) => n + pb[k], 0), notes = Array.isArray(r.notes) ? r.notes.filter(Boolean) : [];
+  const body = ids.length ? `<div class="tq-pvbar" aria-hidden="true">${ids.map((k, i) => `<i style="width:${100 * pb[k] / tot}%;background:${COLORS[i % COLORS.length]}"></i>`).join('')}</div>
+    <div class="tq-pvl">${ids.slice(0, 6).map(k => `<span><b>${esc(lab(k))}</b> ${pb[k]}</span>`).join('')}${ids.length > 6 ? `<span class="tq-pvmore">+${ids.length - 6} more</span>` : ''}</div>` : '';
+  return `<div class="tq-pvh">This block</div>${body}${notes.slice(0, 2).map(n => `<div class="tq-hint">${ICON.warn}<span>${esc(n)}</span></div>`).join('')}`;
+}
+/* debounced, never blocks render, a newer request makes older answers stale */
+function schedulePlan(m) {
+  const B = bridge(); clearTimeout(PV.t);
+  if (S.pull === 'order' || !B || typeof B.qbanksPlan !== 'function' || !D || !m || !m.avail || !S.sel.size) { if (PV.res || PV.key) { PV.res = null; PV.key = ''; PV.seq++; } return; }
+  const key = JSON.stringify([S.pull, m.count, S.perBlock, m.avail, [...S.sel].sort(), [...S.formsOff].sort(), [...S.statuses].sort(), S.subs ? [...S.subs].sort() : null, S.syss ? [...S.syss].sort() : null, trackNow(), attemptNow()]);
+  if (key === PV.key) return;
+  const n = ++PV.seq;
+  PV.t = setTimeout(async () => {
+    try {
+      const formIds = D.forms.filter(f => S.sel.has(f.bank) && !S.formsOff.has(f.id)).map(f => f.id);
+      const sel = { statuses: [...S.statuses], subjects: S.subs ? [...S.subs] : m.subjects.slice(), systems: S.syss ? [...S.syss] : m.systems.slice(), source: trackNow(), attempt: attemptNow(), pull: S.pull, formIds };
+      const res = await B.qbanksPlan(sel, Math.max(1, m.count), Math.max(1, S.perBlock));
+      if (n !== PV.seq) return;
+      PV.key = key; PV.res = res && typeof res === 'object' ? res : null;
+      // patch only the preview box: a full render() here could swallow a click that is landing on Generate
+      const box = byId('tqPv'); if (box) box.innerHTML = pvInner(); else render();
+    } catch (e) { if (n === PV.seq) { PV.key = key; PV.res = null; } }
+  }, 220);
+}
 
 /* ---------- small helpers ---------- */
 function setHtml(el, html) {
@@ -248,7 +286,8 @@ function createHtml(m) {
     <div class="tq-count" role="group" aria-label="Number of questions"><button type="button" class="tq-ib tq-cb" data-a="cdec" aria-label="Fewer questions" ${m.count > 1 ? '' : 'disabled'}>${ICON.minus}</button><input class="tq-inp" type="number" min="1" max="${m.avail}" value="${m.count}" inputmode="numeric" aria-label="Number of questions" data-a="countn"><button type="button" class="tq-ib tq-cb" data-a="cinc" aria-label="More questions" ${m.count < m.avail ? '' : 'disabled'}>${ICON.plus}</button><button type="button" class="tq-btn tq-small" data-a="cmax" ${m.count < m.avail ? '' : 'disabled'}>Max</button></div>
     <div class="tq-nums2"><label class="tq-field"><span>Per block</span><input class="tq-inp" type="number" min="1" max="80" value="${S.perBlock}" inputmode="numeric" data-a="perblock"></label>
     ${S.mode === 'timed' ? `<label class="tq-field"><span>Seconds per question</span><input class="tq-inp" type="number" min="15" max="600" value="${S.secs}" inputmode="numeric" data-a="secs"></label>` : ''}</div>
-    <div class="tq-sw"><div><b>Shuffle</b><span>Random pick and order</span></div><button type="button" class="tq-switch" role="switch" aria-checked="${S.shuffle}" aria-label="Shuffle" data-a="shuffle"><i></i></button></div>
+    <div class="tq-pull"><span class="tq-pulll" id="tqPullL">Question order</span><div class="tq-sortseg tq-pullseg" role="radiogroup" aria-labelledby="tqPullL">${PULL_OPTS.map(([k, l, w]) => `<button type="button" role="radio" aria-checked="${S.pull === k}" aria-label="${l}" data-a="pull" data-v="${k}"><span class="tq-wl">${l}</span><span class="tq-wn">${w}</span></button>`).join('')}</div>
+    <div class="tq-pullsub" id="tqPullSub">${esc(pullSub())}</div><div class="tq-pv" id="tqPv">${pvInner()}</div></div>
     <button type="button" class="tq-namebtn" data-a="nameopen" aria-expanded="${S.nameOpen}"><span>Name: ${nm ? esc(nm) : 'auto'}</span>${chev}</button>
     ${S.nameOpen ? `<input class="tq-inp tq-nameinp" type="text" placeholder="${esc(autoName())}" aria-label="Test name" data-a="name" value="${esc(S.name)}" autocomplete="off">` : ''}
     <button type="button" class="tq-btn tq-fill tq-go" data-a="go" ${why || S.busy ? 'disabled' : ''}>${ICON.play}Generate test</button>
@@ -293,7 +332,7 @@ function historyHtml() {
     <div class="tq-card tq-tests" aria-label="Previous tests">${list.map(t => {
       const name = t.name || 'Qbank test', act = t.done ? 'review' : 'resume', blocks = t.blocks || 1;
       const bks = (t.banks || []).map(bankById).filter(Boolean).map(mini).join('');
-      return `<div class="tq-test">${ring(t)}<div class="tq-nm"><b>${esc(name)}</b><small>${esc([when(t.completedAt || t.updatedAt || t.createdAt), plural(t.total || 0, 'Q'), plural(blocks, 'block'), filterLine(t)].filter(Boolean).join(' · '))}</small></div>
+      return `<div class="tq-test">${ring(t)}<div class="tq-nm"><b>${esc(name)}</b><small>${esc([when(t.completedAt || t.updatedAt || t.createdAt), plural(t.total || 0, 'Q'), plural(blocks, 'block'), filterLine(t)].filter(Boolean).join(' · '))}</small>${PULL_LABEL[t.qbankPullMode] ? `<span class="tq-pchip">${PULL_LABEL[t.qbankPullMode]}</span>` : ''}</div>
       <div class="tq-bk">${bks}</div><div class="tq-stc"><span class="tq-st ${t.done ? 'tq-done' : 'tq-prog'}">${t.done ? 'Completed' : 'In progress'}</span></div>
       <div class="tq-acts"><button type="button" class="tq-btn tq-small ${t.done ? '' : 'tq-fill'}" data-a="tact" data-act="${act}" data-v="${esc(t.id)}" aria-label="${t.done ? 'Review' : 'Resume'} ${esc(name)}">${t.done ? 'Review' : 'Resume'}</button>
         <button type="button" class="tq-ib" data-a="tact" data-act="rename" data-v="${esc(t.id)}" title="Rename" aria-label="Rename ${esc(name)}">${ICON.pencil}</button>
@@ -429,6 +468,7 @@ function render() {
   const bEl = rootEl.querySelector('[data-r="banks"]'); bEl.hidden = !banks;
   setHtml(bEl, banks); setHtml(rootEl.querySelector('[data-r="view"]'), view);
   const barEl = rootEl.querySelector('[data-r="bar"]'); barEl.hidden = !bar; setHtml(barEl, bar);
+  schedulePlan(S.tab === 'create' && D && need ? model() : null);
 }
 
 /* ---------- sheets: import wizard, Re-tag, rename ---------- */
@@ -671,7 +711,8 @@ async function start() {
     setLegacy('qbankSourceMode', trackNow() === 'forms' ? 'linked' : 'qbank');
     setLegacy('qbankAttemptSource', attemptNow());
     setLegacy('qbankBlockSize', Math.max(1, S.perBlock));
-    setLegacy('qbankShuffle', S.shuffle);
+    setLegacy('qbankShuffle', S.pull !== 'order');
+    sel.pull = S.pull;
     setLegacy('qbankTestName', S.name.trim() || autoName());
     B.qbanksSetFilter(sel);
     setLegacyForms(formIds);
@@ -691,6 +732,7 @@ function applyPreset(p) {
   const a = p.apply || {};
   S.statuses = new Set(a.statuses || []); S.subs = a.subjects ? new Set(a.subjects) : null; S.syss = a.systems ? new Set(a.systems) : null;
   if (a.mode) S.mode = a.mode === 'timed' ? 'timed' : 'tutor'; if (a.secs) S.secs = a.secs; if (a.count) S.want = a.count; if (a.perBlock) S.perBlock = a.perBlock;
+  if (PULLS.includes(a.pull)) S.pull = a.pull; else if (p.id === 'sim') S.pull = 'mix';
   S.preset = p.id; if (S.sel.size > 1) S.combine = true; savePrefs();
 }
 function toggleIn(setName, all, v) { const cur = S[setName] ? new Set(S[setName]) : new Set(all); cur.has(v) ? cur.delete(v) : cur.add(v); S[setName] = cur; }
@@ -744,7 +786,8 @@ async function onClick(e) {
     case 'allsys': S.preset = ''; S.syss = v === '1' ? null : new Set(); render(); return;
     case 'form': S.formsOff.has(v) ? S.formsOff.delete(v) : S.formsOff.add(v); S.open.forms = true; render(); return;
     case 'ftab': { const [b, tab] = v.split('|'), ids = D.forms.filter(f => f.bank === b && (f.tab || 'Imported files') === tab).map(f => f.id), allOn = ids.every(id => !S.formsOff.has(id)); ids.forEach(id => (allOn ? S.formsOff.add(id) : S.formsOff.delete(id))); S.open.forms = true; render(); return; }
-    case 'shuffle': S.shuffle = !S.shuffle; render(); return;
+    case 'pull': if (PULLS.includes(v) && S.pull !== v) { S.pull = v; savePrefs(); render(); } return;
+    case 'shuffle': S.pull = S.pull === 'order' ? 'random' : 'order'; savePrefs(); render(); return; /* legacy hook: toggles Random / Form order */
     case 'hf': S.hf = v; render(); return;
     case 'hb': S.hb = v; render(); return;
     case 'pb': { const all = perfBankIds(); if (!v) S.pb = null; else { const cur = S.pb ? new Set(S.pb) : new Set(); cur.has(v) ? cur.delete(v) : cur.add(v); S.pb = cur.size && !all.every(id => cur.has(id)) ? cur : null; } render(); return; }
@@ -993,6 +1036,18 @@ ${R} .tq-field{display:flex;flex-direction:column;gap:6px;margin-top:14px}
 ${R} .tq-field>span{font-size:12px;font-weight:600;color:var(--q-on2)!important}
 ${R} .tq-inp{border:1px solid var(--q-line);background:var(--q-sf);border-radius:10px;padding:9px 12px;width:100%}
 ${R} .tq-nums2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+${R} .tq-pull{margin-top:14px}
+${R} .tq-pulll{display:block;font-size:12px;font-weight:600;color:var(--q-on2)!important;margin-bottom:6px}
+${R} .tq-pullseg{width:100%}
+${R} .tq-pullseg button{flex:1;padding:5px 6px;white-space:nowrap}
+${R} .tq-pullsub{font-size:12px;color:var(--q-on3)!important;margin-top:6px}
+${R} .tq-pvh{font-size:12px;font-weight:600;color:var(--q-on2)!important;margin:10px 0 6px}
+${R} .tq-pvbar{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--q-s2)}
+${R} .tq-pvbar i{display:block;height:100%;min-width:2px}
+${R} .tq-pvl{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:12px;color:var(--q-on2)!important}
+${R} .tq-pvl b{color:var(--q-on)!important;font-weight:600}
+${R} .tq-pvmore{color:var(--q-on3)!important}
+${R} .tq-pchip{display:inline-block;margin-top:4px;font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;width:max-content;background:var(--q-s2);color:var(--q-on2)!important;border:1px solid var(--q-line)}
 ${R} .tq-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
 ${R} .tq-sw b{display:block;font-weight:600}
 ${R} .tq-sw span{font-size:12px;color:var(--q-on3)!important}

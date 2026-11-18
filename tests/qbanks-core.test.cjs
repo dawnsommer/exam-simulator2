@@ -150,3 +150,220 @@ test('fmtDuration', () => {
   assert.equal(Q.fmtDuration(0), '0 min');
   assert.equal(Q.fmtDuration(3590), '1 h 00 min');
 });
+
+// ---- Exam mix: blueprint, clinical sciences, planners ----
+const BP = Q.BLUEPRINT_STEP2;
+function seeded(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+const rowOfId = id => BP.rows.find(r => r.id === id);
+const capOfRow = (id, len) => Math.max(1, Math.floor(rowOfId(id).max * len / 100 + 1e-9));
+function mkPool(perRow, opts) {
+  opts = opts || {}; const units = []; let c = 0;
+  Object.keys(perRow).forEach(id => {
+    for (let i = 0; i < perRow[id]; i++) {
+      const k = 'k' + (c++), sci = id === 'social' || id === 'biostat' ? [] : [['medicine'], ['pediatrics'], ['obgyn'], ['psychiatry', 'medicine'], ['surgery', 'medicine']][i % 5];
+      units.push({ keys: [k], row: id === 'none' ? null : id, sci });
+    }
+  });
+  return units;
+}
+const fullPool = n => { const o = {}; BP.rows.forEach(r => { o[r.id] = n; }); return o; };
+const unitsInPlan = p => { const out = []; let i = 0; p.sizes.forEach(sz => { out.push(p.keys.slice(i, i + sz)); i += sz; }); return out; };
+
+test('BLUEPRINT_STEP2: sums, mapping covers every SYSTEMS name once', () => {
+  assert.equal(BP.rows.length, 14);
+  assert.equal(BP.rows.reduce((a, r) => a + (r.min + r.max) / 2, 0), 101);
+  const seen = {}; BP.rows.forEach(r => r.systems.forEach(s => { seen[s] = (seen[s] || 0) + 1; }));
+  Q.SYSTEMS.forEach(s => assert.equal(seen[s], 1, s));
+  assert.equal(seen[Q.UNASSIGNED], undefined);
+  Object.keys(seen).forEach(s => assert.equal(seen[s], 1));
+  assert.deepEqual(BP.sciences.map(c => c.id), ['medicine', 'pediatrics', 'obgyn', 'psychiatry', 'surgery']);
+  assert.equal(Q.blueprintRow('Cardiovascular'), 'cardio');
+  assert.equal(Q.blueprintRow('Male Reproductive'), 'renal');
+  assert.equal(Q.blueprintRow('Infectious Diseases'), 'multi');
+  assert.equal(Q.blueprintRow('Ophthalmology'), 'neuro');
+  assert.equal(Q.blueprintRow('Genetics'), 'humdev');
+  assert.equal(Q.blueprintRow('Unassigned'), null);
+  assert.equal(Q.blueprintRow('Nonsense'), null);
+  assert.equal(Q.blueprintRow(null), null);
+});
+
+test('clinicalSciencesOf: explicit, CMS shelf, rules', () => {
+  const cs = Q.clinicalSciencesOf;
+  ['IM', 'Internal Medicine', 'Family Medicine', 'FM', 'Emergency Medicine', 'EM', 'Neurology', 'Neuro'].forEach(d => assert.deepEqual(cs({ discipline: d }, null), ['medicine'], d));
+  assert.deepEqual(cs({ discipline: 'Peds' }), ['pediatrics']);
+  assert.deepEqual(cs({ clinicalScience: 'OB/GYN' }), ['obgyn']);
+  assert.deepEqual(cs({ discipline: 'Psych' }), ['psychiatry']);
+  assert.deepEqual(cs({ discipline: 'General Surgery' }), ['surgery']);
+  assert.deepEqual(cs({ discipline: 'Pathology', system: 'Cardiology' }), ['medicine']);
+  const shelves = { IM: 'medicine', FM: 'medicine', EM: 'medicine', Neuro: 'medicine', Peds: 'pediatrics', OBGyn: 'obgyn', Psych: 'psychiatry', Surg: 'surgery' };
+  Object.keys(shelves).forEach(f => assert.deepEqual(cs({ stem: 'A 4-year-old boy' }, { type: 'C', id: 'C-X', filter: f }), [shelves[f]], f));
+  assert.deepEqual(cs({ system: 'Cardiology', recognizer: 'A 4-year-old boy with a murmur' }, { type: 'N' }), ['pediatrics']);
+  assert.deepEqual(cs({ stem: 'A 3-week-old infant' }), ['pediatrics']);
+  assert.deepEqual(cs({ stem: 'A 45-year-old man' , system: 'Cardiology' }), ['medicine']);
+  assert.deepEqual(cs({ stem: 'A 17-year-old girl', system: 'Cardiology' }), ['pediatrics']);
+  assert.deepEqual(cs({ stem: 'A 18-year-old girl', system: 'Cardiology' }), ['medicine']);
+  assert.deepEqual(cs({ stem: 'A 30-year-old pregnant woman', system: 'Cardiology' }), ['obgyn']);
+  assert.deepEqual(cs({ system: 'Obstetrics/Gynecology', stem: 'x' }), ['obgyn']);
+  assert.deepEqual(cs({ system: 'Psychiatry', stem: 'x' }), ['psychiatry']);
+  assert.deepEqual(cs({ system: 'General Surgery', stem: 'A 50-year-old man' }), ['medicine', 'surgery']);
+  assert.deepEqual(cs({ system: 'Cardiology', stem: 'A 50-year-old man', answerText: 'Laparotomy' }), ['medicine', 'surgery']);
+  assert.deepEqual(cs({ system: 'Ethics', stem: 'A 50-year-old man' }), []);
+  assert.deepEqual(cs({ system: 'Biostatistics', stem: 'A study' }), []);
+  assert.deepEqual(cs({ system: 'General Surgery', stem: 'A 6-year-old boy' }), ['pediatrics', 'surgery']);
+  assert.deepEqual(cs({ system: 'Cardiology', stem: 'A 6-month-old', answerText: 'Surgical repair' }), ['pediatrics', 'surgery']);
+  assert.deepEqual(cs({}), ['medicine']);
+  assert.deepEqual(cs(null), ['medicine']);
+});
+
+test('subjectOf fallback uses clinical science instead of always Internal Medicine', () => {
+  assert.deepEqual(Q.subjectOf({ subject: 'Cardiology', recognizer: 'A 4-year-old boy with a murmur' }, { type: 'N' }), { subject: 'Pediatrics', from: 'inferred' });
+  assert.deepEqual(Q.subjectOf({ subject: 'Cardiology', recognizer: 'A 30-year-old pregnant woman' }, { type: 'N' }), { subject: 'Obstetrics & Gynecology', from: 'inferred' });
+  assert.deepEqual(Q.subjectOf({ subject: 'Cardiology', recognizer: 'A 45-year-old man' }, { type: 'N' }), { subject: 'Internal Medicine', from: 'inferred' });
+  assert.deepEqual(Q.subjectOf({ subject: 'Neurology', recognizer: 'A 4-year-old boy' }, { type: 'N' }), { subject: 'Neurology', from: 'inferred' });
+  assert.deepEqual(Q.subjectOf({ subject: 'Cardiology', recognizer: 'A 4-year-old boy' }, { type: 'C', filter: 'IM' }), { subject: 'Internal Medicine', from: 'form' });
+});
+
+test('planMix: quotas sum to N for N=1..200, never above N', () => {
+  const pool = mkPool(fullPool(60));
+  for (let n = 1; n <= 200; n++) {
+    const p = Q.planMix(pool, n, 40, { rand: seeded(n) });
+    assert.equal(p.keys.length, n, 'n=' + n);
+    assert.equal(p.sizes.reduce((a, b) => a + b, 0), n);
+    assert.equal(new Set(p.keys).size, n);
+  }
+});
+
+test('planMix: per-block counts inside official range, blocks sum, caps hold', () => {
+  const pool = mkPool(fullPool(80));
+  [40, 120, 280].forEach(n => {
+    for (let seed = 1; seed <= 3; seed++) {
+      const p = Q.planMix(pool, n, 40, { rand: seeded(seed * 7 + n) });
+      assert.equal(p.keys.length, n);
+      assert.equal(p.blocks.length, n / 40);
+      assert.equal(p.perBlock.length, p.blocks.length);
+      p.blocks.forEach((b, i) => {
+        const len = b[1] - b[0];
+        assert.equal(len, 40);
+        assert.equal(Object.values(p.perBlock[i]).reduce((a, x) => a + x, 0), len);
+        BP.rows.forEach(r => {
+          const c = p.perBlock[i][r.id] || 0;
+          assert.ok(c >= Math.floor(r.min * len / 100) - 1, n + ' ' + r.id + ' low ' + c);
+          assert.ok(c <= Math.ceil(r.max * len / 100), n + ' ' + r.id + ' high ' + c);
+          assert.ok(c <= capOfRow(r.id, len), n + ' ' + r.id + ' cap ' + c);
+        });
+      });
+      assert.deepEqual(p.notes, []);
+    }
+  });
+});
+
+test('planMix: short row spills to other rows with a note, total correct', () => {
+  const per = fullPool(60); per.social = 2;
+  const p = Q.planMix(mkPool(per), 40, 40, { rand: seeded(5) });
+  assert.equal(p.keys.length, 40);
+  assert.equal(p.perBlock[0].social, 2);
+  assert.ok(p.notes.some(t => /^Short on .*Ethics.* → filled from other systems$/.test(t)), p.notes.join('|'));
+  BP.rows.forEach(r => assert.ok((p.perBlock[0][r.id] || 0) <= capOfRow(r.id, 40), r.id));
+  assert.ok(!p.notes.some(t => /Cap raised/.test(t)));
+});
+
+test('planMix: unassigned top up, then cap break with note', () => {
+  const per = fullPool(0); per.cardio = 30; per.none = 5;
+  const p = Q.planMix(mkPool(per), 40, 40, { rand: seeded(2) });
+  assert.equal(p.keys.length, 35);
+  assert.ok(p.notes.some(t => /unassigned/.test(t)));
+  assert.ok(p.notes.some(t => /Cap raised for Cardio/.test(t)));
+  assert.equal(p.perBlock[0].none, 5);
+  const big = Q.planMix(mkPool({ cardio: 50 }), 40, 40, { rand: seeded(2) });
+  assert.equal(big.keys.length, 40);
+  assert.ok(big.notes.some(t => /Cap raised for Cardio/.test(t)));
+});
+
+test('planMix: opts.rows re-normalises over the rows in use', () => {
+  const pool = mkPool(fullPool(80));
+  const p = Q.planMix(pool, 40, 40, { rand: seeded(3), rows: ['cardio', 'resp'] });
+  assert.equal(p.keys.length, 40);
+  assert.deepEqual(Object.keys(p.perBlock[0]).sort(), ['cardio', 'resp']);
+  assert.ok(Math.abs(p.perBlock[0].cardio - 20) <= 3, JSON.stringify(p.perBlock[0]));
+  assert.deepEqual(p.notes, []);
+});
+
+test('planMix: linked sets stay adjacent, in order and inside one block', () => {
+  const units = []; let c = 0;
+  BP.rows.forEach(r => { for (let i = 0; i < 40; i++) { const sz = i % 4 === 0 ? 3 : 1, keys = []; for (let j = 0; j < sz; j++) keys.push('k' + (c++)); units.push({ keys, row: r.id, sci: ['medicine'] }); } });
+  const p = Q.planMix(units, 120, 40, { rand: seeded(11) });
+  assert.ok(p.keys.length <= 120 && p.keys.length >= 110, String(p.keys.length));
+  const byFirst = {}; units.forEach(u => { byFirst[u.keys[0]] = u.keys; });
+  let i = 0;
+  p.sizes.forEach(sz => { const seg = p.keys.slice(i, i + sz); assert.deepEqual(seg, byFirst[seg[0]]); i += sz; });
+  p.blocks.forEach(([a, b]) => { let pos = a; p.sizes.reduce((acc, sz) => { if (acc >= a && acc < b) assert.ok(acc + sz <= b); return acc + sz; }, 0); assert.ok(pos <= b); });
+  assert.equal(p.blocks[p.blocks.length - 1][1], p.keys.length);
+});
+
+test('planMix: same row never adjacent in a block when the pool allows', () => {
+  const pool = mkPool(fullPool(80)), rowOfKey = {}; pool.forEach(u => { rowOfKey[u.keys[0]] = u.row; });
+  for (let seed = 1; seed <= 10; seed++) {
+    const p = Q.planMix(pool, 120, 40, { rand: seeded(seed) });
+    p.blocks.forEach(([a, b]) => { for (let i = a + 1; i < b; i++) assert.notEqual(rowOfKey[p.keys[i]], rowOfKey[p.keys[i - 1]], 'seed ' + seed); });
+  }
+});
+
+test('planMix: same seeded rand gives identical output; different seed differs', () => {
+  const pool = mkPool(fullPool(60));
+  const a = Q.planMix(pool, 80, 40, { rand: seeded(42) }), b = Q.planMix(pool, 80, 40, { rand: seeded(42) }), c = Q.planMix(pool, 80, 40, { rand: seeded(43) });
+  assert.deepEqual(a, b);
+  assert.notDeepEqual(a.keys, c.keys);
+  const ra = Q.planRandomCapped(pool, 80, 40, { rand: seeded(1) }), rb = Q.planRandomCapped(pool, 80, 40, { rand: seeded(1) });
+  assert.deepEqual(ra, rb);
+});
+
+test('planMix: sciences preference keeps Medicine from taking over', () => {
+  const pool = mkPool(fullPool(80));
+  const sciOf = {}; pool.forEach(u => { sciOf[u.keys[0]] = u.sci; });
+  const p = Q.planMix(pool, 120, 40, { rand: seeded(9) });
+  const cnt = {}; p.keys.forEach(k => sciOf[k].forEach(s => { cnt[s] = (cnt[s] || 0) + 1; }));
+  assert.ok(cnt.pediatrics > 0 && cnt.obgyn > 0 && cnt.surgery > 0);
+});
+
+test('planMix: empty, tiny and over-sized requests', () => {
+  assert.deepEqual(Q.planMix([], 40, 40), { keys: [], sizes: [], blocks: [], perBlock: [], notes: [] });
+  assert.equal(Q.planMix(mkPool(fullPool(1)), 0, 40).keys.length, 0);
+  const p = Q.planMix(mkPool(fullPool(1)), 500, 40, { rand: seeded(1) });
+  assert.equal(p.keys.length, 14);
+  assert.equal(p.blocks.length, 1);
+});
+
+test('planRandomCapped: caps hold per block with a skewed pool', () => {
+  const per = fullPool(50); per.neuro = 400;
+  const pool = mkPool(per);
+  const p = Q.planRandomCapped(pool, 80, 40, { rand: seeded(4) });
+  assert.equal(p.keys.length, 80);
+  assert.deepEqual(p.notes, []);
+  p.blocks.forEach((b, i) => {
+    assert.equal(b[1] - b[0], 40);
+    BP.rows.forEach(r => assert.ok((p.perBlock[i][r.id] || 0) <= capOfRow(r.id, 40), r.id));
+  });
+  assert.equal(p.perBlock[0].neuro, 4);
+});
+
+test('planRandomCapped: second pass fills with a note, big n returns everything', () => {
+  const pool = mkPool({ neuro: 60 });
+  const p = Q.planRandomCapped(pool, 40, 40, { rand: seeded(8) });
+  assert.equal(p.keys.length, 40);
+  assert.ok(p.notes.some(t => /Cap raised for Neuro/.test(t)), p.notes.join('|'));
+  const all = Q.planRandomCapped(mkPool(fullPool(2)), 500, 40, { rand: seeded(8) });
+  assert.equal(all.keys.length, 28);
+  assert.equal(new Set(all.keys).size, 28);
+  const linked = Q.planRandomCapped([{ keys: ['a', 'b', 'c'], row: 'cardio', sci: [] }, { keys: ['d'], row: 'gi', sci: [] }], 4, 40, { rand: seeded(1) });
+  assert.equal(linked.keys.length, 4);
+  const i = linked.keys.indexOf('a'); assert.deepEqual(linked.keys.slice(i, i + 3), ['a', 'b', 'c']);
+});
+
+test('planners: a linked set bigger than the count is taken whole (legacy rule), never an empty test', () => {
+  const set = { keys: ['a', 'b', 'c', 'd', 'e'], row: null, sci: [] };
+  for (const f of ['planMix', 'planRandomCapped']) {
+    const p = Q[f]([set], 2, 40, {});
+    assert.deepEqual(p.keys, ['a', 'b', 'c', 'd', 'e'], f); assert.deepEqual(p.blocks, [[0, 5]], f); assert.match(p.notes[0], /Linked set kept whole/);
+    assert.equal(Q[f]([], 2, 40, {}).keys.length, 0, f + ' empty pool stays empty');
+  }
+});
