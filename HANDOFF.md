@@ -2,7 +2,7 @@
 
 Last inspected: 2026-11-10  
 Effective simulator UI version: `A22.14` (final script in `index.html`)  
-Cloud sync: **Sync v3 is live** (since release 24; `js/sync3-*.js`, resume file `../SYNC_V3_PROGRESS.md`), V2 modules remain as the fallback/archive path. App-shell release: numeric `VERSION` in `sw.js` (**61**, bumped by `tools/release.mjs`)  
+Cloud sync: **Sync v3 is live** (since release 24; `js/sync3-*.js`, resume file `../SYNC_V3_PROGRESS.md`), V2 modules remain as the fallback/archive path. App-shell release: numeric `VERSION` in `sw.js` (**62**, bumped by `tools/release.mjs`)  
 Scope: this nested repository only; do not inspect the parent LOCAL simulator for iPad-only work.
 
 ## Start here
@@ -261,3 +261,4 @@ Newest first, compact. Full history (64 rows from 2026-08-12 plus releases 22–
 - 2026-10-27: DEPLOYED as iPad release 32 (commit 3ba048c, Publish workflow success; live thunder-ui.js, sw.js, index.html byte-equal to the repo, live sw VERSION 32). Quick practice takes ZIP banks …
 - 2026-10-27: iPad release 33. Settings > Appearance "Keep CMS forms open" switch (persisted); Library confirm/prompt dialogs (appDialog) restyled to the modern card and the device-wipe confirmation …
 - 2026-10-27: iPad release 34. "Keep CMS forms open" now expands the CMS subject tiles without selecting the CMS forms button or filtering the list (pane shown when selected or kept open); Library …
+- 2026-11-19: Fixed slots N-17, C-OBGyn-11/12 added; N-09, N-10, C-OBGyn-05, C-OBGyn-06 retired (RETIRED_SLOTS, hidden from Load New Form only; loaded forms keep metadata). Same block as Local. Released as iPad release 62.
