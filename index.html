@@ -12,13 +12,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=59">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=59">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=60">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=60">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=59"></script>
-<script src="./js/form-updates-core.js?v=59"></script>
-<script src="./js/form-update-store.js?v=59"></script>
-<script src="./js/google-auth.js?v=59"></script>
+<script src="./js/sync-config.js?v=60"></script>
+<script src="./js/form-updates-core.js?v=60"></script>
+<script src="./js/form-update-store.js?v=60"></script>
+<script src="./js/google-auth.js?v=60"></script>
 
 <style>
 :root{
@@ -484,7 +484,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=59" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=60" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,10 +635,10 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=59"></script>
-<script src="./qbank-builtin-tags.js?v=59"></script>
-<script src="./js/qid-migration.js?v=59"></script>
-<script src="./qbanks-core.js?v=59"></script>
+<script src="jszip.min.js?v=60"></script>
+<script src="./qbank-builtin-tags.js?v=60"></script>
+<script src="./js/qid-migration.js?v=60"></script>
+<script src="./qbanks-core.js?v=60"></script>
 <script>
 
 
@@ -4442,8 +4442,10 @@ document.addEventListener('click', function(e){
             function parseManifest(text){
               let j; try{ j=JSON.parse(text); }catch(e){ return null; } if(!j||typeof j!=='object'||Array.isArray(j)) return null;
               const tm=j.tagMap&&typeof j.tagMap==='object'?j.tagMap:null, color=str(j.color);
-              return {name:str(j.name).slice(0,40),code:str(j.code).toUpperCase().slice(0,3),color:/^#[0-9a-f]{3,8}$/i.test(color)?color:'',tagMap:tm?{system:str(tm.system),subject:str(tm.subject),topic:str(tm.topic),normalize:tm.normalize!==false}:null};
+              return {name:str(j.name).slice(0,40),code:str(j.code).toUpperCase().slice(0,3),color:/^#[0-9a-f]{3,8}$/i.test(color)?color:'',tagMap:tm?{system:str(tm.system),subject:str(tm.subject),topic:str(tm.topic),normalize:tm.normalize!==false}:null,...(facetRulesOf(j.facetRules)?{facetRules:facetRulesOf(j.facetRules)}:{})};
             }
+            /* per-bank facet rules (manifest facetRules): only systemsBySubject:true is known; anything else = null (today's behaviour) */
+            function facetRulesOf(fr){ return fr&&typeof fr==='object'&&!Array.isArray(fr)&&fr.systemsBySubject===true?{systemsBySubject:true}:null; }
             const fileBase=p=>normPath(p).split('/').pop().replace(/\.json$/i,'');
             /* same rule as choice-epc.js values(): numbers or "62%" strings, at least one > 0 */
             function epcNum(v){ if(typeof v==='number') return isFinite(v)&&v>=0?v:null; if(typeof v==='string'){ const m=v.trim().match(/^(\d+(?:\.\d+)?)\s*%?$/); return m?Number(m[1]):null; } return null; }
@@ -4494,7 +4496,7 @@ document.addEventListener('click', function(e){
                 return {rows:plan.keys.map(k=>b.rowOf.get(k)).filter(Boolean),sizes:plan.sizes.slice(),setOf,plan};
               }catch(e){ return null; }
             }
-            return {str,IMG_RX,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs,isManifest,questionFiles,pickManifest,parseManifest,fileBase,epcHas,epcCount,altName,renameFree,missingRefs,exportRewrite,resolveSystem,planRowsOf,planUnits,planPick};
+            return {str,IMG_RX,facetRulesOf,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs,isManifest,questionFiles,pickManifest,parseManifest,fileBase,epcHas,epcCount,altName,renameFree,missingRefs,exportRewrite,resolveSystem,planRowsOf,planUnits,planPick};
           })();
           /* QBDATA-PURE-END */
 
@@ -4567,7 +4569,7 @@ document.addEventListener('click', function(e){
             const C=needCore(); const m=await computeRows(opt), qp=await readQbankProgress();
             const byBank={}; m.forms.forEach(f=>{ (byBank[f.bank]||(byBank[f.bank]=[])).push(f.id); });
             const banks=[]; C.BUILTIN_BANKS.forEach(b=>{ const ids=(byBank[b.id]||[]).filter(id=>!hiddenRec(catalogForm(id))); if(ids.length) banks.push(Object.assign({},b,{kind:'library',formIds:ids})); });
-            const seen=new Set(); (catalog.forms||[]).forEach(f=>{ const q=f&&f.qbank; if(!q||!q.id||seen.has(q.id)) return; seen.add(q.id); banks.push({id:q.id,name:q.name||q.id,code:q.code||'QB',color:q.color||'#5c5f66',sub:'Imported Qbank',kind:'imported',formIds:bankRecs(q.id).map(x=>x.id)}); });
+            const seen=new Set(); (catalog.forms||[]).forEach(f=>{ const q=f&&f.qbank; if(!q||!q.id||seen.has(q.id)) return; seen.add(q.id); banks.push({id:q.id,name:q.name||q.id,code:q.code||'QB',color:q.color||'#5c5f66',sub:'Imported Qbank',kind:'imported',formIds:bankRecs(q.id).map(x=>x.id),...(QBP.facetRulesOf(q.facetRules)?{facetRules:QBP.facetRulesOf(q.facetRules)}:{})}); });
             const tests=(qp.sessions||[]).filter(t=>t&&t.session).map(t=>{ const ids=(t.formIds||[]).slice(), bs=Array.from(new Set(ids.map(id=>{ const r=catalogForm(id); return r?C.bankOf(r):null; }).filter(Boolean)));
               return {id:t.qbankTestId,name:t.name||'',mode:t.mode==='tutor'?'tutor':'testing',done:t.status==='completed',total:Number(t.total)||0,blocks:((t.session&&t.session.blocks)||[]).length,percent:t.summary&&t.summary.percent!=null?Number(t.summary.percent):null,sourceMode:t.sourceMode||'',poolType:t.poolType||'',attemptSource:t.attemptSource||'',formIds:ids,banks:bs,filter:t.filter||(t.session&&t.session.qbankFilter)||null,qbankPullMode:t.qbankPullMode||(t.session&&t.session.qbankPullMode)||null,qbankPlanNotes:t.qbankPlanNotes||(t.session&&t.session.qbankPlanNotes)||null,createdAt:t.createdAt||null,updatedAt:t.updatedAt||null,completedAt:t.completedAt||null}; });
             let at=''; Object.keys(m.tags||{}).forEach(k=>{ const a=m.tags[k]&&m.tags[k].at; if(a&&String(a)>at) at=String(a); });
@@ -4721,7 +4723,7 @@ document.addEventListener('click', function(e){
               const mf=src.manifest, mm=o.map&&(o.map.system||o.map.subject||o.map.topic)?o.map:((mf&&mf.tagMap)||o.map||{});
               const tagMap={system:String(mm.system||''),subject:String(mm.subject||''),topic:String(mm.topic||''),normalize:o.normalize!==undefined?o.normalize!==false:!(mf&&mf.tagMap&&mf.tagMap.normalize===false)};
               let into=null,qb; if(o.into){ const recs=bankRecs(o.into); if(!recs.length) throw new Error('That bank no longer exists.'); into=recs; qb=Object.assign({},recs[0].qbank); qb.tagMap=Object.assign({},qb.tagMap,tagMap); }
-              else{ const name=String(o.name||(mf&&mf.name)||'').trim().slice(0,40)||'Imported Qbank', slug=QBP.freeSlug(QBP.slugOf(name),(catalog.forms||[]).map(f=>f.id),(catalog.forms||[]).map(f=>f.qbank&&f.qbank.id).filter(Boolean)), color=String(o.color||(mf&&mf.color)||''); qb={id:QBP.bankIdOfSlug(slug),name,code:String(o.code||(mf&&mf.code)||name.replace(/[^A-Za-z0-9]/g,'').slice(0,3)||'QB').toUpperCase().slice(0,3),color:/^#[0-9a-f]{3,8}$/i.test(color)?color:'#e4572e',tagMap}; }
+              else{ const name=String(o.name||(mf&&mf.name)||'').trim().slice(0,40)||'Imported Qbank', slug=QBP.freeSlug(QBP.slugOf(name),(catalog.forms||[]).map(f=>f.id),(catalog.forms||[]).map(f=>f.qbank&&f.qbank.id).filter(Boolean)), color=String(o.color||(mf&&mf.color)||''); qb={id:QBP.bankIdOfSlug(slug),name,code:String(o.code||(mf&&mf.code)||name.replace(/[^A-Za-z0-9]/g,'').slice(0,3)||'QB').toUpperCase().slice(0,3),color:/^#[0-9a-f]{3,8}$/i.test(color)?color:'#e4572e',tagMap}; const fr=QBP.facetRulesOf(mf&&mf.facetRules); if(fr) qb.facetRules=fr; }
               const slug=(into&&QBP.slugFromFormId(into[0].id))||qb.id.slice(3).toUpperCase();
               const have=into?await srcIdsOfBank(into):new Set(); let added=0,skipped=0; const plans=[];
               for(const it of items){ const bank0=normalizeBank(it.j), blocks=[]; let n=0;
@@ -4807,7 +4809,7 @@ document.addEventListener('click', function(e){
             needData(); if(!window.JSZip) throw new Error('Export needs JSZip (jszip.min.js).');
             const recs=bankRecs(id).slice().sort((x,y)=>QBP.natCmp(x.id,y.id)); if(!recs.length) throw new Error('That bank no longer exists.');
             const qb=recs[0].qbank, zip=new JSZip(), tm=qb.tagMap||{};
-            zip.file('qbank.json',JSON.stringify({fileType:'ThunderQbank',version:2,name:qb.name,code:qb.code,color:qb.color,tagMap:{system:tm.system||'',subject:tm.subject||'',topic:tm.topic||'',normalize:tm.normalize!==false}},null,2));
+            zip.file('qbank.json',JSON.stringify({fileType:'ThunderQbank',version:2,name:qb.name,code:qb.code,color:qb.color,tagMap:{system:tm.system||'',subject:tm.subject||'',topic:tm.topic||'',normalize:tm.normalize!==false},...(QBP.facetRulesOf(qb.facetRules)?{facetRules:QBP.facetRulesOf(qb.facetRules)}:{})},null,2));
             /* one shared assets/ folder: the bank dir first, then legacy per-form dirs; a clash with different bytes gets ~2 */
             const dirOrder=[]; recs.forEach(r=>{ const d=r.qbank&&r.qbank.assetDir; if(d&&!dirOrder.includes(d)) dirOrder.push(d); }); recs.forEach(r=>dirOrder.push(r.id));
             const taken=new Map(), out=new Map(), items=[]; let images=0;
@@ -11240,18 +11242,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=59"></script>
-<script src="./js/sync-storage.js?v=59"></script>
-<script src="./js/progress-sync.js?v=59"></script>
-<script src="./js/library-backup.js?v=59"></script>
-<script src="./js/qid-settings.js?v=59"></script>
-<script src="./js/sync3-core.js?v=59"></script>
-<script src="./js/sync3-bridge.js?v=59"></script>
-<script src="./js/sync3-store.js?v=59"></script>
-<script src="./js/sync3-drive.js?v=59"></script>
-<script src="./js/sync3-sync.js?v=59"></script>
-<script src="./js/sync3-migrate.js?v=59"></script>
-<script src="./js/sync3-boot.js?v=59"></script>
+<script src="./js/sync-merge.js?v=60"></script>
+<script src="./js/sync-storage.js?v=60"></script>
+<script src="./js/progress-sync.js?v=60"></script>
+<script src="./js/library-backup.js?v=60"></script>
+<script src="./js/qid-settings.js?v=60"></script>
+<script src="./js/sync3-core.js?v=60"></script>
+<script src="./js/sync3-bridge.js?v=60"></script>
+<script src="./js/sync3-store.js?v=60"></script>
+<script src="./js/sync3-drive.js?v=60"></script>
+<script src="./js/sync3-sync.js?v=60"></script>
+<script src="./js/sync3-migrate.js?v=60"></script>
+<script src="./js/sync3-boot.js?v=60"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11730,10 +11732,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=59"></script>
-<script src="./exam-notes.js?v=59"></script>
-<script src="./app-update.js?v=59"></script>
-<script src="./js/form-updates.js?v=59"></script>
+<script src="./bulk-import.js?v=60"></script>
+<script src="./exam-notes.js?v=60"></script>
+<script src="./app-update.js?v=60"></script>
+<script src="./js/form-updates.js?v=60"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -12160,13 +12162,13 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=59"></script>
-<script src="./nav-delay.js?v=59"></script>
-<script src="./thunder-ui.js?v=59"></script>
-<script src="./rapid-review.js?v=59"></script>
-<script src="./shadow-logger.js?v=59"></script>
-<script src="./analysis.js?v=59"></script>
-<script src="./qbanks.js?v=59"></script>
-<script src="./choice-epc.js?v=59"></script>
+<script src="./item-code.js?v=60"></script>
+<script src="./nav-delay.js?v=60"></script>
+<script src="./thunder-ui.js?v=60"></script>
+<script src="./rapid-review.js?v=60"></script>
+<script src="./shadow-logger.js?v=60"></script>
+<script src="./analysis.js?v=60"></script>
+<script src="./qbanks.js?v=60"></script>
+<script src="./choice-epc.js?v=60"></script>
 </body>
 </html>

@@ -46,12 +46,12 @@ test('the Re-tag chip row is the only exam-screen addition and is guarded by the
   assert.match(ui, /q\.untagged/);
 });
 
-test('Settings > Qbanks: thunder-ui supplies #tuSetQbanks, calls mountSettings after paint, label is Qbanks, defaults rows stay', () => {
+test('Settings > Qbanks: thunder-ui supplies #tuSetQbanks, calls mountSettings after paint, label is Qbanks, defaults rows stay (inline, no Edit)', () => {
   assert.match(thunder, /\['qbank', 'Qbanks'\]/);
-  assert.match(thunder, /SET_LEGACY = \{tabs:'library', qbank:'qbank'/);
+  assert.match(thunder, /SET_LEGACY = \{library:'library', qbank:'qbank'/);
   assert.match(thunder, /id="tuSetQbanks"/);
   assert.match(thunder, /ThunderQbanksUI\.mountSettings\(h\)/);
-  for (const hook of ['data-tu-setsw="setLinkQbank"', 'data-tu-defaults', 'data-tu-reset', 'Library is read-only for Qbank']) assert.ok(thunder.includes(hook), 'defaults row kept: ' + hook);
+  for (const hook of ['data-tu-setsw="setLinkQbank"', 'data-tu-defmode', 'data-tu-step="${id}"', "step('setDefaultSpq'", "step('setDefaultBlock'", 'data-tu-reset', 'Qbank reads form attempts but never changes them.']) assert.ok(thunder.includes(hook), 'defaults row kept: ' + hook);
   assert.match(thunder, /openSettings:openSettingsSection/);
 });
 
@@ -94,14 +94,14 @@ test('Create builder v2: bank cards, quick start row, facet columns/switch, +N m
   assert.doesNotMatch(ui.slice(ui.indexOf('function savePrefs'), ui.indexOf('let D = null')), /more|nameOpen/, 'expand state is not saved');
 });
 
-test('Previous tests shows every test (bank filter chip row, not S.sel); Performance has its own bank filter and model', () => {
+test('Previous tests shows every test (bank filter chip row, not S.sel); Performance uses the shared bank cards and selection', () => {
   const hist = ui.slice(ui.indexOf('function testsFiltered'), ui.indexOf('function historyHtml'));
   assert.doesNotMatch(hist, /S\.sel/, 'history ignores the Create bank selection');
   assert.match(hist, /S\.hb/);
-  assert.match(ui, /data-a="hb"|bankChips\('hb'/); assert.match(ui, /bankChips\('pb'/);
+  assert.match(ui, /data-a="hb"|bankChips\('hb'/); assert.doesNotMatch(ui, /bankChips\('pb'|S\.pb\b/, 'old Performance filter chips are gone');
   const perf = ui.slice(ui.indexOf('function perfModel'), ui.indexOf('function perfHtml'));
-  assert.match(perf, /core\(\)\.facets\(/); assert.doesNotMatch(perf, /S\.sel/);
-  assert.match(ui, /S\.sel = new Set\(perfIds\(\)\)/, 'tap a row selects that bank set for Create');
+  assert.match(perf, /core\(\)\.facets\(/); assert.match(ui, /function perfIds\(\) \{ return \[\.\.\.S\.sel\]; \}/, 'Performance follows the shared selection');
+  assert.match(ui, /else if \(S\.tab === 'performance'\) \{ banks = banksHtml\(\);/, 'Performance draws the same cards + Combine switch + progress card');
 });
 
 test('import sheet v2: step 1 summary, values from pv.values, manifest prefill, no local ZIP re-read or 80 MB cap', () => {
@@ -115,15 +115,33 @@ test('bank cards: single select by default, Combine toggles, last bank stays, or
   assert.doesNotMatch(card, /tick/, 'cards have no tick marks');
   assert.match(card, /tq-ord/, 'combined cards show an order number');
   assert.match(ui, /combine: P\.combine === true \|\| \(Array\.isArray\(P\.sel\) && P\.sel\.length > 1\)/, 'saved multi-bank selection turns Combine on');
-  assert.match(ui, /JSON\.stringify\(\{ sel: \[\.\.\.S\.sel\], combine: S\.combine/, 'combine is saved');
+  assert.match(ui, /JSON\.stringify\(\{ sel: S\.savedSel, hidden: \[\.\.\.S\.hidden\], combine: S\.combine/, 'selection, hidden banks and combine are saved');
   const click = ui.slice(ui.indexOf("case 'bank': {"), ui.indexOf("case 'mode':"));
   assert.match(click, /if \(!S\.combine\) \{ S\.sel = new Set\(\[v\]\)/, 'single click selects only that bank');
   assert.match(click, /S\.sel\.size > 1\) S\.sel\.delete/, 'cannot deselect the last bank');
   assert.match(click, /S\.lastBank/, 'Combine off keeps the last clicked bank');
-  assert.match(ui.slice(ui.indexOf('function pick('), ui.indexOf('function goTab')), /S\.combine = true/, 'perf pick over several banks turns Combine on');
+  assert.doesNotMatch(ui.slice(ui.indexOf('function pick('), ui.indexOf('function goTab')), /S\.sel =/, 'perf pick keeps the selection');
   const prog = ui.slice(ui.indexOf('function progressHtml'), ui.indexOf('function rowHtml'));
   assert.match(prog, /r\.status === 'correct'/); assert.match(prog, /D\.tests\.filter/); assert.match(prog, /when\(last\)/);
-  assert.match(ui.slice(ui.indexOf('function perfHtml')), /progressHtml\(perfIds\(\)\)/, 'Performance progress follows S.pb');
+});
+
+/* remembered selection: run the real reconcileSel/savePrefs in a sandbox */
+test('saved bank pick survives an empty or partial bank list at start-up and hidden banks', () => {
+  const vm = require('node:vm');
+  const src = ui.slice(ui.indexOf('const selKey'), ui.indexOf('let D = null;')) + ui.slice(ui.indexOf('function visBanks'), ui.indexOf('function markStale'));
+  const mk = (sel, hidden) => { const store = { 'k': JSON.stringify({ sel, hidden }) };
+    const ctx = { KEY: 'k', root: { localStorage: { getItem: k => store[k], setItem: (k, v) => { store[k] = v; } } }, store, D: null };
+    ctx.S = { sel: new Set(sel), savedSel: sel.slice(), selFallback: '', hidden: new Set(hidden || []), combine: sel.length > 1, statuses: new Set(), sort: 'az', facet: 'sub', reviewTag: true, mode: 'tutor', secs: 90, track: '', attempt: '', pull: 'mix' };
+    vm.createContext(ctx); vm.runInContext(src + ';this.reconcileSel=reconcileSel;this.savePrefs=savePrefs;this.setD=d=>{D=d};', ctx); return ctx; };
+  const banks = ids => ({ banks: ids.map(id => ({ id })) });
+  const c = mk(['MEH']);
+  c.setD(banks([])); c.reconcileSel(); assert.deepEqual([...c.S.sel], [], 'empty list keeps nothing shown');
+  c.setD(banks(['NBME', 'CMS'])); c.reconcileSel(); assert.deepEqual([...c.S.sel], ['NBME'], 'partial list shows the first bank');
+  c.savePrefs(); assert.deepEqual(JSON.parse(c.store.k).sel, ['MEH'], 'an unrelated save keeps the saved pick');
+  c.setD(banks(['NBME', 'CMS', 'MEH'])); c.reconcileSel(); assert.deepEqual([...c.S.sel], ['MEH'], 'saved pick comes back when the bank appears');
+  const h = mk(['CMS', 'MEH'], ['MEH']); h.setD(banks(['NBME', 'CMS', 'MEH'])); h.reconcileSel(); assert.deepEqual([...h.S.sel], ['CMS'], 'hidden bank leaves the pick');
+  h.S.hidden.delete('MEH'); h.reconcileSel(); assert.deepEqual([...h.S.sel].sort(), ['CMS', 'MEH'], 'shown again: it returns');
+  const all = mk(['CMS'], ['NBME', 'CMS']); all.setD(banks(['NBME', 'CMS'])); all.reconcileSel(); assert.deepEqual([...all.S.sel], ['CMS'], 'everything hidden falls back to showing all');
 });
 
 /* ---- Exam mix: "Question order" control (pull = mix | random | order) ---- */
@@ -183,4 +201,21 @@ test('Previous tests chip from test.qbankPullMode (Exam mix / Random / Form orde
   assert.equal(JSON.stringify(loadUi(null)._t.PULL_LABEL), JSON.stringify({ mix: 'Exam mix', random: 'Random', order: 'Form order' }));
   const css = ui.split('\n').filter((l) => /tq-pull|tq-pv|tq-pchip/.test(l) && /^\$\{R\}/.test(l)).join('\n');
   assert.ok(css.length > 200); assert.doesNotMatch(css, /#[0-9a-fA-F]{3,6}\b/, 'no raw colours: --q-* tokens only');
+});
+
+test('Settings show/hide: switch per bank row (outside the expand button), Show all, last shown bank stays, cards use visBanks()', () => {
+  const row = ui.slice(ui.indexOf('function setBankHtml'), ui.indexOf('function settingsHtml'));
+  assert.match(row, /role="switch" aria-checked="\$\{shown\}"[^>]*data-a="svis"/);
+  assert.ok(row.indexOf('data-a="svis"') > row.indexOf('</button>'), 'switch is not nested in the row button');
+  assert.match(ui, /data-a="sviall"/);
+  const sv = ui.slice(ui.indexOf('function setVisible'), ui.indexOf('function saveBlob'));
+  assert.match(sv, /<= 1\) \{ toast\('Keep at least one bank shown'\)/);
+  assert.match(sv, /reconcileSel\(\); resetFacets\(\); savePrefs\(\); render\(\)/);
+  assert.match(ui.slice(ui.indexOf('function banksHtml'), ui.indexOf('function progressHtml')), /visBanks\(\)\.map\(b => bankCard/);
+});
+
+test('System facet follows the subjects for banks with facetRules.systemsBySubject (and only those)', () => {
+  assert.ok(ui.includes("b.facetRules && b.facetRules.systemsBySubject === true"), 'scope banks come from the bank record');
+  assert.ok(ui.includes('scopeBanks: scope'), 'model() passes the scope to facets()');
+  assert.ok(/if \(scope\.length && S\.syss\) \{/.test(ui), 'filter sync runs only when a flagged bank is selected');
 });

@@ -380,3 +380,18 @@ test('exam mix: wiring - filter pull, qbankPickUnits rebind, plan bridge, pull s
     const root = path.dirname(IPAD); for (const f of ['sw.js', 'app-update.js']) assert.ok(fs.readFileSync(path.join(root, f), 'utf8').includes('"./qbank-builtin-tags.js?v='), f);
     assert.ok(fs.readFileSync(path.join(root, 'tools', 'publish.mjs'), 'utf8').includes("'qbank-builtin-tags.js'")); }
 });
+
+test('manifest facetRules: only systemsBySubject:true is kept, stored, exported and listed per bank', () => {
+  const m = (o) => QBP.parseManifest(JSON.stringify(Object.assign({ name: 'B', tagMap: { system: 'system' } }, o)));
+  assert.deepEqual(m({ facetRules: { systemsBySubject: true } }).facetRules, { systemsBySubject: true });
+  for (const fr of [undefined, null, true, [], {}, { systemsBySubject: 'yes' }, { systemsBySubject: false }, { other: true }]) assert.ok(!('facetRules' in m({ facetRules: fr })), JSON.stringify(fr));
+  assert.deepEqual(QBP.facetRulesOf({ systemsBySubject: true, extra: 1 }), { systemsBySubject: true });
+  for (const h of Object.values(html)) {
+    const imp = h.slice(h.indexOf('async function importBank('), h.indexOf('async function updateBank('));
+    assert.ok(imp.includes('const fr=QBP.facetRulesOf(mf&&mf.facetRules); if(fr) qb.facetRules=fr;'), 'new bank takes the manifest rule');
+    assert.ok(/qb=Object\.assign\(\{\},recs\[0\]\.qbank\)/.test(imp), 'Add files keeps the bank record (and its facetRules)');
+    const exp = h.slice(h.indexOf('async function exportBank('), h.indexOf('async function exportBank(') + 1200);
+    assert.ok(exp.includes('...(QBP.facetRulesOf(qb.facetRules)?{facetRules:QBP.facetRulesOf(qb.facetRules)}:{})'), 'export writes facetRules back');
+    assert.ok(h.includes("kind:'imported',formIds:bankRecs(q.id).map(x=>x.id),...(QBP.facetRulesOf(q.facetRules)?{facetRules:QBP.facetRulesOf(q.facetRules)}:{})"), 'qbanks() lists the rule on the bank');
+  }
+});

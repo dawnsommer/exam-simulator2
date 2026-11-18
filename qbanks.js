@@ -54,17 +54,20 @@ const PULLS = ['mix', 'random', 'order'];
 const pullFromPrefs = p => (PULLS.includes(p.pull) ? p.pull : typeof p.shuffle === 'boolean' ? (p.shuffle ? 'random' : 'order') : Object.keys(p || {}).length ? 'random' : 'mix');
 const S = {
   tab: 'create', prevTab: 'create',
-  sel: new Set(Array.isArray(P.sel) ? P.sel : []), selFromPrefs: Array.isArray(P.sel), combine: P.combine === true || (Array.isArray(P.sel) && P.sel.length > 1), lastBank: '',
+  sel: new Set(Array.isArray(P.sel) ? P.sel : []), savedSel: Array.isArray(P.sel) ? P.sel.slice() : [], selFallback: '', hidden: new Set(Array.isArray(P.hidden) ? P.hidden : []), combine: P.combine === true || (Array.isArray(P.sel) && P.sel.length > 1), lastBank: '',
   statuses: new Set(Array.isArray(P.statuses) && P.statuses.length ? P.statuses : ['unused']),
   sort: ['az', 'count', 'weak'].includes(P.sort) ? P.sort : 'az', facet: P.facet === 'sys' ? 'sys' : 'sub',
   reviewTag: P.reviewTag !== false,
   mode: P.mode === 'timed' ? 'timed' : 'tutor', secs: Math.max(15, Math.min(600, Number(P.secs) || 90)),
   track: P.track === 'forms' ? 'forms' : P.track === 'qbank' ? 'qbank' : '', attempt: typeof P.attempt === 'string' ? P.attempt : '',
-  subs: null, syss: null, fq: '', formsOff: new Set(), want: 40, perBlock: 40, pull: pullFromPrefs(P), name: '', preset: '',
-  hf: 'all', hq: '', hb: '', pb: null, more: { sub: false, sys: false }, nameOpen: false, open: {}, stale: true, busy: false
+  subs: null, syss: null, sysVis: null, fq: '', formsOff: new Set(), want: 40, perBlock: 40, pull: pullFromPrefs(P), name: '', preset: '',
+  hf: 'all', hq: '', hb: '', more: { sub: false, sys: false }, nameOpen: false, open: {}, stale: true, busy: false
 };
+const selKey = () => [...S.sel].sort().join('|');
+/* The saved pick is kept while the bank list is still loading (empty or partial) or a saved bank is hidden: the shown fallback is never written over it until the user changes the pick. */
 function savePrefs() {
-  try { root.localStorage.setItem(KEY, JSON.stringify({ sel: [...S.sel], combine: S.combine, statuses: [...S.statuses], sort: S.sort, facet: S.facet, reviewTag: S.reviewTag, mode: S.mode, secs: S.secs, track: S.track, attempt: S.attempt, pull: S.pull })); } catch (e) {}
+  if (!(S.selFallback && S.selFallback === selKey())) { S.savedSel = [...S.sel]; S.selFallback = ''; }
+  try { root.localStorage.setItem(KEY, JSON.stringify({ sel: S.savedSel, hidden: [...S.hidden], combine: S.combine, statuses: [...S.statuses], sort: S.sort, facet: S.facet, reviewTag: S.reviewTag, mode: S.mode, secs: S.secs, track: S.track, attempt: S.attempt, pull: S.pull })); } catch (e) {}
 }
 let D = null;      // bridge qbanks() result
 let seq = 0;
@@ -141,20 +144,39 @@ async function fetchData() {
   if (n !== seq || !d) return;
   S.err = '';
   D = { banks: d.banks || [], forms: d.forms || [], rows: d.rows || [], prov: d.prov || {}, tests: d.tests || [], tagsUpdatedAt: d.tagsUpdatedAt };
-  const ids = new Set(D.banks.map(b => b.id));
-  S.sel = new Set([...S.sel].filter(id => ids.has(id)));
-  if (!S.sel.size && D.banks.length) S.sel = new Set([D.banks[0].id]);
-  if (S.sel.size > 1) S.combine = true;
+  reconcileSel();
   const off = new Set(D.forms.map(f => f.id)); S.formsOff = new Set([...S.formsOff].filter(id => off.has(id)));
   render();
+}
+/* banks shown in the tab (Settings can hide some; at least one always stays shown) */
+function visBanks() { if (!D) return []; const v = D.banks.filter(b => !S.hidden.has(b.id)); return v.length ? v : D.banks; }
+function reconcileSel() {
+  if (!D) return;
+  const vis = visBanks(), has = new Set(vis.map(b => b.id));
+  const src = (S.selFallback && S.selFallback === selKey()) || !S.sel.size ? S.savedSel : [...S.sel];
+  let keep = src.filter(id => has.has(id));
+  if (!keep.length) keep = [...S.sel].filter(id => has.has(id));
+  if (!keep.length && vis.length) keep = [vis[0].id];
+  S.sel = new Set(keep);
+  S.selFallback = S.savedSel.some(id => !has.has(id)) ? selKey() : '';
+  if (S.sel.size > 1) S.combine = true;
 }
 function markStale() { S.stale = true; clearTimeout(markStale.t); markStale.t = setTimeout(() => { if (activePanel()) fetchData(); }, 120); }
 
 /* ---------- model (facets over the selected banks and forms) ---------- */
 function baseRows() { return D ? D.rows.filter(r => S.sel.has(r.bank) && !S.formsOff.has(r.formId)) : []; }
+/* banks whose manifest set facetRules.systemsBySubject: their systems list follows the selected subjects */
+function scopeBanks() { return D ? D.banks.filter(b => S.sel.has(b.id) && b.facetRules && b.facetRules.systemsBySubject === true).map(b => b.id) : []; }
 function model() {
-  const C = core(), base = baseRows();
-  const f = C.facets(base, { statuses: [...S.statuses], subjects: S.subs, systems: S.syss });
+  const C = core(), base = baseRows(), scope = scopeBanks();
+  let f = C.facets(base, { statuses: [...S.statuses], subjects: S.subs, systems: S.syss, scopeBanks: scope });
+  if (scope.length && S.syss) {
+    // hidden systems leave the filter; systems revealed by a subject change join it (unless systems were cleared)
+    const vis = new Set(f.systems), prev = S.sysVis, next = new Set([...S.syss].filter(x => vis.has(x)));
+    if (prev && S.syss.size) f.systems.forEach(x => { if (!prev.has(x)) next.add(x); });
+    if (next.size !== S.syss.size || [...next].some(x => !S.syss.has(x))) { S.syss = next; f = C.facets(base, { statuses: [...S.statuses], subjects: S.subs, systems: S.syss, scopeBanks: scope }); }
+  }
+  S.sysVis = new Set(f.systems);
   const count = Math.max(0, Math.min(S.want, f.avail));
   return Object.assign(f, { base, count });
 }
@@ -195,7 +217,7 @@ function banksHtml() {
   const T = root.ThunderUI, canSet = !!(T && typeof T.openSettings === 'function'), ids = [...S.sel];
   const label = S.combine && ids.length > 1 ? `${ids.length} banks combined` : 'Pick a Qbank';
   return `<div class="tq-bkh"><span class="tq-bkl">${label}</span><div class="tq-bkr">${canSet ? '<button type="button" class="tq-link tq-manage" data-a="opensettings" aria-label="Manage in Settings"><span class="tq-wl">Manage in Settings</span><span class="tq-wn">Manage</span></button>' : ''}<div class="tq-cmb"><span class="tq-wl">Combine banks</span><span class="tq-wn">Combine</span><button type="button" class="tq-switch" role="switch" aria-checked="${S.combine}" aria-label="Combine banks" data-a="combine"><i></i></button></div></div></div>
-    <div class="tq-bcards" role="${S.combine ? 'group' : 'radiogroup'}" aria-label="Qbanks">${D.banks.map(b => bankCard(b, S.sel.has(b.id), ids.indexOf(b.id) + 1)).join('')}</div>
+    <div class="tq-bcards" role="${S.combine ? 'group' : 'radiogroup'}" aria-label="Qbanks">${visBanks().map(b => bankCard(b, S.sel.has(b.id), ids.indexOf(b.id) + 1)).join('')}</div>
     ${progressHtml(ids)}`;
 }
 /* progress over a bank set: same status source as the builder (rows come from the current track), so it equals model().poolCount */
@@ -343,21 +365,19 @@ function historyHtml() {
 }
 
 /* performance */
-function perfBankIds() { const have = new Set(D.rows.map(r => r.bank)); return D.banks.filter(b => have.has(b.id)).map(b => b.id); }
-function perfIds() { const all = perfBankIds(); if (!S.pb) return all; const ids = all.filter(id => S.pb.has(id)); return ids.length ? ids : all; }
-/* performance over the chosen banks (not the Create selection): same core facets, every status ticked */
+function perfIds() { return [...S.sel]; }
+/* performance over the selected banks (same cards and selection as Create): same core facets, every status ticked */
 function perfModel() {
   const ids = new Set(perfIds());
   return core().facets(D.rows.filter(r => ids.has(r.bank)), { statuses: STATUS.map(x => x[0]) });
 }
 function perfHtml(m) {
-  const all = perfBankIds(), chips = all.length ? bankChips('pb', all, S.pb) : '';
   const table = (title, keys, perf, kind, a) => `<div class="tq-card tq-ptabcard"><div class="tq-sech"><h2>${title}</h2></div><table class="tq-ptab"><thead><tr><th>${kind}</th><th>Correct</th><th class="tq-hide-s">Used</th><th style="width:40%"></th><th></th></tr></thead><tbody>
     ${keys.map(k => { const p = perf[k] || { n: 0, c: 0, w: 0 }, used = p.c + p.w, pct = pctOf(p);
       return `<tr data-a="pick" data-v="${a}|${esc(k)}" tabindex="0" role="button" aria-label="Practice ${esc(k)}" title="Practice ${esc(k)}"><td class="${k === UNAS ? 'tq-unas' : ''}">${esc(k)}</td><td style="color:${pctCol(pct)}!important;font-weight:600">${pct == null ? '—' : pct + '%'}</td><td class="tq-hide-s">${used}/${p.n}</td><td><div class="tq-pbar"><i style="width:${pct || 0}%;background:${pct == null ? 'transparent' : pctCol(pct)}"></i></div></td><td class="tq-go1">${ICON.play}</td></tr>`; }).join('')}</tbody></table></div>`;
   const bySys = m.systems.slice().sort((a, b) => { const pa = pctOf(m.sysPerf[a]), pb = pctOf(m.sysPerf[b]); return (pa == null ? 101 : pa) - (pb == null ? 101 : pb) || a.localeCompare(b); });
-  return `${chips}${progressHtml(perfIds())}<div class="tq-perf">${table('By subject', m.subjects.slice().sort((a, b) => a.localeCompare(b)), m.subPerf, 'Subject', 'sub')}${table('By system · weakest first', bySys, m.sysPerf, 'System', 'sys')}</div>
-    <p class="tq-foot">Numbers come from your answers in the chosen banks (${trackNow() === 'forms' ? 'form attempts' : 'Qbank tests'}). Tap a row to build a test on just that subject or system in those banks (unused + incorrect).</p>`;
+  return `<div class="tq-perf">${table('By subject', m.subjects.slice().sort((a, b) => a.localeCompare(b)), m.subPerf, 'Subject', 'sub')}${table('By system · weakest first', bySys, m.sysPerf, 'System', 'sys')}</div>
+    <p class="tq-foot">Numbers come from your answers in the selected banks (${trackNow() === 'forms' ? 'form attempts' : 'Qbank tests'}). Tap a row to build a test on just that subject or system in those banks (unused + incorrect).</p>`;
 }
 
 /* ---------- Settings > Qbanks (bank list with expandable details) ----------
@@ -400,7 +420,10 @@ function setBankHtml(b) {
       ${d.epc > 0 ? `<p class="tq-smeta"><b>Choice %</b> · ${fmt(d.epc)} of ${fmt(s.n)} questions</p>` : ''}
       <div class="tq-acts tq-sacts">${imp ? `<button type="button" class="tq-btn tq-small" data-a="import" data-into="${esc(b.id)}">${ICON.plus}Add files</button>` : ''}<button type="button" class="tq-btn tq-small" data-a="retag" data-v="${esc(b.id)}">${ICON.tag}Re-tag</button>${imp ? `<button type="button" class="tq-btn tq-small" data-a="rename" data-v="${esc(b.id)}">${ICON.pencil}Rename</button>${typeof bridge().qbanksExportBank === 'function' ? `<button type="button" class="tq-btn tq-small" data-a="sexport" data-v="${esc(b.id)}" ${busy ? 'disabled' : ''}>${ICON.dl}${busy ? 'Exporting…' : 'Export ZIP'}</button>` : ''}<button type="button" class="tq-btn tq-small tq-bad" data-a="delbank" data-v="${esc(b.id)}">${ICON.trash}Remove</button>` : ''}</div></div>`;
   }
-  return `<div class="tq-sbk" data-bank="${esc(b.id)}"><button type="button" class="tq-srow" data-a="sbank" data-v="${esc(b.id)}" aria-expanded="${open}" ${open ? `aria-controls="tqDet-${esc(b.id)}"` : ''}>${badge(b)}<span class="tq-snm"><b>${esc(b.name)}</b><small>${esc(parts.join(' · '))}</small></span><span class="tq-schip">${imp ? 'Imported' : 'Built-in'}</span><span class="tq-chv">${chev}</span></button>${det}</div>`;
+  const shown = !S.hidden.has(b.id);
+  return `<div class="tq-sbk${shown ? '' : ' tq-shid'}" data-bank="${esc(b.id)}"><div class="tq-sbh"><button type="button" class="tq-srow" data-a="sbank" data-v="${esc(b.id)}" aria-expanded="${open}" ${open ? `aria-controls="tqDet-${esc(b.id)}"` : ''}>${badge(b)}<span class="tq-snm"><b>${esc(b.name)}</b><small>${esc(parts.join(' · '))}${shown ? '' : ' · hidden'}</small></span><span class="tq-schip">${imp ? 'Imported' : 'Built-in'}</span></button>
+    <span class="tq-svis"><span class="tq-svl" aria-hidden="true">${shown ? 'Shown' : 'Hidden'}</span><button type="button" class="tq-switch" role="switch" aria-checked="${shown}" aria-label="Show ${esc(b.name)} in Qbanks" data-a="svis" data-v="${esc(b.id)}"><i></i></button></span>
+    <button type="button" class="tq-chv" data-a="sbank" data-v="${esc(b.id)}" tabindex="-1" aria-hidden="true">${chev}</button></div>${det}</div>`;
 }
 function settingsHtml() {
   const need = !!bridge() && !!core();
@@ -409,7 +432,9 @@ function settingsHtml() {
   if (!D) return head(S.err ? `Could not read your banks: ${esc(S.err)}` : 'Reading your banks…', false) + (S.err ? `<div class="tq-sbody0"><button type="button" class="tq-btn tq-small" data-a="sreload">Try again</button></div>` : '');
   const imgs = D.banks.reduce((a, b) => a + ((ST.det[b.id] && ST.det[b.id].images) || 0), 0), nq = D.rows.length;
   const sub = [plural(D.banks.length, 'bank'), plural(nq, 'question'), imgs ? plural(imgs, 'image') : ''].filter(Boolean).join(' · ');
-  return head(sub, true) + D.banks.map(setBankHtml).join('');
+  const nv = D.banks.filter(b => !S.hidden.has(b.id)).length;
+  const vis = D.banks.length > 1 ? `<div class="tq-svh"><span>${nv} of ${D.banks.length} banks shown in Qbanks</span>${nv < D.banks.length ? '<button type="button" class="tq-link" data-a="sviall">Show all</button>' : ''}</div>` : '';
+  return head(sub, true) + vis + D.banks.map(setBankHtml).join('');
 }
 function paintSet() { if (setHost && setHost.isConnected) setHtml(setHost, settingsHtml()); }
 function mountSettings(host) {
@@ -431,7 +456,17 @@ function onSetHostClick(e) {
   if (a === 'sretry') { invalDet(v); paintSet(); loadDetails(v); return; }
   if (a === 'sreload') { S.err = ''; S.stale = true; mountSettings(setHost); return; }
   if (a === 'sexport') { exportBank(v); return; }
+  if (a === 'svis' || a === 'sviall') { setVisible(a === 'sviall' ? null : v); return; }
   bankAct(a, v, t);
+}
+/* show/hide a bank in the Qbanks tab (null = show all); the last shown bank stays */
+function setVisible(id) {
+  if (!D) return;
+  if (id == null) S.hidden = new Set();
+  else if (S.hidden.has(id)) S.hidden.delete(id);
+  else { if (D.banks.filter(b => !S.hidden.has(b.id)).length <= 1) { toast('Keep at least one bank shown'); return; } S.hidden.add(id); }
+  S.hidden = new Set([...S.hidden].filter(x => D.banks.some(b => b.id === x)));
+  reconcileSel(); resetFacets(); savePrefs(); render();
 }
 function saveBlob(blob, name) {
   const a = doc.createElement('a'); a.href = root.URL.createObjectURL(blob); a.download = name; doc.body.appendChild(a); a.click(); a.remove();
@@ -463,7 +498,8 @@ function render() {
   else {
     if (S.tab !== 'history' && S.tab !== 'performance') S.tab = 'create';
     if (S.tab === 'create') { const m = model(); banks = banksHtml(); view = createHtml(m); bar = barHtml(m); }
-    else view = S.tab === 'history' ? historyHtml() : perfHtml(perfModel());
+    else if (S.tab === 'performance') { banks = banksHtml(); view = perfHtml(perfModel()); }
+    else view = historyHtml();
   }
   const bEl = rootEl.querySelector('[data-r="banks"]'); bEl.hidden = !banks;
   setHtml(bEl, banks); setHtml(rootEl.querySelector('[data-r="view"]'), view);
@@ -738,7 +774,7 @@ function applyPreset(p) {
 function toggleIn(setName, all, v) { const cur = S[setName] ? new Set(S[setName]) : new Set(all); cur.has(v) ? cur.delete(v) : cur.add(v); S[setName] = cur; }
 function pick(v) {
   const i = v.indexOf('|'), kind = v.slice(0, i), name = v.slice(i + 1);
-  S.sel = new Set(perfIds()); if (S.sel.size > 1) S.combine = true; S.lastBank = [...S.sel].pop(); S.formsOff = new Set(); S.subs = kind === 'sub' ? new Set([name]) : null; S.syss = kind === 'sys' ? new Set([name]) : null;
+  S.lastBank = S.sel.has(S.lastBank) ? S.lastBank : [...S.sel].pop(); S.formsOff = new Set(); S.subs = kind === 'sub' ? new Set([name]) : null; S.syss = kind === 'sys' ? new Set([name]) : null;
   S.statuses = new Set(['unused', 'incorrect']); S.preset = ''; S.want = 40; S.tab = 'create'; savePrefs(); render(); root.scrollTo && root.scrollTo(0, 0); toast(`Test on ${name}: unused + incorrect`);
 }
 function goTab(k) {
@@ -756,7 +792,7 @@ async function bankAct(a, v, t) {
   if (a === 'delbank') {
     const b = bankById(v), B = bridge(); if (!b || !B || !B.qbanksDeleteBank) return;
     if (!await askOk(`Delete “${b.name}” and its ${plural(bankStats(b.id).n, 'question')}?\n\nA recovery ZIP is saved first. Your Qbank tests stay in history.`, 'Delete bank', 'Delete')) return;
-    try { await B.qbanksDeleteBank(b.id); S.sel.delete(b.id); if (ST.open === b.id) ST.open = ''; invalDet(); resetFacets(); savePrefs(); await fetchData(); toast(`Deleted ${b.name}`); } catch (err) { toast('Could not delete: ' + ((err && err.message) || err)); }
+    try { await B.qbanksDeleteBank(b.id); S.sel.delete(b.id); S.hidden.delete(b.id); if (ST.open === b.id) ST.open = ''; invalDet(); resetFacets(); savePrefs(); await fetchData(); toast(`Deleted ${b.name}`); } catch (err) { toast('Could not delete: ' + ((err && err.message) || err)); }
   }
 }
 async function onClick(e) {
@@ -770,7 +806,7 @@ async function onClick(e) {
     case 'bank': {
       if (!S.combine) { S.sel = new Set([v]); }
       else if (S.sel.has(v)) { if (S.sel.size > 1) S.sel.delete(v); } else S.sel.add(v);
-      S.lastBank = S.sel.has(v) ? v : [...S.sel].pop(); resetFacets(); savePrefs(); render(); return;
+      S.lastBank = S.sel.has(v) ? v : [...S.sel].pop(); S.selFallback = ''; resetFacets(); savePrefs(); render(); return;
     }
     case 'combine': {
       if (S.combine) { const keep = S.sel.has(S.lastBank) ? S.lastBank : [...S.sel][0]; S.combine = false; if (keep && S.sel.size > 1) { S.sel = new Set([keep]); resetFacets(); } }
@@ -790,7 +826,6 @@ async function onClick(e) {
     case 'shuffle': S.pull = S.pull === 'order' ? 'random' : 'order'; savePrefs(); render(); return; /* legacy hook: toggles Random / Form order */
     case 'hf': S.hf = v; render(); return;
     case 'hb': S.hb = v; render(); return;
-    case 'pb': { const all = perfBankIds(); if (!v) S.pb = null; else { const cur = S.pb ? new Set(S.pb) : new Set(); cur.has(v) ? cur.delete(v) : cur.add(v); S.pb = cur.size && !all.every(id => cur.has(id)) ? cur : null; } render(); return; }
     case 'facet': S.facet = v === 'sys' ? 'sys' : 'sub'; savePrefs(); render(); return;
     case 'more': S.more[v] = !S.more[v]; render(); return;
     case 'cdec': case 'cinc': { const mm = m(); S.want = Math.max(1, Math.min(mm.avail || 1, mm.count + (a === 'cinc' ? 1 : -1))); render(); return; }
@@ -1346,7 +1381,18 @@ ${R} .tq-shd h2{margin:0!important;font-size:19px!important;font-weight:800!impo
 ${R} .tq-shd p{margin:3px 0 0!important;font-size:13px!important;color:var(--q-on3)!important}
 ${R} .tq-sbody0{padding:0 22px 16px}
 ${R} .tq-sbk{border-top:1px solid var(--q-line2)}
-${R} .tq-srow{display:grid;grid-template-columns:40px minmax(0,1fr) auto 24px;gap:12px;align-items:center;width:100%;padding:12px 22px;border:0;background:none;text-align:left;color:var(--q-on)!important}
+${R} .tq-sbh{display:flex;align-items:center;gap:10px;padding-right:22px}
+${R} .tq-sbh .tq-srow{flex:1;min-width:0}
+${R} .tq-svis{display:flex;align-items:center;gap:8px;flex:none}
+${R} .tq-svl{font-size:12px;color:var(--q-on3)!important;min-width:44px;text-align:right}
+${R} .tq-svis .tq-switch{width:36px;height:44px;min-height:44px;padding:11px 0;box-sizing:border-box;background-clip:content-box;cursor:pointer}
+${R} .tq-svis .tq-switch i{width:16px;height:16px;top:14px}
+${R} .tq-svis .tq-switch[aria-checked=true] i{left:17px}
+${R} .tq-sbh .tq-chv{width:24px;height:44px;border:0;background:none;padding:0;cursor:pointer}
+${R} .tq-sbh:has(.tq-srow[aria-expanded=true]) .tq-chv svg{transform:rotate(180deg)}
+${R} .tq-shid .tq-srow .tq-badge,${R} .tq-shid .tq-srow .tq-snm b{opacity:.45}
+${R} .tq-svh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 22px 10px;font-size:13px;color:var(--q-on3)!important}
+${R} .tq-srow{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;padding:12px 22px;border:0;background:none;text-align:left;color:var(--q-on)!important}
 ${R} .tq-srow:hover{background:var(--q-s1)}
 ${R} .tq-snm{min-width:0}
 ${R} .tq-snm b{display:block;font-size:15px;font-weight:700;color:var(--q-on)!important}
@@ -1381,7 +1427,10 @@ ${R} .tq-badfiles{display:flex;flex-direction:column;gap:2px;margin-top:6px;font
 @media (max-width:640px){
 ${R} .tq-shd{padding:16px 14px 12px}
 ${R} .tq-shd .tq-btn{width:100%;justify-content:center}
-${R} .tq-srow{grid-template-columns:36px minmax(0,1fr) 20px;padding:10px 14px;gap:10px}
+${R} .tq-srow{grid-template-columns:36px minmax(0,1fr);padding:10px 14px;gap:10px}
+${R} .tq-sbh{padding-right:10px;gap:6px}
+${R} .tq-svl{display:none}
+${R} .tq-svh{padding:0 14px 10px}
 ${R} .tq-srow .tq-schip{display:none}
 ${R} .tq-sdet{padding:2px 14px 16px}
 ${R} .tq-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}

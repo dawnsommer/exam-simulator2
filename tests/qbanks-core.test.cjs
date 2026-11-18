@@ -367,3 +367,34 @@ test('planners: a linked set bigger than the count is taken whole (legacy rule),
     assert.equal(Q[f]([], 2, 40, {}).keys.length, 0, f + ' empty pool stays empty');
   }
 });
+
+test('facets scopeBanks (facetRules.systemsBySubject): systems follow the selected subjects, hidden not zero', () => {
+  const B = (key, bank, subject, system) => ({ key, bank, subject, system, status: 'unused', marked: false });
+  const hy = [B('h1', 'qb-hy', 'HY Ethics', 'Ethics  - Block 1'), B('h2', 'qb-hy', 'HY Ethics', 'Ethics  - Block 2'),
+    B('h3', 'qb-hy', 'Concepts', 'Cardiology'), B('h4', 'qb-hy', 'Concepts', 'Unassigned'), B('h5', 'qb-hy', 'Days', 'Day 1 - Cardio')];
+  const all = Q.facets(hy, { statuses: null, subjects: null, scopeBanks: ['qb-hy'] });
+  assert.equal(all.scoped, false, 'no subject selection: nothing hidden');
+  assert.equal(all.systems.length, 5);
+  const eth = Q.facets(hy, { statuses: null, subjects: ['HY Ethics'], scopeBanks: ['qb-hy'] });
+  assert.equal(eth.scoped, true);
+  assert.deepEqual(eth.systems, ['Ethics  - Block 1', 'Ethics  - Block 2']);
+  assert.deepEqual(eth.sysCount, { 'Ethics  - Block 1': 1, 'Ethics  - Block 2': 1 }, 'hidden systems have no count entry');
+  assert.equal(eth.avail, 2);
+  const two = Q.facets(hy, { statuses: null, subjects: new Set(['Concepts', 'Days']), scopeBanks: new Set(['qb-hy']) });
+  assert.deepEqual(two.systems, ['Cardiology', 'Day 1 - Cardio', 'Unassigned'], 'Unassigned stays last');
+  // a stale selected system that is hidden never adds to the pool
+  assert.equal(Q.facets(hy, { statuses: null, subjects: ['HY Ethics'], systems: ['Cardiology', 'Ethics  - Block 1'], scopeBanks: ['qb-hy'] }).avail, 1);
+  // empty subject selection: no scoping (the list does not vanish), pool is empty as before
+  const none = Q.facets(hy, { statuses: null, subjects: [], scopeBanks: ['qb-hy'] });
+  assert.equal(none.scoped, false); assert.equal(none.systems.length, 5); assert.equal(none.avail, 0);
+  // without scopeBanks the result is exactly today's
+  const plain = Q.facets(hy, { statuses: null, subjects: ['HY Ethics'] });
+  assert.equal(plain.scoped, false); assert.equal(plain.systems.length, 5); assert.equal(plain.sysCount.Cardiology, 0);
+  const { scoped: _a, ...p1 } = plain, { scoped: _b, ...p2 } = Q.facets(hy, { statuses: null, subjects: ['HY Ethics'], scopeBanks: ['other'] });
+  assert.deepEqual(p1, p2, 'a scope bank with no rows changes nothing');
+  // mixed: rows of an unflagged bank keep all their systems; only the flagged bank's rows are scoped
+  const mixed = hy.concat([B('n1', 'nbme', 'Internal Medicine', 'Renal & Urinary'), B('n2', 'nbme', 'Surgery', 'Cardiology')]);
+  const mx = Q.facets(mixed, { statuses: null, subjects: ['HY Ethics'], scopeBanks: ['qb-hy'] });
+  assert.deepEqual(mx.systems, ['Cardiology', 'Ethics  - Block 1', 'Ethics  - Block 2', 'Renal & Urinary']);
+  assert.deepEqual(mx.sysCount, { Cardiology: 0, 'Ethics  - Block 1': 1, 'Ethics  - Block 2': 1, 'Renal & Urinary': 0 });
+});

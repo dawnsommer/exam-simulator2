@@ -724,57 +724,40 @@ ${S} :not([data-v15-highlight-id]){color:inherit!important}`;
     else{ unmount(side); unmount(belowPanel); }
   }
 
-  /* ---------- Settings -> Appearance: "Review screen" group (thunder-ui.js builds Settings and stays untouched) ---------- */
+  /* ---------- Settings -> Review screen pane: fills the mounts thunder-ui.js renders (review, rrdata); only rr-specific CSS here ---------- */
   function setCss(){
-    const S = ':root[data-tu] body #menu .rr-set';
+    const S = '#tuSettings';
     return `
-.rr-set{border-top:1px solid var(--tu-line2,#e4e7f0);margin-top:6px;container-type:inline-size}
-${S} .rr-setgrid{display:grid;grid-template-columns:minmax(0,1fr) 250px;border-top:1px solid var(--tu-line2)}
-${S} .rr-setgrid>.rr-rows>.tu-setrow:first-child{border-top:0}
-${S} .rr-prev{border-left:1px solid var(--tu-line2);padding:14px 16px;display:flex;flex-direction:column;gap:8px;background:var(--tu-s1)}
-${S} .rr-cap{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tu-on3)}
-${S} .rr-prev p{margin:0;font-size:12.5px;line-height:1.45;color:var(--tu-on2)}
 ${S} .rr-dim{opacity:.55}
-${S} .rr-lay{display:flex;gap:10px;flex-wrap:wrap}
-${S} .rr-lay>button{all:unset;box-sizing:border-box;font-family:inherit;display:flex;flex-direction:column;align-items:flex-start;gap:7px;width:150px;padding:9px 10px 10px;border:1.5px solid var(--tu-line);border-radius:14px;background:var(--tu-surface);color:var(--tu-on);cursor:pointer;text-align:left}
-${S} .rr-lay>button[aria-checked="true"]{border-color:var(--tu-p);background:color-mix(in srgb,var(--tu-pc) 45%,var(--tu-surface));box-shadow:0 0 0 1px var(--tu-p) inset}
-${S} .rr-lay>button:focus-visible,${S} .rr-chip:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
-${S} .rr-lay b{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
-${S} .rr-lay small{font-size:12px;line-height:1.35;color:var(--tu-on2)}
-${S} .rr-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--tu-on3);box-sizing:border-box;flex:none}
-${S} [aria-checked="true"] .rr-dot{border:4px solid var(--tu-p)}
+${S} .rr-layctl{display:flex;align-items:center;justify-content:flex-end;gap:14px;flex-wrap:wrap}
+${S} .rr-mini{width:92px;flex:none}
 ${S} .rr-wf{display:grid;gap:3px;background:var(--tu-s2);border-radius:7px;padding:4px;width:100%;aspect-ratio:16/10;box-sizing:border-box}
 ${S} .rr-wf>div{border-radius:4px;background:var(--tu-surface);display:flex;flex-direction:column;gap:2px;padding:3px;min-height:0;overflow:hidden}
 ${S} .rr-wf i{display:block;height:3px;border-radius:2px;background:var(--tu-s3)}
 ${S} .rr-wf .tb-row{display:flex;gap:2px;flex-wrap:wrap}
 ${S} .rr-wf .tb{font-size:7.5px;line-height:1;padding:2px 3px;border-radius:2px;background:var(--tu-s2);color:var(--tu-on3);font-weight:700;white-space:nowrap}
 ${S} .rr-wf .tb.on{background:var(--tu-p);color:var(--tu-onp)}
-${S} .rr-wf .lb{font-size:9.5px;color:var(--tu-on3);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-${S} .rr-wf.big{aspect-ratio:auto;height:190px;padding:6px;gap:5px}
-${S} .rr-wf.big>div{padding:6px;gap:4px}
-${S} .rr-wf.big i{height:5px}
-${S} .rr-wf.big .tb{font-size:10.5px;padding:3px 6px;border-radius:4px}
-${S} .rr-placerow>.rr-place{flex:1 1 100%;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+${S} .rr-place{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:4px 18px 16px}
 ${S} .rr-zone{border:1.5px dashed var(--tu-line);border-radius:14px;padding:9px 10px 10px;min-height:84px;background:var(--tu-s1)}
 ${S} .rr-zone.off{opacity:.45}
 ${S} .rr-zone h4{margin:0 0 7px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tu-on3)}
 ${S} .rr-zone>div{display:flex;flex-wrap:wrap;gap:6px}
 ${S} .rr-zone em{font-style:normal;font-size:12.5px;color:var(--tu-on3)}
 ${S} .rr-chip{all:unset;box-sizing:border-box;font-family:inherit;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--tu-line);background:var(--tu-surface);color:var(--tu-on);font-weight:700;font-size:13.5px;white-space:nowrap;cursor:pointer}
+${S} .rr-chip:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
 ${S} button.rr-chip:not(:disabled):hover{border-color:var(--tu-on3)}
 ${S} .rr-chip:disabled{cursor:default}
 ${S} .rr-chip.lock{cursor:default;color:var(--tu-on2)}
 ${S} .rr-chip.first{border-color:var(--tu-p)}
 ${S} .rr-chip.first::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--tu-p)}
 ${S} .rr-chip small{font-size:12px;font-weight:600;color:var(--tu-on3)}
-${S} .rr-hint{flex:1 1 100%;font-size:12.5px;color:var(--tu-warn,#7d4b00);margin-top:-4px}
+${S} .rr-hint{padding:0 18px 12px;font-size:12.5px;color:var(--tu-warn,#7d4b00)}
 ${S} .rr-hint:empty{display:none}
 ${S} .tu-setseg button:disabled{cursor:default}
-${S} .rr-st{font-size:13.5px;color:var(--tu-on2);white-space:nowrap}
 ${S} .rr-link{all:unset;box-sizing:border-box;font:inherit;color:var(--tu-p);text-decoration:underline;cursor:pointer}
 ${S} .rr-link:disabled{cursor:default;opacity:.55}
 ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
-@container (max-width:640px){${S} .rr-setgrid{grid-template-columns:1fr}${S} .rr-prev{border-left:0;border-top:1px solid var(--tu-line2)}${S} .rr-placerow>.rr-place{grid-template-columns:1fr}${S} .rr-lay>button{width:calc(50% - 5px)}}`;
+@media (max-width:760px){${S} .rr-place{grid-template-columns:1fr;padding:4px 14px 14px}${S} .rr-layctl{justify-content:flex-start}${S} .rr-hint{padding:0 14px 12px}}`;
   }
   const NAME = {exp: 'Explanation', rr: 'Rapid review', ex: 'Exhibit'};
   function setState(){
@@ -801,6 +784,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     const dv = RS.drive && RS.drive.total ? ' · ' + RS.drive.saved + ' saved to Drive' : '';
     return RS.offline ? (n ? f + ' · offline, using saved files' : f + ' · offline') + dv : (RS.checkedAt ? f + ' · checked ' + z(d.getHours()) + ':' + z(d.getMinutes()) : f) + dv;
   }
+  let arrOpen = false;
   function setHtml(){
     const s = setState(), split = s.layout === 'split';
     const chip = k => {
@@ -809,32 +793,39 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
       return `<button type="button" class="rr-chip ${s.together && s.first === k ? 'first' : ''}" data-rr-mv="${k}"${split ? ' disabled' : ''}>${NAME[k]}${split ? '' : `<small>${z === 'side' ? 'move under ↓' : 'move beside ↑'}</small>`}</button>`;
     };
     const zone = (z, title) => `<div class="rr-zone ${split && z === 'below' ? 'off' : ''}"><h4>${title}</h4><div>${['exp', 'rr', 'ex'].filter(k => s.zoneOf(k) === z).map(chip).join('') || '<em>Nothing here</em>'}</div></div>`;
-    const firstDesc = !s.together ? 'Explanation and Rapid review are in different places, so both show at once.'
-      : split ? 'Both share the side panel. Pick the tab that opens when you review a question.' : 'Both are under the question. Pick the tab that opens first.';
-    const prev = split ? 'Question on the left; Explanation, Rapid review and Exhibit as tabs in the side panel.'
-      : `Explanation ${s.zoneOf('exp') === 'side' ? 'beside' : 'under'} the question, Rapid review ${s.zoneOf('rr') === 'side' ? 'beside' : 'under'}. Exhibit beside.`;
-    const lay = (v, l, d) => `<button type="button" role="radio" aria-checked="${s.layout === v}" data-rr-lay="${v}">${wfHtml(s, v)}<b><span class="rr-dot"></span>${l}</b><small>${d}</small></button>`;
+    const firstDesc = !s.together ? 'Explanation and Rapid Review are in different places, so both show' : 'The tab you see when you open a question';
+    const arrDesc = split ? 'All tabs beside the question' : `Explanation ${s.zoneOf('exp') === 'side' ? 'beside' : 'under'} · Rapid Review ${s.zoneOf('rr') === 'side' ? 'beside' : 'under'}`;
+    const lay = (v, l) => `<button type="button" role="radio" aria-checked="${s.layout === v}" data-rr-lay="${v}">${l}</button>`;
     const first = (v, l) => `<button type="button" role="radio" aria-checked="${s.first === v}" data-rr-first="${v}"${s.together ? '' : ' disabled'}>${l}</button>`;
-    return `<div class="tu-sechead"><h2>Review screen</h2><p>Where the explanation and Rapid Review appear when you review a question. The Split/Below switch in the exam’s Settings menu changes the same setting. On phones, Explanation and Rapid Review always sit under the question as tabs, since side by side doesn’t fit.</p></div>
-      <div class="tu-setrow"><div><b>Rule + Trap first</b><span>Show the Rapid rule and Trap tested lines at the start of the explanation instead of the end, on forms that have them.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" role="switch" aria-checked="${ruleFirst()}" aria-label="Rule and Trap first" data-rr-rf><i></i></button></div></div>
-      <div class="tu-setrow"><div><b>Alee’s OCD Switch</b><span>A tighter Explanation view: answer choices without spacing, no “Why the other answers are wrong” heading (the wrong choices stay, without spacing), and Rapid rule and Trap tested in one box.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" role="switch" aria-checked="${ocdOn()}" aria-label="Alee’s OCD Switch" data-rr-ocd><i></i></button></div></div>
-      <div class="rr-setgrid"><div class="rr-rows">
-        <div class="tu-setrow"><div><b>Layout</b><span>Side by side with the question, or stacked under it.</span></div><div class="tu-setctl"><div class="rr-lay" role="radiogroup" aria-label="Review layout">${lay('split', 'Split', 'All tabs beside the question')}${lay('below', 'Below', 'Reading space under the question')}</div></div></div>
-        <div class="tu-setrow rr-placerow"><div><b>Tab placement</b><span>${split ? 'Split keeps every tab in the side panel. Choose Below to place tabs under the question.' : 'Click a tab to move it. Keep at least one under the question.'}</span></div><div class="rr-place">${zone('side', 'Beside the question')}${zone('below', 'Under the question')}</div><div class="rr-hint">${esc(setHint)}</div></div>
-        <div class="tu-setrow${s.together ? '' : ' rr-dim'}"><div><b>Opens first</b><span>${firstDesc}</span></div><div class="tu-setctl"><div class="tu-setseg" role="radiogroup" aria-label="Opens first">${first('exp', 'Explanation')}${first('rr', 'Rapid Review')}</div></div></div>
-      </div><aside class="rr-prev"><span class="rr-cap">Preview</span>${wfHtml(s, s.layout, true)}<p>${prev}</p></aside></div>
-      <div class="tu-setrow rr-data"><div><b>Rapid Review data</b></div><div class="tu-setctl rr-st">${esc(statusText())} · <button type="button" class="rr-link" data-rr-check${RS.busy ? ' disabled' : ''}>Check now</button></div></div>`;
+    const sw = (attr, on, label) => `<button type="button" class="tu-switch" role="switch" aria-checked="${on}" aria-label="${label}" ${attr}><i></i></button>`;
+    return `<div class="tu-setgroup" data-tu-group="layout"><h3 class="tu-grouph">Layout</h3><div class="tu-setcard">
+      <div class="tu-setrow"><div><b>Explanation position</b><span>${split ? 'Beside the question, as tabs' : 'Under the question'}</span></div><div class="tu-setctl rr-layctl"><div class="tu-setseg" role="radiogroup" aria-label="Explanation position">${lay('split', 'Beside')}${lay('below', 'Below')}</div><div class="rr-mini" aria-hidden="true">${wfHtml(s, s.layout, false)}</div></div></div>
+      <div class="tu-setrow${s.together ? '' : ' rr-dim'}"><div><b>Opens first</b><span>${firstDesc}</span></div><div class="tu-setctl"><div class="tu-setseg" role="radiogroup" aria-label="Opens first">${first('exp', 'Explanation')}${first('rr', 'Rapid Review')}</div></div></div>
+      <button type="button" class="tu-setrow tu-setlink" data-rr-arr aria-expanded="${arrOpen}"><div><b>Arrange tabs</b><span>${arrDesc}</span></div><span class="tu-chev"></span></button>${arrOpen ? `<div class="tu-setsub" data-rr-arrsub><div class="rr-place">${zone('side', 'Beside the question')}${zone('below', 'Under the question')}</div><div class="rr-hint">${esc(setHint)}</div></div>` : ''}
+    </div><p class="tu-note">The Split/Below switch in the exam’s Settings menu changes the same setting. Phones always show tabs under the question.</p></div>
+    <div class="tu-setgroup" data-tu-group="explanation"><h3 class="tu-grouph">Explanation</h3><div class="tu-setcard">
+      <div class="tu-setrow"><div><b>Rule + Trap first</b><span>Show Rapid rule and Trap tested at the top</span></div><div class="tu-setctl">${sw('data-rr-rf', ruleFirst(), 'Rule and Trap first')}</div></div>
+      <div class="tu-setrow"><div><b>Alee’s OCD Switch</b><span>Tighter view: no choice spacing, Rule and Trap in one box</span></div><div class="tu-setctl">${sw('data-rr-ocd', ocdOn(), 'Alee’s OCD Switch')}</div></div>
+    </div></div>`;
+  }
+  function dataHtml(){
+    return `<div class="tu-setrow rr-data"><div><b>Rapid Review data</b><span>${esc(statusText())}</span></div><div class="tu-setctl"><button type="button" class="rr-link" data-rr-check${RS.busy ? ' disabled' : ''}>Check now</button></div></div>`;
   }
   function addSettings(){
-    document.querySelectorAll('section.tu-setbody').forEach(sec => {
-      const h = sec.querySelector('.tu-sechead h2');
-      if(!h || h.textContent.trim() !== 'Appearance') return;
-      const sig = [getLayout(), ls.get(PLACE), getPref(), ruleFirst(), ocdOn(), setHint, statusText()].join('|');
-      let box = sec.querySelector('[data-rr-set]');
-      if(box && box.dataset.sig === sig) return;
-      if(!box){ box = document.createElement('div'); box.className = 'rr-set'; box.setAttribute('data-rr-set', ''); sec.appendChild(box); }
-      box.innerHTML = setHtml(); box.dataset.sig = sig;
-    });
+    const m = document.querySelector('#tuSettings [data-tu-mount="review"]');
+    if(m){
+      const sig = [getLayout(), ls.get(PLACE), getPref(), ruleFirst(), ocdOn(), setHint, arrOpen, isPhone()].join('|');
+      let box = m.querySelector(':scope > [data-rr-set]');
+      if(!box || box.dataset.sig !== sig){
+        if(!box){ m.textContent = ''; box = document.createElement('div'); box.setAttribute('data-rr-set', ''); m.appendChild(box); }
+        box.innerHTML = setHtml(); box.dataset.sig = sig;
+      }
+    }
+    const d = document.querySelector('#tuSettings [data-tu-mount="rrdata"]');
+    if(d){
+      const sig = statusText() + '|' + RS.busy;
+      if(!d.querySelector(':scope > .rr-data') || d.dataset.sig !== sig){ d.innerHTML = dataHtml(); d.dataset.sig = sig; }
+    }
   }
   // the review re-renders only when it is on screen; otherwise the next render picks the new setting up
   function rerender(){
@@ -863,6 +854,7 @@ ${S} .rr-link:focus-visible{outline:2px solid var(--tu-p);outline-offset:2px}
     const t = e.target; if(!t || !t.closest) return;
     const hs = t.closest('.rr-pane .rr-hl'); if(hs){ const sl = window.getSelection(); if(!sl || sl.isCollapsed){ hlRemove(hs); return; } }
     if(t.closest('[data-rr-check]')){ sync(true); return; }
+    if(t.closest('[data-rr-arr]')){ arrOpen = !arrOpen; schedule(); return; }
     const sb = t.closest('[data-rr-sub]');
     if(sb){ sub = sb.getAttribute('data-rr-sub'); if(sub === 'path') sub = 'over'; wantTopic = sub === 'topic'; schedule(); return; }
     const zb = t.closest('[data-rr-z]');

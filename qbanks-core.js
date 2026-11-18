@@ -157,10 +157,16 @@
     return inStatuses(row, sel.statuses) && (!subs || subs.has(row.subject)) && (!syss || syss.has(row.system));
   }
   const pctOf = p => (p && p.c + p.w ? Math.round(100 * p.c / (p.c + p.w)) : null);
+  // sel.scopeBanks: ids of banks whose manifest asks for facetRules.systemsBySubject. While a subject selection
+  // exists (non-empty), a system is listed only if it has a row from an unscoped bank or a scoped-bank row in a
+  // selected subject; the others are hidden (not shown with 0). scoped = that rule hid or could hide something.
   function facets(rows, sel) {
     rows = rows || []; sel = sel || {};
     const subjects = [...new Set(rows.map(r => r.subject))].sort();
-    const systems = [...new Set(rows.map(r => r.system))].sort((a, b) => (a === UNASSIGNED) - (b === UNASSIGNED) || a.localeCompare(b));
+    const scope = toSet(sel.scopeBanks), pick = toSet(sel.subjects);
+    const scoped = !!(scope && scope.size && pick && pick.size && rows.some(r => scope.has(r.bank)));
+    const sysRows = scoped ? rows.filter(r => !scope.has(r.bank) || pick.has(r.subject)) : rows;
+    const systems = [...new Set(sysRows.map(r => r.system))].sort((a, b) => (a === UNASSIGNED) - (b === UNASSIGNED) || a.localeCompare(b));
     const subs = toSet(sel.subjects) || new Set(subjects), syss = toSet(sel.systems) || new Set(systems);
     const subCount = {}, sysCount = {}, subPerf = {}, sysPerf = {}, poolCount = {}, keys = [];
     subjects.forEach(s => { subCount[s] = 0; }); systems.forEach(s => { sysCount[s] = 0; });
@@ -169,7 +175,7 @@
     rows.forEach(r => {
       if (inStatuses(r, sel.statuses)) {
         subCount[r.subject]++;
-        if (subs.has(r.subject)) { sysCount[r.system]++; if (syss.has(r.system)) { avail++; keys.push(r.key); } }
+        if (subs.has(r.subject) && sysCount[r.system] != null) { sysCount[r.system]++; if (syss.has(r.system)) { avail++; keys.push(r.key); } }
       }
       [[r.subject, subPerf], [r.system, sysPerf]].forEach(([k, map]) => {
         const p = map[k] || (map[k] = { n: 0, c: 0, w: 0, u: 0 }); p.n++;
@@ -178,7 +184,7 @@
       if (poolCount[r.status] != null) poolCount[r.status]++;
       if (r.marked) poolCount.marked++;
     });
-    return { subjects, systems, subCount, sysCount, subPerf, sysPerf, poolCount, avail, keys };
+    return { subjects, systems, subCount, sysCount, subPerf, sysPerf, poolCount, avail, keys, scoped };
   }
 
   // model = facets() result computed with all statuses ticked (needs systems, sysPerf, poolCount).

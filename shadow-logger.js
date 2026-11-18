@@ -735,20 +735,19 @@
   // pick up the files when the page comes back (another device's changes arrive through Sync, a DATA folder may have been connected since)
   document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && fileOk !== null) syncFiles(); });
   setTimeout(() => syncFiles(), 100); // first run: merges the cache into the files (migration of logs kept only in localStorage)
-  /* Settings page (Settings > Appearance): a ThunderShadow switch next to the Review screen group. Same key as the exam Settings menu row. */
+  /* Settings page (Settings > Review screen > Tools): one row in thunder-ui's shadow mount. Same key as the exam Settings menu row. */
   function paintSetting(){
     const panel = byId('settingsPanel'); if(!panel) return;
     const on = ls.get(OFF) !== '1';
-    panel.querySelectorAll('section.tu-setbody').forEach(sec => {
-      const h = sec.querySelector('.tu-sechead h2'); if(!h || h.textContent.trim() !== 'Appearance') return;
-      let box = sec.querySelector('[data-tsl-set]');
-      if(!box){
-        box = document.createElement('div'); box.className = 'tsl-set'; box.setAttribute('data-tsl-set', ''); box.style.cssText = 'border-top:1px solid var(--tu-line2,#e4e7f0);margin-top:6px';
-        box.innerHTML = '<div class="tu-sechead"><h2>ThunderShadow</h2><p>Log each question with the error code and reasoning pattern while you review a form. Export the log as a TSV for ThunderShadow.</p><div class="tu-setrow"><div><b>ThunderShadow logger</b><span>Show the logging bar on the Review screen. The exam’s Settings menu has the same switch.</span></div><div class="tu-setctl"><button type="button" class="tu-switch" id="tslSetSwitch" role="switch" aria-checked="' + on + '" aria-label="ThunderShadow logger"><i></i></button></div></div></div>';
-        sec.appendChild(box);
+    const m = panel.querySelector('#tuSettings [data-tu-mount="shadow"]') || document.querySelector('#tuSettings [data-tu-mount="shadow"]');
+    if(m){
+      let sw = m.querySelector('#tslSetSwitch');
+      if(!sw){
+        m.innerHTML = '<div class="tu-setrow" data-tsl-set><div><b>ThunderShadow logger</b><span>Logging bar on the Review screen; export as TSV</span></div><div class="tu-setctl"><button type="button" class="tu-switch" id="tslSetSwitch" role="switch" aria-checked="' + on + '" aria-label="ThunderShadow logger"><i></i></button></div></div>';
+        sw = m.querySelector('#tslSetSwitch');
       }
-      const sw = box.querySelector('#tslSetSwitch'); if(sw && sw.getAttribute('aria-checked') !== String(on)) sw.setAttribute('aria-checked', String(on));
-    });
+      if(sw && sw.getAttribute('aria-checked') !== String(on)) sw.setAttribute('aria-checked', String(on));
+    }
     const t = byId('shadowLoggerToggle'); if(t && t.checked !== on) t.checked = on;
   }
   document.addEventListener('click', e => {

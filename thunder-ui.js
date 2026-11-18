@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 59;
+  const TU_RELEASE = 60;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -451,7 +451,10 @@ ${H} .tu-layer .tu-round:hover{background:var(--tu-s2)}
 .tu-layer .tu-btn.outline:hover:not(:disabled),#tuQuick .tu-btn.outline:hover:not(:disabled){background:var(--tu-s2);filter:none}
 .tu-note{font-size:12.5px;color:var(--tu-on3);line-height:1.45}
 .tu-chips{display:flex;flex-wrap:wrap;gap:8px}
-.tu-layer .tu-chip,#tuQuick .tu-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:9px;border:1px solid var(--tu-line);background:transparent;color:var(--tu-on);font-weight:700;font-size:13.5px;white-space:nowrap}
+.tu-layer .tu-chip,#tuQuick ${H} .tu-check{width:24px;height:24px;min-width:24px;border-radius:7px;border:2px solid var(--tu-on3);background:transparent;color:var(--tu-onp);display:flex;align-items:center;justify-content:center;padding:0}
+${H} .tu-check[aria-checked="true"]{background:var(--tu-p);border-color:var(--tu-p)}
+${H} .tu-check:disabled{opacity:.3}
+.tu-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:9px;border:1px solid var(--tu-line);background:transparent;color:var(--tu-on);font-weight:700;font-size:13.5px;white-space:nowrap}
 .tu-layer .tu-chip span,#tuQuick .tu-chip span{font-weight:600;opacity:.7}
 .tu-layer .tu-chip:is([aria-pressed="true"],[aria-checked="true"]),#tuQuick .tu-chip:is([aria-pressed="true"],[aria-checked="true"]){border-color:var(--tu-p);background:var(--tu-pc);color:var(--tu-onpc)}
 .tu-chip svg{flex:none}
@@ -897,28 +900,13 @@ ${H} .tu-setview .tu-danger{color:var(--tu-bad)!important}
 .tu-sethead{display:flex;flex-direction:column;gap:4px}
 ${H} .tu-sethead h1{font-size:32px!important;font-weight:800!important;letter-spacing:-.02em!important}
 .tu-sethead>span{font-size:14px}
-.tu-setgrid{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;align-items:start}
-.tu-setnav{display:flex;flex-direction:column;gap:4px;position:sticky;top:16px}
-${H} .tu-setnav button{display:flex;align-items:center;justify-content:space-between;gap:8px;height:48px;padding:0 18px;border:0;border-radius:999px;background:transparent;color:var(--tu-on);font-weight:700;font-size:14.5px;text-align:left;white-space:nowrap}
-${H} .tu-setnav button:hover{background:var(--tu-s2)}
-${H} .tu-setnav button[aria-current="page"]{background:var(--tu-pc);color:var(--tu-onpc)}
-.tu-setnav small{font-size:11px;font-weight:800}
-.tu-setbody{min-width:0;overflow:hidden;border-radius:28px;padding-bottom:6px}
 .tu-sechead{padding:18px 22px 14px;display:flex;flex-direction:column;gap:5px}
 .tu-sechead.tu-qdefs{border-top:1px solid var(--tu-line2);margin-top:6px;padding-top:16px}
 ${H} .tu-sechead h2{font-size:19px!important;font-weight:800!important}
 ${H} .tu-setview .tu-sechead p{margin:0!important;font-size:13px!important;line-height:1.5!important}
 .tu-sechead p b{color:var(--tu-on);font-weight:700}
-.tu-setrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding:14px 22px;border-top:1px solid var(--tu-line2)}
-.tu-setrow>div:first-child{flex:1 1 260px;display:flex;flex-direction:column;gap:3px;min-width:0}
-.tu-setrow>div:first-child>b{font-size:15px;font-weight:700}
-.tu-setrow>div:first-child>span{font-size:13px;line-height:1.45}
 .tu-setctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .tu-setctl:empty{display:none}
-.tu-setseg{display:flex;height:40px;border:1px solid var(--tu-line);border-radius:999px;overflow:hidden;flex:none}
-${H} .tu-setseg button{display:flex;align-items:center;gap:6px;padding:0 16px;border:0;border-radius:0;background:transparent;color:var(--tu-on);font-weight:700;font-size:13.5px;height:100%}
-${H} .tu-setseg button+button{border-left:1px solid var(--tu-line)}
-${H} .tu-setseg button[aria-checked="true"]{background:var(--tu-pc);color:var(--tu-onpc)}
 ${H} .tu-setview :is(.tu-setselect select,.tu-setnum,.tu-setfield input){height:42px;border-radius:12px!important;border:1px solid var(--tu-line)!important;background-color:var(--tu-surface)!important;color:var(--tu-on)!important;padding:0 12px;font-size:15px;font-weight:600;margin:0;box-shadow:none!important}
 ${H} .tu-setview .tu-setnum{width:110px;font-weight:700}
 .tu-setfield{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -928,45 +916,6 @@ ${H} .tu-swatch{display:flex;align-items:center;gap:9px;height:44px;padding:0 16
 ${H} .tu-swatch[aria-checked="true"]{border-color:var(--tu-p)}
 .tu-swatch svg{width:26px;height:26px}
 .tu-lockchip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:var(--tu-s2);font-weight:800;font-size:12.5px;flex:none}
-.tu-futbox{background:var(--tu-s1);border-top:1px solid var(--tu-line2)}
-.tu-futbox .tu-setrow{padding:11px 22px 11px 38px}
-/* library tabs table */
-.tu-tabtable{container-type:inline-size;border-top:1px solid var(--tu-line2)}
-.tu-tabrow{display:grid;grid-template-columns:36px 48px minmax(120px,1fr) repeat(4,minmax(64px,88px)) 44px;align-items:center;column-gap:6px;padding:5px 14px;border-top:1px solid var(--tu-line2);position:relative;background:var(--tu-surface)}
-.tu-tabtable>.tu-tabrow:first-child{border-top:0}
-.tu-tabhead{background:var(--tu-s1);font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding-top:9px;padding-bottom:9px}
-.tu-tabhead span:nth-child(n+4):nth-child(-n+7){text-align:center}
-.tu-tabcell{display:flex;justify-content:center;align-items:center;gap:6px}
-.tu-tablbl{display:none;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
-${H} .tu-check{width:24px;height:24px;min-width:24px;border-radius:7px;border:2px solid var(--tu-on3);background:transparent;color:var(--tu-onp);display:flex;align-items:center;justify-content:center;padding:0}
-${H} .tu-check[aria-checked="true"]{background:var(--tu-p);border-color:var(--tu-p)}
-${H} .tu-check:disabled{opacity:.3}
-${H} .tu-drag{width:32px;height:40px;border:0;background:transparent;color:var(--tu-on3);cursor:grab;touch-action:none;display:flex;align-items:center;justify-content:center;border-radius:8px;padding:0}
-${H} .tu-drag:hover{background:var(--tu-s2)}
-${H} .tu-colorbtn{width:34px;height:34px;border-radius:10px;border:1px solid var(--tu-line);background:var(--tu-surface);padding:5px}
-.tu-colorbtn i{display:block;width:100%;height:100%;border-radius:6px}
-.tu-tabname{display:flex;flex-direction:column;gap:1px;min-width:0}
-.tu-tabname b{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tu-tabname small{font-size:12px}
-.tu-tabdel{display:flex;justify-content:flex-end}
-.tu-colorpop{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 8px 90px}
-${H} .tu-colorpop button{display:flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:9px;border:1px solid var(--tu-line);background:transparent;color:var(--tu-on);font-weight:700;font-size:12.5px}
-${H} .tu-colorpop button[aria-checked="true"]{border-color:var(--tu-p);background:var(--tu-pc);color:var(--tu-onpc)}
-.tu-colorpop i{width:14px;height:14px;border-radius:4px}
-.tu-tabrow.tu-dragging{z-index:2;box-shadow:var(--tu-shadow);opacity:.95}
-.tu-tabrow.tu-dropbefore{box-shadow:inset 0 3px 0 var(--tu-p)}.tu-tabrow.tu-dropafter{box-shadow:inset 0 -3px 0 var(--tu-p)}
-.tu-tabfoot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:14px 22px;border-top:1px solid var(--tu-line2);font-size:13px}
-.tu-tabfoot b{color:var(--tu-on)}
-@container (max-width:600px){
-  .tu-tabhead{display:none}
-  .tu-tabrow{grid-template-columns:32px 44px repeat(4,minmax(0,1fr)) 40px;row-gap:8px;padding:10px 12px}
-  .tu-tabname{grid-column:3/7}
-  .tu-tabcell{grid-row:2;flex-direction:column;gap:4px}
-  .tu-tabrow>.tu-tabcell:nth-child(4){grid-column:3}.tu-tabrow>.tu-tabcell:nth-child(5){grid-column:4}.tu-tabrow>.tu-tabcell:nth-child(6){grid-column:5}.tu-tabrow>.tu-tabcell:nth-child(7){grid-column:6}
-  .tu-tabdel{grid-column:7;grid-row:1}
-  .tu-tablbl{display:block}
-  .tu-colorpop{padding-left:0}
-}
 /* QID migration checklist */
 .tu-qidsteps{list-style:none;margin:0;padding:0 22px;display:flex;flex-direction:column;gap:8px}
 .tu-qidstep{display:flex;align-items:center;gap:14px;padding:10px 12px 10px 14px;border-radius:16px;background:var(--tu-s1);min-height:54px}
@@ -1052,7 +1001,6 @@ ${H} .tu-setview .tu-diag{margin:0!important;font-size:12.5px!important;white-sp
 /* legacy dark rules force every span and label in #menu to fixed colors; take them back inside these views */
 ${H} .tu-setview :is(span,label){color:inherit!important}
 ${H} .tu-setview :is(.tu-sethead>span,.tu-setrow>div:first-child>span,.tu-setnav small,.tu-tabname small,.tu-tabhead,.tu-tablbl,.tu-qidtext small,.tu-syncttl>span,.tu-collhead small,.tu-histrow small,.tu-movetile small,.tu-xferhead,.tu-xferfoot,.tu-metrics small,.tu-tabfoot,.tu-adminth,.tu-adminrow small,.tu-setfield>span,.tu-sechead p,.tu-note,.tu-qidmsg){color:var(--tu-on3)!important}
-${H} .tu-setview .tu-setnav button[aria-current="page"] small{color:var(--tu-onpc)!important}
 ${H} .tu-setview .tu-lockchip{color:var(--tu-on2)!important}
 ${H} .tu-setview .tu-lockchip.open{background:var(--tu-okc);color:var(--tu-ok)!important}
 ${H} .tu-setview .tu-settile{background:var(--tu-pc);color:var(--tu-onpc)!important}
@@ -1067,7 +1015,6 @@ ${H} .tu-setview .tu-qidnum{color:var(--tu-on2)!important}
 ${H} .tu-setview .tu-qidstep.done .tu-qidnum{background:var(--tu-okc);color:var(--tu-ok)!important}
 ${H} .tu-setview .tu-qidstep.now .tu-qidnum{background:var(--tu-pc);color:var(--tu-onpc)!important}
 ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
-@media (max-width:1000px){.tu-setgrid{grid-template-columns:190px minmax(0,1fr)}}
 @media (max-width:900px){
   ${H} .modern-main:has(:is(#settingsPanel.tu-has-settings,#progressSyncPanel.tu-has-sync).active){padding:24px 24px 120px!important;overflow:visible!important}
   ${H} .tu-sethead h1{font-size:30px!important}
@@ -1077,6 +1024,113 @@ ${H} .tu-setview .tu-decide span{color:var(--tu-warn)!important}
   ${H} .tu-setnav button[aria-current="page"]{border-color:transparent}
 }
 @media (max-width:720px){.tu-syncgrid,.tu-moves{grid-template-columns:minmax(0,1fr)}}
+/* Settings v2: five panes, grouped cards, search */
+.tu-setgrid{display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px;align-items:start}
+.tu-setside{position:sticky;top:16px;display:flex;flex-direction:column;min-width:0}
+.tu-setsearch{position:relative;display:block;margin:0 0 10px}
+.tu-setsearch .tu-ico{position:absolute;left:12px;top:12px;color:var(--tu-on3);pointer-events:none}
+${H} .tu-setview .tu-setsearch input{width:100%;height:40px;border:1px solid var(--tu-line)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;border-radius:12px!important;padding:0 12px 0 36px;font:inherit;font-size:14.5px;outline:none;margin:0;box-shadow:none!important;box-sizing:border-box}
+${H} .tu-setview .tu-setsearch input:focus{border-color:var(--tu-p)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--tu-p) 22%,transparent)!important}
+.tu-setnav{display:flex;flex-direction:column;gap:2px}
+${H} .tu-setnav button{display:flex;align-items:center;gap:10px;height:42px;padding:0 12px;border:0;border-radius:12px;background:transparent;color:var(--tu-on2);font-weight:600;font-size:14.5px;text-align:left;white-space:nowrap}
+${H} .tu-setnav button .tu-ico{opacity:.8}
+${H} .tu-setnav button:hover{background:var(--tu-s2)}
+${H} .tu-setnav button[aria-current="page"]{background:var(--tu-pc);color:var(--tu-onpc);font-weight:700}
+.tu-setmain{min-width:0}
+${H} .tu-setview .tu-card.tu-setbody{min-width:0;background:none;border:0;box-shadow:none;border-radius:0;padding:0;overflow:visible}
+.tu-setgroup{margin:0 0 26px}
+${H} .tu-setview .tu-grouph{font-size:12px!important;font-weight:700!important;letter-spacing:.06em!important;text-transform:uppercase;color:var(--tu-on3)!important;margin:0 0 8px 4px!important}
+.tu-setcard{background:var(--tu-surface);border:1px solid var(--tu-line2);border-radius:14px;overflow:hidden}
+.tu-dangercard{border-color:color-mix(in srgb,var(--tu-bad) 32%,var(--tu-line2))}
+.tu-setgroup>.tu-note{margin:8px 4px 0}
+.tu-setmount:empty{display:none}
+.tu-setgroup[data-tu-group="tools"]:not(:has(.tu-setmount:not(:empty))){display:none}
+.tu-setempty{padding:44px 16px;text-align:center;color:var(--tu-on3)}
+.tu-setrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;min-height:58px;padding:14px 18px}
+.tu-setrow>div:first-child{flex:1 1 220px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tu-setrow>div:first-child>b{font-size:15px;font-weight:600}
+.tu-setrow>div:first-child>span{font-size:13px;line-height:1.4}
+${H} .tu-setview .tu-setcard :is(.tu-setrow,.tu-tabrow,.tu-setsub){box-shadow:0 -1px 0 var(--tu-line2)}
+${H} .tu-setview :is(button.tu-setlink,a.tu-setlink){width:100%;box-sizing:border-box;border:0;background:transparent;color:var(--tu-on);text-align:left;font:inherit;cursor:pointer;text-decoration:none;flex-wrap:nowrap;border-radius:0}
+${H} .tu-setview .tu-setlink:hover{background:var(--tu-s1)}
+.tu-setlink>.tu-setctl{flex:none}
+.tu-chev{width:18px;height:18px;flex:none;display:inline-block;position:relative;transition:transform .15s}
+.tu-chev::before{content:"";position:absolute;left:4px;top:5px;width:7px;height:7px;border-right:2px solid var(--tu-on3);border-top:2px solid var(--tu-on3);transform:rotate(45deg)}
+[aria-expanded="true"]>.tu-setctl>.tu-chev,[aria-expanded="true"]>.tu-chev{transform:rotate(90deg)}
+.tu-setsub{padding:6px 18px 16px;background:var(--tu-s1)}
+.tu-subnote{margin:8px 0 6px;font-size:13px;line-height:1.5}
+${H} .tu-setview .tu-subnote{color:var(--tu-on3)!important}
+.tu-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap}
+${H} .tu-setview .tu-chip{background:var(--tu-s2);color:var(--tu-on2)!important}
+${H} .tu-setview .tu-chip.ok{background:var(--tu-okc);color:var(--tu-ok)!important}
+${H} .tu-setview .tu-chip.warn{background:var(--tu-warnc);color:var(--tu-warn)!important}
+${H} .tu-setview .tu-chip.bad{background:var(--tu-badc);color:var(--tu-bad)!important}
+${H} .tu-setview .tu-hit{background:color-mix(in srgb,var(--tu-p) 12%,transparent)!important}
+${H} .tu-setview .tu-linkbtn{border:0;background:none;padding:0;color:var(--tu-p);font-weight:700;font-size:inherit;text-decoration:underline;text-underline-offset:2px}
+.tu-setseg{display:inline-flex;background:var(--tu-s1);border-radius:10px;padding:3px;gap:2px;flex:none}
+${H} .tu-setseg button{display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:0!important;border-radius:8px;background:none;color:var(--tu-on2);font-weight:500;font-size:14px;white-space:nowrap}
+${H} .tu-setseg button[aria-checked="true"]{background:var(--tu-surface);color:var(--tu-on);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.16)}
+.tu-dots{display:flex;gap:10px;flex-wrap:wrap}
+${H} .tu-dot{width:30px;height:30px;min-width:30px;border-radius:50%;border:0;padding:0;cursor:pointer;position:relative}
+${H} .tu-dot[aria-checked="true"]{box-shadow:0 0 0 2px var(--tu-surface),0 0 0 4px var(--tu-on)}
+${H} .tu-dot.sm{width:24px;height:24px;min-width:24px}
+.tu-step{display:inline-flex;align-items:center;border:1px solid var(--tu-line);border-radius:10px;overflow:hidden;background:var(--tu-surface)}
+${H} .tu-step button{border:0;background:none;width:40px;height:38px;font-size:18px;color:var(--tu-on2);padding:0}
+${H} .tu-step button:hover{background:var(--tu-s1)}
+.tu-step output{min-width:62px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+/* library tabs list */
+.tu-tabrow{display:flex;align-items:center;gap:2px;padding:2px 12px 2px 8px;min-height:56px;position:relative;background:var(--tu-surface)}
+${H} .tu-drag{width:32px;height:44px;min-width:32px;border:0;background:transparent;color:var(--tu-on3);cursor:grab;touch-action:none;display:flex;align-items:center;justify-content:center;border-radius:8px;padding:0}
+${H} .tu-drag:hover{background:var(--tu-s2)}
+${H} .tu-tabmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:52px;padding:4px 6px;border:0;background:transparent;color:var(--tu-on);text-align:left;border-radius:8px}
+.tu-tabrow:hover{background:var(--tu-s1)}
+.tu-cdot{display:block;width:12px;height:12px;border-radius:50%;flex:none}
+.tu-tabname{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
+.tu-tabname b{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-tabname small{font-size:12.5px}
+.tu-flags{display:flex;gap:4px;flex:none}
+${H} .tu-setview .tu-flag{font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;background:var(--tu-s2);color:var(--tu-on3)!important}
+${H} .tu-setview .tu-flag.on{background:var(--tu-pc);color:var(--tu-onpc)!important}
+.tu-tabx{display:flex;flex-direction:column;gap:4px;padding:8px 18px 16px 54px}
+.tu-flagsw{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px}
+.tu-flagrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;font-size:14px}
+.tu-flagrow small{font-size:12.5px;color:var(--tu-on3)}
+.tu-colors{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding-top:8px;font-size:14px}
+.tu-colors>span{margin-right:4px}
+.tu-tabxact{padding-top:8px}
+${H} .tu-setview .tu-setcard .tu-tabrow.tu-dragging{z-index:2;box-shadow:var(--tu-shadow);opacity:.95}
+${H} .tu-setview .tu-setcard .tu-tabrow.tu-dropbefore{box-shadow:inset 0 3px 0 var(--tu-p)}
+${H} .tu-setview .tu-setcard .tu-tabrow.tu-dropafter{box-shadow:inset 0 -3px 0 var(--tu-p)}
+.tu-setcard.tu-futbox{margin-top:10px}
+/* inside the expanding rows */
+.tu-setsub .tu-qidsteps{padding:0;margin-top:10px}
+.tu-setsub .tu-qidstep{background:var(--tu-surface)}
+.tu-setsub .tu-qidneed{margin:10px 0 0}
+${H} .tu-setsub .tu-qidmsg{margin:12px 0 0!important}
+.tu-setsub .tu-settools{padding:0;border:0;margin-top:12px}
+.tu-setsub .tu-adminform{padding:12px 0 0;border:0}
+.tu-setsub .tu-admintable{margin:12px 0 0;background:var(--tu-surface)}
+.tu-setsub .tu-adminform+.tu-note{padding:0;margin:6px 0 0}
+@media (max-width:1000px){.tu-setgrid{grid-template-columns:200px minmax(0,1fr);gap:20px}}
+@media (max-width:900px){
+  .tu-setgrid{grid-template-columns:minmax(0,1fr);gap:14px}
+  .tu-setside{position:static}
+  .tu-setnav{flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:2px;scrollbar-width:none}
+  ${H} .tu-setnav button{height:38px;padding:0 14px;flex:none;border:1px solid var(--tu-line2);background:var(--tu-surface)}
+  ${H} .tu-setnav button .tu-ico{display:none}
+  ${H} .tu-setnav button[aria-current="page"]{border-color:transparent;background:var(--tu-pc)}
+}
+@media (max-width:760px){
+  .tu-setrow{padding:14px 16px}
+  .tu-setrow>div:first-child{flex:1 1 100%}
+  .tu-setrow:has(>.tu-setctl .tu-switch,>.tu-setctl .tu-chev){flex-wrap:nowrap}
+  .tu-setrow:has(>.tu-setctl .tu-switch,>.tu-setctl .tu-chev)>div:first-child{flex:1 1 0}
+  .tu-setseg{flex-wrap:wrap}
+  .tu-flags{display:none}
+  .tu-flagsw{grid-template-columns:minmax(0,1fr)}
+  .tu-tabx{padding-left:18px}
+  .tu-setsub{padding:4px 16px 16px}
+}
 
 /* Score Report (shown inside the exam screen) */
 :root[data-tu] body #examScreen #workspace .tu-report{font-family:var(--tu-font);color:var(--tu-on);background:var(--tu-bg);max-width:none;margin:0;padding:24px 28px 40px;border:0;box-shadow:none;border-radius:0;min-height:100%;box-sizing:border-box;font-variant-numeric:tabular-nums}
@@ -1906,7 +1960,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(t.hasAttribute('data-tu-updates')){ openUpdates(t); return; }
     if(t.hasAttribute('data-tu-addmini')){ openAdd('slot', t); return; }
     if(t.hasAttribute('data-tu-fullscreen')){ t.closest('details')?.removeAttribute('open'); toggleFullscreen(); return; }
-    if(t.id === 'tuCustomizeTabs'){ setUi.sec = 'tabs'; store.set(SET_KEY, 'tabs'); if(setUi.page === 'sync') setSyncPage(false); byId('settingsTab')?.click(); setSyncPage(false); return; }
+    if(t.id === 'tuCustomizeTabs'){ setUi.sec = 'library'; store.set(SET_KEY, 'library'); if(setUi.page === 'sync') setSyncPage(false); byId('settingsTab')?.click(); setSyncPage(false); return; }
     const act = t.dataset.tuAct, id = t.dataset.id; if(!act || !id) return;
     if(act === 'sheet'){ openSheet(id, t); return; }
     cardAction(id, `[data-action="${act}"]`);
@@ -2812,8 +2866,10 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
      iPad: #tuSync sits over #progressSyncPanel. Local: Backup & sync is its own sidebar page (#tuSyncTab) drawn over the
      legacy Settings › Backup tab, whose buttons it proxies. */
   const SET_KEY = 'ThunderUSMLE.settingsSection', THEME_MODE = 'ThunderUSMLE.themeMode';
-  const SET_SECTIONS = [['appearance', 'Appearance'], ['tabs', 'Library tabs'], ['qbank', 'Qbanks'], ['safety', 'Safety'], ['advanced', 'Advanced'], ['admin', 'Admin'], ['about', 'About & updates']];
-  const SET_LEGACY = {tabs:'library', qbank:'qbank', safety:'safety', admin:'admin'}; // the hidden legacy tab that holds each section's controls
+  const SET_SECTIONS = [['appearance', 'Appearance'], ['library', 'Library'], ['review', 'Review screen'], ['qbank', 'Qbanks'], ['device', 'App & data']];
+  const SET_ALIAS = {tabs:'library', safety:'library', advanced:'device', admin:'device', about:'device'}; // keys of the old seven sections
+  const normSec = id => SET_SECTIONS.some(([s]) => s === id) ? id : (SET_ALIAS[id] || 'appearance');
+  const SET_LEGACY = {library:'library', qbank:'qbank'}; // the hidden legacy tab that holds each pane's controls (device: 'admin' only while its Admin row is open, see legacyFor)
   const SET_READY = {
     library:'[data-lib-meter]', order:'[data-v195-drag-tab]', custom:'.settings-panel-v195', qbank:'#setLinkQbank', safety:'#setDefaultMode', admin:'.fu-admin',
     backup: IPAD ? '[data-v101]' : '[data-local-compat]'
@@ -2822,13 +2878,16 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     folder:'<path d="M3 7.5a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
     grip:'<circle cx="9" cy="6" r="1.3" fill="currentColor"/><circle cx="15" cy="6" r="1.3" fill="currentColor"/><circle cx="9" cy="12" r="1.3" fill="currentColor"/><circle cx="15" cy="12" r="1.3" fill="currentColor"/><circle cx="9" cy="18" r="1.3" fill="currentColor"/><circle cx="15" cy="18" r="1.3" fill="currentColor"/>',
     trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    appearance:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/>', library:'<rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/>',
+    review:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M13 4v16"/>', qbank:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>', device:'<rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M11 18h2"/>',
     tick:'<path d="m5 12 5 5 9-10"/>', ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'
   };
   // the legacy "Order & colors" choices (select[data-v195-tab-color])
   const TAB_COLORS = [['', 'Default'], ['#0076b6', 'Blue'], ['#00a6a6', 'Teal'], ['#16a05d', 'Green'], ['#d9a300', 'Yellow'], ['#f28c28', 'Orange'], ['#d64242', 'Red'], ['#c2185b', 'Pink'], ['#7b5cff', 'Purple'], ['#8a5a2b', 'Brown'], ['#6b7280', 'Gray'], ['#334155', 'Slate'], ['#111827', 'Black']];
   const ATTEMPT_SOURCES = [['first', '1st attempts only'], ['latest_completed', 'Latest completed'], ['active', 'Active selected'], ['completed_qbank', 'Completed Qbank tests'], ['latest_qbank', 'Latest Qbank test'], ['all_qbank', 'All Qbank tests']];
   const TAB_FLAGS = [['meter', 'Meter', 'data-lib-meter'], ['overall', 'Overall', 'data-lib-overall'], ['completed', 'Completed', 'data-lib-overview'], ['chip', '3-digit', 'data-lib-scorechip']];
-  const setUi = {sec: store.get(SET_KEY, 'appearance'), page:'settings', data:null, backups:null, storage:null, stale:true, seq:0, future:false, defaults:false, color:'', open:{}, focus:'', switching:false, qidBackup:false};
+  const setUi = {sec: normSec(store.get(SET_KEY, 'appearance')), page:'settings', data:null, backups:null, storage:null, stale:true, seq:0, future:false, open:{}, focus:'', switching:false, qidBackup:false, q:'', ov:{}, safe:{}, hit:null, adminUnlocked:null};
   let setQueued = false, setObserver = null, syncObserver = null, themeAuto = false;
   const setViews = {};
 
@@ -2846,10 +2905,14 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     }finally{ setUi.switching = false; }
     return legacyReady(name);
   }
+  // setUi.hold: a save is waiting for its legacy tab, so a repaint must not switch the hidden tab back underneath it
   async function legacyDo(tab, fn){
-    if(!legacyReady(tab) && !await legacySetTab(tab)){ console.warn('ThunderUI: legacy settings tab missing', tab); return false; }
-    // the legacy saves read their files first, so look again once they have landed
-    try{ return fn(); }finally{ scheduleSettings(true); setTimeout(() => scheduleSettings(true), 400); setTimeout(() => scheduleSettings(true), 1300); }
+    setUi.hold = (setUi.hold || 0) + 1;
+    try{
+      if(!legacyReady(tab) && !await legacySetTab(tab)){ console.warn('ThunderUI: legacy settings tab missing', tab); return false; }
+      // the legacy saves read their files first, so look again once they have landed
+      try{ return fn(); }finally{ scheduleSettings(true); setTimeout(() => scheduleSettings(true), 400); setTimeout(() => scheduleSettings(true), 1300); }
+    }finally{ setTimeout(() => { setUi.hold--; scheduleSettings(true); }, 800); } // the legacy save reads its file before the inputs
   }
   const legacyIn = sel => document.querySelector('#settingsPanel .settings-content-v195 ' + sel);
   function clickLegacy(sel){ const b = document.querySelector(sel); if(!b || b.disabled){ console.warn('ThunderUI: legacy control missing', sel); return false; } b.click(); return true; }
@@ -2873,7 +2936,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const shownEl = el => !!el && !el.hidden && !el.closest('[hidden]');
   const bytes = n => (Number(n) || 0) >= 1073741824 ? ((Number(n) || 0) / 1073741824).toFixed(1) + ' GB' : mb(n);
   const txt = el => (el && el.textContent || '').replace(/\s+/g, ' ').trim();
-  const swRow = (title, hint, attr, on, extra) => `<div class="tu-setrow"><div><b>${title}</b><span>${hint}</span></div><div class="tu-setctl">${extra || ''}<button type="button" class="tu-switch" role="switch" aria-checked="${!!on}" aria-label="${esc(title)}" ${attr}><i></i></button></div></div>`;
+  const swRow = (title, hint, attr, on, extra) => `<div class="tu-setrow"><div><b>${title}</b>${hint ? `<span>${hint}</span>` : ''}</div><div class="tu-setctl">${extra || ''}<button type="button" class="tu-switch" role="switch" aria-checked="${!!on}" aria-label="${esc(title)}" ${attr}><i></i></button></div></div>`;
   const setRow = (title, hint, ctl) => `<div class="tu-setrow"><div><b>${title}</b>${hint ? `<span>${hint}</span>` : ''}</div><div class="tu-setctl">${ctl}</div></div>`;
   const setTile = (ico, tone) => `<span class="tu-settile ${tone || ''}">${icon(ico, 22)}</span>`;
 
@@ -2890,7 +2953,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   if(darkMq){ if(darkMq.addEventListener) darkMq.addEventListener('change', applySystemTheme); else if(darkMq.addListener) darkMq.addListener(applySystemTheme); }
 
-  function sections(){ return SET_SECTIONS.filter(([id]) => id !== 'admin' || (IPAD && !!document.querySelector('#settingsPanel [data-v195b-settings-tab="admin"]'))); }
+  const sections = () => SET_SECTIONS;
+  const legacyFor = sec => sec === 'device' ? (adminAvail() && setUi.open.admin ? 'admin' : '') : (SET_LEGACY[sec] || '');
   function tabRows(){
     const d = setUi.data || {tabs:[]}, pills = {}; libTabs().forEach(t => { pills[t.internal] = t; });
     return d.tabs.map(t => {
@@ -2902,58 +2966,62 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
 
   /* section bodies */
+  const setGroup = (name, title, rows, note, extra) => `<div class="tu-setgroup${extra ? ' tu-danger-group' : ''}" data-tu-group="${name}">${title ? `<h3 class="tu-grouph">${title}</h3>` : ''}<div class="tu-setcard${extra ? ' tu-dangercard' : ''}">${rows}</div>${note ? `<p class="tu-note">${note}</p>` : ''}</div>`;
+  const openRow = (name, title, hint, chip, open) => `<button type="button" class="tu-setrow tu-setlink" data-tu-open="${esc(name)}" aria-expanded="${!!open}"><div><b>${title}</b>${hint ? `<span>${hint}</span>` : ''}</div><div class="tu-setctl">${chip || ''}<span class="tu-chev"></span></div></button>`;
+  const chipHtml = (text, tone) => `<span class="tu-chip${tone ? ' ' + tone : ''}">${text}</span>`;
+  const segBtns = (label, items, cur, attr) => `<div class="tu-setseg" role="radiogroup" aria-label="${label}">${items.map(([v, l, ico]) => `<button type="button" role="radio" aria-checked="${cur === v}" ${attr}="${v}">${ico ? icon(ICONS[ico], 16) : ''}${l}</button>`).join('')}</div>`;
+  // optimistic values: a control shows what was just chosen for a moment, until the legacy save has landed and the bridge reports it
+  const OV_MS = 2500;
+  function ovSet(k, v){ setUi.ov[k] = {v, t: Date.now()}; setTimeout(() => scheduleSettings(true), OV_MS + 100); }
+  function ovGet(k, fallback){ const o = setUi.ov[k]; if(o && Date.now() - o.t < OV_MS) return o.v; delete setUi.ov[k]; return fallback; }
+  // Protect 1st attempts / Confirm before deleting live on the legacy Safety tab (which the app never saves: always checked);
+  // the last value seen or chosen is remembered while the legacy tab shows another pane
+  function safeVal(id){ const el = legacyIn('#' + id); if(el) setUi.safe[id] = el.checked; return setUi.safe[id] !== false; }
+
   function appearanceBody(){
-    const mode = themeMode(), accent = currentAccent(), view = store.get(KEYS.view, 'grid') === 'list' ? 'list' : 'grid';
-    const seg = (v, l, ico) => `<button type="button" role="radio" aria-checked="${mode === v}" data-tu-theme="${v}">${ico ? icon(ICONS[ico], 16) : ''}${l}</button>`;
-    const swatch = id => `<button type="button" class="tu-swatch" role="radio" aria-checked="${accent === id}" data-tu-pick="${id}"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="${ACCENTS[id].brand}"/><path d="${BOLT}" fill="#fff"/></svg>${ACCENTS[id].label}</button>`;
-    return `<div class="tu-sechead"><h2>Appearance</h2></div>` +
-      setRow('Theme', 'Library, Qbank and Settings', `<div class="tu-setseg" role="radiogroup" aria-label="Theme">${seg('light', 'Light', 'sun')}${seg('dark', 'Dark', 'moon')}${seg('system', 'Match device')}</div>`) +
-      setRow('Accent color', 'Buttons, selection, progress rings and the app icon. Crimson is the default.' + (IPAD ? ' The Home Screen icon updates when you add the app to the Home Screen again.' : ''), `<div class="tu-swatches" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(swatch).join('')}</div>`) +
-      setRow('Exam style', 'NBME looks like test day (default). Modern applies the new design to answering, review and explanations, and fits phones. Also in the exam’s Settings menu and on the Score Report.', `<div class="tu-setseg" role="radiogroup" aria-label="Exam style">${[['nbme', 'NBME'], ['modern', 'Modern']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${examStyle() === v}" data-tu-examstyle="${v}">${l}</button>`).join('')}</div>`) +
-      setRow('Card density', 'Comfortable cards, or a compact list for big libraries', `<label class="tu-setselect"><span class="tu-sr">Card density</span><select data-tu-density><option value="grid"${view === 'grid' ? ' selected' : ''}>Comfortable</option><option value="list"${view === 'list' ? ' selected' : ''}>Compact</option></select></label>`) +
-      swRow('Keep CMS forms open', 'Keep the CMS subject tiles expanded on the Library (the CMS forms button stays unselected until you pick it)', 'data-tu-cmskeep', keepCms());
+    const mode = themeMode(), accent = currentAccent();
+    const dot = id => `<button type="button" class="tu-dot" role="radio" aria-checked="${accent === id}" data-tu-pick="${id}" style="background:${ACCENTS[id].brand}" aria-label="${esc(ACCENTS[id].label)}" title="${esc(ACCENTS[id].label)}"></button>`;
+    const theme = `<div class="tu-setseg" role="radiogroup" aria-label="Theme">${[['light', 'Light', 'sun'], ['dark', 'Dark', 'moon'], ['system', 'Auto']].map(([v, l, ico]) => `<button type="button" role="radio" aria-checked="${mode === v}" data-tu-theme="${v}">${ico ? icon(ICONS[ico], 16) : ''}${l}</button>`).join('')}</div>`;
+    return setGroup('look', 'Look', setRow('Theme', '', theme) + setRow('Accent color', 'Also tints the app icon' + (IPAD ? ' (add the app to the Home Screen again to update it)' : ''), `<div class="tu-dots" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(dot).join('')}</div>`)) +
+      setGroup('exam', 'Exam', setRow('Exam style', 'NBME looks like test day. Modern fits phones.', segBtns('Exam style', [['nbme', 'NBME'], ['modern', 'Modern']], examStyle(), 'data-tu-examstyle')), 'Other exam-screen options stay in the exam’s own Settings menu.');
   }
-  function tabsBody(){
-    const d = setUi.data || {tabs:[], future:{}}, rows = tabRows(), f = d.future || {};
-    const box = (r, k, label) => {
-      const dis = k === 'overall' && !r.overallSettable;
-      return `<span class="tu-tabcell"><span class="tu-tablbl">${label}</span><button type="button" class="tu-check" role="checkbox" aria-checked="${!!r[k]}" aria-label="${label} for ${esc(r.name)}" data-tu-flag="${k}" data-key="${esc(r.key)}"${dis ? ' disabled title="All forms is a filter, not a form group"' : ''}>${r[k] ? icon(SET_ICONS.tick, 14) : ''}</button></span>`;
-    };
-    const body = rows.map((r, i) => {
-      const colorName = (TAB_COLORS.find(([v]) => v && v === r.color) || [0, r.color ? 'Custom' : 'Default'])[1];
-      const pop = setUi.color === r.key ? `<div class="tu-colorpop" role="radiogroup" aria-label="Color for ${esc(r.name)}">${TAB_COLORS.map(([v, l]) => `<button type="button" role="radio" aria-checked="${(r.color || '') === v}" data-tu-setcolor="${esc(v)}" data-key="${esc(r.key)}" title="${l}"><i style="background:${v || esc(TAB_DOTS[r.key] || TAB_DOTS.Custom)}"></i>${l}</button>`).join('')}</div>` : '';
-      return `<div class="tu-tabrow" data-key="${esc(r.key)}"><button type="button" class="tu-drag" data-tu-drag="${esc(r.key)}" data-i="${i}" aria-label="Move ${esc(r.name)}. Drag, or use the up and down arrow keys" title="Drag to reorder">${icon(SET_ICONS.grip, 18)}</button>` +
-        `<button type="button" class="tu-colorbtn" data-tu-colorbtn="${esc(r.key)}" aria-expanded="${setUi.color === r.key}" aria-label="Color for ${esc(r.name)}: ${colorName}" title="Color: ${colorName}"><i style="background:${esc(r.shown)}"></i></button>` +
-        `<span class="tu-tabname"><b>${esc(r.name)}</b><small>${esc(r.kind)}</small></span>${TAB_FLAGS.map(([k, l]) => box(r, k, l)).join('')}` +
-        `<span class="tu-tabdel">${r.custom ? `<button type="button" class="tu-qticon bad" data-tu-deltab="${esc(r.key)}" aria-label="Delete the ${esc(r.name)} tab" title="Delete tab (its forms move to Custom)">${icon(SET_ICONS.trash, 18)}</button>` : ''}</span>${pop}</div>`;
+  const FLAG_HINTS = {meter:'Progress bar on the tab', overall:'Counts in the main ring', completed:'Listed under Completed', chip:'Score chips on cards'};
+  function libraryBody(){
+    const d = setUi.data || {tabs:[], future:{}}, rows = tabRows(), f = d.future || {}, view = store.get(KEYS.view, 'grid') === 'list' ? 'list' : 'grid';
+    const display = setGroup('display', 'Display', setRow('Card layout', '', segBtns('Card layout', [['grid', 'Cards'], ['list', 'Compact list']], view, 'data-tu-density')) + swRow('Keep CMS forms open', 'CMS subject tiles stay expanded', 'data-tu-cmskeep', keepCms()));
+    const list = rows.map((r, i) => {
+      const open = !!setUi.open['t:' + r.key], k = esc(r.key);
+      const head = `<div class="tu-tabrow" data-key="${k}"><button type="button" class="tu-drag" data-tu-drag="${k}" data-i="${i}" aria-label="Move ${esc(r.name)}. Drag, or use the up and down arrow keys" title="Drag to reorder">${icon(SET_ICONS.grip, 18)}</button>` +
+        `<button type="button" class="tu-tabmain" data-tu-open="t:${k}" aria-expanded="${open}"><i class="tu-cdot" style="background:${esc(r.shown)}"></i><span class="tu-tabname"><b>${esc(r.name)}</b><small>${esc(r.kind)}</small></span><span class="tu-flags" aria-hidden="true">${TAB_FLAGS.map(([fk, l]) => `<span class="tu-flag${r[fk] ? ' on' : ''}">${l}</span>`).join('')}</span><span class="tu-chev"></span></button></div>`;
+      if(!open) return head;
+      const sw = TAB_FLAGS.map(([fk, l]) => { const dis = fk === 'overall' && !r.overallSettable; return `<div class="tu-flagrow"><span>${l}<small> · ${FLAG_HINTS[fk]}</small></span><button type="button" class="tu-switch" role="switch" aria-checked="${!!r[fk]}" aria-label="${l} for ${esc(r.name)}" data-tu-flag="${fk}" data-key="${k}"${dis ? ' disabled title="All forms is a filter, not a form group"' : ''}><i></i></button></div>`; }).join('');
+      const cols = TAB_COLORS.map(([v, l]) => `<button type="button" class="tu-dot sm" role="radio" aria-checked="${(r.color || '') === v}" data-tu-setcolor="${esc(v)}" data-key="${k}" title="${l}" aria-label="${l}" style="background:${v || esc(TAB_DOTS[r.key] || TAB_DOTS.Custom)}"></button>`).join('');
+      return head + `<div class="tu-setsub tu-tabx" data-tu-sub="t:${k}"><div class="tu-flagsw">${sw}</div><div class="tu-colors" role="radiogroup" aria-label="Color for ${esc(r.name)}"><span>Color</span>${cols}</div>${r.custom ? `<div class="tu-tabxact"><button type="button" class="tu-btn small outline tu-danger" data-tu-deltab="${k}" aria-label="Delete the ${esc(r.name)} tab" title="Its forms move to Custom">Delete tab</button></div>` : ''}</div>`;
     }).join('');
     const on = [['meter', 'Meter'], ['overall', 'Overall'], ['completed', 'Completed']].filter(([k]) => f[k] !== false).map(([, l]) => l);
     const futureText = on.length ? `start with ${on.length > 1 ? on.slice(0, -1).join(', ') + ' and ' + on[on.length - 1] : on[0]} on.` : 'start with everything off.';
-    const future = setUi.future ? `<div class="tu-futbox">${swRow('Meter', 'Show the tab’s progress bar', 'data-tu-futsw="setLibFutureCustomMeters"', f.meter !== false)}${swRow('Overall', 'Count the tab in the main progress ring', 'data-tu-futsw="setLibFutureCustomOverall"', f.overall !== false)}${swRow('Completed', 'List its completed forms under Completed', 'data-tu-futsw="setLibFutureCustomOverview"', f.completed !== false)}</div>` : '';
-    return `<div class="tu-sechead"><h2>Library tabs</h2><p>Drag to reorder. <b>Meter</b> shows the tab’s progress bar, <b>Overall</b> counts it in the main progress ring, <b>Completed</b> lists its forms under Completed, <b>3-digit</b> shows score chips on its cards.</p></div>` +
-      `<div class="tu-tabtable" data-tu-tabtable><div class="tu-tabrow tu-tabhead" aria-hidden="true"><span></span><span>Color</span><span>Tab</span>${TAB_FLAGS.map(([, l]) => `<span>${l}</span>`).join('')}<span></span></div>${body || '<div class="tu-qtempty">No library tabs yet.</div>'}</div>` +
-      `<div class="tu-tabfoot"><span><b>New custom tabs</b> ${futureText}</span><button type="button" class="tu-btn outline small" data-tu-future aria-expanded="${setUi.future}">Change defaults</button></div>${future}`;
+    const future = setUi.future ? `<div class="tu-setcard tu-futbox">${swRow('Meter', 'Show the tab’s progress bar', 'data-tu-futsw="setLibFutureCustomMeters"', f.meter !== false)}${swRow('Overall', 'Count the tab in the main progress ring', 'data-tu-futsw="setLibFutureCustomOverall"', f.overall !== false)}${swRow('Completed', 'List its completed forms under Completed', 'data-tu-futsw="setLibFutureCustomOverview"', f.completed !== false)}</div>` : '';
+    const tabs = `<div class="tu-setgroup" data-tu-group="tabs"><h3 class="tu-grouph">Tabs</h3><div class="tu-setcard" data-tu-tabtable>${list || '<div class="tu-qtempty">No library tabs yet.</div>'}</div>` +
+      `<p class="tu-note">Drag to reorder. Tap a tab to change its color and what it counts toward. New custom tabs ${futureText} <button type="button" class="tu-linkbtn" data-tu-future aria-expanded="${setUi.future}">Change</button></p>${future}</div>`;
+    const attempts = setGroup('attempts', 'Attempts', swRow('Protect 1st attempts', 'Extra confirmation before changing a first attempt', 'data-tu-setsw="setProtectFirst" data-tab="safety"', safeVal('setProtectFirst')) +
+      swRow('Confirm before deleting attempts', 'Always ask before progress is removed', 'data-tu-setsw="setConfirmDelete" data-tab="safety"', safeVal('setConfirmDelete')));
+    return display + tabs + attempts;
   }
+  const reviewBody = () => `<div class="tu-setmount" data-tu-mount="review"></div><div class="tu-setgroup" data-tu-group="tools"><h3 class="tu-grouph">Tools</h3><div class="tu-setcard"><div class="tu-setmount" data-tu-mount="shadow"></div><div class="tu-setmount" data-tu-mount="rrdata"></div></div></div>`;
   function qbankBody(){
-    const q = (setUi.data && setUi.data.qbank) || {}, src = (ATTEMPT_SOURCES.find(([v]) => v === q.defaultAttemptSource) || ATTEMPT_SOURCES[0])[1];
-    const summary = [q.defaultMode === 'tutor' ? 'Tutor' : 'Testing', (q.defaultSecondsPerQuestion || 90) + ' s', plural(q.defaultBlockSize || 40, 'question') + ' per block', src].join(' · ');
-    const edit = setUi.defaults ? `<div class="tu-futbox tu-defbox">` +
-      setRow('Mode', '', `<div class="tu-setseg" role="radiogroup" aria-label="Default mode"><button type="button" role="radio" aria-checked="${q.defaultMode !== 'tutor'}" data-tu-defmode="testing">Testing</button><button type="button" role="radio" aria-checked="${q.defaultMode === 'tutor'}" data-tu-defmode="tutor">Tutor</button></div>`) +
-      setRow('Seconds per question', '', `<input type="number" min="15" step="5" inputmode="numeric" class="tu-setnum" aria-label="Default seconds per question" data-tu-setin="setDefaultSpq">`) +
-      setRow('Questions per block', '', `<input type="number" min="1" inputmode="numeric" class="tu-setnum" aria-label="Default questions per block" data-tu-setin="setDefaultBlock">`) +
-      setRow('Linked attempt source', 'Used when a test counts progress from Form Library attempts', `<label class="tu-setselect"><span class="tu-sr">Linked attempt source</span><select data-tu-setsel="setAttemptSource">${ATTEMPT_SOURCES.map(([v, l]) => `<option value="${v}"${v === (q.defaultAttemptSource || 'first') ? ' selected' : ''}>${l}</option>`).join('')}</select></label>`) + '</div>' : '';
-    return (window.ThunderQbanksUI && window.ThunderQbanksUI.mountSettings ? `<div id="tuSetQbanks" class="tq-scope tq-setq"></div>` : `<div class="tu-sechead"><h2>Qbanks</h2></div>`) +
-      `<div class="tu-sechead tu-qdefs"><h2>Qbank defaults</h2></div>` +
-      swRow('Default to Form Library attempts', 'New Qbank tests start with “Form Library attempts” as the source', 'data-tu-setsw="setLinkQbank" data-tab="qbank"', q.linkToLibrary) +
-      setRow('Library is read-only for Qbank', 'Always on: Qbank reads form attempts but never writes to them', `<span class="tu-lockchip">${icon(SET_ICONS.lock, 15)}Locked on</span>`) +
-      setRow('Defaults for new tests', esc(summary), `<button type="button" class="tu-btn outline small" data-tu-defaults aria-expanded="${setUi.defaults}">${setUi.defaults ? 'Done' : 'Edit'}</button>`) + edit +
-      setRow('Reset Qbank history', 'Clears used-question history and the Qbank test list. Form progress is untouched.', `<button type="button" class="tu-btn outline small tu-danger" data-tu-reset>Reset…</button>`);
-  }
-  function safetyBody(){
-    const v = id => { const el = legacyIn('#' + id); return el ? el.checked : true; };
-    return `<div class="tu-sechead"><h2>Safety</h2></div>` +
-      swRow('Protect 1st attempts', 'Extra confirmation before any change to a first attempt', 'data-tu-setsw="setProtectFirst" data-tab="safety"', v('setProtectFirst')) +
-      swRow('Confirm before deleting attempts', 'Always ask before progress is removed', 'data-tu-setsw="setConfirmDelete" data-tab="safety"', v('setConfirmDelete'));
+    const q = (setUi.data && setUi.data.qbank) || {};
+    const mode = ovGet('mode', q.defaultMode === 'tutor' ? 'tutor' : 'testing'), spq = ovGet('spq', q.defaultSecondsPerQuestion || 90), blk = ovGet('blk', q.defaultBlockSize || 40), link = ovGet('link', !!q.linkToLibrary), src = ovGet('src', q.defaultAttemptSource || 'first');
+    const step = (id, label, v, d, unit) => `<div class="tu-step" role="group" aria-label="${label}"><button type="button" data-tu-step="${id}" data-d="${-d}" aria-label="Decrease ${label}">−</button><output data-v="${v}" aria-live="polite">${v}${unit}</output><button type="button" data-tu-step="${id}" data-d="${d}" aria-label="Increase ${label}">+</button></div>`;
+    const banks = window.ThunderQbanksUI && window.ThunderQbanksUI.mountSettings ? `<div class="tu-setgroup" data-tu-group="banks"><div class="tu-setcard"><div id="tuSetQbanks" class="tq-scope tq-setq"></div></div></div>` : '';
+    const defs = setGroup('defaults', 'New test defaults',
+      setRow('Mode', '', `<div class="tu-setseg" role="radiogroup" aria-label="Default mode"><button type="button" role="radio" aria-checked="${mode !== 'tutor'}" data-tu-defmode="testing">Testing</button><button type="button" role="radio" aria-checked="${mode === 'tutor'}" data-tu-defmode="tutor">Tutor</button></div>`) +
+      setRow('Time per question', '', step('setDefaultSpq', 'time per question', spq, 5, ' s')) +
+      setRow('Questions per block', '', step('setDefaultBlock', 'questions per block', blk, 1, '')) +
+      swRow('Count form attempts', 'New Qbank tests start with “Form Library attempts” as the source', 'data-tu-setsw="setLinkQbank" data-tab="qbank"', link) +
+      (link ? setRow('Which attempt', '', `<label class="tu-setselect"><span class="tu-sr">Which attempt</span><select data-tu-setsel="setAttemptSource">${ATTEMPT_SOURCES.map(([v, l]) => `<option value="${v}"${v === src ? ' selected' : ''}>${l}</option>`).join('')}</select></label>`) : ''),
+      'Qbank reads form attempts but never changes them.');
+    const danger = setGroup('danger', 'Danger zone', setRow('Reset Qbank history', 'Clears used questions and the test list. Form progress is kept.', `<button type="button" class="tu-btn outline small tu-danger" data-tu-reset>Reset…</button>`), '', true);
+    return banks + defs + danger;
   }
   function qidModel(){
     const card = byId('qidMigrationCard'), sum = txt(card && card.querySelector('.qid-summary'));
@@ -2968,9 +3036,8 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   function advancedBody(){
     const q = qidModel();
-    if(!q.card) return `<div class="tu-sechead"><h2>Question ID migration</h2><p>Loading the migration tools…</p></div>` + wipeHtml();
-    const cur = !q.scanned ? 1 : !q.ok ? (setUi.qidBackup ? 3 : 2) : 5;
     const btn = (act, label, main) => q.has(act) ? `<button type="button" class="tu-btn small ${main ? '' : 'outline'}" data-tu-qid="${act}"${q.busy ? ' disabled' : ''}>${label}</button>` : '';
+    const cur = !q.scanned ? 1 : !q.ok ? (setUi.qidBackup ? 3 : 2) : 5;
     const step = (n, title, meta, act, done) => {
       const state = done ? 'done' : n === cur ? 'now' : 'later';
       return `<li class="tu-qidstep ${state}"><span class="tu-qidnum">${done ? icon(SET_ICONS.tick, 14) : n}</span><span class="tu-qidtext"><b>${title}</b>${meta ? `<small>${meta}</small>` : ''}</span><span class="tu-qidact">${act}</span></li>`;
@@ -2979,20 +3046,18 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const needList = q.need.length ? `<div class="tu-qidneed"><b>Need IDs</b>${q.need.slice(0, 8).map(c => `<span>${esc(c[0])} · ${esc(c[7].toLowerCase())}</span>`).join('')}${q.need.length > 8 ? `<span>and ${q.need.length - 8} more</span>` : ''}</div>` : '';
     const notNeeded = q.ok ? 'Not needed: every form has IDs' : '';
     const last = IPAD ? `${btn('baseline', 'Establish cloud baseline', cur === 5)}<button type="button" class="tu-btn small outline" data-tu-gosync>Backup &amp; sync</button>` : `<button type="button" class="tu-btn small${cur === 5 ? '' : ' outline'}" data-tu-gosync>Open Backup &amp; sync</button>`;
-    return `<div class="tu-sechead"><h2>Question ID migration</h2><p>Run once on your main device, then copy the library and progress to other devices. Never migrate on two devices separately.</p></div>` +
-      `<ol class="tu-qidsteps">` +
+    return `<p class="tu-subnote">Run once on your main device, then copy the library and progress to other devices. Never migrate on two devices separately.</p><ol class="tu-qidsteps">` +
       step(1, 'Scan forms', scanMeta, btn('scan', q.scanned ? 'Rescan' : 'Scan', cur === 1), q.scanned) +
       step(2, 'Create recovery backup', notNeeded || 'A copy of the library and progress, saved before anything changes', btn('backup', 'Create', cur === 2), q.ok || setUi.qidBackup) +
       step(3, 'Migrate missing IDs', notNeeded || 'Adds IDs to the forms that need them', btn('migrate', 'Migrate', cur === 3), q.ok) +
       step(4, 'Verify library', q.ok ? 'Every form verified' : 'Checks the result', btn('verify', 'Verify', cur === 4), false) +
       step(5, 'Export full library, then progress', IPAD ? `iPad: establish the new cloud baseline${q.baseline ? ' (' + esc(q.baseline) + ')' : ''}, then export from Backup &amp; sync` : 'From Backup &amp; sync, so other devices import the same IDs', last, false) +
-      `</ol>${needList}${q.msg ? `<p class="tu-qidmsg" role="status">${esc(q.msg)}</p>` : ''}` +
-      `<div class="tu-settools">${btn('restore', 'Restore pre-migration backup')}${byId('scanDataFolderBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="scanDataFolderBtn">Rebuild library index</button>' : ''}${byId('exportCatalogBtn') ? '<button type="button" class="tu-btn small outline" data-tu-proxy="exportCatalogBtn">Save library index</button>' : ''}</div>` + wipeHtml();
+      `</ol>${needList}${q.msg ? `<p class="tu-qidmsg" role="status">${esc(q.msg)}</p>` : ''}` + (q.has('restore') ? `<div class="tu-settools">${btn('restore', 'Restore pre-migration backup')}</div>` : '');
   }
-  /* Advanced › Device data: erase this app's IndexedDB (phones where Safari's own "Remove website data" does not work). */
+  /* App & data › Danger zone: erase this app's IndexedDB (phones where Safari's own "Remove website data" does not work). */
   function wipeHtml(){
-    const hint = IPAD ? 'Deletes the forms, progress, Qbank and sync records stored in this browser. Google Drive backups and exported files are not touched; reconnect Backup &amp; sync afterwards to restore.' : 'Forgets the DATA folder link and other records kept in this browser. Files in your DATA folder are not touched.';
-    return `<div class="tu-sechead" style="margin-top:28px"><h2>Device data</h2></div>` + setRow('Delete data on this device', hint, `<button type="button" class="tu-btn small danger" data-tu-wipe${wipeBusy ? ' disabled' : ''}>${wipeBusy ? 'Deleting…' : 'Delete data'}</button>`);
+    const hint = IPAD ? 'Forms, progress, Qbank and sync records in this browser. Google Drive backups and exported files are kept; reconnect Backup &amp; sync afterwards to restore.' : 'Forgets the DATA folder link and other records kept in this browser. Files in your DATA folder are not touched.';
+    return setGroup('danger', 'Danger zone', setRow('Delete data on this device', hint, `<button type="button" class="tu-btn small outline tu-danger" data-tu-wipe${wipeBusy ? ' disabled' : ''}>${wipeBusy ? 'Deleting…' : 'Delete data'}</button>`), '', true);
   }
   let wipeBusy = false;
   async function wipeDeviceData(){
@@ -3008,33 +3073,114 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     try{ sessionStorage.clear(); }catch(e){}
     location.reload();
   }
-  function adminBody(){
+  const adminAvail = () => IPAD && !!document.querySelector('#settingsPanel [data-v195b-settings-tab="admin"]');
+  // Admin (iPad): the existing admin body, drawn inside the collapsed row; its legacy tab is only switched on while the row is open
+  function adminParts(){
     const box = legacyIn('.fu-admin');
-    if(!box) return `<div class="tu-sechead"><h2>Form installations</h2><p>Loading…</p></div>`;
+    if(!box) return `<p class="tu-subnote">Loading…</p>`;
     const unlocked = !!box.querySelector('[data-fu="lock"]'), status = txt(box.querySelector('#fuAdminStatus'));
     const busy = !!box.querySelector('#fuAdminUnlock button[disabled], #fuAdminFilters button[disabled]');
     const rows = Array.from(box.querySelectorAll('.fu-admin-table tbody tr')).map(tr => Array.from(tr.cells).map(td => [txt(td.querySelector('b')) || txt(td.firstChild), txt(td.querySelector('small'))]));
     const empty = txt(box.querySelector('.fu-empty'));
-    const head = `<div class="tu-sechead tu-adminhead"><div><h2>Form installations</h2><p>See which devices installed which online forms. iPad app only.</p></div><span class="tu-lockchip${unlocked ? ' open' : ''}">${icon(SET_ICONS.lock, 15)}${unlocked ? 'Unlocked' : 'Locked'}</span></div>`;
     const device = `<div class="tu-adminform"><label class="tu-setfield"><span>This device’s name</span><input type="text" maxlength="80" placeholder="e.g. iPad Pro" data-tu-admin="device" autocomplete="off"></label><button type="button" class="tu-btn small outline" data-tu-adminact="device">Save name</button></div>`;
     const body = !unlocked
       ? `<div class="tu-adminform"><label class="tu-setfield"><span>Admin password</span><input type="password" autocomplete="current-password" data-tu-admin="password"></label><button type="button" class="tu-btn small" data-tu-adminact="unlock"${busy ? ' disabled' : ''}>Unlock</button></div><p class="tu-note">Stays unlocked in this browser until you lock it.</p>`
       : `<div class="tu-adminform tu-adminfilters"><label class="tu-setfield"><span>Search</span><input type="search" placeholder="User, device or form" data-tu-admin="fuAdminSearch"></label><label class="tu-setfield"><span>Form ID</span><input type="text" data-tu-admin="fuAdminForm"></label><label class="tu-setfield"><span>Revision</span><input type="text" data-tu-admin="fuAdminRevision"></label><button type="button" class="tu-btn small outline" data-tu-adminact="filter"${busy ? ' disabled' : ''}>Refresh</button></div>` +
         `<div class="tu-admintable"><div class="tu-adminrow tu-adminth" aria-hidden="true"><span>Form</span><span>User / device</span><span>Installed</span></div>${rows.map(c => `<div class="tu-adminrow">${c.map(([a, b]) => `<span><b>${esc(a)}</b>${b ? `<small>${esc(b)}</small>` : ''}</span>`).join('')}</div>`).join('') || `<div class="tu-qtempty">${esc(empty || 'No installations to show.')}</div>`}</div>` +
         `<div class="tu-settools">${box.querySelector('[data-fu="more"]') ? `<button type="button" class="tu-btn small outline" data-tu-adminact="more"${busy ? ' disabled' : ''}>Load more</button>` : ''}<button type="button" class="tu-btn small outline" data-tu-adminact="lock">Lock admin</button></div>`;
-    return head + device + body + (status ? `<p class="tu-qidmsg" role="status">${esc(status)}</p>` : '');
+    return `<p class="tu-subnote">See which devices installed which online forms.</p>` + device + body + (status ? `<p class="tu-qidmsg" role="status">${esc(status)}</p>` : '');
   }
   function syncBuild(){ const m = txt(document.querySelector('#progressSyncPanel .sync-footer')).match(/SYNC-(V[\d.]+)/i); return m ? m[1] : ''; }
-  function aboutBody(){
+  function deviceBody(){
     const file = decodeURIComponent(location.pathname.split('/').pop() || ''), lv = (file.match(/v(\d+(?:\.\d+)+)/i) || [0, ''])[1];
     const shell = IPAD ? Number((window.StepAppUpdates && window.StepAppUpdates.version) || txt(byId('appVersionLabel')).replace(/\D+/g, '')) || 0 : 0;
-    const ver = ['Version ' + TU_RELEASE, IPAD ? (shell && shell !== TU_RELEASE ? 'app shell ' + shell + ' (reload to update)' : '') : 'Local app' + (lv ? ' · simulator ' + lv : ''), IPAD && syncBuild() ? 'sync ' + syncBuild() : ''].filter(Boolean).join(' · ');
-    return `<div class="tu-sechead"><h2>About &amp; updates</h2></div>` + setRow('Version', esc(ver), '') +
-      (IPAD && byId('updateAppShellBtn') ? setRow('Update app', 'Reloads the latest version. Your library and progress are kept.', '<button type="button" class="tu-btn small" data-tu-proxy="updateAppShellBtn">Update &amp; reload</button>') : !IPAD ? setRow('Updates', 'Replace this HTML file in your Step Simulator folder with the new version. Your DATA folder is not touched.', '') : '') +
-      (IPAD ? setRow('Privacy policy', '', `<a class="tu-btn small outline" href="./privacy.html" target="_blank" rel="noopener">Open${icon(SET_ICONS.ext, 15)}</a>`) : '');
+    const sub = IPAD ? [shell && shell !== TU_RELEASE ? 'app shell ' + shell + ' (reload to update)' : '', syncBuild() ? 'Sync ' + syncBuild() : ''].filter(Boolean).join(' · ')
+      : ['Local app' + (lv ? ' · simulator ' + lv : ''), 'Replace this HTML file in your Step Simulator folder with the new version. Your DATA folder is not touched.'].join(' · ');
+    const upd = IPAD && byId('updateAppShellBtn') ? '<button type="button" class="tu-btn small" data-tu-proxy="updateAppShellBtn">Update &amp; reload</button>' : '';
+    const sv = IPAD ? syncView() : null, folderOk = !IPAD && !!byId('dataFolderStatus') && byId('dataFolderStatus').classList.contains('connected');
+    const syncChip = IPAD ? (sv ? chipHtml('● ' + esc(sv.label), sv.tone === 'good' ? 'ok' : sv.tone === 'error' ? 'bad' : sv.tone === 'pending' || sv.tone === 'conflict' ? 'warn' : '') : '') : chipHtml(folderOk ? '● DATA folder connected' : 'DATA folder not connected', folderOk ? 'ok' : 'warn');
+    const app = setGroup('app', 'App', setRow('ThunderUSMLE · version ' + TU_RELEASE, esc(sub), upd) +
+      `<button type="button" class="tu-setrow tu-setlink" data-tu-gosync><div><b>Backup &amp; sync</b><span>${IPAD ? 'Google Drive' : 'DATA folder'}, Progress ZIP, Full Library ZIP</span></div><div class="tu-setctl">${syncChip}<span class="tu-chev"></span></div></button>` +
+      (IPAD ? `<a class="tu-setrow tu-setlink" href="./privacy.html" target="_blank" rel="noopener"><div><b>Privacy policy</b></div><div class="tu-setctl">${icon(SET_ICONS.ext, 16)}</div></a>` : ''));
+    const q = qidModel(), n = q.total - q.migrated;
+    const qidChip = !q.card ? chipHtml('Loading…') : q.ok ? chipHtml('✓ All forms have IDs', 'ok') : q.scanned ? chipHtml(n > 0 ? n + ' need IDs' : 'Qbank needs IDs', 'warn') : chipHtml('Not scanned');
+    const box = legacyIn('.fu-admin'); if(box) setUi.adminUnlocked = !!box.querySelector('[data-fu="lock"]');
+    const adminOn = adminAvail(), qidOpen = !!setUi.open.qid, adminOpen = !!setUi.open.admin;
+    const maint = setGroup('maintenance', 'Maintenance',
+      (byId('scanDataFolderBtn') ? setRow('Rebuild library index', 'Rescan forms if the library looks wrong', '<button type="button" class="tu-btn small outline" data-tu-proxy="scanDataFolderBtn">Rebuild</button>') : '') +
+      (byId('exportCatalogBtn') ? setRow('Save library index', 'Download catalog.json', '<button type="button" class="tu-btn small outline" data-tu-proxy="exportCatalogBtn">Save</button>') : '') +
+      openRow('qid', 'Question ID migration', 'One-time tool, only on your main device', qidChip, qidOpen) + (qidOpen ? `<div class="tu-setsub" data-tu-sub="qid">${q.card ? advancedBody() : '<p class="tu-subnote">Loading the migration tools…</p>'}</div>` : '') +
+      (adminOn ? openRow('admin', 'Admin', 'Form installations by device · iPad app', setUi.adminUnlocked == null ? '' : chipHtml(setUi.adminUnlocked ? 'Unlocked' : '🔒 Locked', setUi.adminUnlocked ? 'ok' : ''), adminOpen) + (adminOpen ? `<div class="tu-setsub" data-tu-sub="admin">${adminParts()}</div>` : '') : ''));
+    return app + maint + wipeHtml();
   }
-  const SET_BODIES = {appearance:appearanceBody, tabs:tabsBody, qbank:qbankBody, safety:safetyBody, advanced:advancedBody, admin:adminBody, about:aboutBody};
+  const SET_BODIES = {appearance:appearanceBody, library:libraryBody, review:reviewBody, qbank:qbankBody, device:deviceBody};
 
+  /* search: a static index of every row; results replace the pane while the box has text */
+  const SET_INDEX = [
+    ['appearance', 'Theme', 'light dark auto match device system mode'],
+    ['appearance', 'Accent color', 'accent colour crimson blue teal icon brand'],
+    ['appearance', 'Exam style', 'nbme modern test day phone phones'],
+    ['library', 'Card layout', 'card density comfortable compact list grid view cards'],
+    ['library', 'Keep CMS forms open', 'cms subject tiles expanded'],
+    ['library', 'Tabs', 'library tabs order reorder drag color colour meter overall completed 3-digit score chip custom delete new custom tabs defaults'],
+    ['library', 'Protect 1st attempts', 'first attempts safety confirmation protect'],
+    ['library', 'Confirm before deleting attempts', 'delete progress safety confirm'],
+    ['review', 'Explanation position', 'layout split below beside stacked side by side'],
+    ['review', 'Opens first', 'explanation rapid review tab first'],
+    ['review', 'Arrange tabs', 'tab placement customize tabs beside under exhibit move', {expand:true}],
+    ['review', 'Rule + Trap first', 'rule trap first rapid tested'],
+    ['review', 'Alee’s OCD Switch', 'alee ocd tighter compact explanation spacing'],
+    ['review', 'ThunderShadow logger', 'shadow logger log error code tsv export'],
+    ['review', 'Rapid Review data', 'rapid review data update check explanations'],
+    ['qbank', 'Qbanks', 'banks import zip json add files retag rename export remove built-in visibility show hide'],
+    ['qbank', 'Mode', 'default new test testing tutor'],
+    ['qbank', 'Time per question', 'seconds timer time default new test'],
+    ['qbank', 'Questions per block', 'block size questions default new test'],
+    ['qbank', 'Count form attempts', 'form library attempts source linked'],
+    ['qbank', 'Which attempt', 'linked attempt source first latest completed active'],
+    ['qbank', 'Reset Qbank history', 'reset clear used questions test list danger'],
+    ['device', 'Version', 'version update reload about app release', {m:'ThunderUSMLE'}],
+    ['device', 'Backup & sync', 'google drive progress zip full library move devices cloud sync backup data folder'],
+    ['device', 'Privacy policy', 'privacy policy', {ipad:true}],
+    ['device', 'Rebuild library index', 'scan data folder rescan forms index', {need:'scanDataFolderBtn'}],
+    ['device', 'Save library index', 'catalog export json', {need:'exportCatalogBtn'}],
+    ['device', 'Question ID migration', 'qid scan backup migrate verify restore baseline ids', {open:'qid'}],
+    ['device', 'Admin', 'form installations devices password unlock ipad', {open:'admin', ipad:true}],
+    ['device', 'Delete data on this device', 'erase wipe reset device data indexeddb danger']
+  ];
+  const setPaneLabel = id => (SET_SECTIONS.find(([s]) => s === id) || [0, id])[1];
+  function searchHits(){
+    const toks = setUi.q.toLowerCase().split(/\s+/).filter(Boolean);
+    return SET_INDEX.map((h, i) => [h, i]).filter(([h]) => {
+      const o = h[3] || {};
+      if(o.ipad && !IPAD) return false; if(o.need && !byId(o.need)) return false;
+      const hay = (h[1] + ' ' + h[2] + ' ' + setPaneLabel(h[0])).toLowerCase();
+      return toks.every(t => hay.includes(t));
+    });
+  }
+  function searchBody(){
+    const hits = searchHits();
+    if(!hits.length) return `<div class="tu-setempty">No settings match “${esc(setUi.q.trim())}”</div>`;
+    return setGroup('results', hits.length + ' result' + (hits.length > 1 ? 's' : ''), hits.map(([h, i]) => `<button type="button" class="tu-setrow tu-setlink" data-tu-go="${i}"><div><b>${esc(h[1])}</b><span>${esc(setPaneLabel(h[0]))}</span></div><div class="tu-setctl"><span class="tu-chev"></span></div></button>`).join(''));
+  }
+  function flashRow(h, n){
+    const v = setViews.tuSettings, body = v && setRegion_(v, 'body'); if(!body) return;
+    const want = h.title.toLowerCase();
+    const b = Array.from(body.querySelectorAll('b, h2, h3')).find(x => txt(x).toLowerCase().startsWith(want));
+    if(!b){ if(n < 6) setTimeout(() => flashRow(h, n + 1), 250); else body.scrollIntoView({block:'start'}); return; }
+    const el = b.closest('.tu-setrow, .tu-tabrow, .tq-shd, .tu-setgroup') || b;
+    if(h.expand){ const t = el.matches('[aria-expanded="false"]') ? el : el.querySelector('[aria-expanded="false"]'); if(t) t.click(); }
+    el.classList.add('tu-hit'); el.scrollIntoView({block:'center'});
+    setTimeout(() => el.classList.remove('tu-hit'), 2200);
+  }
+  function goResult(i){
+    const h = SET_INDEX[i]; if(!h) return;
+    const o = h[3] || {}, inp = setViews.tuSettings && setViews.tuSettings.querySelector('[data-tu-setsearch]');
+    setUi.q = ''; if(inp) inp.value = '';
+    if(o.open) setUi.open[o.open] = true;
+    setUi.hit = {title: o.m || h[1], expand: !!o.expand};
+    goSection(h[0]);
+  }
   /* Backup & sync page */
   function storageHtml(){
     const status = byId('dataFolderStatus'), ok = !!status && status.classList.contains('connected');
@@ -3124,7 +3270,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(!v){
       v = document.createElement('div'); v.id = id; v.className = 'tu-setview';
       v.innerHTML = id === 'tuSettings'
-        ? `<header class="tu-sethead"><h1>Settings</h1><span>Applies to the library and Qbank. Exam-screen options stay in the exam’s own Settings menu.</span></header><div class="tu-setgrid"><nav class="tu-setnav" aria-label="Settings sections" data-tu-r="nav"></nav><section class="tu-card tu-setbody" data-tu-r="body"></section></div>`
+        ? `<header class="tu-sethead"><h1>Settings</h1></header><div class="tu-setgrid"><div class="tu-setside"><label class="tu-setsearch">${icon(SET_ICONS.search, 16)}<input type="search" data-tu-setsearch placeholder="Search settings" aria-label="Search settings" autocomplete="off" spellcheck="false"></label><nav class="tu-setnav" aria-label="Settings sections" data-tu-r="nav"></nav></div><div class="tu-setmain"><section class="tu-card tu-setbody" data-tu-r="body"></section></div></div>`
         : `<header class="tu-sethead"><h1>Backup &amp; sync</h1><span>Your progress is saved on this device first. Everything else is an extra copy.</span></header><section class="tu-card tu-synccard" aria-label="Storage" data-tu-r="storage"></section>` +
           (IPAD ? `<div class="tu-syncgrid"><section class="tu-card tu-synccard" aria-label="Google Drive progress sync" data-tu-r="progress"></section><section class="tu-card tu-synccard" aria-label="Full library in Google Drive" data-tu-r="library"></section></div><section class="tu-card tu-synccoll" aria-label="History and recovery" data-tu-r="hist"></section><section class="tu-card tu-synccoll" aria-label="Advanced sync tools" data-tu-r="adv"></section>`
             : `<section class="tu-card tu-synccoll" aria-label="Recovery copies" data-tu-r="rec"></section>`) +
@@ -3132,6 +3278,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
           `<section class="tu-card tu-synccard" aria-label="Move between devices" data-tu-r="move"></section>`;
       v.addEventListener('click', onSetClick);
       v.addEventListener('change', onSetChange);
+      v.addEventListener('input', e => { if(e.target.matches && e.target.matches('[data-tu-setsearch]')){ setUi.q = e.target.value; scheduleSettings(); } });
       v.addEventListener('keydown', onSetKey);
       v.addEventListener('pointerdown', onDragStart);
       v.addEventListener('focusin', e => { const a = e.target; setUi.focus = a && a.attributes ? Array.from(a.attributes).filter(x => /^data-tu|^data-key$/.test(x.name)).map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('') : ''; });
@@ -3144,18 +3291,19 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const setRegion_ = (v, name) => v.querySelector(`[data-tu-r="${name}"]`);
   // number/text inputs are filled after each render (not in the markup), so typing never triggers a re-render
   function setSyncInputs(v){
-    v.querySelectorAll('[data-tu-setin]').forEach(el => { if(el === document.activeElement) return; const src = legacyIn('#' + el.dataset.tuSetin); const q = (setUi.data && setUi.data.qbank) || {}; const val = src ? src.value : el.dataset.tuSetin === 'setDefaultSpq' ? q.defaultSecondsPerQuestion : q.defaultBlockSize; if(val != null && el.value !== String(val)) el.value = String(val); });
     v.querySelectorAll('[data-tu-admin]').forEach(el => { const k = el.dataset.tuAdmin; if(el === document.activeElement || k === 'password') return; const src = legacyIn(k === 'device' ? '#fuDeviceLabel' : '#' + k); if(src && el.value !== src.value) el.value = src.value; });
   }
   function paintSetView(panel){
-    const v = ensureSetView(panel, 'tuSettings'), secs = sections();
-    if(!secs.some(([id]) => id === setUi.sec)) setUi.sec = 'appearance';
-    swapHtml(setRegion_(v, 'nav'), secs.map(([id, l]) => `<button type="button" data-tu-sec="${id}" aria-current="${setUi.sec === id ? 'page' : 'false'}">${esc(l)}${id === 'admin' ? '<small>iPad</small>' : ''}</button>`).join(''));
-    swapHtml(setRegion_(v, 'body'), SET_BODIES[setUi.sec]());
+    const v = ensureSetView(panel, 'tuSettings'), secs = sections(), q = setUi.q.trim(), pane = q ? 'search' : setUi.sec;
+    setUi.sec = normSec(setUi.sec);
+    swapHtml(setRegion_(v, 'nav'), secs.map(([id, l]) => `<button type="button" data-tu-sec="${id}" aria-current="${!q && setUi.sec === id ? 'page' : 'false'}">${icon(SET_ICONS[id], 18)}${esc(l)}</button>`).join(''));
+    const body = setRegion_(v, 'body'); body.dataset.tuPane = pane;
+    swapHtml(body, q ? searchBody() : SET_BODIES[setUi.sec]());
     setSyncInputs(v);
-    if(setUi.sec === 'qbank'){ const h = byId('tuSetQbanks'); if(h && window.ThunderQbanksUI && window.ThunderQbanksUI.mountSettings) window.ThunderQbanksUI.mountSettings(h); }
-    const want = SET_LEGACY[setUi.sec];
-    if(want && !setUi.switching && !legacyReady(want) && !(setUi.sec === 'tabs' && ['order', 'custom'].includes(legacyActive()))) legacySetTab(want).then(() => scheduleSettings(true));
+    if(!q && setUi.sec === 'qbank'){ const h = byId('tuSetQbanks'); if(h && window.ThunderQbanksUI && window.ThunderQbanksUI.mountSettings) window.ThunderQbanksUI.mountSettings(h); }
+    const want = legacyFor(setUi.sec);
+    if(want && !setUi.switching && !setUi.hold && !legacyReady(want) && !(setUi.sec === 'library' && ['order', 'custom'].includes(legacyActive()))) legacySetTab(want).then(() => scheduleSettings(true));
+    if(setUi.hit && !q){ const h = setUi.hit; setUi.hit = null; setTimeout(() => flashRow(h, 0), 60); }
   }
   function paintSyncView(panel){
     const v = ensureSetView(panel, 'tuSync');
@@ -3164,7 +3312,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     else swapHtml(setRegion_(v, 'rec'), recoveryLocalHtml());
     swapHtml(setRegion_(v, 'move'), moveHtml());
     // keep the hidden legacy Backup tab drawn, so its buttons (and the file pickers they open) answer at once
-    if(!setUi.switching && !legacyReady('backup') && !(IPAD && byId('settingsPanel')?.classList.contains('active'))) legacySetTab('backup');
+    if(!setUi.switching && !setUi.hold && !legacyReady('backup') && !(IPAD && byId('settingsPanel')?.classList.contains('active'))) legacySetTab('backup');
   }
   function scheduleSettings(fresh){
     if(fresh) setUi.stale = true;
@@ -3253,13 +3401,15 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
 
   /* actions */
   function goSection(id){
-    setUi.sec = id; setUi.color = ''; store.set(SET_KEY, id);
+    id = normSec(id); setUi.sec = id; store.set(SET_KEY, id);
     scheduleSettings(true);
-    const want = SET_LEGACY[id]; if(want && !legacyReady(want)) legacySetTab(want).then(() => scheduleSettings(true));
+    const want = legacyFor(id); if(want && !legacyReady(want)) legacySetTab(want).then(() => scheduleSettings(true));
   }
-  // opens Settings on one section (used by the Qbanks tab: "Manage banks in Settings → Qbanks")
+  // opens Settings on one pane (used by the Qbanks tab: "Manage banks in Settings → Qbanks"); old keys alias to the new panes
   function openSettingsSection(id){
-    if(!sections().some(([s]) => s === id)) return false;
+    if(!SET_SECTIONS.some(([s]) => s === id) && !SET_ALIAS[id]) return false;
+    if(id === 'admin') setUi.open.admin = true; else if(id === 'advanced') setUi.open.qid = true;
+    setUi.q = ''; const inp = setViews.tuSettings && setViews.tuSettings.querySelector('[data-tu-setsearch]'); if(inp) inp.value = '';
     if(!byId('settingsPanel')?.classList.contains('active')) byId('settingsTab')?.click();
     if(!IPAD && setUi.page === 'sync') setSyncPage(false);
     goSection(id); return true;
@@ -3270,20 +3420,32 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(ds.tuSec){ goSection(ds.tuSec); return; }
     if(ds.tuTheme){ setTheme(ds.tuTheme); return; }
     if(ds.tuExamstyle){ setExamStyle(ds.tuExamstyle); return; }
+    if(ds.tuOpen){
+      const k = ds.tuOpen; setUi.open[k] = !setUi.open[k];
+      if(k === 'admin' && setUi.open.admin && adminAvail()) legacySetTab('admin').then(() => scheduleSettings(true));
+      scheduleSettings(); return;
+    }
+    if(ds.tuGo != null){ goResult(+ds.tuGo); return; }
+    if(ds.tuDensity){ store.set(KEYS.view, ds.tuDensity === 'list' ? 'list' : 'grid'); scheduleLibrary(); scheduleSettings(); return; }
+    if(ds.tuStep){
+      const id = ds.tuStep, out = t.parentNode.querySelector('output'), spq = id === 'setDefaultSpq', n = Math.max(spq ? 15 : 1, (Number(out.dataset.v) || (spq ? 90 : 40)) + Number(ds.d));
+      out.dataset.v = String(n); out.textContent = n + (spq ? ' s' : ''); ovSet(spq ? 'spq' : 'blk', n); writeQbNum(id, n); return;
+    }
     if(ds.tuFlag && ds.key){
       const f = TAB_FLAGS.find(([k]) => k === ds.tuFlag), on = t.getAttribute('aria-checked') !== 'true';
-      t.setAttribute('aria-checked', String(on)); t.innerHTML = on ? icon(SET_ICONS.tick, 14) : '';
+      t.setAttribute('aria-checked', String(on));
       legacyDo('library', () => setLegacyEl(legacyIn(`[${f[2]}="${CSS.escape(ds.key)}"]`), on)); return;
     }
-    if(ds.tuColorbtn){ setUi.color = setUi.color === ds.tuColorbtn ? '' : ds.tuColorbtn; scheduleSettings(); return; }
-    if(ds.tuSetcolor != null && ds.key){ const key = ds.key, val = ds.tuSetcolor; setUi.color = ''; legacyDo('order', () => setLegacyEl(legacyIn(`select[data-v195-tab-color="${CSS.escape(key)}"]`), val)); return; }
+    if(ds.tuSetcolor != null && ds.key){ const key = ds.key, val = ds.tuSetcolor; legacyDo('order', () => setLegacyEl(legacyIn(`select[data-v195-tab-color="${CSS.escape(key)}"]`), val)); return; }
     if(ds.tuDeltab){ const key = ds.tuDeltab; legacyDo('custom', () => clickLegacy(`#settingsPanel [data-v195-delete-tab="${CSS.escape(key)}"]`)); return; }
     if(t.hasAttribute('data-tu-future')){ setUi.future = !setUi.future; scheduleSettings(); return; }
     if(ds.tuFutsw){ const id = ds.tuFutsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on)); legacyDo('library', () => setLegacyEl(legacyIn('#' + id), on)); return; }
-    if(ds.tuSetsw){ const id = ds.tuSetsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on)); legacyDo(ds.tab, () => setLegacyEl(legacyIn('#' + id), on)); return; }
+    if(ds.tuSetsw){
+      const id = ds.tuSetsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on));
+      if(id === 'setLinkQbank'){ ovSet('link', on); scheduleSettings(); } else setUi.safe[id] = on;
+      legacyDo(ds.tab, () => setLegacyEl(legacyIn('#' + id), on)); return; }
     if(t.hasAttribute('data-tu-cmskeep')){ const on = !keepCms(); store.set(KEYS.cmsKeep, on ? 'on' : 'off'); scheduleLibrary(); scheduleSettings(); return; }
-    if(t.hasAttribute('data-tu-defaults')){ setUi.defaults = !setUi.defaults; scheduleSettings(); if(setUi.defaults) legacySetTab('safety').then(() => scheduleSettings(true)); return; }
-    if(ds.tuDefmode){ const v = ds.tuDefmode; legacyDo('safety', () => { setLegacyEl(legacyIn('#setDefaultMode'), v); setLegacy('qbankRunMode', v); }); return; }
+    if(ds.tuDefmode){ const v = ds.tuDefmode; ovSet('mode', v); scheduleSettings(); legacyDo('safety', () => { setLegacyEl(legacyIn('#setDefaultMode'), v); setLegacy('qbankRunMode', v); }); return; }
     if(t.hasAttribute('data-tu-reset')){ legacyDo('qbank', () => clickLegacy('#settingsPanel [data-v9="settings-reset-qbank"]')); return; }
     if(ds.tuQid){ if(ds.tuQid === 'backup') setUi.qidBackup = false; clickLegacy(`#qidMigrationCard [data-qid-action="${ds.tuQid}"]`); scheduleSettings(true); return; }
     if(t.hasAttribute('data-tu-gosync')){ openSyncPage(); return; }
@@ -3310,17 +3472,14 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   function onSetChange(e){
     const t = e.target;
-    if(t.hasAttribute('data-tu-density')){ store.set(KEYS.view, t.value === 'list' ? 'list' : 'grid'); scheduleLibrary(); scheduleSettings(); return; }
-    if(t.dataset.tuSetsel){ const id = t.dataset.tuSetsel, val = t.value; legacyDo('safety', () => setLegacyEl(legacyIn('#' + id), val)); return; }
-    if(t.dataset.tuSetin){
-      const id = t.dataset.tuSetin, min = id === 'setDefaultSpq' ? 15 : 1, n = Math.max(min, parseInt(t.value, 10) || min); t.value = String(n);
-      legacyDo('safety', () => { setLegacyEl(legacyIn('#' + id), n); if(id === 'setDefaultBlock') setLegacy('qbankBlockSize', n); });
-    }
+    if(t.dataset && t.dataset.tuSetsel){ const id = t.dataset.tuSetsel, val = t.value; ovSet('src', val); legacyDo('safety', () => setLegacyEl(legacyIn('#' + id), val)); }
   }
+  // Qbank defaults live on the legacy Safety tab (setDefaultSpq / setDefaultBlock); the block size is also the live Qbank setting
+  function writeQbNum(id, n){ legacyDo('safety', () => { setLegacyEl(legacyIn('#' + id), n); if(id === 'setDefaultBlock') setLegacy('qbankBlockSize', n); }); }
   function onSetKey(e){
     const t = e.target;
     if(e.key === 'Enter' && t.dataset && t.dataset.tuAdmin){ e.preventDefault(); adminAct(t.dataset.tuAdmin === 'password' ? 'unlock' : t.dataset.tuAdmin === 'device' ? 'device' : 'filter'); return; }
-    if(e.key === 'Enter' && t.dataset && t.dataset.tuSetin){ t.blur(); return; }
+    if(e.key === 'Escape' && t.matches && t.matches('[data-tu-setsearch]') && t.value){ t.value = ''; setUi.q = ''; scheduleSettings(); return; }
     if(t.dataset && t.dataset.tuDrag && (e.key === 'ArrowUp' || e.key === 'ArrowDown')){
       e.preventDefault();
       const rows = tabRows(), i = rows.findIndex(r => r.key === t.dataset.tuDrag), j = i + (e.key === 'ArrowUp' ? -1 : 1);
