@@ -8,7 +8,7 @@
   if(window.ThunderUI) return;
   const IPAD = window.__STEP_SIM_STORAGE_PROFILE === 'ipad-browser-library-primary';
   // ThunderUSMLE release number, shown in Settings › About of both apps. tools/release.mjs (iPad) sets it on every release.
-  const TU_RELEASE = 60;
+  const TU_RELEASE = 61;
   const ACCENTS = {
     crimson:{label:'Crimson', brand:'#A2283A', deep:'#6E1424'},
     blue:{label:'Blue', brand:'#2F5BD3', deep:'#1C3A93'},
@@ -451,7 +451,7 @@ ${H} .tu-layer .tu-round:hover{background:var(--tu-s2)}
 .tu-layer .tu-btn.outline:hover:not(:disabled),#tuQuick .tu-btn.outline:hover:not(:disabled){background:var(--tu-s2);filter:none}
 .tu-note{font-size:12.5px;color:var(--tu-on3);line-height:1.45}
 .tu-chips{display:flex;flex-wrap:wrap;gap:8px}
-.tu-layer .tu-chip,#tuQuick ${H} .tu-check{width:24px;height:24px;min-width:24px;border-radius:7px;border:2px solid var(--tu-on3);background:transparent;color:var(--tu-onp);display:flex;align-items:center;justify-content:center;padding:0}
+.tu-layer .tu-check,#tuQuick ${H} .tu-check{width:24px;height:24px;min-width:24px;border-radius:7px;border:2px solid var(--tu-on3);background:transparent;color:var(--tu-onp);display:flex;align-items:center;justify-content:center;padding:0}
 ${H} .tu-check[aria-checked="true"]{background:var(--tu-p);border-color:var(--tu-p)}
 ${H} .tu-check:disabled{opacity:.3}
 .tu-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:9px;border:1px solid var(--tu-line);background:transparent;color:var(--tu-on);font-weight:700;font-size:13.5px;white-space:nowrap}
@@ -558,13 +558,13 @@ ${H} .tu-add-h h3{font-size:20px!important;font-weight:800!important}
 ${H} .tu-layer .tu-slotsearch input{-webkit-appearance:none!important;appearance:none!important;border:0!important;background:transparent!important;outline:none!important;flex:1!important;min-width:0!important;height:42px!important;padding:0!important;margin:0!important;box-shadow:none!important;font:14.5px var(--tu-font)!important;color:var(--tu-on)!important}
 .tu-layer .tu-add .tu-chips{gap:6px}
 .tu-layer .tu-add .tu-chip{border-radius:8px;font-size:13px}
-.tu-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
-.tu-slot{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid var(--tu-line2);min-width:0}
+.tu-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));grid-auto-rows:60px;gap:8px;align-items:stretch}
+.tu-slot{display:flex;align-items:center;gap:12px;box-sizing:border-box;min-height:60px;padding:8px 14px;border-radius:16px;border:1px solid var(--tu-line2);min-width:0}
 .tu-slot.loaded{background:var(--tu-s1)}
 .tu-slot>i{width:9px;height:9px;border-radius:50%;flex:none}
 .tu-slot>span{flex:1;display:flex;flex-direction:column;min-width:0}
-.tu-slot b{font-weight:800;font-size:14.5px}.tu-slot small{font-size:12px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tu-layer .tu-slot .tu-btn{height:34px;padding:0 14px;font-size:13px;font-weight:700}
+.tu-slot b{font-weight:800;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tu-slot small{font-size:12px;color:var(--tu-on3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-layer .tu-slot .tu-btn{height:34px;min-width:88px;flex:none;padding:0 14px;font-size:13px;font-weight:700}
 .tu-layer .tu-slot .tu-btn.outline{color:var(--tu-on2)}
 .tu-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .tu-fieldin{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -595,6 +595,23 @@ ${H} .tu-layer p.tu-status.bad{color:var(--tu-bad)!important;font-weight:700}
 .tu-end{display:flex;justify-content:flex-end}
 .tu-layer .tu-end .tu-btn{height:46px;padding:0 24px;font-size:14.5px}
 .tu-layer .tu-add .tu-banner{background:var(--tu-s1);color:var(--tu-on)}
+/* phones: full-width bottom sheet, close pinned top-right of the header, safe-area aware */
+@media (max-width:640px){
+  .tu-layer:has(.tu-add) .tu-dialog-wrap{padding:0;align-items:flex-end;justify-content:stretch}
+  .tu-layer .tu-add{position:relative;width:100%;max-width:100%;height:calc(100dvh - max(env(safe-area-inset-top),12px) - 12px);max-height:100%;flex-direction:column;flex-wrap:nowrap;border-radius:24px 24px 0 0;margin:0;box-shadow:0 -8px 40px rgba(0,0,0,.3)}
+  .tu-add-nav{flex:none;padding:16px 0 8px;gap:8px}
+  ${H} .tu-layer .tu-add-nav h2{margin:0!important;padding:0 68px 0 20px!important;box-sizing:border-box;font-size:20px!important;line-height:44px!important}
+  .tu-add-nav [role="tablist"]{flex-direction:row;overflow-x:auto;gap:6px;padding:0 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tu-add-nav [role="tablist"]::-webkit-scrollbar{display:none}
+  ${H} .tu-add-nav [role="tab"]{flex:none;width:auto;padding:9px 14px;border-radius:999px;white-space:nowrap}
+  .tu-add-nav [role="tab"] span{display:none}
+  .tu-add-foot{display:none}
+  .tu-add-main{flex:1 1 auto;height:auto;min-height:0;position:static}
+  .tu-add-top{position:absolute;top:max(8px,calc(env(safe-area-inset-top) - 28px));right:12px;padding:0;z-index:3}
+  .tu-add-body{padding:8px 16px calc(20px + env(safe-area-inset-bottom))}
+  .tu-slots{grid-template-columns:minmax(0,1fr)}
+  .tu-form-grid{grid-template-columns:minmax(0,1fr)}.tu-fieldin.span2{grid-column:auto}
+}
 /* online updates: the Add forms tab and the header popover (board FormUpdates) */
 .tu-updbody{display:flex;flex-direction:column;gap:12px}
 .tu-updmsg{font-size:13.5px;font-weight:600;color:var(--tu-on2)}
@@ -820,6 +837,17 @@ ${H} .tu-qbview .tu-qbtile.main span{color:var(--tu-onp)!important}
 @media (max-width:1000px){${H} .modern-main:has(#libraryModePanel.tu-has-home.active){padding:18px 20px 40px!important}}
 @media (max-width:560px){.tu-sheet-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.tu-retests{grid-template-columns:minmax(0,1fr)}.tu-sheet{top:0;right:0;bottom:0;max-width:100%;border-radius:0}}
 
+/* 901-1100 px: the legacy row top bar, kept to one compact line (no wrapped Add forms, no clipped labels: only the active tab keeps its label, the others fold to icons) */
+@media (min-width:901px) and (max-width:1100px){
+  ${H} aside.modern-sidebar{align-items:center!important;flex-wrap:nowrap!important;gap:6px!important;height:auto!important;min-height:0!important;padding:12px 16px!important;overflow:hidden!important}
+  ${H} aside.modern-sidebar>:is(#tuNavCard,.sidebar-note){display:none!important}
+  ${H} aside.modern-sidebar .brand-block{flex:none;padding:0 8px 0 0!important}
+  ${H} aside.modern-sidebar #tuAddForms{flex:none;width:auto!important;height:44px!important;margin:0 4px 0 0!important;padding:0 14px!important;gap:8px;white-space:nowrap;font-size:14px}
+  ${H} aside.modern-sidebar .menu-tab{flex:none!important;width:auto!important;min-width:0;height:44px!important;min-height:44px!important;margin:0!important;padding:0 14px!important;gap:8px!important;white-space:nowrap;font-size:14px!important}
+  ${H} aside.modern-sidebar .menu-tab:not(.active) .tu-tab-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  ${H} aside.modern-sidebar #themeToggle{flex:none;margin:0 0 0 auto!important;padding:0 12px!important;white-space:nowrap}
+}
+@media (min-width:901px) and (max-width:1000px){${H} aside.modern-sidebar .menu-tab{padding:0 10px!important}${H} aside.modern-sidebar #tuAddForms{padding:0 12px!important}}
 /* iPad portrait (board iPadPortrait): bottom navigation, Add forms button, sync strip, compact home */
 @media (max-width:900px){
   ${H}.modern-menu-shell .modern-menu{display:block!important;padding-bottom:96px!important}
@@ -1316,6 +1344,21 @@ ${W} #stem :is(td,th,table){border-color:var(--tu-line)!important}
 ${W} :is(#stem,.qbank-body) .v15-highlight,${W} :is(#stem,.qbank-body) .v15-highlight *{color:#161A25!important}
 ${W} #stem :is(img,table,svg){max-width:100%!important}
 ${W} #stem *{min-width:0!important}
+/* Modern: imported-bank "Show Hint" disclosure (native details; pill summary, tinted callout when open) */
+${W} #stem details.question-hint{display:block!important;margin:1.25em 0 0!important;padding:0!important;border:0!important;background:none!important}
+${W} #stem details.question-hint>summary{display:inline-flex!important;align-items:center!important;gap:7px!important;box-sizing:border-box!important;list-style:none!important;cursor:pointer!important;user-select:none!important;-webkit-user-select:none!important;padding:5px 11px 5px 10px!important;border:1px solid rgba(37,99,235,.38)!important;border-radius:999px!important;background:rgba(37,99,235,.08)!important;color:#1d4ed8!important;font:inherit!important;font-size:.875em!important;font-weight:600!important;line-height:1.3!important;text-decoration:none!important;outline-offset:2px}
+${W} #stem details.question-hint>summary::-webkit-details-marker{display:none!important}
+${W} #stem details.question-hint>summary::marker{content:none!important}
+${W} #stem details.question-hint>summary::before{content:""!important;display:inline-block!important;width:1.1em;height:1.1em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat}
+${W} #stem details.question-hint>summary::after{content:""!important;display:inline-block!important;width:.45em;height:.45em;margin:-.15em 0 0 .1em;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform .15s}
+${W} #stem details.question-hint[open]>summary::after{transform:rotate(-135deg);margin-top:.15em}
+${W} #stem details.question-hint>summary:hover{background:rgba(37,99,235,.15)!important}
+${W} #stem details.question-hint>summary:focus-visible{outline:2px solid #2563eb!important}
+${W} #stem details.question-hint>summary~*{display:block!important;box-sizing:border-box!important;margin:8px 0 0!important;padding:10px 14px!important;border:0!important;border-left:3px solid #2563eb!important;border-radius:0 10px 10px 0!important;background:rgba(37,99,235,.07)!important;font-size:inherit!important;line-height:inherit!important}
+${X}:is(.exam-dark,.reverse) #workspace #stem details.question-hint>summary{border-color:rgba(147,197,253,.4)!important;background:rgba(96,165,250,.14)!important;color:#93c5fd!important}
+${X}:is(.exam-dark,.reverse) #workspace #stem details.question-hint>summary:hover{background:rgba(96,165,250,.24)!important}
+${X}:is(.exam-dark,.reverse) #workspace #stem details.question-hint>summary:focus-visible{outline-color:#93c5fd!important}
+${X}:is(.exam-dark,.reverse) #workspace #stem details.question-hint>summary~*{border-left-color:#60a5fa!important;background:rgba(96,165,250,.12)!important}
 ${W} .answers{display:flex!important;flex-direction:column!important;gap:8px!important;margin:0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;width:auto!important}
 ${W} .answers .answer{position:relative!important;display:flex!important;align-items:center!important;gap:12px!important;min-height:52px!important;margin:0 48px 0 0!important;padding:8px 14px!important;border-radius:16px!important;border:1.5px solid var(--tu-line2)!important;background:var(--tu-surface)!important;color:var(--tu-on)!important;box-shadow:none!important;font:500 15.5px/1.45 var(--tu-font)!important;cursor:pointer;outline:0!important;text-decoration:none!important;opacity:1!important;width:auto!important}
 ${W} .answers .answer:hover{border-color:var(--tu-line)!important}
@@ -2162,7 +2205,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(!box || box.dataset.html === html) return false;
     const a = document.activeElement, scrollers = Array.from(box.querySelectorAll('[data-tu-scroll]')).map(s => [s.dataset.tuScroll, s.scrollTop]);
     let key = '';
-    if(a && a !== box && box.contains(a)) key = Array.from(a.attributes).filter(x => /^data-tu|^id$|^data-d$/.test(x.name)).map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('');
+    if(a && a !== box && box.contains(a)) key = Array.from(a.attributes).filter(x => /^data-tu-key$|^data-tu|^id$|^data-d$/.test(x.name)).map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('');
     box.innerHTML = html; box.dataset.html = html;
     scrollers.forEach(([k, top]) => { const s = box.querySelector(`[data-tu-scroll="${k}"]`); if(s) s.scrollTop = top; });
     if(key) box.querySelector(key)?.focus();
@@ -2213,14 +2256,16 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const rec = bridge().form(setup.formId), sel = byId('blockSizeSelect'), want = rec && rec.suggestedBlockSize ? String(rec.suggestedBlockSize) : '';
     startUi.size = want && sel && Array.from(sel.options).some(o => o.value === want) ? want : null;
     el.hidden = false; byId('menu').dataset.tuStart = '1'; heroTitle();
-    startUi.focus = true; // focus moves to Close after the first paint
+    startUi.opener = document.activeElement && document.activeElement !== document.body ? document.activeElement : null; startUi.focus = true; // focus moves to Close after the first paint
   }
   function closeStartView(){
     if(!startUi.open) return;
     startUi.open = false; startUi.token = '';
+    const op = startUi.opener; startUi.opener = null;
     const el = byId('tuStart'); if(el){ el.hidden = true; const box = el.querySelector('.tu-start'); box.innerHTML = ''; box.dataset.html = ''; }
     const menu = byId('menu'); if(menu) delete menu.dataset.tuStart;
     heroTitle();
+    if(op && op.isConnected && op.focus) setTimeout(() => { if(op.isConnected) op.focus(); }, 0); // back to the button that opened it
   }
   function cancelStart(){
     const id = startUi.formId; closeStartView();
@@ -2708,6 +2753,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   function slotsHtml(){
     if(!storageReady()) return connectHtml();
     const slots = readSlots(); if(!slots.length) return '<span class="tu-note">The fixed form slots could not be loaded.</span>';
+    // groups follow the Library tab order (NBME first), forms inside a group in natural order (N-06 before N-10)
+    const tabOrder = libTabs().map(t => t.internal === 'N-Forms' ? 'NBME' : t.internal), rank = c => { const i = tabOrder.indexOf(c); return i < 0 ? 999 : i; };
+    slots.sort((a, b) => rank(a.cat) - rank(b.cat) || (a.cat < b.cat ? -1 : a.cat > b.cat ? 1 : 0) || a.id.localeCompare(b.id, 'en', {numeric:true}));
     const cats = []; slots.forEach(s => { if(!cats.includes(s.cat)) cats.push(s.cat); });
     if(!cats.includes(addUi.cat)) addUi.cat = cats[0];
     const q = addUi.q.trim().toLowerCase();
@@ -2898,10 +2946,16 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(legacyReady(name)) return true;
     const b = document.querySelector(`#settingsPanel [data-v195b-settings-tab="${name}"]`); if(!b) return false;
     setUi.switching = true;
+    // the hidden tab switch must not take the keyboard focus from the control that was just used
+    const a = document.activeElement, key = a && a !== document.body && a.closest && a.closest('.tu-setview') && a.attributes ? Array.from(a.attributes).filter(x => /^data-tu|^data-d$/.test(x.name)).map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('') : '';
+    // ...and must not move the scroll position (the hidden legacy panes change the scrollable height for a moment)
+    const keep = []; for(let e = byId('tuSettings'); e; e = e.parentElement) if(e.scrollTop) keep.push([e, e.scrollTop]);
+    if(document.scrollingElement && document.scrollingElement.scrollTop) keep.push([document.scrollingElement, document.scrollingElement.scrollTop]);
     try{
       b.click();
-      for(let i = 0; i < 60 && !legacyReady(name); i++) await wait(25);
-      await wait(120);
+      const back = () => { for(const [e, top] of keep) if(e.scrollTop !== top) e.scrollTop = top; if(key && (!document.activeElement || document.activeElement === document.body)){ const e = document.querySelector('.tu-setview ' + key); if(e) try{ e.focus({preventScroll:true}); }catch(_){} } };
+      for(let i = 0; i < 60 && !legacyReady(name); i++){ await wait(25); back(); }
+      await wait(120); back();
     }finally{ setUi.switching = false; }
     return legacyReady(name);
   }
@@ -2969,7 +3023,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const setGroup = (name, title, rows, note, extra) => `<div class="tu-setgroup${extra ? ' tu-danger-group' : ''}" data-tu-group="${name}">${title ? `<h3 class="tu-grouph">${title}</h3>` : ''}<div class="tu-setcard${extra ? ' tu-dangercard' : ''}">${rows}</div>${note ? `<p class="tu-note">${note}</p>` : ''}</div>`;
   const openRow = (name, title, hint, chip, open) => `<button type="button" class="tu-setrow tu-setlink" data-tu-open="${esc(name)}" aria-expanded="${!!open}"><div><b>${title}</b>${hint ? `<span>${hint}</span>` : ''}</div><div class="tu-setctl">${chip || ''}<span class="tu-chev"></span></div></button>`;
   const chipHtml = (text, tone) => `<span class="tu-chip${tone ? ' ' + tone : ''}">${text}</span>`;
-  const segBtns = (label, items, cur, attr) => `<div class="tu-setseg" role="radiogroup" aria-label="${label}">${items.map(([v, l, ico]) => `<button type="button" role="radio" aria-checked="${cur === v}" ${attr}="${v}">${ico ? icon(ICONS[ico], 16) : ''}${l}</button>`).join('')}</div>`;
+  const segBtns = (label, items, cur, attr) => `<div class="tu-setseg" role="radiogroup" aria-label="${label}">${items.map(([v, l, ico]) => `<button type="button" role="radio" aria-checked="${cur === v}" ${attr}="${v}" data-tu-key="${esc(label)}:${v}">${ico ? icon(ICONS[ico], 16) : ''}${l}</button>`).join('')}</div>`;
   // optimistic values: a control shows what was just chosen for a moment, until the legacy save has landed and the bridge reports it
   const OV_MS = 2500;
   function ovSet(k, v){ setUi.ov[k] = {v, t: Date.now()}; setTimeout(() => scheduleSettings(true), OV_MS + 100); }
@@ -2982,7 +3036,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     const mode = themeMode(), accent = currentAccent();
     const dot = id => `<button type="button" class="tu-dot" role="radio" aria-checked="${accent === id}" data-tu-pick="${id}" style="background:${ACCENTS[id].brand}" aria-label="${esc(ACCENTS[id].label)}" title="${esc(ACCENTS[id].label)}"></button>`;
     const theme = `<div class="tu-setseg" role="radiogroup" aria-label="Theme">${[['light', 'Light', 'sun'], ['dark', 'Dark', 'moon'], ['system', 'Auto']].map(([v, l, ico]) => `<button type="button" role="radio" aria-checked="${mode === v}" data-tu-theme="${v}">${ico ? icon(ICONS[ico], 16) : ''}${l}</button>`).join('')}</div>`;
-    return setGroup('look', 'Look', setRow('Theme', '', theme) + setRow('Accent color', 'Also tints the app icon' + (IPAD ? ' (add the app to the Home Screen again to update it)' : ''), `<div class="tu-dots" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(dot).join('')}</div>`)) +
+    return setGroup('look', 'Look', setRow('Theme', '', theme) + setRow('Accent color', 'Also tints the app icon' + (IPAD ? ' (add the app to the Home Screen again to update it)' : ''), `<div class="tu-dots" role="radiogroup" aria-label="Accent color">${Object.keys(ACCENTS).map(dot).join('')}</div>`) + '<div class="tu-setmount" data-tu-mount="libstyle"></div>') +
       setGroup('exam', 'Exam', setRow('Exam style', 'NBME looks like test day. Modern fits phones.', segBtns('Exam style', [['nbme', 'NBME'], ['modern', 'Modern']], examStyle(), 'data-tu-examstyle')), 'Other exam-screen options stay in the exam’s own Settings menu.');
   }
   const FLAG_HINTS = {meter:'Progress bar on the tab', overall:'Counts in the main ring', completed:'Listed under Completed', chip:'Score chips on cards'};
@@ -3119,6 +3173,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   const SET_INDEX = [
     ['appearance', 'Theme', 'light dark auto match device system mode'],
     ['appearance', 'Accent color', 'accent colour crimson blue teal icon brand'],
+    ['appearance', 'Library style', 'library simple classic list layout up next'],
     ['appearance', 'Exam style', 'nbme modern test day phone phones'],
     ['library', 'Card layout', 'card density comfortable compact list grid view cards'],
     ['library', 'Keep CMS forms open', 'cms subject tiles expanded'],
@@ -3293,12 +3348,24 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   function setSyncInputs(v){
     v.querySelectorAll('[data-tu-admin]').forEach(el => { const k = el.dataset.tuAdmin; if(el === document.activeElement || k === 'password') return; const src = legacyIn(k === 'device' ? '#fuDeviceLabel' : '#' + k); if(src && el.value !== src.value) el.value = src.value; });
   }
+  // Every pane: a changed default (Mode, steppers, switch, select) only rewrites its own group. The Qbanks list host
+  // (#tuSetQbanks) is never rebuilt, so the bank cards, scroll position and focus stay put and nothing blinks.
+  function swapGroups(body, html, pane){
+    if(body.dataset.tuLast !== pane || !body.dataset.html) return false;
+    const t = document.createElement('template'); t.innerHTML = html;
+    const next = Array.from(t.content.children), cur = Array.from(body.children), key = e => e.dataset ? e.dataset.tuGroup || '' : '';
+    if(!next.length || next.length !== cur.length || next.some((e, i) => !key(e) || key(e) !== key(cur[i]))) return false;
+    next.forEach((e, i) => { if(!(pane === 'qbank' && key(e) === 'banks')) swapHtml(cur[i], e.innerHTML); });
+    body.dataset.html = html; return true;
+  }
   function paintSetView(panel){
     const v = ensureSetView(panel, 'tuSettings'), secs = sections(), q = setUi.q.trim(), pane = q ? 'search' : setUi.sec;
     setUi.sec = normSec(setUi.sec);
     swapHtml(setRegion_(v, 'nav'), secs.map(([id, l]) => `<button type="button" data-tu-sec="${id}" aria-current="${!q && setUi.sec === id ? 'page' : 'false'}">${icon(SET_ICONS[id], 18)}${esc(l)}</button>`).join(''));
     const body = setRegion_(v, 'body'); body.dataset.tuPane = pane;
-    swapHtml(body, q ? searchBody() : SET_BODIES[setUi.sec]());
+    const html = q ? searchBody() : SET_BODIES[setUi.sec]();
+    if(!swapGroups(body, html, pane)) swapHtml(body, html);
+    body.dataset.tuLast = pane;
     setSyncInputs(v);
     if(!q && setUi.sec === 'qbank'){ const h = byId('tuSetQbanks'); if(h && window.ThunderQbanksUI && window.ThunderQbanksUI.mountSettings) window.ThunderQbanksUI.mountSettings(h); }
     const want = legacyFor(setUi.sec);
@@ -3340,7 +3407,9 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       const n = ++setUi.seq; setUi.stale = false;
       const [d, bk, st] = await Promise.all([B.settings(), !IPAD && onSync && B.backups ? B.backups() : null, IPAD && onSync && navigator.storage && navigator.storage.estimate ? navigator.storage.estimate().catch(() => null) : null]);
       if(n !== setUi.seq) return;
+      const same = !!setUi.data && !bk && !st && JSON.stringify(d) === JSON.stringify(setUi.data);
       setUi.data = d; if(bk) setUi.backups = bk; if(st) setUi.storage = st;
+      if(same) return; // nothing changed since the cached draw: no repaint
     }
     draw();
   }
@@ -3428,7 +3497,7 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(ds.tuGo != null){ goResult(+ds.tuGo); return; }
     if(ds.tuDensity){ store.set(KEYS.view, ds.tuDensity === 'list' ? 'list' : 'grid'); scheduleLibrary(); scheduleSettings(); return; }
     if(ds.tuStep){
-      const id = ds.tuStep, out = t.parentNode.querySelector('output'), spq = id === 'setDefaultSpq', n = Math.max(spq ? 15 : 1, (Number(out.dataset.v) || (spq ? 90 : 40)) + Number(ds.d));
+      const id = ds.tuStep, out = t.parentNode.querySelector('output'), spq = id === 'setDefaultSpq', n = Math.min(spq ? 600 : 80, Math.max(spq ? 15 : 1, (Number(out.dataset.v) || (spq ? 90 : 40)) + Number(ds.d)));
       out.dataset.v = String(n); out.textContent = n + (spq ? ' s' : ''); ovSet(spq ? 'spq' : 'blk', n); writeQbNum(id, n); return;
     }
     if(ds.tuFlag && ds.key){
@@ -3443,9 +3512,11 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
     if(ds.tuSetsw){
       const id = ds.tuSetsw, on = t.getAttribute('aria-checked') !== 'true'; t.setAttribute('aria-checked', String(on));
       if(id === 'setLinkQbank'){ ovSet('link', on); scheduleSettings(); } else setUi.safe[id] = on;
-      legacyDo(ds.tab, () => setLegacyEl(legacyIn('#' + id), on)); return; }
+      const p = legacyDo(ds.tab, () => setLegacyEl(legacyIn('#' + id), on));
+      if(id === 'setLinkQbank') qbDefaultsSaved('linkToLibrary', on, p);
+      return; }
     if(t.hasAttribute('data-tu-cmskeep')){ const on = !keepCms(); store.set(KEYS.cmsKeep, on ? 'on' : 'off'); scheduleLibrary(); scheduleSettings(); return; }
-    if(ds.tuDefmode){ const v = ds.tuDefmode; ovSet('mode', v); scheduleSettings(); legacyDo('safety', () => { setLegacyEl(legacyIn('#setDefaultMode'), v); setLegacy('qbankRunMode', v); }); return; }
+    if(ds.tuDefmode){ const v = ds.tuDefmode; ovSet('mode', v); scheduleSettings(); const p = legacyDo('safety', () => { setLegacyEl(legacyIn('#setDefaultMode'), v); setLegacy('qbankRunMode', v); }); qbDefaultsSaved('defaultMode', v, p); return; }
     if(t.hasAttribute('data-tu-reset')){ legacyDo('qbank', () => clickLegacy('#settingsPanel [data-v9="settings-reset-qbank"]')); return; }
     if(ds.tuQid){ if(ds.tuQid === 'backup') setUi.qidBackup = false; clickLegacy(`#qidMigrationCard [data-qid-action="${ds.tuQid}"]`); scheduleSettings(true); return; }
     if(t.hasAttribute('data-tu-gosync')){ openSyncPage(); return; }
@@ -3472,10 +3543,23 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
   }
   function onSetChange(e){
     const t = e.target;
-    if(t.dataset && t.dataset.tuSetsel){ const id = t.dataset.tuSetsel, val = t.value; ovSet('src', val); legacyDo('safety', () => setLegacyEl(legacyIn('#' + id), val)); }
+    if(t.dataset && t.dataset.tuSetsel){ const id = t.dataset.tuSetsel, val = t.value; ovSet('src', val); const p = legacyDo('safety', () => setLegacyEl(legacyIn('#' + id), val)); if(id === 'setAttemptSource') qbDefaultsSaved('defaultAttemptSource', val, p); }
   }
   // Qbank defaults live on the legacy Safety tab (setDefaultSpq / setDefaultBlock); the block size is also the live Qbank setting
-  function writeQbNum(id, n){ legacyDo('safety', () => { setLegacyEl(legacyIn('#' + id), n); if(id === 'setDefaultBlock') setLegacy('qbankBlockSize', n); }); }
+  function writeQbNum(id, n){ const p = legacyDo('safety', () => { setLegacyEl(legacyIn('#' + id), n); if(id === 'setDefaultBlock') setLegacy('qbankBlockSize', n); }); qbDefaultsSaved(id === 'setDefaultSpq' ? 'defaultSecondsPerQuestion' : 'defaultBlockSize', n, p); }
+  // The Qbanks tab follows these New test defaults: once the legacy save has landed (settings() shows the value), tell it to re-read them
+  function qbDefaultsSaved(field, want, after){
+    const tell = () => { try{ if(window.ThunderQbanksUI && typeof window.ThunderQbanksUI.refresh === 'function') window.ThunderQbanksUI.refresh(); }catch(e){} };
+    const B = window.StepLibraryBridge; let tries = 0; const me = (qbDefaultsSaved.n = (qbDefaultsSaved.n || 0) + 1);
+    const look = async () => {
+      if(me !== qbDefaultsSaved.n) return; // a newer change is being watched
+      let q = null;
+      if(B && typeof B.settings === 'function'){ try{ q = ((await B.settings()) || {}).qbank; }catch(e){} }
+      if(!q || q[field] === want || ++tries > 8) return tell();
+      setTimeout(look, 300);
+    };
+    Promise.resolve(after).then(() => setTimeout(look, 250), () => setTimeout(look, 250));
+  }
   function onSetKey(e){
     const t = e.target;
     if(e.key === 'Enter' && t.dataset && t.dataset.tuAdmin){ e.preventDefault(); adminAct(t.dataset.tuAdmin === 'password' ? 'unlock' : t.dataset.tuAdmin === 'device' ? 'device' : 'filter'); return; }
@@ -3961,6 +4045,10 @@ ${XB} .pause-card,${XB} #appDialogLayer .app-dialog{max-width:calc(100vw - 24px)
       if(recs.every(r => r.target.closest && r.target.closest('.tux'))) return;
       scheduleExam();
     }).observe(scr, {childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['class', 'disabled', 'aria-expanded', 'hidden']});
+    /* the Show Hint disclosure stays open when the stem is rebuilt (a highlight re-renders it) */
+    let hintOpen = ''; const hintKey = st => (st.textContent || '').slice(0, 80);
+    scr.addEventListener('toggle', e => { const d = e.target; if(d && d.matches && d.matches('#stem details.question-hint')) hintOpen = d.open ? hintKey(d.closest('#stem')) : ''; }, true);
+    new MutationObserver(() => { if(!hintOpen) return; const d = scr.querySelector('#stem details.question-hint:not([open])'); if(d && hintKey(d.closest('#stem')) === hintOpen) d.open = true; }).observe(scr, {childList:true, subtree:true});
     scr.addEventListener('click', onExamClick);
     new MutationObserver(() => decorateExamSettings()).observe(document.body, {childList:true});
     document.addEventListener('click', onOnlyNav, true);
@@ -4242,6 +4330,21 @@ ${P} :is(#stem,.lset-intro) table tr:hover:not(.tun0){background:#d7dced!importa
 ${P} #stem :is(sub,sup){font-size:75%!important;line-height:0!important;vertical-align:baseline!important;position:relative!important}
 ${P} #stem sub{bottom:-.5em!important}${P} #stem sup{top:-.5em!important}
 ${P} #stem u{text-decoration:underline!important}
+/* NBME: imported-bank "Show Hint" disclosure (native details; pill summary, tinted callout when open) */
+${P} #workspace #stem details.question-hint{display:block!important;margin:1.25em 0 0!important;padding:0!important;border:0!important;background:none!important}
+${P} #workspace #stem details.question-hint>summary{display:inline-flex!important;align-items:center!important;gap:7px!important;box-sizing:border-box!important;list-style:none!important;cursor:pointer!important;user-select:none!important;-webkit-user-select:none!important;padding:5px 11px 5px 10px!important;border:1px solid rgba(37,99,235,.38)!important;border-radius:999px!important;background:rgba(37,99,235,.08)!important;color:#1d4ed8!important;font:inherit!important;font-size:.875em!important;font-weight:600!important;line-height:1.3!important;text-decoration:none!important;outline-offset:2px}
+${P} #workspace #stem details.question-hint>summary::-webkit-details-marker{display:none!important}
+${P} #workspace #stem details.question-hint>summary::marker{content:none!important}
+${P} #workspace #stem details.question-hint>summary::before{content:""!important;display:inline-block!important;width:1.1em;height:1.1em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat}
+${P} #workspace #stem details.question-hint>summary::after{content:""!important;display:inline-block!important;width:.45em;height:.45em;margin:-.15em 0 0 .1em;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform .15s}
+${P} #workspace #stem details.question-hint[open]>summary::after{transform:rotate(-135deg);margin-top:.15em}
+${P} #workspace #stem details.question-hint>summary:hover{background:rgba(37,99,235,.15)!important}
+${P} #workspace #stem details.question-hint>summary:focus-visible{outline:2px solid #2563eb!important}
+${P} #workspace #stem details.question-hint>summary~*{display:block!important;box-sizing:border-box!important;margin:8px 0 0!important;padding:10px 14px!important;border:0!important;border-left:3px solid #2563eb!important;border-radius:0 10px 10px 0!important;background:rgba(37,99,235,.07)!important;font-size:inherit!important;line-height:inherit!important}
+${PD} #workspace #stem details.question-hint>summary{border-color:rgba(147,197,253,.4)!important;background:rgba(96,165,250,.14)!important;color:#93c5fd!important}
+${PD} #workspace #stem details.question-hint>summary:hover{background:rgba(96,165,250,.24)!important}
+${PD} #workspace #stem details.question-hint>summary:focus-visible{outline-color:#93c5fd!important}
+${PD} #workspace #stem details.question-hint>summary~*{border-left-color:#60a5fa!important;background:rgba(96,165,250,.12)!important}
 ${P} #workspace :is(.v15-highlight,[data-v15-highlight-id]){background:#ff0!important;color:inherit!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;cursor:pointer}
 ${P} #workspace ::selection{background:#b3d4fc}
 /* answer choices (v2 calibration, screen 9): the reference's option row (.opt = .mk | .label-box (label | .sow)) on the
@@ -5848,7 +5951,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
   // The HTML head hides the page (#tuCloak) until this sets data-tu-ready, so the legacy UI never flashes on open.
   // Shown once the first view is drawn: Home is built, an exam runs, a dialog asks something, or a panel other than the
   // HTML's default Quick practice is open (startup switches to Library after its async scan, so Quick practice alone
-  // is not a drawn view yet; the time cap covers a start that stays there).
+  // is not a drawn view yet; the 8 s time cap covers a start that stays there; a slow scan keeps the splash instead of showing Quick practice).
   function revealWhenDrawn(){
     const root = document.documentElement; if(root.hasAttribute('data-tu-ready')) return;
     const start = Date.now();
@@ -5858,7 +5961,7 @@ ${NW} .review-panel .review-card .goq{margin:3px 0!important;padding:2px 8px!imp
       if(lib && lib.classList.contains('active')) return lib.classList.contains('tu-has-home') && !!byId('tuHome');
       return !!active && active.id !== 'quickModePanel';
     };
-    const check = () => { if(root.hasAttribute('data-tu-ready')) return; if(drawn() || Date.now() - start > 1500) root.setAttribute('data-tu-ready', '1'); else requestAnimationFrame(check); };
+    const check = () => { if(root.hasAttribute('data-tu-ready')) return; if(drawn() || Date.now() - start > 8000) root.setAttribute('data-tu-ready', '1'); else requestAnimationFrame(check); };
     requestAnimationFrame(check);
   }
   function boot(){

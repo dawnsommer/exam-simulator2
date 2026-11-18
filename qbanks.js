@@ -53,23 +53,24 @@ const PULLS = ['mix', 'random', 'order'];
 // Existing users keep today's behaviour: Shuffle was always on and never saved, so any saved prefs without `pull` = Random. Only a fresh profile starts on Exam mix.
 const pullFromPrefs = p => (PULLS.includes(p.pull) ? p.pull : typeof p.shuffle === 'boolean' ? (p.shuffle ? 'random' : 'order') : Object.keys(p || {}).length ? 'random' : 'mix');
 const S = {
-  tab: 'create', prevTab: 'create',
+  tab: 'create', prevTab: 'create', virt: false,
   sel: new Set(Array.isArray(P.sel) ? P.sel : []), savedSel: Array.isArray(P.sel) ? P.sel.slice() : [], selFallback: '', hidden: new Set(Array.isArray(P.hidden) ? P.hidden : []), combine: P.combine === true || (Array.isArray(P.sel) && P.sel.length > 1), lastBank: '',
   statuses: new Set(Array.isArray(P.statuses) && P.statuses.length ? P.statuses : ['unused']),
   sort: ['az', 'count', 'weak'].includes(P.sort) ? P.sort : 'az', facet: P.facet === 'sys' ? 'sys' : 'sub',
   reviewTag: P.reviewTag !== false,
-  mode: P.mode === 'timed' ? 'timed' : 'tutor', secs: Math.max(15, Math.min(600, Number(P.secs) || 90)),
-  track: P.track === 'forms' ? 'forms' : P.track === 'qbank' ? 'qbank' : '', attempt: typeof P.attempt === 'string' ? P.attempt : '',
+  /* mode / seconds / track / attempt are the New test defaults from Settings (loadDefaults), never saved here; old saved values are ignored */
+  mode: 'tutor', secs: 90, track: '', attempt: '', defKey: '',
   subs: null, syss: null, sysVis: null, fq: '', formsOff: new Set(), want: 40, perBlock: 40, pull: pullFromPrefs(P), name: '', preset: '',
-  hf: 'all', hq: '', hb: '', more: { sub: false, sys: false }, nameOpen: false, open: {}, stale: true, busy: false
+  hf: 'all', hm: '', hq: '', hb: '', hs: 'new', more: { sub: false, sys: false }, nameOpen: false, open: {}, stale: true, busy: false
 };
 const selKey = () => [...S.sel].sort().join('|');
 /* The saved pick is kept while the bank list is still loading (empty or partial) or a saved bank is hidden: the shown fallback is never written over it until the user changes the pick. */
 function savePrefs() {
   if (!(S.selFallback && S.selFallback === selKey())) { S.savedSel = [...S.sel]; S.selFallback = ''; }
-  try { root.localStorage.setItem(KEY, JSON.stringify({ sel: S.savedSel, hidden: [...S.hidden], combine: S.combine, statuses: [...S.statuses], sort: S.sort, facet: S.facet, reviewTag: S.reviewTag, mode: S.mode, secs: S.secs, track: S.track, attempt: S.attempt, pull: S.pull })); } catch (e) {}
+  try { root.localStorage.setItem(KEY, JSON.stringify({ sel: S.savedSel, hidden: [...S.hidden], combine: S.combine, statuses: [...S.statuses], sort: S.sort, facet: S.facet, reviewTag: S.reviewTag, pull: S.pull })); } catch (e) {}
 }
 let D = null;      // bridge qbanks() result
+let DEF = null;    // Settings → Qbanks → New test defaults, mapped (null when the bridge has no settings())
 let seq = 0;
 
 /* ---------- Question order: Exam mix / Random / Form order, with a "This block" preview from B.qbanksPlan ---------- */
@@ -97,12 +98,12 @@ function schedulePlan(m) {
   PV.t = setTimeout(async () => {
     try {
       const formIds = D.forms.filter(f => S.sel.has(f.bank) && !S.formsOff.has(f.id)).map(f => f.id);
-      const sel = { statuses: [...S.statuses], subjects: S.subs ? [...S.subs] : m.subjects.slice(), systems: S.syss ? [...S.syss] : m.systems.slice(), source: trackNow(), attempt: attemptNow(), pull: S.pull, formIds };
+      const sel = { statuses: [...S.statuses], subjects: S.subs ? [...S.subs] : null, systems: S.syss ? [...S.syss] : null, source: trackNow(), attempt: attemptNow(), pull: S.pull, formIds };
       const res = await B.qbanksPlan(sel, Math.max(1, m.count), Math.max(1, S.perBlock));
       if (n !== PV.seq) return;
       PV.key = key; PV.res = res && typeof res === 'object' ? res : null;
       // patch only the preview box: a full render() here could swallow a click that is landing on Generate
-      const box = byId('tqPv'); if (box) box.innerHTML = pvInner(); else render();
+      const box = byId('tqPv'); if (box) { const h = pvInner(); if (box._h !== h) { box.innerHTML = h; box._h = h; } } else render();
     } catch (e) { if (n === PV.seq) { PV.key = key; PV.res = null; } }
   }, 220);
 }
@@ -136,14 +137,46 @@ const badge = b => `<span class="tq-badge" style="background:${esc(b.color)}">${
 const mini = b => `<span class="tq-mini" style="background:${esc(b.color)}" title="${esc(b.name)}">${esc(b.code)}</span>`;
 
 /* ---------- data ---------- */
+/* Settings → Qbanks → New test defaults (StepLibraryBridge.settings().qbank) → the tab's starting values. Testing = Timed. */
+function mapDefaults(q) {
+  if (!q || typeof q !== 'object') return null;
+  const num = (v, lo, hi, d) => { v = Math.round(Number(v)); return Number.isFinite(v) && v > 0 ? Math.max(lo, Math.min(hi, v)) : d; };
+  const track = q.linkToLibrary ? 'forms' : 'qbank';
+  return { mode: q.defaultMode === 'tutor' ? 'tutor' : 'timed', secs: num(q.defaultSecondsPerQuestion, 15, 600, 90), perBlock: num(q.defaultBlockSize, 1, 80, 40), track,
+    attempt: ATTEMPTS[track].some(a => a[0] === q.defaultAttemptSource) ? q.defaultAttemptSource : defaultAttempt(track) };
+}
+/* applied on the first load and again only when a default changes (compared by key); edits made in the tab stay until then */
+async function loadDefaults() {
+  const B = bridge(); let q = null;
+  if (B && typeof B.settings === 'function') { try { const r = await B.settings(); q = r && r.qbank; } catch (e) {} }
+  const d = DEF = mapDefaults(q);
+  if (!d) { if (!S.defKey) { S.defKey = 'none'; if (!S.track) S.track = legacyVal('qbankSourceMode') === 'linked' ? 'forms' : 'qbank'; } return; }
+  const key = JSON.stringify(d); if (key === S.defKey) return;
+  S.defKey = key; S.mode = d.mode; S.secs = d.secs; S.perBlock = d.perBlock; S.want = d.perBlock; S.track = d.track; S.attempt = d.attempt; S.preset = '';
+}
+const presetDefs = () => (DEF ? { perBlock: DEF.perBlock, secs: DEF.secs } : undefined);
+function dataSig(d, tr, at) {
+  let h = 5381; const add = v => { v = String(v == null ? '' : v); for (let i = 0; i < v.length; i++) h = ((h << 5) + h + v.charCodeAt(i)) | 0; h = ((h << 5) + h + 124) | 0; };
+  add(tr); add(at); add(d.tagsUpdatedAt); add(d.rows.length); add(d.forms.length); add(d.banks.length); add(d.tests.length);
+  d.banks.forEach(b => { add(b.id); add(b.name); add(b.code); add(b.color); });
+  d.forms.forEach(f => { add(f.id); add(f.bank); add(f.tab); add(f.name); });
+  d.rows.forEach(r => { for (const k in r) { const v = r[k]; add(k); add(v && typeof v === 'object' ? JSON.stringify(v) : v); } });
+  d.tests.forEach(t => add(JSON.stringify(t)));
+  add(JSON.stringify(d.prov));
+  return h + ':' + d.rows.length;
+}
 async function fetchData() {
   const B = bridge(); if (!B || typeof B.qbanks !== 'function') return;
+  await loadDefaults();
   const n = ++seq; S.stale = false;
   let d;
   try { d = await B.qbanks({ source: trackNow(), attempt: attemptNow() }); } catch (e) { console.warn('ThunderQbanks: qbanks() failed', e); S.err = String((e && e.message) || e); if (n === seq) render(); return; }
   if (n !== seq || !d) return;
-  S.err = '';
-  D = { banks: d.banks || [], forms: d.forms || [], rows: d.rows || [], prov: d.prov || {}, tests: d.tests || [], tagsUpdatedAt: d.tagsUpdatedAt };
+  const wasErr = !!S.err; S.err = '';
+  const nd = { banks: d.banks || [], forms: d.forms || [], rows: d.rows || [], prov: d.prov || {}, tests: d.tests || [], tagsUpdatedAt: d.tagsUpdatedAt };
+  /* same data as the last answer (the post-exam second refetch usually is): keep D and skip the render entirely */
+  const sig = dataSig(nd, trackNow(), attemptNow()); if (D && !wasErr && D._sig === sig) return;
+  nd._sig = sig; D = nd;
   reconcileSel();
   const off = new Set(D.forms.map(f => f.id)); S.formsOff = new Set([...S.formsOff].filter(id => off.has(id)));
   render();
@@ -160,6 +193,12 @@ function reconcileSel() {
   S.sel = new Set(keep);
   S.selFallback = S.savedSel.some(id => !has.has(id)) ? selKey() : '';
   if (S.sel.size > 1) S.combine = true;
+}
+/* after a legacy test action (rename/delete/export confirm dialogs close later): refetch in a burst until the list reflects it */
+function legacyRefresh() {
+  clearTimeout(legacyRefresh.t); let i = 0; const gaps = [350, 700, 1200, 2000, 3500, 5000, 8000];
+  const go = () => { S.stale = true; fetchData(); if (++i < gaps.length) legacyRefresh.t = setTimeout(go, gaps[i]); };
+  legacyRefresh.t = setTimeout(go, gaps[0]);
 }
 function markStale() { S.stale = true; clearTimeout(markStale.t); markStale.t = setTimeout(() => { if (activePanel()) fetchData(); }, 120); }
 
@@ -220,23 +259,25 @@ function banksHtml() {
     <div class="tq-bcards" role="${S.combine ? 'group' : 'radiogroup'}" aria-label="Qbanks">${visBanks().map(b => bankCard(b, S.sel.has(b.id), ids.indexOf(b.id) + 1)).join('')}</div>
     ${progressHtml(ids)}`;
 }
-/* progress over a bank set: same status source as the builder (rows come from the current track), so it equals model().poolCount */
+/* progress over a bank set: same rows as baseRows() (selected banks minus forms switched off under Limit to specific forms) and the same status source as the builder, so it equals the status chips / model().poolCount. "Used" = correct + incorrect + omitted. */
 function progressHtml(ids) {
   if (!D) return '';
-  const set = new Set(ids), rows = D.rows.filter(r => set.has(r.bank)), total = rows.length;
+  const set = new Set(ids), rows = D.rows.filter(r => set.has(r.bank) && !S.formsOff.has(r.formId)), total = rows.length;
   let c = 0, w = 0, o = 0;
   rows.forEach(r => { if (r.status === 'correct') c++; else if (r.status === 'incorrect') w++; else if (r.status === 'omitted') o++; });
-  const ans = c + w + o, un = total - ans, pc = Math.round(100 * ans / Math.max(1, total)), pw = x => 100 * x / Math.max(1, total);
+  const ans = c + w + o, un = total - ans, pc = Math.round(100 * ans / Math.max(1, total)), pw = x => 100 * x / Math.max(1, total), cp = ans ? Math.round(100 * c / ans) : null;
   const names = ids.map(id => (bankById(id) || { name: id }).name).join(' + ');
   const tests = D.tests.filter(t => (t.banks || []).some(id => set.has(id)));
-  const last = tests.reduce((a, t) => Math.max(a, Date.parse(t.updatedAt || t.completedAt || t.createdAt) || 0), 0);
-  const foot = [ans ? `${Math.round(100 * c / ans)}% correct` : '', tests.length ? plural(tests.length, 'test') : '', last && when(last) ? `last ${when(last).replace(/^(Today|Yesterday)$/, x => x.toLowerCase())}` : ''].filter(Boolean).join(' · ');
+  const last = tests.reduce((a, t) => Math.max(a, Date.parse(t.updatedAt || t.completedAt || t.createdAt) || 0), 0), lastW = last ? when(last) : '';
+  const pts = trendPoints(tests, 10);
+  const cell = (v, l, col) => `<span class="tq-pn"><b${col ? ` style="color:${col}!important"` : ''}>${v}</b> <small>${l}</small></span>`;
+  const foot = [ans ? cell(cp + '%', 'correct', pctCol(cp)) : '', tests.length ? cell(fmt(tests.length), tests.length === 1 ? 'test' : 'tests') : '', last && lastW ? `<span class="tq-pn"><small>last</small> <b>${esc(lastW.replace(/^(Today|Yesterday)$/, x => x.toLowerCase()))}</b></span>` : ''].join('');
   const leg = (cls, v, l) => `<span class="tq-lgi"><i class="${cls}"></i>${l} <b>${fmt(v)}</b></span>`;
-  return `<div class="tq-card tq-prog" data-r="progress" aria-label="Progress"><div class="tq-pring" style="--p:${pc}" role="img" aria-label="${pc}% done"><span><b>${pc}%</b><small>done</small></span></div>
-    <div class="tq-pbody"><div class="tq-ptop"><b class="tq-ptitle" title="${esc(names)}">${esc(names || 'No bank')}</b><span class="tq-pans">${fmt(ans)} of ${fmt(total)} answered</span></div>
+  return `<div class="tq-card tq-prog" data-r="progress" aria-label="Performance"><div class="tq-pring" style="--p:${pc};--cp:${cp || 0};--cc:${pctCol(cp)}" role="img" aria-label="${pc}% used${cp == null ? '' : ', ' + cp + '% correct'}"><i class="tq-pin"></i><span><b>${pc}%</b><small>used</small></span></div>
+    <div class="tq-pbody"><div class="tq-ptop"><b class="tq-ptitle" title="${esc(names)}">${esc(names || 'No bank')}</b><span class="tq-pans">${fmt(ans)} of ${fmt(total)} used</span></div>
+      <div class="tq-pmid">${foot ? `<div class="tq-pfoot">${foot}</div>` : ''}${pts.length >= 3 ? `<span class="tq-ptrend" style="color:${pctCol(pts[pts.length - 1])}!important">${sparkSvg(pts, 92, 28, 'Score trend')}</span>` : ''}</div>
       <div class="tq-pstack" aria-hidden="true"><i style="width:${pw(c)}%;background:var(--q-ok)"></i><i style="width:${pw(w)}%;background:var(--q-bad)"></i><i style="width:${pw(o)}%;background:var(--q-warn)"></i></div>
-      <div class="tq-plegend">${leg('tq-lc', c, 'Correct')}${leg('tq-lw', w, 'Incorrect')}${leg('tq-lo', o, 'Omitted')}${leg('tq-lu', un, 'Unused')}</div>
-      ${foot ? `<div class="tq-pfoot">${esc(foot)}</div>` : ''}</div></div>`;
+      <div class="tq-plegend">${leg('tq-lc', c, 'Correct')}${leg('tq-lw', w, 'Incorrect')}${leg('tq-lo', o, 'Omitted')}${leg('tq-lu', un, 'Unused')}</div></div></div>`;
 }
 function rowHtml(kind, name, count, perf, on, disabled) {
   const p = perf || { n: 1, c: 0, w: 0 }, pc = pctOf(p);
@@ -264,7 +305,7 @@ function createHtml(m) {
   const forms = D.forms.filter(f => S.sel.has(f.bank)), groups = [];
   [...S.sel].forEach(id => { const b = bankById(id); if (!b) return; const tabs = new Map(); forms.filter(f => f.bank === id).forEach(f => { const t = f.tab || 'Imported files'; if (!tabs.has(t)) tabs.set(t, []); tabs.get(t).push(f); }); groups.push({ b, tabs }); });
   const offN = forms.filter(f => S.formsOff.has(f.id)).length;
-  const ps = C.presets(m);
+  const ps = C.presets(m, presetDefs());
   const sortSeg = `<div class="tq-sortseg" role="radiogroup" aria-label="Sort">${[['az', 'A–Z'], ['count', 'Most'], ['weak', 'Weakest']].map(([k, l]) => `<button type="button" role="radio" aria-checked="${S.sort === k}" data-a="sort" data-v="${k}">${l}</button>`).join('')}</div>`;
   const pv = {}; [...S.sel].forEach(id => { const p = D.prov[id] || {}; for (const k in p) pv[k] = (pv[k] || 0) + p[k]; });
   const provHtml = [['question', 'the question', 'var(--q-ok)'], ['form', 'the CMS form', 'var(--q-p)'], ['inferred', 'inferred from system', 'var(--q-warn)']].filter(([k]) => pv[k]).map(([k, l, c]) => `<i style="--c:${c}">${l} ${fmt(pv[k])}</i>`).join('');
@@ -282,7 +323,7 @@ function createHtml(m) {
     <section class="tq-sec"><div class="tq-sech"><h2>Question status</h2><span class="tq-note">Pick any mix</span></div>
       <div class="tq-pools" role="group" aria-label="Question status">${STATUS.map(([k, l]) => `<button type="button" class="tq-pool tq-p-${k}" role="checkbox" aria-checked="${S.statuses.has(k)}" data-a="pool" data-v="${k}"><span class="tq-bx">${S.statuses.has(k) ? tick : ''}</span>${l}<small>${fmt(m.poolCount[k])}</small></button>`).join('')}</div></section>
     <section class="tq-sec tq-ss" data-facet="${S.facet}"><div class="tq-sech"><h2>Subjects · Systems</h2>
-      <div class="tq-sectools"><label class="tq-find">${ICON.search}<span class="tq-sr">Filter subjects and systems</span><input type="search" placeholder="Filter" data-a="fq" value="${esc(S.fq)}"></label>${sortSeg}</div></div>
+      <div class="tq-sectools"><label class="tq-find">${ICON.search}<span class="tq-sr">Filter subjects and systems</span><input type="search" class="tu-bare" placeholder="Filter" data-a="fq" value="${esc(S.fq)}"></label>${sortSeg}</div></div>
       <div class="tq-facetsw" role="radiogroup" aria-label="Show subjects or systems">${[['sub', 'Subjects', nSub, m.subjects.length], ['sys', 'Systems', nSys, m.systems.length]].map(([k, l, a, b]) => `<button type="button" role="radio" aria-checked="${S.facet === k}" data-a="facet" data-v="${k}">${l} <em>${a}/${b}</em></button>`).join('')}</div>
       <div class="tq-cols">
         <div class="tq-col" data-col="sub"><div class="tq-colh"><h3>Subjects <em>${nSub}/${m.subjects.length}</em></h3><button type="button" class="tq-link" data-a="allsub" data-v="${allSub ? 0 : 1}">${allSub ? 'Clear' : 'Select all'}</button></div>
@@ -309,37 +350,95 @@ function createHtml(m) {
     <div class="tq-nums2"><label class="tq-field"><span>Per block</span><input class="tq-inp" type="number" min="1" max="80" value="${S.perBlock}" inputmode="numeric" data-a="perblock"></label>
     ${S.mode === 'timed' ? `<label class="tq-field"><span>Seconds per question</span><input class="tq-inp" type="number" min="15" max="600" value="${S.secs}" inputmode="numeric" data-a="secs"></label>` : ''}</div>
     <div class="tq-pull"><span class="tq-pulll" id="tqPullL">Question order</span><div class="tq-sortseg tq-pullseg" role="radiogroup" aria-labelledby="tqPullL">${PULL_OPTS.map(([k, l, w]) => `<button type="button" role="radio" aria-checked="${S.pull === k}" aria-label="${l}" data-a="pull" data-v="${k}"><span class="tq-wl">${l}</span><span class="tq-wn">${w}</span></button>`).join('')}</div>
-    <div class="tq-pullsub" id="tqPullSub">${esc(pullSub())}</div><div class="tq-pv" id="tqPv">${pvInner()}</div></div>
+    <div class="tq-pullsub" id="tqPullSub">${esc(pullSub())}</div><div class="tq-pv" id="tqPv" style="min-height:${S.pull === 'order' ? 0 : 76}px">${pvInner()}</div></div>
     <button type="button" class="tq-namebtn" data-a="nameopen" aria-expanded="${S.nameOpen}"><span>Name: ${nm ? esc(nm) : 'auto'}</span>${chev}</button>
     ${S.nameOpen ? `<input class="tq-inp tq-nameinp" type="text" placeholder="${esc(autoName())}" aria-label="Test name" data-a="name" value="${esc(S.name)}" autocomplete="off">` : ''}
     <button type="button" class="tq-btn tq-fill tq-go" data-a="go" ${why || S.busy ? 'disabled' : ''}>${ICON.play}Generate test</button>
     <div class="tq-why" id="tqWhy">${esc(why || summary(m))}</div>
+    ${DEF ? `<div class="tq-defs"><span>Defaults from Settings</span>${root.ThunderUI && typeof root.ThunderUI.openSettings === 'function' ? '<button type="button" class="tq-link tq-inline" data-a="opensettings" aria-label="Change the new test defaults in Settings">Change</button>' : ''}</div>` : ''}
   </div></aside></div>`;
 }
 
 /* history */
-let subjectTotal = { d: null, n: 0 };
+/* ---- pure helpers (unit-tested through ThunderQbanksUI._test): date buckets, sort, stat strip, sparkline, performance summary ---- */
+const tsOf = t => Date.parse(t.completedAt || t.updatedAt || t.createdAt) || 0;
+const BUCKETS = ['Today', 'Yesterday', 'This week', 'This month', 'Earlier'];
+const HSORTS = [['new', 'Newest'], ['old', 'Oldest'], ['best', 'Best score'], ['worst', 'Worst score']];
+function dateBucket(ts, now) {
+  const d = new Date(ts); if (!ts || isNaN(d)) return 'Earlier';
+  const t = now == null ? new Date() : new Date(now), day = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime(), n = Math.round((day(t) - day(d)) / 864e5);
+  if (n <= 0) return 'Today'; if (n === 1) return 'Yesterday'; if (n < 7) return 'This week';
+  return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() ? 'This month' : 'Earlier';
+}
+function sortTests(list, key) {
+  const a = list.slice(), sc = t => (t.done && t.percent != null ? t.percent : null);
+  if (key === 'best' || key === 'worst') {
+    const dir = key === 'best' ? -1 : 1;
+    return a.sort((x, y) => { const p = sc(x), q = sc(y); if (p == null && q == null) return tsOf(y) - tsOf(x); if (p == null) return 1; if (q == null) return -1; return dir * (p - q) || tsOf(y) - tsOf(x); });
+  }
+  return a.sort((x, y) => (key === 'old' ? tsOf(x) - tsOf(y) : tsOf(y) - tsOf(x)));
+}
+function groupTests(list, key, now) {
+  if (!list.length) return [];
+  if (key === 'best' || key === 'worst') return [{ label: key === 'best' ? 'Highest scores' : 'Lowest scores', items: list }];
+  const by = {}; list.forEach(t => { (by[dateBucket(tsOf(t), now)] = by[dateBucket(tsOf(t), now)] || []).push(t); });
+  return (key === 'old' ? BUCKETS.slice().reverse() : BUCKETS).filter(b => by[b]).map(b => ({ label: b, items: by[b] }));
+}
+/* last n completed scores, oldest first */
+function trendPoints(list, n) {
+  return list.filter(t => t.done && t.percent != null).sort((x, y) => tsOf(x) - tsOf(y)).slice(-n).map(t => Math.round(t.percent));
+}
+function histStats(list) {
+  const done = list.filter(t => t.done), sc = done.filter(t => t.percent != null);
+  return { total: list.length, completed: done.length, avg: sc.length ? Math.round(sc.reduce((s, t) => s + t.percent, 0) / sc.length) : null, qs: list.reduce((s, t) => s + (t.total || 0), 0), pts: trendPoints(list, 12) };
+}
+function continueTest(list) {
+  return list.filter(t => !t.done).sort((x, y) => tsOf(y) - tsOf(x))[0] || null;
+}
+function sparkSvg(v, w, h, label) {
+  if (!v || !v.length) return '';
+  const W = w || 96, H = h || 30, pad = 4, lo = Math.min(...v), hi = Math.max(...v), span = Math.max(20, hi - lo), base = (hi + lo) / 2 - span / 2;
+  const xs = i => (v.length === 1 ? W / 2 : pad + i * (W - 2 * pad) / (v.length - 1)), ys = p => H - pad - ((p - base) / span) * (H - 2 * pad);
+  const pts = v.map((p, i) => `${xs(i).toFixed(1)},${ys(p).toFixed(1)}`), last = pts[pts.length - 1].split(',');
+  return `<svg class="tq-spark" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label || 'Score trend')}: ${v.join(', ')}">${v.length > 1 ? `<polyline points="${pts.join(' ')}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>` : ''}<circle cx="${last[0]}" cy="${last[1]}" r="3" fill="currentColor"/></svg>`;
+}
+/* strongest / weakest system among those with at least 10 answered (correct + incorrect); needs two to compare */
+function perfSummary(m) {
+  const q = m.systems.map(k => { const p = m.sysPerf[k] || { c: 0, w: 0 }; return { name: k, pct: pctOf(p), n: p.c + p.w }; }).filter(x => x.n >= 10 && x.pct != null && x.name !== UNAS);
+  if (q.length < 2) return null;
+  q.sort((a, b) => b.pct - a.pct || b.n - a.n || a.name.localeCompare(b.name));
+  return { best: q[0], worst: q.slice().sort((a, b) => a.pct - b.pct || b.n - a.n || a.name.localeCompare(b.name))[0] };
+}
+/* distinct subject / system counts of a test's own banks (all banks when it names none), cached per data set */
+let facetTotals = { d: null, by: {} };
+function bankTotals(t) {
+  if (facetTotals.d !== D) facetTotals = { d: D, by: {} };
+  const ids = (t.banks || []).slice().sort(), key = ids.join('|'), hit = facetTotals.by[key]; if (hit) return hit;
+  const set = new Set(ids), rows = ids.length ? D.rows.filter(r => set.has(r.bank)) : D.rows;
+  return (facetTotals.by[key] = { sub: new Set(rows.map(r => r.subject)), sys: new Set(rows.map(r => r.system)) });
+}
 function filterLine(t) {
   const f = t.filter;
   if (f && Array.isArray(f.statuses)) {
-    if (subjectTotal.d !== D) { subjectTotal = { d: D, n: new Set(D.rows.map(r => r.subject)).size }; }
+    const tot = bankTotals(t), allOf = (sel, all) => !Array.isArray(sel) || !sel.length || !all.size || sel.filter(x => all.has(x)).length >= all.size;
     const st = f.statuses.map(s => STATUS_LABEL[s] || s).join(' + ') || 'Any status';
-    const sb = !f.subjects || !f.subjects.length || f.subjects.length >= subjectTotal.n ? 'all subjects' : plural(f.subjects.length, 'subject');
-    const sy = !f.systems || !f.systems.length ? '' : ` · ${plural(f.systems.length, 'system')}`;
+    const sb = allOf(f.subjects, tot.sub) ? 'all subjects' : plural(f.subjects.length, 'subject');
+    const sy = allOf(f.systems, tot.sys) ? '' : ` · ${plural(f.systems.length, 'system')}`;
     return `${st} · ${sb}${sy}`;
   }
   const src = t.sourceMode === 'linked' ? 'Form attempts' : 'Qbank history';
   return `${POOL_LABEL[t.poolType] || t.poolType || ''} · ${src}`.replace(/^ · /, '');
 }
+function testsInBank() { return S.hb ? D.tests.filter(t => (t.banks || []).includes(S.hb)) : D.tests.slice(); }
 function testsFiltered() {
   const q = S.hq.trim().toLowerCase(), names = {}; D.forms.forEach(f => { names[f.id] = f.name || f.id; });
-  return D.tests.filter(t => {
+  return sortTests(D.tests.filter(t => {
     if (S.hf === 'prog' && t.done) return false; if (S.hf === 'done' && !t.done) return false;
-    if (S.hf === 'tutor' && t.mode !== 'tutor') return false; if (S.hf === 'timed' && t.mode === 'tutor') return false;
+    if (S.hm === 'tutor' && t.mode !== 'tutor') return false; if (S.hm === 'timed' && t.mode === 'tutor') return false;
     if (S.hb && !(t.banks || []).includes(S.hb)) return false;
     if (q && !((t.name || '') + ' ' + (t.formIds || []).map(id => names[id] || id).join(' ')).toLowerCase().includes(q)) return false;
     return true;
-  }).sort((a, b) => (Date.parse(b.updatedAt || b.completedAt || b.createdAt) || 0) - (Date.parse(a.updatedAt || a.completedAt || a.createdAt) || 0));
+  }), S.hs);
 }
 function bankChips(kind, ids, cur) {
   return `<div class="tq-bchips" role="group" aria-label="Filter by bank"><button type="button" class="tq-chip" aria-pressed="${!cur}" data-a="${kind}" data-v="">All</button>${ids.map(id => { const b = bankById(id); return `<button type="button" class="tq-chip tq-bchip" aria-pressed="${cur instanceof Set ? cur.has(id) : cur === id}" data-a="${kind}" data-v="${esc(id)}">${mini(b)}<span>${esc(b.name)}</span></button>`; }).join('')}</div>`;
@@ -347,20 +446,37 @@ function bankChips(kind, ids, cur) {
 function testBankIds() { const have = new Set(); D.tests.forEach(t => (t.banks || []).forEach(id => have.add(id))); return D.banks.filter(b => have.has(b.id)).map(b => b.id); }
 function historyHtml() {
   const hbIds = testBankIds(); if (S.hb && !hbIds.includes(S.hb)) S.hb = '';
-  const list = testsFiltered();
-  const ring = t => t.percent == null ? `<div class="tq-ring" style="--p:50;--c:var(--q-warn)" aria-label="In progress"><span>½</span></div>` : `<div class="tq-ring" style="--p:${Math.round(t.percent)};--c:${t.percent >= 70 ? 'var(--q-ok)' : t.percent >= 60 ? 'var(--q-warn)' : 'var(--q-bad)'}"><span>${Math.round(t.percent)}%</span></div>`;
-  return `${hbIds.length ? bankChips('hb', hbIds, S.hb) : ''}<div class="tq-htools"><div class="tq-chips" role="group" aria-label="Filter tests">${[['all', 'All'], ['prog', 'In progress'], ['done', 'Completed'], ['tutor', 'Tutor'], ['timed', 'Timed']].map(([k, l]) => `<button type="button" class="tq-chip" aria-pressed="${S.hf === k}" data-a="hf" data-v="${k}">${l}</button>`).join('')}</div>
-    <div class="tq-sectools"><label class="tq-find">${ICON.search}<span class="tq-sr">Search tests</span><input type="search" placeholder="Search tests" data-a="hq" value="${esc(S.hq)}"></label><button type="button" class="tq-ib" data-a="trefresh" aria-label="Refresh the test list" title="Refresh">${ICON.refresh}</button></div></div>
-    <div class="tq-card tq-tests" aria-label="Previous tests">${list.map(t => {
-      const name = t.name || 'Qbank test', act = t.done ? 'review' : 'resume', blocks = t.blocks || 1;
-      const bks = (t.banks || []).map(bankById).filter(Boolean).map(mini).join('');
-      return `<div class="tq-test">${ring(t)}<div class="tq-nm"><b>${esc(name)}</b><small>${esc([when(t.completedAt || t.updatedAt || t.createdAt), plural(t.total || 0, 'Q'), plural(blocks, 'block'), filterLine(t)].filter(Boolean).join(' · '))}</small>${PULL_LABEL[t.qbankPullMode] ? `<span class="tq-pchip">${PULL_LABEL[t.qbankPullMode]}</span>` : ''}</div>
-      <div class="tq-bk">${bks}</div><div class="tq-stc"><span class="tq-st ${t.done ? 'tq-done' : 'tq-prog'}">${t.done ? 'Completed' : 'In progress'}</span></div>
+  const list = testsFiltered(), st = histStats(testsInBank()), cont = continueTest(list);
+  const ring = t => !t.done ? `<div class="tq-ring tq-ring-p" style="--p:100;--c:var(--q-warn)" aria-label="In progress"><span>…</span></div>` : t.percent == null ? `<div class="tq-ring" style="--p:0;--c:var(--q-s3)" aria-label="No score"><span>—</span></div>` : `<div class="tq-ring" style="--p:${Math.round(t.percent)};--c:${pctCol(Math.round(t.percent))}"><span>${Math.round(t.percent)}%</span></div>`;
+  const meta = t => [when(t.completedAt || t.updatedAt || t.createdAt), plural(t.total || 0, 'Q'), plural(t.blocks || 1, 'block'), filterLine(t)].filter(Boolean).join(' · ');
+  const tile = (l, v, extra, col) => `<div class="tq-hs"><span>${l}</span><b${col ? ` style="color:${col}!important"` : ''}>${v}</b>${extra || ''}</div>`;
+  const stats = `<div class="tq-hstats" role="group" aria-label="Test summary">${tile('Tests', fmt(st.total))}${tile('Completed', fmt(st.completed))}${tile('Avg score', st.avg == null ? '—' : st.avg + '%', st.pts.length ? `<em style="color:${pctCol(st.avg)}!important">${sparkSvg(st.pts, 76, 24, 'Score trend')}</em>` : '', st.avg == null ? '' : pctCol(st.avg))}${tile('Questions in tests', fmt(st.qs))}</div>`;
+  const contCard = cont ? `<div class="tq-cont">${ring(cont)}<div class="tq-nm"><small class="tq-ck">Continue where you left off</small><b>${esc(cont.name || 'Qbank test')}</b><small>${esc(meta(cont))}</small></div>
+    <div class="tq-cacts"><button type="button" class="tq-btn tq-fill tq-resume" data-a="tact" data-act="resume" data-v="${esc(cont.id)}" aria-label="Resume ${esc(cont.name || 'Qbank test')}">${ICON.play}Resume</button>
+      <span class="tq-cib"><button type="button" class="tq-ib" data-a="tact" data-act="rename" data-v="${esc(cont.id)}" title="Rename" aria-label="Rename ${esc(cont.name || 'Qbank test')}">${ICON.pencil}</button>
+      <button type="button" class="tq-ib" data-a="tact" data-act="export" data-v="${esc(cont.id)}" title="Export" aria-label="Export ${esc(cont.name || 'Qbank test')}">${ICON.dl}</button>
+      <button type="button" class="tq-ib tq-bad" data-a="tact" data-act="delete" data-v="${esc(cont.id)}" title="Delete" aria-label="Delete ${esc(cont.name || 'Qbank test')}">${ICON.trash}</button></span></div></div>` : '';
+  const row = t => {
+    const name = t.name || 'Qbank test', act = t.done ? 'review' : 'resume';
+    const bks = (t.banks || []).map(bankById).filter(Boolean).map(mini).join('');
+    return `<div class="tq-test">${ring(t)}<div class="tq-nm"><b>${esc(name)}</b><small>${esc(meta(t))}</small>
+      <div class="tq-pills"><span class="tq-st ${t.done ? 'tq-done' : 'tq-prog'}">${t.done ? 'Completed' : 'In progress'}</span><span class="tq-mp">${t.mode === 'tutor' ? 'Tutor' : 'Timed'}</span>${PULL_LABEL[t.qbankPullMode] ? `<span class="tq-pchip">${PULL_LABEL[t.qbankPullMode]}</span>` : ''}<span class="tq-bk">${bks}</span></div></div>
       <div class="tq-acts"><button type="button" class="tq-btn tq-small ${t.done ? '' : 'tq-fill'}" data-a="tact" data-act="${act}" data-v="${esc(t.id)}" aria-label="${t.done ? 'Review' : 'Resume'} ${esc(name)}">${t.done ? 'Review' : 'Resume'}</button>
         <button type="button" class="tq-ib" data-a="tact" data-act="rename" data-v="${esc(t.id)}" title="Rename" aria-label="Rename ${esc(name)}">${ICON.pencil}</button>
         <button type="button" class="tq-ib" data-a="tact" data-act="export" data-v="${esc(t.id)}" title="Export" aria-label="Export ${esc(name)}">${ICON.dl}</button>
         <button type="button" class="tq-ib tq-bad" data-a="tact" data-act="delete" data-v="${esc(t.id)}" title="Delete" aria-label="Delete ${esc(name)}">${ICON.trash}</button></div></div>`;
-    }).join('') || `<div class="tq-empty">${D.tests.length ? 'No tests match this filter.' : 'No Qbank tests yet. Generated tests appear here.'}</div>`}</div>
+  };
+  const groups = groupTests(cont ? list.filter(t => t !== cont) : list, S.hs).map(g => `<section class="tq-grp"><div class="tq-gh"><b>${g.label}</b><em>${g.items.length}</em></div>${g.items.map(row).join('')}</section>`).join('');
+  const empty = D.tests.length
+    ? `<div class="tq-empty"><span class="tq-eic">${ICON.search}</span><b>No tests match this filter.</b><button type="button" class="tq-btn tq-small" data-a="hclear">Clear filters</button></div>`
+    : `<div class="tq-empty"><span class="tq-eic">${ICON.file}</span><b>No Qbank tests yet. Generated tests appear here.</b><button type="button" class="tq-btn tq-fill" data-a="tab" data-v="create">${ICON.plus}Create a test</button></div>`;
+  return `${hbIds.length ? bankChips('hb', hbIds, S.hb) : ''}${D.tests.length ? stats : ''}${contCard}
+    <div class="tq-htools"><div class="tq-hrow1"><div class="tq-hseg" role="group" aria-label="Show tests">${[['all', 'All'], ['prog', 'In progress'], ['done', 'Completed']].map(([k, l]) => `<button type="button" aria-pressed="${S.hf === k}" data-a="hf" data-v="${k}">${l}</button>`).join('')}</div>
+      <div class="tq-chips" role="group" aria-label="Filter by mode">${[['tutor', 'Tutor'], ['timed', 'Timed']].map(([k, l]) => `<button type="button" class="tq-chip" aria-pressed="${S.hm === k}" data-a="hm" data-v="${k}">${l}</button>`).join('')}</div></div>
+      <div class="tq-sectools"><label class="tq-find">${ICON.search}<span class="tq-sr">Search tests</span><input type="search" class="tu-bare" placeholder="Search tests" data-a="hq" value="${esc(S.hq)}"></label>
+        <label class="tq-hsel"><span class="tq-sr">Sort tests</span><select class="tq-inp" data-a="hs">${HSORTS.map(([k, l]) => `<option value="${k}"${S.hs === k ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+        <button type="button" class="tq-ib" data-a="trefresh" aria-label="Refresh the test list" title="Refresh">${ICON.refresh}</button></div></div>
+    <div class="tq-tests" aria-label="Previous tests">${groups || (list.length ? '' : empty)}</div>
     <p class="tq-foot">Every test shows, whichever banks are selected on Create; the bank badges say where each test came from.</p>`;
 }
 
@@ -372,11 +488,14 @@ function perfModel() {
   return core().facets(D.rows.filter(r => ids.has(r.bank)), { statuses: STATUS.map(x => x[0]) });
 }
 function perfHtml(m) {
-  const table = (title, keys, perf, kind, a) => `<div class="tq-card tq-ptabcard"><div class="tq-sech"><h2>${title}</h2></div><table class="tq-ptab"><thead><tr><th>${kind}</th><th>Correct</th><th class="tq-hide-s">Used</th><th style="width:40%"></th><th></th></tr></thead><tbody>
+  const list = (title, keys, perf, kind, a) => `<div class="tq-card tq-ptabcard"><div class="tq-sech"><h2>${title}<em>${keys.length}</em></h2></div><table class="tq-ptab" aria-label="${title}"><tbody>
     ${keys.map(k => { const p = perf[k] || { n: 0, c: 0, w: 0 }, used = p.c + p.w, pct = pctOf(p);
-      return `<tr data-a="pick" data-v="${a}|${esc(k)}" tabindex="0" role="button" aria-label="Practice ${esc(k)}" title="Practice ${esc(k)}"><td class="${k === UNAS ? 'tq-unas' : ''}">${esc(k)}</td><td style="color:${pctCol(pct)}!important;font-weight:600">${pct == null ? '—' : pct + '%'}</td><td class="tq-hide-s">${used}/${p.n}</td><td><div class="tq-pbar"><i style="width:${pct || 0}%;background:${pct == null ? 'transparent' : pctCol(pct)}"></i></div></td><td class="tq-go1">${ICON.play}</td></tr>`; }).join('')}</tbody></table></div>`;
+      return `<tr data-a="pick" data-v="${a}|${esc(k)}" tabindex="0" role="button" aria-label="Practice ${esc(k)}" title="Practice ${esc(k)}"><td class="${k === UNAS ? 'tq-unas' : ''}">${esc(k)}</td><td style="color:${pctCol(pct)}!important">${pct == null ? '—' : pct + '%'}</td><td>${used}/${p.n}</td><td><div class="tq-pbar"><i style="width:${pct || 0}%;background:${pct == null ? 'transparent' : pctCol(pct)}"></i></div></td></tr>`; }).join('')}</tbody></table></div>`;
   const bySys = m.systems.slice().sort((a, b) => { const pa = pctOf(m.sysPerf[a]), pb = pctOf(m.sysPerf[b]); return (pa == null ? 101 : pa) - (pb == null ? 101 : pb) || a.localeCompare(b); });
-  return `<div class="tq-perf">${table('By subject', m.subjects.slice().sort((a, b) => a.localeCompare(b)), m.subPerf, 'Subject', 'sub')}${table('By system · weakest first', bySys, m.sysPerf, 'System', 'sys')}</div>
+  const sm = perfSummary(m);
+  const chip = (cls, l, x, pick) => `<${pick ? 'button type="button" data-a="pick" data-v="sys|' + esc(x.name) + '" aria-label="Practice ' + esc(x.name) + '"' : 'div'} class="tq-psc ${cls}"><span>${l}</span><b>${esc(x.name)}</b><em style="color:${pctCol(x.pct)}!important">${x.pct}% · ${fmt(x.n)} answered</em></${pick ? 'button' : 'div'}>`;
+  const summary = `<div class="tq-psum">${sm ? chip('tq-psc-b', 'Strongest system', sm.best, false) + chip('tq-psc-w', 'Weakest system', sm.worst, true) : '<div class="tq-psc tq-psc-n"><span>Strongest and weakest</span><em>Answer at least 10 questions in two systems to see them here.</em></div>'}</div>`;
+  return `${summary}<div class="tq-perf">${list('By subject', m.subjects.slice().sort((a, b) => a.localeCompare(b)), m.subPerf, 'Subject', 'sub')}${list('By system · weakest first', bySys, m.sysPerf, 'System', 'sys')}</div>
     <p class="tq-foot">Numbers come from your answers in the selected banks (${trackNow() === 'forms' ? 'form attempts' : 'Qbank tests'}). Tap a row to build a test on just that subject or system in those banks (unused + incorrect).</p>`;
 }
 
@@ -384,7 +503,7 @@ function perfHtml(m) {
    Drawn into the host thunder-ui gives us (#tuSetQbanks). Idempotent: mountSettings only paints from cached data; the banks
    come from the same qbanks() read as the tab (fetched once), details per bank from qbanksBankDetails (cached by bank id,
    dropped after import / rename / delete / re-tag). Nothing here asks Settings to repaint, so there is no refetch loop. */
-const ST = { open: '', det: {}, load: {}, more: {}, exp: '' };
+const ST = { open: '', det: {}, load: {}, more: {}, exp: '', sbusy: '', serr: {} };
 let setHost = null, setFetching = false;
 const fmtBytes = n => (n == null ? '—' : n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(0) + ' KB' : n < 1073741824 ? (n / 1048576).toFixed(n < 10485760 ? 1 : 0) + ' MB' : (n / 1073741824).toFixed(1) + ' GB');
 const hasDet = () => { const B = bridge(); return !!B && typeof B.qbanksBankDetails === 'function'; };
@@ -402,10 +521,25 @@ async function loadDetails(id) {
   if (D) { const nx = D.banks.find(b => !ST.det[b.id] && !ST.load[b.id]); if (nx && setHost && setHost.isConnected) loadDetails(nx.id); }
 }
 const detOf = b => { const d = ST.det[b.id]; return d && !d.err ? d : basicDet(b); };
+/* Systems follow subjects: how well a bank's systems line up with its subjects. Unassigned is ignored on both sides.
+   single = systems whose questions all sit in exactly one subject. suggested only while the switch is off (never auto-enabled). */
+function scopeFit(rows, bankId, on) {
+  const subs = new Set(), sys = new Map();
+  (rows || []).forEach(r => {
+    if (!r || r.bank !== bankId) return;
+    const su = r.subject && r.subject !== UNAS ? r.subject : '', sy = r.system && r.system !== UNAS ? r.system : '';
+    if (su) subs.add(su);
+    if (sy) { if (!sys.has(sy)) sys.set(sy, new Set()); if (su) sys.get(sy).add(su); }
+  });
+  let single = 0; sys.forEach(v => { if (v.size === 1) single++; });
+  return { subjects: subs.size, systems: sys.size, single, suggested: !on && sys.size >= 2 && single / sys.size >= 0.6 };
+}
+const scopeHint = f => (f.subjects < 2 || f.systems < 2 ? 'This bank has one subject, so there is nothing to scope.' : `${f.single} of ${f.systems} systems here belong to one subject.`);
+const scopeOn = b => !!(b && b.facetRules && b.facetRules.systemsBySubject === true);
 function setBankHtml(b) {
   const d = detOf(b), open = ST.open === b.id, imp = b.kind === 'imported', s = bankStats(b.id);
   const nf = d.files.length, parts = [plural(s.n, 'question'), plural(nf, 'file')];
-  if (d.images != null) parts.push(plural(d.images, 'image')); if (d.epc > 0) parts.push('choice % on');
+  if (d.images != null) parts.push(plural(d.images, 'image')); if (d.epc > 0) parts.push('choice % on'); if (imp && scopeOn(b)) parts.push('systems by subject');
   let det = '';
   if (open) {
     const un = D.rows.filter(r => r.bank === b.id && r.system === UNAS).length, raw = ST.det[b.id], more = ST.more[b.id];
@@ -418,12 +552,34 @@ function setBankHtml(b) {
       <p class="tq-smeta">${imp ? `${d.importedAt && when(d.importedAt) ? 'Imported ' + esc(new Date(d.importedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })) : 'Imported bank'}${d.sources && d.sources.length ? ' · from ' + esc(d.sources.slice(0, 3).join(', ')) + (d.sources.length > 3 ? ` and ${d.sources.length - 3} more` : '') : ''}` : 'Follows your Library: a form added to its tabs joins this bank.'}</p>
       ${fl.length ? `<div class="tq-sfl" role="list" aria-label="Files in ${esc(b.name)}">${fl.map(f => `<div role="listitem"><span>${esc(f.source || f.formId)}</span><em>${f.questions == null ? '' : fmt(f.questions)}</em></div>`).join('')}</div>${d.files.length > 3 ? `<button type="button" class="tq-link" data-a="smore" data-v="${esc(b.id)}">${more ? 'Show fewer' : `${d.files.length - 3} more`}</button>` : ''}` : ''}
       ${d.epc > 0 ? `<p class="tq-smeta"><b>Choice %</b> · ${fmt(d.epc)} of ${fmt(s.n)} questions</p>` : ''}
+      ${imp ? scopeRowHtml(b) : ''}
       <div class="tq-acts tq-sacts">${imp ? `<button type="button" class="tq-btn tq-small" data-a="import" data-into="${esc(b.id)}">${ICON.plus}Add files</button>` : ''}<button type="button" class="tq-btn tq-small" data-a="retag" data-v="${esc(b.id)}">${ICON.tag}Re-tag</button>${imp ? `<button type="button" class="tq-btn tq-small" data-a="rename" data-v="${esc(b.id)}">${ICON.pencil}Rename</button>${typeof bridge().qbanksExportBank === 'function' ? `<button type="button" class="tq-btn tq-small" data-a="sexport" data-v="${esc(b.id)}" ${busy ? 'disabled' : ''}>${ICON.dl}${busy ? 'Exporting…' : 'Export ZIP'}</button>` : ''}<button type="button" class="tq-btn tq-small tq-bad" data-a="delbank" data-v="${esc(b.id)}">${ICON.trash}Remove</button>` : ''}</div></div>`;
   }
   const shown = !S.hidden.has(b.id);
   return `<div class="tq-sbk${shown ? '' : ' tq-shid'}" data-bank="${esc(b.id)}"><div class="tq-sbh"><button type="button" class="tq-srow" data-a="sbank" data-v="${esc(b.id)}" aria-expanded="${open}" ${open ? `aria-controls="tqDet-${esc(b.id)}"` : ''}>${badge(b)}<span class="tq-snm"><b>${esc(b.name)}</b><small>${esc(parts.join(' · '))}${shown ? '' : ' · hidden'}</small></span><span class="tq-schip">${imp ? 'Imported' : 'Built-in'}</span></button>
     <span class="tq-svis"><span class="tq-svl" aria-hidden="true">${shown ? 'Shown' : 'Hidden'}</span><button type="button" class="tq-switch" role="switch" aria-checked="${shown}" aria-label="Show ${esc(b.name)} in Qbanks" data-a="svis" data-v="${esc(b.id)}"><i></i></button></span>
     <button type="button" class="tq-chv" data-a="sbank" data-v="${esc(b.id)}" tabindex="-1" aria-hidden="true">${chev}</button></div>${det}</div>`;
+}
+function scopeRowHtml(b) {
+  const on = scopeOn(b), fit = scopeFit(D ? D.rows : [], b.id, on), busy = ST.sbusy === b.id, err = ST.serr[b.id];
+  return `<div class="tq-sw tq-bordered tq-sscope"><div><b>Systems follow subjects${fit.suggested ? ' <span class="tq-spill">Suggested</span>' : ''}</b><span>When you pick subjects in Qbanks, show only the systems that have questions in them. ${esc(scopeHint(fit))}</span></div>
+    <button type="button" class="tq-switch" role="switch" aria-checked="${on}" aria-label="Systems follow subjects for ${esc(b.name)}" data-a="sscope" data-v="${esc(b.id)}"${busy ? ' disabled aria-busy="true"' : ''}><i></i></button></div>
+    ${err ? `<div class="tq-hint" role="alert">${ICON.warn}<span>Could not save: ${esc(err)}</span></div>` : ''}`;
+}
+/* flip the bank's rule through the bridge; the switch reads D (qbanks()), so a failure leaves it as it was and shows the error in the card */
+async function toggleScope(id) {
+  const B = bridge(), b = bankById(id); if (!B || !b || ST.sbusy) return;
+  const on = !scopeOn(b); ST.sbusy = id; delete ST.serr[id]; paintSet();
+  try {
+    if (typeof B.qbanksUpdateBank !== 'function') throw new Error('this build cannot change it');
+    await B.qbanksUpdateBank(id, { facetRules: on ? { systemsBySubject: true } : null });
+    if (on) b.facetRules = { systemsBySubject: true }; else delete b.facetRules;
+    if (!on && S.sel.has(id)) S.syss = null;   // systems the rule was hiding come back selected
+    S.preset = ''; invalDet(id);
+    await fetchData();
+  } catch (err) { ST.serr[id] = String((err && err.message) || err); }
+  ST.sbusy = ''; invalDet(id); paintSet(); render();
+  if (D && ST.open) loadDetails(ST.open);
 }
 function settingsHtml() {
   const need = !!bridge() && !!core();
@@ -456,6 +612,7 @@ function onSetHostClick(e) {
   if (a === 'sretry') { invalDet(v); paintSet(); loadDetails(v); return; }
   if (a === 'sreload') { S.err = ''; S.stale = true; mountSettings(setHost); return; }
   if (a === 'sexport') { exportBank(v); return; }
+  if (a === 'sscope') { toggleScope(v); return; }
   if (a === 'svis' || a === 'sviall') { setVisible(a === 'sviall' ? null : v); return; }
   bankAct(a, v, t);
 }
@@ -504,6 +661,7 @@ function render() {
   const bEl = rootEl.querySelector('[data-r="banks"]'); bEl.hidden = !banks;
   setHtml(bEl, banks); setHtml(rootEl.querySelector('[data-r="view"]'), view);
   const barEl = rootEl.querySelector('[data-r="bar"]'); barEl.hidden = !bar; setHtml(barEl, bar);
+  { const pvb = byId('tqPv'); if (pvb) pvb._h = pvInner(); }
   schedulePlan(S.tab === 'create' && D && need ? model() : null);
 }
 
@@ -731,9 +889,20 @@ function setLegacyForms(ids) {
   (last || inputs[inputs.length - 1]) && (last || inputs[inputs.length - 1]).dispatchEvent(new Event('change', { bubbles: true }));
   return inputs.length;
 }
+const legacyRetry = { n: 0 };
 function testLegacy(id, act) {
   const card = doc.querySelector(`#qbankTestsGrid [data-qb-id="${root.CSS.escape(id)}"]`), b = card && card.querySelector(`[data-v9="qbank-${act}"]`);
-  if (!b) { console.warn('ThunderQbanks: legacy Qbank control missing', id, act); toast('That test is not ready yet. Try Refresh.'); return false; }
+  if (!b) {
+    /* the legacy grid only fills while its panel is open: open it, wait for the card, then run the action */
+    const tab = byId('qbankTestsTab');
+    if (tab && !legacyRetry.n) {
+      legacyRetry.n = 1; tab.click();
+      const go = i => { const c = doc.querySelector(`#qbankTestsGrid [data-qb-id="${root.CSS.escape(id)}"]`), bb = c && c.querySelector(`[data-v9="qbank-${act}"]`);
+        if (bb) { legacyRetry.n = 0; bb.click(); markStale(); legacyRefresh(); } else if (i < 12) setTimeout(() => go(i + 1), 150); else { legacyRetry.n = 0; toast('That test is not ready yet. Try Refresh.'); } };
+      go(0); return false;
+    }
+    console.warn('ThunderQbanks: legacy Qbank control missing', id, act); toast('That test is not ready yet. Try Refresh.'); return false;
+  }
   b.click(); return true;
 }
 async function start() {
@@ -757,7 +926,7 @@ async function start() {
     setLegacy('qbankQuestionCount', n);
     const btn = doc.querySelector('#qbankModePanel [data-v9="qbank-start"]');
     if (!btn) { toast('The Qbank start control is missing'); }
-    else { S.stale = true; btn.click(); }
+    else { S.stale = true; btn.click(); S.name = ''; S.nameOpen = false; }
   } catch (e) { console.warn('ThunderQbanks: start failed', e); toast('Could not start: ' + ((e && e.message) || e)); }
   S.busy = false; render();
 }
@@ -775,13 +944,14 @@ function toggleIn(setName, all, v) { const cur = S[setName] ? new Set(S[setName]
 function pick(v) {
   const i = v.indexOf('|'), kind = v.slice(0, i), name = v.slice(i + 1);
   S.lastBank = S.sel.has(S.lastBank) ? S.lastBank : [...S.sel].pop(); S.formsOff = new Set(); S.subs = kind === 'sub' ? new Set([name]) : null; S.syss = kind === 'sys' ? new Set([name]) : null;
-  S.statuses = new Set(['unused', 'incorrect']); S.preset = ''; S.want = 40; S.tab = 'create'; savePrefs(); render(); root.scrollTo && root.scrollTo(0, 0); toast(`Test on ${name}: unused + incorrect`);
+  S.statuses = new Set(['unused', 'incorrect']); S.preset = ''; S.want = Math.max(1, Math.min(80, Number(DEF && DEF.perBlock) || S.perBlock || 40)); S.tab = 'create'; savePrefs(); render(); root.scrollTo && root.scrollTo(0, 0); toast(`Test on ${name}: unused + incorrect`);
 }
 function goTab(k) {
   const tests = byId('qbankTestsPanel');
-  if (k === 'history') { const b = byId('qbankTestsTab'); if (b) { S.prevTab = S.tab === 'history' ? S.prevTab : S.tab; b.click(); return; } }
-  if (k !== 'history' && k !== 'performance') k = 'create';
-  S.tab = k; S.prevTab = k;
+  /* the legacy tabs are only clicked when the legacy panel is the one showing (or a legacy action needs it): history is drawn from D in either panel */
+  if (k === 'history') { if (S.tab !== 'history') S.prevTab = S.tab; S.tab = 'history'; if (!(tests && tests.classList.contains('active'))) S.virt = true; render(); return; }
+  if (k !== 'performance') k = 'create';
+  S.tab = k; S.prevTab = k; S.virt = false;
   if (tests && tests.classList.contains('active')) { const b = byId('qbankTab'); if (b) { b.click(); return; } }
   render();
 }
@@ -801,7 +971,7 @@ async function onClick(e) {
   const m = () => model();
   switch (a) {
     case 'tab': goTab(v); return;
-    case 'preset': { const p = core().presets(m()).find(x => x.id === v); if (p && !p.disabled) { applyPreset(p); render(); toast(`${p.title}: filters set below. Change anything before you start`); } return; }
+    case 'preset': { const p = core().presets(m(), presetDefs()).find(x => x.id === v); if (p && !p.disabled) { applyPreset(p); render(); toast(`${p.title}: filters set below. Change anything before you start`); } return; }
     case 'sort': S.sort = v; savePrefs(); render(); return;
     case 'bank': {
       if (!S.combine) { S.sel = new Set([v]); }
@@ -824,8 +994,10 @@ async function onClick(e) {
     case 'ftab': { const [b, tab] = v.split('|'), ids = D.forms.filter(f => f.bank === b && (f.tab || 'Imported files') === tab).map(f => f.id), allOn = ids.every(id => !S.formsOff.has(id)); ids.forEach(id => (allOn ? S.formsOff.add(id) : S.formsOff.delete(id))); S.open.forms = true; render(); return; }
     case 'pull': if (PULLS.includes(v) && S.pull !== v) { S.pull = v; savePrefs(); render(); } return;
     case 'shuffle': S.pull = S.pull === 'order' ? 'random' : 'order'; savePrefs(); render(); return; /* legacy hook: toggles Random / Form order */
-    case 'hf': S.hf = v; render(); return;
+    case 'hf': if (v === 'tutor' || v === 'timed') S.hm = (S.hm === v ? '' : v); else S.hf = v; render(); return;
+    case 'hm': S.hm = (v === S.hm ? '' : (v === 'tutor' || v === 'timed' ? v : '')); render(); return;
     case 'hb': S.hb = v; render(); return;
+    case 'hclear': S.hf = 'all'; S.hm = ''; S.hq = ''; S.hb = ''; render(); return;
     case 'facet': S.facet = v === 'sys' ? 'sys' : 'sub'; savePrefs(); render(); return;
     case 'more': S.more[v] = !S.more[v]; render(); return;
     case 'cdec': case 'cinc': { const mm = m(); S.want = Math.max(1, Math.min(mm.avail || 1, mm.count + (a === 'cinc' ? 1 : -1))); render(); return; }
@@ -834,7 +1006,7 @@ async function onClick(e) {
     case 'trefresh': { const b = doc.querySelector('#qbankTestsPanel [data-v9="qtests-refresh"]'); if (b) b.click(); markStale(); return; }
     case 'tact': {
       const act = t.dataset.act;
-      if (act === 'delete' || act === 'rename' || act === 'export' || act === 'resume' || act === 'review') { if (testLegacy(v, act)) markStale(); }
+      if (act === 'delete' || act === 'rename' || act === 'export' || act === 'resume' || act === 'review') { if (testLegacy(v, act)) { markStale(); if (act !== 'resume' && act !== 'review') legacyRefresh(); } }
       return;
     }
     case 'go': start(); return;
@@ -863,6 +1035,7 @@ function onInput(e) {
 }
 function onChange(e) {
   const t = e.target, a = t.dataset && t.dataset.a; if (!a) return;
+  if (a === 'hs') { S.hs = HSORTS.some(x => x[0] === t.value) ? t.value : 'new'; render(); return; }
   if (a === 'attempt') { S.attempt = t.value; savePrefs(); markStale(); render(); return; }
   if (a === 'countn' || a === 'perblock' || a === 'secs') render();
 }
@@ -890,8 +1063,8 @@ function ensureRoot(panel) {
 }
 function sync() {
   const p = activePanel(); if (!p) return;
-  if (p.id === 'qbankTestsPanel') { if (S.tab !== 'history') S.prevTab = S.tab; S.tab = 'history'; setLegacy('qTestFilter', 'all'); setLegacy('qTestSearch', ''); }
-  else if (S.tab === 'history') S.tab = S.prevTab === 'history' ? 'create' : S.prevTab;
+  if (p.id === 'qbankTestsPanel') { S.virt = false; if (S.tab !== 'history') S.prevTab = S.tab; S.tab = 'history'; setLegacy('qTestFilter', 'all'); setLegacy('qTestSearch', ''); }
+  else if (S.tab === 'history' && !S.virt) S.tab = S.prevTab === 'history' ? 'create' : S.prevTab;
   ensureRoot(p); render();
   if (S.stale || !D) fetchData();
 }
@@ -905,7 +1078,7 @@ function watch() {
       if (!outside.length) return;
       const opened = p.classList.contains('active') && outside.some(r => r.target === p && ((r.type === 'attributes' && !/(^|\s)active(\s|$)/.test(r.oldValue || '')) || r.type === 'childList'));
       if (opened || (p.classList.contains('active') && (!rootEl || rootEl.parentNode !== p))) { S.stale = true; sync(); return; }
-      if (p.classList.contains('active') && outside.some(r => r.target.closest && r.target.closest('#qbankTestsGrid'))) markStale();
+      if ((p.classList.contains('active') || S.virt) && outside.some(r => r.target.closest && r.target.closest('#qbankTestsGrid'))) markStale();
     }).observe(p, { childList: true, subtree: true, attributes: true, attributeOldValue: true, attributeFilter: ['class'] });
   });
   /* coming back from an exam (menu shown again) the numbers changed: refetch, once now and once after late saves land */
@@ -997,11 +1170,6 @@ ${R} .tq-sortseg{display:flex;background:var(--q-s2);border-radius:999px;padding
 ${R} .tq-sortseg button{border:0;background:none;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;color:var(--q-on2)!important}
 ${R} .tq-sortseg button[aria-checked=true]{background:var(--q-sf);color:var(--q-on)!important;box-shadow:var(--q-shadow)}
 ${R} .tq-row .tq-pc{font-size:12px;font-weight:600;min-width:32px;text-align:right;font-variant-numeric:tabular-nums}
-${R} .tq-ptab tr[data-a=pick]{cursor:pointer}
-${R} .tq-ptab tr[data-a=pick]:hover td{background:var(--q-s1)}
-${R} .tq-ptab .tq-go1{color:var(--q-p)!important;width:28px;opacity:0}
-${R} .tq-ptab tr:hover .tq-go1,
-${R} .tq-ptab tr:focus .tq-go1{opacity:1}
 ${R} .tq-rtforms{display:flex;flex-direction:column;gap:6px}
 ${R} .tq-rtforms div{display:flex;justify-content:space-between;gap:10px;background:var(--q-s1);border-radius:10px;padding:8px 12px;font-size:13px}
 ${R} .tq-rtforms span{color:var(--q-on3)!important}
@@ -1035,6 +1203,10 @@ ${R} .tq-p-omitted small{background:var(--q-warnc);color:var(--q-warn)!important
 ${R} .tq-p-correct small{background:var(--q-okc);color:var(--q-ok)!important}
 ${R} .tq-find{display:flex;align-items:center;gap:8px;background:var(--q-s1);border:1px solid var(--q-line2);border-radius:999px;padding:5px 12px;min-width:0}
 ${R} .tq-find input{border:0;background:none;outline:0;width:150px}
+${R} .tq-find input[type=search]{flex:1 1 auto;min-width:0;width:100%;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:0!important;padding:0!important;margin:0;-webkit-appearance:none;appearance:none}
+${R} .tq-find input[type=search].tu-bare{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:0!important;-webkit-appearance:none!important;appearance:none!important;padding:0!important}
+${R} .tq-find:focus-within{border-color:var(--q-p)}
+${R} .tq-htools .tq-find{flex:1 1 160px;min-width:160px;max-width:none}
 ${R} .tq-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 18px}
 ${R} .tq-row{display:grid;grid-template-columns:20px minmax(0,1fr) auto auto;align-items:center;gap:10px;border:0;background:none;padding:7px 8px;border-radius:10px;text-align:left}
 ${R} .tq-row:hover{background:var(--q-s1)}
@@ -1082,7 +1254,7 @@ ${R} .tq-pvbar i{display:block;height:100%;min-width:2px}
 ${R} .tq-pvl{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:12px;color:var(--q-on2)!important}
 ${R} .tq-pvl b{color:var(--q-on)!important;font-weight:600}
 ${R} .tq-pvmore{color:var(--q-on3)!important}
-${R} .tq-pchip{display:inline-block;margin-top:4px;font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;width:max-content;background:var(--q-s2);color:var(--q-on2)!important;border:1px solid var(--q-line)}
+${R} .tq-pchip{display:inline-block;margin:0;font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;width:max-content;background:var(--q-s2);color:var(--q-on2)!important;border:1px solid var(--q-line)}
 ${R} .tq-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
 ${R} .tq-sw b{display:block;font-weight:600}
 ${R} .tq-sw span{font-size:12px;color:var(--q-on3)!important}
@@ -1096,32 +1268,69 @@ ${R} .tq-mixline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 ${R} .tq-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;background:var(--q-s2);border-radius:999px;padding:2px 9px 2px 4px}
 ${R} .tq-pill i{width:16px;height:16px;border-radius:5px}
 ${R} .tq-mobilebar{display:none}
-${R} .tq-htools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:16px 0 12px}.tq-bchips+.tq-htools{margin-top:0}
+${R} .tq-htools{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:flex-start;margin:14px 0 14px}.tq-bchips+.tq-htools{margin-top:0}
+${R} .tq-hseg{display:flex;background:var(--q-s2);border-radius:999px;padding:3px;gap:2px}
+${R} .tq-hseg button{border:0;background:none;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;color:var(--q-on2)!important;white-space:nowrap}
+${R} .tq-hseg button[aria-pressed=true]{background:var(--q-sf);color:var(--q-on)!important;box-shadow:var(--q-shadow)}
+${R} .tq-htools .tq-sectools{flex:1 1 360px;min-width:0;flex-wrap:nowrap;margin-left:auto}${R} .tq-htools .tq-hsel,${R} .tq-htools .tq-ib{flex:0 0 auto}${R} .tq-hsel select{width:auto;min-width:0;padding:7px 12px;border-radius:999px;font-weight:600;font-size:13px}
+${R} .tq-hstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:2px 0 14px}
+${R} .tq-hs{position:relative;display:flex;flex-direction:column;gap:2px;background:var(--q-sf);border:1px solid var(--q-line2);border-radius:16px;box-shadow:var(--q-shadow);padding:12px 16px;min-width:0}
+${R} .tq-hs span{font-size:12px;font-weight:600;color:var(--q-on3)!important;text-transform:uppercase;letter-spacing:.04em}
+${R} .tq-hs b{font-size:26px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums;line-height:1.15}
+${R} .tq-hs em{position:absolute;right:12px;bottom:10px;line-height:0;font-style:normal}
+${R} .tq-spark{display:block;overflow:visible}
+${R} .tq-cont{display:flex;align-items:center;gap:16px;padding:16px 20px;margin:0 0 14px;border-radius:18px;border:1px solid color-mix(in srgb,var(--q-warn) 35%,var(--q-line2));background:linear-gradient(100deg,color-mix(in srgb,var(--q-warn) 12%,var(--q-sf)),var(--q-sf) 70%);box-shadow:var(--q-shadow)}
+${R} .tq-cont .tq-nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+${R} .tq-cont .tq-nm b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+${R} .tq-cont .tq-nm small{color:var(--q-on3)!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+${R} .tq-cont .tq-ck{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q-warn)!important}
+${R} .tq-resume{flex:none;padding:11px 22px;font-size:15px}
+${R} .tq-cacts{display:flex;align-items:center;gap:6px;flex:none}${R} .tq-cib{display:inline-flex;gap:4px;align-items:center}
+${R} .tq-hrow1{display:contents}
+${R} .tq-tests{display:flex;flex-direction:column;gap:6px}
+${R} .tq-grp{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+${R} .tq-gh{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:8px;padding:8px 2px 4px;background:var(--q-bg,transparent);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--q-on3)!important}
+${R} .tq-gh em{font-style:normal;font-weight:600;letter-spacing:0;background:var(--q-s2);border-radius:999px;padding:0 8px}
+${R} .tq-test{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:14px 16px;background:var(--q-sf);border:1px solid var(--q-line2);border-radius:16px;box-shadow:var(--q-shadow);transition:border-color .15s}
+${R} .tq-test:hover{border-color:var(--q-line)}
+${R} .tq-ring{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--q-s2) 0);position:relative;font-weight:700;font-size:12px;font-variant-numeric:tabular-nums;flex:none}
+${R} .tq-ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--q-sf)}
+${R} .tq-ring span{position:relative}
+${R} .tq-ring-p{background:conic-gradient(var(--c) 0 25%,color-mix(in srgb,var(--c) 30%,var(--q-s2)) 0 50%,var(--c) 0 75%,color-mix(in srgb,var(--c) 30%,var(--q-s2)) 0);font-size:16px}
+${R} .tq-test .tq-nm b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+${R} .tq-test .tq-nm small{color:var(--q-on3)!important;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+${R} .tq-pills{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
+${R} .tq-pills .tq-bk{display:inline-flex;gap:4px;flex-wrap:wrap}
+${R} .tq-mp{font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;background:var(--q-pc);color:var(--q-onpc)!important}
 ${R} .tq-chips{display:flex;flex-wrap:wrap;gap:6px}
 ${R} .tq-chip{border:1px solid var(--q-line);background:var(--q-sf);border-radius:999px;padding:5px 12px;font-weight:600;font-size:13px;color:var(--q-on2)!important}
 ${R} .tq-chip[aria-pressed=true]{background:var(--q-pc);color:var(--q-onpc)!important;border-color:transparent}
-${R} .tq-tests{display:flex;flex-direction:column}
-${R} .tq-test{display:grid;grid-template-columns:52px minmax(0,1fr) 120px 150px auto;gap:14px;align-items:center;padding:14px 18px;border-top:1px solid var(--q-line2)}
-${R} .tq-test:first-child{border-top:0}
-${R} .tq-ring{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--q-s2) 0);position:relative;font-weight:700;font-size:12px}
-${R} .tq-ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--q-sf)}
-${R} .tq-ring span{position:relative}
-${R} .tq-test .tq-nm b{display:block}
-${R} .tq-test .tq-nm small{color:var(--q-on3)!important;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-${R} .tq-test .tq-bk{display:flex;gap:4px;flex-wrap:wrap}
 ${R} .tq-mini{font-size:11px;font-weight:700;color:#fff!important;border-radius:6px;padding:1px 6px}
-${R} .tq-st{font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;width:max-content}
+${R} .tq-st,${R} .tq-st.tq-prog{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 9px;margin:0;width:max-content}
 ${R} .tq-st.tq-done{background:var(--q-okc);color:var(--q-ok)!important}
 ${R} .tq-st.tq-prog{background:var(--q-warnc);color:var(--q-warn)!important}
 ${R} .tq-acts{display:flex;gap:4px;align-items:center}
 ${R} .tq-ib{width:34px;height:34px;border-radius:50%;border:0;background:none;color:var(--q-on2)!important;display:grid;place-items:center}
 ${R} .tq-ib:hover{background:var(--q-s2)}
-${R} .tq-perf{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-${R} .tq-ptab{width:100%;border-collapse:collapse;font-size:13px}
-${R} .tq-ptab th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--q-on3)!important;text-align:left;padding:8px 10px;font-weight:600}
-${R} .tq-ptab td{padding:9px 10px;border-top:1px solid var(--q-line2);font-variant-numeric:tabular-nums}
-${R} .tq-ptab td:first-child{font-weight:500}
-${R} .tq-pbar{height:8px;border-radius:8px;background:var(--q-s2);overflow:hidden;min-width:80px}
+${R} .tq-perf{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+${R} .tq-psum{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px}
+${R} .tq-psc{display:flex;flex-direction:column;gap:2px;text-align:left;background:var(--q-sf);border:1px solid var(--q-line2);border-left:4px solid var(--q-line);border-radius:16px;box-shadow:var(--q-shadow);padding:12px 16px;min-width:0;font:inherit}
+${R} .tq-psc span{font-size:12px;font-weight:600;color:var(--q-on3)!important;text-transform:uppercase;letter-spacing:.04em}
+${R} .tq-psc b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+${R} .tq-psc em{font-style:normal;font-size:13px;font-weight:600;color:var(--q-on3)!important}
+${R} .tq-psc-b{border-left-color:var(--q-ok)}${R} .tq-psc-w{border-left-color:var(--q-bad);cursor:pointer}
+${R} .tq-psc-w:hover{background:var(--q-s1)}
+${R} .tq-psc-n{grid-column:1/-1;border-left-color:var(--q-line)}
+${R} .tq-ptab{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;display:block}
+${R} .tq-ptab tbody{display:flex;flex-direction:column;gap:2px}
+${R} .tq-ptab tr{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n p" "b u";gap:6px 12px;align-items:center;padding:10px 12px;border-radius:12px}
+${R} .tq-ptab td{display:block;padding:0!important;border:0!important;height:auto!important;font-variant-numeric:tabular-nums;background:transparent}
+${R} .tq-ptab td:nth-child(1){grid-area:n;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+${R} .tq-ptab td:nth-child(2){grid-area:p;font-weight:800;font-size:15px;text-align:right}
+${R} .tq-ptab td:nth-child(3){grid-area:u;font-size:12px;color:var(--q-on3)!important;text-align:right}
+${R} .tq-ptab td:nth-child(4){grid-area:b}
+${R} .tq-ptab tr[data-a=pick]:focus-visible{outline:2px solid var(--q-p);outline-offset:-2px}
+${R} .tq-pbar{height:8px;border-radius:8px;background:var(--q-s2);overflow:hidden;min-width:0}
 ${R} .tq-pbar i{display:block;height:100%;border-radius:8px}
 ${R} .tq-src{font-size:12px;color:var(--q-on2)!important}
 ${R} .tq-sheet{background:var(--q-sf);border-radius:22px;width:min(760px,100%);max-height:calc(100vh - 40px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -1178,6 +1387,9 @@ ${R} .tq-bordered{border:1px solid var(--q-line2);border-radius:14px}
 ${R} .tq-sw.tq-bordered{padding:12px 14px}
 ${R} .tq-chk2{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12.5px}
 ${R} .tq-empty{padding:34px 20px;text-align:center;color:var(--q-on3)!important}
+${R} .tq-tests .tq-empty{display:flex;flex-direction:column;align-items:center;gap:12px;padding:44px 20px;border:1px dashed var(--q-line);border-radius:18px;background:var(--q-sf)}
+${R} .tq-eic{width:56px;height:56px;border-radius:50%;background:var(--q-s2);display:grid;place-items:center;color:var(--q-on3)!important}
+${R} .tq-tests .tq-empty b{color:var(--q-on)!important;font-size:15px}
 ${R} .tq-unas{color:var(--q-warn)!important}
 ${R} .tq-inline{padding:0;color:inherit!important;text-decoration:underline}
 ${R} .tq-inp{font-size:14px}
@@ -1186,6 +1398,7 @@ ${R} .tq-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0
 ${R} .tq-opt b,${R} .tq-opt>span{min-width:0}
 ${R} .tq-card{overflow:hidden}
 ${R} .tq-ptabcard{padding:6px 8px 10px}
+${R} .tq-sech h2 em{margin-left:8px}
 ${R} .tq-ptabcard .tq-sech{padding:12px 10px 0}
 ${R} .tq-sidecard{position:sticky;top:16px;display:flex;flex-direction:column;gap:14px}
 ${R} .tq-bad{color:var(--q-bad)!important}
@@ -1205,7 +1418,7 @@ ${R} .tq-fchip{color:var(--q-on)!important}
 ${R} .tq-mapc select,${R} .tq-field select{appearance:auto}
 ${R} .tq-ptab td,${R} .tq-ptab th{background:transparent}
 ${R} .tq-ptab tr[data-a=pick]{cursor:pointer}
-${R} .tq-ptab tr[data-a=pick]:hover td{background:var(--q-s1)}
+${R} .tq-ptab tr[data-a=pick]:hover{background:var(--q-s1)}
 ${R} .tq-mbtxt{flex:1;min-width:0}
 ${R}.tq-scrim{position:fixed;inset:0;background:rgba(10,12,18,.5);z-index:90;display:flex;align-items:center;justify-content:center;padding:20px;font:14px/1.45 var(--q-font);color:var(--q-on);-webkit-font-smoothing:antialiased}
 ${R}.tq-scrim[hidden]{display:none}
@@ -1231,16 +1444,23 @@ ${R} .tq-swatch{min-width:44px;min-height:44px;width:44px;height:44px;background
 ${R} .tq-sortseg button{min-height:44px}
 ${R} .tq-find{padding-top:0;padding-bottom:0}
 ${R} .tq-find input{min-height:44px}
-${R} .tq-ptab td{height:44px}
 ${R} .tq-inp{min-height:44px}
 ${R} .tq-find{min-height:44px}
 ${R} .tq-fchip{padding:0 12px}
 ${R} .tq-chip{padding:0 14px}
 ${R} .tq-pool{padding:0 14px 0 10px}
 ${R} .tq-test{grid-template-columns:48px minmax(0,1fr);gap:8px 12px;padding:12px 14px}
-${R} .tq-test .tq-bk,${R} .tq-test .tq-stc{display:none}
-${R} .tq-test .tq-acts{grid-column:1/-1;justify-content:space-between}
-${R} .tq-test .tq-acts .tq-btn{flex:1;justify-content:center}
+${R} .tq-hstats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+${R} .tq-hs{padding:10px 12px}${R} .tq-hs b{font-size:22px}
+${R} .tq-htools{flex-direction:column;align-items:stretch;gap:10px}${R} .tq-htools .tq-sectools{flex:none;margin-left:0}
+${R} .tq-hrow1{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}${R} .tq-hrow1::-webkit-scrollbar{display:none}${R} .tq-hrow1>*{flex:none}${R} .tq-hseg{width:auto}${R} .tq-hseg button{min-height:44px;padding:0 12px;white-space:nowrap}${R} .tq-hrow1 .tq-chip{min-height:44px;white-space:nowrap}
+${R} .tq-htools .tq-sectools{flex-wrap:nowrap}${R} .tq-htools .tq-find{flex:1;max-width:none}${R} .tq-hsel select{min-height:44px}
+${R} .tq-cont{flex-wrap:wrap;padding:14px;gap:12px}${R} .tq-cacts{width:100%;flex-direction:column;align-items:stretch;gap:8px}${R} .tq-cib{justify-content:flex-end;gap:6px}${R} .tq-resume{width:100%;justify-content:center;min-height:44px}
+${R} .tq-psum{grid-template-columns:minmax(0,1fr)}
+${R} .tq-test .tq-acts{grid-column:1/-1;justify-content:flex-start;gap:6px}
+${R} .tq-test .tq-acts .tq-btn{flex:none;width:auto;justify-content:center;min-width:92px}
+${R} .tq-test .tq-acts .tq-btn+.tq-ib{margin-left:auto}
+${R} .tq-test .tq-nm small{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 ${R} .tq-headr{width:100%}
 }
 @media (max-width:640px){
@@ -1259,16 +1479,12 @@ ${R} .tq-opt .tq-ic{display:none}
 ${R} .tq-sec{padding:16px 14px}
 ${R} details.tq-more summary{padding:0 14px}
 ${R} .tq-fgroup{padding:0 14px 12px}
-${R} .tq-find input{width:100px}
 ${R} .tq-map,${R} .tq-fmts{grid-template-columns:minmax(0,1fr)}
 ${R}.tq-scrim{padding:0;align-items:flex-end}
 ${R} .tq-sheet{border-radius:22px 22px 0 0;max-height:92vh}
 ${R} .tq-sbody{padding:4px 16px 16px}${R} .tq-shead{padding:16px 16px 10px}${R} .tq-steps{padding:0 16px 10px}${R} .tq-sfoot{padding:12px 16px}
-${R} .tq-ptab .tq-hide-s{display:none}
-${R} .tq-ptab th,${R} .tq-ptab td{padding-left:6px;padding-right:6px}
 ${R} .tq-ptabcard{padding:4px 4px 8px}
-${R} .tq-ptab .tq-go1{display:none}
-${R} .tq-pbar{min-width:40px}
+${R} .tq-ptab tr{min-height:44px;padding:9px 8px}
 ${R} .tq-card .tq-sech{align-items:flex-start}
 }
 /* Qbanks tab v2: bank chips, quick start row, one Subjects · Systems section, compact summary */
@@ -1293,7 +1509,8 @@ ${R} .tq-bank small{display:block;font-size:11.5px;line-height:1.2;color:var(--q
 ${R} .tq-bkr{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:flex-end}.tq-wn{display:none}@media (max-width:640px){.tq-wl{display:none}.tq-wn{display:inline}.tq-bkr{gap:12px;flex-wrap:nowrap}}
 ${R} .tq-manage{white-space:nowrap;font-size:13px}
 ${R} .tq-prog{display:flex;gap:18px;align-items:center;padding:16px 18px;margin:14px 0 16px}
-${R} .tq-pring{width:84px;height:84px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative;background:conic-gradient(var(--q-p) calc(var(--p)*1%),var(--q-s3) 0)}
+${R} .tq-pring{width:92px;height:92px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative;background:conic-gradient(var(--q-p) calc(var(--p)*1%),var(--q-s3) 0)}
+${R} .tq-pin{position:absolute;inset:14px;border-radius:50%;background:conic-gradient(var(--cc) calc(var(--cp)*1%),var(--q-s3) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px))}
 ${R} .tq-pring::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--q-sf)}
 ${R} .tq-pring span{position:relative;display:flex;flex-direction:column;align-items:center;line-height:1.1}
 ${R} .tq-pring b{font-size:19px;font-weight:800}
@@ -1309,7 +1526,14 @@ ${R} .tq-lgi{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 ${R} .tq-lgi b{color:var(--q-on)!important;font-weight:700}
 ${R} .tq-lgi i{width:9px;height:9px;border-radius:3px;background:var(--q-s3)}
 ${R} .tq-lgi .tq-lc{background:var(--q-ok)}${R} .tq-lgi .tq-lw{background:var(--q-bad)}${R} .tq-lgi .tq-lo{background:var(--q-warn)}
-${R} .tq-pfoot{font-size:12px;color:var(--q-on3)!important}
+${R} .tq-pmid{display:flex;align-items:flex-end;justify-content:flex-start;gap:12px 26px;flex-wrap:wrap}
+${R} .tq-pfoot{display:flex;flex-wrap:wrap;gap:4px 22px;color:var(--q-on3)!important}
+${R} .tq-pn{display:flex;flex-direction:column;line-height:1.15}
+${R} .tq-pn b{font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--q-on)!important;order:-1;font-variant-numeric:tabular-nums}
+${R} .tq-pn small{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--q-on3)!important}
+${R} .tq-ptrend{line-height:0;flex:none;width:96px;height:30px;box-sizing:border-box;display:block;border-bottom:1px solid var(--q-line);align-self:flex-end;margin-bottom:3px}
+${R} .tq-ptrend .tq-spark{width:96px;height:29px}
+@media (max-width:640px){${R} .tq-ptrend{display:none}}
 ${R} .tq-presets{display:flex;align-items:center;flex-wrap:nowrap;gap:8px;margin:0 0 16px;overflow-x:auto;padding:2px 2px 4px}
 ${R} .tq-qs{flex:none;font-size:12px;font-weight:600;color:var(--q-on3)!important;margin-right:2px;white-space:nowrap}
 ${R} .tq-preset{flex:none;border:1px solid var(--q-line);background:var(--q-sf);border-radius:999px;padding:5px 13px;font-size:13px;font-weight:600;color:var(--q-on)!important;white-space:nowrap}
@@ -1361,9 +1585,11 @@ ${R} .tq-banks{margin:12px 0 8px}
 ${R} .tq-bcards{display:flex;overflow-x:auto;gap:8px;padding:2px 2px 6px;scroll-snap-type:x proximity}
 ${R} .tq-bank{flex:none;width:160px;scroll-snap-align:start}
 ${R} .tq-prog{gap:12px;padding:14px;margin:10px 0 12px}
-${R} .tq-pring{width:64px;height:64px}
+${R} .tq-pring{width:68px;height:68px}
 ${R} .tq-pring::before{inset:6px}
-${R} .tq-pring b{font-size:15px}
+${R} .tq-pin{inset:9px}
+${R} .tq-pring b{font-size:13px}${R} .tq-pring small{font-size:9px}
+${R} .tq-pn b{font-size:18px}
 ${R} .tq-ptop{flex-direction:column;gap:0;align-items:flex-start}
 ${R} .tq-plegend{gap:2px 12px;font-size:12px}
 ${R} .tq-plegend .tq-lgi{flex:0 0 calc(50% - 6px)}
@@ -1385,9 +1611,8 @@ ${R} .tq-sbh{display:flex;align-items:center;gap:10px;padding-right:22px}
 ${R} .tq-sbh .tq-srow{flex:1;min-width:0}
 ${R} .tq-svis{display:flex;align-items:center;gap:8px;flex:none}
 ${R} .tq-svl{font-size:12px;color:var(--q-on3)!important;min-width:44px;text-align:right}
-${R} .tq-svis .tq-switch{width:36px;height:44px;min-height:44px;padding:11px 0;box-sizing:border-box;background-clip:content-box;cursor:pointer}
-${R} .tq-svis .tq-switch i{width:16px;height:16px;top:14px}
-${R} .tq-svis .tq-switch[aria-checked=true] i{left:17px}
+${R} .tq-svis .tq-switch{height:44px;min-height:44px;padding:9px 0;box-sizing:border-box;background-clip:content-box;cursor:pointer}
+${R} .tq-svis .tq-switch i{top:12px}
 ${R} .tq-sbh .tq-chv{width:24px;height:44px;border:0;background:none;padding:0;cursor:pointer}
 ${R} .tq-sbh:has(.tq-srow[aria-expanded=true]) .tq-chv svg{transform:rotate(180deg)}
 ${R} .tq-shid .tq-srow .tq-badge,${R} .tq-shid .tq-srow .tq-snm b{opacity:.45}
@@ -1397,6 +1622,10 @@ ${R} .tq-srow:hover{background:var(--q-s1)}
 ${R} .tq-snm{min-width:0}
 ${R} .tq-snm b{display:block;font-size:15px;font-weight:700;color:var(--q-on)!important}
 ${R} .tq-snm small{display:block;font-size:12.5px;color:var(--q-on3)!important;line-height:1.35}
+${R} .tq-sscope>div{min-width:0}
+${R} .tq-sscope .tq-switch{height:44px;min-height:44px;padding:9px 0;box-sizing:border-box;background-clip:content-box;cursor:pointer}${R} .tq-sscope .tq-switch i{top:12px}
+${R} .tq-sw .tq-spill{display:inline-block;font-size:10px;font-weight:700;line-height:1.5;border-radius:999px;padding:0 7px;margin-left:6px;vertical-align:middle;background:var(--q-s2);color:var(--q-on2)!important;white-space:nowrap}
+${R} .tq-defs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--q-on3)!important}
 ${R} .tq-schip{font-size:11px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--q-s2);color:var(--q-on2)!important;white-space:nowrap}
 ${R} .tq-chv{display:grid;place-items:center;color:var(--q-on3)!important}
 ${R} .tq-srow[aria-expanded=true] .tq-chv svg{transform:rotate(180deg)}
@@ -1458,15 +1687,15 @@ function injectStyle() {
 }
 function init() {
   injectStyle();
-  // first visit: follow the legacy default source (Settings > "Default to Form Library attempts")
-  if (!S.track) { S.track = legacyVal('qbankSourceMode') === 'linked' ? 'forms' : 'qbank'; }
+  // track / mode / seconds / attempt come from Settings → Qbanks → New test defaults (loadDefaults, first data load)
   watch(); watchExam();
 }
 const api = {
   version: 1,
   refresh() { S.stale = true; invalDet(); if (activePanel()) sync(); else paintSet(); examTick(); },
   mountSettings,
-  _state: S
+  _state: S,
+  _test: { dateBucket, sortTests, groupTests, trendPoints, histStats, continueTest, sparkSvg, perfSummary, historyHtml, progressHtml, perfHtml, testsFiltered, filterLine, scopeFit, scopeHint, scopeOn, mapDefaults, loadDefaults, presetDefs, savePrefs, setBankHtml, settingsHtml, toggleScope, setD(d) { D = d; }, getDef() { return DEF; }, ST }
 };
 root.ThunderQbanksUI = api;
 let tries = 0;

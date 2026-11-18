@@ -53,7 +53,7 @@
   const str = v => (v == null ? '' : String(v)).trim();
   function normSystem(raw) {
     const s = str(raw);
-    if (!s || /generated|inferred/i.test(s)) return UNASSIGNED;
+    if (!s || /generated|inferred/i.test(s) || /^(uncategori[sz]ed|unknown|n\/?a|none|other)$/i.test(s)) return UNASSIGNED;
     return pick(SYS_RULES, s) || pick(SYS_RULES, s.split('/')[0].trim()) || s;
   }
   function systemOf(q) {
@@ -171,7 +171,7 @@
     const subCount = {}, sysCount = {}, subPerf = {}, sysPerf = {}, poolCount = {}, keys = [];
     subjects.forEach(s => { subCount[s] = 0; }); systems.forEach(s => { sysCount[s] = 0; });
     STATUSES.forEach(k => { poolCount[k] = 0; });
-    let avail = 0;
+    let avail = 0, misses = 0;
     rows.forEach(r => {
       if (inStatuses(r, sel.statuses)) {
         subCount[r.subject]++;
@@ -183,22 +183,26 @@
       });
       if (poolCount[r.status] != null) poolCount[r.status]++;
       if (r.marked) poolCount.marked++;
+      if (r.marked || r.status === 'incorrect' || r.status === 'omitted') misses++;
     });
-    return { subjects, systems, subCount, sysCount, subPerf, sysPerf, poolCount, avail, keys, scoped };
+    return { subjects, systems, subCount, sysCount, subPerf, sysPerf, poolCount, misses, avail, keys, scoped };
   }
 
   // model = facets() result computed with all statuses ticked (needs systems, sysPerf, poolCount).
   // apply.subjects/systems: null = everything available.
-  function presets(m) {
+  // defs (optional, from Settings → New test defaults): { perBlock, secs }. Without it the numbers are 40 / 90 s as before.
+  function presets(m, defs) {
     m = m || {};
-    const sp = m.sysPerf || {}, pc = m.poolCount || {};
+    const clamp = (v, lo, hi, d) => { v = Math.round(Number(v)); return Number.isFinite(v) && v > 0 ? Math.max(lo, Math.min(hi, v)) : d; };
+    const n = clamp(defs && defs.perBlock, 1, 80, 40), secs = clamp(defs && defs.secs, 15, 600, 90);
+    const sp = m.sysPerf || {}, pc = m.poolCount || {}, cnt = k => Math.max(0, Number(pc[k]) || 0);
     const weak = (m.systems || []).filter(s => s !== UNASSIGNED && pctOf(sp[s]) != null && sp[s].c + sp[s].w >= 10)
       .sort((a, b) => pctOf(sp[a]) - pctOf(sp[b])).slice(0, 3);
     return [
-      { id: 'fresh', title: 'Fresh 40', detail: 'Unused · everything', disabled: false, apply: { statuses: ['unused'], subjects: null, systems: null, count: 40 } },
-      { id: 'weak', title: 'Weak spots', detail: weak.length ? weak.join(', ') : 'needs answered questions', disabled: !weak.length, apply: { statuses: ['unused', 'incorrect'], subjects: null, systems: weak, count: 40 } },
-      { id: 'redo', title: 'Redo misses', detail: 'Incorrect + marked · ' + ((pc.incorrect || 0) + (pc.marked || 0)), disabled: false, apply: { statuses: ['incorrect', 'marked', 'omitted'], subjects: null, systems: null, count: 40 } },
-      { id: 'sim', title: 'Exam block', detail: '40 unused · Timed 90 s', disabled: false, apply: { statuses: ['unused'], subjects: null, systems: null, mode: 'timed', secs: 90, count: 40, perBlock: 40 } }];
+      { id: 'fresh', title: 'Fresh ' + n, detail: 'Unused · everything', disabled: false, apply: { statuses: ['unused'], subjects: null, systems: null, count: n } },
+      { id: 'weak', title: 'Weak spots', detail: weak.length ? weak.join(', ') : 'needs answered questions', disabled: !weak.length, apply: { statuses: ['unused', 'incorrect'], subjects: null, systems: weak, count: n } },
+      { id: 'redo', title: 'Redo misses', detail: 'Incorrect + marked + omitted · ' + (Number.isFinite(m.misses) ? m.misses : cnt('incorrect') + cnt('marked') + cnt('omitted')), disabled: false, apply: { statuses: ['incorrect', 'marked', 'omitted'], subjects: null, systems: null, count: n } },
+      { id: 'sim', title: 'Exam block', detail: Math.min(n, cnt('unused')) + ' unused · Timed ' + secs + ' s', disabled: false, apply: { statuses: ['unused'], subjects: null, systems: null, mode: 'timed', secs: secs, count: n, perBlock: n } }];
   }
 
   // ---- Exam mix planners (pure; all randomness via opts.rand) ----

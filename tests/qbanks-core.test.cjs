@@ -8,6 +8,7 @@ const Q = require('../qbanks-core.js');
 test('normSystem: simple, compound, passthrough', () => {
   assert.equal(Q.SYSTEMS.length, 23);
   assert.equal(Q.normSystem('Cardiology'), 'Cardiovascular');
+  for (const x of ['Uncategorized', ' unknown ', 'N/A', 'NA', 'None', 'Other', '', 'OTHER']) assert.equal(Q.normSystem(x), Q.UNASSIGNED, JSON.stringify(x));
   assert.equal(Q.normSystem('Nephrology/Urology'), 'Renal & Urinary');
   assert.equal(Q.normSystem('Obstetrics/Gynecology'), 'Female Reproductive & Breast');
   assert.equal(Q.normSystem('Obstetrics'), 'Pregnancy & Childbirth');
@@ -98,6 +99,7 @@ test('facets: counts, cross-filter, perf, disabled when zero', () => {
   assert.deepEqual(f.sysPerf.Cardiovascular, { n: 3, c: 0, w: 1, u: 2 });
   assert.deepEqual(f.subPerf.Pediatrics, { n: 2, c: 0, w: 1, u: 1 });
   assert.deepEqual(f.poolCount, { unused: 3, incorrect: 1, marked: 2, omitted: 1, correct: 1 });
+  assert.ok(Number.isFinite(f.misses) && f.misses <= 4 && f.misses >= 2, 'misses = distinct incorrect/omitted/marked rows');
   // null selection = everything
   assert.equal(Q.facets(rows, { statuses: null }).avail, 6);
   assert.equal(Q.facets([], {}).avail, 0);
@@ -124,7 +126,7 @@ test('presets: weak spots needs >=10 answered, picks 3 weakest', () => {
   const none = Q.presets(Q.facets(rows, { statuses: null })).find(x => x.id === 'weak');
   assert.equal(none.disabled, true);
   assert.equal(none.detail, 'needs answered questions');
-  assert.equal(Q.presets(m).find(x => x.id === 'redo').detail, 'Incorrect + marked \u00b7 ' + (m.poolCount.incorrect + m.poolCount.marked));
+  assert.equal(Q.presets(m).find(x => x.id === 'redo').detail, 'Incorrect + marked + omitted \u00b7 ' + m.misses);
 });
 
 test('mergeTags: newest wins, tombstones, inputs untouched', () => {
@@ -397,4 +399,17 @@ test('facets scopeBanks (facetRules.systemsBySubject): systems follow the select
   const mx = Q.facets(mixed, { statuses: null, subjects: ['HY Ethics'], scopeBanks: ['qb-hy'] });
   assert.deepEqual(mx.systems, ['Cardiology', 'Ethics  - Block 1', 'Ethics  - Block 2', 'Renal & Urinary']);
   assert.deepEqual(mx.sysCount, { Cardiology: 0, 'Ethics  - Block 1': 1, 'Ethics  - Block 2': 1, 'Renal & Urinary': 0 });
+});
+
+test('presets(m, defs): count follows the default block size, Exam block uses default seconds, no defs = today', () => {
+  const m = Q.facets(perfRows, { statuses: null });
+  const base = Q.presets(m), same = Q.presets(m, undefined), d = Q.presets(m, { perBlock: 20, secs: 120 });
+  assert.deepEqual(same, base, 'no defaults: identical');
+  assert.equal(base.find(x => x.id === 'fresh').title, 'Fresh 40'); assert.equal(base.find(x => x.id === 'sim').detail, Math.min(40, m.poolCount.unused) + ' unused · Timed 90 s');
+  assert.equal(d.find(x => x.id === 'fresh').title, 'Fresh 20');
+  for (const id of ['fresh', 'weak', 'redo']) assert.equal(d.find(x => x.id === id).apply.count, 20, id);
+  const sim = d.find(x => x.id === 'sim');
+  assert.deepEqual([sim.apply.mode, sim.apply.secs, sim.apply.count, sim.apply.perBlock, sim.detail], ['timed', 120, 20, 20, Math.min(20, m.poolCount.unused) + ' unused · Timed 120 s']);
+  const odd = Q.presets(m, { perBlock: 999, secs: 1 });
+  assert.equal(odd.find(x => x.id === 'fresh').apply.count, 80); assert.equal(odd.find(x => x.id === 'sim').apply.secs, 15);
 });

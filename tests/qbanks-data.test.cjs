@@ -395,3 +395,153 @@ test('manifest facetRules: only systemsBySubject:true is kept, stored, exported 
     assert.ok(h.includes("kind:'imported',formIds:bankRecs(q.id).map(x=>x.id),...(QBP.facetRulesOf(q.facetRules)?{facetRules:QBP.facetRulesOf(q.facetRules)}:{})"), 'qbanks() lists the rule on the bank');
   }
 });
+
+/* ---- per-bank facetRules switch (updateBank), precedence on Add files, listing, export and re-import ---- */
+function fxHarness(h, forms) {
+  const upd = h.slice(h.indexOf('const C_builtinId='), h.indexOf('async function deleteBank('));
+  const catalog = { forms }; const saved = []; let rendered = 0;
+  const bankRecs = (id) => (catalog.forms || []).filter((f) => f && f.qbank && f.qbank.id === id);
+  const upsertCatalogForm = (rec) => { catalog.forms = catalog.forms.filter((f) => f.id !== rec.id).concat([rec]); };
+  const env = { needData() {}, needCore: () => Core, QBP, bankRecs, upsertCatalogForm, writeCatalog: async () => { saved.push(JSON.stringify(catalog.forms)); }, renderQbankMode: async () => { rendered++; } };
+  const names = Object.keys(env);
+  const api = new Function(...names, upd + ';return {updateBank};')(...names.map((k) => env[k]));
+  const listLine = line(h, '            const seen=new Set(); (catalog.forms||[]).forEach(f=>{ const q=f&&f.qbank;');
+  const list = () => new Function('catalog', 'QBP', 'bankRecs', 'banks', listLine + ';return banks;')(catalog, QBP, bankRecs, []);
+  return { catalog, saved, api, list, rendered: () => rendered, bankRecs };
+}
+const fxForms = () => [1, 2, 3].map((n) => ({ id: 'QB-MULTI-0' + n, sourceFiles: ['f' + n + '.json'], qbank: { id: 'qb-multi', name: 'Multi', code: 'MU', color: '#112233', tagMap: { system: 'system' } } }))
+  .concat([{ id: 'QB-OTHER-01', qbank: { id: 'qb-other', name: 'Other', code: 'OT' } }]);
+
+test('updateBank facetRules: set and remove on every record; other banks and no-key patches untouched', async () => {
+  for (const h of Object.values(html)) {
+    const fx = fxHarness(h, fxForms());
+    await fx.api.updateBank('qb-multi', { name: 'Renamed' });
+    assert.ok(fx.bankRecs('qb-multi').every((r) => !('facetRules' in r.qbank)), 'no key in the patch leaves it absent');
+    assert.deepEqual(await fx.api.updateBank('qb-multi', { facetRules: { systemsBySubject: true } }), { ok: true });
+    let recs = fx.bankRecs('qb-multi'); assert.equal(recs.length, 3);
+    assert.ok(recs.every((r) => JSON.stringify(r.qbank.facetRules) === '{"systemsBySubject":true}'), 'set on all 3 records');
+    assert.ok(!('facetRules' in fx.bankRecs('qb-other')[0].qbank), 'other bank untouched');
+    assert.ok(fx.rendered() >= 2 && fx.saved.length >= 2, 'same save path: writeCatalog + renderQbankMode');
+    await fx.api.updateBank('qb-multi', { name: 'Again', code: 'ag' });
+    assert.ok(fx.bankRecs('qb-multi').every((r) => r.qbank.facetRules && r.qbank.facetRules.systemsBySubject === true && r.qbank.name === 'Again' && r.qbank.code === 'AG'), 'patch without the key keeps the rule');
+    assert.deepEqual(fx.list().find((b) => b.id === 'qb-multi').facetRules, { systemsBySubject: true }, 'qbanks() lists it after setting');
+    await fx.api.updateBank('qb-multi', { facetRules: { systemsBySubject: false } });
+    assert.ok(fx.bankRecs('qb-multi').every((r) => !('facetRules' in r.qbank)), 'false deletes the key on every record');
+    assert.ok(!('facetRules' in fx.list().find((b) => b.id === 'qb-multi')), 'qbanks() omits it after removing');
+    await fx.api.updateBank('qb-multi', { facetRules: { systemsBySubject: true } });
+    await fx.api.updateBank('qb-multi', { facetRules: null });
+    assert.ok(fx.bankRecs('qb-multi').every((r) => !('facetRules' in r.qbank)), 'null deletes the key');
+    await fx.api.updateBank('qb-multi', { facetRules: { systemsBySubject: 'yes' } });
+    assert.ok(fx.bankRecs('qb-multi').every((r) => !('facetRules' in r.qbank)), 'a non-true value is normalised away');
+  }
+});
+
+test('updateBank facetRules: library ids throw the built-in error first, unknown ids say the bank is gone', async () => {
+  for (const h of Object.values(html)) {
+    const fx = fxHarness(h, fxForms());
+    for (const b of Core.BUILTIN_BANKS) for (const fr of [{ systemsBySubject: true }, null, { systemsBySubject: false }])
+      await assert.rejects(fx.api.updateBank(b.id, { facetRules: fr }), { message: 'Built-in banks use the standard system list; this switch is for imported banks.' }, b.id);
+    await assert.rejects(fx.api.updateBank('qb-nope', { facetRules: { systemsBySubject: true } }), { message: 'That bank no longer exists.' });
+    await assert.rejects(fx.api.updateBank('qb-nope', { name: 'x' }), { message: 'That bank no longer exists.' });
+  }
+});
+
+test('Add files never changes facetRules: the bank record wins over the added ZIP manifest', () => {
+  for (const h of Object.values(html)) {
+    const imp = h.slice(h.indexOf('async function importBank('), h.indexOf('async function updateBank('));
+    const ia = imp.indexOf('if(o.into){'), ib = imp.indexOf('else{', ia);
+    const intoBranch = imp.slice(ia, ib), newBranch = imp.slice(ib, imp.indexOf('\n', ib));
+    assert.ok(!/facetRules|\bmf\b/.test(intoBranch), 'Add files branch never reads the manifest or writes facetRules');
+    assert.ok(/qb=Object\.assign\(\{\},recs\[0\]\.qbank\)/.test(intoBranch), 'starts from the bank record');
+    assert.ok(newBranch.includes('QBP.facetRulesOf(mf&&mf.facetRules)'), 'manifest flag only read for a new bank');
+    assert.equal((imp.match(/facetRules/g) || []).length, 3, 'no other facetRules use inside importBank');
+    /* the two statements, run on both cases */
+    const run = (bankRec, manifest) => { const recs = [{ qbank: bankRec }]; const mf = manifest; let qb = Object.assign({}, recs[0].qbank); qb.tagMap = Object.assign({}, qb.tagMap, {}); return qb; };
+    const on = run({ id: 'b', facetRules: { systemsBySubject: true } }, { facetRules: undefined });
+    assert.deepEqual(on.facetRules, { systemsBySubject: true }, 'bank with the flag stays on when the added manifest lacks it');
+    const off = run({ id: 'b' }, { facetRules: { systemsBySubject: true } });
+    assert.ok(!('facetRules' in off), 'bank without the flag stays off when the added manifest has it');
+  }
+});
+
+test('export writes facetRules only when on; re-import of the export keeps it', async () => {
+  for (const h of Object.values(html)) {
+    const src = h.slice(h.indexOf('async function exportBank('), h.indexOf('async function acceptSuggestions('));
+    const exportOf = async (recs) => {
+      const files = {}; class FakeZip { file(n, c) { files[n] = c; } async generateAsync() { return { fake: true }; } }
+      const env = { needData() {}, window: { JSZip: FakeZip }, JSZip: FakeZip, bankRecs: () => recs, QBP, assetFiles: async () => [], readText: async () => JSON.stringify({ title: 't', blocks: [] }), formsDir: async () => ({}), shaOfBlob: async () => '' };
+      const names = Object.keys(env);
+      await new Function(...names, src + ';return exportBank;')(...names.map((k) => env[k]))('qb-multi');
+      return files;
+    };
+    for (const on of [true, false]) {
+      const forms = fxForms().filter((f) => f.qbank.id === 'qb-multi'); if (on) forms.forEach((f) => { f.qbank.facetRules = { systemsBySubject: true }; });
+      const files = await exportOf(forms);
+      const man = JSON.parse(files['qbank.json']);
+      assert.equal(Object.keys(files).filter((n) => /^questions\//.test(n)).length, 3, 'one file per stored form');
+      if (on) assert.deepEqual(man.facetRules, { systemsBySubject: true }); else assert.ok(!('facetRules' in man), 'omitted when off');
+      const re = QBP.parseManifest(files['qbank.json']);
+      if (on) assert.deepEqual(re.facetRules, { systemsBySubject: true }, 're-import keeps it'); else assert.ok(!('facetRules' in re));
+    }
+  }
+});
+
+/* ---- unfinished tests, linked-set Exam mix, null facets, filter reset ---- */
+test('unfinished Qbank test: answered questions keep their real status, unanswered stay used/omitted; latest attempt decides across completed + unfinished', () => {
+  const blk = (ans, flagged, result) => ({ total: ans.length, answers: ans, flagged, result: result || null });
+  const open = (at, keys, ans, flagged, result) => ({ status: 'in_progress', updatedAt: at, session: { qbankKeys: keys, blocks: [blk(ans, flagged, result)] } });
+  const done = (at, key, chosen, correct) => ({ status: 'completed', completedAt: at, session: { qbankKeys: [key], blocks: [blk([chosen], [false], { answers: [{ item: 1, chosen, correct, isCorrect: chosen === correct }] })] } });
+  const cm = { 'F::1': 'B', 'F::2': 'C' };
+  const qp = { sessions: [open('2026-11-05', ['F::1', 'F::2', 'F::3', 'F::4'], ['B', 'A', null, null], [false, false, false, true])] };
+  assert.deepEqual(Object.keys(QBP.usedFromSessions(qp)).sort(), ['F::1', 'F::2', 'F::3', 'F::4'], 'every question of the test is out of Unused');
+  assert.deepEqual([...QBP.openAnswerKeys(qp)].sort(), ['F::1', 'F::2'], 'answers without a graded result need the form key');
+  let h = QBP.histFromSessions(qp, 'completed_qbank');
+  assert.deepEqual(h, {}, 'without the open option the unfinished test is ignored (legacy behaviour)');
+  h = QBP.histFromSessions(qp, 'completed_qbank', null, { open: true, correctOf: k => cm[k] });
+  const st = k => Core.statusOf(QBP.qbankStatus(true, h[k]));
+  assert.deepEqual(st('F::1'), { status: 'correct', marked: false });
+  assert.deepEqual(st('F::2'), { status: 'incorrect', marked: false });
+  assert.deepEqual(st('F::3'), { status: 'omitted', marked: false }, 'unanswered stays omitted (no history entry)');
+  assert.deepEqual(st('F::4'), { status: 'omitted', marked: true }, 'unanswered but marked keeps the mark');
+  // a graded block inside an unfinished test needs no lookup
+  const graded = { sessions: [open('2026-11-05', ['F::1'], ['A'], [false], { answers: [{ item: 1, chosen: 'A', correct: 'B', isCorrect: false }] })] };
+  assert.equal(QBP.histFromSessions(graded, 'completed_qbank', null, { open: true })['F::1'].wrong, true);
+  assert.equal(QBP.openAnswerKeys(graded).size, 0);
+  // latest attempt decides: completed wrong (Nov 1) < unfinished right (Nov 5) < completed wrong (Nov 9)
+  const mix = (extra) => ({ sessions: [...extra, done('2026-11-01', 'F::1', 'A', 'B'), open('2026-11-05', ['F::1'], ['B'], [false])].sort((a, b) => String(b.completedAt || b.updatedAt).localeCompare(String(a.completedAt || a.updatedAt))) });
+  h = QBP.histFromSessions(mix([]), 'completed_qbank', null, { open: true, correctOf: k => cm[k] });
+  assert.equal(h['F::1'].wrong, false, 'newer unfinished answer beats the older completed one');
+  h = QBP.histFromSessions(mix([done('2026-11-09', 'F::1', 'A', 'B')]), 'completed_qbank', null, { open: true, correctOf: k => cm[k] });
+  assert.equal(h['F::1'].wrong, true, 'a later completed attempt beats the unfinished one');
+  // an unanswered question of a newer unfinished test does not erase an older completed answer
+  const keep = { sessions: [open('2026-11-08', ['F::1'], [null], [false]), done('2026-11-01', 'F::1', 'B', 'B')] };
+  h = QBP.histFromSessions(keep, 'completed_qbank', null, { open: true });
+  assert.deepEqual(h['F::1'], { used: true, wrong: false, marked: false, answered: true });
+});
+
+test('Exam mix fills the count when the pool is made of linked sets (units of 2 or 3)', () => {
+  let s = 11; const rand = () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+  const SY = Core.SYSTEMS.filter((x) => x !== Core.UNASSIGNED);
+  for (const size of [1, 2, 3]) for (const n of [10, 20]) for (let t = 0; t < 40; t++) {
+    const rows = [], sizes = [], sys = {}; let i = 0;
+    for (let u = 0; u < 60; u++) { sizes.push(size); const sy = SY[Math.floor(rand() * SY.length)]; for (let j = 0; j < size; j++, i++) { rows.push({ key: 'k' + i }); sys['k' + i] = sy; } }
+    for (const pull of ['mix', 'random']) {
+      const res = QBP.planPick(Core, pull, { rows, sizes, setOf: {} }, n, 40, { systems: null }, (k) => sys[k], () => null, rand);
+      assert.ok(res && res.rows.length <= n && res.rows.length >= n - (size - 1), pull + ' size ' + size + ' n ' + n + ' got ' + (res && res.rows.length));
+      assert.equal(res.sizes.reduce((a, b) => a + b, 0), res.rows.length);
+      assert.equal(new Set(res.rows.map((r) => r.key)).size, res.rows.length, 'no question twice');
+      assert.equal(res.plan.blocks[res.plan.blocks.length - 1][1], res.rows.length, 'blocks cover every key');
+      assert.equal(res.plan.perBlock.reduce((a, c) => a + Object.values(c).reduce((x, y) => x + y, 0), 0), res.rows.length, 'per-block counts add up');
+    }
+  }
+});
+
+test('null facets mean no filter on that facet; Start resets the filter after the pool is drawn', () => {
+  const rows = [{ status: 'unused', marked: false, subject: 'S', system: 'X' }];
+  assert.equal(Core.matches(rows[0], { statuses: null, subjects: null, systems: null }), true);
+  assert.equal(Core.matches(rows[0], { subjects: null, systems: ['Y'] }), false);
+  for (const h of Object.values(html)) {
+    assert.ok(/const arr=v=>v==null\?null:Array\.from\(v\)/.test(h), 'mkFilter keeps null as null');
+    assert.ok(h.includes('const out=await prevStart.apply(this,arguments); filter=null;'), 'filter reset after Start');
+  }
+});

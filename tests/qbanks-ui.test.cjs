@@ -219,3 +219,212 @@ test('System facet follows the subjects for banks with facetRules.systemsBySubje
   assert.ok(ui.includes('scopeBanks: scope'), 'model() passes the scope to facets()');
   assert.ok(/if \(scope\.length && S\.syss\) \{/.test(ui), 'filter sync runs only when a flagged bank is selected');
 });
+
+/* ---- Systems follow subjects (Settings switch) ---- */
+const rowsOf = (bank, list) => list.map(([subject, system], i) => ({ bank, formId: 'f', qid: bank + i, subject, system, status: 'unused' }));
+const settingsCtx = (banks, rows) => {
+  const T = mkRoot({}).ThunderQbanksUI._test;
+  T.setD({ banks, forms: [], rows, prov: {}, tests: [] }); return T;
+};
+test('scopeFit: subjects, systems, single-subject systems; Unassigned ignored; one-subject bank', () => {
+  const T = loadUi(null)._test;
+  const rows = rowsOf('B', [['Medicine', 'Cardio'], ['Medicine', 'Cardio'], ['Medicine', 'Renal'], ['Surgery', 'Renal'], ['Surgery', 'Ortho'], ['Pediatrics', 'Peds only']]).concat(rowsOf('X', [['Other', 'Zzz']]));
+  assert.deepEqual({ ...T.scopeFit(rows, 'B', false) }, { subjects: 3, systems: 4, single: 3, suggested: true }, 'Renal spans two subjects; other bank ignored');
+  const un = rows.concat(rowsOf('B', [['Unassigned', 'Cardio'], ['Medicine', 'Unassigned'], ['Unassigned', 'Unassigned']]));
+  assert.deepEqual({ ...T.scopeFit(un, 'B', false) }, { subjects: 3, systems: 4, single: 3, suggested: true }, 'Unassigned adds nothing on either side');
+  const one = T.scopeFit(rowsOf('B', [['Medicine', 'A'], ['Medicine', 'B'], ['Medicine', 'C']]), 'B', false);
+  assert.equal(one.subjects, 1); assert.equal(T.scopeHint(one), 'This bank has one subject, so there is nothing to scope.');
+  assert.equal(T.scopeHint(T.scopeFit(rows, 'B', false)), '3 of 4 systems here belong to one subject.');
+  const oneSys = T.scopeFit(rowsOf('B', [['M', 'A'], ['S', 'A']]), 'B', false); assert.equal(oneSys.suggested, false); assert.match(T.scopeHint(oneSys), /nothing to scope/);
+  assert.deepEqual({ ...T.scopeFit([], 'B', false) }, { subjects: 0, systems: 0, single: 0, suggested: false });
+});
+test('Suggested rule: at least 60% of systems in one subject, only while the switch is off', () => {
+  const T = loadUi(null)._test;
+  const mk = (n, of) => { const l = []; for (let i = 0; i < of; i++) { l.push(['S' + (i < n ? i % 2 : 0), 'sys' + i]); if (i >= n) l.push(['S1', 'sys' + i]); } return rowsOf('B', l); };
+  assert.equal(T.scopeFit(mk(3, 5), 'B', false).suggested, true, '3 of 5 = 60%');
+  assert.equal(T.scopeFit(mk(2, 5), 'B', false).suggested, false, '2 of 5 = 40%');
+  assert.equal(T.scopeFit(mk(3, 5), 'B', true).suggested, false, 'already on: not suggested');
+});
+test('Settings card: the switch renders for imported banks only, with the contract markup, suffix and Suggested pill', () => {
+  const rows = rowsOf('IMP', [['Medicine', 'Cardio'], ['Surgery', 'Ortho'], ['Pediatrics', 'Growth']]).concat(rowsOf('LIB', [['Medicine', 'Cardio'], ['Surgery', 'Ortho']]));
+  const banks = [{ id: 'IMP', kind: 'imported', name: 'My Bank', code: 'MB', color: '#123456' }, { id: 'LIB', kind: 'builtin', name: 'Built', code: 'BI', color: '#654321' }];
+  const T = settingsCtx(banks, rows);
+  T.ST.open = 'IMP'; const imp = T.setBankHtml(banks[0]);
+  assert.match(imp, /<div class="tq-sw tq-bordered tq-sscope"><div><b>Systems follow subjects <span class="tq-spill">Suggested<\/span><\/b>/);
+  assert.match(imp, /role="switch" aria-checked="false" aria-label="Systems follow subjects for My Bank" data-a="sscope" data-v="IMP"/);
+  assert.match(imp, /3 of 3 systems here belong to one subject\./); assert.doesNotMatch(imp, /systems by subject<\/small>|aria-busy/);
+  T.ST.open = 'LIB'; assert.doesNotMatch(T.setBankHtml(banks[1]), /sscope|Systems follow subjects/, 'built-in banks have no switch');
+  banks[0].facetRules = { systemsBySubject: true }; T.ST.open = '';
+  assert.match(T.setBankHtml(banks[0]), /· systems by subject<\/small>/, 'collapsed suffix when on');
+  T.ST.open = 'IMP'; const on = T.setBankHtml(banks[0]);
+  assert.match(on, /aria-checked="true"[^>]*data-a="sscope"/); assert.doesNotMatch(on, /tq-spill/, 'no pill while on');
+  T.ST.sbusy = 'IMP'; assert.match(T.setBankHtml(banks[0]), /data-v="IMP" disabled aria-busy="true"/);
+  T.ST.sbusy = ''; T.ST.serr.IMP = 'nope <b>'; assert.match(T.setBankHtml(banks[0]), /class="tq-hint" role="alert">.*Could not save: nope &lt;b&gt;/s);
+});
+const mkRoot = (bridgeObj, saved) => { const root = { document: { readyState: 'loading', addEventListener() {}, getElementById: () => null }, localStorage: { getItem: () => (saved == null ? null : JSON.stringify(saved)), setItem() {} } };
+  root.window = root; root.setTimeout = () => 0; root.console = { log() {}, warn() {}, error() {} }; root.ThunderQbanksCore = {}; if (bridgeObj) root.StepLibraryBridge = bridgeObj; vm.runInNewContext(ui, root); return root; };
+test('toggleScope: saves through qbanksUpdateBank, refetches; on failure shows the error and keeps the old state', async () => {
+  const rows = rowsOf('IMP', [['M', 'A'], ['S', 'B']]), calls = []; let fail = false;
+  const bank = { id: 'IMP', kind: 'imported', name: 'My Bank', code: 'MB', color: '#123456' };
+  const B = { qbanks: async () => ({ banks: [{ ...bank, ...(calls.length && !fail ? { facetRules: { systemsBySubject: calls[calls.length - 1].on } } : {}) }], forms: [], rows, prov: {}, tests: [] }), settings: async () => ({ qbank: {} }),
+    qbanksUpdateBank: async (id, patch) => { if (fail) throw new Error('disk full'); calls.push({ id, patch, on: !!(patch.facetRules && patch.facetRules.systemsBySubject) }); } };
+  const r = mkRoot(B), T = r.ThunderQbanksUI._test;
+  T.setD({ banks: [{ ...bank }], forms: [], rows, prov: {}, tests: [] });
+  await T.toggleScope('IMP'); assert.deepEqual(JSON.parse(JSON.stringify(calls[0])), { id: 'IMP', patch: { facetRules: { systemsBySubject: true } }, on: true });
+  assert.equal(T.ST.sbusy, ''); assert.match((T.ST.open = 'IMP', T.setBankHtml({ ...bank, facetRules: { systemsBySubject: true } })), /aria-checked="true"/);
+  await T.toggleScope('IMP'); assert.equal(calls[1].patch.facetRules, null, 'off sends null');
+  fail = true; T.setD({ banks: [{ ...bank, facetRules: { systemsBySubject: true } }], forms: [], rows, prov: {}, tests: [] });
+  await T.toggleScope('IMP'); assert.equal(T.ST.serr.IMP, 'disk full'); assert.equal(T.ST.sbusy, '');
+  assert.match(T.setBankHtml({ ...bank, facetRules: { systemsBySubject: true } }), /role="alert">.*Could not save: disk full/s);
+});
+test('click handler: data-a="sscope" is handled in onSetHostClick and the save path refetches, invalidates and repaints', () => {
+  const h = ui.slice(ui.indexOf('function onSetHostClick'), ui.indexOf('function setVisible'));
+  assert.match(h, /a === 'sscope'\) \{ toggleScope\(v\)/);
+  const f = ui.slice(ui.indexOf('async function toggleScope'), ui.indexOf('function settingsHtml'));
+  assert.match(f, /qbanksUpdateBank\(id, \{ facetRules: on \? \{ systemsBySubject: true \} : null \}\)/);
+  assert.match(f, /await fetchData\(\)/); assert.match(f, /invalDet\(id\)/); assert.match(f, /paintSet\(\); render\(\)/); assert.match(f, /ST\.serr\[id\] =/);
+});
+
+/* ---- Defaults follow Settings ---- */
+test('mapDefaults: Settings New test defaults to the tab (testing = timed, link = forms, attempt valid for the track)', () => {
+  const T = loadUi(null)._test, m = q => ({ ...T.mapDefaults(q) });
+  assert.deepEqual(m({ defaultMode: 'testing', defaultSecondsPerQuestion: 60, defaultBlockSize: 20, linkToLibrary: false, defaultAttemptSource: 'latest_qbank' }), { mode: 'timed', secs: 60, perBlock: 20, track: 'qbank', attempt: 'latest_qbank' });
+  assert.deepEqual(m({ defaultMode: 'tutor', defaultSecondsPerQuestion: 5, defaultBlockSize: 500, linkToLibrary: true, defaultAttemptSource: 'latest_completed' }), { mode: 'tutor', secs: 15, perBlock: 80, track: 'forms', attempt: 'latest_completed' });
+  assert.equal(m({ defaultAttemptSource: 'first' }).attempt, 'completed_qbank', 'a form attempt is not valid for the Qbank track: track default');
+  assert.equal(m({ linkToLibrary: true, defaultAttemptSource: 'all_qbank' }).attempt, 'active', 'a Qbank attempt is not valid for forms: track default');
+  assert.equal(m({ linkToLibrary: true, defaultAttemptSource: 'first' }).attempt, 'first');
+  assert.deepEqual(m({}), { mode: 'timed', secs: 90, perBlock: 40, track: 'qbank', attempt: 'completed_qbank' });
+  assert.equal(T.mapDefaults(null), null); assert.equal(T.mapDefaults(undefined), null);
+});
+test('loadDefaults: applied on first load, again only when the Settings values change; a bridge without settings is tolerated', async () => {
+  const U = loadUi({ mode: 'timed', secs: 200, track: 'forms', attempt: 'first', pull: 'order' }), T = U._test, S = U._state;
+  assert.deepEqual([S.mode, S.secs, S.track, S.attempt], ['tutor', 90, '', ''], 'old saved mode/secs/track/attempt are ignored');
+  const mk = (q) => { const root = mkRoot(q === 'none' ? {} : { settings: async () => ({ qbank: root.Q }) }); root.Q = q === 'none' ? null : q; return root; };
+  const r = mk({ defaultMode: 'testing', defaultSecondsPerQuestion: 45, defaultBlockSize: 10, linkToLibrary: true, defaultAttemptSource: 'first' });
+  const t = r.ThunderQbanksUI._test, s = r.ThunderQbanksUI._state;
+  await t.loadDefaults();
+  assert.deepEqual([s.mode, s.secs, s.perBlock, s.want, s.track, s.attempt], ['timed', 45, 10, 10, 'forms', 'first']);
+  s.mode = 'tutor'; s.want = 7; await t.loadDefaults(); assert.deepEqual([s.mode, s.want], ['tutor', 7], 'unchanged Settings: tab edits stay');
+  r.Q = { ...r.Q, defaultBlockSize: 25 }; await t.loadDefaults(); assert.deepEqual([s.mode, s.want, s.perBlock], ['timed', 25, 25], 'changed Settings: applied again');
+  assert.deepEqual({ ...t.presetDefs() }, { perBlock: 25, secs: 45 });
+  const n = mk('none'); await n.ThunderQbanksUI._test.loadDefaults(); assert.equal(n.ThunderQbanksUI._state.track, 'qbank'); assert.equal(n.ThunderQbanksUI._test.presetDefs(), undefined);
+});
+test('savePrefs no longer stores mode, secs, track or attempt', () => {
+  const store = {}, root = { document: { readyState: 'loading', addEventListener() {}, getElementById: () => null }, localStorage: { getItem: () => null, setItem: (k, v) => { store[k] = v; } } };
+  root.window = root; root.setTimeout = () => 0; root.console = console; root.ThunderQbanksCore = {};
+  vm.runInNewContext(ui, root); const U = root.ThunderQbanksUI; U._state.mode = 'timed'; U._state.secs = 33; U._state.track = 'forms'; U._state.attempt = 'active'; U._test.savePrefs();
+  const saved = JSON.parse(Object.values(store)[0]);
+  for (const k of ['mode', 'secs', 'track', 'attempt']) assert.ok(!(k in saved), k + ' not saved');
+  assert.equal(saved.pull, 'mix'); assert.ok('sel' in saved && 'facet' in saved);
+});
+test('summary card has the Defaults from Settings line with the opensettings link; init no longer reads the legacy source input', () => {
+  assert.match(ui, /Defaults from Settings<\/span>[^`]*data-a="opensettings"/);
+  assert.doesNotMatch(ui.slice(ui.indexOf('function init()'), ui.indexOf('const api')), /qbankSourceMode/);
+  assert.match(ui, /core\(\)\.presets\(m\(\), presetDefs\(\)\)/); assert.match(ui, /C\.presets\(m, presetDefs\(\)\)/);
+});
+
+/* ---- Previous tests redesign + performance card (pure helpers and markup) ---- */
+const NOW = new Date(2026, 10, 18, 15, 0, 0).getTime(), DAY = 864e5;
+const ago = (d, h = 0) => new Date(NOW - d * DAY - h * 36e5).toISOString();
+const mkTest = (id, o = {}) => ({ id, name: 'T ' + id, mode: 'tutor', done: true, total: 40, blocks: 1, percent: 70, banks: ['A'], formIds: [], createdAt: ago(0), updatedAt: ago(0), completedAt: ago(0), ...o });
+test('dateBucket: Today, Yesterday, This week, This month, Earlier (and bad input)', () => {
+  const T = loadUi(null)._test, b = (d) => T.dateBucket(NOW - d * DAY, NOW);
+  assert.equal(b(0), 'Today'); assert.equal(b(-1), 'Today', 'future counts as today'); assert.equal(b(1), 'Yesterday');
+  assert.equal(b(2), 'This week'); assert.equal(b(6), 'This week'); assert.equal(b(7), 'This month'); assert.equal(b(17), 'This month');
+  assert.equal(b(18), 'Earlier', '1 Nov 2026 minus one day is October'); assert.equal(b(400), 'Earlier');
+  assert.equal(T.dateBucket(0, NOW), 'Earlier'); assert.equal(T.dateBucket('nope', NOW), 'Earlier');
+});
+test('sortTests: newest, oldest, best, worst (in-progress last); groupTests follows the sort', () => {
+  const T = loadUi(null)._test;
+  const a = mkTest('a', { percent: 90, completedAt: ago(3) }), b = mkTest('b', { percent: 55, completedAt: ago(1) }), c = mkTest('c', { done: false, percent: null, completedAt: null, updatedAt: ago(0) }), d = mkTest('d', { percent: 72, completedAt: ago(20) });
+  const ids = (l) => l.map(t => t.id).join('');
+  assert.equal(ids(T.sortTests([a, b, c, d], 'new')), 'cbad'); assert.equal(ids(T.sortTests([a, b, c, d], 'old')), 'dabc');
+  assert.equal(ids(T.sortTests([a, b, c, d], 'best')), 'adbc'); assert.equal(ids(T.sortTests([a, b, c, d], 'worst')), 'bdac');
+  const g = [...T.groupTests(T.sortTests([a, b, c, d], 'new'), 'new', NOW).map(x => x.label + ':' + ids(x.items))];
+  assert.deepEqual(g, ['Today:c', 'Yesterday:b', 'This week:a', 'Earlier:d']);
+  assert.deepEqual([...T.groupTests(T.sortTests([a, b, c, d], 'old'), 'old', NOW).map(x => x.label)], ['Earlier', 'This week', 'Yesterday', 'Today']);
+  assert.deepEqual([...T.groupTests([a, b], 'best', NOW).map(x => x.label)], ['Highest scores']); assert.equal(T.groupTests([], 'new', NOW).length, 0);
+});
+test('histStats: average is over completed tests only; trend = last 12 completed, oldest first', () => {
+  const T = loadUi(null)._test;
+  const l = [mkTest('a', { percent: 80, completedAt: ago(5) }), mkTest('b', { percent: 60, completedAt: ago(2) }), mkTest('p', { done: false, percent: 10, completedAt: null, total: 99 })];
+  const s = T.histStats(l); assert.equal(s.total, 3); assert.equal(s.completed, 2); assert.equal(s.avg, 70); assert.equal(s.qs, 179, 'questions in tests = every test'); assert.deepEqual([...s.pts], [80, 60]);
+  assert.equal(T.histStats([mkTest('p', { done: false, percent: null })]).avg, null); assert.equal(T.histStats([]).avg, null);
+  const many = Array.from({ length: 15 }, (_, i) => mkTest('t' + i, { percent: i, completedAt: ago(20 - i) }));
+  assert.deepEqual([...T.trendPoints(many, 12)], [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
+});
+test('Previous tests markup: stat strip respects the bank filter; continue card only with an in-progress test', () => {
+  const tests = [mkTest('a', { percent: 90, banks: ['A'] }), mkTest('b', { percent: 50, banks: ['B'] }), mkTest('c', { done: false, percent: null, banks: ['B'], name: 'Half way', updatedAt: ago(0), completedAt: null })];
+  const st = loadUi(null);
+  const U = st._test; U.setD({ banks: [{ id: 'A', name: 'Bank A', code: 'AA', color: '#123456' }, { id: 'B', name: 'Bank B', code: 'BB', color: '#654321' }], forms: [], rows: [], prov: {}, tests });
+  let h = U.historyHtml();
+  assert.match(h, /class="tq-cont"/); assert.match(h, /aria-label="Resume Half way"/); assert.match(h, /<span>Avg score<\/span><b[^>]*>70%<\/b>/); assert.match(h, /<span>Tests<\/span><b>3<\/b>/);
+  assert.match(h, /<span>Completed<\/span><b>2<\/b>/); assert.match(h, /<span>Questions in tests<\/span><b>120<\/b>/);
+  st._state.hb = 'A'; h = U.historyHtml();
+  assert.doesNotMatch(h, /class="tq-cont"/, 'no in-progress test in bank A'); assert.match(h, /<span>Avg score<\/span><b[^>]*>90%<\/b>/); assert.match(h, /<span>Tests<\/span><b>1<\/b>/);
+  st._state.hb = ''; st._state.hf = 'done'; h = U.historyHtml(); assert.doesNotMatch(h, /class="tq-cont"/, 'filtered to completed: no continue card'); assert.match(h, /<span>Tests<\/span><b>3<\/b>/, 'strip ignores the status filter');
+  st._state.hf = 'all';
+  h = U.historyHtml();
+  for (const [act, label] of [['review', 'Review T a'], ['rename', 'Rename T a'], ['export', 'Export T a'], ['delete', 'Delete T a']]) assert.ok(h.includes(`data-a="tact" data-act="${act}" data-v="a"`) && h.includes(`aria-label="${label}"`), act); for (const k of ['all', 'prog', 'done']) assert.ok(h.includes(`data-a="hf" data-v="${k}"`), 'hf ' + k); for (const k of ['tutor', 'timed']) assert.ok(h.includes(`data-a="hm" data-v="${k}"`), 'hm ' + k);
+  assert.match(h, /data-a="hs"/); assert.match(h, /data-a="hq"/); assert.match(h, /data-a="trefresh"/); assert.match(h, /class="tq-gh"/);
+});
+test('Previous tests empty states and sparkline with 0, 1 and n points', () => {
+  const st = loadUi(null), U = st._test; U.setD({ banks: [], forms: [], rows: [], prov: {}, tests: [] });
+  let h = U.historyHtml(); assert.match(h, /class="tq-empty"/); assert.match(h, /data-a="tab" data-v="create"/); assert.match(h, /Create a test/); assert.doesNotMatch(h, /tq-hstats/);
+  U.setD({ banks: [], forms: [], rows: [], prov: {}, tests: [mkTest('a')] }); st._state.hq = 'zzz'; h = U.historyHtml(); assert.match(h, /No tests match this filter/); assert.match(h, /data-a="hclear"/); st._state.hq = '';
+  assert.equal(U.sparkSvg([]), ''); const one = U.sparkSvg([80]); assert.match(one, /<circle/); assert.doesNotMatch(one, /<polyline/);
+  const n = U.sparkSvg([50, 60, 80]); assert.match(n, /<polyline points="[^"]+"/); assert.equal((n.match(/<circle/g) || []).length, 1); assert.match(n, /aria-label="Score trend: 50, 60, 80"/);
+  assert.doesNotMatch(U.sparkSvg([50, 50, 50]), /NaN/, 'flat series is fine');
+});
+test('Performance card: answered, correct %, tests, last, trend; follows the selected banks', () => {
+  const st = loadUi(null), U = st._test, mk = (bank, status, n) => Array.from({ length: n }, () => ({ bank, subject: 'S', system: 'X', status }));
+  const rows = [...mk('A', 'correct', 6), ...mk('A', 'incorrect', 2), ...mk('A', 'omitted', 2), ...mk('A', 'unused', 10), ...mk('B', 'correct', 5)];
+  const tests = [mkTest('a', { percent: 60, completedAt: ago(4) }), mkTest('b', { percent: 80, completedAt: ago(1) }), mkTest('x', { banks: ['B'], percent: 99 })];
+  U.setD({ banks: [{ id: 'A', name: 'Bank A', code: 'AA', color: '#123456' }, { id: 'B', name: 'Bank B', code: 'BB', color: '#654321' }], forms: [], rows, prov: {}, tests });
+  let h = U.progressHtml(['A']);
+  assert.match(h, /data-r="progress"/); assert.match(h, /class="tq-pans">10 of 20 used/); assert.match(h, /<b>50%<\/b><small>used<\/small>/);
+  assert.match(h, /<b[^>]*>60%<\/b> <small>correct<\/small>/); assert.match(h, /<b>2<\/b> <small>tests<\/small>/); assert.match(h, /<small>last<\/small> <b>/);
+  assert.doesNotMatch(h, /tq-ptrend/, 'fewer than 3 points: no sparkline');
+  U.setD({ banks: [{ id: 'A', name: 'Bank A', code: 'AA', color: '#123456' }], forms: [], rows, prov: {}, tests: [...tests, mkTest('c', { percent: 70, completedAt: ago(2) })] });
+  assert.match(U.progressHtml(['A']), /class="tq-ptrend"[^>]*><svg class="tq-spark"[^>]*aria-label="Score trend: 60, 70, 80"/);
+  U.setD({ banks: [{ id: 'A', name: 'Bank A', code: 'AA', color: '#123456' }, { id: 'B', name: 'Bank B', code: 'BB', color: '#654321' }], forms: [], rows, prov: {}, tests });
+  for (const c of ['tq-lc', 'tq-lw', 'tq-lo', 'tq-lu']) assert.ok(h.includes(`class="${c}"`), c);
+  h = U.progressHtml(['A', 'B']); assert.match(h, /15 of 25 used/); assert.match(h, /<b[^>]*>73%<\/b> <small>correct<\/small>/); assert.match(h, /<b>3<\/b> <small>tests<\/small>/);
+  U.setD({ banks: [{ id: 'A', name: 'Bank A', code: 'AA', color: '#123456' }], forms: [], rows: mk('A', 'unused', 4), prov: {}, tests: [] });
+  h = U.progressHtml(['A']); assert.doesNotMatch(h, /\d tests?<\/small>/, 'no tests, no test count'); assert.doesNotMatch(h, /tq-ptrend|correct<\/small>/);
+});
+test('perfSummary: strongest and weakest system need at least 10 answered each, and two systems to compare', () => {
+  const U = loadUi(null)._test, m = (o) => ({ systems: Object.keys(o), sysPerf: Object.fromEntries(Object.entries(o).map(([k, [c, w]]) => [k, { n: c + w + 5, c, w }])) });
+  const s = U.perfSummary(m({ Cardio: [18, 2], Renal: [6, 9], Neuro: [4, 1], Derm: [9, 1] }));
+  assert.equal(s.best.name, 'Cardio'); assert.equal(s.best.pct, 90); assert.equal(s.worst.name, 'Renal'); assert.equal(s.worst.pct, 40);
+  assert.equal(U.perfSummary(m({ Cardio: [18, 2], Neuro: [4, 1] })), null, 'only one system with 10 answered'); assert.equal(U.perfSummary(m({})), null);
+  assert.equal(U.perfSummary(m({ A: [5, 5], B: [9, 1] })).worst.name, 'A', 'exactly 10 answered counts');
+  const st = loadUi(null), V = st._test; V.setD({ banks: [], forms: [], rows: [], prov: {}, tests: [] });
+  const html = V.perfHtml({ subjects: ['S'], systems: ['Cardio', 'Renal'], subPerf: { S: { n: 40, c: 24, w: 6 } }, sysPerf: { Cardio: { n: 20, c: 18, w: 2 }, Renal: { n: 20, c: 6, w: 9 } } });
+  assert.match(html, /Strongest system<\/span><b>Cardio/); assert.match(html, /Weakest system<\/span><b>Renal/); assert.match(html, /data-a="pick" data-v="sys\|Renal"/);
+  assert.equal((html.match(/<tr data-a="pick"/g) || []).length, 3); assert.match(html, /data-v="sub\|S"/); assert.ok(html.indexOf('data-v="sys|Renal"') < html.indexOf('data-v="sys|Cardio"'), 'weakest first');
+});
+
+test('Previous tests: status and mode filters combine; Continue test is not listed twice; ring marks; filterLine uses the test banks', () => {
+  const st = loadUi(null), U = st._test;
+  const rows = ['S1', 'S2', 'S3'].flatMap(sub => ['X', 'Y'].map(sys => ({ bank: 'A', formId: 'f', subject: sub, system: sys, status: 'unused' }))).concat([{ bank: 'B', formId: 'g', subject: 'Z', system: 'W', status: 'unused' }]);
+  const tests = [mkTest('a', { mode: 'tutor', percent: 90 }), mkTest('b', { mode: 'testing', percent: 50 }), mkTest('c', { mode: 'tutor', done: false, percent: null, completedAt: null, name: 'Half way' }), mkTest('d', { mode: 'testing', percent: null })];
+  U.setD({ banks: [{ id: 'A', name: 'Bank A', code: 'AA', color: '#123456' }, { id: 'B', name: 'Bank B', code: 'BB', color: '#654321' }], forms: [], rows, prov: {}, tests });
+  const S = st._state;
+  assert.equal(U.testsFiltered().length, 4);
+  S.hf = 'done'; S.hm = 'tutor'; assert.deepEqual(U.testsFiltered().map(t => t.id), ['a']);
+  S.hm = 'timed'; assert.deepEqual(U.testsFiltered().map(t => t.id).sort(), ['b', 'd']);
+  S.hf = 'all'; S.hm = '';
+  const h = U.historyHtml();
+  assert.equal((h.match(/Resume Half way/g) || []).length, 1, 'Continue card only, not repeated in the list');
+  assert.equal((h.match(/class="tq-test"/g) || []).length, 3);
+  assert.match(h, /class="tq-cacts"/);
+  for (const k of ['Rename', 'Export', 'Delete']) assert.match(h, new RegExp('data-act="' + k.toLowerCase() + '" data-v="[^"]*" title="' + k + '" aria-label="' + k + ' Half way"'), 'Continue card has ' + k);
+  assert.match(h, /aria-label="No score"><span>\u2014<\/span>/);
+  assert.equal((h.match(/tq-ring-p/g) || []).length, 1, 'in-progress ring only on the Continue card');
+  const fl = f => U.filterLine({ banks: ['A'], filter: f });
+  assert.equal(fl({ statuses: ['unused'], subjects: ['S1', 'S2', 'S3'], systems: ['X', 'Y'] }), 'Unused \u00b7 all subjects');
+  assert.equal(fl({ statuses: ['unused'], subjects: null, systems: null }), 'Unused \u00b7 all subjects');
+  assert.equal(fl({ statuses: ['unused'], subjects: ['S1'], systems: ['X'] }), 'Unused \u00b7 1 subject \u00b7 1 system');
+  assert.equal(U.filterLine({ banks: ['B'], filter: { statuses: ['unused'], subjects: ['Z'], systems: ['W'] } }), 'Unused \u00b7 all subjects');
+});

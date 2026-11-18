@@ -439,14 +439,15 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
   function mount(el, getInput, opts) {
     const st = { mode: 'score', sys: null, mx: 'assess', cv: null, edit: null };
     const actions = (opts && opts.onAction) || (() => {});
-    let m = null;
+    let m = null, lastHtml = null, drawnW = 0;
 
-    function draw() {
+    // draw(true) = background refresh: leaves the DOM (and the charts) alone when nothing would change
+    function draw(ifChanged) {
       m = A.compute(getInput());
       const t = m.totals, o = m.outlook, b = m.behaviour, pr = m.prefs;
       const doneN = m.done.length, formsWithAny = m.forms.filter((f) => f.status !== 'new').length;
-      if (!formsWithAny) { el.innerHTML = `<header class="ta-head"><div class="ta-title"><h1>Analysis</h1><p>Your scores, weak systems and habits, built automatically from your forms.</p></div></header><article class="ta-card ta-empty-card"><h2>Nothing to analyse yet</h2><p>Answer questions in any form from the Library. This page fills in by itself: no logging needed.</p></article>`; return; }
-      el.innerHTML = `
+      if (!formsWithAny) { lastHtml = null; el.innerHTML = `<header class="ta-head"><div class="ta-title"><h1>Analysis</h1><p>Your scores, weak systems and habits, built automatically from your forms.</p></div></header><article class="ta-card ta-empty-card"><h2>Nothing to analyse yet</h2><p>Answer questions in any form from the Library. This page fills in by itself: no logging needed.</p></article>`; return; }
+      const html = `
 <header class="ta-head">
   <div class="ta-title"><h1>Analysis</h1><p>Built automatically from your forms · ${doneN} completed · ${k(t.graded)} questions graded</p></div>
   <div class="ta-tools">
@@ -546,8 +547,12 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
 
   ${m.shadow ? shadowCard(m.shadow) : `<article class="ta-card s12 ta-slim"><div><h2>Why you miss</h2><p>Log misses with the ThunderShadow bar in Review and the reasons show here (error type and reasoning pattern).</p></div></article>`}
 </section>`;
-      drawTrend(); drawSys(); drawMx(); drawTime(); drawStam(); drawCal();
+      if (ifChanged === true && html === lastHtml && el.firstElementChild && !el.querySelector('.ta-loading')) return false;
+      lastHtml = html; el.innerHTML = html; el.style.minHeight = '';
+      drawCharts();
+      return true;
     }
+    function drawCharts() { drawTrend(); drawSys(); drawMx(); drawTime(); drawStam(); drawCal(); drawnW = el.clientWidth; }
 
     // ---------- pieces
     function delta(d) { if (d == null || isNaN(d)) return ''; const up = d >= 0; return `<span class="ta-delta ${up ? 'up' : 'dn'}">${up ? I.up : I.down}${Math.abs(d).toFixed(1)}</span>`; }
@@ -778,9 +783,9 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
       tip.style.left = x + 'px'; tip.style.top = y + 'px';
     });
     el.addEventListener('pointerleave', () => (tip.hidden = true));
-    let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(() => { if (m) { drawTrend(); drawSys(); drawMx(); drawTime(); drawStam(); drawCal(); } }, 80); }).observe(el);
+    let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(() => { const w = el.clientWidth; if (m && w && w !== drawnW) drawCharts(); }, 80); }).observe(el); // only a real width change (not the panel hiding/showing or the content getting taller)
     draw();
-    return { redraw: draw };
+    return { redraw: (ifChanged) => draw(ifChanged) };
   }
 
   root.ThunderAnalysisUI = { mount };
@@ -798,7 +803,7 @@ root.TAScoreModels=api;if(typeof module==='object'&&module.exports)module.export
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const store = { get() { try { return JSON.parse(localStorage.getItem(PREFS)) || {}; } catch (e) { return {}; } }, set(v) { try { localStorage.setItem(PREFS, JSON.stringify(v)); } catch (e) {} } };
   const ICON = '<svg class="tu-ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg>';
-  let prefs = store.get(), data = null, ui = null, loading = null, seq = 0;
+  let prefs = store.get(), data = null, ui = null, loading = null, seq = 0, lastLoad = 0;
 
   const A = ':root body #menu #tuAnalysis';
   const STYLE = `
@@ -960,6 +965,7 @@ ${A} .ta-tp{display:flex;flex-direction:column;min-width:0;flex:1}${A} .ta-tp b{
 ${A} .ta-tw{font-size:12px;color:var(--a-on3);white-space:nowrap}${A} .ta-tw b{color:var(--ta-weak);font-size:14px}
 ${A} .ta-why{display:flex;flex-direction:column;gap:6px}${A} .ta-wr{display:grid;grid-template-columns:140px 1fr 40px;gap:10px;align-items:center}
 ${A} .ta-loading{color:var(--a-on3);padding:40px 0;text-align:center}
+${A}.ta-pending{min-height:101vh}
 #analysisPanel .ta-tip{position:fixed;z-index:80;pointer-events:none;max-width:280px;padding:8px 10px;border-radius:10px;background:var(--tu-on,#161A25);color:var(--tu-bg,#fff);font:12px/1.35 var(--tu-font,system-ui);display:flex;flex-direction:column;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 #analysisPanel .ta-tip b{font-size:12.5px}#analysisPanel .ta-tip[hidden]{display:none}
 @media (max-width:1180px){${A} .ta-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}${A} :is(.s5,.s7,.s8){grid-column:span 12}${A} .ta-grid>.s4:nth-of-type(2){grid-column:span 12}}
@@ -1006,16 +1012,20 @@ ${A} .ta-loading{color:var(--a-on3);padding:40px 0;text-align:center}
     const el = byId('tuAnalysis'), B = window.StepLibraryBridge, my = ++seq;
     if (!el) return;
     if (!B || typeof B.analysis !== 'function') { el.innerHTML = '<p class="ta-loading">Analysis needs the form library. Open the Library once and try again.</p>'; return; }
-    if (!data) el.innerHTML = '<p class="ta-loading">Reading your forms…</p>';
+    // First open: keep the space reserved (no scrollbar pop, no collapse) and only show the text if the read is slow.
+    // Re-open: keep the content already on screen and swap it in place only if the numbers changed.
+    let slow = null;
+    if (!ui) { el.innerHTML = ''; el.classList.add('ta-pending'); slow = setTimeout(() => { if (my === seq && !ui) el.innerHTML = '<p class="ta-loading">Reading your forms…</p>'; }, 350); }
     try {
       const d = await (loading || (loading = B.analysis()));
-      loading = null; if (my !== seq) return;
-      data = d;
+      loading = null; clearTimeout(slow); if (my !== seq) return;
+      data = d; lastLoad = Date.now();
+      el.classList.remove('ta-pending');
       if (!ui) ui = window.ThunderAnalysisUI.mount(el, () => ({ catalog: data.catalog, progress: data.progress, shadow: data.shadow, prefs, now: new Date() }), { onAction });
-      else ui.redraw();
+      else ui.redraw(true);
     } catch (e) {
-      loading = null; console.warn('ThunderAnalysis: load failed', e);
-      if (my === seq) el.innerHTML = '<p class="ta-loading">Couldn’t read your progress files. Reconnect the DATA folder from the Library and try again.</p>';
+      loading = null; clearTimeout(slow); console.warn('ThunderAnalysis: load failed', e);
+      if (my === seq) el.classList.remove('ta-pending'), el.innerHTML = '<p class="ta-loading">Couldn’t read your progress files. Reconnect the DATA folder from the Library and try again.</p>';
     }
   }
   async function toLibrary() {
@@ -1069,11 +1079,11 @@ ${A} .ta-loading{color:var(--a-on3);padding:40px 0;text-align:center}
     document.querySelectorAll('#menu .mode-panel').forEach((p) => { if (p.id === 'analysisPanel' || seen.has(p)) return; seen.add(p); panelObs.observe(p, { attributes: true, attributeFilter: ['class'] }); });
   }
   // Results change after an exam: refresh the next time the tab opens (and now, if it is open).
-  window.addEventListener('focus', () => { if (isOpen()) load(); });
+  window.addEventListener('focus', () => { if (isOpen() && Date.now() - lastLoad > 3000) load(); });
   function boot() {
     let n = 0; const t = setInterval(() => { const ok = ensure(); wrapMode(); if ((ok && n > 4) || ++n > 60) clearInterval(t); }, 250);
     ensure(); wrapMode();
   }
-  window.ThunderAnalysisApp = { open, close, refresh: () => { data = null; if (isOpen()) load(); } };
+  window.ThunderAnalysisApp = { open, close, refresh: () => { if (isOpen()) load(); } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

@@ -3,22 +3,59 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<!-- ThunderUSMLE: keep the page hidden until the UI layer has drawn its first view, so the old UI never flashes on open (4 s fallback) -->
-<style id="tuCloak">html:not([data-tu-ready]){background:#F6F7FB}html.tu-cloak-dark:not([data-tu-ready]){background:#0E1118}html:not([data-tu-ready]) body{visibility:hidden!important}</style>
-<script>(function(){var r=document.documentElement;try{if(localStorage.getItem('step-simulator-ipad-menu-theme')==='dark')r.classList.add('tu-cloak-dark');}catch(e){}setTimeout(function(){if(!r.hasAttribute('data-tu-ready'))r.setAttribute('data-tu-ready','timeout');},4000);})();</script>
+<!-- ThunderUSMLE: keep the page hidden until the UI layer has drawn its first view, so the old UI never flashes on open (20 s fallback; thunder-ui caps at 8 s) -->
+<style id="tuCloak">html:not([data-tu-ready]){background:#F6F7FB}html.tu-cloak-dark:not([data-tu-ready]){background:#0E1118}html:not([data-tu-ready]) body{visibility:hidden!important}html:not([data-tu-ready])::after{content:'';position:fixed;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:16px;background:#A2283A url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M13.2 2 5 13.4h5.6L9.8 22 19 10.2h-5.7z'/%3E%3C/svg%3E") center/60% no-repeat;animation:tuPulse 1.4s ease-in-out infinite}@keyframes tuPulse{50%{opacity:.55}}</style>
+<script>(function(){var r=document.documentElement;try{var d=localStorage.getItem('ThunderUSMLE.themeMode')==='system'?!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches):localStorage.getItem('step-simulator-ipad-menu-theme')==='dark';if(d)r.classList.add('tu-cloak-dark');}catch(e){}setTimeout(function(){if(!r.hasAttribute('data-tu-ready'))r.setAttribute('data-tu-ready','timeout');},20000);})();</script>
 <title>ThunderUSMLE</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#A2283A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ThunderUSMLE">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=60">
-<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=60">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png?v=61">
+<link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png?v=61">
+<!-- iPad launch screens: solid theme colour (matches #tuCloak) so there is no white/blue flash before the first paint -->
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2048x2732.png" media="(prefers-color-scheme: light) and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2732x2048.png" media="(prefers-color-scheme: light) and (device-width: 1366px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2048x2732.png" media="(prefers-color-scheme: dark) and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2732x2048.png" media="(prefers-color-scheme: dark) and (device-width: 1366px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2064x2752.png" media="(prefers-color-scheme: light) and (device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2752x2064.png" media="(prefers-color-scheme: light) and (device-width: 1376px) and (device-height: 1032px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2064x2752.png" media="(prefers-color-scheme: dark) and (device-width: 1032px) and (device-height: 1376px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2752x2064.png" media="(prefers-color-scheme: dark) and (device-width: 1376px) and (device-height: 1032px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-1668x2420.png" media="(prefers-color-scheme: light) and (device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2420x1668.png" media="(prefers-color-scheme: light) and (device-width: 1210px) and (device-height: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-1668x2420.png" media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1210px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2420x1668.png" media="(prefers-color-scheme: dark) and (device-width: 1210px) and (device-height: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-1668x2388.png" media="(prefers-color-scheme: light) and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2388x1668.png" media="(prefers-color-scheme: light) and (device-width: 1194px) and (device-height: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-1668x2388.png" media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2388x1668.png" media="(prefers-color-scheme: dark) and (device-width: 1194px) and (device-height: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-1668x2224.png" media="(prefers-color-scheme: light) and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2224x1668.png" media="(prefers-color-scheme: light) and (device-width: 1112px) and (device-height: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-1668x2224.png" media="(prefers-color-scheme: dark) and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2224x1668.png" media="(prefers-color-scheme: dark) and (device-width: 1112px) and (device-height: 834px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-1640x2360.png" media="(prefers-color-scheme: light) and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2360x1640.png" media="(prefers-color-scheme: light) and (device-width: 1180px) and (device-height: 820px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-1640x2360.png" media="(prefers-color-scheme: dark) and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2360x1640.png" media="(prefers-color-scheme: dark) and (device-width: 1180px) and (device-height: 820px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-1620x2160.png" media="(prefers-color-scheme: light) and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2160x1620.png" media="(prefers-color-scheme: light) and (device-width: 1080px) and (device-height: 810px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-1620x2160.png" media="(prefers-color-scheme: dark) and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2160x1620.png" media="(prefers-color-scheme: dark) and (device-width: 1080px) and (device-height: 810px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-1488x2266.png" media="(prefers-color-scheme: light) and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2266x1488.png" media="(prefers-color-scheme: light) and (device-width: 1133px) and (device-height: 744px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-1488x2266.png" media="(prefers-color-scheme: dark) and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2266x1488.png" media="(prefers-color-scheme: dark) and (device-width: 1133px) and (device-height: 744px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-1536x2048.png" media="(prefers-color-scheme: light) and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/light-2048x1536.png" media="(prefers-color-scheme: light) and (device-width: 1024px) and (device-height: 768px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-1536x2048.png" media="(prefers-color-scheme: dark) and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+<link rel="apple-touch-startup-image" href="./icons/splash/dark-2048x1536.png" media="(prefers-color-scheme: dark) and (device-width: 1024px) and (device-height: 768px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
 <!-- exam-simulator2 cloud auth loads early so the OAuth callback fragment is captured and removed before simulator initialization. -->
-<script src="./js/sync-config.js?v=60"></script>
-<script src="./js/form-updates-core.js?v=60"></script>
-<script src="./js/form-update-store.js?v=60"></script>
-<script src="./js/google-auth.js?v=60"></script>
+<script src="./js/sync-config.js?v=61"></script>
+<script src="./js/form-updates-core.js?v=61"></script>
+<script src="./js/form-update-store.js?v=61"></script>
+<script src="./js/google-auth.js?v=61"></script>
 
 <style>
 :root{
@@ -484,7 +521,7 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
   <div class="modern-menu">
     <aside class="modern-sidebar">
       <div class="brand-block">
-        <div class="brand-mark"><img src="./icons/icon-192.png?v=60" alt="STEP Simulator" /></div>
+        <div class="brand-mark"><img src="./icons/icon-192.png?v=61" alt="STEP Simulator" /></div>
         <div>
           <div class="menu-title">Step Exam Simulator</div>
           <div class="menu-subtitle">by Bladelord</div>
@@ -635,10 +672,10 @@ mark[data-v14-highlight-id]{cursor:pointer;-webkit-tap-highlight-color:transpare
 <div id="overviewRoot" class="hidden"></div>
 <div id="modalRoot" class="hidden"></div>
 
-<script src="jszip.min.js?v=60"></script>
-<script src="./qbank-builtin-tags.js?v=60"></script>
-<script src="./js/qid-migration.js?v=60"></script>
-<script src="./qbanks-core.js?v=60"></script>
+<script src="jszip.min.js?v=61"></script>
+<script src="./qbank-builtin-tags.js?v=61"></script>
+<script src="./js/qid-migration.js?v=61"></script>
+<script src="./qbanks-core.js?v=61"></script>
 <script>
 
 
@@ -4370,17 +4407,22 @@ document.addEventListener('click', function(e){
             function systemFor(row,rec,Core){ if(rec&&rec.qbank){ const tm=rec.qbank.tagMap, raw=str(row.system); if(tm&&tm.normalize===false&&raw) return {system:raw,from:'system'}; return Core.systemOf({system:raw}); } return Core.systemOf(row); }
             /* ---- Qbank history (mirrors the legacy qHist / qbankUsedFromSessions) ---- */
             function usedFromSessions(qp){ const used={}; ((qp&&qp.sessions)||[]).forEach(t=>{ const keys=t.qbankKeys||(t.session&&t.session.qbankKeys)||[]; keys.forEach(k=>{ if(k) used[k]=true; }); }); return used; }
-            function histFromSessions(qp,mode,sessionDone){
+            /* opt.open: tests not finished yet also count, but only their answered (or marked) questions, by that test's updatedAt; opt.correctOf(key) = the right choice for an answer in a block with no result yet */
+            const isDoneTest=(t,sessionDone)=>t.status==='completed'||!!(sessionDone&&sessionDone(t.session));
+            function openAnswerKeys(qp,sessionDone){ const out=new Set(); ((qp&&qp.sessions)||[]).forEach(t=>{ if(!t||!t.session||isDoneTest(t,sessionDone)) return; const s=t.session,keys=s.qbankKeys||[]; let pos=0; (s.blocks||[]).forEach(bp=>{ const n=(bp&&(bp.total||(bp.answers&&bp.answers.length)))||0, done=new Set(((bp&&bp.result&&bp.result.answers)||[]).map(a=>(a.item||1)-1)); for(let qi=0;qi<n;qi++,pos++){ if(keys[pos]&&bp&&bp.answers&&bp.answers[qi]!=null&&!done.has(qi)) out.add(keys[pos]); } }); }); return out; }
+            function histFromSessions(qp,mode,sessionDone,opt){
+              opt=opt||{}; const correctOf=typeof opt.correctOf==='function'?opt.correctOf:null;
               let sessions=((qp&&qp.sessions)||[]).filter(t=>t&&t.session);
-              if(mode==='latest_qbank') sessions=sessions.slice(0,1); else if(mode!=='all_qbank') sessions=sessions.filter(t=>t.status==='completed'||(sessionDone&&sessionDone(t.session)));
+              if(mode==='latest_qbank') sessions=sessions.slice(0,1); else if(mode!=='all_qbank') sessions=sessions.filter(t=>isDoneTest(t,sessionDone)||opt.open);
               /* latest attempt wins (like UWorld): oldest test first, so a later answer replaces an earlier one; marked stays once set */
               const tOf=t=>String(t.completedAt||t.updatedAt||t.createdAt||(t.session&&t.session.startedAt)||'');
               sessions=sessions.map((t,i)=>({t,i})).sort((a,b)=>tOf(a.t).localeCompare(tOf(b.t))||(b.i-a.i)).map(x=>x.t);
               const hist={};
-              sessions.forEach(t=>{ const s=t.session,keys=s.qbankKeys||[],blocks=s.blocks||[]; let pos=0;
+              sessions.forEach(t=>{ const s=t.session,keys=s.qbankKeys||[],blocks=s.blocks||[], openT=!!opt.open&&!isDoneTest(t,sessionDone); let pos=0;
                 blocks.forEach(bp=>{ const resultMap={}; ((bp.result&&bp.result.answers)||[]).forEach(a=>{ resultMap[(a.item||1)-1]=a; }); const n=bp.total||(bp.answers&&bp.answers.length)||0;
                   for(let qi=0;qi<n;qi++,pos++){ const k=keys[pos]; if(!k) continue; const ra=resultMap[qi]||{}; const chosen=bp.answers&&bp.answers[qi]!=null?bp.answers[qi]:ra.chosen;
-                    const ok=ra.isCorrect===true||(chosen!=null&&ra.correct!=null&&chosen===ra.correct), answered=chosen!=null||ra.chosen!=null, marked=!!((bp.flagged&&bp.flagged[qi])||ra.flagged), prev=hist[k]||{used:false,wrong:false,marked:false,answered:false};
+                    const cor=ra.correct!=null?ra.correct:(openT&&correctOf?correctOf(k):null), ok=ra.isCorrect===true||(chosen!=null&&cor!=null&&chosen===cor)||(openT&&chosen!=null&&cor==null), answered=chosen!=null||ra.chosen!=null, marked=!!((bp.flagged&&bp.flagged[qi])||ra.flagged), prev=hist[k]||{used:false,wrong:false,marked:false,answered:false};
+                    if(openT&&!answered){ if(marked) hist[k]=Object.assign({},prev,{used:true,marked:true}); continue; }
                     hist[k]={used:true,wrong:answered&&!ok,marked:prev.marked||marked,answered}; } }); });
               return hist;
             }
@@ -4492,11 +4534,21 @@ document.addEventListener('click', function(e){
               try{
                 const b=planUnits(C,all.rows,all.sizes,sysOf,recOf), opts={rows:planRowsOf(C,f)}; if(typeof rand==='function') opts.rand=rand;
                 const plan=fn.call(C,b.units,n,per,opts); if(!plan||!Array.isArray(plan.keys)||!Array.isArray(plan.sizes)) return null;
+                /* Exam mix hands out whole-system quotas of 1-2, so a pool made of linked sets (size >= 2) can leave the test far short: top it up with unused units that still fit under the count */
+                { const total=b.units.reduce((x,u)=>x+u.keys.length,0), want=Math.min(Math.max(0,Math.floor(Number(n)||0)),total), pb=Math.floor(Number(per))>0?Math.floor(Number(per)):want;
+                  if(plan.keys.length<want){ const have=new Set(plan.keys), rnd=typeof rand==='function'?rand:Math.random, left=b.units.filter(u=>!u.keys.some(k=>have.has(k)));
+                    for(let i=left.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=left[i]; left[i]=left[j]; left[j]=t; }
+                    if(!Array.isArray(plan.blocks)) plan.blocks=[]; if(!Array.isArray(plan.perBlock)) plan.perBlock=[];
+                    for(const u of left){ const sz=u.keys.length; if(plan.keys.length+sz>want) continue;
+                      const at=plan.keys.length, last=plan.blocks[plan.blocks.length-1], rid=u.row==null?'none':u.row; let bi=plan.blocks.length-1;
+                      if(last&&last[1]-last[0]+sz<=pb) last[1]=at+sz; else { plan.blocks.push([at,at+sz]); plan.perBlock.push({}); bi=plan.blocks.length-1; }
+                      plan.perBlock[bi]=plan.perBlock[bi]||{}; plan.perBlock[bi][rid]=(plan.perBlock[bi][rid]||0)+sz;
+                      u.keys.forEach(k=>plan.keys.push(k)); plan.sizes.push(sz); if(plan.keys.length>=want) break; } } }
                 const keep=new Set(plan.keys), setOf={}; Object.keys(all.setOf||{}).forEach(k=>{ if(keep.has(k)) setOf[k]=all.setOf[k]; });
                 return {rows:plan.keys.map(k=>b.rowOf.get(k)).filter(Boolean),sizes:plan.sizes.slice(),setOf,plan};
               }catch(e){ return null; }
             }
-            return {str,IMG_RX,facetRulesOf,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs,isManifest,questionFiles,pickManifest,parseManifest,fileBase,epcHas,epcCount,altName,renameFree,missingRefs,exportRewrite,resolveSystem,planRowsOf,planUnits,planPick};
+            return {str,IMG_RX,facetRulesOf,normPath,isJunk,skipJson,natCmp,slugOf,bankIdOfSlug,nextFormId,slugFromFormId,freeSlug,getPath,extractQuestions,detectFields,valueCounts,guess,srcId,mappedTags,applyTagMap,systemFor,usedFromSessions,histFromSessions,openAnswerKeys,histMode,pickAttempt,attemptMap,mergeStatus,qbankStatus,cleanAssetKey,safeAssetRel,addAssetMapKeys,lookupAsset,rewriteAssetRefs,isManifest,questionFiles,pickManifest,parseManifest,fileBase,epcHas,epcCount,altName,renameFree,missingRefs,exportRewrite,resolveSystem,planRowsOf,planUnits,planPick};
           })();
           /* QBDATA-PURE-END */
 
@@ -4544,10 +4596,18 @@ document.addEventListener('click', function(e){
             }
             faCache.set(ck,{stamp,map}); return map;
           }
+          /* answers given in a test that is not finished have no graded result yet: look the right choice up in the form (cached per form + bank hash) */
+          const ccache=new Map();
+          async function openCorrectMap(qp){
+            const keys=QBP.openAnswerKeys(qp,sessionDone), out=new Map(); if(!keys.size) return out;
+            const recs=new Map(); keys.forEach(k=>{ const h=rowByKey(k); if(h&&h.f) recs.set(h.f.id,h.f); });
+            for(const rec of recs.values()){ const ck=rec.id+'|'+(rec.bankHash||''); let m=ccache.get(ck); if(!m){ try{ m=await rawCorrectMap(rec); }catch(e){ m={}; } ccache.set(ck,m); } Object.keys(m).forEach(k=>{ if(keys.has(k)&&m[k]!=null) out.set(k,m[k]); }); }
+            return out;
+          }
           async function computeRows(opt){
             opt=opt||{}; const C=needCore(), source=opt.source==='forms'?'forms':'qbank';
-            const qp=await readQbankProgress(), used=QBP.usedFromSessions(qp);
-            const hist=QBP.histFromSessions(qp,QBP.histMode(source==='qbank'?opt.attempt:null),sessionDone);
+            const qp=await readQbankProgress(), used=QBP.usedFromSessions(qp), cmap=await openCorrectMap(qp);
+            const hist=QBP.histFromSessions(qp,QBP.histMode(source==='qbank'?opt.attempt:null),sessionDone,{open:true,correctOf:k=>cmap.get(k)});
             const amode=['first','latest_completed','active'].includes(opt.attempt)?opt.attempt:'active';
             const tags=(await loadTags()).tags, want=opt.formIds?new Set(opt.formIds):null, rows=[], prov={}, forms=[];
             for(const rec of (catalog.forms||[])){
@@ -4763,9 +4823,13 @@ document.addEventListener('click', function(e){
               throw err;
             }finally{ window.__STEP_NATIVE_IMPORT_BUSY=false; }
           }
+          const C_builtinId=id=>!!needCore().BUILTIN_BANKS.find(x=>x.id===id);
           async function updateBank(id,patch){
-            needData(); const recs=bankRecs(id); if(!recs.length) throw new Error('That bank no longer exists.'); patch=patch||{};
+            needData(); patch=patch||{}; const hasFr=Object.prototype.hasOwnProperty.call(patch,'facetRules');
+            if(hasFr&&C_builtinId(id)) throw new Error('Built-in banks use the standard system list; this switch is for imported banks.');
+            const recs=bankRecs(id); if(!recs.length) throw new Error('That bank no longer exists.'); const fr=hasFr?QBP.facetRulesOf(patch.facetRules):null;
             recs.forEach(rec=>{ const q=Object.assign({},rec.qbank);
+              if(hasFr){ if(fr) q.facetRules=fr; else delete q.facetRules; }
               if(typeof patch.name==='string'&&patch.name.trim()) q.name=patch.name.trim().slice(0,40);
               if(typeof patch.code==='string'&&patch.code.trim()) q.code=patch.code.trim().toUpperCase().slice(0,3);
               if(typeof patch.color==='string'&&/^#[0-9a-f]{3,8}$/i.test(patch.color)) q.color=patch.color;
@@ -4841,7 +4905,7 @@ document.addEventListener('click', function(e){
               if(!filter) return await prevStart.apply(this,arguments);
               const mode=$id('qbankQuestionMode'), spq=$id('secondsPerQuestion'), pm=mode?mode.value:null, ps=spq?spq.value:null;
               pendingPlan=null;
-              try{ if(mode) mode.value='all'; if(filter.secondsPerQuestion>0&&spq) spq.value=String(filter.secondsPerQuestion); return await prevStart.apply(this,arguments); }
+              try{ if(mode) mode.value='all'; if(filter.secondsPerQuestion>0&&spq) spq.value=String(filter.secondsPerQuestion); const out=await prevStart.apply(this,arguments); filter=null; /* the pool is drawn and the test stamped: the next start must not reuse this selection */ return out; }
               finally{ pendingPlan=null; if(mode&&pm!=null) mode.value=pm; if(spq&&ps!=null) spq.value=ps; }
             };
             /* pull: the filter's exam-mix / capped-random / form-order pick replaces qbankPickUnits (missing pull = today's behaviour) */
@@ -9171,6 +9235,18 @@ textarea,
 }
 #examScreen .answer.choice-table-row{min-height:36px!important;line-height:1.4!important;}
 #examScreen .answer.choice-table-row .choice-cell{min-height:36px!important;line-height:1.4!important;align-items:center!important;}
+/* imported-bank "Show Hint" disclosure for the undecorated legacy exam (ThunderUI restyles it when active) */
+#stem details.question-hint{display:block;margin:1.25em 0 0}
+#stem details.question-hint>summary{display:inline-flex;align-items:center;gap:7px;box-sizing:border-box;list-style:none;cursor:pointer;user-select:none;-webkit-user-select:none;padding:5px 11px 5px 10px;border:1px solid rgba(37,99,235,.38);border-radius:999px;background:rgba(37,99,235,.08);color:#1d4ed8;font-size:.875em;font-weight:600;line-height:1.3;outline-offset:2px}
+#stem details.question-hint>summary::-webkit-details-marker{display:none}
+#stem details.question-hint>summary::marker{content:none}
+#stem details.question-hint>summary::before{content:"";display:inline-block;width:1.1em;height:1.1em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z'/%3E%3C/svg%3E") center/contain no-repeat}
+#stem details.question-hint>summary::after{content:"";display:inline-block;width:.45em;height:.45em;margin:-.15em 0 0 .1em;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform .15s}
+#stem details.question-hint[open]>summary::after{transform:rotate(-135deg);margin-top:.15em}
+#stem details.question-hint>summary:focus-visible{outline:2px solid #2563eb}
+#stem details.question-hint>summary~*{display:block;margin:8px 0 0;padding:10px 14px;border-left:3px solid #2563eb;border-radius:0 10px 10px 0;background:rgba(37,99,235,.07)}
+#examScreen:is(.exam-dark,.reverse) #stem details.question-hint>summary{border-color:rgba(147,197,253,.4);background:rgba(96,165,250,.14);color:#93c5fd}
+#examScreen:is(.exam-dark,.reverse) #stem details.question-hint>summary~*{border-left-color:#60a5fa;background:rgba(96,165,250,.12)}
 mark,
 #stem mark,
 .stem mark,
@@ -11242,18 +11318,18 @@ try{
 </script>
 
 <!-- exam-simulator2 Google Drive progress backup + library recovery -->
-<script src="./js/sync-merge.js?v=60"></script>
-<script src="./js/sync-storage.js?v=60"></script>
-<script src="./js/progress-sync.js?v=60"></script>
-<script src="./js/library-backup.js?v=60"></script>
-<script src="./js/qid-settings.js?v=60"></script>
-<script src="./js/sync3-core.js?v=60"></script>
-<script src="./js/sync3-bridge.js?v=60"></script>
-<script src="./js/sync3-store.js?v=60"></script>
-<script src="./js/sync3-drive.js?v=60"></script>
-<script src="./js/sync3-sync.js?v=60"></script>
-<script src="./js/sync3-migrate.js?v=60"></script>
-<script src="./js/sync3-boot.js?v=60"></script>
+<script src="./js/sync-merge.js?v=61"></script>
+<script src="./js/sync-storage.js?v=61"></script>
+<script src="./js/progress-sync.js?v=61"></script>
+<script src="./js/library-backup.js?v=61"></script>
+<script src="./js/qid-settings.js?v=61"></script>
+<script src="./js/sync3-core.js?v=61"></script>
+<script src="./js/sync3-bridge.js?v=61"></script>
+<script src="./js/sync3-store.js?v=61"></script>
+<script src="./js/sync3-drive.js?v=61"></script>
+<script src="./js/sync3-sync.js?v=61"></script>
+<script src="./js/sync3-migrate.js?v=61"></script>
+<script src="./js/sync3-boot.js?v=61"></script>
 
 
 <style id="exam-sim-cloud2-ui-polish">
@@ -11732,10 +11808,10 @@ try{
   #menu.theme-dark .v10-breakdown span{color:#b8d2df!important}
   #menu.theme-dark .v9-retbox{background:#4a3b20!important;border-color:#a98a46!important;color:#fff1bd!important}
 </style>
-<script src="./bulk-import.js?v=60"></script>
-<script src="./exam-notes.js?v=60"></script>
-<script src="./app-update.js?v=60"></script>
-<script src="./js/form-updates.js?v=60"></script>
+<script src="./bulk-import.js?v=61"></script>
+<script src="./exam-notes.js?v=61"></script>
+<script src="./app-update.js?v=61"></script>
+<script src="./js/form-updates.js?v=61"></script>
 <script id="a23-phase-b-start-engine">
 /* A23 Phase B: the start dialog can run any chosen set of blocks in one sitting, and can give a fixed break after
    each block instead of one shared break bank. Both are opt-in; "Start All Blocks", "Start Selected Block" and the
@@ -12162,13 +12238,14 @@ html body #examScreen.exam-dark .qbank-body[data-panel-mode] .exp-section.exp-co
   };
 })();
 </script>
-<script src="./item-code.js?v=60"></script>
-<script src="./nav-delay.js?v=60"></script>
-<script src="./thunder-ui.js?v=60"></script>
-<script src="./rapid-review.js?v=60"></script>
-<script src="./shadow-logger.js?v=60"></script>
-<script src="./analysis.js?v=60"></script>
-<script src="./qbanks.js?v=60"></script>
-<script src="./choice-epc.js?v=60"></script>
+<script src="./item-code.js?v=61"></script>
+<script src="./nav-delay.js?v=61"></script>
+<script src="./thunder-ui.js?v=61"></script>
+<script src="./rapid-review.js?v=61"></script>
+<script src="./shadow-logger.js?v=61"></script>
+<script src="./analysis.js?v=61"></script>
+<script src="./qbanks.js?v=61"></script>
+<script src="./choice-epc.js?v=61"></script>
+<script src="./library-simple.js?v=61"></script>
 </body>
 </html>
