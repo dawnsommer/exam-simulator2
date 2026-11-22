@@ -361,6 +361,24 @@
 #tslSheet .tsl-btn.pri{background:#004976;border-color:#004976;color:#fff}
 #tslSheet .tsl-btn.pri:hover{background:#0a5a8c}
 #tslSheet .tsl-btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+/* dark: the sheet lives on <body>, outside #examScreen, so the exam theme is mirrored as .tsl-dark (themeSheet) */
+#tslSheet.tsl-dark{background:rgba(0,0,0,.6);color:#E4E7F0}
+#tslSheet.tsl-dark .tsl-card{background:#161A23;box-shadow:0 18px 50px rgba(0,0,0,.6)}
+#tslSheet.tsl-dark header,#tslSheet.tsl-dark th,#tslSheet.tsl-dark footer{border-color:#3A4256}
+#tslSheet.tsl-dark th{background:#161A23;color:#B4BACB}
+#tslSheet.tsl-dark td,#tslSheet.tsl-dark .tsl-cards li{border-color:#272E3D}
+#tslSheet.tsl-dark header p,#tslSheet.tsl-dark .tsl-close,#tslSheet.tsl-dark .tsl-ib,#tslSheet.tsl-dark .tsl-cards .s,#tslSheet.tsl-dark .tsl-empty,#tslSheet.tsl-dark footer .tsl-msg{color:#B4BACB}
+#tslSheet.tsl-dark .tsl-close:hover,#tslSheet.tsl-dark .tsl-ib:hover,#tslSheet.tsl-dark .tsl-btn:hover{background:#2B3242}
+#tslSheet.tsl-dark .tsl-ib:hover{color:#E4E7F0}
+#tslSheet.tsl-dark .tsl-cards .t{color:#E4E7F0}
+#tslSheet.tsl-dark footer{background:#131720}
+#tslSheet.tsl-dark button:focus-visible{outline-color:#7FB8E8}
+#tslSheet.tsl-dark .tsl-undo{color:#8EC8F5}
+#tslSheet.tsl-dark .tsl-btn{background:#222835;border-color:#3A4256;color:#E4E7F0}
+#tslSheet.tsl-dark .tsl-btn.pri{background:#7FB8E8;border-color:#7FB8E8;color:#0B2236}
+#tslSheet.tsl-dark .tsl-btn.pri:hover{background:#9BC9EE}
+#tslSheet.tsl-dark .tsl-btn.danger{color:#FFB4AB;border-color:#7A3A35}
+#tslSheet.tsl-dark .tsl-btn.danger.pri{background:#FFB4AB;border-color:#FFB4AB;color:#4A1612}
 @media (max-width:640px){#tslSheet{padding:0;align-items:flex-end}#tslSheet .tsl-card{border-radius:14px 14px 0 0;max-height:88vh;max-height:88dvh}#tslSheet table{display:none}#tslSheet .tsl-cards{display:block}#tslSheet .tsl-list{padding:2px 14px}#tslSheet footer{gap:6px;padding:8px 14px}#tslSheet footer .tsl-msg{flex:1 0 100%}#tslSheet .tsl-btn{height:34px;padding:0 11px;font-size:13px}#tslSheet header{padding:12px 14px 10px}}
 `;
   const st = document.createElement('style'); st.id = 'shadow-logger-css'; st.textContent = css; document.head.appendChild(st);
@@ -667,6 +685,9 @@
       goToQuestionIndex(item - 1);
     }catch(e){}
   }
+  // the exam screen is dark when it has .exam-dark or .reverse; the sheet is outside it, so mirror that as a class (live: see start())
+  const isDarkExam = () => { const e = byId('examScreen'); return !!e && e.classList.contains('exam-dark') || !!e && e.classList.contains('reverse'); };
+  function themeSheet(){ if(sheet) sheet.classList.toggle('tsl-dark', isDarkExam()); }
   function openSheet(){
     const c = ctx(); if(!c) return;
     closeSheet();
@@ -715,6 +736,7 @@
       else if(!e.shiftKey && i === f.length - 1){ e.preventDefault(); f[0].focus(); }
     };
     document.addEventListener('keydown', sheetKeys, true);
+    themeSheet();
     document.body.appendChild(sheet);
     const x = sheet.querySelector('.tsl-close'); if(x){ x.tabIndex = 0; try{ x.focus(); }catch(e){} }
   }
@@ -726,6 +748,7 @@
     byId('tslFlow').addEventListener('scroll', schedule, {passive: true});
     new MutationObserver(recs => { if(recs.every(r => dock.contains(r.target))) return; schedule(); }).observe(scr, {childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'data-tux-view']});
     new MutationObserver(schedule).observe(document.documentElement, {attributes: true, attributeFilter: ['data-tu-exam', 'data-tun']});
+    new MutationObserver(themeSheet).observe(scr, {attributes: true, attributeFilter: ['class']});
     addEventListener('resize', schedule);
     if(window.visualViewport){ visualViewport.addEventListener('resize', schedule); visualViewport.addEventListener('scroll', schedule); }
     if(typeof ResizeObserver === 'function') new ResizeObserver(schedule).observe(dock);
