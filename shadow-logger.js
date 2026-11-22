@@ -630,9 +630,13 @@
   function rowsOf(b){
     const key = keyOfBucket(b);
     let prev = 0;
-    return sorted(b, key).map((e, i) => { const n = entryOf(e, key) || (e.block === 1 ? e.item : Math.max(i + 1, prev + 1)); prev = n; return ['', b.form, b.date, n, e.errorCode || '', (pp => pp ? pp[1] + ' — ' + pp[2] : '')(PAT.find(p => p[0] === e.pattern)),
-      (e.speedFlags || []).map(v => (f => f ? f[1] + ' — ' + f[2] : v)(SPD.find(s => s[0] === v))).join(' | '), tsvEscape(e.note, true), e.noteKind === 'reasoning' ? 'Broad Pattern' : 'Clinical Pattern', '', '', '', e.examItem || '']
-      .map((v, idx) => idx === 7 ? v : tsvEscape(v)).map(tsvCell).join('\t'); });
+    // IDs and rules as ThunderShadow writes them: Form_ID = the form id, Note_ID = <formId>:entry-<n>, and every entry with a
+    // reasoning note is a rule (the note itself, broad or clinical) whose ThunderShadowID is thundershadow:log:<formId>:entry-<n>
+    const fid = b.formId === 'QBANK_MODE' ? fileIdOfBucket(key, b) : String(b.formId == null ? '' : b.formId);
+    return sorted(b, key).map((e, i) => { const n = entryOf(e, key) || (e.block === 1 ? e.item : Math.max(i + 1, prev + 1)); prev = n; const note = tsvEscape(e.note, true);
+      return [note ? 'thundershadow:log:' + encodeURIComponent(fid) + ':entry-' + n : '', b.form, b.date, n, e.errorCode || '', (pp => pp ? pp[1] + ' — ' + pp[2] : '')(PAT.find(p => p[0] === e.pattern)),
+      (e.speedFlags || []).map(v => (f => f ? f[1] + ' — ' + f[2] : v)(SPD.find(s => s[0] === v))).join(' | '), note, e.noteKind === 'reasoning' ? 'Broad Pattern' : 'Clinical Pattern', fid, fid + ':entry-' + n, note, e.examItem || '']
+      .map((v, idx) => idx === 7 || idx === 11 ? v : tsvEscape(v)).map(tsvCell).join('\t'); });
   }
   function tsv(key){
     const list = key ? [db.forms[key]].filter(Boolean) : Object.values(db.forms);
