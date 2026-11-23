@@ -58,6 +58,21 @@ background:var(--rr-bg);color:var(--rr-t);font-family:var(--rr-ff,Arial,Helvetic
 .rr-plus{color:var(--rr-m)}
 .rr-arrow{color:var(--rr-at);font-weight:700}
 .rr-ans{background:var(--rr-okf);color:#fff;border-radius:4px;padding:0 6px;font-weight:700}
+.rr-cl.key{border-color:var(--rr-okf);box-shadow:inset 0 0 0 1px var(--rr-okf);font-weight:700}
+.rr-cl.key::before{content:"★ ";color:var(--rr-okf)}
+.rr-mg-why{margin-top:6px;padding-top:5px;border-top:1px dashed var(--rr-ab)}
+.rr-mg-k{font-size:.72em;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--rr-okt);margin-right:6px}
+.rr-pane :is(.rr-mg-k,.rr-br-if,.rr-br-a,.rr-br .rr-l){font-family:var(--rr-ffb,inherit)}
+.rr-br{border-top:1px solid var(--rr-b2)}
+.rr-br-r{display:grid;grid-template-columns:1.55em minmax(0,1fr);gap:0 9px;padding:5px 8px;border-bottom:1px solid var(--rr-b2);border-left:3px solid transparent;align-items:start}
+.rr-br-r.me{background:var(--rr-badbg);border-left-color:var(--rr-badb);border-bottom-color:transparent;border-radius:6px}
+.rr-br-r.me+.rr-br-r{border-top:0}
+.rr-br-r .rr-l.x{background:none;border-style:dashed;color:var(--rr-m)}
+.rr-br-r.me .rr-l{background:var(--rr-badf);color:#fff;border-color:var(--rr-badf)}
+.rr-br-if{font-size:.72em;font-weight:700;letter-spacing:.06em;color:var(--rr-at);margin-right:5px}
+.rr-br-ar{color:var(--rr-m);margin:0 .3em}
+.rr-br-a{font-weight:700}
+.rr-br-s{color:var(--rr-sub)}
 .rr-ht{margin:8px 0 0;padding:1px 0 1px 9px;border-left:3px solid}
 .rr-ht+.rr-ht{margin-top:6px}
 .rr-ht .k{font-size:.72em;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-right:6px}
@@ -348,11 +363,30 @@ ${hlHideCss()}`;
     hits.forEach(h => { out += esc(stem.slice(pos, h.s)) + `<span class="rr-mk${h.t ? ' t' : ''}">${esc(stem.slice(h.s, h.e))}</span>`; pos = h.e; });
     return out + esc(stem.slice(pos));
   }
-  // "clue, clue + clue -> answer": one chip per clue (", " or " + "; "20,000" stays whole)
+  // "clue + clue + **key clue** -> answer": one chip per clue. With " + " in the text, chips split ONLY on " + " (a comma stays inside its chip);
+  // without it, the older ", " or " + " split ("20,000" stays whole). A chip wrapped in ** is a deciding clue (starred, asterisks stripped).
+  // The hinge field is the Why line inside the box.
   function callHtml(it){
-    const parts = String(it.boardCall || '').replace(/\.\s*$/, '').split(/\s*(?:->|→)\s*/), ans = parts.length > 1 ? parts.pop() : '';
-    const left = parts.join(' → ').split(/,\s+|\s+\+\s+/).map(x => `<span class="rr-cl">${esc(x)}</span>`).join('<span class="rr-plus">+</span>');
-    return `<div class="rr-call">${it.task ? `<span class="rr-task">${esc(it.task)}</span>` : ''}<div class="rr-flow">${left}${ans ? `<span class="rr-arrow">→</span><span class="rr-ans">${esc(ans)}</span>` : ''}</div></div>`;
+    const parts = String(it.boardCall || '').replace(/\.\s*$/, '').split(/\s*(?:->|→)\s*/), ans = parts.length > 1 ? parts.pop().replace(/\*\*/g, '').trim() : '';
+    const lhs = parts.join(' → '), chips = / \+ /.test(lhs) ? lhs.split(/\s+\+\s+/) : lhs.split(/,\s+|\s+\+\s+/);
+    const left = chips.map(x => { x = x.trim(); const key = /^\*\*[\s\S]+\*\*$/.test(x); return `<span class="rr-cl${key ? ' key' : ''}">${esc(x.replace(/\*\*/g, ''))}</span>`; }).join('<span class="rr-plus">+</span>');
+    const why = typeof it.hinge === 'string' && it.hinge.trim() ? `<div class="rr-mg-why"><span class="rr-mg-k">Why</span>${esc(it.hinge)}</div>` : '';
+    return `<div class="rr-call">${it.task ? `<span class="rr-task">${esc(it.task)}</span>` : ''}<div class="rr-flow">${left}${ans ? `<span class="rr-arrow">→</span><span class="rr-ans">${esc(ans)}</span>` : ''}</div>${why}</div>`;
+  }
+  // branches: [{opt, if, then, step?}] -> valid rows only (object with non-empty if + then), the pick's row first (tinted, tagged) after a wrong pick.
+  // The letter shows only when opt is a choice letter of this question and not the correct one.
+  function brHtml(it, n, cor, pick, wrong){
+    const rows = (Array.isArray(it.branches) ? it.branches : []).filter(b => b && typeof b === 'object' && typeof b.if === 'string' && b.if.trim() && typeof b.then === 'string' && b.then.trim()).slice(0, 8).map(b => {
+      const i = typeof b.opt === 'string' && b.opt.trim().length === 1 ? LT.indexOf(b.opt.trim().toUpperCase()) : -1, ok = i >= 0 && i < n && i !== cor;
+      return {b, L: ok ? LT[i] : '', me: ok && wrong && i === pick};
+    });
+    if(!rows.length) return '';
+    const first = rows.findIndex(r => r.me); if(first > 0) rows.unshift(rows.splice(first, 1)[0]);
+    const body = rows.map((r, k) => {
+      const tint = r.me && k === 0, step = typeof r.b.step === 'string' && r.b.step.trim() ? ` <span class="rr-br-s">· ${esc(r.b.step)}</span>` : '';
+      return `<div class="rr-br-r${tint ? ' me' : ''}">${r.L ? `<span class="rr-l">${r.L}</span>` : '<span class="rr-l x" title="not a listed choice">·</span>'}<div><span class="rr-br-if">IF</span>${mdb(r.b.if)}<span class="rr-br-ar">→</span><span class="rr-br-a">${esc(r.b.then)}</span>${step}${tint ? '<span class="rr-tag me">Your pick</span>' : ''}</div></div>`;
+    }).join('');
+    return `<div class="rr-lab">Branches · when another answer wins</div><div class="rr-br">${body}</div>`;
   }
   // one option; table = Options tab (lure line + Management column), otherwise the Overview row
   function optRow(q, it, i, pick, cor, table){
@@ -405,13 +439,18 @@ ${hlHideCss()}`;
       const stem = stemHtml(String(q.stem || ''), trig);
       body = `<div class="rr-lab">Stem${trig.length ? ' · clues marked' : ''}</div><div class="rr-stem">${stem}</div>${/rr-mk t/.test(stem) ? '<div class="rr-leg">Red mark = the phrase that pulls toward the trap.</div>' : ''}`;
     }else{
-      const shown = wrong ? [cor, pick] : [cor], rest = [];
-      for(let i = 0; i < n; i++) if(!shown.includes(i)) rest.push(LT[i]);
+      const br = brHtml(it, n, cor, pick, wrong);
+      let mid;
+      if(br) mid = br + `<button type="button" class="rr-more" data-rr-sub="opt">All ${n} options: compare on the Options tab →</button>`;
+      else{
+        const shown = wrong ? [cor, pick] : [cor], rest = [];
+        for(let i = 0; i < n; i++) if(!shown.includes(i)) rest.push(LT[i]);
+        mid = `<div class="rr-lab">${wrong ? 'Answer vs your pick' : 'Answer'}</div>${shown.map(i => optRow(q, it, i, pick, cor, false)).join('')}`
+          + (rest.length ? `<button type="button" class="rr-more" data-rr-sub="opt">${rest.join(', ')}: compare on the Options tab →</button>` : '');
+      }
       body = callHtml(it)
-        + (it.hinge ? `<div class="rr-ht h"><span class="k">Hinge</span>${esc(it.hinge)}</div>` : '')
         + `<div class="rr-ht t"><span class="k">${tempt ? 'Why ' + LT[pick] + ' pulled you' : 'Trap'}</span>${esc(tempt ? cap(tempt) + '.' : it.trap)}</div>`
-        + `<div class="rr-lab">${wrong ? 'Answer vs your pick' : 'Answer'}</div>${shown.map(i => optRow(q, it, i, pick, cor, false)).join('')}`
-        + (rest.length ? `<button type="button" class="rr-more" data-rr-sub="opt">${rest.join(', ')}: compare on the Options tab →</button>` : '')
+        + mid
         + (alg ? `<div class="rr-sec">${pathHtml(alg)}</div>` : '');
     }
     return bar + `<div class="rr-hl-root">` + body + `</div>` + `<div class="rr-foot">The explanation text wins if they conflict</div>`;
@@ -443,6 +482,8 @@ ${hlHideCss()}`;
     const text = hlNodes(root).map(x => x.n.nodeValue).join('');
     list.forEach(r => {
       const nodes = hlNodes(root);
+      // stored highlights from an older Overview layout: paint only a record that carries its text and finite offsets (it relocates by text below)
+      if(!r || typeof r.t !== 'string' || !r.t || !Number.isFinite(r.s) || !Number.isFinite(r.e)) return;
       let s = r.s, e = r.e;
       if(r.t && text.slice(s, e) !== r.t){ const i = text.indexOf(r.t); if(i < 0) return; s = i; e = i + r.t.length; }
       nodes.forEach(x => {

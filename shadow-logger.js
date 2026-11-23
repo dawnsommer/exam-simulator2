@@ -1,8 +1,9 @@
 /* ThunderShadow logger for the Review screen (one file, meant to be identical in the Local and iPad apps).
    A floating bar between the question area and the exam's bottom bar. It takes its own space (the question area gets
    shorter by the strip's height), so it never covers the question, the explanation or the exhibit.
-   One tap on an error code logs the question; the reasoning pattern chips then take its place in the same bar (second tap).
-   The study note opens a small editor above the bar only while you write (Enter, Done or a tap outside closes it); speed flags sit beside it.
+   One tap on an error code logs the question; the reasoning pattern chips then take its place in the same bar (second tap, or Skip),
+   then the optional speed flags (any number, then None/Done). The three picks end up as small pills; tap one to change it.
+   The study note opens a small editor above the bar only while you write (Enter, Done or a tap outside closes it).
    Exam Settings menu: "ThunderShadow" switch (ShadowLogger.settingHtml(), key ThunderShadowLog.off).
    The form, date and simulator item (block.item) are filled in from the attempt.
    Export: the 13 columns of ThunderShadow's own "Form log TSV" (js/browser-api.js formToTsv), so one importer reads both.
@@ -31,7 +32,8 @@
     ['timeline_course', 'P6', 'TIMELINE', '#6366F1', 'The timing, onset, duration, progression, event order, or treatment exposure determined the answer.', 'Which timing relationship did you overlook?'],
     ['modifier_constraint', 'P7', 'MODIFIER', '#22C55E', 'Knew the usual rule but failed to adjust it for a patient-specific constraint or context.', 'Which patient-specific factor changed the usual pathway?']
   ];
-  const SPD = [['rushed', 'S1', 'RUSHED'], ['overthought', 'S2', 'OVERTHOUGHT'], ['reread_loop', 'S3', 'RE-READ LOOP'], ['changed_answer', 'S4', 'CHANGED ANSWER'], ['slow_recall', 'S5', 'SLOW RECALL'], ['fatigue_attention', 'S6', 'FATIGUE/ATTENTION']];
+  // value, code, label (TSV), short label (strip chips and pill)
+  const SPD = [['rushed', 'S1', 'RUSHED', 'Rushed'], ['overthought', 'S2', 'OVERTHOUGHT', 'Overthought'], ['reread_loop', 'S3', 'RE-READ LOOP', 'Re-read'], ['changed_answer', 'S4', 'CHANGED ANSWER', 'Changed'], ['slow_recall', 'S5', 'SLOW RECALL', 'Slow recall'], ['fatigue_attention', 'S6', 'FATIGUE/ATTENTION', 'Fatigue']];
   const HEADERS = ['ThunderShadowID', 'Form', 'Date', 'Entry_Number', 'Error_Code', 'Rule_Pattern', 'Speed_Flags', 'Reasoning_Note', 'Note_Type', 'Form_ID', 'Note_ID', 'Rule_Text', 'Exam_Item'];
 
   const ls = {get: k => { try{ return localStorage.getItem(k); }catch(e){ return null; } }, set: (k, v) => { try{ localStorage.setItem(k, v); return true; }catch(e){ return false; } }};
@@ -46,6 +48,7 @@
     list: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01" stroke-width="3"/></svg>',
     x: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     go: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
     bin: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg>'
   };
 
@@ -254,7 +257,7 @@
 #tslDock .tsl-pat > i{flex:none;width:9px;height:9px;border-radius:50%;background:var(--c)}
 #tslDock .tsl-pat[aria-checked="true"],#tslDock .tsl-sum.tsl-pat{background:color-mix(in srgb,var(--c) 24%,var(--bg));color:var(--fg);box-shadow:inset 0 0 0 2px var(--c)}
 #tslDock .tsl-spd.tsl-hint:not([aria-pressed="true"]){box-shadow:inset 0 0 0 1.5px var(--sel)}
-#tslDock .tsl-spd.tsl-hint:not([aria-pressed="true"])::after{content:"from your attempt";font-weight:400;font-size:11px;color:var(--sub)}
+#tslDock .tsl-spd.tsl-hint:not([aria-pressed="true"])::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sel);margin-right:-1px}
 #tslDock .tsl-notebtn{flex:1 0 170px;min-width:0;display:flex;align-items:center;gap:8px;height:var(--h);padding:0 12px;border-radius:999px;background:var(--field);color:var(--sub);cursor:text;box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .12s}
 #tslDock .tsl-notebtn:hover,#tslDock .tsl-notebtn[aria-expanded="true"]{box-shadow:inset 0 0 0 1.5px var(--sel)}
 #tslDock .tsl-notebtn svg{flex:none}
@@ -272,7 +275,6 @@
 @media (pointer:coarse){#tslDock textarea{font-size:16px}}
 #tslDock textarea::placeholder{color:var(--sub);opacity:.85}
 #tslDock .tsl-opts{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
-#tslDock .tsl-speed{flex:1 1 auto;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 #tslDock .tsl-tray .tsl-chip{height:calc(var(--h) - 6px);padding:0 12px;font-size:12px}
 #tslDock .tsl-kind{flex:none;display:inline-flex;padding:3px;border-radius:999px;background:var(--chip)}
 #tslDock .tsl-kind button{padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--sub)}
@@ -315,6 +317,26 @@
 #tslDock[data-size="narrow"][data-stage="pattern"] .tsl-lbl .w{display:none}
 #tslDock[data-size="narrow"][data-stage="pattern"] .tsl-lbl .o{margin:0;font-size:12px}
 #tslDock[data-size="narrow"][data-stage="pattern"] .tsl-lbl .o::before{content:""}
+/* speed step (optional flags) and the speed pill */
+#tslDock .tsl-bspd{padding:0 14px}
+#tslDock .tsl-chip.tsl-next{padding:0 16px;background:var(--sel);color:var(--selfg);font-weight:700}
+#tslDock .tsl-chip.tsl-next:hover{filter:brightness(1.08)}
+#tslDock[data-stage="speed"] .tsl-sum{flex:none}
+#tslDock[data-stage="speed"] .tsl-sum.tsl-err .l-full{display:none}
+#tslDock[data-stage="speed"] .tsl-sum.tsl-err .l-short{display:inline}
+#tslDock[data-stage="speed"] .tsl-lbl .o{display:inline;margin-left:4px;font-weight:500;letter-spacing:.02em;text-transform:none;opacity:.9}
+#tslDock[data-stage="speed"] .tsl-lbl .o::before{content:"· "}
+#tslDock[data-size="narrow"][data-stage="speed"] .tsl-flow .tsl-lbl{display:none!important}
+#tslDock .tsl-sum.tsl-spdsum{padding:0 12px 0 10px;background:var(--chip);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--fg)}
+#tslDock .tsl-sum.tsl-spdsum svg{flex:none;color:var(--sub)}
+#tslDock .tsl-spdsum .l-short{display:none;font-weight:800}
+#tslDock[data-size="narrow"] .tsl-sum.tsl-spdsum{flex:none;gap:4px;padding:0 10px 0 8px}
+#tslDock[data-size="narrow"] .tsl-spdsum .l-full{display:none}
+#tslDock[data-size="narrow"] .tsl-spdsum .l-short{display:inline}
+#tslDock[data-size="narrow"][data-stage="done"][data-spd="1"] .tsl-tick{display:none}
+#tslDock[data-size="narrow"][data-stage="done"][data-spd="1"] .tsl-flow{gap:4px}
+#tslDock[data-size="narrow"][data-stage="done"][data-spd="1"] .tsl-sum.tsl-err{padding:0 8px 0 5px;gap:5px}
+#tslDock[data-size="narrow"][data-stage="done"][data-spd="1"] .tsl-sum.tsl-pat{padding:0 8px 0 9px;gap:5px}
 /* phones: the note editor never takes more than ~40% of the visible screen; it scrolls inside */
 #tslDock[data-size="narrow"] .tsl-tray{max-height:max(120px,calc(var(--tsl-vvh,100vh) * .4))}#tslDock[data-size="narrow"] textarea{max-height:min(140px,max(120px,calc(var(--tsl-vvh,100vh) * .4)))}
 /* phones: the chips of the current step wrap onto their own rows under the bar's first row, so none is off-screen */
@@ -385,8 +407,10 @@
 
   /* ---------- the strip ----------
      One row that walks through the log: error code chips, then (as soon as a code is picked) the reasoning pattern chips
-     in the same place, then two small pills showing what was picked. Nothing has to be opened for code or pattern.
-     Only the study note and the speed flags live in the tray above the strip. */
+     in the same place (optional, with a Skip chip), then the speed flags (optional, multi-select, None/Done), then small pills
+     showing what was picked (the speed pill only when a flag is set). Nothing has to be opened for code, pattern or speed.
+     "Passed" steps are remembered in memory only (passed set), never saved: a question that is loaded with a code and a pattern
+     or speed flag counts as passed for both, so reopening a logged question shows the pills. Only the study note lives in the tray above the strip. */
   const title = s => s.charAt(0) + s.slice(1).toLowerCase();
   const errChip = e => `<button type="button" class="tsl-chip tsl-err" role="radio" aria-checked="false" data-code="${e[0]}" title="${esc(e[0] + ' ' + e[3] + '. ' + e[4])}" aria-label="${esc('Error code ' + e[0] + ': ' + e[3])}"><b>${e[0]}</b><span>${esc(e[1])}</span></button>`;
   const patChip = p => `<button type="button" class="tsl-chip tsl-pat" role="radio" aria-checked="false" data-pat="${p[0]}" style="--c:${p[3]}" title="${esc(p[1] + ' ' + p[2] + '. ' + p[4])}" aria-label="${esc('Reasoning pattern ' + p[1] + ': ' + p[2])}"><i></i><span>${esc(title(p[2]))}</span></button>`;
@@ -397,7 +421,6 @@
   <textarea id="tslNote" rows="2" maxlength="12000" spellcheck="true" autocapitalize="sentences" aria-label="Study note"></textarea>
   <div class="tsl-opts">
     <div class="tsl-kind" role="radiogroup" aria-label="Note type"><button type="button" role="radio" data-kind="clinical" aria-checked="true" title="A clinical rule for this topic">Clinical</button><button type="button" role="radio" data-kind="reasoning" aria-checked="false" title="A broad reasoning habit, not tied to one topic">Broad</button></div>
-    <div class="tsl-speed" role="group" aria-label="Speed flags"><span class="tsl-lbl">Speed</span>${SPD.map(s => `<button type="button" class="tsl-chip tsl-spd" aria-pressed="false" data-spd="${s[0]}" title="${esc(s[1] + ' ' + s[2])}">${esc(title(s[2]))}</button>`).join('')}</div>
     <button type="button" class="tsl-done" data-act="done" title="Save the note and close (Enter). Shift+Enter adds a line. Cmd/Ctrl+Enter goes to the next question.">Done<kbd>↵</kbd></button>
   </div>
 </div>
@@ -406,16 +429,19 @@
   <div class="tsl-flow" id="tslFlow">
     <button type="button" class="tsl-chip tsl-sum tsl-err" id="tslSumCode" data-act="editcode" hidden></button>
     <button type="button" class="tsl-chip tsl-sum tsl-pat" id="tslSumPat" data-act="editpat" hidden></button>
+    <button type="button" class="tsl-chip tsl-sum tsl-spdsum" id="tslSumSpd" data-act="editspd" hidden></button>
     <span class="tsl-lbl" id="tslLbl"></span>
     <div class="tsl-group" id="tslCodes" role="radiogroup" aria-label="Error code">${ERR.map(errChip).join('')}<button type="button" class="tsl-chip tsl-ghost" data-act="allcodes" id="tslAll"></button></div>
-    <div class="tsl-group" id="tslPats" role="radiogroup" aria-label="Reasoning pattern (optional)" title="Optional. Skip it with Next or Cmd/Ctrl+Enter." hidden>${PAT.map(patChip).join('')}</div>
+    <div class="tsl-group" id="tslPats" role="radiogroup" aria-label="Reasoning pattern (optional)" title="Optional. Skip it with the Skip chip, Next or Cmd/Ctrl+Enter." hidden>${PAT.map(patChip).join('')}<button type="button" class="tsl-chip tsl-ghost" data-act="skippat" title="Skip the reasoning pattern">Skip</button></div>
+    <div class="tsl-group" id="tslSpds" role="group" aria-label="Speed flags (optional)" hidden>${SPD.map(s => `<button type="button" class="tsl-chip tsl-spd tsl-bspd" aria-pressed="false" data-spd="${s[0]}" title="${esc(s[1] + ' ' + s[2])}">${esc(s[3])}</button>`).join('')}<button type="button" class="tsl-chip tsl-next" data-act="spddone" id="tslSpdDone">None</button></div>
   </div>
-  <button type="button" class="tsl-notebtn" data-act="note" id="tslNoteBtn" aria-expanded="false" aria-controls="tslPanel" aria-label="Study note and speed flags" title="Study note and speed flags (N)">${I.pen}<span class="tsl-prev" id="tslPrev"></span><span class="tsl-badges" id="tslBadges"></span></button>
+  <button type="button" class="tsl-notebtn" data-act="note" id="tslNoteBtn" aria-expanded="false" aria-controls="tslPanel" aria-label="Study note" title="Study note (N)">${I.pen}<span class="tsl-prev" id="tslPrev"></span><span class="tsl-badges" id="tslBadges"></span></button>
   <span class="tsl-warn" id="tslWarn" role="status" hidden>Not saved</span>
 <button type="button" class="tsl-log" data-act="log" id="tslLog" title="Logged questions" aria-label="Logged questions">${I.list}<span><b id="tslCount">0</b><span class="tsl-word"> logged</span></span></button>
 </div>`;
 
   let cur = null, lastC = null, curKey = '', showAll = false, view = '', raf = 0, sheet = null, noteTimer = 0;
+  const passed = new Set(); // steps the user went through, per question (memory only: not saved, not synced)
   const $ = sel => dock.querySelector(sel), $$ = sel => Array.from(dock.querySelectorAll(sel));
   const setText = (el, t) => { if(el && el.textContent !== t) el.textContent = t; };
   const setHtml = (el, h) => { if(el && el.__h !== h){ el.__h = h; el.innerHTML = h; } };
@@ -455,20 +481,24 @@
       cur = saved && (isLogged(saved) || !saved.deleted) ? saved : blank(c);
       try{ Object.defineProperty(cur, '__k', {value: k, writable: true, enumerable: false, configurable: true}); }catch(e){ cur.__k = k; }
       cur.speedFlags = Array.isArray(cur.speedFlags) ? cur.speedFlags : [];
+      if(!isLogged(cur)){ passed.delete(k + ':pat'); passed.delete(k + ':spd'); } // removed or never logged: the steps start again
+      if(cur.errorCode && (cur.pattern || cur.speedFlags.length)){ passed.add(k + ':pat'); passed.add(k + ':spd'); } // a logged question reopens at "done"
       const t = note(); if(t && t.value !== cur.note) t.value = cur.note || '';
     }
     setText(byId('tslItem'), c.code);
     setHidden(byId('tslTick'), !isLogged(cur));
-    // which step the strip shows: the code chips, then the reasoning chips, then just the two picks
-    const stage = view || (!cur.errorCode ? 'code' : !cur.pattern ? 'pattern' : 'done');
+    // which step the strip shows: the code chips, the reasoning chips, the speed chips, then just the picks
+    const stage = view || (!cur.errorCode ? 'code' : !cur.pattern && !passed.has(k + ':pat') ? 'pattern' : !passed.has(k + ':spd') ? 'speed' : 'done');
     if(dock.dataset.stage !== stage){ dock.dataset.stage = stage; byId('tslFlow').scrollLeft = 0; }
     const er = ERR.find(x => x[0] === cur.errorCode), p = PAT.find(x => x[0] === cur.pattern), txt = (cur.note || '').trim();
-    const sc = byId('tslSumCode'), sp = byId('tslSumPat');
-    setHidden(sc, !er || stage === 'code'); setHidden(sp, !p || stage === 'pattern');
+    const sc = byId('tslSumCode'), sp = byId('tslSumPat'), ss = byId('tslSumSpd'), flags = cur.speedFlags.map(v => SPD.find(x => x[0] === v)).filter(Boolean), showSpd = stage === 'done' && flags.length > 0;
+    setHidden(sc, !er || stage === 'code'); setHidden(sp, !p || stage === 'pattern'); setHidden(ss, !showSpd);
+    if(dock.dataset.spd !== (showSpd ? '1' : '0')) dock.dataset.spd = showSpd ? '1' : '0';
+    if(showSpd){ setHtml(ss, I.clock + '<span class="tsl-nm l-full">' + esc(flags.map(f => f[3]).join(' · ')) + '</span><span class="l-short">' + flags.length + '</span>'); setAttr(ss, 'title', flags.map(f => f[1] + ' ' + f[2]).join(', ') + '. Tap to change the speed flags.'); setAttr(ss, 'aria-label', 'Speed flags: ' + flags.map(f => f[2]).join(', ') + '. Change'); }
     if(er){ setHtml(sc, '<b>' + er[0] + '</b><span class="tsl-nm"><span class="l-full">' + esc(er[1]) + '</span><span class="l-short">' + esc(er[2]) + '</span></span>'); setAttr(sc, 'title', er[3] + '. Tap to change the error code.'); setAttr(sc, 'aria-label', 'Error code ' + er[0] + ': ' + er[3] + '. Change'); }
     if(p){ setHtml(sp, '<i></i><span class="tsl-nm">' + esc(title(p[2])) + '</span>'); if(sp.style.getPropertyValue('--c') !== p[3]) sp.style.setProperty('--c', p[3]); setAttr(sp, 'title', p[1] + ' ' + p[2] + '. Tap to change the reasoning pattern.'); setAttr(sp, 'aria-label', 'Reasoning pattern ' + p[1] + ': ' + p[2] + '. Change'); }
-    setHidden(byId('tslCodes'), stage !== 'code'); setHidden(byId('tslPats'), stage !== 'pattern');
-    setHtml(byId('tslLbl'), stage === 'code' ? '<span class="w">Error</span>' : stage === 'pattern' ? '<span class="w">Reasoning</span><span class="o">optional</span>' : ''); setAttr(byId('tslLbl'), 'title', stage === 'pattern' ? 'Optional. Skip it with Next or Cmd/Ctrl+Enter.' : ''); setHidden(byId('tslLbl'), stage === 'done');
+    setHidden(byId('tslCodes'), stage !== 'code'); setHidden(byId('tslPats'), stage !== 'pattern'); setHidden(byId('tslSpds'), stage !== 'speed');
+    setHtml(byId('tslLbl'), stage === 'code' ? '<span class="w">Error</span>' : stage === 'pattern' ? '<span class="w">Reasoning</span><span class="o">optional</span>' : stage === 'speed' ? '<span class="w">Speed</span><span class="o">optional</span>' : ''); setAttr(byId('tslLbl'), 'title', stage === 'pattern' ? 'Optional. Skip it with the Skip chip, Next or Cmd/Ctrl+Enter.' : stage === 'speed' ? 'Optional. Tap any that apply, then Done.' : ''); setHidden(byId('tslLbl'), stage === 'done');
     // incorrect or unanswered: codes 1–4 first; correct: 5–7 first. The outlined chip shows the rest.
     const primary = c.isCorrect ? ['5', '6', '7'] : ['1', '2', '3', '4'];
     const all = showAll || (cur.errorCode && primary.indexOf(cur.errorCode) < 0);
@@ -478,12 +508,13 @@
     setHidden(byId('tslAll'), !!(cur.errorCode && primary.indexOf(cur.errorCode) < 0));
     $$('#tslCodes .tsl-err').forEach(b => setAttr(b, 'aria-checked', String(b.dataset.code === cur.errorCode)));
     $$('#tslPats .tsl-pat').forEach(b => setAttr(b, 'aria-checked', String(b.dataset.pat === cur.pattern)));
-    $$('.tsl-spd').forEach(b => { setAttr(b, 'aria-pressed', String(cur.speedFlags.indexOf(b.dataset.spd) >= 0)); b.classList.toggle('tsl-hint', b.dataset.spd === 'changed_answer' && c.changed); });
+    $$('.tsl-spd').forEach(b => { const f = SPD.find(x => x[0] === b.dataset.spd), hint = b.dataset.spd === 'changed_answer' && c.changed; setAttr(b, 'aria-pressed', String(cur.speedFlags.indexOf(b.dataset.spd) >= 0)); b.classList.toggle('tsl-hint', hint); if(f) setAttr(b, 'title', f[1] + ' ' + f[2] + (hint ? ' · you changed your answer on this question' : '')); });
+    setText(byId('tslSpdDone'), cur.speedFlags.length ? 'Done' : 'None');
     $$('.tsl-kind button').forEach(b => setAttr(b, 'aria-checked', String(b.dataset.kind === (cur.noteKind === 'reasoning' ? 'reasoning' : 'clinical'))));
     const t = note(); if(t){ const ph = p ? p[5] : 'What will you do differently next time?'; if(t.placeholder !== ph) t.placeholder = ph; }
     setText(byId('tslPrev'), txt ? txt.replace(/\s+/g, ' ') : 'Add a note…');
-    byId('tslNoteBtn').classList.toggle('has', !!(txt || cur.speedFlags.length));
-    setHtml(byId('tslBadges'), (cur.speedFlags.length ? '<span>' + cur.speedFlags.map(v => (SPD.find(s => s[0] === v) || [])[1]).filter(Boolean).join(' ') + '</span>' : '') + (txt && cur.noteKind === 'reasoning' ? '<span>Broad</span>' : ''));
+    byId('tslNoteBtn').classList.toggle('has', !!txt);
+    setHtml(byId('tslBadges'), txt && cur.noteKind === 'reasoning' ? '<span>Broad</span>' : '');
     setText(byId('tslCount'), String(countOf(c)));
     setAttr(byId('tslLog'), 'aria-label', countOf(c) + ' logged. Open the list'); setAttr(byId('tslLog'), 'title', 'Logged questions (' + countOf(c) + ')');
     lastC = c;
@@ -571,12 +602,15 @@
   function fit(){ const t = note(); if(!t || !t.getClientRects().length) return; t.style.height = 'auto'; t.style.height = Math.min(140, Math.max(48, t.scrollHeight)) + 'px'; schedule(); }
   function act(c, kind, value){
     if(!c || !cur) return;
-    if(kind === 'code') cur.errorCode = cur.errorCode === value ? '' : value;
-    else if(kind === 'pat') cur.pattern = cur.pattern === value ? '' : value;
+    const pk = n => cur.__k + ':' + n;
+    if(kind === 'code'){ cur.errorCode = cur.errorCode === value ? '' : value; if(!cur.errorCode){ passed.delete(pk('pat')); passed.delete(pk('spd')); } }
+    else if(kind === 'pat'){ cur.pattern = cur.pattern === value ? '' : value; if(cur.pattern) passed.add(pk('pat')); else passed.delete(pk('pat')); }
+    else if(kind === 'skippat') passed.add(pk('pat'));
+    else if(kind === 'spddone') passed.add(pk('spd'));
     else if(kind === 'spd'){ const i = cur.speedFlags.indexOf(value); if(i >= 0) cur.speedFlags.splice(i, 1); else cur.speedFlags.push(value); cur.speedFlags.sort((a, b) => SPD.findIndex(s => s[0] === a) - SPD.findIndex(s => s[0] === b)); }
     else if(kind === 'kind') cur.noteKind = value === 'reasoning' ? 'reasoning' : 'clinical';
-    if(kind === 'code' || kind === 'pat') view = ''; // move on to the next step
-    commit(c);
+    if(kind === 'code' || kind === 'pat' || kind === 'skippat' || kind === 'spddone') view = ''; // move on to the next step
+    if(kind === 'skippat' || kind === 'spddone') paint(c); else commit(c); // step changes are not data: no new updatedAt
   }
   dock.addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('button'); if(!b || !dock.contains(b)) return;
@@ -589,6 +623,9 @@
     else if(b.dataset.act === 'allcodes'){ showAll = !showAll; tick(); }
     else if(b.dataset.act === 'editcode'){ view = 'code'; tick(); }
     else if(b.dataset.act === 'editpat'){ view = 'pattern'; tick(); }
+    else if(b.dataset.act === 'editspd'){ view = 'speed'; tick(); }
+    else if(b.dataset.act === 'skippat') act(c, 'skippat');
+    else if(b.dataset.act === 'spddone') act(c, 'spddone');
     else if(b.dataset.act === 'done') setOpen(false, false);
     else if(b.dataset.act === 'note'){ if(dock.dataset.open === '1') setOpen(false, false); else setOpen(true, true); }
     else if(b.dataset.act === 'log') openSheet();
