@@ -175,7 +175,8 @@ background:var(--rr-bg);color:var(--rr-t);font-family:var(--rr-ff,Arial,Helvetic
 @media (max-width:759.98px),(max-height:520px){.explanation-below .below-exp-wrap{max-width:none!important;width:auto!important}}
 ${setCss()}
 ${ocdCss()}
-${hlHideCss()}`;
+${hlHideCss()}
+#workspace[data-rr-wait] .below-exp-panel,#workspace[data-rr-wait] .right-panel-wrap>.qbank-panel{visibility:hidden!important}`;
   const st = document.createElement('style'); st.id = 'rapid-review-css'; st.textContent = css; document.head.appendChild(st);
 
   /* ---------- data: explanations/<ID>.json, one cached object per form ---------- */
@@ -236,17 +237,25 @@ ${hlHideCss()}`;
     return d;
   }
   const sha256 = async buf => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', buf)), b => b.toString(16).padStart(2, '0')).join('');
+  // loading: forms whose file is being read; the old value (if any) stays in the cache meanwhile, so a re-read never blanks the tab
+  const loading = new Set();
   async function loadForm(id){
+    if(loading.has(id)) return; loading.add(id);
     let d = null;
     try{ const f = await store.read(id); if(f){ if(f.size > MAXB) throw new Error('over 2 MB'); d = parseFile(await f.text(), id); } }
     catch(e){ console.warn('Rapid Review: could not read ' + id, e); }
-    cache.set(id, d); schedule();
+    loading.delete(id); cache.set(id, d); schedule();
   }
-  // null until the stored file has been read (the tab appears once it finishes)
+  // null until the stored file has been read (the tab appears once it finishes); null afterwards = no usable file
   function formData(id){
     if(!id) return null;
     if(cache.has(id)) return cache.get(id);
     cache.set(id, null); loadForm(id); return null;
+  }
+  // the form now open (library run or Qbank question), known before the question renders: its file starts loading early
+  function openFormId(){
+    try{ const q = questions && questions[state.current]; const f = q && formIdOf(q); if(f) return f; }catch(e){}
+    try{ const ok = v => v && v !== 'QBANK_MODE' ? String(v) : ''; return ok(importedBank && importedBank.librarySlotId) || ok(activeSession && activeSession.libraryFormId); }catch(e){ return ''; }
   }
   // the form a question belongs to: Qbank questions carry sourceFormId; library runs load the form into importedBank (librarySlotId)
   function formIdOf(q){
@@ -305,7 +314,7 @@ ${hlHideCss()}`;
           }catch(e){ console.warn('Rapid Review: kept the saved ' + x.formId + ' file', e); }
         }
       }catch(e){ console.warn('Rapid Review: sync failed', e); }
-      finally{ RS.busy = false; running = null; cache.forEach((v, k) => { if(!v) cache.delete(k); }); countFiles(); schedule(); }
+      finally{ RS.busy = false; running = null; cache.forEach((v, k) => { if(!v) loadForm(k); }); countFiles(); schedule(); }
     })();
   }
 
@@ -732,6 +741,7 @@ ${S} :not([data-v15-highlight-id]){color:inherit!important}`;
       want.forEach(n => par.insertBefore(n, ec));
     });
   }
+  const WAIT = 300; let waitT = 0, waitId = 0;
   function ensure(){
     raf = 0; addSettings(); applyOcd(); applyHlHide(); placeRuleTrap();
     const ws = document.getElementById('workspace'); if(!ws) return;
@@ -743,9 +753,17 @@ ${S} :not([data-v15-highlight-id]){color:inherit!important}`;
         if(ws.querySelector('.below-exp-panel, .qbank-tab[data-panel-tab="explanation"]') && typeof renderQuestion === 'function' && Array.isArray(questions) && questions.length){ renderQuestion(); return; }
       }
     }catch(e){}
+    const fid = openFormId(); if(fid) formData(fid);
     const c = curItem(), flex = ws.querySelector('.question-flex'), belowPanel = ws.querySelector('.below-exp-panel');
     const below = !!ws.querySelector('.question-stack.explanation-below');
     const reveal = below ? !!belowPanel : !!ws.querySelector('.right-panel-wrap .qbank-tab[data-panel-tab="explanation"]');
+    // review opened before the form's file was read: keep the explanation panels invisible (up to WAIT ms) instead of
+    // showing the plain explanation and swapping Rapid Review in a moment later
+    const wait = !c && reveal && !!fid && loading.has(fid) && !manual;
+    if(wait && !waitT){ waitT = Date.now(); waitId = setTimeout(schedule, WAIT); }
+    const hold = wait && Date.now() - waitT < WAIT;
+    if(!wait){ waitT = 0; clearTimeout(waitId); }
+    if(hold !== ws.hasAttribute('data-rr-wait')) ws.toggleAttribute('data-rr-wait', hold);
     const P = getPlace();
     // split: one side panel; rrSide: explanation under, Rapid Review beside; both: both under; expSide: explanation beside, Rapid Review under
     const mode = !c || !reveal || !flex ? null : isPhone() ? 'both' : !below ? 'split' : P.exp === 'side' ? 'expSide' : P.rr === 'below' ? 'both' : 'rrSide';
