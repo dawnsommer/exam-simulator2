@@ -2795,8 +2795,8 @@
   },
   "795697": {
    "task": "Diagnosis",
-   "boardCall": "Pregnant + fever + RLQ tenderness + leukocytosis -> acute appendicitis",
-   "hinge": "Fever, nausea, RLQ tenderness, and leukocytosis in pregnancy indicate acute appendicitis, the most common non-obstetric surgical emergency.",
+   "boardCall": "27 wk pregnant + **RLQ tenderness** + **closed cervix** + WBC 16,700 → Appendicitis",
+   "hinge": "Focal lower-quadrant tenderness with intact membranes points to acute surgical appendicitis.",
    "trap": "Fetal tachycardia and contractions mimic chorioamnionitis, but intact membranes, closed cervix, and focal RLQ tenderness indicate appendicitis.",
    "options": {
     "A": {
@@ -2888,12 +2888,34 @@
      "text": "leukocyte count is 16,700/mm³"
     }
    ],
-   "topic": "appendicitis"
+   "topic": "appendicitis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Ruptured membranes**, **uterine fundal tenderness**, and purulent fluid",
+     "then": "Chorioamnionitis"
+    },
+    {
+     "opt": "E",
+     "if": "**CVA percussion tenderness**, **dysuria**, and bacteriuria",
+     "then": "Pyelonephritis"
+    },
+    {
+     "opt": "B",
+     "if": "**Postprandial RUQ pain** with **positive Murphy sign** and gallstones",
+     "then": "Cholecystitis"
+    },
+    {
+     "opt": null,
+     "if": "**Acute unilateral pelvic pain** with **5-cm adnexal mass**",
+     "then": "Ovarian torsion"
+    }
+   ]
   },
   "795698": {
    "task": "Pharmacology",
-   "boardCall": "Lactational mastitis + cracked nipple + fever 38.4 C -> oral dicloxacillin",
-   "hinge": "Lactational mastitis is most commonly caused by Staphylococcus aureus and requires penicillinase-resistant dicloxacillin or cephalexin.",
+   "boardCall": "2 wk breastfeeding + **fissured nipple** + **erythematous breast wedge** + fever → Dicloxacillin",
+   "hinge": "Staphylococcus aureus from skin cracks causes lactational mastitis, requiring penicillinase-resistant coverage.",
    "trap": "Tetracycline is contraindicated in breastfeeding due to tooth discoloration, and ampicillin has high resistance rates in S aureus.",
    "options": {
     "A": {
@@ -2982,12 +3004,30 @@
      "text": "nipple has fissures"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Suspected MRSA mastitis** in **non-newborn** infant, mild illness",
+     "then": "Trimethoprim-sulfamethoxazole"
+    },
+    {
+     "opt": "C",
+     "if": "**Severe penicillin allergy** with **non-MRSA lactational mastitis**",
+     "then": "Erythromycin"
+    },
+    {
+     "opt": null,
+     "if": "**Bilateral tense warm breasts** on **postpartum day 3**, afebrile",
+     "then": "Physiologic engorgement",
+     "step": "ice packs and supportive bra"
+    }
+   ]
   },
   "795699": {
    "task": "Diagnosis",
-   "boardCall": "22-year-old woman + firm smooth mobile painless breast mass -> fibroadenoma",
-   "hinge": "A well-circumscribed, firm, mobile, painless solitary breast mass in a woman under 30 is classically a fibroadenoma.",
+   "boardCall": "22-year-old + **4-cm firm mobile mass** + **painless breast lump** → Fibroadenoma",
+   "hinge": "A solitary circumscribed mobile mass in a young woman defines benign fibroadenoma.",
    "trap": "Fibrocystic changes are typically multiple, bilateral, and fluctuate in pain and tenderness with the menstrual cycle.",
    "options": {
     "A": {
@@ -3099,12 +3139,34 @@
      "text": "4-cm, firm, smooth, mobile mass is palpated in the upper outer quadrant"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Bilateral cyclic breast pain** with **multiple fluctuating nodules**",
+     "then": "Fibrocystic changes"
+    },
+    {
+     "opt": "F",
+     "if": "**Bloody nipple discharge** with **no palpable breast mass**",
+     "then": "Intraductal papilloma"
+    },
+    {
+     "opt": "B",
+     "if": "**Firm irregular mass** after **seatbelt breast trauma**",
+     "then": "Fat necrosis"
+    },
+    {
+     "opt": "A",
+     "if": "**Fluctuant tender erythematous mass** with **fever** during lactation",
+     "then": "Abscess"
+    }
+   ]
   },
   "795700": {
    "task": "Diagnosis",
-   "boardCall": "Isolated axillary lymph node adenocarcinoma + normal mammography -> occult breast cancer",
-   "hinge": "Adenocarcinoma in an isolated female axillary node represents occult breast primary until proven otherwise, even with normal mammogram.",
+   "boardCall": "54-year-old + **2-cm axillary node adenocarcinoma** + **normal mammogram** → Breast",
+   "hinge": "Isolated axillary nodal adenocarcinoma in women almost always indicates occult breast cancer.",
    "trap": "Lung, pancreas, or gastric adenocarcinomas metastasize to supraclavicular or mediastinal nodes, not isolated low axillary nodes.",
    "options": {
     "A": {
@@ -3182,12 +3244,34 @@
      "text": "biopsy specimen of the node shows adenocarcinoma"
     }
    ],
-   "topic": "breast-neoplasia"
+   "topic": "breast-neoplasia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Left supraclavicular Virchow node** with **epigastric weight loss**",
+     "then": "Stomach"
+    },
+    {
+     "opt": "B",
+     "if": "**Heavy smoker** with **mediastinal adenopathy** and hemoptysis",
+     "then": "Lung"
+    },
+    {
+     "opt": "D",
+     "if": "**Painless jaundice** with **epigastric pain** radiating to back",
+     "then": "Pancreas"
+    },
+    {
+     "opt": "C",
+     "if": "**Bilateral axillary nodes** showing **monomorphic lymphocytes**",
+     "then": "Lymphatics"
+    }
+   ]
   },
   "795701": {
    "task": "Screening",
-   "boardCall": "Pelvic inflammatory disease with multiple partners -> HIV antibody test",
-   "hinge": "Diagnosis of an acute STI (PID) mandates comprehensive screening for concurrent STIs including HIV and syphilis.",
+   "boardCall": "19-year-old + **purulent cervical discharge** + **cul-de-sac mass** + multiple partners → HIV antibody test",
+   "hinge": "Acute sexually transmitted pelvic infection requires comprehensive co-screening for bloodborne viral infections.",
    "trap": "Pap smear and HPV testing evaluate cervical cancer screening, not acute sexually transmitted infection workup.",
    "options": {
     "A": {
@@ -3276,12 +3360,34 @@
      "text": "fluctuant mass in the cul-de-sac"
     }
    ],
-   "topic": "cervicitis-pid"
+   "topic": "cervicitis-pid",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Painful grouped labial vesicles** and **shallow genital ulcers**",
+     "then": "Herpes simplex virus test"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 21 or older** presenting for **routine cervical screening**",
+     "then": "Pap smear"
+    },
+    {
+     "opt": "E",
+     "if": "**12 months of infertility** with **normal semen analysis**",
+     "then": "Hysterosalpingography"
+    },
+    {
+     "opt": null,
+     "if": "**Acute PID** with **concurrent pregnancy or high fever**",
+     "then": "Screen for syphilis too"
+    }
+   ]
   },
   "795702": {
    "task": "Next step",
-   "boardCall": "Painless vulvar ulcer after prior negative RPR -> repeat rapid plasma reagin",
-   "hinge": "Primary syphilis can have a false-negative initial nontreponemal test; repeat RPR or order darkfield testing.",
+   "boardCall": "19-year-old + **nontender raised-edge ulcer** + **prior negative RPR 6 wk ago** → Repeat rapid plasma reagin",
+   "hinge": "Initial RPR can be false-negative early, so new chancres require repeat testing.",
    "trap": "Prior HSV diagnosis tempts repeating viral culture, but the new lesion is solitary, painless, and clean-based.",
    "options": {
     "A": {
@@ -3369,12 +3475,29 @@
      "text": "1 × 2.5-cm nontender ulcer with slightly raised edges and a shallow base"
     }
    ],
-   "topic": "syphilis"
+   "topic": "syphilis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Painful grouped vesicles** on **erythematous base**",
+     "then": "Viral culture of the ulcer"
+    },
+    {
+     "opt": "A",
+     "if": "**Acute febrile pharyngitis and rash** with **lymphadenopathy** after exposure",
+     "then": "Repeat HIV antibody test"
+    },
+    {
+     "opt": "E",
+     "if": "**Nonhealing vulvar lesion** in **postmenopausal woman**",
+     "then": "Excision of the ulcer"
+    }
+   ]
   },
   "795703": {
    "task": "Diagnosis",
-   "boardCall": "Fever + severe dysuria + bilateral coalescing vulvar vesicles -> Herpes simplex virus",
-   "hinge": "Grouped erythematous labial vesicles with severe vulvar burning and bilateral inguinal lymphadenopathy indicate primary HSV.",
+   "boardCall": "19-year-old + fever + **severe dysuria** + **coalescing labial vesicles** → Herpes simplex virus",
+   "hinge": "Grouped vesicles with painful urination and tender inguinal nodes define primary herpes.",
    "trap": "Treponema pallidum causes a solitary painless chancre; Haemophilus ducreyi causes a deep purulent painful ulcer, not grouped vesicles.",
    "options": {
     "A": {
@@ -3469,12 +3592,34 @@
      "text": "erythematous, coalescing labial vesicles bilaterally"
     }
    ],
-   "topic": "herpes-simplex-virus"
+   "topic": "herpes-simplex-virus",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Single deep ragged ulcer** with **suppurative inguinal bubo**",
+     "then": "Haemophilus ducreyi"
+    },
+    {
+     "opt": "F",
+     "if": "**Painless indurated chancre** with **nontender rubbery nodes**",
+     "then": "Treponema pallidum"
+    },
+    {
+     "opt": "E",
+     "if": "**Purulent cervical discharge** and **cervical motion tenderness**, no vesicles",
+     "then": "Neisseria gonorrhoeae"
+    },
+    {
+     "opt": "A",
+     "if": "**Painless small papule** followed by **painful inguinal buboes**",
+     "then": "Chlamydia trachomatis"
+    }
+   ]
   },
   "795704": {
    "task": "Pharmacology",
-   "boardCall": "Adolescent vulvar pruritus + pseudohyphae on smear -> topical vaginal miconazole",
-   "hinge": "Vulvar erythema and pruritus with budding yeast and pseudohyphae is Candida vulvovaginitis, treated with topical azoles.",
+   "boardCall": "12-year-old + **7-day vulvovaginal itching** + **pseudohyphae on smear** → Vaginal miconazole",
+   "hinge": "Budding yeast and pseudohyphae on microscopy confirm candidiasis, treated with topical azoles.",
    "trap": "Metronidazole and clindamycin treat bacterial vaginosis (clue cells, fishy odor), not fungal Candida.",
    "options": {
     "A": {
@@ -3558,12 +3703,30 @@
      "text": "mild erythema and excoriation of the labia majora"
     }
    ],
-   "topic": "vaginitis"
+   "topic": "vaginitis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Thin gray fishy discharge** with **clue cells** and pH > 4.5",
+     "then": "Vaginal metronidazole"
+    },
+    {
+     "opt": "B",
+     "if": "**Frothy yellow-green discharge** with **motile trichomonads**",
+     "then": "Oral metronidazole",
+     "step": "treat sexual partner too"
+    },
+    {
+     "opt": "C",
+     "if": "**Bacterial vaginosis** in a patient **unable to tolerate metronidazole**",
+     "then": "Vaginal clindamycin"
+    }
+   ]
   },
   "795705": {
    "task": "Pharmacology",
-   "boardCall": "Soft pink papillary vulvar lesions -> topical podophyllum resin",
-   "hinge": "Soft pink papillary lesions on the vulva are condylomata acuminata (HPV 6/11), treated topically with podophyllum resin.",
+   "boardCall": "22-year-old + **soft pink papillary vulvar lesions** + normal cervix → Podophyllum resin therapy",
+   "hinge": "Exophytic genital warts from low-risk HPV respond to topical podophyllum resin.",
    "trap": "Acyclovir treats ulcerative vesicular lesions of HSV, not fleshy exophytic papillomas of HPV.",
    "options": {
     "A": {
@@ -3654,12 +3817,29 @@
      "text": "multiple 5- to 10-mm soft pink papillary lesions with areas of pigmentation"
     }
    ],
-   "topic": "human-papillomavirus-infection"
+   "topic": "human-papillomavirus-infection",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Painful grouped vesicles** and **shallow vulvar ulcers**",
+     "then": "Acyclovir therapy"
+    },
+    {
+     "opt": "B",
+     "if": "**Mucopurulent cervicitis** with **chlamydia** or chancroid ulcer",
+     "then": "Azithromycin therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Indurated pigmented vulvar plaque** unresponsive to **wart therapy**",
+     "then": "Punch biopsy"
+    }
+   ]
   },
   "795706": {
    "task": "Next step",
-   "boardCall": "Asymptomatic 15-week-sized leiomyomata uteri + normal hematocrit -> observation only",
-   "hinge": "Asymptomatic uterine fibroids require observation only, regardless of uterine size, when bleeding and pressure are absent.",
+   "boardCall": "42-year-old + **15-week fibroid uterus** + **no bleeding or pain** + Hct 41% → Observation only",
+   "hinge": "Asymptomatic uterine leiomyomas require surveillance alone regardless of uterine size.",
    "trap": "15-week uterine size tempts myomectomy or GnRH agonists, but asymptomatic fibroids require no intervention.",
    "options": {
     "A": {
@@ -3743,12 +3923,34 @@
      "text": "Pelvic ultrasonography confirms leiomyomata uteri"
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Submucosal fibroid** causing **infertility** or severe anemia",
+     "then": "Myomectomy"
+    },
+    {
+     "opt": "D",
+     "if": "**Heavy menstrual bleeding** from fibroids **without cavity distortion**",
+     "then": "Oral contraceptive therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Preoperative shrinkage** needed for **large symptomatic fibroid**",
+     "then": "GnRH agonist therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Rapid uterine growth** after **menopause**",
+     "then": "Evaluate for leiomyosarcoma"
+    }
+   ]
   },
   "795707": {
    "task": "Diagnosis",
-   "boardCall": "Postmenopausal woman + palpable ovary -> palpable ovary requires pelvic ultrasound",
-   "hinge": "Ovaries atrophy after menopause; any palpable ovary in a postmenopausal woman is suspicious for ovarian malignancy.",
+   "boardCall": "**65-year-old postmenopausal** + prolapse + **palpable right ovary** → Palpable right ovary",
+   "hinge": "Ovaries shrink after menopause, making any palpable adnexal mass suspicious for malignancy.",
    "trap": "Pelvic organ prolapse (cystocele, rectocele) is common and benign, whereas a palpable postmenopausal ovary is a red flag.",
    "options": {
     "A": {
@@ -3833,12 +4035,34 @@
      "text": "right ovary is palpable but less than 5 cm in diameter"
     }
    ],
-   "topic": "ovarian-cancer"
+   "topic": "ovarian-cancer",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Symptomatic anterior vaginal bulge** causing **stress urinary incontinence**",
+     "then": "Cystocele"
+    },
+    {
+     "opt": "E",
+     "if": "**Cervix protruding past introitus** with **mucosal ulceration**",
+     "then": "Uterovaginal prolapse"
+    },
+    {
+     "opt": "D",
+     "if": "**Posterior vaginal wall bulge** causing **defecation difficulty**",
+     "then": "Rectocele"
+    },
+    {
+     "opt": null,
+     "if": "**28-year-old woman** with **palpable 3-cm smooth ovary**",
+     "then": "Normal reproductive finding"
+    }
+   ]
   },
   "795708": {
    "task": "Risk factor",
-   "boardCall": "Oligomenorrhea + BMI 30 + heavy bleeding -> chronic anovulation drives endometrial cancer",
-   "hinge": "Chronic anovulation causes prolonged unopposed estrogen exposure without progesterone, the strongest driver of endometrial hyperplasia and cancer.",
+   "boardCall": "47-year-old + **4–6 periods yearly** + BMI 30 + **heavy bleeding** → Chronic anovulation",
+   "hinge": "Infrequent ovulatory cycles leave endometrium exposed to continuous unopposed estrogen without progesterone.",
    "trap": "Diabetes and hypertension are associated comorbidities, but chronic anovulatory unopposed estrogen is the dominant direct risk.",
    "options": {
     "A": {
@@ -3926,12 +4150,34 @@
      "trap": true
     }
    ],
-   "topic": "endometrial-cancer"
+   "topic": "endometrial-cancer",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Regular ovulatory menses** with **increased endometrial cancer risk**",
+     "then": "Nulliparity"
+    },
+    {
+     "opt": "B",
+     "if": "**Regular cycles and BMI 22** with **long-standing insulin resistance**",
+     "then": "Diabetes mellitus"
+    },
+    {
+     "opt": "C",
+     "if": "**Menarche at age 9** with **menopause at age 56**",
+     "then": "Early menarche"
+    },
+    {
+     "opt": null,
+     "if": "**Breast cancer survivor** taking **tamoxifen** with bleeding",
+     "then": "Tamoxifen therapy"
+    }
+   ]
   },
   "795709": {
    "task": "Diagnosis",
-   "boardCall": "11-year-old girl + 8-cm complex echogenic adnexal mass -> mature cystic teratoma",
-   "hinge": "An 8-cm complex adnexal mass with internal echogenicity in a premenarchal girl is a mature cystic teratoma.",
+   "boardCall": "11-year-old + premenarchal + **right adnexal mass** + **8-cm complex echogenic lesion** → Mature teratoma",
+   "hinge": "A complex ovarian mass with heterogeneous echogenicity in a child characterizes dermoid.",
    "trap": "Functional cysts are simple unilocular fluid collections, while teratomas display complex heterogeneous echogenicity.",
    "options": {
     "A": {
@@ -4009,12 +4255,34 @@
      "text": "8-cm complex mass in the right adnexa with echogenicity"
     }
    ],
-   "topic": "ovarian-cysts"
+   "topic": "ovarian-cysts",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**3-cm simple anechoic cyst** in **postmenarchal teenager**",
+     "then": "Functional ovarian cyst"
+    },
+    {
+     "opt": "B",
+     "if": "**65-year-old woman** with **complex adnexal mass** and ascites",
+     "then": "Epithelial ovarian cancer"
+    },
+    {
+     "opt": "A",
+     "if": "**Fever and RLQ rebound** with **elevated WBC** and fluid collection",
+     "then": "Appendiceal abscess"
+    },
+    {
+     "opt": null,
+     "if": "**Premenarchal complex mass** with **elevated AFP or β-hCG**",
+     "then": "Malignant germ-cell tumor"
+    }
+   ]
   },
   "795710": {
    "task": "Diagnosis",
-   "boardCall": "Primary amenorrhea + short stature + elevated FSH/LH -> Turner syndrome (45,X)",
-   "hinge": "Primary amenorrhea with short stature, delayed puberty, hypoestrogenism, and elevated gonadotropins indicates hypergonadotropic hypogonadism from Turner syndrome.",
+   "boardCall": "24-year-old + **primary amenorrhea** + short stature + **LH 22, FSH 33** → Turner syndrome (45,X)",
+   "hinge": "Elevated gonadotropins with delayed puberty and hypoestrogenism establish primary ovarian failure.",
    "trap": "Müllerian agenesis has normal FSH/LH and secondary sexual development; hypogonadotropic hypogonadism has low or normal FSH/LH.",
    "options": {
     "A": {
@@ -4120,12 +4388,34 @@
      "text": "follicle-stimulating hormone concentration of 33 mIU/mL"
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Normal breast development** with **absent cervix** and normal FSH",
+     "then": "Congenital absence of uterus"
+    },
+    {
+     "opt": "E",
+     "if": "**Low FSH and LH** with **lifelong anosmia**",
+     "then": "Hypogonadotropic hypogonadism"
+    },
+    {
+     "opt": "A",
+     "if": "**BMI 15 and lanugo** with **low FSH and LH**",
+     "then": "Anorexia nervosa"
+    },
+    {
+     "opt": "D",
+     "if": "**Bilateral galactorrhea** with **visual field cut** and prolactin 160",
+     "then": "Hyperprolactinemia"
+    }
+   ]
   },
   "795711": {
    "task": "Prevention",
-   "boardCall": "Prior DVT + poor daily pill adherence -> depot medroxyprogesterone injection",
-   "hinge": "Prior DVT contraindicates estrogen; progestin-only injection every 3 months avoids daily adherence issues and estrogen thrombotic risk.",
+   "boardCall": "**prior DVT** + **forgets daily pills** + recent chlamydia → Depot medroxyprogesterone",
+   "hinge": "Previous thromboembolism contraindicates estrogen, and three-monthly progestin injections solve daily pill nonadherence.",
    "trap": "Combined oral contraceptives and vaginal ring contain estrogen, which is absolutely contraindicated with prior venous thromboembolism.",
    "options": {
     "A": {
@@ -4215,12 +4505,34 @@
      "text": "difficulty remembering to take daily medications"
     }
    ],
-   "topic": "contraception"
+   "topic": "contraception",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Monogamous woman** with **no recent STI** wanting long-acting method",
+     "then": "Placement of an IUD"
+    },
+    {
+     "opt": "C",
+     "if": "**40-year-old certain** she wants **no future pregnancies**",
+     "then": "Laparoscopic tubal ligation"
+    },
+    {
+     "opt": "A",
+     "if": "**No DVT history**, forgets daily pills, **prefers monthly ring**",
+     "then": "Vaginal contraceptive ring"
+    },
+    {
+     "opt": null,
+     "if": "**Prior DVT** wanting **3-year reversible progestin implant**",
+     "then": "Etonogestrel subdermal implant"
+    }
+   ]
   },
   "795712": {
    "task": "Next step",
-   "boardCall": "Fundal IUD + intramural fibroid without cavity distortion -> leave IUD in place + counsel",
-   "hinge": "An intramural fibroid that does not distort the endometrial cavity does not compromise IUD efficacy; leave in place.",
+   "boardCall": "copper IUD + visible string + **4-cm intramural fibroid** + **normal uterine cavity** → Leave IUD in place and counsel",
+   "hinge": "Non-distorting intramural fibroids preserve intrauterine device efficacy, making removal unnecessary.",
    "trap": "A 4-cm fibroid tempts IUD removal or surgical myomectomy, but non-distorting asymptomatic fibroids require no intervention.",
    "options": {
     "A": {
@@ -4308,12 +4620,29 @@
      "text": "endometrial cavity is normal in size"
     }
    ],
-   "topic": "contraception"
+   "topic": "contraception",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**IUD displaced into cervix** with **partial expulsion**",
+     "then": "Remove the IUD"
+    },
+    {
+     "opt": "C",
+     "if": "**Submucosal fibroid** causing **recurrent pregnancy loss** or severe anemia",
+     "then": "Remove IUD and fibroid"
+    },
+    {
+     "opt": null,
+     "if": "**Positive pregnancy test** with **IUD in place**",
+     "then": "Rule out ectopic; remove IUD"
+    }
+   ]
   },
   "795713": {
    "task": "Next step",
-   "boardCall": "16-year-old requesting contraception alone -> prescribe oral contraceptive",
-   "hinge": "Title X and state laws allow confidential contraceptive access for minors without parental consent or invasive exams.",
+   "boardCall": "16-year-old alone + **requests contraception** + **normal exam** → Prescribe low-dose oral contraceptive",
+   "hinge": "Adolescents can confidentially access oral contraception without parental consent or pelvic exams.",
    "trap": "Routine pelvic examination or parental notification is not required before prescribing combined oral contraceptives to healthy adolescents.",
    "options": {
     "A": {
@@ -4402,12 +4731,29 @@
      "text": "Menses occur at regular 28-day intervals"
     }
    ],
-   "topic": "adolescent-confidentiality-and-care"
+   "topic": "adolescent-confidentiality-and-care",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Already sexually active** adolescent presenting for **routine care**",
+     "then": "Test for Chlamydia and gonorrhea"
+    },
+    {
+     "opt": "A",
+     "if": "**Adolescent unsure** and **declines starting contraception today**",
+     "then": "Provide information on contraception only"
+    },
+    {
+     "opt": null,
+     "if": "**Acute vaginal discharge** or **pelvic pain** at visit",
+     "then": "Perform pelvic examination"
+    }
+   ]
   },
   "795714": {
    "task": "Mechanism",
-   "boardCall": "Postmenopausal urinary frequency + negative urine cultures -> decreased estradiol production",
-   "hinge": "Estrogen receptors populate the bladder trigone and urethra; postmenopausal estradiol loss causes genitourinary syndrome of menopause.",
+   "boardCall": "68-year-old + **dysuria and frequency** + **negative urine cultures** → Estradiol",
+   "hinge": "Postmenopausal estrogen loss thins urogenital mucosa, causing sterile urinary urgency and dysuria.",
    "trap": "Negative cultures rule out recurrent bacterial UTI; progesterone does not maintain urogenital mucosal integrity.",
    "options": {
     "A": {
@@ -4489,12 +4835,29 @@
      "text": "Several urine cultures have been negative"
     }
    ],
-   "topic": "menopause"
+   "topic": "menopause",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Irregular heavy bleeding** from **unopposed endometrial estrogen**",
+     "then": "Progesterone"
+    },
+    {
+     "opt": "E",
+     "if": "**Low libido** and **fatigue after bilateral oophorectomy**",
+     "then": "Testosterone"
+    },
+    {
+     "opt": null,
+     "if": "**Nocturia and polyuria** with **dilute urine**",
+     "then": "Antidiuretic hormone"
+    }
+   ]
   },
   "795715": {
    "task": "Diagnosis",
-   "boardCall": "Infertility + dysmenorrhea + dyspareunia + normal HSG -> pelvic endometriosis",
-   "hinge": "Subfertility accompanied by dysmenorrhea and dyspareunia with otherwise normal basic fertility workup indicates endometriosis.",
+   "boardCall": "18-mo infertility + **dysmenorrhea and dyspareunia** + **normal HSG and semen** → Endometriosis",
+   "hinge": "Painful menses and intercourse with patent tubes point to peritoneal endometriotic implants.",
    "trap": "Normal hysterosalpingography demonstrates patent tubes, but fails to visualize peritoneal endometriotic implants.",
    "options": {
     "A": {
@@ -4580,12 +4943,34 @@
      "text": "in-phase endometrial biopsy, and hysterosalpingography, shows no abnormalities"
     }
    ],
-   "topic": "endometriosis"
+   "topic": "endometriosis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Galactorrhea and oligomenorrhea** with **irregular LH surges**",
+     "then": "Hyperprolactinemia"
+    },
+    {
+     "opt": "E",
+     "if": "**Prior PID** with **bilateral tubal occlusion** on HSG",
+     "then": "Pelvic adhesions"
+    },
+    {
+     "opt": "C",
+     "if": "**Anovulatory cycles and weight gain** with **elevated TSH**",
+     "then": "Hypothyroidism"
+    },
+    {
+     "opt": null,
+     "if": "**Mild endometriosis** confirmed on **diagnostic laparoscopy**",
+     "then": "Excise or ablate implants"
+    }
+   ]
   },
   "795716": {
    "task": "Next step",
-   "boardCall": "14-year-old + Tanner 4 + nausea and fatigue -> urine pregnancy test",
-   "hinge": "Pregnancy must be excluded first before any amenorrhea or endocrine evaluation, even in an adolescent claiming no menses.",
+   "boardCall": "14-year-old + **no menses yet** + Tanner 4 + **nausea and fatigue** → Pregnancy test",
+   "hinge": "Ovulation precedes first menstruation, so pregnancy must be excluded before endocrine testing.",
    "trap": "Patient reports never having had a period, but ovulation precedes menarche; pregnancy test is mandatory before endocrine labs.",
    "options": {
     "A": {
@@ -4674,12 +5059,29 @@
      "text": "Breast development is Tanner stage 4"
     }
    ],
-   "topic": "routine-prenatal-care"
+   "topic": "routine-prenatal-care",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Negative β-hCG** with **primary amenorrhea at age 15**",
+     "then": "Serum FSH and LH"
+    },
+    {
+     "opt": "E",
+     "if": "**Negative β-hCG** with **normal FSH, TSH, prolactin**",
+     "then": "Progesterone challenge test"
+    },
+    {
+     "opt": null,
+     "if": "**Bluish bulging hymen** with **cyclic lower abdominal pain**",
+     "then": "Imperforate hymen"
+    }
+   ]
   },
   "795717": {
    "task": "Next step",
-   "boardCall": "Heavy regular menses + completed childbearing + prior DVT -> endometrial ablation",
-   "hinge": "Prior DVT contraindicates estrogen; completed childbearing and normal uterine cavity make endometrial ablation an ideal procedure.",
+   "boardCall": "42-year-old + **refractory menorrhagia** + **prior DVT** + done childbearing → Endometrial ablation",
+   "hinge": "Prior thrombosis precludes estrogen; ablation treats bleeding definitively after childbearing.",
    "trap": "Combined oral contraceptives are contraindicated due to prior DVT; copper IUD increases menstrual bleeding and pain.",
    "options": {
     "A": {
@@ -4763,12 +5165,29 @@
      "text": "Pelvic ultrasonography shows a normal uterus"
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**No DVT history and nonsmoker** while **desiring future pregnancy**",
+     "then": "Combination oral contraceptive"
+    },
+    {
+     "opt": "E",
+     "if": "**Multiple large uterine fibroids** with **completed childbearing**",
+     "then": "Uterine artery embolization"
+    },
+    {
+     "opt": null,
+     "if": "**Age 42 with heavy bleeding** before **endometrial ablation**",
+     "then": "Perform endometrial biopsy first"
+    }
+   ]
   },
   "795718": {
    "task": "Next step",
-   "boardCall": "Postmenopausal bleeding + 12-week-sized irregular uterus -> endometrial biopsy",
-   "hinge": "Any postmenopausal vaginal bleeding mandates prompt endometrial biopsy to rule out endometrial carcinoma.",
+   "boardCall": "**6 yr postmenopause** + **heavy vaginal bleeding** + 12-wk uterus + Hb 9 → Endometrial biopsy",
+   "hinge": "Postmenopausal uterine bleeding requires immediate tissue sampling to rule out adenocarcinoma.",
    "trap": "Hemoglobin 9 g/dL does not require packed red cell transfusion in a hemodynamically stable patient.",
    "options": {
     "A": {
@@ -4856,12 +5275,34 @@
      "trap": true
     }
    ],
-   "topic": "endometrial-cancer"
+   "topic": "endometrial-cancer",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Hemoglobin 6.4** with **orthostatic hypotension** and tachycardia",
+     "then": "Packed RBC transfusion"
+    },
+    {
+     "opt": "E",
+     "if": "**Biopsy confirms endometrial adenocarcinoma** without **distant spread**",
+     "then": "Hysterectomy and staging"
+    },
+    {
+     "opt": "B",
+     "if": "**Preoperative fibroid mapping** before **planned myomectomy**",
+     "then": "MRI of the pelvis"
+    },
+    {
+     "opt": null,
+     "if": "**Biopsy nondiagnostic** with **endometrial stripe > 4 mm**",
+     "then": "Hysteroscopy with D&C"
+    }
+   ]
   },
   "795719": {
    "task": "Next step",
-   "boardCall": "Frail elderly woman + reducible uterine prolapse -> insertion of a vaginal pessary",
-   "hinge": "A reducible pelvic organ prolapse in a frail elderly patient with significant comorbidities is managed conservatively with a pessary.",
+   "boardCall": "87-year-old + dementia + **reducible cervical prolapse** + **no ulceration** → Insertion of a vaginal pessary",
+   "hinge": "Frail elderly patients with reducible prolapse are safely managed with a pessary.",
    "trap": "Surgical repair carries operative risk and is reserved for failed pessary trials or ulcerated prolapse.",
    "options": {
     "A": {
@@ -4943,12 +5384,29 @@
      "text": "no cervical ulceration"
     }
    ],
-   "topic": "pelvic-organ-prolapse"
+   "topic": "pelvic-organ-prolapse",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Healthy 62-year-old** failing pessary with **symptomatic prolapse**",
+     "then": "Vaginal hysterectomy"
+    },
+    {
+     "opt": "A",
+     "if": "**Palpable adnexal mass** alongside **pelvic prolapse**",
+     "then": "Pelvic ultrasonography"
+    },
+    {
+     "opt": null,
+     "if": "**Anterior prolapse** causing **urinary retention**",
+     "then": "Check postvoid residual"
+    }
+   ]
   },
   "795720": {
    "task": "Diagnosis",
-   "boardCall": "Postpartum hemorrhage + lactation failure + hypothyroidism -> panhypopituitarism (Sheehan syndrome)",
-   "hinge": "Ischemic necrosis of the hypertrophied anterior pituitary following postpartum hemorrhage causes panhypopituitarism.",
+   "boardCall": "**postpartum hemorrhage** + **lactation failure** + amenorrhea + cold intolerance → ⬇ ⬇ ⬇ ⬇ ⬇",
+   "hinge": "Pituitary infarction after obstetric hemorrhage causes panhypopituitarism, lowering all anterior trophic hormones.",
    "trap": "Primary hypothyroidism causes elevated TSH, but Sheehan syndrome destroys the pituitary, leading to low TSH with low T4.",
    "options": {
     "A": {
@@ -5037,12 +5495,29 @@
      "text": "Menses have not resumed"
     }
    ],
-   "topic": "hypopituitarism"
+   "topic": "hypopituitarism",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Cushing disease** with **ACTH-secreting pituitary adenoma**",
+     "then": "⬆ normal normal normal normal"
+    },
+    {
+     "opt": "D",
+     "if": "**Functional hypothalamic amenorrhea** with **isolated low LH and FSH**",
+     "then": "Normal normal ⬇ ⬇ normal"
+    },
+    {
+     "opt": "B",
+     "if": "**Isolated corticotrope and thyrotrope loss** sparing **gonadotropins and GH**",
+     "then": "⬇ ⬇ normal normal normal"
+    }
+   ]
   },
   "795721": {
    "task": "Screening",
-   "boardCall": "Preconception Tay-Sachs counseling + French-Canadian ancestry -> test wife first; stop if negative",
-   "hinge": "Autosomal recessive screening starts with the partner from a high-risk group; if negative, offspring have negligible disease risk.",
+   "boardCall": "preconception Tay-Sachs + **French-Canadian wife** + **non-Ashkenazi husband** → Test wife first; stop if negative",
+   "hinge": "Carrier screening tests the higher-risk partner first; negative results mean negligible risk.",
    "trap": "If the first partner tests positive, the other partner must be tested; testing only stops if the first partner is negative.",
    "options": {
     "A": {
@@ -5120,7 +5595,24 @@
      "text": "risk for having a child with Tay-Sachs disease"
     }
    ],
-   "topic": "carrier-screening"
+   "topic": "carrier-screening",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Both parents** of **low-risk Northern European ancestry**",
+     "then": "No testing is indicated"
+    },
+    {
+     "opt": "A",
+     "if": "**Ashkenazi Jewish husband** and **low-risk non-carrier ethnicity wife**",
+     "then": "Test husband first"
+    },
+    {
+     "opt": null,
+     "if": "**Wife tests positive** as **Tay-Sachs carrier**",
+     "then": "Test husband next"
+    }
+   ]
   }
  },
  "topics": {
@@ -8775,5 +9267,5 @@
    "evidence": "Checked 2026-10-30: [AHA/ACC PE (2026)](https://www.jacc.org/doi/10.1016/j.jacc.2025.11.005), [ASH diagnosis (2018)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6258916/)."
   }
  },
- "updatedAt": "2026-11-23T05:02:05Z"
+ "updatedAt": "2026-11-23T10:13:17Z"
 }

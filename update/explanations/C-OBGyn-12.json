@@ -2724,8 +2724,8 @@
   },
   "C-OBGyn-12:Q026": {
    "task": "Diagnosis",
-   "boardCall": "37 weeks + BP 150/110 + 2+ protein + FGR (8th percentile) -> placental infarction.",
-   "hinge": "Severe preeclampsia causes spiral artery vasospasm and uteroplacental ischemia, resulting in villous necrosis (placental infarction) and FGR.",
+   "boardCall": "37 weeks + **BP 150/110** + blurred vision + 2+ protein + **EFW 8th percentile** → Infarction",
+   "hinge": "Poorly remodeled spiral arteries starve villi, causing ischemic necrosis and growth lag.",
    "trap": "2.3-kg weight gain and pedal edema pull toward placental edema, whereas ischemia causes infarction.",
    "options": {
     "A": {
@@ -2811,12 +2811,34 @@
      "text": "Urinalysis shows 2+ protein"
     }
    ],
-   "topic": "hypertensive-disorders-of-pregnancy"
+   "topic": "hypertensive-disorders-of-pregnancy",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Sudden painful bleeding** with tender rigid uterus",
+     "then": "Hemorrhage"
+    },
+    {
+     "opt": "B",
+     "if": "**Fetal hydrops** from Rh alloimmunization",
+     "then": "Edema"
+    },
+    {
+     "opt": "A",
+     "if": "**Prior cesarean** with placenta not separating",
+     "then": "Adhesions"
+    },
+    {
+     "opt": "D",
+     "if": "**Poorly controlled diabetes**, large-for-dates fetus",
+     "then": "Hypertrophy"
+    }
+   ]
   },
   "C-OBGyn-12:Q027": {
    "task": "Risk factor",
-   "boardCall": "Chronic HTN + fundal height 27 cm at 32 wk + AC < 3rd percentile -> chronic hypertension.",
-   "hinge": "Asymmetric fetal growth restriction with low abdominal circumference and normal head/femur percentiles reflects uteroplacental insufficiency from chronic hypertension.",
+   "boardCall": "32 weeks + **chronic HTN on labetalol** + fundal height 27 cm + **AC <3rd percentile, head spared** + low AFI → Chronic hypertension",
+   "hinge": "Head-sparing growth lag with low fluid points to placental insufficiency.",
    "trap": "Comorbid gestational diabetes or short maternal height (5 ft) pulls toward diabetes or parental stature.",
    "options": {
     "A": {
@@ -2897,12 +2919,34 @@
      "text": "Estimated fetal weight < 5th percentile"
     }
    ],
-   "topic": "fetal-growth-restriction"
+   "topic": "fetal-growth-restriction",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Poor glucose control**, **AC above 90th percentile**",
+     "then": "Gestational diabetes"
+    },
+    {
+     "opt": "D",
+     "if": "**Symmetric small fetus**, normal Dopplers and fluid",
+     "then": "Parental stature"
+    },
+    {
+     "opt": "C",
+     "if": "EFW **above 10th percentile**, normal fluid",
+     "then": "Normal fetal growth"
+    },
+    {
+     "opt": null,
+     "if": "**Symmetric FGR before 20 weeks** with anomalies",
+     "then": "Aneuploidy or congenital infection"
+    }
+   ]
   },
   "C-OBGyn-12:Q028": {
    "task": "Next step",
-   "boardCall": "Severe preeclampsia + failed induction (closed cervix) + late decelerations -> cesarean delivery.",
-   "hinge": "Nonreassuring fetal heart tracing with late decelerations and minimal variability in severe preeclampsia with a closed cervix requires prompt cesarean delivery.",
+   "boardCall": "37 weeks + severe preeclampsia + FGR + **cervix closed after 2 h** + **nonreassuring tracing** → Cesarean delivery",
+   "hinge": "An unfavorable cervix leaves a compromised fetus hours from vaginal birth.",
    "trap": "Unchanged closed cervix after 2 hours of oxytocin pulls toward Foley cervical ripening, which delays urgent delivery.",
    "options": {
     "A": {
@@ -2977,12 +3021,35 @@
      "text": "fetus to be at the 5th percentile"
     }
    ],
-   "topic": "hypertensive-disorders-of-pregnancy"
+   "topic": "hypertensive-disorders-of-pregnancy",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Category I tracing** with unfavorable cervix",
+     "then": "Intracervical Foley balloon"
+    },
+    {
+     "opt": "A",
+     "if": "**Single transient deceleration** that resolves with repositioning",
+     "then": "Oxygen to the mother"
+    },
+    {
+     "opt": "B",
+     "if": "**Reassuring tracing**, **cervix dilating** on oxytocin",
+     "then": "Continue observation"
+    },
+    {
+     "opt": null,
+     "if": "**Seizure** during induction",
+     "then": "Magnesium bolus",
+     "step": "deliver once stabilized"
+    }
+   ]
   },
   "C-OBGyn-12:Q029": {
    "task": "Pharmacology",
-   "boardCall": "Pregnant + prior OCP-associated DVT (negative thrombophilia) -> low-molecular-weight heparin.",
-   "hinge": "Prior estrogen-associated DVT carries high recurrence risk in pregnancy and requires prophylactic LMWH, which does not cross the placenta.",
+   "boardCall": "9 weeks pregnant + **prior DVT on estrogen OCP** + negative thrombophilia workup → Low-molecular-weight heparin",
+   "hinge": "Hormone-provoked clots recur in pregnancy; LMWH does not cross the placenta.",
    "trap": "Negative thrombophilia testing pulls toward no pharmacotherapy, whereas estrogen-provoked VTE still warrants antepartum prophylaxis.",
    "options": {
     "A": {
@@ -3068,12 +3135,36 @@
      "trap": true
     }
    ],
-   "topic": "venous-thromboembolism"
+   "topic": "venous-thromboembolism",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "Prior DVT from **surgery or trauma** only",
+     "then": "No antepartum pharmacotherapy",
+     "step": "give postpartum prophylaxis"
+    },
+    {
+     "opt": "E",
+     "if": "**Postpartum** and breast-feeding",
+     "then": "Warfarin"
+    },
+    {
+     "opt": "A",
+     "if": "**Not pregnant**, new DVT",
+     "then": "Apixaban"
+    },
+    {
+     "opt": "B",
+     "if": "**High preeclampsia risk**, no VTE history",
+     "then": "Aspirin",
+     "step": "start at 12–16 weeks"
+    }
+   ]
   },
   "C-OBGyn-12:Q030": {
    "task": "Next step",
-   "boardCall": "Completed childbearing + estrogen migraines + bicornuate uterus -> laparoscopic tubal ligation.",
-   "hinge": "Permanent nonhormonal sterilization via laparoscopic tubal ligation fits a patient who wants no more children and has estrogen migraines.",
+   "boardCall": "G3P3 + **wants no more children** + migraines on estrogen + **bicornuate uterus** → Laparoscopic tubal ligation",
+   "hinge": "Permanent, hormone-free, and cavity-independent fits every constraint.",
    "trap": "Bicornuate uterus and desire for reliable contraception pull toward progestin IUD, which is temporary and difficult to place in bicornuate anatomy.",
    "options": {
     "A": {
@@ -3151,12 +3242,34 @@
      "text": "oral contraceptive, which caused frequent migraines"
     }
    ],
-   "topic": "contraception"
+   "topic": "contraception",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**May want future children**, normal uterine cavity",
+     "then": "Progestin IUD"
+    },
+    {
+     "opt": "B",
+     "if": "**No migraines**, desires reversible method",
+     "then": "Combination oral contraceptive"
+    },
+    {
+     "opt": "A",
+     "if": "No migraines, **trouble taking daily pills**",
+     "then": "Combination contraceptive patch"
+    },
+    {
+     "opt": null,
+     "if": "**Husband** opts for permanent method",
+     "then": "Vasectomy"
+    }
+   ]
   },
   "C-OBGyn-12:Q031": {
    "task": "Next step",
-   "boardCall": "46,XX newborn + ambiguous genitalia -> 17alpha-hydroxyprogesterone.",
-   "hinge": "46,XX virilization is most commonly caused by 21-hydroxylase deficiency CAH, diagnosed by elevated 17alpha-hydroxyprogesterone.",
+   "boardCall": "term newborn + **ambiguous genitalia** + **46,XX** + no maternal androgen exposure → 17α-Hydroxyprogesterone",
+   "hinge": "Virilized XX infants most often have 21-hydroxylase deficiency.",
    "trap": "Virilization and adrenal steroid deficiency pull toward cortisol or testosterone, which are less specific than 17alpha-hydroxyprogesterone.",
    "options": {
     "A": {
@@ -3231,12 +3344,35 @@
      "text": "mother did not receive prenatal care"
     }
    ],
-   "topic": "congenital-adrenal-hyperplasia"
+   "topic": "congenital-adrenal-hyperplasia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**46,XY** with ambiguous genitalia, normal testosterone",
+     "then": "5α-Dihydrotestosterone",
+     "step": "testosterone-to-DHT ratio"
+    },
+    {
+     "opt": "E",
+     "if": "**46,XY**, undervirilized, suspected androgen synthesis defect",
+     "then": "Testosterone"
+    },
+    {
+     "opt": null,
+     "if": "**Vomiting**, **Na low, K high** at 2 weeks",
+     "then": "Salt-wasting adrenal crisis"
+    },
+    {
+     "opt": null,
+     "if": "**Maternal virilization** during pregnancy",
+     "then": "Placental aromatase deficiency or luteoma"
+    }
+   ]
   },
   "C-OBGyn-12:Q032": {
    "task": "Screening",
-   "boardCall": "38-year-old at 11 weeks' gestation -> cell-free DNA aneuploidy screening.",
-   "hinge": "Cell-free DNA is the most sensitive and specific first-line aneuploidy screen starting at 10 weeks, especially with advanced maternal age.",
+   "boardCall": "**age 38** + primigravida + **11 weeks** + first visit → Cell-free DNA",
+   "hinge": "From 10 weeks, cfDNA detects trisomy 21 better than any screen.",
    "trap": "11-week first-trimester visit pulls toward PAPP-A, which is less accurate than cell-free DNA.",
    "options": {
     "A": {
@@ -3312,12 +3448,34 @@
      "text": "first prenatal visit"
     }
    ],
-   "topic": "routine-prenatal-care"
+   "topic": "routine-prenatal-care",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**cfDNA declined**, first-trimester combined screen wanted",
+     "then": "Serum PAPP-A"
+    },
+    {
+     "opt": "B",
+     "if": "Patient is **18–22 weeks**",
+     "then": "Fetal anatomy ultrasonography"
+    },
+    {
+     "opt": "D",
+     "if": "**15–22 weeks**, neural tube defect screen",
+     "then": "Maternal serum α-fetoprotein"
+    },
+    {
+     "opt": null,
+     "if": "**cfDNA positive** at 12 weeks",
+     "then": "Chorionic villus sampling"
+    }
+   ]
   },
   "C-OBGyn-12:Q033": {
    "task": "Prevention",
-   "boardCall": "Prior GBS UTI in pregnancy -> intrapartum antibiotic prophylaxis at onset of labor.",
-   "hinge": "GBS bacteriuria at any time during pregnancy indicates heavy colonization and mandates intrapartum antibiotics regardless of repeat cultures.",
+   "boardCall": "28 weeks + **GBS UTI this pregnancy** + treated with amoxicillin + now asymptomatic → Intrapartum antibiotics at labor onset",
+   "hinge": "GBS bacteriuria marks heavy colonization that treatment does not clear.",
    "trap": "Asymptomatic status after amoxicillin pulls toward waiting for a repeat third-trimester urine culture.",
    "options": {
     "A": {
@@ -3393,12 +3551,34 @@
      "text": "28-week gestation"
     }
    ],
-   "topic": "group-b-streptococcus-prophylaxis"
+   "topic": "group-b-streptococcus-prophylaxis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Unknown GBS status**, labor before 37 weeks",
+     "then": "Antibiotics if delivery is preterm"
+    },
+    {
+     "opt": "D",
+     "if": "Unknown status at term, **ROM 18 h or more**",
+     "then": "Antibiotics if fever or prolonged ROM"
+    },
+    {
+     "opt": null,
+     "if": "**Planned cesarean**, no labor, intact membranes",
+     "then": "No GBS prophylaxis needed"
+    },
+    {
+     "opt": null,
+     "if": "**Anaphylaxis to penicillin**",
+     "then": "Clindamycin if susceptible, else vancomycin"
+    }
+   ]
   },
   "C-OBGyn-12:Q034": {
    "task": "Mechanism",
-   "boardCall": "Labor FHR baseline 140 + intermittent accelerations 20/min above baseline -> fetal activity.",
-   "hinge": "Fetal heart rate accelerations are a reassuring sympathetic response to fetal movement, indicating intact oxygenation.",
+   "boardCall": "term labor + 5 cm + baseline 140 + no decelerations + **accelerations 20 beats above baseline** → Fetal activity",
+   "hinge": "Movement triggers sympathetic surges; accelerations prove an oxygenated, nonacidotic fetus.",
    "trap": "Recent IV meperidine or active uterine contractions pull toward drug effect or contractions as the cause.",
    "options": {
     "A": {
@@ -3473,12 +3653,34 @@
      "text": "intermittent accelerations of 20/min above the baseline"
     }
    ],
-   "topic": "intrapartum-fetal-monitoring"
+   "topic": "intrapartum-fetal-monitoring",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Reduced variability** shortly after IV opioid",
+     "then": "Action of meperidine"
+    },
+    {
+     "opt": "C",
+     "if": "**Abrupt V-shaped drops** with contractions",
+     "then": "Intermittent umbilical cord compression"
+    },
+    {
+     "opt": "E",
+     "if": "**Late decelerations** after each contraction peak",
+     "then": "Uteroplacental insufficiency"
+    },
+    {
+     "opt": "D",
+     "if": "**Early decelerations** mirroring each contraction",
+     "then": "Head compression during contractions"
+    }
+   ]
   },
   "C-OBGyn-12:Q035": {
    "task": "Prognosis",
-   "boardCall": "Immediate postpartum dyspnea + cyanosis + BP 50/30 + JVD + S3 -> cardiopulmonary collapse.",
-   "hinge": "Amniotic fluid embolism causes sudden pulmonary vasoconstriction and acute right heart failure, making cardiopulmonary collapse the immediate cause of death.",
+   "boardCall": "right after delivery + dyspnea, cyanosis + **BP 50/30** + **JVD, S3** + Po2 55 + new RBBB → Cardiopulmonary collapse",
+   "hinge": "Acute right heart failure kills within minutes, before coagulopathy develops.",
    "trap": "Amniotic fluid embolism also triggers DIC and hemorrhage, which occur after the initial cardiopulmonary collapse.",
    "options": {
     "A": {
@@ -3563,12 +3765,34 @@
      "text": "Po2 of 55 mm Hg"
     }
    ],
-   "topic": "amniotic-fluid-embolism"
+   "topic": "amniotic-fluid-embolism",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "Survives first hour, **oozing from IV sites**",
+     "then": "Disseminated intravascular coagulation"
+    },
+    {
+     "opt": "E",
+     "if": "Stabilized, then **boggy uterus with nonclotting blood**",
+     "then": "Massive hemorrhage"
+    },
+    {
+     "opt": "C",
+     "if": "Survives with **new focal weakness**",
+     "then": "Cerebral infarction"
+    },
+    {
+     "opt": "A",
+     "if": "**Prolonged shock**, rising creatinine over days",
+     "then": "Acute renal failure"
+    }
+   ]
   },
   "C-OBGyn-12:Q036": {
    "task": "Next step",
-   "boardCall": "14-year-old + 6-week spotting after starting OCP -> urine beta-hCG.",
-   "hinge": "Any reproductive-aged female with abnormal uterine bleeding must have pregnancy excluded first with beta-hCG, even on contraception.",
+   "boardCall": "14-year-old + **OCP for 2 months** + **6 weeks of spotting** + bleeding from os → Urine β-hCG",
+   "hinge": "Pregnancy is excluded first in any adolescent bleeding, even on contraception.",
    "trap": "6-week spotting after starting OCPs pulls toward reassuring breakthrough bleeding or checking CBC without ruling out pregnancy first.",
    "options": {
     "A": {
@@ -3647,12 +3871,34 @@
      "text": "bleeding in the cervical os and a normal uterus"
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Heavy bleeding** with dizziness, hCG negative",
+     "then": "Complete blood count"
+    },
+    {
+     "opt": null,
+     "if": "**Friable cervix** or new partner, hCG negative",
+     "then": "Chlamydia/gonorrhea NAAT"
+    },
+    {
+     "opt": "E",
+     "if": "**Painful vesicles** on vulva or cervix",
+     "then": "Culture for herpes simplex"
+    },
+    {
+     "opt": "D",
+     "if": "**Amenorrhea off OCPs**, hot flashes",
+     "then": "Serum FSH"
+    }
+   ]
   },
   "C-OBGyn-12:Q037": {
    "task": "Diagnosis",
-   "boardCall": "Regular heavy menses + 6-wk uterus + 2-cm intracavitary convex mass -> leiomyoma uteri.",
-   "hinge": "Regular heavy menses with anemia and a 2-cm smooth convex mass distorting the endometrial cavity on sonohysterography is a submucosal leiomyoma.",
+   "boardCall": "42-year-old + **regular heavy menses** + Hb 10.3 + 6-week uterus + **2-cm smooth convex cavity mass** → Leiomyoma uteri",
+   "hinge": "A discrete myometrial mass bulging into the cavity is a submucosal fibroid.",
    "trap": "Heterogeneous myometrial echogenicity pulls toward adenomyosis, which causes a diffusely enlarged tender uterus rather than a discrete mass.",
    "options": {
     "A": {
@@ -3727,12 +3973,34 @@
      "trap": true
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Diffusely boggy tender** uterus, **dysmenorrhea**, no discrete mass",
+     "then": "Adenomyosis"
+    },
+    {
+     "opt": "D",
+     "if": "**Intermenstrual spotting**, **stalk-like** echogenic cavity lesion",
+     "then": "Endometrial polyp"
+    },
+    {
+     "opt": "B",
+     "if": "**Irregular unpredictable** cycles, normal cavity",
+     "then": "Anovulatory bleeding"
+    },
+    {
+     "opt": "C",
+     "if": "**Postmenopausal** bleeding, thick endometrium",
+     "then": "Endometrial cancer"
+    }
+   ]
   },
   "C-OBGyn-12:Q038": {
    "task": "Next step",
-   "boardCall": "16-year-old + primary amenorrhea + stage 3 breasts + absent pubic hair -> pelvic ultrasonography.",
-   "hinge": "Primary amenorrhea with breast development and absent pubic/axillary hair requires pelvic ultrasonography first to check for a uterus and ovaries.",
+   "boardCall": "16-year-old + primary amenorrhea + **breasts stage 3** + **no pubic or axillary hair** + tall → Pelvic ultrasonography",
+   "hinge": "Breasts without androgen-driven hair suggest AIS; first confirm whether a uterus exists.",
    "trap": "Concern for internal anatomy pulls toward pelvic MRI or laparoscopy, which are more expensive or invasive than first-line ultrasonography.",
    "options": {
     "A": {
@@ -3811,12 +4079,34 @@
      "text": "no axillary or pubic hair"
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Ultrasound inconclusive** for Müllerian structures",
+     "then": "Pelvic MRI"
+    },
+    {
+     "opt": "A",
+     "if": "**Cyclic pain**, endometriosis suspected despite normal imaging",
+     "then": "Diagnostic laparoscopy"
+    },
+    {
+     "opt": null,
+     "if": "**Uterus absent** on ultrasound",
+     "then": "Karyotype and serum testosterone"
+    },
+    {
+     "opt": null,
+     "if": "**No breast development**, short stature",
+     "then": "Serum FSH and LH"
+    }
+   ]
   },
   "C-OBGyn-12:Q039": {
    "task": "Next step",
-   "boardCall": "Uncomplicated pregnancy at 28 weeks + Rh-positive -> 1-hour glucose tolerance test.",
-   "hinge": "Universal gestational diabetes screening with a 1-hour oral glucose tolerance test is performed at 24-28 weeks' gestation.",
+   "boardCall": "28 weeks + uncomplicated + **Rh-positive** + fundal height matches + STIs negative → 1-Hour glucose tolerance test",
+   "hinge": "Universal diabetes screening falls in this window, whatever the risk profile.",
    "trap": "28-week gestation pulls toward Rho(D) immune globulin or GBS culture, which are for Rh-negative patients or 35-37 weeks.",
    "options": {
     "A": {
@@ -3892,12 +4182,34 @@
      "text": "maternal blood group is O, Rh-positive"
     }
    ],
-   "topic": "routine-prenatal-care"
+   "topic": "routine-prenatal-care",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "Mother is **Rh-negative**, antibody screen negative",
+     "then": "Rho(D) immune globulin"
+    },
+    {
+     "opt": "A",
+     "if": "Visit at **36–37 weeks**",
+     "then": "GBS culture"
+    },
+    {
+     "opt": "C",
+     "if": "**Fundal height 3 cm or more below** dates",
+     "then": "Ultrasonography for fetal growth"
+    },
+    {
+     "opt": "B",
+     "if": "**Decreased fetal movement**",
+     "then": "Fetal nonstress test"
+    }
+   ]
   },
   "C-OBGyn-12:Q040": {
    "task": "Diagnosis",
-   "boardCall": "Switched to pumping + unilateral firm tender breast + no erythema -> milk duct obstruction.",
-   "hinge": "Incomplete milk drainage causing focal unilateral firmness and tenderness without erythema or high fever indicates a plugged milk duct.",
+   "boardCall": "1 month postpartum + switched to pumping + **less output on left** + focal firm tender area + **no redness** → Milk duct obstruction",
+   "hinge": "Incomplete emptying plugs one duct; no erythema or high fever excludes infection.",
    "trap": "Temperature of 37.8 C (100 F) and breast tenderness pull toward mastitis, which presents with erythema and systemic illness.",
    "options": {
     "A": {
@@ -3982,12 +4294,34 @@
      "text": "no redness or masses are noted"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Wedge of erythema**, **fever above 38.3°C**",
+     "then": "Mastitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Both breasts** hard and swollen, days 2–5 postpartum",
+     "then": "Breast engorgement"
+    },
+    {
+     "opt": "C",
+     "if": "**Painless cystic mass** of milk",
+     "then": "Galactocele"
+    },
+    {
+     "opt": null,
+     "if": "**Fluctuant mass** with fever despite antibiotics",
+     "then": "Breast abscess"
+    }
+   ]
   },
   "C-OBGyn-12:Q041": {
    "task": "Diagnosis",
-   "boardCall": "Frothy discharge + strawberry cervix (petechiae) + pH 5 -> Trichomonas vaginalis.",
-   "hinge": "Frothy purulent vaginal discharge with vaginal pH > 4.5 and cervical petechiae (strawberry cervix) is diagnostic of Trichomonas vaginalis.",
+   "boardCall": "16-year-old + 2 partners + **frothy foul discharge** + **cervical petechiae** + pH 5 → Trichomonas vaginalis",
+   "hinge": "Inflamed, petechial mucosa separates trichomoniasis from noninflammatory BV.",
    "trap": "Foul-smelling discharge with pH 5 pulls toward Gardnerella vaginalis (BV), which lacks vaginal erythema and cervical petechiae.",
    "options": {
     "A": {
@@ -4076,12 +4410,34 @@
      "text": "pH of the discharge is 5"
     }
    ],
-   "topic": "vaginitis"
+   "topic": "vaginitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Thin gray discharge**, **clue cells**, no inflammation",
+     "then": "Gardnerella vaginalis"
+    },
+    {
+     "opt": "A",
+     "if": "**Thick white discharge**, **pH 4.5 or less**",
+     "then": "Candida albicans"
+    },
+    {
+     "opt": "E",
+     "if": "**Mucopurulent cervicitis**, normal vaginal pH",
+     "then": "Neisseria gonorrhoeae"
+    },
+    {
+     "opt": "C",
+     "if": "**Painless exophytic warts** on cervix",
+     "then": "Human papillomavirus"
+    }
+   ]
   },
   "C-OBGyn-12:Q042": {
    "task": "Next step",
-   "boardCall": "Chorioamnionitis at 40 wk + on antibiotics + no contractions + reassuring FHR -> oxytocin.",
-   "hinge": "Chorioamnionitis requires prompt delivery in addition to IV antibiotics; once fetal tracing stabilizes, induce labor with oxytocin.",
+   "boardCall": "40 weeks + **ROM 24 h** + fever 38.6°C + on antibiotics + **FHR now reassuring** + no contractions → Administration of oxytocin",
+   "hinge": "Infection requires delivery; a recovered tracing allows labor rather than surgery.",
    "trap": "Prior fetal tachycardia (170/min) with minimal variability pulls toward emergency cesarean delivery despite improvement to 150/min with moderate variability.",
    "options": {
     "A": {
@@ -4163,12 +4519,34 @@
      "text": "Fetal heart rate is now 150/min with moderate variability"
     }
    ],
-   "topic": "intra-amniotic-infection"
+   "topic": "intra-amniotic-infection",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Category III tracing** persists despite resuscitation",
+     "then": "Emergency cesarean delivery"
+    },
+    {
+     "opt": "C",
+     "if": "**Recurrent variable decelerations** in active labor",
+     "then": "Amnioinfusion"
+    },
+    {
+     "opt": "B",
+     "if": "**Tachysystole** with fetal bradycardia",
+     "then": "Terbutaline"
+    },
+    {
+     "opt": "E",
+     "if": "**Preterm PROM at 30 weeks**, no infection",
+     "then": "Expectant management"
+    }
+   ]
   },
   "C-OBGyn-12:Q043": {
    "task": "Next step",
-   "boardCall": "Perimenopausal 42-year-old + 3-month intermittent spotting + normal Pap -> endometrial biopsy.",
-   "hinge": "Intermenstrual vaginal spotting in a perimenopausal woman with normal cervical cytology requires endometrial biopsy to exclude hyperplasia or cancer.",
+   "boardCall": "age 42 + **3 months intermenstrual spotting** + regular cycles + normal Pap 6 months ago + hCG negative → Endometrial biopsy",
+   "hinge": "Persistent unexplained bleeding near 45 needs tissue before hormones.",
    "trap": "Regular 28-day cycles and normal pelvic exam pull toward empiric medroxyprogesterone without sampling the endometrium first.",
    "options": {
     "A": {
@@ -4254,12 +4632,34 @@
      "trap": true
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Smooth red mass** protruding from cervical os",
+     "then": "Cervical polypectomy"
+    },
+    {
+     "opt": "C",
+     "if": "Pap shows **HSIL**",
+     "then": "Colposcopy"
+    },
+    {
+     "opt": "D",
+     "if": "**Visible cervical lesion** on exam",
+     "then": "Cervical biopsy"
+    },
+    {
+     "opt": "B",
+     "if": "Biopsy shows **benign anovulatory** endometrium",
+     "then": "Medroxyprogesterone therapy"
+    }
+   ]
   },
   "C-OBGyn-12:Q044": {
    "task": "Diagnosis",
-   "boardCall": "8 wk pregnant + sudden severe LLQ pain -> resolved -> recurred + tender adnexal mass -> ovarian torsion.",
-   "hinge": "Sudden severe unilateral pelvic pain that waxes and wanes with a tender adnexal mass in early pregnancy is classic for ovarian torsion.",
+   "boardCall": "8 weeks + **sudden pain, resolves, then returns** + **tender left adnexal mass** + IUP heartbeat + guarding → Ovarian torsion",
+   "hinge": "Intermittent twisting of a corpus luteum cyst causes waxing, waning pain.",
    "trap": "8 weeks' gestation with acute unilateral pain and adnexal mass pulls toward ruptured ectopic pregnancy, which causes constant pain and hemodynamic instability.",
    "options": {
     "A": {
@@ -4345,12 +4745,34 @@
      "text": "Ten minutes after the examination, she has severe, constant left lower quadrant pain"
     }
    ],
-   "topic": "ovarian-torsion"
+   "topic": "ovarian-torsion",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**No intrauterine pregnancy**, free fluid, hypotension",
+     "then": "Ruptured ectopic pregnancy"
+    },
+    {
+     "opt": "A",
+     "if": "**Periumbilical pain migrating** to right lower quadrant",
+     "then": "Appendicitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever, flank pain**, **pyuria**",
+     "then": "Pyelonephritis"
+    },
+    {
+     "opt": null,
+     "if": "**Hemoperitoneum** from cyst with stable IUP",
+     "then": "Ruptured corpus luteum cyst"
+    }
+   ]
   },
   "C-OBGyn-12:Q045": {
    "task": "Risk factor",
-   "boardCall": "18-week dichorionic-diamniotic twin pregnancy -> preterm labor.",
-   "hinge": "Preterm labor from uterine overdistension is the most common complication of twin gestations across all chorionicity types.",
+   "boardCall": "twins at 18 weeks + **thick dividing membrane** + **male and female** + one fundal placental mass → Preterm labor",
+   "hinge": "Fused placentas can be dichorionic; overdistension still makes prematurity most common.",
    "trap": "One fundal placental mass pulls toward twin-to-twin transfusion, but discordant sexes and thick separating membrane indicate dichorionic twins.",
    "options": {
     "A": {
@@ -4425,12 +4847,34 @@
      "text": "one male and one female fetus"
     }
    ],
-   "topic": "multiple-gestation"
+   "topic": "multiple-gestation",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Same-sex twins**, **thin membrane**, single placenta",
+     "then": "Twin-to-twin transfusion"
+    },
+    {
+     "opt": "E",
+     "if": "**No dividing membrane** seen",
+     "then": "Umbilical cord entanglement"
+    },
+    {
+     "opt": "A",
+     "if": "**Cocaine use** or severe hypertension",
+     "then": "Abruptio placentae"
+    },
+    {
+     "opt": "B",
+     "if": "**Singleton** with poorly controlled diabetes",
+     "then": "Macrosomia"
+    }
+   ]
   },
   "C-OBGyn-12:Q046": {
    "task": "Next step",
-   "boardCall": "Mastitis + failed dicloxacillin + 2-cm erythematous mass -> breast ultrasonography.",
-   "hinge": "Persistent fever and a localized breast mass failing oral dicloxacillin indicate a suspected breast abscess, diagnosed by ultrasonography.",
+   "boardCall": "5 weeks postpartum + **mastitis failing dicloxacillin** + fever 38.4°C + **2-cm erythematous mass** → Ultrasonography of the right breast",
+   "hinge": "Persistent fever with a focal mass suggests an abscess needing drainage.",
    "trap": "Failed dicloxacillin pulls toward breast milk Gram stain and culture, which does not detect a drainable abscess.",
    "options": {
     "A": {
@@ -4506,12 +4950,35 @@
      "text": "2-cm, erythematous mass in the upper outer quadrant"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Recurrent mastitis**, no mass on ultrasound",
+     "then": "Breast milk Gram stain and culture"
+    },
+    {
+     "opt": null,
+     "if": "Ultrasound shows **fluid collection**",
+     "then": "Needle aspiration",
+     "step": "send fluid for culture"
+    },
+    {
+     "opt": null,
+     "if": "**Not lactating**, peau d'orange, no response",
+     "then": "Biopsy for inflammatory carcinoma"
+    },
+    {
+     "opt": "B",
+     "if": "**Cough and pleuritic pain** with fever",
+     "then": "X-ray of the chest"
+    }
+   ]
   },
   "C-OBGyn-12:Q047": {
    "task": "Diagnosis",
-   "boardCall": "LMP 15 wk + fundal height 24 cm + absent FHT + protruding vesicles -> gestational trophoblastic disease.",
-   "hinge": "Uterine size larger than dates, absent fetal heart tones, and grape-like vesicles protruding from the cervix are diagnostic of hydatidiform mole.",
+   "boardCall": "age 47 + LMP 15 weeks + **fundal height 24 cm** + no fetal heart tones + **vesicles at cervix** → Gestational trophoblastic disease",
+   "hinge": "Size exceeding dates plus passed grape-like villi defines molar pregnancy.",
    "trap": "Vaginal bleeding at 15 weeks pulls toward threatened or complete abortion, which lack oversized uterus and vesicles.",
    "options": {
     "A": {
@@ -4596,12 +5063,34 @@
      "text": "cervix is 1 cm dilated with protruding vesicles"
     }
    ],
-   "topic": "gestational-trophoblastic-disease"
+   "topic": "gestational-trophoblastic-disease",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Young girl** with **grape-like vaginal mass**",
+     "then": "Sarcoma botryoides"
+    },
+    {
+     "opt": "D",
+     "if": "**Closed os**, size equals dates, heartbeat present",
+     "then": "Threatened abortion"
+    },
+    {
+     "opt": "A",
+     "if": "**Closed os**, cramps resolved, **empty uterus**",
+     "then": "Complete abortion"
+    },
+    {
+     "opt": "E",
+     "if": "**Third trimester**, ROM with **fetal bradycardia**",
+     "then": "Vasa previa"
+    }
+   ]
   },
   "C-OBGyn-12:Q048": {
    "task": "Risk factor",
-   "boardCall": "2-yr infertility + regular 30-day cycles + prior Chlamydia + fertile partner -> tubal disease.",
-   "hinge": "Prior Chlamydia trachomatis infection causes tubal scarring and obstruction despite regular ovulatory cycles and proven partner fertility.",
+   "boardCall": "2 years infertile + **regular 30-day cycles** + **prior chlamydia** + husband fathered child + normal exam → Tubal disease",
+   "hinge": "Ovulation and partner fertility are proven, leaving scarred tubes.",
    "trap": "Prior herpes simplex with recurrent outbreaks pulls toward herpes vaginitis, which does not cause tubal scarring or infertility.",
    "options": {
     "A": {
@@ -4682,12 +5171,34 @@
      "text": "Menses occur at regular 30-day intervals"
     }
    ],
-   "topic": "infertility"
+   "topic": "infertility",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Irregular cycles**, hirsutism, obesity",
+     "then": "Anovulation"
+    },
+    {
+     "opt": "D",
+     "if": "**Age over 38**, **high day-3 FSH**",
+     "then": "Poor ovarian reserve"
+    },
+    {
+     "opt": "C",
+     "if": "Partner has **no prior children**, abnormal semen analysis",
+     "then": "Male factor"
+    },
+    {
+     "opt": null,
+     "if": "**Cyclic pelvic pain** and dyspareunia",
+     "then": "Endometriosis"
+    }
+   ]
   },
   "C-OBGyn-12:Q049": {
    "task": "Pharmacology",
-   "boardCall": "12 weeks' gestation + fever + diffuse vesicular rash + sick students -> oral acyclovir.",
-   "hinge": "Active varicella (chickenpox) in pregnancy requires prompt oral acyclovir to reduce maternal morbidity and complications.",
+   "boardCall": "12 weeks + teacher with sick students + fever 38.6°C + **vesicles spreading from trunk** + **mixed-stage lesions** → Oral acyclovir",
+   "hinge": "Adult varicella in pregnancy risks pneumonia; antivirals within 24 h help most.",
    "trap": "Concern for medication safety in first-trimester pregnancy pulls toward topical diphenhydramine or hydrocortisone instead of systemic antiviral therapy.",
    "options": {
     "A": {
@@ -4769,12 +5280,35 @@
      "text": "Temperature is 38.6°C (101.5°F)"
     }
    ],
-   "topic": "congenital-infections"
+   "topic": "congenital-infections",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Cough, dyspnea, hypoxia** with rash",
+     "then": "IV acyclovir",
+     "step": "admit"
+    },
+    {
+     "opt": "D",
+     "if": "**Influenza season**, fever, myalgia, no rash",
+     "then": "Oral oseltamivir"
+    },
+    {
+     "opt": "A",
+     "if": "**Painless chancre** or palmar rash, positive RPR",
+     "then": "Benzathine penicillin"
+    },
+    {
+     "opt": null,
+     "if": "**Exposed, nonimmune**, no rash yet",
+     "then": "Varicella-zoster immune globulin"
+    }
+   ]
   },
   "C-OBGyn-12:Q050": {
    "task": "Diagnosis",
-   "boardCall": "3 prior cesareans + failed manual placental separation + severe bleeding -> trophoblast invasion into myometrium.",
-   "hinge": "Prior cesarean scars predispose to placenta accreta spectrum, showing trophoblast invasion into the myometrium without intervening decidua.",
+   "boardCall": "**3 prior cesareans** + age 42 + smoker + **placenta will not separate** + severe bleeding → Trophoblast invasion into the myometrium",
+   "hinge": "Scarred endometrium lacks decidua, so villi attach directly into muscle.",
    "trap": "25 pack-year smoking history and hypertension pull toward placental abruption (bleeding into decidua basalis).",
    "options": {
     "A": {
@@ -4853,7 +5387,29 @@
      "text": "attempts to manually separate the anterior placenta from the uterus result in severe bleeding"
     }
    ],
-   "topic": "placenta-accreta-spectrum"
+   "topic": "placenta-accreta-spectrum",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Painful bleeding** with **rigid uterus** before delivery",
+     "then": "Bleeding into the decidua basalis"
+    },
+    {
+     "opt": "B",
+     "if": "**Uterus large for dates**, very high hCG",
+     "then": "Edematous villi with trophoblastic hyperplasia"
+    },
+    {
+     "opt": "E",
+     "if": "**ROM with fetal bleeding**, painless",
+     "then": "Velamentous cord insertion"
+    },
+    {
+     "opt": "C",
+     "if": "**Postmenopausal bleeding**, endometrioid carcinoma invading muscle",
+     "then": "Glandular atypia in the myometrium"
+    }
+   ]
   }
  },
  "topics": {
@@ -7967,5 +8523,5 @@
    "evidence": "Checked 2026-10-30: [AHA/ACC PE (2026)](https://www.jacc.org/doi/10.1016/j.jacc.2025.11.005), [ASH diagnosis (2018)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6258916/)."
   }
  },
- "updatedAt": "2026-11-23T05:02:05Z"
+ "updatedAt": "2026-11-23T12:05:48Z"
 }

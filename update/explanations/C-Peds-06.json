@@ -2964,8 +2964,8 @@
   },
   "746351": {
    "task": "Mechanism",
-   "boardCall": "Meningitis + bulging fontanel + hyponatremia (Na 121 mEq/L) -> Increased secretion of ADH (vasopressin) [SIADH]",
-   "hinge": "CNS infection (meningitis) irritates the hypothalamic-pituitary axis, stimulating inappropriate ADH secretion that causes euvolemic hypotonic hyponatremia.",
+   "boardCall": "6-month-old + fever, lethargy + **bulging fontanel, nuchal rigidity** + **Na 121** + glucose 150 → Increased secretion of ADH (vasopressin)",
+   "hinge": "Meningeal inflammation drives inappropriate ADH; mild hyperglycemia barely shifts sodium.",
    "trap": "Mild hyperglycemia (150 mg/dL) tempts factitious pseudohyponatremia, but correcting sodium for 150 mg/dL changes it by less than 1 mEq/L.",
    "options": {
     "A": {
@@ -3061,12 +3061,34 @@
      "trap": true
     }
    ],
-   "topic": "hyponatremia"
+   "topic": "hyponatremia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Glucose above 600** with low measured sodium",
+     "then": "Factitious hyponatremia from hyperglycemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Diluted formula** or water feeds, no infection",
+     "then": "Excessive intake of free water"
+    },
+    {
+     "opt": "F",
+     "if": "**Profuse diarrhea**, sunken fontanel, low urine sodium",
+     "then": "Intravascular volume depletion"
+    },
+    {
+     "opt": null,
+     "if": "**High urine output**, high urine sodium after CNS injury",
+     "then": "Cerebral salt wasting"
+    }
+   ]
   },
   "746352": {
    "task": "Next step",
-   "boardCall": "Newborn + HR > 100/min + slow respirations (20/min) + peripheral cyanosis -> Tactile stimulation and blow-by oxygen",
-   "hinge": "With a heart rate > 100/min but slow respirations and acrocyanosis, initial management is tactile stimulation (drying/rubbing back) and supplemental oxygen before advancing to PPV.",
+   "boardCall": "term newborn + strong cry + **HR above 100** + **respirations 20** + peripheral cyanosis + low tone → Tactile stimulation and oxygen therapy",
+   "hinge": "Breathing with adequate heart rate needs only stimulation before escalating support.",
    "trap": "Slow respirations (20/min) tempt positive-pressure ventilation, but HR is > 100/min and initial warming/stimulation steps are still in progress.",
    "options": {
     "A": {
@@ -3148,12 +3170,35 @@
      "text": "peripheral cyanosis and minimal movement of the upper and lower extremities"
     }
    ],
-   "topic": "neonatal-resuscitation"
+   "topic": "neonatal-resuscitation",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Apnea or gasping**, or **HR below 100**",
+     "then": "Positive-pressure ventilation via face mask"
+    },
+    {
+     "opt": "E",
+     "if": "**HR below 60** despite effective mask ventilation",
+     "then": "Intubation",
+     "step": "start compressions 3:1"
+    },
+    {
+     "opt": "B",
+     "if": "**Maternal opioid** within 4 h, ventilation supported",
+     "then": "Naloxone therapy"
+    },
+    {
+     "opt": null,
+     "if": "**HR below 60** after 60 s of compressions",
+     "then": "IV epinephrine"
+    }
+   ]
   },
   "746353": {
    "task": "Mechanism",
-   "boardCall": "Recurrent meningococcal infection + family death from meningococcemia + purpura fulminans -> Complement system immunodeficiency (C5-C9 deficiency)",
-   "hinge": "Recurrent Neisseria meningitidis infections with a family history of fatal meningococcemia indicate terminal complement component deficiency (C5b-C9 membrane attack complex).",
+   "boardCall": "8-year-old + **second similar episode** + fever and purpura + shock + **brother died of meningococcemia** → Complement system immunodeficiency",
+   "hinge": "Recurrent Neisseria in a family points to missing membrane attack complex.",
    "trap": "Purpuric skin lesions in a child can raise suspicion for trauma or abuse, but fever, shock, and family history confirm meningococcemia.",
    "options": {
     "A": {
@@ -3248,12 +3293,34 @@
      "text": "She has had one previous episode of similar symptoms."
     }
    ],
-   "topic": "complement-deficiencies"
+   "topic": "complement-deficiencies",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Recurrent sinopulmonary infections**, **low immunoglobulins**, boy",
+     "then": "Congenital humoral immunodeficiency"
+    },
+    {
+     "opt": "B",
+     "if": "**Patterned bruises** of varied age, afebrile",
+     "then": "Child abuse"
+    },
+    {
+     "opt": "A",
+     "if": "**Perinatal HIV exposure**, thrush, failure to thrive",
+     "then": "AIDS"
+    },
+    {
+     "opt": null,
+     "if": "Recurrent infections after **splenectomy**",
+     "then": "Asplenia"
+    }
+   ]
   },
   "746354": {
    "task": "Mechanism",
-   "boardCall": "ACE inhibitor initiation + chronic renal failure + rise in K (4.5 -> 5.4) + stable creatinine -> Suppression of aldosterone",
-   "hinge": "ACE inhibitors block angiotensin II production, suppressing adrenal aldosterone secretion and reducing cortical collecting tubule potassium excretion.",
+   "boardCall": "9-year-old + CKD + **started enalapril 2 days ago** + **K rose to 5.4** + creatinine stable → Suppression of aldosterone",
+   "hinge": "Less angiotensin II means less aldosterone, so collecting ducts keep potassium.",
    "trap": "Pre-existing chronic renal failure tempts acute worsening of renal failure, but creatinine and BUN remain essentially unchanged (3.1 mg/dL).",
    "options": {
     "A": {
@@ -3337,12 +3404,35 @@
      "text": "Creatinine (mg/dL) 3.1 3.1"
     }
    ],
-   "topic": "renin-angiotensin-system-inhibitors"
+   "topic": "renin-angiotensin-system-inhibitors",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Creatinine rises over 30%** after ACE inhibitor",
+     "then": "Decreased glomerular perfusion",
+     "step": "check for renal artery stenosis"
+    },
+    {
+     "opt": "A",
+     "if": "**BUN and creatinine climbing** without new drug",
+     "then": "Progression of chronic renal failure"
+    },
+    {
+     "opt": "D",
+     "if": "**Hypotension, hyperpigmentation**, low sodium",
+     "then": "Primary adrenal insufficiency"
+    },
+    {
+     "opt": "C",
+     "if": "**Bicarbonate falls sharply** with K shift",
+     "then": "Metabolic acidosis"
+    }
+   ]
   },
   "746355": {
    "task": "Diagnosis",
-   "boardCall": "3-week-old infant + bilious emesis + abdominal pain + air-fluid levels -> Midgut volvulus (malrotation)",
-   "hinge": "Bilious (green) emesis in a neonate is a surgical emergency indicating intestinal malrotation with midgut volvulus until proven otherwise.",
+   "boardCall": "3-week-old + **bilious vomiting** + drawing up legs + tender abdomen + dilated loops, air-fluid levels → Volvulus",
+   "hinge": "Green vomit in a neonate is malrotation with volvulus until proven otherwise.",
    "trap": "Projectile vomiting in a 3-week-old tempts pyloric stenosis, but bilious (green) vomit originates distal to the ampulla of Vater.",
    "options": {
     "A": {
@@ -3465,12 +3555,34 @@
      "text": "dilated loops of small bowel and air-fluid levels"
     }
    ],
-   "topic": "neonatal-intestinal-obstruction"
+   "topic": "neonatal-intestinal-obstruction",
+   "branches": [
+    {
+     "opt": "I",
+     "if": "**Projectile nonbilious** vomiting, **olive mass**",
+     "then": "Pyloric stenosis"
+    },
+    {
+     "opt": "C",
+     "if": "**Day 1**, **double bubble**, no distal gas",
+     "then": "Duodenal atresia"
+    },
+    {
+     "opt": "G",
+     "if": "**Age 6–36 months**, currant jelly stool",
+     "then": "Intussusception"
+    },
+    {
+     "opt": "B",
+     "if": "**Delayed meconium**, **explosive stool** on rectal exam",
+     "then": "Hirschsprung disease"
+    }
+   ]
   },
   "746356": {
    "task": "Next step",
-   "boardCall": "Painless maroon rectal bleeding + tachycardia + anemia (Hb 8) -> Meckel scan (technetium-99m pertechnetate)",
-   "hinge": "Painless gastrointestinal hemorrhage (maroon stool) in a young child is the classic presentation of a bleeding Meckel diverticulum diagnosed by pertechnetate scintigraphy.",
+   "boardCall": "8-year-old + **painless maroon stool** + no abdominal pain + HR 150 + **Hb 8** → Meckel scan",
+   "hinge": "Ectopic gastric mucosa ulcerates the ileum; pertechnetate shows that mucosa.",
    "trap": "Upper GI series evaluates proximal obstruction or malrotation, but painless lower GI bleeding originates from ectopic gastric mucosa in the ileum.",
    "options": {
     "A": {
@@ -3555,12 +3667,34 @@
      "text": "He has not had cough, rash, abdominal pain, vomiting, or diarrhea."
     }
    ],
-   "topic": "meckel-diverticulum"
+   "topic": "meckel-diverticulum",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Bright red blood** on toilet paper with constipation",
+     "then": "Anoscopy"
+    },
+    {
+     "opt": "B",
+     "if": "**Bilious vomiting**, malrotation suspected",
+     "then": "Upper GI series"
+    },
+    {
+     "opt": "A",
+     "if": "**Distension, vomiting**, obstruction suspected",
+     "then": "X-ray of the abdomen"
+    },
+    {
+     "opt": null,
+     "if": "**Scan negative**, bleeding continues",
+     "then": "CT angiography or colonoscopy"
+    }
+   ]
   },
   "746357": {
    "task": "Mechanism",
-   "boardCall": "Sickle cell disease + severe acute anemia (Hct 16%) + hyperdynamic precordium -> Increased cardiac output (compensatory flow)",
-   "hinge": "Severe anemia causes tissue hypoxia and decreased blood viscosity, triggering reflex peripheral vasodilation and increased cardiac output to maintain oxygen delivery.",
+   "boardCall": "sickle cell + viral illness + **Hct 16%** + **active precordium** + flow murmur + fatigue → Cardiac output",
+   "hinge": "Low viscosity and vasodilation drop afterload, so stroke volume and rate rise.",
    "trap": "Active precordium and flow murmur suggest cardiac strain, but systemic afterload is decreased (vasodilation) while cardiac output is increased.",
    "options": {
     "A": {
@@ -3641,12 +3775,34 @@
      "text": "His hematocrit is 16%."
     }
    ],
-   "topic": "sickle-cell-disease"
+   "topic": "sickle-cell-disease",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Volume overload** after rapid transfusion, JVD",
+     "then": "Central venous pressure"
+    },
+    {
+     "opt": "D",
+     "if": "**Chest pain, hypoxia**, new infiltrate",
+     "then": "Pulmonary vascular resistance"
+    },
+    {
+     "opt": "E",
+     "if": "**Hypovolemic shock** from bleeding, cold extremities",
+     "then": "Systemic afterload"
+    },
+    {
+     "opt": null,
+     "if": "**Reticulocytes near zero** after viral prodrome",
+     "then": "Parvovirus B19 aplastic crisis"
+    }
+   ]
   },
   "746358": {
    "task": "Risk factor",
-   "boardCall": "Dextrocardia + asplenia (Howell-Jolly bodies) + complex congenital heart disease -> Sepsis (encapsulated bacteria)",
-   "hinge": "Congenital asplenia (right atrial isomerism / Ivemark syndrome) abolishes splenic phagocytosis and opsonization, creating a lifelong risk of fulminant encapsulated sepsis.",
+   "boardCall": "newborn + dextrocardia + complex AV-valve defect + **no spleen** + **Howell-Jolly bodies** → Sepsis",
+   "hinge": "Without splenic filtering, encapsulated bacteria cause fulminant infection.",
    "trap": "Howell-Jolly bodies and absent spleen also cause thrombocytosis, but fulminant bacterial sepsis is the greatest lethal clinical risk.",
    "options": {
     "A": {
@@ -3734,12 +3890,34 @@
      "text": "blood smear shows Howell-Jolly bodies"
     }
    ],
-   "topic": "asplenia"
+   "topic": "asplenia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Platelet count** after splenectomy asked",
+     "then": "Thrombocytosis"
+    },
+    {
+     "opt": "C",
+     "if": "**Right-to-left shunt** with polycythemia",
+     "then": "Cerebral infarction"
+    },
+    {
+     "opt": "A",
+     "if": "**Hemolytic disease**, high bilirubin, reticulocytosis",
+     "then": "Anemia"
+    },
+    {
+     "opt": null,
+     "if": "**Polysplenia**, interrupted IVC",
+     "then": "Left atrial isomerism"
+    }
+   ]
   },
   "746359": {
    "task": "Risk factor",
-   "boardCall": "Active child + balanced diet + whole milk and juice excess + BMI > 97th percentile -> Excessive intake of total calories",
-   "hinge": "Pediatric obesity in an active child eating balanced foods but drinking multiple daily glasses of juice and whole milk is driven by excessive total caloric intake exceeding expenditure.",
+   "boardCall": "10-year-old + active, varied diet + **whole milk and juice daily** + **BMI above 97th percentile** + height 75th → Excessive intake of total calories",
+   "hinge": "Normal height velocity and activity leave energy surplus as the cause.",
    "trap": "Fruit juice and whole milk tempt excess carbohydrates or fat specifically, but caloric surplus across balanced macronutrients causes obesity.",
    "options": {
     "A": {
@@ -3827,12 +4005,34 @@
      "text": "He has no history of serious illness and takes no medications."
     }
    ],
-   "topic": "obesity-and-bariatric-surgery"
+   "topic": "obesity-and-bariatric-surgery",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Hours of screen time**, no sports",
+     "then": "Inadequate physical activity"
+    },
+    {
+     "opt": null,
+     "if": "**Short stature**, falling height velocity",
+     "then": "Endocrine cause: hypothyroidism or Cushing"
+    },
+    {
+     "opt": null,
+     "if": "**Hyperphagia**, hypotonia, small hands",
+     "then": "Prader-Willi syndrome"
+    },
+    {
+     "opt": "D",
+     "if": "**Diet mainly processed snacks**, no produce",
+     "then": "Inadequate intake of fruits and vegetables"
+    }
+   ]
   },
   "746360": {
    "task": "Diagnosis",
-   "boardCall": "Macrosomia (5000 g) + macroglossia + omphalocele + visceromegaly -> Hypoglycemia (Beckwith-Wiedemann syndrome)",
-   "hinge": "Beckwith-Wiedemann syndrome causes neonatal macrosomia, macroglossia, and omphalocele with hyperinsulinemic hypoglycemia from pancreatic islet cell hyperplasia.",
+   "boardCall": "**5000-g infant** + **macroglossia** + visceromegaly + omphalocele → Hypoglycemia",
+   "hinge": "Beckwith-Wiedemann islet hyperplasia causes hyperinsulinism after birth.",
    "trap": "Macrosomia in an infant can suggest polycythemia from infant of diabetic mother, but pancreatic hyperplasia causes profound hypoglycemia.",
    "options": {
     "A": {
@@ -3917,12 +4117,35 @@
      "text": "uncomplicated pregnancy and delivery"
     }
    ],
-   "topic": "congenital-abdominal-wall-defects"
+   "topic": "congenital-abdominal-wall-defects",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Mother with diabetes**, plethoric macrosomic infant",
+     "then": "Polycythemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Omphalocele** with trisomy 13 or 18 features",
+     "then": "Congenital heart disease"
+    },
+    {
+     "opt": "C",
+     "if": "**Vertebral and limb** anomalies with TE fistula",
+     "then": "Imperforate anus"
+    },
+    {
+     "opt": null,
+     "if": "**Hemihypertrophy** in early childhood",
+     "then": "Wilms tumor screening",
+     "step": "ultrasound every 3 months"
+    }
+   ]
   },
   "746361": {
    "task": "Next step",
-   "boardCall": "Sternoclavicular joint arthritis + purulent aspirate + gram-negative diplococci -> Culture of the aspirate fluid (Neisseria gonorrhoeae)",
-   "hinge": "Septic arthritis confirmed by purulent synovial fluid and gram-negative diplococci requires immediate synovial fluid culture on chocolate agar / Thayer-Martin to guide antimicrobial therapy.",
+   "boardCall": "15-year-old + fever 40°C + **sternoclavicular septic joint** + purulent aspirate + **gram-negative diplococci** → Culture of the aspirate fluid",
+   "hinge": "Gram stain suggests gonococcus; culture proves it and gives susceptibilities.",
    "trap": "Sore throat 10 days ago tempts rheumatic fever workup with echocardiography, but purulent joint fluid with intracellular diplococci proves septic arthritis.",
    "options": {
     "A": {
@@ -4007,12 +4230,34 @@
      "text": "numerous segmented neutrophils and numerous gram-negative diplococci"
     }
    ],
-   "topic": "septic-arthritis"
+   "topic": "septic-arthritis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Migratory arthritis**, new murmur, **sterile** fluid after strep throat",
+     "then": "Echocardiography"
+    },
+    {
+     "opt": "D",
+     "if": "**Abscess extending** into mediastinum suspected",
+     "then": "CT scan of the sternoclavicular joint"
+    },
+    {
+     "opt": null,
+     "if": "**Pustules and tenosynovitis**, sterile joint",
+     "then": "Urogenital and pharyngeal NAAT"
+    },
+    {
+     "opt": null,
+     "if": "**IV drug use**, gram-positive cocci",
+     "then": "Staphylococcus aureus: vancomycin"
+    }
+   ]
   },
   "746362": {
    "task": "Next step",
-   "boardCall": "Unresponsive adolescent + respiratory depression (6/min) + pinpoint pupils + decreased bowel sounds -> IV/IN Naloxone",
-   "hinge": "The opioid overdose toxidrome (CNS depression, pinpoint pupils, and bradypnea) requires immediate naloxone to restore spontaneous ventilatory drive.",
+   "boardCall": "16-year-old unresponsive at party + **RR 6** + **pinpoint pupils** + decreased bowel sounds → Naloxone",
+   "hinge": "Reversing mu-receptor depression restores breathing faster than any airway workup.",
    "trap": "Hypertonia and diminished gag reflex can mimic other toxic ingestions, but severe respiratory depression and miosis demand immediate opioid reversal.",
    "options": {
     "A": {
@@ -4098,12 +4343,34 @@
      "trap": true
     }
    ],
-   "topic": "opioid-toxicity"
+   "topic": "opioid-toxicity",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Fingerstick glucose low**, diaphoretic, normal pupils",
+     "then": "5% Glucose"
+    },
+    {
+     "opt": "A",
+     "if": "**Awake**, ingestion within 1 h, airway protected",
+     "then": "Activated charcoal"
+    },
+    {
+     "opt": null,
+     "if": "**Recurrent sedation** after naloxone, methadone ingestion",
+     "then": "Naloxone infusion"
+    },
+    {
+     "opt": null,
+     "if": "**Dilated pupils**, dry hot skin, urinary retention",
+     "then": "Anticholinergic toxicity"
+    }
+   ]
   },
   "746363": {
    "task": "Next step",
-   "boardCall": "Reflux nephropathy + recurrent pyelonephritis + severe hypertension (160/100) + retinopathy -> Serum BUN and creatinine",
-   "hinge": "Severe secondary hypertension with growth failure and retinal changes in a child with vesicoureteral reflux reflects chronic renal scarring, requiring urgent serum BUN and creatinine.",
+   "boardCall": "9-year-old + **vesicoureteral reflux** + 2 pyelonephritis admissions + growth below 5th percentile + **BP 160/100** → Serum BUN and creatinine",
+   "hinge": "Reflux scarring is the likely cause, so renal function comes first.",
    "trap": "Headache and dizziness with retinopathy tempt a head CT, but severe hypertension in the setting of reflux nephropathy requires assessing renal function first.",
    "options": {
     "A": {
@@ -4192,12 +4459,34 @@
      "text": "Funduscopic examination shows narrowing of the retinal arteries."
     }
    ],
-   "topic": "secondary-hypertension"
+   "topic": "secondary-hypertension",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Mildly elevated BP**, asymptomatic, no end-organ signs",
+     "then": "Repeat BP measurement"
+    },
+    {
+     "opt": "E",
+     "if": "**Focal deficits** or papilledema",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "D",
+     "if": "**Tremor, weight loss**, tachycardia",
+     "then": "Thyroid function tests"
+    },
+    {
+     "opt": null,
+     "if": "**Leg BP lower** than arm, weak femoral pulses",
+     "then": "Echocardiography for coarctation"
+    }
+   ]
   },
   "746364": {
    "task": "Next step",
-   "boardCall": "3-year-old touching own genitals + normal exam + normal preschool behavior -> Reassurance of normal developmental exploration",
-   "hinge": "Genital touching and masturbatory exploration are normal developmental behaviors in toddlers and preschoolers, requiring parental education and reassurance when abuse signs are absent.",
+   "boardCall": "3-year-old + genital touching + **normal exam** + **normal behavior at preschool** + typical toddler quirks → Reassure the mother that this is normal behavior",
+   "hinge": "Self-touching that is redirectable, with no injury, is developmental exploration.",
    "trap": "Mother's concern about day care abuse and child's nighttime awakenings tempt an abuse interview, but these are typical toddler behaviors.",
    "options": {
     "A": {
@@ -4286,12 +4575,34 @@
      "text": "Physical examination shows no abnormalities."
     }
    ],
-   "topic": "normal-pediatric-variants"
+   "topic": "normal-pediatric-variants",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Genital injury** or **STI** found",
+     "then": "Child protective services"
+    },
+    {
+     "opt": "B",
+     "if": "**Simulates intercourse** or adult sexual knowledge",
+     "then": "Abuse evaluation interview"
+    },
+    {
+     "opt": "C",
+     "if": "**Persistent defiance** disrupting home and school",
+     "then": "Parent management training"
+    },
+    {
+     "opt": null,
+     "if": "**Nighttime perianal itching**",
+     "then": "Pinworm tape test"
+    }
+   ]
   },
   "746365": {
    "task": "Mechanism",
-   "boardCall": "Fleshy vascular thigh mass + hepatic bruit + profound thrombocytopenia (15,000) -> Hemangioma (Kasabach-Merritt phenomenon)",
-   "hinge": "A large vascular tumor with platelet trapping, profound thrombocytopenia (15,000/mm³), and hepatic bruit indicates a hemangioma/vascular neoplasm causing Kasabach-Merritt syndrome.",
+   "boardCall": "2-week-old + petechiae, ecchymoses + **fleshy vascular thigh mass** + hepatic bruit + **platelets 15,000** → Hemangioma",
+   "hinge": "A vascular tumor traps and consumes platelets, explaining bleeding.",
    "trap": "Precipitous delivery tempts birth trauma bruising, but fleshy mass and severe consumptive thrombocytopenia reveal a vascular neoplasm.",
    "options": {
     "A": {
@@ -4394,12 +4705,34 @@
      "trap": true
     }
    ],
-   "topic": "thrombocytopenia"
+   "topic": "thrombocytopenia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Soft posterior neck mass**, transilluminates, Turner features",
+     "then": "Cystic hygroma"
+    },
+    {
+     "opt": "F",
+     "if": "**Lesion urticates when rubbed**",
+     "then": "Mastocytoma"
+    },
+    {
+     "opt": "D",
+     "if": "**Yellow-orange papule**, normal platelets",
+     "then": "Juvenile xanthogranuloma"
+    },
+    {
+     "opt": "G",
+     "if": "**Café-au-lait macules** and axillary freckling",
+     "then": "Neurofibroma"
+    }
+   ]
   },
   "746366": {
    "task": "Diagnosis",
-   "boardCall": "Adolescent female athlete + anterior knee pain after jumping/running + patellar crepitance -> Patellofemoral syndrome / instability",
-   "hinge": "Anterior knee pain worsened by running, jumping, or squatting with patellar crepitus on flexion in an adolescent athlete indicates patellofemoral syndrome/instability.",
+   "boardCall": "14-year-old volleyball player + **6 weeks knee pain after jumping** + no trauma + **crepitance on flexion** → Patellofemoral instability",
+   "hinge": "Overuse loading of the patellar joint, not inflammation or infection, causes this.",
    "trap": "Crepitance and knee tenderness in an adolescent can tempt juvenile arthritis, but pain provoked specifically by jumping and running reflects patellofemoral overuse.",
    "options": {
     "A": {
@@ -4516,12 +4849,34 @@
      "trap": true
     }
    ],
-   "topic": "knee-injuries"
+   "topic": "knee-injuries",
+   "branches": [
+    {
+     "opt": "H",
+     "if": "**Fever**, hot effusion, refuses to bear weight",
+     "then": "Septic arthritis"
+    },
+    {
+     "opt": "D",
+     "if": "**Morning stiffness** over 6 weeks with joint swelling",
+     "then": "Juvenile rheumatoid arthritis"
+    },
+    {
+     "opt": "C",
+     "if": "**Bilateral nighttime leg pain**, normal exam, younger child",
+     "then": "Growing pains"
+    },
+    {
+     "opt": null,
+     "if": "**Tibial tubercle tenderness** and swelling",
+     "then": "Osgood-Schlatter disease"
+    }
+   ]
   },
   "746367": {
    "task": "Diagnosis",
-   "boardCall": "Missouri farm + chicken coop exposure + subacute pulmonary disease + necrotizing mediastinal granulomas -> Histoplasmosis (Histoplasma capsulatum)",
-   "hinge": "Chicken coop exposure in an endemic Midwestern region (Missouri) with mediastinal necrotizing granulomas and negative PPD confirms pulmonary histoplasmosis.",
+   "boardCall": "Missouri farm + **chicken coop play** + 11 days fever and cough + **PPD negative, control positive** + necrotizing mediastinal granulomas → Histoplasmosis",
+   "hinge": "Bird-dropping soil in the Mississippi valley plus anergy-free negative PPD excludes TB.",
    "trap": "Necrotizing granulomas and chronic cough tempt tuberculosis, but intact cell-mediated immunity (mumps positive) with negative PPD and bird/chicken coop exposure favor Histoplasma.",
    "options": {
     "A": {
@@ -4623,12 +4978,34 @@
      "text": "biopsy specimen of a mediastinal lymph node shows necrotizing granulomas"
     }
    ],
-   "topic": "endemic-mycoses"
+   "topic": "endemic-mycoses",
+   "branches": [
+    {
+     "opt": "G",
+     "if": "**PPD positive**, household adult with cough",
+     "then": "Tuberculosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Cattle or sheep birthing** exposure, hepatitis",
+     "then": "Q fever"
+    },
+    {
+     "opt": "A",
+     "if": "**Pancytopenia**, blasts on smear, mediastinal mass",
+     "then": "Acute lymphocytic leukemia"
+    },
+    {
+     "opt": "F",
+     "if": "**Diarrhea** after handling the turtle",
+     "then": "Salmonella enteritidis"
+    }
+   ]
   },
   "746368": {
    "task": "Prevention",
-   "boardCall": "12-year-old girl + well-child check + HPV vaccine timing -> Within the next year (routine age 11-12)",
-   "hinge": "The HPV vaccine is recommended routinely at age 11-12 years to generate maximal antibody titers prior to any potential sexual exposure.",
+   "boardCall": "**12-year-old** + well-child visit + not sexually active + mother questions HPV vaccine → Within the next year",
+   "hinge": "Antibody response is strongest before any exposure, so age drives timing.",
    "trap": "Condom use or delaying until sexual debut/Pap smear tempts deferred vaccination, but immunogenicity and protection are optimal before any sexual exposure.",
    "options": {
     "A": {
@@ -4710,12 +5087,34 @@
      "text": "mother asks if her daughter should receive the human papillomavirus (HPV) vaccine"
     }
    ],
-   "topic": "childhood-and-adolescent-immunizations"
+   "topic": "childhood-and-adolescent-immunizations",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Age 15 or older** at first dose",
+     "then": "Three-dose series"
+    },
+    {
+     "opt": null,
+     "if": "**Unvaccinated at 22**",
+     "then": "Catch-up vaccination"
+    },
+    {
+     "opt": null,
+     "if": "**Pregnant** at time of visit",
+     "then": "Defer HPV vaccine until postpartum"
+    },
+    {
+     "opt": null,
+     "if": "**Immunocompromised** at age 11",
+     "then": "Three-dose series"
+    }
+   ]
   },
   "746369": {
    "task": "Diagnosis",
-   "boardCall": "Infant + pruritic lichenified plaques on cheeks/chin/diaper + family asthma -> Atopic dermatitis (eczema)",
-   "hinge": "Pruritic, excoriated, lichenified erythematous plaques on the cheeks and extensor surfaces with a family history of atopy define infantile atopic dermatitis.",
+   "boardCall": "10-month-old + **itchy lichenified plaques on cheeks** + diaper area + excoriations + **family asthma** → Atopic dermatitis",
+   "hinge": "Facial involvement with chronic scratching and atopy marks infantile eczema.",
    "trap": "Diaper area involvement tempts candidiasis, but lichenified plaques on the face and intense rubbing point to generalized atopic dermatitis.",
    "options": {
     "A": {
@@ -4799,12 +5198,34 @@
      "text": "She is afebrile and otherwise healthy."
     }
    ],
-   "topic": "atopic-dermatitis"
+   "topic": "atopic-dermatitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Beefy red** diaper rash with **satellite pustules**",
+     "then": "Candidiasis"
+    },
+    {
+     "opt": "D",
+     "if": "**Annular scaly plaque** with central clearing",
+     "then": "Tinea corporis"
+    },
+    {
+     "opt": "E",
+     "if": "**Skin sloughing over 30%**, new drug, mucosa involved",
+     "then": "Toxic epidermal necrolysis"
+    },
+    {
+     "opt": "C",
+     "if": "**Hives and vomiting** minutes after new food",
+     "then": "Food allergy"
+    }
+   ]
   },
   "746370": {
    "task": "Next step",
-   "boardCall": "Straddle trauma + perineal butterfly hematoma + blood at urethral meatus + urinary retention -> Retrograde urethrography",
-   "hinge": "Blood at the urethral meatus and inability to void following straddle injury indicate anterior urethral rupture, diagnosed by retrograde urethrography before any blind catheterization.",
+   "boardCall": "**bicycle straddle injury** + cannot void + perineal hematoma + **blood at urethral meatus** + normal pelvis film → Retrograde urethrography",
+   "hinge": "A blind catheter can complete a partial urethral tear.",
    "trap": "Urinary retention tempts blind urethral catheter insertion, which is strictly contraindicated because it can convert a partial urethral tear into a complete transection.",
    "options": {
     "A": {
@@ -4886,12 +5307,34 @@
      "text": "X-ray of the pelvis shows no abnormalities."
     }
    ],
-   "topic": "genitourinary-trauma"
+   "topic": "genitourinary-trauma",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Normal urethrogram**, still unable to void",
+     "then": "Insertion of a urinary catheter"
+    },
+    {
+     "opt": "C",
+     "if": "**Flank pain, hematuria**, normal meatus",
+     "then": "CT scan of the abdomen"
+    },
+    {
+     "opt": null,
+     "if": "Urethrogram shows **complete disruption**",
+     "then": "Suprapubic cystostomy"
+    },
+    {
+     "opt": null,
+     "if": "**Pelvic fracture**, high-riding prostate",
+     "then": "Posterior urethral injury"
+    }
+   ]
   },
   "746371": {
    "task": "Mechanism",
-   "boardCall": "Extreme prematurity + bronchopulmonary dysplasia + loud P2 + RVH + hepatomegaly -> Pulmonary hypertension (cor pulmonale)",
-   "hinge": "Chronic lung disease of prematurity (bronchopulmonary dysplasia) leads to alveolar hypoplasia and vascular remodeling, causing pulmonary hypertension and cor pulmonale.",
+   "boardCall": "**born at 27 weeks** + home oxygen + **loud S2, precordial heave** + hepatomegaly + RVH, right axis → Pulmonary hypertension",
+   "hinge": "Bronchopulmonary dysplasia remodels pulmonary vessels, loading the right ventricle.",
    "trap": "Wheezing and diuretics suggest cardiomyopathy or shunting, but loud P2 and RVH in bronchopulmonary dysplasia define pulmonary hypertension.",
    "options": {
     "A": {
@@ -4982,12 +5425,34 @@
      "text": "ECG shows right axis deviation and right ventricular hypertrophy"
     }
    ],
-   "topic": "pulmonary-hypertension"
+   "topic": "pulmonary-hypertension",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Continuous machine murmur**, bounding pulses, preterm",
+     "then": "Left-to-right shunting"
+    },
+    {
+     "opt": "A",
+     "if": "**Gallop with LV dilation**, low ejection fraction",
+     "then": "Cardiomyopathy"
+    },
+    {
+     "opt": "C",
+     "if": "**Soft murmur radiating to axillae**, otherwise well",
+     "then": "Peripheral pulmonary stenosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Harsh systolic ejection murmur** with click, cyanosis",
+     "then": "Pulmonary outlet obstruction"
+    }
+   ]
   },
   "746372": {
    "task": "Prevention",
-   "boardCall": "Pregnant woman with family history of atopy -> Exclusive breastfeeding for at least 6 months",
-   "hinge": "Exclusive breastfeeding for the first 6 months of life is the primary recommended strategy to protect against atopic disease and food allergies.",
+   "boardCall": "20 weeks pregnant + **first child had milk protein proctocolitis** + wants allergy prevention → Exclusively breast-feed for at least 6 months",
+   "hinge": "Breast milk is the only feeding step that protects; delaying allergens backfires.",
    "trap": "Delaying allergenic solids like peanuts and eggs until 9 months was an old disproven belief; modern guidelines recommend early introduction (4-6 months).",
    "options": {
     "A": {
@@ -5073,12 +5538,35 @@
      "text": "asks how she can prevent food allergies in her next child"
     }
    ],
-   "topic": "infant-nutrition"
+   "topic": "infant-nutrition",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "Infant **already has** cow milk protein allergy",
+     "then": "Hypoallergenic formula"
+    },
+    {
+     "opt": "E",
+     "if": "**Congenital galactosemia**",
+     "then": "Lactose-free formula"
+    },
+    {
+     "opt": null,
+     "if": "**Severe eczema** at 4 months",
+     "then": "Early peanut introduction",
+     "step": "allergy evaluation first"
+    },
+    {
+     "opt": null,
+     "if": "**Bloody stool** in breast-fed infant",
+     "then": "Maternal dairy elimination"
+    }
+   ]
   },
   "746373": {
    "task": "Diagnosis",
-   "boardCall": "Healthy term newborn + 4 hours old + blue hands, feet, perioral skin + pink mucous membranes -> Acrocyanosis",
-   "hinge": "Isolated peripheral blueness of hands, feet, and perioral skin with normal vitality and pink mucous membranes in the first 24-48 hours is benign physiologic acrocyanosis.",
+   "boardCall": "term newborn + 4 hours old + **blue hands, feet, perioral skin** + **Apgar 9 and 9** + normal Hb → Acrocyanosis",
+   "hinge": "Peripheral vasomotor instability spares the tongue and mucosa in healthy newborns.",
    "trap": "Perioral cyanosis can mimic central cyanosis from congenital heart disease, but oral mucosal pinkness and normal Apgar scores confirm acrocyanosis.",
    "options": {
     "A": {
@@ -5163,12 +5651,35 @@
      "text": "remainder of the examination shows no abnormalities."
     }
    ],
-   "topic": "normal-pediatric-variants"
+   "topic": "normal-pediatric-variants",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Blue tongue**, harsh murmur, **no rise** with oxygen",
+     "then": "Tetralogy of Fallot"
+    },
+    {
+     "opt": "C",
+     "if": "**Chocolate-brown blood**, normal PaO2",
+     "then": "Methemoglobinemia",
+     "step": "methylene blue"
+    },
+    {
+     "opt": null,
+     "if": "Cyanosis with **fever and hypothermia**",
+     "then": "Neonatal sepsis"
+    },
+    {
+     "opt": null,
+     "if": "**Hct above 65%**, plethora",
+     "then": "Polycythemia"
+    }
+   ]
   },
   "746374": {
    "task": "Diagnosis",
-   "boardCall": "Preterm infant + RDS + pH 7.17 + PCO2 50 mm Hg + HCO3 14 mEq/L -> Mixed respiratory and metabolic acidosis",
-   "hinge": "A pH < 7.35 with elevated PCO2 (50 mm Hg, respiratory acidosis) and depressed HCO3 (14 mEq/L, metabolic acidosis) defines a mixed acid-base disorder.",
+   "boardCall": "1-day-old + 1400 g + grunting, flaring + cyanosis + **pH 7.17** + **PCO2 50, HCO3 14** → Respiratory and metabolic acidosis",
+   "hinge": "Each value pushes pH down independently; neither is compensating.",
    "trap": "Tachypnea suggests respiratory compensation for metabolic acidosis, but PCO2 is elevated (50 mm Hg), proving respiratory failure.",
    "options": {
     "A": {
@@ -5252,12 +5763,34 @@
      "text": "pH 7.17 PCO₂ 50 mm Hg PO₂ 40 mm Hg"
     }
    ],
-   "topic": "acid-base-disorders"
+   "topic": "acid-base-disorders",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**HCO3 elevated** with high PCO2, chronic course",
+     "then": "Respiratory acidosis with compensation"
+    },
+    {
+     "opt": "A",
+     "if": "**PCO2 low**, HCO3 low, lactate high",
+     "then": "Lactic acidosis with compensation"
+    },
+    {
+     "opt": "B",
+     "if": "Low HCO3, **PCO2 matches Winter's formula**",
+     "then": "Pure metabolic acidosis"
+    },
+    {
+     "opt": "D",
+     "if": "**Rising creatinine** with oliguria",
+     "then": "Respiratory acidosis with renal failure"
+    }
+   ]
   },
   "746375": {
    "task": "Ethics",
-   "boardCall": "Parents request replacing ALL chemotherapy with unverified herbal remedy -> Continue chemotherapy while investigating the herbal information",
-   "hinge": "When parents seek alternative therapies for life-threatening pediatric illness, the physician should advise continuing proven chemotherapy while empathetically investigating the remedy's safety and efficacy.",
+   "boardCall": "7-year-old + **relapsed ALL on chemotherapy** + side effects + **parents want herbal cure instead** → Continue medications while investigating further",
+   "hinge": "Engaging the family keeps them in care while curative therapy continues.",
    "trap": "Refusal to discontinue chemotherapy can tempt immediate CPS reporting, but constructive dialogue and empathetic education must occur first.",
    "options": {
     "A": {
@@ -5355,7 +5888,29 @@
      "text": "discontinue their daughter's current medications"
     }
    ],
-   "topic": "informed-consent-and-capacity"
+   "topic": "informed-consent-and-capacity",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Parents stop chemotherapy** despite counseling",
+     "then": "Child protective services"
+    },
+    {
+     "opt": "D",
+     "if": "Remedy is **proven safe**, no interactions",
+     "then": "Add herbal remedy to regimen"
+    },
+    {
+     "opt": null,
+     "if": "**Persistent refusal** of life-saving therapy",
+     "then": "Ethics consult and court order"
+    },
+    {
+     "opt": null,
+     "if": "Patient is **an adult** with capacity",
+     "then": "Respect refusal"
+    }
+   ]
   }
  },
  "topics": {
@@ -9762,5 +10317,5 @@
    "evidence": "Checked 2026-10-30: [AHA adult advanced life support 2025](https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support)."
   }
  },
- "updatedAt": "2026-11-23T05:02:05Z"
+ "updatedAt": "2026-11-23T12:05:48Z"
 }

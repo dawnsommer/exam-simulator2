@@ -1203,8 +1203,8 @@
   },
   "n-07-p2q46": {
    "task": "Diagnosis",
-   "boardCall": "14 L fluids + hypoxemia + cephalization of pulmonary vasculature -> Volume overload congestive heart failure.",
-   "hinge": "Keyed CHF: cephalization and perihilar fullness after 14 L crystalloid = volume-overload edema; measured PCWP 9 (normal) would favor ARDS.",
+   "boardCall": "Pancreatitis + **14 L crystalloid** + hypoxemia + **vascular cephalization** → Congestive heart failure",
+   "hinge": "Massive crystalloid overload produces hydrostatic edema with perihilar fullness despite pancreatitis.",
    "trap": "Severe pancreatitis and hypoxemia suggest ARDS, but cephalization and perihilar fullness point to hydrostatic edema.",
    "options": {
     "A": {
@@ -1288,7 +1288,25 @@
      "trap": true
     }
    ],
-   "topic": "heart-failure"
+   "topic": "heart-failure",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**PCWP ≤18 mm Hg** + **normal heart size** after pancreatitis",
+     "then": "Acute respiratory distress syndrome",
+     "step": "use low tidal volume PEEP"
+    },
+    {
+     "opt": "B",
+     "if": "**Witnessed vomiting** + **dependent lung lobe infiltrate**",
+     "then": "Aspiration pneumonitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Post-intubation hypoxemia** + **unilateral diminished breath sounds**",
+     "then": "Atelectasis"
+    }
+   ]
   },
   "n-07-p3q01": {
    "task": "Mechanism",
@@ -1404,8 +1422,8 @@
   },
   "n-07-p3q02": {
    "task": "Diagnosis",
-   "boardCall": "Anticoagulation (enoxaparin + ketorolac) + epidural removal + acute paraplegia + incontinence -> Spinal epidural hematoma.",
-   "hinge": "Acute lower extremity motor loss and urinary incontinence immediately following epidural catheter removal while anticoagulated.",
+   "boardCall": "Hip arthroplasty + **enoxaparin + ketorolac** + **paraplegia after epidural removal** → Epidural hematoma",
+   "hinge": "Acute cord compression right after catheter removal on anticoagulants signals spinal bleeding.",
    "trap": "Immediate onset after catheter removal might suggest residual anesthetic block, but urinary incontinence indicates acute cord compression.",
    "options": {
     "A": {
@@ -1490,12 +1508,35 @@
      "text": "medications include ketorolac, enoxaparin, and morphine"
     }
    ],
-   "topic": "spinal-cord-compression"
+   "topic": "spinal-cord-compression",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Normal sphincter tone** resolving as **anesthetic wears off**",
+     "then": "Residual neurologic blockade"
+    },
+    {
+     "opt": "E",
+     "if": "**Recent viral illness** + **symmetric sensory-motor level**",
+     "then": "Transverse myelitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Back pain, saddle anesthesia**, and **urinary retention**",
+     "then": "Centrally herniated nucleus pulposus"
+    },
+    {
+     "opt": null,
+     "if": "**Fever, back tenderness**, and **gradual deficit**",
+     "then": "Spinal epidural abscess",
+     "step": "start vancomycin and ceftriaxone"
+    }
+   ]
   },
   "n-07-p3q03": {
    "task": "Diagnosis",
-   "boardCall": "Rotatory nystagmus in elderly -> Pathologic central or vestibular sign requiring neuroimaging.",
-   "hinge": "Rotatory nystagmus is always abnormal and indicates a vestibular or central nervous system lesion.",
+   "boardCall": "82yo woman + MMSE 29 + **rotatory nystagmus** + normal gait → Brisk rotatory nystagmus",
+   "hinge": "Involuntary torsional eye movement always signals vestibular or central pathology.",
    "trap": "Decreased smell suggests early neurodegenerative disease, but rotatory nystagmus is a clear pathologic sign requiring workup.",
    "options": {
     "A": {
@@ -1586,12 +1627,30 @@
      "trap": true
     }
    ],
-   "topic": "physiologic-changes-of-aging"
+   "topic": "physiologic-changes-of-aging",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Resting pill-rolling tremor** with **rigidity and bradykinesia**",
+     "then": "Decreased sense of smell"
+    },
+    {
+     "opt": "C",
+     "if": "**Early postural falls** + **vertical gaze palsy**",
+     "then": "Decreased upward gaze"
+    },
+    {
+     "opt": null,
+     "if": "**Acute vertigo** + **direction-changing nystagmus** + normal HIT",
+     "then": "Posterior circulation stroke",
+     "step": "get urgent diffusion MRI"
+    }
+   ]
   },
   "n-07-p3q04": {
    "task": "Diagnosis",
-   "boardCall": "Bradycardia + hypothermia + nonpitting edema + cognitive slowing -> Hypothyroidism (reversible dementia).",
-   "hinge": "Bradycardia, hypothermia, nonpitting edema, and delayed reflexes identify severe hypothyroidism as the cause of dementia.",
+   "boardCall": "77yo + **HR 52** + 36.2°C + **nonpitting edema** + MMSE 20 → Hypothyroidism",
+   "hinge": "Hypothermia, bradycardia, and nonpitting myxedema identify reversible metabolic dementia.",
    "trap": "Progressive cognitive decline in a 77-year-old suggests vascular dementia, but hypothermia and nonpitting edema reveal hypothyroidism.",
    "options": {
     "A": {
@@ -1678,12 +1737,34 @@
      "text": "temperature is 36.2°C (97.2°F)"
     }
    ],
-   "topic": "hypothyroidism"
+   "topic": "hypothyroidism",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Stepwise cognitive decline** + **focal motor deficits**",
+     "then": "Multi-infarct dementia"
+    },
+    {
+     "opt": "D",
+     "if": "**Macrocytic anemia** + **lost vibration** + glossitis",
+     "then": "Pernicious anemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Choreiform movements** + **caudate atrophy** + family history",
+     "then": "Huntington disease"
+    },
+    {
+     "opt": "E",
+     "if": "**Grandiose delusions** + **Argyll Robertson pupils**",
+     "then": "Syphilis"
+    }
+   ]
   },
   "n-07-p3q05": {
    "task": "Mechanism",
-   "boardCall": "Alcoholism + IV dextrose + triad of encephalopathy, ataxia, ophthalmoplegia -> Wernicke encephalopathy (thiamine / vitamin B1 deficiency).",
-   "hinge": "Bilateral lateral rectus palsies, nystagmus, and ataxia precipitated by IV dextrose indicate thiamine deficiency.",
+   "boardCall": "Alcohol detox + **IV dextrose** + ataxia + **bilateral CN VI palsy** → Vitamin B1 (thiamine)",
+   "hinge": "Infusing glucose without thiamine depletes remaining cofactor, precipitating acute Wernicke encephalopathy.",
    "trap": "Alcohol withdrawal symptoms suggest sedative underdosing, but ophthalmoplegia after dextrose is diagnostic of thiamine deficiency.",
    "options": {
     "A": {
@@ -1796,12 +1877,29 @@
      "text": "admission to the hospital for detoxification"
     }
    ],
-   "topic": "wernicke-korsakoff-syndrome"
+   "topic": "wernicke-korsakoff-syndrome",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Subacute combined degeneration** + **macrocytic anemia**",
+     "then": "Vitamin B12 deficiency"
+    },
+    {
+     "opt": "D",
+     "if": "**Peripheral neuropathy** during **isoniazid therapy**",
+     "then": "Vitamin B6 deficiency"
+    },
+    {
+     "opt": "H",
+     "if": "**Hemolytic anemia** + **ataxia** in fat malabsorption",
+     "then": "Vitamin E deficiency"
+    }
+   ]
   },
   "n-07-p3q06": {
    "task": "Diagnosis",
-   "boardCall": "Recurrent angioedema without urticaria/pruritus + positive family history -> Hereditary angioedema (C1 esterase inhibitor deficiency).",
-   "hinge": "Recurrent episodes of nonpitting angioedema without pruritus and strong paternal family history point to C1 inhibitor deficiency.",
+   "boardCall": "Recurrent lip/tongue swelling + **no itching/hives** + **paternal family history** → C1 esterase inhibitor",
+   "hinge": "Nonpruritic familial angioedema reflects bradykinin excess from C1 inhibitor deficiency, not IgE.",
    "trap": "Sudden facial swelling suggests IgE-mediated anaphylaxis, but absence of hives, itching, or allergies indicates bradykinin angioedema.",
    "options": {
     "A": {
@@ -1898,12 +1996,29 @@
      "text": "Mild inspiratory stridor is heard"
     }
    ],
-   "topic": "angioedema"
+   "topic": "angioedema",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Urticaria, wheezing, pruritus**, and **peanut exposure**",
+     "then": "IgE"
+    },
+    {
+     "opt": "D",
+     "if": "**Episodic angioedema** with **peripheral eosinophilia**",
+     "then": "Eosinophil count"
+    },
+    {
+     "opt": "C",
+     "if": "**Recurrent disseminated Neisseria** meningitidis infections",
+     "then": "C8"
+    }
+   ]
   },
   "n-07-p3q07": {
    "task": "Diagnosis",
-   "boardCall": "Pregnancy at 20 weeks + epigastric pain radiating to back + vomiting -> Acute pancreatitis (serum amylase and lipase).",
-   "hinge": "Epigastric pain radiating to the back with vomiting warrants serum amylase and lipase measurement for acute pancreatitis.",
+   "boardCall": "20 wk pregnant + **epigastric pain to back** + **BP 120/80** → Serum amylase activity",
+   "hinge": "Normotensive upper abdominal tenderness favors pancreatic inflammation over preeclampsia.",
    "trap": "Epigastric pain in pregnancy raises preeclampsia concern, but normal blood pressure and back radiation point to pancreatitis.",
    "options": {
     "A": {
@@ -2009,12 +2124,35 @@
      "text": "temperature is 37.8°C (100°F)"
     }
    ],
-   "topic": "pancreatitis"
+   "topic": "pancreatitis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**BP ≥140/90** + **proteinuria** or RUQ pain after 20 wk",
+     "then": "Platelet count"
+    },
+    {
+     "opt": "H",
+     "if": "**Vaginal bleeding** or **cervical dilation** at 20 wk",
+     "then": "Pelvic ultrasonography"
+    },
+    {
+     "opt": "B",
+     "if": "**Nonpregnant** with **suspected necrotizing pancreatitis**",
+     "then": "CT scan of the abdomen"
+    },
+    {
+     "opt": null,
+     "if": "**Fever, RUQ pain**, and **jaundice** in pregnancy",
+     "then": "Cholangitis",
+     "step": "perform ERCP with fetal shielding"
+    }
+   ]
   },
   "n-07-p3q08": {
    "task": "Diagnosis",
-   "boardCall": "37 weeks + BP 150/98 + proteinuria 3+ + epigastric pain + headache -> Preeclampsia with severe features (check platelet count for HELLP).",
-   "hinge": "Hypertension and proteinuria at 37 weeks with epigastric pain require platelet count to evaluate for HELLP syndrome.",
+   "boardCall": "37 wk + **BP 150/98** + **3+ proteinuria** + epigastric pain + 3+ DTRs → Measurement of platelet count",
+   "hinge": "Checking platelets and transaminases evaluates for HELLP syndrome in severe preeclampsia.",
    "trap": "Epigastric pain suggests pancreatitis, but hypertension, hyperreflexia, and proteinuria point to preeclampsia.",
    "options": {
     "A": {
@@ -2120,12 +2258,30 @@
      "text": "Fetal heart rate is 130/min"
     }
    ],
-   "topic": "hypertensive-disorders-of-pregnancy"
+   "topic": "hypertensive-disorders-of-pregnancy",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Normotensive** + **no proteinuria** + pain to back",
+     "then": "Serum amylase activity"
+    },
+    {
+     "opt": "H",
+     "if": "**Vaginal bleeding** or **suspected placental abruption**",
+     "then": "Ultrasonography of the pelvis"
+    },
+    {
+     "opt": null,
+     "if": "**Generalized tonic-clonic seizure** in preeclampsia",
+     "then": "Eclampsia",
+     "step": "give magnesium then deliver"
+    }
+   ]
   },
   "n-07-p3q09": {
    "task": "Diagnosis",
-   "boardCall": "Calf claudication + decreased pedal pulses -> Femoropopliteal artery stenosis.",
-   "hinge": "Aching pain isolated to the calves during exertion (claudication) corresponds anatomically to femoropopliteal stenosis.",
+   "boardCall": "67yo man + **calf pain walking** + relieved by rest + **decreased pedal pulses** → Femoropopliteal arteries",
+   "hinge": "Claudication localizes to muscles immediately distal to the superficial femoral stenosis.",
    "trap": "Decreased pedal pulses suggest infrapopliteal (tibial/peroneal) disease, but calf claudication arises from the superficial femoral artery.",
    "options": {
     "A": {
@@ -2212,12 +2368,29 @@
      "text": "A 67-year-old man"
     }
    ],
-   "topic": "peripheral-artery-disease"
+   "topic": "peripheral-artery-disease",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Buttock and thigh claudication** + **absent femoral pulses**",
+     "then": "Iliac arteries"
+    },
+    {
+     "opt": "A",
+     "if": "**Bilateral buttock pain** + **erectile dysfunction**",
+     "then": "Abdominal aorta"
+    },
+    {
+     "opt": "E",
+     "if": "**Diabetic foot ischemia** with **intact popliteal pulse**",
+     "then": "Tibial and peroneal arteries"
+    }
+   ]
   },
   "n-07-p3q10": {
    "task": "Mechanism",
-   "boardCall": "Dysphagia to solids and liquids + retained secretions + bird-beak on barium swallow -> Achalasia (decreased peristalsis + increased LES tone).",
-   "hinge": "Achalasia shows aperistalsis in the esophageal body and failure of lower esophageal sphincter relaxation with elevated tone.",
+   "boardCall": "**Dysphagia to solids and liquids** + retained secretions + **bird-beak barium swallow** → ⬇ | ⬆ (achalasia)",
+   "hinge": "Achalasia impairs esophageal body motility and prevents lower esophageal sphincter relaxation.",
    "trap": "Diffuse esophageal spasm causes uncoordinated hyperperistalsis, whereas achalasia causes aperistalsis.",
    "options": {
     "A": {
@@ -2297,12 +2470,29 @@
      "text": "A previously healthy 37-year-old woman"
     }
    ],
-   "topic": "esophageal-motility-disorders"
+   "topic": "esophageal-motility-disorders",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**CREST syndrome** with **patulous low-pressure sphincter**",
+     "then": "⬇ | ⬇ (scleroderma)"
+    },
+    {
+     "opt": "A",
+     "if": "**Unpredictable chest pain** + **corkscrew esophagus**",
+     "then": "⬆ | ⬆ (hypertensive spasm)"
+    },
+    {
+     "opt": "B",
+     "if": "**Strong peristalsis** with **normal LES relaxation**",
+     "then": "⬆ | ⬇"
+    }
+   ]
   },
   "n-07-p3q11": {
    "task": "Next step",
-   "boardCall": "Severe claustrophobia during essential MRI + patient wants to complete test -> Short-acting benzodiazepine (lorazepam).",
-   "hinge": "Acute situational claustrophobia preventing an essential diagnostic MRI is managed with a short-acting benzodiazepine.",
+   "boardCall": "Essential MRI + **claustrophobic panic** + **wants to finish** → Lorazepam therapy",
+   "hinge": "A single short-acting benzodiazepine calms acute MRI anxiety without risking paper-bag hypoxia.",
    "trap": "Hyperventilation tingling suggests paper bag breathing, but paper bag breathing causes dangerous hypoxia and is contraindicated.",
    "options": {
     "A": {
@@ -2398,12 +2588,29 @@
      "text": "pulse is 104/min, respirations are 22/min and shallow"
     }
    ],
-   "topic": "phobias"
+   "topic": "phobias",
+   "branches": [
+    {
+     "opt": "G",
+     "if": "**Performance-only stage fright** before **public speaking**",
+     "then": "Propranolol therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Acute psychosis** with **violent paranoia**",
+     "then": "Haloperidol therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**Chronic generalized anxiety** without **urgent imaging**",
+     "then": "Biofeedback"
+    }
+   ]
   },
   "n-07-p3q12": {
    "task": "Next step",
-   "boardCall": "Post-splenectomy dyspnea + decreased left base breath sounds + leukocytosis -> Chest x-ray (subdiaphragmatic fluid, left pleural effusion, or atelectasis).",
-   "hinge": "New postoperative dyspnea with decreased breath sounds at the left base requires a chest x-ray as the best initial test.",
+   "boardCall": "POD 5 splenectomy + **new dyspnea** + **decreased left base breath sounds** → X-rays of the chest",
+   "hinge": "Postoperative dyspnea with unilateral diminished breath sounds warrants chest radiography first.",
    "trap": "Difficult hilar dissection raises concern for pancreatic tail injury or subphrenic abscess, but chest x-ray is the initial test for acute dyspnea.",
    "options": {
     "A": {
@@ -2501,12 +2708,29 @@
      "trap": true
     }
    ],
-   "topic": "perioperative-care"
+   "topic": "perioperative-care",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Clear chest x-ray** + **hypoxemia** + tachycardia",
+     "then": "Pulmonary angiography"
+    },
+    {
+     "opt": "B",
+     "if": "**Fever, leukocytosis**, and **left upper quadrant tenderness**",
+     "then": "Abdominal ultrasonography"
+    },
+    {
+     "opt": "E",
+     "if": "**Confirmed pulmonary embolism** without **bleeding risk**",
+     "then": "Systemic heparin therapy"
+    }
+   ]
   },
   "n-07-p3q13": {
    "task": "Diagnosis",
-   "boardCall": "Schizoaffective disorder + drinking 12-15 glasses of water daily + hyponatremia with dilute urine -> Psychogenic polydipsia.",
-   "hinge": "Schizoaffective + 12-15 glasses water daily + relatively dilute urine (Uosm 200) = primary polydipsia; classic polydipsia has Uosm <100.",
+   "boardCall": "Schizoaffective + **12–15 glasses water/day** + Na 122 + **Uosm 200** → Psychogenic polydipsia",
+   "hinge": "Excessive water consumption overwhelms renal free-water excretion in psychiatric patients.",
    "trap": "Hyponatremia with euvolemia suggests SIADH, but SIADH causes concentrated urine (Uosm > 100), whereas polydipsia causes maximally dilute urine.",
    "options": {
     "A": {
@@ -2598,12 +2822,29 @@
      "text": "Osmolality | 200 mOsmol/kg"
     }
    ],
-   "topic": "hyponatremia"
+   "topic": "hyponatremia",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Normal fluid intake** + **Uosm >300** + high urine Na",
+     "then": "Syndrome of inappropriate ADH"
+    },
+    {
+     "opt": "C",
+     "if": "**Polyuria** with **serum sodium >145 mEq/L**",
+     "then": "Diabetes insipidus"
+    },
+    {
+     "opt": "A",
+     "if": "**Hypotension, hyperkalemia**, and **hyperpigmentation**",
+     "then": "Adrenal insufficiency"
+    }
+   ]
   },
   "n-07-p3q14": {
    "task": "Next step",
-   "boardCall": "Widespread or facial molluscum contagiosum in adult (> 100 lesions) -> HIV antibody testing.",
-   "hinge": "Extensive, giant, or facial molluscum contagiosum in an adult is a hallmark cutaneous manifestation of severe immunocompromise from HIV.",
+   "boardCall": "27yo man + **>100 umbilicated papules** + **facial spread** → HIV antibody testing",
+   "hinge": "Disseminated facial molluscum in an adult signals advanced cell-mediated immunodeficiency.",
    "trap": "Molluscum is often benign in children requiring no intervention, but extensive adult involvement mandates HIV screening.",
    "options": {
     "A": {
@@ -2690,12 +2931,29 @@
      "text": "diagnosis of molluscum contagiosum is made"
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Three trunk papules** in **healthy child**",
+     "then": "No additional intervention"
+    },
+    {
+     "opt": "C",
+     "if": "**Painless genital chancre** or **palmoplantar rash**",
+     "then": "Syphilis serologic testing"
+    },
+    {
+     "opt": "D",
+     "if": "**Painful grouped vesicles** needing **HSV confirmation**",
+     "then": "Viral culture"
+    }
+   ]
   },
   "n-07-p3q15": {
    "task": "Mechanism",
-   "boardCall": "Adolescent growth spurt + jumping sports + tender tibial tubercle -> Osgood-Schlatter (traction apophysitis / repeated microfracture at patellar tendon insertion).",
-   "hinge": "Traction apophysitis of the tibial tubercle secondary to repetitive quadriceps contraction during a rapid growth spurt.",
+   "boardCall": "14yo boy + **3-inch growth** + jumping pain + **tender tibial tubercle** → Repeated microfracture at insertion",
+   "hinge": "Repetitive quadriceps traction on the apophysis during rapid growth produces Osgood-Schlatter disease.",
    "trap": "Acute onset with jumping sounds like an avulsion fracture, but 6-month chronic ache at the tubercle represents repetitive traction microtrauma.",
    "options": {
     "A": {
@@ -2787,12 +3045,29 @@
      "text": "There is no joint effusion, and the knee joint is stable"
     }
    ],
-   "topic": "knee-injuries"
+   "topic": "knee-injuries",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Acute fall** with **inability to extend knee**",
+     "then": "Acute epiphyseal fracture"
+    },
+    {
+     "opt": "C",
+     "if": "**High fever, warm effusion**, and **refusal to move joint**",
+     "then": "Acute suppurative arthritis"
+    },
+    {
+     "opt": "B",
+     "if": "**Pivoting injury** with **hemarthrosis and positive Lachman**",
+     "then": "Acute ligament failure"
+    }
+   ]
   },
   "n-07-p3q16": {
    "task": "Next step",
-   "boardCall": "Post-op orthopedic surgery + unilateral calf tightness and tenderness -> Deep venous thrombosis (confirm with compression duplex ultrasound).",
-   "hinge": "Compression duplex ultrasonography is the noninvasive imaging modality of choice to confirm deep vein thrombosis.",
+   "boardCall": "POD 3 femur ORIF + **left calf tightness** + **tenderness** → Duplex scan",
+   "hinge": "Compression duplex ultrasound is the first-line noninvasive test to confirm postoperative DVT.",
    "trap": "Contrast venography is the historical gold standard, but compression duplex ultrasound is the first-line noninvasive confirmatory study.",
    "options": {
     "A": {
@@ -2879,12 +3154,29 @@
      "text": "Three days after"
     }
    ],
-   "topic": "venous-thromboembolism"
+   "topic": "venous-thromboembolism",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Equivocal noninvasive studies** requiring **gold-standard anatomy**",
+     "then": "Venography"
+    },
+    {
+     "opt": "C",
+     "if": "**Cool pale foot** with **absent pedal pulses**",
+     "then": "Angiography"
+    },
+    {
+     "opt": null,
+     "if": "**Acute pleuritic pain** and **hypoxia** after ORIF",
+     "then": "CT pulmonary angiography"
+    }
+   ]
   },
   "n-07-p3q17": {
    "task": "Next step",
-   "boardCall": "Painless red eye without vision change + normal exam + sharply demarcated scleral blood -> Subconjunctival hemorrhage (reassurance).",
-   "hinge": "Painless well-demarcated subconjunctival hemorrhage with preserved 20/20 visual acuity is benign and requires only reassurance.",
+   "boardCall": "Painless red eye + **20/20 vision** + **flat circumscribed scleral blood** → Reassurance",
+   "hinge": "Isolated subconjunctival hemorrhage with intact vision and no trauma resolves spontaneously.",
    "trap": "Dramatic ocular redness suggests severe intraocular pathology or bleeding disorder, but isolated subconjunctival hemorrhage is benign.",
    "options": {
     "A": {
@@ -2985,12 +3277,35 @@
      "text": "Visual field testing shows no abnormalities"
     }
    ],
-   "topic": "conjunctivitis"
+   "topic": "conjunctivitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Pain, photophobia**, or **decreased visual acuity**",
+     "then": "Slit-lamp examination"
+    },
+    {
+     "opt": "D",
+     "if": "**Recurrent subconjunctival bleeds** or **warfarin therapy**",
+     "then": "Prothrombin and partial thromboplastin times"
+    },
+    {
+     "opt": "G",
+     "if": "**Purulent discharge** with **eyelid crusting**",
+     "then": "Topical sulfacetamide therapy"
+    },
+    {
+     "opt": null,
+     "if": "**360° hemorrhage** + **teardrop pupil** after trauma",
+     "then": "Globe rupture",
+     "step": "shield eye, consult ophthalmology"
+    }
+   ]
   },
   "n-07-p3q18": {
    "task": "Diagnosis",
-   "boardCall": "Posterior vulva / vestibule mass at 4 or 8 o'clock external to hymenal ring -> Bartholin duct cyst.",
-   "hinge": "A fluctuant mass in the posterior labium majus / vestibule at the 4 or 8 o'clock position external to the hymenal ring is a Bartholin duct cyst.",
+   "boardCall": "3-cm fluctuant mass + **posterior vulva** + **external to hymen** → Bartholin duct cyst",
+   "hinge": "Bartholin glands sit posterolaterally in the vestibule outside the hymenal ring.",
    "trap": "Prior deliveries suggest an episiotomy inclusion cyst, but characteristic posterior vestibular anatomy defines a Bartholin cyst.",
    "options": {
     "A": {
@@ -3077,12 +3392,29 @@
      "text": "A 37-year-old woman, gravida 3. para 3"
     }
    ],
-   "topic": "bartholin-gland-cyst-and-abscess"
+   "topic": "bartholin-gland-cyst-and-abscess",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Firm subepithelial nodule** along **prior episiotomy scar**",
+     "then": "Episiotomy inclusion cyst"
+    },
+    {
+     "opt": "C",
+     "if": "**Asymptomatic cyst** along **anterolateral vaginal wall**",
+     "then": "Mesonephric duct cyst"
+    },
+    {
+     "opt": "D",
+     "if": "**Superficial labia majora nodule** with **central punctum**",
+     "then": "Sebaceous cyst"
+    }
+   ]
   },
   "n-07-p3q19": {
    "task": "Diagnosis",
-   "boardCall": "Pleuritic chest pain after lifting furniture + reproducible parasternal tenderness -> Costochondritis.",
-   "hinge": "Reproducible focal tenderness to palpation at the costochondral junction confirms costochondritis.",
+   "boardCall": "Lifted heavy furniture + pleuritic pain + **focal parasternal tenderness** → Costochondritis",
+   "hinge": "Reproducible point tenderness over costochondral cartilage distinguishes musculoskeletal pain from PE.",
    "trap": "Smoking, OCPs, pleuritic pain, and tachycardia suggest PE, but point tenderness at the sternal border localizes to the chest wall.",
    "options": {
     "A": {
@@ -3173,12 +3505,30 @@
      "trap": true
     }
    ],
-   "topic": "costochondritis"
+   "topic": "costochondritis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**No chest wall tenderness** + **hypoxemia** + OCPs",
+     "then": "Pulmonary embolus",
+     "step": "order CT pulmonary angiography"
+    },
+    {
+     "opt": "D",
+     "if": "**Absent unilateral breath sounds** + **hyperresonance**",
+     "then": "Pneumothorax"
+    },
+    {
+     "opt": "B",
+     "if": "**Direct trauma** + **point tenderness over lower rib**",
+     "then": "Fracture of 10th rib"
+    }
+   ]
   },
   "n-07-p3q20": {
    "task": "Diagnosis",
-   "boardCall": "Severely decreased cardiac index (1.2) + markedly elevated wedge pressure (30) + hypotension -> Cardiogenic shock.",
-   "hinge": "Profoundly low cardiac index and severe hypotension despite elevated filling pressures (PCWP 30, CVP 28) define cardiogenic shock.",
+   "boardCall": "Post-AAA repair + MAP 55 + **CI 1.2** + **PCWP 30** → Cardiogenic shock",
+   "hinge": "Severely depressed cardiac output with high filling pressures defines intrinsic pump failure.",
    "trap": "High wedge pressure sounds like congestive heart failure, but frank hypotension (MAP 55) and severe hypoperfusion define cardiogenic shock.",
    "options": {
     "A": {
@@ -3272,7 +3622,32 @@
      "text": "Central venous pressure | 28 cm H₂O"
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Massive blood loss** with **PCWP 3 and flat neck veins**",
+     "then": "Hypovolemic hypoperfusion",
+     "step": "give crystalloid and blood"
+    },
+    {
+     "opt": "C",
+     "if": "**High CI** with **warm skin** and fever",
+     "then": "Decreased SVR (septic shock)",
+     "step": "start norepinephrine and antibiotics"
+    },
+    {
+     "opt": "B",
+     "if": "**Elevated PCWP** with **normal MAP** and warm extremities",
+     "then": "Congestive heart failure"
+    },
+    {
+     "opt": null,
+     "if": "**Equalized diastolic pressures** + **pulsus paradoxus**",
+     "then": "Cardiac tamponade",
+     "step": "perform pericardiocentesis"
+    }
+   ]
   },
   "n-07-p3q21": {
    "task": "Prevention",
@@ -20064,8 +20439,8 @@
   },
   "n-07-p2q45": {
    "task": "Prevention",
-   "boardCall": "Chronic alcohol use + wide-based gait + impaired tandem walk -> Alcoholic cerebellar degeneration (prevented by abstinence).",
-   "hinge": "Chronic heavy alcohol consumption directly causes anterior cerebellar vermis degeneration and truncal ataxia.",
+   "boardCall": "67yo man + **daily vodka** + **wide-based gait** + failed tandem walk → Abstinence from alcohol",
+   "hinge": "Chronic ethanol directly injures anterior cerebellar vermis Purkinje cells, causing truncal ataxia.",
    "trap": "Long smoking history suggests vascular or oncologic etiology, but cerebellar ataxia is alcohol-induced.",
    "options": {
     "A": {
@@ -20143,7 +20518,24 @@
      "text": "cannot walk more than three steps heel-to-toe in a straight line"
     }
    ],
-   "topic": "cerebellar-disorders"
+   "topic": "cerebellar-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Squamous lung lesion** + **subacute cerebellar autoantibodies**",
+     "then": "Abstinence from smoking"
+    },
+    {
+     "opt": "D",
+     "if": "**Argyll Robertson pupils** + **lost dorsal column vibration**",
+     "then": "Benzathine penicillin G"
+    },
+    {
+     "opt": "C",
+     "if": "**Follicular hyperkeratosis** and **night blindness**",
+     "then": "Diet rich in retinoids"
+    }
+   ]
   }
  },
  "topics": {
@@ -33911,5 +34303,5 @@
    "evidence": "Not checked online; established thiamine-deficiency teaching."
   }
  },
- "updatedAt": "2026-11-23T05:02:05Z"
+ "updatedAt": "2026-11-23T10:13:17Z"
 }

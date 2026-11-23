@@ -2740,8 +2740,8 @@
   },
   "C-OBGyn-11:Q026": {
    "task": "Next step",
-   "boardCall": "Postpartum hemorrhage + macrosomia + polyhydramnios + soft boggy uterus -> uterine massage.",
-   "hinge": "A soft uterus extending to the umbilicus with profuse postpartum bleeding indicates uterine atony, treated first with bimanual uterine massage.",
+   "boardCall": "macrosomia + polyhydramnios + prolonged oxytocin + **soft uterus at umbilicus** + profuse bleeding → Uterine massage",
+   "hinge": "Atony is the cause, so compressing the uterus comes before any procedure.",
    "trap": "Tachycardia and hypotension (90/50 mm Hg) can tempt jumping directly to invasive curettage, embolization, or laparotomy.",
    "options": {
     "A": {
@@ -2831,12 +2831,35 @@
      "trap": true
     }
    ],
-   "topic": "postpartum-hemorrhage"
+   "topic": "postpartum-hemorrhage",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Firm uterus** with **missing placental cotyledon**",
+     "then": "Uterine curettage"
+    },
+    {
+     "opt": "C",
+     "if": "Bleeding **persists after balloon**, patient **stable**",
+     "then": "Uterine artery embolization"
+    },
+    {
+     "opt": "B",
+     "if": "**Refractory shock** despite uterotonics and transfusion",
+     "then": "Laparotomy"
+    },
+    {
+     "opt": null,
+     "if": "**Mass at introitus**, fundus not palpable abdominally",
+     "then": "Uterine inversion: manual replacement",
+     "step": "stop uterotonics until replaced"
+    }
+   ]
   },
   "C-OBGyn-11:Q027": {
    "task": "Next step",
-   "boardCall": "14 weeks' gestation + chickenpox exposure + uncertain immunity -> IgG titers for varicella antibodies.",
-   "hinge": "In an asymptomatic pregnant woman exposed to varicella with unknown immunity, check varicella IgG titers first to guide VZIG.",
+   "boardCall": "14 weeks pregnant + **varicella exposure** + **unknown immunity** + no rash → IgG titers for varicella antibodies",
+   "hinge": "Most adults are immune; IgG decides who actually needs immune globulin.",
    "trap": "Knowing VZV causes congenital anomalies can tempt giving VZIG immediately or varicella vaccine without checking immunity.",
    "options": {
     "A": {
@@ -2925,12 +2948,35 @@
      "trap": true
     }
    ],
-   "topic": "congenital-infections"
+   "topic": "congenital-infections",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**IgG negative** on titer",
+     "then": "Varicella-zoster immune globulin",
+     "step": "within 10 days of exposure"
+    },
+    {
+     "opt": "A",
+     "if": "**Documented prior varicella** or two vaccine doses",
+     "then": "Reassurance"
+    },
+    {
+     "opt": "F",
+     "if": "**Nonimmune, not pregnant**",
+     "then": "Varicella vaccine"
+    },
+    {
+     "opt": null,
+     "if": "**Vesicular rash** develops in pregnancy",
+     "then": "Oral acyclovir"
+    }
+   ]
   },
   "C-OBGyn-11:Q028": {
    "task": "Next step",
-   "boardCall": "19-year-old + 6 months secondary amenorrhea + negative urine pregnancy test -> progesterone challenge test.",
-   "hinge": "After ruling out pregnancy in secondary amenorrhea, a progesterone challenge test evaluates endogenous estrogen status and outflow tract patency.",
+   "boardCall": "19-year-old + 6 months no menses + BMI 29 + normal pelvic exam + **negative urine hCG** → Progesterone challenge test",
+   "hinge": "Withdrawal bleeding separates anovulation from low estrogen or outflow obstruction.",
    "trap": "No contraception might tempt repeating serum β-hCG, or BMI 29 might tempt immediate pelvic ultrasound for PCOS.",
    "options": {
     "A": {
@@ -3013,12 +3059,35 @@
      "trap": true
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Urine test equivocal** or very early pregnancy suspected",
+     "then": "Serum β-hCG"
+    },
+    {
+     "opt": "C",
+     "if": "**Hirsutism** with withdrawal bleed, PCOS suspected",
+     "then": "Pelvic ultrasonography"
+    },
+    {
+     "opt": "D",
+     "if": "**Prior D&C**, no bleeding after estrogen-progestin",
+     "then": "Hysteroscopy",
+     "step": "lyse adhesions"
+    },
+    {
+     "opt": null,
+     "if": "**Galactorrhea** or headaches",
+     "then": "Serum prolactin"
+    }
+   ]
   },
   "C-OBGyn-11:Q029": {
    "task": "Diagnosis",
-   "boardCall": "Multipara + fourth-degree lacerations + constipation relieved by vaginal splinting + introital bulge -> rectocele.",
-   "hinge": "Constipation requiring digital vaginal pressure to defecate plus a soft introital bulge after traumatic deliveries is classic for a rectocele.",
+   "boardCall": "grand multipara + 10-lb babies + **fourth-degree lacerations** + **splints vagina to defecate** + introital bulge → Rectocele",
+   "hinge": "Needing vaginal pressure to pass stool localizes the posterior wall defect.",
    "trap": "A soft mass protruding through the vaginal introitus can mimic cystocele, enterocele, or uterine prolapse.",
    "options": {
     "A": {
@@ -3096,12 +3165,34 @@
      "text": "soft, compressible, smooth mass protruding through the vaginal introitus"
     }
    ],
-   "topic": "pelvic-organ-prolapse"
+   "topic": "pelvic-organ-prolapse",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Anterior wall bulge** with **incomplete voiding**",
+     "then": "Cystocele"
+    },
+    {
+     "opt": "B",
+     "if": "**Apical posterior bulge** after hysterectomy, bowel peristalsis seen",
+     "then": "Enterocele"
+    },
+    {
+     "opt": "E",
+     "if": "**Cervix descends** to introitus on straining",
+     "then": "Uterine prolapse"
+    },
+    {
+     "opt": "D",
+     "if": "**Distal anterior bulge** with stress leakage",
+     "then": "Urethrocele"
+    }
+   ]
   },
   "C-OBGyn-11:Q030": {
    "task": "Diagnosis",
-   "boardCall": "10 weeks' gestation + severe vaginal bleeding + cramps + 1-cm dilated cervix + tissue in vagina -> incomplete abortion.",
-   "hinge": "An open cervical os with reddish-gray products of conception already in the vagina defines an incomplete abortion.",
+   "boardCall": "10 weeks + heavy bleeding + cramps + **cervix dilated 1 cm** + **tissue in vagina** → Incomplete abortion",
+   "hinge": "Passed tissue with an open os means some products remain inside.",
    "trap": "Cervical dilation with bleeding can tempt inevitable abortion, which lacks passed tissue in the vagina.",
    "options": {
     "A": {
@@ -3189,12 +3280,34 @@
      "text": "reddish gray tissue in the vagina"
     }
    ],
-   "topic": "early-pregnancy-loss"
+   "topic": "early-pregnancy-loss",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "Open os but **no tissue passed**",
+     "then": "Inevitable abortion"
+    },
+    {
+     "opt": "F",
+     "if": "**Closed os** with **viable fetus** on ultrasound",
+     "then": "Threatened abortion"
+    },
+    {
+     "opt": "E",
+     "if": "Closed os, **no cardiac activity**, no bleeding",
+     "then": "Missed abortion"
+    },
+    {
+     "opt": "B",
+     "if": "**Grape-like vesicles** and **very high hCG**",
+     "then": "Hydatidiform mole"
+    }
+   ]
   },
   "C-OBGyn-11:Q031": {
    "task": "Diagnosis",
-   "boardCall": "Dementia + walker + nighttime-only incontinence (no help to toilet) + PVR 30 mL + normal UA -> functional incontinence.",
-   "hinge": "Incontinence occurring only at night when nobody helps the patient out of bed, with normal postvoid residual and urinalysis, is functional incontinence.",
+   "boardCall": "87-year-old + walker + dementia + **nighttime-only leaks, no help to toilet** + PVR 30 mL + normal UA → Functional incontinence",
+   "hinge": "Bladder works normally; the barrier is getting to the bathroom in time.",
    "trap": "Alzheimer dementia and advanced age can tempt overflow or urge incontinence, even though daytime continence is preserved and PVR is 30 mL.",
    "options": {
     "A": {
@@ -3288,12 +3401,34 @@
      "text": "postvoid residual volume is 30 mL"
     }
    ],
-   "topic": "urinary-incontinence"
+   "topic": "urinary-incontinence",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**PVR above 200 mL** with dribbling",
+     "then": "Overflow incontinence"
+    },
+    {
+     "opt": "E",
+     "if": "**Sudden urgency** day and night",
+     "then": "Urge incontinence"
+    },
+    {
+     "opt": "D",
+     "if": "**Positive cough stress test**",
+     "then": "Stress incontinence"
+    },
+    {
+     "opt": "F",
+     "if": "**Pyuria and nitrites** with new dysuria",
+     "then": "Urinary tract infection"
+    }
+   ]
   },
   "C-OBGyn-11:Q032": {
    "task": "Next step",
-   "boardCall": "Age 47 + 6-month irregular spotting + BMI 28 + normal Pap 10 months ago -> endometrial biopsy.",
-   "hinge": "Abnormal uterine bleeding in a woman age 45 or older requires an endometrial biopsy first to rule out endometrial hyperplasia or carcinoma.",
+   "boardCall": "age 47 + **6 months irregular spotting** + BMI 28 + smoker + recent normal Pap → Endometrial biopsy",
+   "hinge": "At 45 or older, endometrial cancer must be excluded before hormones.",
    "trap": "Irregular cycles at age 47 can tempt starting oral contraceptives or repeating cervical cytology before sampling the endometrium.",
    "options": {
     "A": {
@@ -3371,12 +3506,34 @@
      "text": "BMI is 28 kg/m2"
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Age under 45**, no obesity, anovulatory bleeding",
+     "then": "Oral contraceptive therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Postcoital bleeding**, Pap overdue",
+     "then": "Cervical cytology"
+    },
+    {
+     "opt": "C",
+     "if": "**Infertility** workup, tubal patency question",
+     "then": "Hysterosalpingography"
+    },
+    {
+     "opt": null,
+     "if": "**Visible cervical lesion** on speculum exam",
+     "then": "Cervical biopsy"
+    }
+   ]
   },
   "C-OBGyn-11:Q033": {
    "task": "Diagnosis",
-   "boardCall": "Primary amenorrhea + no pain + stage 5 breasts and pubic hair + shallow vaginal pouch -> Müllerian agenesis.",
-   "hinge": "Primary amenorrhea with normal stage 5 breast and pubic hair development, no cyclic pain, and a shallow vaginal pouch indicates Müllerian agenesis.",
+   "boardCall": "17-year-old + primary amenorrhea + **stage 5 breasts and pubic hair** + **shallow vaginal pouch** + no pain → Müllerian agenesis",
+   "hinge": "Normal pubic hair means androgens act, so the karyotype is likely XX.",
    "trap": "A shallow vaginal pouch can mimic a transverse vaginal septum, which instead presents with cyclic pelvic pain from hematocolpos.",
    "options": {
     "A": {
@@ -3454,12 +3611,34 @@
      "trap": true
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Scant pubic hair**, inguinal masses, **46,XY**",
+     "then": "Androgen insensitivity syndrome"
+    },
+    {
+     "opt": "E",
+     "if": "**Cyclic pelvic pain**, uterus present, **bulging hematocolpos**",
+     "then": "Transverse vaginal septum"
+    },
+    {
+     "opt": "B",
+     "if": "**Short stature**, absent breasts, **high FSH**",
+     "then": "Turner syndrome"
+    },
+    {
+     "opt": null,
+     "if": "**Bluish bulging membrane** at introitus",
+     "then": "Imperforate hymen"
+    }
+   ]
   },
   "C-OBGyn-11:Q034": {
    "task": "Diagnosis",
-   "boardCall": "35 weeks + nausea 12 h + diarrhea 6 h + cramps + nontender abdomen + closed cervix -> gastroenteritis.",
-   "hinge": "Acute nausea, diarrhea, and cramping with a soft, nontender abdomen and closed cervix at 35 weeks point to infectious gastroenteritis.",
+   "boardCall": "35 weeks + nausea + **diarrhea** + cramps + **nontender abdomen** + closed cervix → Gastroenteritis",
+   "hinge": "Dehydration and hypokalemia irritate the uterus without causing true labor.",
    "trap": "Uterine irritability on tocodynamometry and WBC 14,200/mm3 can tempt normal labor, chorioamnionitis, or appendicitis.",
    "options": {
     "A": {
@@ -3537,12 +3716,34 @@
      "trap": true
     }
    ],
-   "topic": "gastroenteritis"
+   "topic": "gastroenteritis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Regular contractions** with **cervical change**",
+     "then": "Preterm labor"
+    },
+    {
+     "opt": "B",
+     "if": "**Fever**, **uterine tenderness**, fetal tachycardia",
+     "then": "Chorioamnionitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Focal right-sided tenderness** with guarding",
+     "then": "Appendicitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Sharp groin pain** with position change, no GI symptoms",
+     "then": "Round ligament pain"
+    }
+   ]
   },
   "C-OBGyn-11:Q035": {
    "task": "Prognosis",
-   "boardCall": "16-year-old + Turner syndrome + starting estrogen therapy -> breast development (first sign of puberty).",
-   "hinge": "Exogenous estrogen in Turner syndrome induces female secondary sexual development, beginning first with thelarche (breast development).",
+   "boardCall": "16-year-old + **Turner syndrome** + primary amenorrhea + no secondary sex traits + **starting estrogen** → Breast development",
+   "hinge": "Estrogen drives thelarche; streak ovaries and adrenal androgens limit the rest.",
    "trap": "Short stature (142 cm) can tempt expecting increased height from estrogen, though height requires growth hormone and estrogen eventually closes epiphyses.",
    "options": {
     "A": {
@@ -3620,12 +3821,34 @@
      "text": "estrogen therapy"
     }
    ],
-   "topic": "chromosomal-and-genetic-disorders"
+   "topic": "chromosomal-and-genetic-disorders",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Growth hormone** started before epiphyseal closure",
+     "then": "Increased height"
+    },
+    {
+     "opt": "B",
+     "if": "**Donor oocyte** IVF with uterine priming",
+     "then": "Fertility"
+    },
+    {
+     "opt": "E",
+     "if": "**Androgen exposure** at adrenarche",
+     "then": "Increased pubic hair"
+    },
+    {
+     "opt": null,
+     "if": "**Unopposed estrogen** continued long term",
+     "then": "Add cyclic progestin"
+    }
+   ]
   },
   "C-OBGyn-11:Q036": {
    "task": "Mechanism",
-   "boardCall": "37 weeks + headache + BP 180/110 + 3+ reflexes + 4+ proteinuria -> decreased plasma volume.",
-   "hinge": "Severe preeclampsia causes endothelial injury, proteinuria, and low oncotic pressure, shifting fluid into interstitium and decreasing plasma volume.",
+   "boardCall": "37 weeks + headache + **BP 180/110** + 3+ reflexes + **4+ proteinuria** → Decreased plasma volume",
+   "hinge": "Capillary leak moves fluid out of vessels despite visible edema.",
    "trap": "Fluid retention/edema in preeclampsia can falsely suggest increased plasma volume, whereas intravascular volume is actually contracted.",
    "options": {
     "A": {
@@ -3713,12 +3936,34 @@
      "text": "Urinalysis shows 4+ protein"
     }
    ],
-   "topic": "hypertensive-disorders-of-pregnancy"
+   "topic": "hypertensive-disorders-of-pregnancy",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Normal pregnancy** without hypertension",
+     "then": "Decreased systemic vascular resistance"
+    },
+    {
+     "opt": "E",
+     "if": "**Normal pregnancy**, second trimester",
+     "then": "Increased renal blood flow"
+    },
+    {
+     "opt": null,
+     "if": "Same patient, **SVR** asked",
+     "then": "Increased systemic vascular resistance"
+    },
+    {
+     "opt": null,
+     "if": "**Oliguria and rising creatinine**",
+     "then": "Decreased renal blood flow"
+    }
+   ]
   },
   "C-OBGyn-11:Q037": {
    "task": "Risk factor",
-   "boardCall": "30 weeks' gestation + 26-week uterine size + heavy smoking and alcohol -> intrauterine fetal demise.",
-   "hinge": "Size-less-than-dates (26 cm at 30 weeks) with heavy tobacco and alcohol exposure indicates fetal growth restriction, which strongly risks intrauterine fetal demise.",
+   "boardCall": "30 weeks + **size 26 weeks** + **2 packs/day** + daily alcohol + late prenatal care → Intrauterine fetal demise",
+   "hinge": "Size less than dates signals placental insufficiency, which leads to stillbirth.",
    "trap": "Alcohol and age 35 can pull toward congenital anomalies like endocardial cushion defect or cystic hygroma, which are not caused by FGR itself.",
    "options": {
     "A": {
@@ -3796,12 +4041,34 @@
      "trap": true
     }
    ],
-   "topic": "fetal-growth-restriction"
+   "topic": "fetal-growth-restriction",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Trisomy 21** on cell-free DNA",
+     "then": "Endocardial cushion defect"
+    },
+    {
+     "opt": "B",
+     "if": "**Turner syndrome** on first-trimester screen",
+     "then": "Cystic hygroma"
+    },
+    {
+     "opt": "A",
+     "if": "**Abnormal first-trimester screen**, aneuploidy suspected",
+     "then": "Absent nasal bone"
+    },
+    {
+     "opt": null,
+     "if": "**Smooth philtrum**, microcephaly at birth",
+     "then": "Fetal alcohol syndrome"
+    }
+   ]
   },
   "C-OBGyn-11:Q038": {
    "task": "Diagnosis",
-   "boardCall": "Prior cesarean + placenta previa + profuse bleeding after placental delivery refractory to uterotonics -> placenta accreta.",
-   "hinge": "Prior cesarean delivery plus placenta previa causing massive, uterotonic-refractory hemorrhage requiring cesarean hysterectomy is classic for placenta accreta.",
+   "boardCall": "**prior cesarean** + **placenta previa** + bleeding after placental delivery + refractory to uterotonics → Placenta accreta",
+   "hinge": "Implantation over a scar invades myometrium, preventing clean separation.",
    "trap": "Massive hemorrhage after placental delivery can tempt uterine atony, which responds to uterotonics and lacks prior cesarean + previa.",
    "options": {
     "A": {
@@ -3879,12 +4146,34 @@
      "text": "cesarean hysterectomy for massive hemorrhage"
     }
    ],
-   "topic": "placenta-accreta-spectrum"
+   "topic": "placenta-accreta-spectrum",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Boggy uterus** that **firms with uterotonics**",
+     "then": "Uterine atony"
+    },
+    {
+     "opt": "D",
+     "if": "**Trial of labor** after cesarean, **loss of station**",
+     "then": "Uterine rupture"
+    },
+    {
+     "opt": "C",
+     "if": "**Fundal cord traction**, fundus not palpable",
+     "then": "Uterine inversion"
+    },
+    {
+     "opt": "E",
+     "if": "**ROM with fetal bradycardia**, painless bleeding",
+     "then": "Vasa previa"
+    }
+   ]
   },
   "C-OBGyn-11:Q039": {
    "task": "Diagnosis",
-   "boardCall": "57-year-old smoker + 6 months vulvar itching + well-circumscribed raised white plaque -> vulvar intraepithelial neoplasia.",
-   "hinge": "A chronic, pruritic, well-circumscribed, raised white vulvar lesion in a postmenopausal smoker is characteristic of vulvar intraepithelial neoplasia (VIN).",
+   "boardCall": "57-year-old + **40 pack-years** + chronic vulvar itch + **focal raised white plaque** → Vulvar intraepithelial neoplasia",
+   "hinge": "A discrete raised lesion in a smoker is dysplasia until biopsied.",
    "trap": "Chronic vulvar pruritus with a white lesion can tempt lichen sclerosus, which causes diffuse thin atrophic parchment skin rather than a focal raised plaque.",
    "options": {
     "A": {
@@ -3962,12 +4251,34 @@
      "trap": true
     }
    ],
-   "topic": "vulvar-cancer"
+   "topic": "vulvar-cancer",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Thin parchment-like** skin, **figure-of-eight** pattern",
+     "then": "Lichen sclerosus"
+    },
+    {
+     "opt": "C",
+     "if": "**Red velvety eczematous** plaque",
+     "then": "Paget disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Painful grouped vesicles** on erythematous base",
+     "then": "Herpes simplex"
+    },
+    {
+     "opt": "D",
+     "if": "**Painless clean-based ulcer** or moist flat plaques",
+     "then": "Syphilis"
+    }
+   ]
   },
   "C-OBGyn-11:Q040": {
    "task": "Mechanism",
-   "boardCall": "Regular 27-day cycles + basal body temperature rises 13-14 days before menses -> progesterone.",
-   "hinge": "Postovulatory corpus luteum progesterone acts on the hypothalamus to raise basal body temperature throughout the 14-day luteal phase.",
+   "boardCall": "regular 27-day cycles + **BBT rises 13–14 days before menses** + falls with menstruation → Progesterone",
+   "hinge": "The fixed luteal phase reflects corpus luteum progesterone raising the set point.",
    "trap": "LH triggers ovulation itself, while estradiol predominates in the follicular phase before the temperature rise.",
    "options": {
     "A": {
@@ -4048,12 +4359,34 @@
      "text": "Menses occur at regular 27-day intervals"
     }
    ],
-   "topic": "menstrual-cycle-physiology"
+   "topic": "menstrual-cycle-physiology",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Midcycle surge** triggering ovulation asked",
+     "then": "Luteinizing hormone"
+    },
+    {
+     "opt": "A",
+     "if": "**Follicular phase** endometrial proliferation asked",
+     "then": "Estradiol"
+    },
+    {
+     "opt": "F",
+     "if": "**Persistently high temperature**, tremor, weight loss",
+     "then": "Thyroid-stimulating hormone"
+    },
+    {
+     "opt": null,
+     "if": "**Temperature stays elevated** past expected menses",
+     "then": "Pregnancy: hCG rescues corpus luteum"
+    }
+   ]
   },
   "C-OBGyn-11:Q041": {
    "task": "Next step",
-   "boardCall": "15-year-old on OCPs + missed last period + irregular light bleeding -> serum β-hCG.",
-   "hinge": "Missed menses and breakthrough bleeding while taking oral contraceptives always require ruling out pregnancy first with serum β-hCG.",
+   "boardCall": "15-year-old + **OCPs 6 months** + **missed period** + mid-pack spotting → Serum β-hCG",
+   "hinge": "Pill failure is common in teens, so pregnancy comes before hormone workup.",
    "trap": "Breakthrough bleeding mid-pack on OCPs can tempt checking hormone panels (TSH, prolactin, FSH) before excluding pregnancy.",
    "options": {
     "A": {
@@ -4139,12 +4472,34 @@
      "trap": true
     }
    ],
-   "topic": "contraception"
+   "topic": "contraception",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "β-hCG negative, **fatigue and cold intolerance**",
+     "then": "Serum TSH"
+    },
+    {
+     "opt": "D",
+     "if": "β-hCG negative, **galactorrhea**",
+     "then": "Serum prolactin"
+    },
+    {
+     "opt": "B",
+     "if": "**Off OCPs**, amenorrhea with hot flashes",
+     "then": "Serum FSH"
+    },
+    {
+     "opt": null,
+     "if": "β-hCG negative, **cervical friability**",
+     "then": "Chlamydia/gonorrhea NAAT"
+    }
+   ]
   },
   "C-OBGyn-11:Q042": {
    "task": "Next step",
-   "boardCall": "Breast-feeding + fever 38°C + tender erythematous non-fluctuant subareolar induration -> dicloxacillin therapy.",
-   "hinge": "Fever with unilateral breast erythema, tenderness, and non-fluctuant induration during breast-feeding is lactational mastitis, treated with dicloxacillin.",
+   "boardCall": "breast-feeding 12 weeks + fever 38°C + tender erythematous induration + **not fluctuant** → Dicloxacillin therapy",
+   "hinge": "No fluctuance means mastitis, not abscess; cover S aureus and keep nursing.",
    "trap": "Subareolar induration can tempt incision and drainage or breast ultrasound, which are reserved for fluctuant abscesses.",
    "options": {
     "A": {
@@ -4243,12 +4598,35 @@
      "text": "not fluctuant"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Fluctuant mass** or **no improvement in 48 h**",
+     "then": "Ultrasonography of the breast"
+    },
+    {
+     "opt": "F",
+     "if": "Ultrasound shows **abscess** collection",
+     "then": "Aspiration of the mass"
+    },
+    {
+     "opt": "G",
+     "if": "**Not lactating**, persistent mass after antibiotics",
+     "then": "Biopsy of the lesion",
+     "step": "exclude inflammatory carcinoma"
+    },
+    {
+     "opt": null,
+     "if": "**Severe penicillin allergy** or MRSA risk",
+     "then": "Clindamycin"
+    }
+   ]
   },
   "C-OBGyn-11:Q043": {
    "task": "Diagnosis",
-   "boardCall": "5 minutes post-delivery + sudden hypotension + hypoxemia + cardiac arrest + non-clotting blood -> amniotic fluid embolism.",
-   "hinge": "Abrupt peripartum cardiovascular collapse, hypoxemia, and DIC immediately after delivery is classic for amniotic fluid embolism.",
+   "boardCall": "minutes after placenta + **sudden hypotension and hypoxemia** + cardiac arrest + **nonclotting blood** → Amniotic fluid embolism",
+   "hinge": "Abrupt collapse plus DIC right after delivery fits no hemorrhage cause alone.",
    "trap": "An atonic uterus with bleeding can tempt uterine rupture, which typically occurs intrapartum with prior uterine scars.",
    "options": {
     "A": {
@@ -4334,12 +4712,34 @@
      "trap": true
     }
    ],
-   "topic": "amniotic-fluid-embolism"
+   "topic": "amniotic-fluid-embolism",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Prior uterine scar**, **loss of station** intrapartum",
+     "then": "Uterine rupture"
+    },
+    {
+     "opt": "B",
+     "if": "**Seizure** with **BP above 160/110**",
+     "then": "Eclampsia"
+    },
+    {
+     "opt": "D",
+     "if": "**Spiking fevers** days after cesarean despite antibiotics",
+     "then": "Septic pelvic thrombophlebitis"
+    },
+    {
+     "opt": null,
+     "if": "**Unilateral leg swelling** before collapse, no DIC",
+     "then": "Pulmonary embolism"
+    }
+   ]
   },
   "C-OBGyn-11:Q044": {
    "task": "Diagnosis",
-   "boardCall": "Pregnant + HIV (CD4 440/mm3) + fever 38.9°C + purulent sputum + RLL infiltrate -> Streptococcus pneumoniae.",
-   "hinge": "Acute lobar pneumonia with purulent sputum and fever in an HIV patient with CD4 >200/mm3 is most commonly caused by Streptococcus pneumoniae.",
+   "boardCall": "28 weeks + HIV + **CD4 440** + fever, purulent sputum + **RLL lobar infiltrate** → Streptococcus pneumoniae",
+   "hinge": "Above CD4 200, typical lobar pathogens still dominate in HIV.",
    "trap": "HIV-positive status can pull toward Pneumocystis jirovecii, which instead causes bilateral ground-glass opacities when CD4 <200/mm3.",
    "options": {
     "A": {
@@ -4417,12 +4817,35 @@
      "trap": true
     }
    ],
-   "topic": "pneumonia"
+   "topic": "pneumonia",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**CD4 below 200**, **bilateral ground-glass** opacities",
+     "then": "Pneumocystis jirovecii"
+    },
+    {
+     "opt": "A",
+     "if": "**Weeks of night sweats**, **upper-lobe cavity**",
+     "then": "Mycobacterium tuberculosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Dry cough**, **patchy interstitial** infiltrates, headache",
+     "then": "Mycoplasma pneumoniae"
+    },
+    {
+     "opt": "E",
+     "if": "**Vesicular rash** preceding pneumonia",
+     "then": "Varicella-zoster virus",
+     "step": "IV acyclovir"
+    }
+   ]
   },
   "C-OBGyn-11:Q045": {
    "task": "Next step",
-   "boardCall": "24 weeks' gestation + nocturnal hand numbness + positive Phalen/Tinel + thenar weakness -> splinting of the wrist.",
-   "hinge": "Pregnancy-associated carpal tunnel syndrome is managed first-line with neutral wrist splinting, especially at night.",
+   "boardCall": "24 weeks + typist + **nocturnal numbness** + positive Phalen/Tinel + thenar weakness → Splinting of the wrist",
+   "hinge": "Pregnancy edema causes it and usually resolves postpartum, so start conservatively.",
    "trap": "Thenar muscle weakness can tempt jumping straight to corticosteroid injections or surgical carpal tunnel release before trying splinting.",
    "options": {
     "A": {
@@ -4516,12 +4939,34 @@
      "trap": true
     }
    ],
-   "topic": "carpal-tunnel-syndrome"
+   "topic": "carpal-tunnel-syndrome",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Persistent symptoms** despite night splinting",
+     "then": "Corticosteroid injections"
+    },
+    {
+     "opt": "E",
+     "if": "**Thenar atrophy** or **denervation on EMG**",
+     "then": "Surgical median nerve release"
+    },
+    {
+     "opt": "B",
+     "if": "**Wrist mass** or atypical distribution",
+     "then": "MRI of the right upper extremity"
+    },
+    {
+     "opt": null,
+     "if": "**Neck pain** with radiating arm symptoms",
+     "then": "Cervical radiculopathy: cervical MRI"
+    }
+   ]
   },
   "C-OBGyn-11:Q046": {
    "task": "Pharmacology",
-   "boardCall": "Postmenopausal + 6-month vulvar itching + white labia minora + clitoral hood fusion + fissure -> topical clobetasol.",
-   "hinge": "White discoloration of the labia minora, posterior fourchette fissure, and clitoral hood fusion define lichen sclerosus, treated with high-potency topical clobetasol.",
+   "boardCall": "63-year-old + itch worse at night + **white labia to perineum** + **fused clitoral hood** + fissure → Topical clobetasol",
+   "hinge": "Scarring architecture changes mark lichen sclerosus, beyond simple estrogen deficiency.",
    "trap": "Decreased vaginal rugae in a 63-year-old can tempt topical estradiol for genitourinary syndrome of menopause.",
    "options": {
     "A": {
@@ -4603,12 +5048,34 @@
      "trap": true
     }
    ],
-   "topic": "vulvar-dermatoses"
+   "topic": "vulvar-dermatoses",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Dryness and pale thin mucosa** without white scarring",
+     "then": "Topical estradiol"
+    },
+    {
+     "opt": "A",
+     "if": "**Thick white discharge**, pseudohyphae on KOH",
+     "then": "Oral fluconazole"
+    },
+    {
+     "opt": "B",
+     "if": "**Fishy discharge** with clue cells",
+     "then": "Oral metronidazole"
+    },
+    {
+     "opt": null,
+     "if": "**Nonhealing ulcer** or thickened plaque",
+     "then": "Punch biopsy"
+    }
+   ]
   },
   "C-OBGyn-11:Q047": {
    "task": "Next step",
-   "boardCall": "34 weeks in labor + twin gestation + presenting twin breech at +1 station -> cesarean delivery.",
-   "hinge": "When the presenting twin (twin A) is in breech presentation during labor, cesarean delivery is required to prevent head entrapment and cord prolapse.",
+   "boardCall": "34-week twins in labor + **twin A breech** + twin B cephalic + feet at +1 → Cesarean delivery",
+   "hinge": "A noncephalic presenting twin risks head entrapment and interlocking twins.",
    "trap": "Second twin cephalic or +1 station can tempt vaginal delivery or version, which are contraindicated when twin A is noncephalic.",
    "options": {
     "A": {
@@ -4687,12 +5154,34 @@
      "text": "feet are at +1 station"
     }
    ],
-   "topic": "multiple-gestation"
+   "topic": "multiple-gestation",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Both twins cephalic**",
+     "then": "Spontaneous vaginal delivery"
+    },
+    {
+     "opt": "D",
+     "if": "Twin A delivered, **twin B transverse**",
+     "then": "Internal version and extraction"
+    },
+    {
+     "opt": "C",
+     "if": "**Singleton breech at 37 weeks**, not in labor",
+     "then": "External cephalic version"
+    },
+    {
+     "opt": "B",
+     "if": "Cephalic, **fully dilated**, prolonged second stage",
+     "then": "Forceps delivery"
+    }
+   ]
   },
   "C-OBGyn-11:Q048": {
    "task": "Diagnosis",
-   "boardCall": "26-year-old + 3 weeks dull lower abdominal pain + postcoital bleeding + uterine tenderness -> Chlamydia trachomatis.",
-   "hinge": "Subacute pelvic inflammatory disease (3 weeks of dull pain, postcoital bleeding from cervicitis, mild fever, uterine tenderness) is classically caused by Chlamydia trachomatis.",
+   "boardCall": "26-year-old + **3 weeks dull pelvic pain** + **postcoital bleeding** + uterine tenderness + low-grade temp → Chlamydia trachomatis",
+   "hinge": "Indolent course with cervicitis bleeding fits chlamydia over acute gonococcal PID.",
    "trap": "Neisseria gonorrhoeae also causes PID, but typically presents more acutely with high fever and purulent discharge.",
    "options": {
     "A": {
@@ -4773,12 +5262,35 @@
      "text": "moderate tenderness in the uterus"
     }
    ],
-   "topic": "cervicitis-pid"
+   "topic": "cervicitis-pid",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Abrupt onset**, high fever, **purulent cervical discharge**",
+     "then": "Neisseria gonorrhoeae"
+    },
+    {
+     "opt": "D",
+     "if": "**Postpartum** endometritis with fever",
+     "then": "Streptococcus agalactiae"
+    },
+    {
+     "opt": null,
+     "if": "**Adnexal mass** with fever and vomiting",
+     "then": "Tubo-ovarian abscess",
+     "step": "admit for IV antibiotics"
+    },
+    {
+     "opt": null,
+     "if": "**RUQ pain** with PID",
+     "then": "Fitz-Hugh–Curtis syndrome"
+    }
+   ]
   },
   "C-OBGyn-11:Q049": {
    "task": "Mechanism",
-   "boardCall": "In labor + epidural + temperature 38.6°C (101.5°F) + fetal tachycardia -> maternal fever.",
-   "hinge": "Maternal fever (38.6°C) increases fetal metabolic rate and sympathetic tone, directly causing baseline fetal tachycardia (>160/min).",
+   "boardCall": "laboring with epidural + oxytocin + **maternal temp 38.6°C** + **fetal baseline tachycardia** → Maternal fever",
+   "hinge": "Fetal heart rate tracks maternal temperature; the drugs do not raise baseline.",
    "trap": "Epidural anesthesia and oxytocin are given, but epidural causes hypotension/bradycardia and oxytocin causes tachysystole/decelerations rather than isolated tachycardia.",
    "options": {
     "A": {
@@ -4853,12 +5365,35 @@
      "text": "oxytocin augmentation"
     }
    ],
-   "topic": "intrapartum-fetal-monitoring"
+   "topic": "intrapartum-fetal-monitoring",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Contractions over 5 per 10 min** with late decelerations",
+     "then": "Oxytocin"
+    },
+    {
+     "opt": "A",
+     "if": "**Maternal hypotension** after bolus, fetal bradycardia",
+     "then": "Epidural anesthesia"
+    },
+    {
+     "opt": "C",
+     "if": "**Recurrent late decelerations**, minimal variability",
+     "then": "Fetal hypoxia"
+    },
+    {
+     "opt": null,
+     "if": "Fever plus **uterine tenderness** and foul fluid",
+     "then": "Chorioamnionitis",
+     "step": "ampicillin plus gentamicin"
+    }
+   ]
   },
   "C-OBGyn-11:Q050": {
    "task": "Diagnosis",
-   "boardCall": "Age 46 + spontaneous sticky clear/yellow nipple discharge + no mass + no breast pain -> duct ectasia.",
-   "hinge": "Perimenopausal nonbloody, sticky, clear-to-yellow spontaneous nipple discharge without a palpable mass or infection is classic for mammary duct ectasia.",
+   "boardCall": "age 46 + irregular menses + **sticky clear-yellow discharge** + **no mass** + nontender breasts → Duct ectasia",
+   "hinge": "Nonbloody sticky discharge without a mass is benign ductal dilation.",
    "trap": "Spontaneous nipple discharge can raise concern for breast abscess or cyst, though abscess is febrile/tender and cysts present as masses.",
    "options": {
     "A": {
@@ -4935,7 +5470,29 @@
      "text": "No masses are palpated"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Fever** with **fluctuant tender** subareolar mass",
+     "then": "Breast abscess"
+    },
+    {
+     "opt": "B",
+     "if": "**Round mobile mass** that changes with cycle",
+     "then": "Breast cyst"
+    },
+    {
+     "opt": null,
+     "if": "**Bloody unilateral** single-duct discharge",
+     "then": "Intraductal papilloma"
+    },
+    {
+     "opt": "D",
+     "if": "**Bloody discharge** with mass, biopsy shows **proliferating ductal cells**",
+     "then": "Epithelial hyperplasia"
+    }
+   ]
   }
  },
  "topics": {
@@ -8663,5 +9220,5 @@
    "evidence": "Not checked online; established vulvar dermatology and biopsy-directed management."
   }
  },
- "updatedAt": "2026-11-23T05:02:05Z"
+ "updatedAt": "2026-11-23T12:05:48Z"
 }

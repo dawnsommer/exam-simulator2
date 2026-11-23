@@ -3794,8 +3794,8 @@
   },
   "UWSA2:Q115": {
    "task": "Diagnosis",
-   "boardCall": "Seizure + anticholinergic signs + hypotension + QRS 130 msec -> tricyclic antidepressant overdose.",
-   "hinge": "Anticholinergic signs, seizures, hypotension, and QRS prolongation > 100 msec are pathognomonic for TCA overdose.",
+   "boardCall": "antidepressant overdose + **anticholinergic signs** + seizure + **QRS 130 ms** → Tricyclic antidepressant overdose",
+   "hinge": "QRS widening with seizures, hypotension, and muscarinic blockade specifically identifies tricyclic toxicity.",
    "trap": "Depressed patient taking antidepressant tempts serotonin syndrome, but QRS widening and hypomotility indicate TCA toxicity.",
    "options": {
     "A": {
@@ -3884,12 +3884,30 @@
      "text": "ECG reveals sinus tachycardia and a QRS duration of 130 msec"
     }
    ],
-   "topic": "antidepressants"
+   "topic": "antidepressants",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**SSRI plus tramadol** causing **ocular clonus**, diaphoresis, and normal QRS",
+     "then": "Serotonin syndrome",
+     "step": "give benzodiazepines and cyproheptadine"
+    },
+    {
+     "opt": "B",
+     "if": "**Seizure and tachycardia** with **normal QRS** and no dry mouth",
+     "then": "Bupropion overdose"
+    },
+    {
+     "opt": "A",
+     "if": "**Tremor, hypertension**, and **hallucinations 24 h** after stopping alcohol",
+     "then": "Alcohol withdrawal"
+    }
+   ]
   },
   "UWSA2:Q116": {
    "task": "Pharmacology",
-   "boardCall": "Recurrent unexpected panic attacks + anticipatory anxiety -> panic disorder -> first-line SSRI (escitalopram).",
-   "hinge": "SSRIs (escitalopram, sertraline) and SNRIs are first-line long-term pharmacotherapy for panic disorder.",
+   "boardCall": "**unexpected panic attacks** + **anticipatory worry** + normal ECG/labs → Escitalopram",
+   "hinge": "Selective serotonin reuptake inhibitors are first-line maintenance therapy for panic disorder.",
    "trap": "Benzodiazepines (clonazepam, lorazepam) provide rapid acute relief, but are second-line due to abuse and dependence potential.",
    "options": {
     "A": {
@@ -3979,12 +3997,29 @@
      "text": "My chest was pounding and I was shaking uncontrollably"
     }
    ],
-   "topic": "panic-disorder"
+   "topic": "panic-disorder",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Acute disabling panic** needing **short bridge** while starting SSRI",
+     "then": "Lorazepam"
+    },
+    {
+     "opt": "F",
+     "if": "**Isolated performance anxiety** before **public speaking**",
+     "then": "Propranolol"
+    },
+    {
+     "opt": "A",
+     "if": "**Generalized anxiety disorder** **without panic attacks**",
+     "then": "Buspirone"
+    }
+   ]
   },
   "UWSA2:Q117": {
    "task": "Diagnosis",
-   "boardCall": "Post-abortion bleeding + enlarged uterus + friable red vascular vaginal nodule -> choriocarcinoma.",
-   "hinge": "Vascular, red, friable vaginal nodule and enlarged uterus following pregnancy or spontaneous abortion indicate metastatic choriocarcinoma.",
+   "boardCall": "spontaneous abortion 6 mo ago + heavy bleeding + **friable vascular vaginal nodule** → Choriocarcinoma",
+   "hinge": "Vascular hemorrhagic vaginal metastases with an enlarged uterus after gestation indicate choriocarcinoma.",
    "trap": "Uterine fibroid causes bleeding and enlarged uterus, but does not produce friable vascular metastatic vaginal nodules.",
    "options": {
     "A": {
@@ -4081,12 +4116,29 @@
      "text": "bleeding has become increasingly heavy and she now saturates 3 pads a day"
     }
    ],
-   "topic": "gestational-trophoblastic-disease"
+   "topic": "gestational-trophoblastic-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Preschool girl** with **cluster-like hemorrhagic vaginal polyps**",
+     "then": "Sarcoma botryoides"
+    },
+    {
+     "opt": "D",
+     "if": "**CD4 45 HIV** with **purplish mucosal vascular lesions**",
+     "then": "Kaposi sarcoma"
+    },
+    {
+     "opt": "F",
+     "if": "**Irregularly enlarged uterus** with **cyclic menorrhagia**, no vaginal nodule",
+     "then": "Uterine leiomyoma"
+    }
+   ]
   },
   "UWSA2:Q118": {
    "task": "Next step",
-   "boardCall": "Trauma + hemorrhagic shock refractory to crystalloid -> immediate uncrossmatched Type O blood transfusion.",
-   "hinge": "Hemorrhagic shock from open femur and pelvic fractures refractory to crystalloid requires immediate uncrossmatched blood transfusion.",
+   "boardCall": "open femur + pelvic fracture + **BP 80/52 after 2 L saline** → Type O blood transfusion",
+   "hinge": "Hemorrhagic shock unresponsive to initial crystalloid requires immediate uncrossmatched blood resuscitation.",
    "trap": "Pelvic fracture tempts CT scan of abdomen/pelvis, but CT is contraindicated in hemodynamically unstable trauma patients.",
    "options": {
     "A": {
@@ -4177,12 +4229,29 @@
      "trap": true
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Blood at urethral meatus** **after stabilizing blood pressure**",
+     "then": "Retrograde urethrogram"
+    },
+    {
+     "opt": "A",
+     "if": "**Hemodynamically stabilized trauma** needing **solid-organ evaluation**",
+     "then": "CT scan of abdomen and pelvis"
+    },
+    {
+     "opt": null,
+     "if": "**Persistent shock** despite **massive transfusion and pelvic binder**",
+     "then": "Emergent pelvic angiography embolization"
+    }
+   ]
   },
   "UWSA2:Q119": {
    "task": "Next step",
-   "boardCall": "First-trimester bleeding + closed cervix + viable intrauterine fetus -> threatened abortion -> reassurance and follow-up ultrasound.",
-   "hinge": "Threatened abortion with documented fetal cardiac motion and closed cervix carries good prognosis; manage with reassurance and follow-up ultrasound.",
+   "boardCall": "9 wk pregnant + scant bleeding + **closed cervix** + **fetal heartbeat** + Rh+ → Reassurance and follow-up ultrasound",
+   "hinge": "Threatened miscarriage with cardiac activity and closed os requires expectant reassurance alone.",
    "trap": "Bleeding in pregnancy tempts Rho(D) immunoglobulin administration, but the patient is Rh-positive (Blood type B, Rh-positive).",
    "options": {
     "A": {
@@ -4277,12 +4346,29 @@
      "trap": true
     }
    ],
-   "topic": "early-pregnancy-loss"
+   "topic": "early-pregnancy-loss",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Rh-negative mother** with **threatened abortion at ≥12 weeks**",
+     "then": "Administration of Rho(D) immunoglobulin"
+    },
+    {
+     "opt": "C",
+     "if": "**Open cervical os** with **heavy bleeding** and retained products",
+     "then": "Dilation and suction curettage"
+    },
+    {
+     "opt": "F",
+     "if": "**Empty uterus on ultrasound** with **ambiguous pregnancy location**",
+     "then": "Serial β-hCG measurements"
+    }
+   ]
   },
   "UWSA2:Q120": {
    "task": "Diagnosis",
-   "boardCall": "Longitudinal pigmented nail band + progressive enlargement + Hutchinson sign -> subungual melanoma (matrix origin).",
-   "hinge": "Enlarging longitudinal dark band across the nail plate with pigmentation involving the proximal nail fold (Hutchinson sign) indicates subungual melanoma.",
+   "boardCall": "48-year-old + **enlarging dark nail band 10 mo** + **proximal fold pigment** → Melanoma arising from nail matrix",
+   "hinge": "Expanding longitudinal melanonychia spreading onto the nail fold indicates subungual melanoma.",
    "trap": "Traumatic subungual hematoma grows out distally with the nail over months, whereas melanoma originates in matrix and expands.",
    "options": {
     "A": {
@@ -4376,12 +4462,29 @@
      "text": "Examination findings of the right index finger are shown below"
     }
    ],
-   "topic": "skin-cancer"
+   "topic": "skin-cancer",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Acute crush injury** with **pigment growing distally** over months",
+     "then": "Traumatic rupture of nail capillaries"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever, new murmur**, and **multiple linear nail hemorrhages**",
+     "then": "Microemboli from heart vegetations"
+    },
+    {
+     "opt": "A",
+     "if": "**Oil-drop nail pitting** with **extensor silvery plaques**",
+     "then": "Autoimmune epidermal hyperproliferative disorder"
+    }
+   ]
   },
   "UWSA2:Q121": {
    "task": "Diagnosis",
-   "boardCall": "Fixed persecutory delusions + window covering + 3 hospitalizations since age 23 -> schizophrenia.",
-   "hinge": "Chronic persecutory delusions and profound social deterioration lasting > 6 months with multiple hospitalizations define schizophrenia.",
+   "boardCall": "**persecutory delusions** + **3 hospitalizations since age 23** + hypervigilant → Schizophrenia",
+   "hinge": "Chronic psychosis exceeding 6 months with multiple hospitalizations and decline defines schizophrenia.",
    "trap": "Paranoid personality disorder presents with pervasive lifelong distrust, but lacks fixed overt delusions and psychiatric hospitalizations.",
    "options": {
     "A": {
@@ -4471,12 +4574,29 @@
      "text": "history of 3 psychiatric hospitalizations beginning at age 23"
     }
    ],
-   "topic": "schizophrenia-spectrum-disorders"
+   "topic": "schizophrenia-spectrum-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Isolated fixed nonbizarre delusion** with **intact daily functioning**",
+     "then": "Delusional disorder"
+    },
+    {
+     "opt": "C",
+     "if": "**Lifelong pervasive distrust** **without hallucinations or hospitalizations**",
+     "then": "Paranoid personality disorder"
+    },
+    {
+     "opt": "D",
+     "if": "**Sudden violent agitation**, **hypertension**, and nystagmus",
+     "then": "Phencyclidine intoxication"
+    }
+   ]
   },
   "UWSA2:Q122": {
    "task": "Risk factor",
-   "boardCall": "Plaque psoriasis with distal onycholysis and nail pitting -> high risk of inflammatory polyarthritis.",
-   "hinge": "Psoriatic nail disease (nail pitting, onycholysis) is strongly associated with psoriatic arthritis, occurring in up to 80-90%.",
+   "boardCall": "56-year-old woman + plaque psoriasis + **nail pitting and onycholysis** → Polyarthritis",
+   "hinge": "Psoriatic nail dystrophy strongly predicts development of inflammatory psoriatic joint disease.",
    "trap": "Progressive lung fibrosis occurs in systemic sclerosis or rheumatoid arthritis, but not with plaque psoriasis.",
    "options": {
     "A": {
@@ -4562,12 +4682,29 @@
      "text": "Nail examination findings are shown in the image below"
     }
    ],
-   "topic": "psoriasis"
+   "topic": "psoriasis",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Systemic sclerosis** with **diffuse skin thickening** and crackles",
+     "then": "Progressive lung fibrosis"
+    },
+    {
+     "opt": "B",
+     "if": "**CREST sclerodactyly** with **dysphagia to solids and liquids**",
+     "then": "Esophageal dysmotility"
+    },
+    {
+     "opt": "C",
+     "if": "**Dry eyes, dry mouth**, and **dental caries**",
+     "then": "Exocrine gland dysfunction"
+    }
+   ]
   },
   "UWSA2:Q123": {
    "task": "Next step",
-   "boardCall": "Young adult with severe hypertension + brachial-femoral pulse delay -> coarctation of aorta -> echocardiography.",
-   "hinge": "Delayed and diminished femoral pulses relative to brachial pulses in a hypertensive young adult indicate coarctation of the aorta.",
+   "boardCall": "20-year-old + **BP 180/98** + **brachial-femoral pulse delay** → Echocardiography",
+   "hinge": "Upper-extremity hypertension with delayed femoral pulses indicates coarctation, best confirmed by echo.",
    "trap": "Severe hypertension in a young adult tempts plasma catecholamine measurement, but pheochromocytoma does not cause femoral delay.",
    "options": {
     "A": {
@@ -4657,12 +4794,29 @@
      "text": "sustained apical impulse"
     }
    ],
-   "topic": "congenital-heart-disease"
+   "topic": "congenital-heart-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Episodic headache, diaphoresis**, **palpitations**, and equal pulses",
+     "then": "Plasma and urine catecholamine measurement"
+    },
+    {
+     "opt": "F",
+     "if": "**Young woman** with **abdominal bruit** and normal femoral pulses",
+     "then": "Renovascular imaging"
+    },
+    {
+     "opt": "B",
+     "if": "**Hypertension with hypokalemia** and **elevated aldosterone/renin ratio**",
+     "then": "CT scan of adrenal glands"
+    }
+   ]
   },
   "UWSA2:Q124": {
    "task": "Next step",
-   "boardCall": "3-month-old with uncomplicated growing strawberry hemangioma on scalp -> serial observation.",
-   "hinge": "Uncomplicated infantile hemangiomas proliferate during infancy and regress spontaneously; management is serial observation.",
+   "boardCall": "3-month-old + **uncomplicated growing scalp hemangioma** + normal exam → Serial observation",
+   "hinge": "Uncomplicated cutaneous infantile hemangiomas proliferate early then spontaneously involute without intervention.",
    "trap": "Parental anxiety regarding rapid vascular growth tempts surgical excision, which leaves permanent scars unnecessarily.",
    "options": {
     "A": {
@@ -4742,12 +4896,29 @@
      "text": "Examination findings of the lesion are shown in the image below"
     }
    ],
-   "topic": "normal-pediatric-variants"
+   "topic": "normal-pediatric-variants",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Large segmental facial lesion** risking **PHACE brain anomalies**",
+     "then": "MRI of the head"
+    },
+    {
+     "opt": "E",
+     "if": "**Refractory ulcerated lesion** causing **airway compromise**",
+     "then": "Surgical excision"
+    },
+    {
+     "opt": null,
+     "if": "**Periorbital, airway**, or **ulcerating facial hemangioma**",
+     "then": "Oral propranolol"
+    }
+   ]
   },
   "UWSA2:Q125": {
    "task": "Mechanism",
-   "boardCall": "Acute myocardial infarction + cardiogenic shock -> increased preload, decreased cardiac output, increased SVR (↑ | ↓ | ↑).",
-   "hinge": "Cardiogenic shock is characterized by pump failure with elevated preload (PCWP/CVP), reduced cardiac output, and compensatory vasoconstriction (high SVR).",
+   "boardCall": "MI + **BP 80/50** + **JVD and crackles** + lactate 3.5 → ↑ preload, ↓ CO, ↑ SVR",
+   "hinge": "Myocardial pump failure raises filling pressures while compensatory vasoconstriction elevates systemic resistance.",
    "trap": "Cold clammy extremities suggest hypovolemic shock (low preload, low output, high SVR), but JVD and crackles prove cardiogenic shock.",
    "options": {
     "A": {
@@ -4833,12 +5004,29 @@
      "text": "ECG shows sinus tachycardia with left bundle branch block"
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Hemorrhagic hypovolemic shock** with **flat neck veins**",
+     "then": "↓ preload, ↓ CO, ↑ SVR"
+    },
+    {
+     "opt": null,
+     "if": "**Warm distributive septic shock** with **bounding pulses**",
+     "then": "↓ preload, ↑ CO, ↓ SVR"
+    },
+    {
+     "opt": null,
+     "if": "**High-output thyrotoxicosis** with **wide pulse pressure**",
+     "then": "Normal/↓ preload, ↑ CO, ↓ SVR"
+    }
+   ]
   },
   "UWSA2:Q126": {
    "task": "Next step",
-   "boardCall": "Confluent tender sunburn without blisters -> oral nonsteroidal anti-inflammatory agent (ibuprofen).",
-   "hinge": "Mild-to-moderate sunburn is mediated by prostaglandin inflammation; oral NSAIDs provide effective pain relief and reduce erythema.",
+   "boardCall": "beach sunburn + **confluent tender erythema** + **no blisters** → Oral nonsteroidal anti-inflammatory",
+   "hinge": "Prostaglandin-mediated ultraviolet erythema without blistering responds to systemic NSAIDs and cool compresses.",
    "trap": "Topical silver sulfadiazine is used for second-degree burns, but causes facial staining and is unnecessary for nonblistering sunburn.",
    "options": {
     "A": {
@@ -4929,12 +5117,29 @@
      "text": "There are no blisters"
     }
    ],
-   "topic": "burn-injuries"
+   "topic": "burn-injuries",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Extensive blistering sunburn** with **vomiting and dehydration**",
+     "then": "Intravenous fluids"
+    },
+    {
+     "opt": "F",
+     "if": "**Deep partial-thickness thermal burn** on **trunk sparing face**",
+     "then": "Topical silver sulfadiazine"
+    },
+    {
+     "opt": "E",
+     "if": "**Honey-colored crusted impetigo** around **nose and mouth**",
+     "then": "Topical mupirocin"
+    }
+   ]
   },
   "UWSA2:Q127": {
    "task": "Prevention",
-   "boardCall": "Oral isotretinoin therapy in sexually active female -> additional barrier contraceptive use (dual contraception).",
-   "hinge": "Isotretinoin is a severe teratogen; the FDA iPLEDGE program mandates two concurrent effective forms of contraception.",
+   "boardCall": "nodulocystic acne + **planned isotretinoin** + **takes oral contraceptive** → Additional barrier contraceptive use",
+   "hinge": "High teratogenicity mandates two simultaneous contraceptive forms under iPLEDGE before starting isotretinoin.",
    "trap": "Baseline psychiatric evaluation is not mandatory despite package insert warnings, whereas dual contraception is legally required.",
    "options": {
     "A": {
@@ -5021,12 +5226,29 @@
      "text": "sexually active and takes a combined oral contraceptive"
     }
    ],
-   "topic": "acne-vulgaris"
+   "topic": "acne-vulgaris",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Moderate inflammatory acne** **without isotretinoin**",
+     "then": "Oral doxycycline therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Severe active depression** or **suicidal ideation** before isotretinoin",
+     "then": "Baseline psychiatric evaluation"
+    },
+    {
+     "opt": null,
+     "if": "**Patient taking isotretinoin** develops **elevated triglycerides**",
+     "then": "Monitor monthly lipids and LFTs"
+    }
+   ]
   },
   "UWSA2:Q128": {
    "task": "Next step",
-   "boardCall": "6 weeks post-allopurinol + morbilliform rash + facial edema + 15% eosinophilia + transaminitis -> DRESS syndrome -> withdraw allopurinol.",
-   "hinge": "Drug reaction with eosinophilia and systemic symptoms (DRESS) mandates immediate withdrawal of the offending agent (allopurinol).",
+   "boardCall": "**allopurinol 6 wk ago** + **facial edema, morbilliform rash** + 15% eosinophils + high AST/ALT → Prompt withdrawal of the offending drug",
+   "hinge": "Delayed hypersensitivity with eosinophilia and hepatitis (DRESS) requires immediately stopping allopurinol.",
    "trap": "Heterophile antibody testing evaluates mononucleosis, but allopurinol exposure 6 weeks ago and marked eosinophilia confirm DRESS.",
    "options": {
     "A": {
@@ -5116,12 +5338,29 @@
      "text": "Eosinophils 15%"
     }
    ],
-   "topic": "drug-eruptions"
+   "topic": "drug-eruptions",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Exudative pharyngitis**, cervical adenopathy, and **atypical lymphocytes**",
+     "then": "Heterophile antibody latex agglutination"
+    },
+    {
+     "opt": "B",
+     "if": "**Rapidly spreading warm leg erythema** with **high fever**",
+     "then": "Empiric broad-spectrum antibacterial therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Severe DRESS hepatitis** or **myocarditis** despite stopping drug",
+     "then": "Start systemic corticosteroids"
+    }
+   ]
   },
   "UWSA2:Q129": {
    "task": "Diagnosis",
-   "boardCall": "Untreated HIV + lower uterine mass extending laterally + bilateral hydronephrosis -> invasive cervical cancer.",
-   "hinge": "Advanced cervical carcinoma invades laterally into parametria, encasing ureters and causing bilateral hydronephrosis in untreated HIV.",
+   "boardCall": "untreated HIV + spotting + **lateral lower-uterine mass** + **bilateral hydronephrosis** → Cervical cancer",
+   "hinge": "Parametrial extension of invasive cervical carcinoma encases both ureters in immunocompromised hosts.",
    "trap": "Ovarian cancer causes pelvic masses and ascites, but does not present as a lateral lower uterine segment mass obstructing both ureters.",
    "options": {
     "A": {
@@ -5228,12 +5467,29 @@
      "text": "Bilateral hydronephrosis is seen"
     }
    ],
-   "topic": "cervical-neoplasia"
+   "topic": "cervical-neoplasia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Postmenopausal adnexal mass** with **omental caking and ascites**",
+     "then": "Epithelial ovarian cancer"
+    },
+    {
+     "opt": "H",
+     "if": "**Heavy regular menses** with **mobile irregular uterus**, no hydronephrosis",
+     "then": "Uterine leiomyoma"
+    },
+    {
+     "opt": "D",
+     "if": "**HIV with B symptoms**, **nodal masses**, and CNS lesions",
+     "then": "Diffuse large B cell lymphoma"
+    }
+   ]
   },
   "UWSA2:Q130": {
    "task": "Diagnosis",
-   "boardCall": "Chronic painless rubbery lower eyelid nodule -> chalazion from occlusion of the meibomian gland.",
-   "hinge": "Chalazion is a chronic granulomatous lipogranuloma arising from obstruction of meibomian (tarsal) tear glands.",
+   "boardCall": "54-year-old + **1 mo painless lid nodule** + **rubbery tarsal swelling** → Occlusion of the meibomian gland",
+   "hinge": "Chronic tarsal meibomian duct obstruction produces a painless lipogranulomatous chalazion.",
    "trap": "External hordeolum (stye) is an acute, painful, erythematous bacterial infection of an eyelash follicle, unlike a painless chalazion.",
    "options": {
     "A": {
@@ -5333,12 +5589,30 @@
      "text": "Examination of the left eye shows a rubbery swelling"
     }
    ],
-   "topic": "hordeolum-and-chalazion"
+   "topic": "hordeolum-and-chalazion",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Acute painful erythematous pustule** at **eyelash margin**",
+     "then": "Bacterial infection of eyelash follicle"
+    },
+    {
+     "opt": "C",
+     "if": "**Painful eye movements**, **proptosis**, and fever after sinusitis",
+     "then": "Microbial invasion of orbital content",
+     "step": "obtain CT and IV antibiotics"
+    },
+    {
+     "opt": "B",
+     "if": "**Tender erythematous swelling** over **medial canthus** with tearing",
+     "then": "Bacterial infection of lacrimal sac"
+    }
+   ]
   },
   "UWSA2:Q131": {
    "task": "Risk factor",
-   "boardCall": "Vertebral arch defect with bulging neural tissue (myelomeningocele) -> maternal folate vitamin deficiency.",
-   "hinge": "Folate deficiency is the single most significant preventable risk factor for neural tube defects, compounded by carbamazepine.",
+   "boardCall": "12 wk pregnant + **on carbamazepine** + **fetal lumbar myelomeningocele** → Vitamin deficiency",
+   "hinge": "Periconceptional folate deficiency compounded by antiepileptic folate antagonism drives neural tube defects.",
    "trap": "Family history of trisomy 21 increases aneuploidy risk, but confers no increased risk for structural neural tube defects.",
    "options": {
     "A": {
@@ -5428,12 +5702,29 @@
      "text": "BMI is 24 kg/m2"
     }
    ],
-   "topic": "neural-tube-defects"
+   "topic": "neural-tube-defects",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Fetal echocardiography** showing **Ebstein tricuspid valve anomaly**",
+     "then": "Lithium use"
+    },
+    {
+     "opt": "C",
+     "if": "**Abruptio placentae**, **fetal growth restriction**, and maternal hypertension",
+     "then": "Cocaine use"
+    },
+    {
+     "opt": "A",
+     "if": "**First-trimester screening** showing **fetal trisomy 21**",
+     "then": "Advanced maternal age"
+    }
+   ]
   },
   "UWSA2:Q132": {
    "task": "Prevention",
-   "boardCall": "Routine 28-week prenatal visit -> administer tetanus, diphtheria, and acellular pertussis (Tdap) vaccine.",
-   "hinge": "Tdap vaccine is recommended during every pregnancy between 27-36 weeks to optimize passive maternal pertussis antibody transfer.",
+   "boardCall": "**28 wk pregnant** + routine prenatal visit + Rh+ → Tetanus, diphtheria, and pertussis vaccine",
+   "hinge": "Tdap at 27–36 weeks transfers maternal pertussis antibodies to protect the newborn.",
    "trap": "Rubella antibody IgG not detected tempts MMR vaccination, but MMR is a live virus vaccine strictly contraindicated in pregnancy.",
    "options": {
     "A": {
@@ -5527,12 +5818,29 @@
      "trap": true
     }
    ],
-   "topic": "adult-immunizations"
+   "topic": "adult-immunizations",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Maternal blood type O negative** with **negative antibody screen** at 28 wk",
+     "then": "Rho(D) immune globulin"
+    },
+    {
+     "opt": "B",
+     "if": "**Nonimmune rubella IgG** **immediately postpartum**",
+     "then": "Measles, mumps, and rubella vaccine"
+    },
+    {
+     "opt": "F",
+     "if": "**Nonimmune varicella IgG** **after delivery**",
+     "then": "Varicella vaccine"
+    }
+   ]
   },
   "UWSA2:Q133": {
    "task": "Diagnosis",
-   "boardCall": "Pregnant woman with fever + flank tenderness + hypotension + ARDS lung infiltrates -> acute pyelonephritis.",
-   "hinge": "High fever, costovertebral tenderness, and preterm contractions complicated by septic shock and ARDS indicate severe pyelonephritis.",
+   "boardCall": "31 wk pregnant + **fever, flank tenderness** + **BP 88/68** + bilateral infiltrates → Acute pyelonephritis",
+   "hinge": "Pregnancy pyelonephritis frequently precipitates gram-negative sepsis and ARDS with a nontender uterus.",
    "trap": "Preterm contractions and fever tempt chorioamnionitis, but the uterus is nontender and right flank tenderness points to kidney infection.",
    "options": {
     "A": {
@@ -5625,12 +5933,30 @@
      "text": "Chest x-ray reveals bilateral infiltrates"
     }
    ],
-   "topic": "urinary-tract-infections"
+   "topic": "urinary-tract-infections",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Ruptured membranes**, **uterine fundal tenderness**, and foul fluid",
+     "then": "Intraamniotic infection",
+     "step": "deliver and give IV ampicillin-gentamicin"
+    },
+    {
+     "opt": "E",
+     "if": "**Postpartum orthopnea**, **S3 gallop**, and low ejection fraction",
+     "then": "Peripartum cardiomyopathy"
+    },
+    {
+     "opt": "B",
+     "if": "**Sudden collapse during labor** with **DIC and hypoxemia**",
+     "then": "Amniotic fluid embolism"
+    }
+   ]
   },
   "UWSA2:Q134": {
    "task": "Next step",
-   "boardCall": "Metastatic cancer with severe persistent pain wearing off on short-acting opioids -> add extended-release morphine.",
-   "hinge": "Uncontrolled baseline cancer pain requires conversion to or addition of an around-the-clock extended-release opioid formulation.",
+   "boardCall": "metastatic breast cancer + **bone pain** + **wearing off q4h morphine** → Add extended-release morphine",
+   "hinge": "Persistent baseline cancer pain requires scheduled around-the-clock long-acting opioids plus breakthrough dosing.",
    "trap": "Increasing short-acting morphine frequency to every 2 hours disrupts sleep and fails to provide steady baseline analgesia.",
    "options": {
     "A": {
@@ -5717,12 +6043,29 @@
      "text": "effects wear off before her next dose"
     }
    ],
-   "topic": "palliative-and-hospice-care"
+   "topic": "palliative-and-hospice-care",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Occasional incident pain** well controlled **most of day**",
+     "then": "Continue short-acting morphine"
+    },
+    {
+     "opt": "D",
+     "if": "**Persistent anhedonia, hopelessness**, and **worthlessness** beyond pain",
+     "then": "Start antidepressant therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Localized painful rib metastasis** **refractory to opioids**",
+     "then": "Palliative external beam radiation"
+    }
+   ]
   },
   "UWSA2:Q135": {
    "task": "Diagnosis",
-   "boardCall": "Acute scrotal pain + nausea/vomiting + absent cremasteric reflex -> testicular torsion from inadequate tunica vaginalis fixation.",
-   "hinge": "Inadequate fixation of the testis to the tunica vaginalis (bell-clapper deformity) allows free twisting of the spermatic cord and acute ischemia.",
+   "boardCall": "16-year-old + **sudden scrotal pain, vomiting** + **absent cremasteric reflex** → Inadequate fixation of testis to tunica vaginalis",
+   "hinge": "Congenital bell-clapper deformity permits intravaginal spermatic cord twisting and acute testicular ischemia.",
    "trap": "Sexually active history tempts epididymo-orchitis, but acute morning onset and absent cremasteric reflex confirm testicular torsion.",
    "options": {
     "A": {
@@ -5808,12 +6151,29 @@
      "text": "cremasteric reflex is absent on the right side"
     }
    ],
-   "topic": "testicular-torsion"
+   "topic": "testicular-torsion",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Gradual pain, dysuria**, and **intact cremasteric reflex**",
+     "then": "Bacterial infection of epididymis"
+    },
+    {
+     "opt": "E",
+     "if": "**Upper-pole point tenderness** with **blue dot sign**",
+     "then": "Restricted blood flow to appendix"
+    },
+    {
+     "opt": "B",
+     "if": "**Blunt scrotal trauma** with **non-twisting tunica fluid**",
+     "then": "Blood collection within tunica vaginalis"
+    }
+   ]
   },
   "UWSA2:Q136": {
    "task": "Diagnosis",
-   "boardCall": "Smoker > 60 + persistent indurated glans penis ulcer + hard inguinal nodes -> squamous cell penile cancer.",
-   "hinge": "Chronic persistent indurated ulcer with hard inguinal adenopathy in an older smoker indicates squamous cell carcinoma of the penis.",
+   "boardCall": "60-year-old smoker + **months-long indurated glans ulcer** + **hard inguinal nodes** → Penile cancer",
+   "hinge": "Indurated penile ulceration with firm nodes in older smokers indicates squamous carcinoma.",
    "trap": "Primary syphilitic chancre is a painless indurated ulcer, but spontaneously resolves within 3-6 weeks rather than persisting for months.",
    "options": {
     "A": {
@@ -5910,12 +6270,29 @@
      "text": "smoked a pack of cigarettes daily for 40 years"
     }
    ],
-   "topic": "penile-cancer"
+   "topic": "penile-cancer",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Single painless ulcer** resolving spontaneously **within 3–6 weeks**",
+     "then": "Syphilitic chancre"
+    },
+    {
+     "opt": "D",
+     "if": "**Painful ragged purulent ulcer** with **tender fluctuant bubo**",
+     "then": "Haemophilus ducreyi infection"
+    },
+    {
+     "opt": "C",
+     "if": "**Grouped painful vesicles** on **erythematous penile shaft**",
+     "then": "Genital herpes"
+    }
+   ]
   },
   "UWSA2:Q137": {
    "task": "Diagnosis",
-   "boardCall": "Young man with painless firm intratesticular mass that does not transilluminate -> malignant germ cell tumor.",
-   "hinge": "Painless, firm intratesticular mass that does not transilluminate in a young man is testicular cancer until proven otherwise.",
+   "boardCall": "26-year-old + **nontender firm testicular nodule** + **no transillumination** → Malignant proliferation of germinal epithelium",
+   "hinge": "Solid painless intratesticular masses in young men are germ-cell tumors until excluded.",
    "trap": "Recent football injury suggests traumatic hematocele, but trauma typically brings incidental pre-existing cancer to attention.",
    "options": {
     "A": {
@@ -6013,7 +6390,24 @@
      "trap": true
     }
    ],
-   "topic": "testicular-cancer"
+   "topic": "testicular-cancer",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Soft painless scrotal swelling** that **transilluminates brightly**",
+     "then": "Serous fluid outside the testes"
+    },
+    {
+     "opt": "B",
+     "if": "**Left bag-of-worms mass** worsening **when standing**",
+     "then": "Dilation of pampiniform plexus"
+    },
+    {
+     "opt": "A",
+     "if": "**Smooth cystic mass** palpated **separate above testis**",
+     "then": "Cystic epididymal sperm accumulation"
+    }
+   ]
   },
   "UWSA2:Q138": {
    "task": "Next step",
@@ -29286,5 +29680,5 @@
    "evidence": "Checked 2026-10-30: [AHA/ACC PE (2026)](https://www.jacc.org/doi/10.1016/j.jacc.2025.11.005), [ASH diagnosis (2018)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6258916/)."
   }
  },
- "updatedAt": "2026-11-23T05:02:05Z"
+ "updatedAt": "2026-11-23T10:13:18Z"
 }

@@ -8,8 +8,8 @@
  "items": {
   "c-peds-03-q001": {
    "task": "Diagnosis",
-   "boardCall": "Truncus arteriosus + absent thymic shadow + hypocalcemia -> hypoparathyroidism",
-   "hinge": "Conotruncal defect and absent thymic shadow indicate 22q11.2 deletion with parathyroid aplasia causing hypocalcemia.",
+   "boardCall": "truncus arteriosus + **absent thymic shadow** + **calcium 7** + micrognathia → Hypoparathyroidism",
+   "hinge": "Conotruncal cardiac anomaly with thymic aplasia indicates 22q11.2 deletion causing parathyroid agenesis.",
    "trap": "Pseudohypoparathyroidism causes hypocalcemia but does not cause absent thymus or conotruncal heart disease.",
    "options": {
     "A": {
@@ -108,12 +108,29 @@
      "text": "without a thymic shadow"
     }
    ],
-   "topic": "chromosomal-and-genetic-disorders"
+   "topic": "chromosomal-and-genetic-disorders",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Short fourth metacarpals**, round face, **elevated PTH**, normal thymus",
+     "then": "Pseudohypoparathyroidism"
+    },
+    {
+     "opt": "E",
+     "if": "**Exclusively breastfed toddler**, bowing legs, elevated alkaline phosphatase",
+     "then": "Vitamin D-deficient rickets"
+    },
+    {
+     "opt": "F",
+     "if": "**Normal serum calcium**, low phosphorus, elevated FGF-23, bowed legs",
+     "then": "X-linked hypophosphatemic rickets"
+    }
+   ]
   },
   "c-peds-03-q002": {
    "task": "Diagnosis",
-   "boardCall": "Diarrhea with blood and mucus + recent amoxicillin-clavulanate -> Clostridium difficile",
-   "hinge": "Dysentery-like diarrhea starting 1 day after completing a 10-day course of amoxicillin-clavulanate indicates C. difficile colitis.",
+   "boardCall": "3-year-old + **completed amoxicillin-clavulanate** + **fever + bloody mucoid diarrhea** → Clostridium difficile",
+   "hinge": "Recent broad-spectrum antibiotic exposure distinguishes C difficile colitis from community bacterial dysentery.",
    "trap": "Diarrhea containing blood and mucus with fever mimics Shigella or Salmonella, but recent antibiotic exposure points to C. difficile.",
    "options": {
     "A": {
@@ -199,12 +216,29 @@
      "trap": true
     }
    ],
-   "topic": "clostridioides-difficile-infection"
+   "topic": "clostridioides-difficile-infection",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**No recent antibiotics**, daycare exposure, high fever, seizures",
+     "then": "Shigella sonnei"
+    },
+    {
+     "opt": "B",
+     "if": "**Reptile or poultry exposure**, fever, bloody diarrhea, no antibiotics",
+     "then": "Salmonella enteritidis"
+    },
+    {
+     "opt": "E",
+     "if": "**RLQ pseudoappendicitis pain**, raw pork exposure, fever",
+     "then": "Yersinia enterocolitica"
+    }
+   ]
   },
   "c-peds-03-q003": {
    "task": "Diagnosis",
-   "boardCall": "Air-fluid level + poor tympanic mobility + afebrile -> serous otitis media",
-   "hinge": "Middle ear air-fluid level and reduced mobility without fever or acute inflammation define serous otitis media.",
+   "boardCall": "prior otitis media + **afebrile** + **bluish gray TM with air-fluid level** → Serous otitis media",
+   "hinge": "Retained middle ear effusion with poor mobility without inflammation indicates noninfectious fluid.",
    "trap": "Recurrent otitis media history suggests acute otitis media, but the tympanic membrane is bluish gray and landmarks are visible.",
    "options": {
     "A": {
@@ -314,12 +348,29 @@
      "trap": true
     }
    ],
-   "topic": "acute-otitis-media"
+   "topic": "acute-otitis-media",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Fever, otalgia**, bulging erythematous tympanic membrane",
+     "then": "Acute otitis media"
+    },
+    {
+     "opt": "F",
+     "if": "**Postauricular erythema**, tenderness, forward-displaced pinna",
+     "then": "Mastoiditis"
+    },
+    {
+     "opt": "E",
+     "if": "**Pearly white mass** behind TM with chronic foul otorrhea",
+     "then": "Cholesteatoma"
+    }
+   ]
   },
   "c-peds-03-q004": {
    "task": "Prevention",
-   "boardCall": "Age 16 + kindergarten vaccines complete + no adolescent vaccines -> Tdap + HPV + meningococcal",
-   "hinge": "A 16-year-old requires routine adolescent immunizations: Tdap (Td received at age 10 lacks pertussis), MenACWY, and HPV.",
+   "boardCall": "16-year-old + kindergarten shots only + **Td at age 10** → HPV, meningococcal, and Tdap",
+   "hinge": "Prior Td lacks pertussis protection; adolescents also need MenACWY and HPV series.",
    "trap": "Receiving Td at age 10 makes Td sound sufficient, but adolescents still require a dose of acellular pertussis via Tdap.",
    "options": {
     "A": {
@@ -408,12 +459,29 @@
      "text": "healthy 16-year-old girl comes to the physician"
     }
    ],
-   "topic": "childhood-and-adolescent-immunizations"
+   "topic": "childhood-and-adolescent-immunizations",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Tdap already given** at age 11, needs 10-year booster",
+     "then": "Td, Hep B, and HPV"
+    },
+    {
+     "opt": "C",
+     "if": "**Missing childhood MMR** and never received hepatitis B",
+     "then": "MMR, Tdap, and hepatitis B"
+    },
+    {
+     "opt": "F",
+     "if": "**Already received Tdap**, overdue for MMR second dose",
+     "then": "Td, meningococcal, and MMR"
+    }
+   ]
   },
   "c-peds-03-q005": {
    "task": "Diagnosis",
-   "boardCall": "Type 1 diabetes + fatigue + menorrhagia + palpable thyroid -> thyroid-stimulating hormone (TSH)",
-   "hinge": "Fatigue, menorrhagia, bradycardia, and palpable goiter in a patient with type 1 diabetes point to primary hypothyroidism with elevated TSH.",
+   "boardCall": "type 1 diabetes + fatigue + **menorrhagia** + **palpable thyroid** + pulse 60 → Thyroid-stimulating hormone",
+   "hinge": "Autoimmune diabetes predisposes to Hashimoto hypothyroidism, raising pituitary thyrotropin levels.",
    "trap": "Heavy irregular menses in an adolescent suggest polycystic ovary syndrome, tempting DHEA-S or LH.",
    "options": {
     "A": {
@@ -501,12 +569,29 @@
      "trap": true
     }
    ],
-   "topic": "hypothyroidism"
+   "topic": "hypothyroidism",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Hirsutism, severe acne**, obesity, oligomenorrhea without goiter",
+     "then": "Dehydroepiandrosterone sulfate"
+    },
+    {
+     "opt": "D",
+     "if": "**Primary amenorrhea** or PCOS with elevated LH:FSH ratio",
+     "then": "Luteinizing hormone"
+    },
+    {
+     "opt": "A",
+     "if": "**Central weight gain**, purple striae, hypertension, hirsutism",
+     "then": "Cortisol"
+    }
+   ]
   },
   "c-peds-03-q006": {
    "task": "Mechanism",
-   "boardCall": "Continuous machinery murmur + bounding pulses -> extracardiac left-to-right shunt (PDA)",
-   "hinge": "Continuous machinery murmur loudest in the second left intercostal space with 4+ pulses defines an extracardiac left-to-right PDA shunt.",
+   "boardCall": "2-month-old + normal SpO2 + **continuous machinery murmur** + **4+ pulses** → Extracardiac left-to-right shunt",
+   "hinge": "Patent ductus creates aortopulmonary flow, causing continuous murmurs and wide pulse pressure.",
    "trap": "Right toe cyanosis might tempt a right-to-left shunt, but continuous murmur and bounding pulses confirm left-to-right PDA flow.",
    "options": {
     "A": {
@@ -597,12 +682,29 @@
      "text": "Peripheral pulses are 4+ in all extremities"
     }
    ],
-   "topic": "congenital-heart-disease"
+   "topic": "congenital-heart-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Holosystolic murmur** at left lower sternal border, normal pulses",
+     "then": "Intracardiac ventricular left-to-right shunt"
+    },
+    {
+     "opt": "C",
+     "if": "**Wide fixed split S2**, systolic ejection murmur, normal pulses",
+     "then": "Intracardiac atrial left-to-right shunt"
+    },
+    {
+     "opt": "B",
+     "if": "**Differential cyanosis** (lower SpO2 < upper) from Eisenmenger PDA",
+     "then": "Extracardiac right-to-left shunt"
+    }
+   ]
   },
   "c-peds-03-q007": {
    "task": "Diagnosis",
-   "boardCall": "Headaches + papilledema + high LP opening pressure + health supplements -> vitamin A excess",
-   "hinge": "Papilledema with elevated intracranial opening pressure and normal neuroimaging in a patient taking dietary supplements is caused by vitamin A toxicity.",
+   "boardCall": "health food worker + **headaches + papilledema** + normal CT + **high opening pressure** → Vitamin A",
+   "hinge": "Hypervitaminosis A impairs CSF arachnoid resorption, causing secondary pseudotumor cerebri.",
    "trap": "Excess vitamin D causes toxicity with fatigue and confusion, but causes hypercalcemia and nephrolithiasis rather than isolated intracranial hypertension.",
    "options": {
     "A": {
@@ -687,12 +789,29 @@
      "text": "increased opening pressure"
     }
    ],
-   "topic": "increased-intracranial-pressure"
+   "topic": "increased-intracranial-pressure",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Polyuria, constipation**, confusion, hypercalcemia, kidney stones",
+     "then": "Vitamin D"
+    },
+    {
+     "opt": "B",
+     "if": "**Sensory neuropathy** with ataxia after massive megadoses",
+     "then": "Vitamin B6"
+    },
+    {
+     "opt": "E",
+     "if": "**Premature infant** receiving excess leading to NEC or bleeding",
+     "then": "Vitamin E"
+    }
+   ]
   },
   "c-peds-03-q008": {
    "task": "Next step",
-   "boardCall": "2-week-old + forceful nonbilious vomiting + hungry feeder -> abdominal ultrasonography",
-   "hinge": "Abdominal ultrasonography is the diagnostic imaging test of choice to confirm hypertrophic pyloric stenosis.",
+   "boardCall": "2-week-old + **forceful nonbilious vomiting** + **feeds vigorously** → Ultrasonography of the abdomen",
+   "hinge": "Sonography directly measures pyloric muscle thickness and length to confirm pyloric stenosis.",
    "trap": "Abdominal plain radiograph is commonly obtained for infant vomiting, but ultrasound directly visualizes pyloric muscle hypertrophy.",
    "options": {
     "A": {
@@ -777,12 +896,29 @@
      "text": "mildly dehydrated"
     }
    ],
-   "topic": "hypertrophic-pyloric-stenosis"
+   "topic": "hypertrophic-pyloric-stenosis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Bilious vomiting** and abdominal distention (evaluating double bubble)",
+     "then": "X-ray of the abdomen"
+    },
+    {
+     "opt": "C",
+     "if": "**Currant jelly stools** with episodic abdominal pain in toddler",
+     "then": "Barium enema"
+    },
+    {
+     "opt": null,
+     "if": "**Bilious emesis** in newborn needing malrotation rule-out",
+     "then": "Upper GI series"
+    }
+   ]
   },
   "c-peds-03-q009": {
    "task": "Diagnosis",
-   "boardCall": "6-month-old + coryza + barking inspiratory stridor -> larynx (croup)",
-   "hinge": "Inspiratory stridor localizes airway obstruction to the larynx and subglottic space in viral laryngotracheobronchitis.",
+   "boardCall": "6-month-old + 2-day coryza + **audible inspiratory stridor** → Larynx",
+   "hinge": "Subglottic viral edema in croup produces extrathoracic airway narrowing and stridor.",
    "trap": "Wheezing and lower airway retractions in an infant suggest bronchiolitis, tempting bronchioles or alveoli.",
    "options": {
     "A": {
@@ -870,12 +1006,29 @@
      "text": "Generalized harsh breath sounds"
     }
    ],
-   "topic": "croup"
+   "topic": "croup",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Expiratory wheezes**, crackles, tachypnea after RSV coryza",
+     "then": "Bronchioles"
+    },
+    {
+     "opt": "A",
+     "if": "**Focal crackles**, bronchial breath sounds, lobar infiltrate",
+     "then": "Alveoli and interstitial tissues"
+    },
+    {
+     "opt": "B",
+     "if": "**Sudden unilateral wheezing** after choking on peanut",
+     "then": "Bronchi"
+    }
+   ]
   },
   "c-peds-03-q010": {
    "task": "Prevention",
-   "boardCall": "Cow milk diet after 6 months + microcytic anemia -> iron supplementation",
-   "hinge": "Excessive cow milk consumption without iron-fortified foods causes dietary iron deficiency anemia in toddlers.",
+   "boardCall": "1-year-old + **2% cow milk since 6 months** + **pallor + Hct 26%** → Iron",
+   "hinge": "Early cow milk lacks bioavailable mineral stores and causes occult GI bleeding.",
    "trap": "Folate deficiency can cause nutritional anemia, but it causes macrocytic megaloblastic anemia rather than microcytosis.",
    "options": {
     "A": {
@@ -956,12 +1109,29 @@
      "text": "pallor for 2 weeks"
     }
    ],
-   "topic": "microcytic-anemia"
+   "topic": "microcytic-anemia",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Goat milk diet** with hypersegmented neutrophils and macrocytosis",
+     "then": "Folic acid"
+    },
+    {
+     "opt": "E",
+     "if": "**Premature infant** or cholestasis with hemolytic anemia, ataxia",
+     "then": "Vitamin E"
+    },
+    {
+     "opt": "D",
+     "if": "**Isoniazid therapy** with sideroblastic microcytic anemia",
+     "then": "Vitamin B6"
+    }
+   ]
   },
   "c-peds-03-q011": {
    "task": "Pharmacology",
-   "boardCall": "Febrile 3-month-old + nitrites 2+ + leukocyte esterase 3+ -> IV cefotaxime",
-   "hinge": "Urine dipstick with nitrites and leukocyte esterase in a febrile infant indicates UTI requiring third-generation cephalosporin coverage.",
+   "boardCall": "uncircumcised 3-month-old + **fever 39°C** + **nitrites 2+ and LE 3+** → Cefotaxime",
+   "hinge": "Febrile infant UTI requires parenteral third-generation cephalosporins against enteric gram-negative rods.",
    "trap": "Cefazolin provides first-generation coverage, but cefotaxime or ceftriaxone is required for infant uropathogens and pyelonephritis.",
    "options": {
     "A": {
@@ -1046,12 +1216,29 @@
      "text": "patient is uncircumcised"
     }
    ],
-   "topic": "urinary-tract-infections"
+   "topic": "urinary-tract-infections",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Uncomplicated skin cellulitis** or MSSA joint infection",
+     "then": "Cefazolin"
+    },
+    {
+     "opt": "E",
+     "if": "**Suspected MRSA meningitis** or catheter-related sepsis",
+     "then": "Vancomycin"
+    },
+    {
+     "opt": null,
+     "if": "**Neonate under 28 days** with febrile UTI",
+     "then": "Ampicillin plus cefotaxime"
+    }
+   ]
   },
   "c-peds-03-q012": {
    "task": "Pharmacology",
-   "boardCall": "BP 250/154 + seizure + unarousable + retinopathy -> IV sodium nitroprusside",
-   "hinge": "Hypertensive encephalopathy with extreme blood pressure elevation and end-organ injury requires titratable IV vasodilator therapy.",
+   "boardCall": "stopped CCB + **BP 250/154** + **seizure + unarousable + retinopathy** → Sodium nitroprusside",
+   "hinge": "Hypertensive encephalopathy requires rapid, titratable parenteral arterial-venous vasodilation to prevent cerebral injury.",
    "trap": "Lorazepam treats the acute seizure, but the underlying driver and primary life threat is severe hypertensive emergency.",
    "options": {
     "A": {
@@ -1140,12 +1327,29 @@
      "text": "On arrival, he is unarousable"
     }
    ],
-   "topic": "hypertensive-crises"
+   "topic": "hypertensive-crises",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Active ongoing convulsion** while starting blood pressure drip",
+     "then": "Lorazepam"
+    },
+    {
+     "opt": "C",
+     "if": "**Preeclampsia severe hypertension** in pregnant woman",
+     "then": "Hydralazine"
+    },
+    {
+     "opt": "B",
+     "if": "**Acute pulmonary edema** with volume overload, normal BP",
+     "then": "Furosemide"
+    }
+   ]
   },
   "c-peds-03-q013": {
    "task": "Mechanism",
-   "boardCall": "Large compressible vascular lesion + petechiae and bruises -> thrombocytopenia from platelet sequestration (Kasabach-Merritt)",
-   "hinge": "A large vascular tumor trapping platelets and causing consumptive coagulopathy defines Kasabach-Merritt phenomenon.",
+   "boardCall": "1-month-old + **12×8-cm compressible red buttock tumor** + **petechiae and bruises** → Thrombocytopenia from platelet sequestration",
+   "hinge": "Giant vascular tumors trap platelets and clotting factors inside their beds.",
    "trap": "Generalized petechiae and bleeding suggest primary DIC or sepsis, but the large buttock vascular tumor is the site of sequestration.",
    "options": {
     "A": {
@@ -1230,12 +1434,29 @@
      "text": "1-month-old infant has had a 12 x 8-cm"
     }
    ],
-   "topic": "thrombocytopenia"
+   "topic": "thrombocytopenia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Large vascular malformation** causing high-output heart failure",
+     "then": "High-output congestive heart failure"
+    },
+    {
+     "opt": "A",
+     "if": "**Gram-negative sepsis** with diffuse bleeding, no vascular mass",
+     "then": "Disseminated intravascular coagulation"
+    },
+    {
+     "opt": null,
+     "if": "**Severe active hemorrhage** with critical thrombocytopenia",
+     "then": "Platelet and cryoprecipitate transfusion"
+    }
+   ]
   },
   "c-peds-03-q014": {
    "task": "Diagnosis",
-   "boardCall": "Bilateral nocturnal calf pain + active days + normal exam + massage relieves -> growing pains",
-   "hinge": "Nocturnal bilateral calf pain without daytime limp, swelling, or exam abnormalities that resolves with massage defines growing pains.",
+   "boardCall": "3-year-old + **nocturnal bilateral calf pain** + **relieved by massage** + normal exam → Growing pains",
+   "hinge": "Benign nocturnal limb pain after active days with unremarkable exam needs reassurance.",
    "trap": "Osteoid osteoma also causes nocturnal pain relieved by analgesics, but is unilateral and focal to a single bone.",
    "options": {
     "A": {
@@ -1393,12 +1614,29 @@
      "text": "pain is exacerbated when she has been particularly active"
     }
    ],
-   "topic": "normal-pediatric-variants"
+   "topic": "normal-pediatric-variants",
+   "branches": [
+    {
+     "opt": "H",
+     "if": "**Focal unilateral tibial pain** at night relieved by ibuprofen",
+     "then": "Osteoid osteoma"
+    },
+    {
+     "opt": "G",
+     "if": "**Adolescent runner**, tender tibial tubercle, pain with jumping",
+     "then": "Osgood-Schlatter disease"
+    },
+    {
+     "opt": "P",
+     "if": "**Post-viral daytime limp**, mild hip pain, afebrile",
+     "then": "Toxic synovitis"
+    }
+   ]
   },
   "c-peds-03-q015": {
    "task": "Diagnosis",
-   "boardCall": "Fever + red warm swollen tender knee + refusal to move or bear weight -> septic arthritis",
-   "hinge": "Acute fever, refusal to bear weight, and a swollen, erythematous, exquisitely tender joint with restricted range of motion confirm septic arthritis.",
+   "boardCall": "5-year-old + **fever 38.7°C** + **red warm swollen knee** + refuses to move → Septic arthritis",
+   "hinge": "Febrile monoarthritis with guarding and weight-bearing refusal demands emergency joint drainage.",
    "trap": "Toxic synovitis causes acute refusal to bear weight, but presents with mild pain and without marked erythema, warmth, or high fever.",
    "options": {
     "A": {
@@ -1567,12 +1805,29 @@
      "text": "refuses to move the knee and resists passive extension and flexion"
     }
    ],
-   "topic": "septic-arthritis"
+   "topic": "septic-arthritis",
+   "branches": [
+    {
+     "opt": "P",
+     "if": "**Afebrile after recent URI**, mild pain, bears weight",
+     "then": "Toxic synovitis"
+    },
+    {
+     "opt": "I",
+     "if": "**Point tenderness over metaphysis** with preserved passive joint motion",
+     "then": "Osteomyelitis"
+    },
+    {
+     "opt": "M",
+     "if": "**Chronic >6 weeks** oligoarticular knee swelling, afebrile, uveitis",
+     "then": "Rheumatoid arthritis"
+    }
+   ]
   },
   "c-peds-03-q016": {
    "task": "Ethics",
-   "boardCall": "Child asks if dying + parents requested nondisclosure -> 'Have you talked to your parents about this?'",
-   "hinge": "Exploring what the child understands and facilitating family communication honors parental wishes without lying or breaking trust.",
+   "boardCall": "dying 6-year-old + **parents forbid disclosure** + asks if dying → Have you talked to your parents?",
+   "hinge": "Open-ended inquiry explores the child's understanding without deceiving or breaking trust.",
    "trap": "Telling the child that parents forbade disclosure violates parental confidentiality and damages the parent-child relationship.",
    "options": {
     "A": {
@@ -1657,12 +1912,30 @@
      "text": "futility of further treatment"
     }
    ],
-   "topic": "physician-patient-communication"
+   "topic": "physician-patient-communication",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Mature adolescent** asks directly despite parental request",
+     "then": "Disclose prognosis honestly"
+    },
+    {
+     "opt": null,
+     "if": "**Parents ask physician to tell** child directly",
+     "then": "Share honest, gentle prognosis",
+     "step": "keep parents present"
+    },
+    {
+     "opt": null,
+     "if": "**Child becomes acutely distressed** during questioning",
+     "then": "Pause and validate feelings"
+    }
+   ]
   },
   "c-peds-03-q017": {
    "task": "Next step",
-   "boardCall": "Excessive oral secretions + choking on first feed + maternal polyhydramnios -> insertion of nasogastric tube",
-   "hinge": "Attempting to pass a nasogastric tube is the immediate diagnostic step to evaluate suspected esophageal atresia.",
+   "boardCall": "polyhydramnios + **excess oral secretions** + **coughing on first feed** → Insertion of a nasogastric tube",
+   "hinge": "Coiling of a gastric tube in a blind pouch confirms esophageal atresia.",
    "trap": "Chest CT provides detailed thoracic anatomy, but NG tube placement with plain radiography is the immediate first-line evaluation.",
    "options": {
     "A": {
@@ -1752,12 +2025,29 @@
      "text": "newborn is examined 12 hours after birth"
     }
    ],
-   "topic": "esophageal-atresia-and-tracheoesophageal-fistula"
+   "topic": "esophageal-atresia-and-tracheoesophageal-fistula",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Normal gastric tube passage**, biphasic stridor, aspiration",
+     "then": "Laryngoscopy"
+    },
+    {
+     "opt": "B",
+     "if": "**Bilious vomiting** and palpable olive mass or intussusception",
+     "then": "Ultrasonography of the abdomen"
+    },
+    {
+     "opt": null,
+     "if": "**Normal NG tube placement**, recurrent choking on feeds",
+     "then": "Contrast esophagram for H-type TEF"
+    }
+   ]
   },
   "c-peds-03-q018": {
    "task": "Diagnosis",
-   "boardCall": "Painless adenopathy + mediastinal mass + pruritus + B symptoms -> Hodgkin disease",
-   "hinge": "Cervical and mediastinal adenopathy accompanied by pruritus, weight loss, and elevated ESR in an adolescent confirms Hodgkin lymphoma.",
+   "boardCall": "16-year-old + **cervical/axillary/inguinal nodes** + **mediastinal mass** + **pruritus + weight loss** → Hodgkin disease",
+   "hinge": "Painless adenopathy with mediastinal involvement and B symptoms indicates Reed-Sternberg lymphoma.",
    "trap": "Thymoma presents with an anterior mediastinal mass, but does not cause widespread peripheral lymphadenopathy or systemic B symptoms.",
    "options": {
     "A": {
@@ -1849,12 +2139,29 @@
      "text": "increased erythrocyte sedimentation rate"
     }
    ],
-   "topic": "lymphoma"
+   "topic": "lymphoma",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Isolated anterior mediastinal mass**, ptosis, diplopia, no adenopathy",
+     "then": "Thymoma"
+    },
+    {
+     "opt": "C",
+     "if": "**Bilateral hilar adenopathy**, erythema nodosum, uveitis, noncaseating granulomas",
+     "then": "Sarcoidosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Apical lung cavity**, night sweats, positive AFB stain",
+     "then": "Tuberculosis"
+    }
+   ]
   },
   "c-peds-03-q019": {
    "task": "Diagnosis",
-   "boardCall": "4-year-old + edema and ascites after URI + 4+ protein with bland sediment -> minimal change nephrotic syndrome",
-   "hinge": "Sudden onset of massive proteinuria and generalized edema without hematuria or hypertension in a preschooler defines minimal change disease.",
+   "boardCall": "4½-year-old + **post-URI edema and ascites** + **4+ proteinuria, bland sediment** → Minimal change nephrotic syndrome",
+   "hinge": "Massive proteinuria without hematuria or hypertension in preschoolers responds to oral steroids.",
    "trap": "Postinfectious glomerulonephritis develops after an infection, but presents with hematuria, RBC casts, and hypertension.",
    "options": {
     "A": {
@@ -1942,12 +2249,29 @@
      "text": "Breath sounds are diminished on the right side of the chest"
     }
    ],
-   "topic": "nephrotic-syndrome"
+   "topic": "nephrotic-syndrome",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Cola-colored urine**, RBC casts, hypertension, low C3",
+     "then": "Acute glomerulonephritis"
+    },
+    {
+     "opt": "B",
+     "if": "**Steroid-resistant nephrotic syndrome** in African American adolescent",
+     "then": "Focal and segmental glomerulosclerosis"
+    },
+    {
+     "opt": "C",
+     "if": "**Synpharyngitic gross hematuria** 2 days after URI",
+     "then": "IgA nephropathy"
+    }
+   ]
   },
   "c-peds-03-q020": {
    "task": "Prevention",
-   "boardCall": "Severe neurologic impairment + severe GERD + recurrent aspiration pneumonia -> Nissen fundoplication",
-   "hinge": "Surgical fundoplication wraps the gastric fundus around the lower esophagus, eliminating severe reflux and recurrent aspiration pneumonia.",
+   "boardCall": "neurologic devastation + **grade 4 GERD** + **4 recurrent pneumonias** → Fundoplication",
+   "hinge": "Wrapping the gastric fundus restores the esophageal barrier against reflux aspiration.",
    "trap": "Gastrostomy provides enteral access for feeding but does not prevent gastroesophageal reflux or subsequent pulmonary aspiration.",
    "options": {
     "A": {
@@ -2040,12 +2364,29 @@
      "text": "9-month-old boy has pneumonia"
     }
    ],
-   "topic": "gastroesophageal-reflux-disease"
+   "topic": "gastroesophageal-reflux-disease",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Oral dysphagia aspiration** without significant gastroesophageal reflux",
+     "then": "Gastrostomy"
+    },
+    {
+     "opt": "D",
+     "if": "**Projectile nonbilious vomiting** at age 4 weeks, olive mass",
+     "then": "Pyloromyotomy"
+    },
+    {
+     "opt": "A",
+     "if": "**Unrepaired long-gap esophageal atresia** requiring temporary salivary diversion",
+     "then": "Esophagostomy"
+    }
+   ]
   },
   "c-peds-03-q021": {
    "task": "Diagnosis",
-   "boardCall": "8-week-old + projectile nonbilious vomiting + olive mass -> hypochloremic hypokalemic metabolic alkalosis (84 | 2.8 | 7.50)",
-   "hinge": "Recurrent loss of gastric hydrochloric acid produces hypochloremia, secondary renal potassium wasting, and metabolic alkalosis.",
+   "boardCall": "8-week-old + **projectile nonbilious vomiting** + **epigastric olive** → Cl 84, K 2.8, pH 7.50",
+   "hinge": "Emesis of gastric HCl produces hypochloremic, hypokalemic alkalosis with paradoxical aciduria.",
    "trap": "Severe dehydration can cause prerenal azotemia or lactic acidosis, but persistent vomiting of gastric acid dominates as alkalosis.",
    "options": {
     "A": {
@@ -2130,12 +2471,29 @@
      "text": "infant appears lethargic and has dry mucous membranes"
     }
    ],
-   "topic": "hypertrophic-pyloric-stenosis"
+   "topic": "hypertrophic-pyloric-stenosis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Severe profuse secretory diarrhea** with metabolic acidosis",
+     "then": "Cl 84, K 2.8, pH 7.25"
+    },
+    {
+     "opt": "A",
+     "if": "**Loop diuretic** or primary hyperaldosteronism with mild hypochloremia",
+     "then": "Cl 106, K 2.8, pH 7.48"
+    },
+    {
+     "opt": "B",
+     "if": "**Hyperkalemic renal tubular acidosis** or adrenal insufficiency",
+     "then": "Cl 106, K 5.2, pH 7.51"
+    }
+   ]
   },
   "c-peds-03-q022": {
    "task": "Diagnosis",
-   "boardCall": "Firm nodular midline abdominal mass + calcifications + bone pain/metastasis -> neuroblastoma",
-   "hinge": "A firm, nodular midline retroperitoneal mass with calcifications and distant skeletal metastases in a toddler confirms neuroblastoma.",
+   "boardCall": "3-year-old + **nodular midline mass** + **calcifications** + wrist bone pain → Neuroblastoma",
+   "hinge": "Calcified retroperitoneal tumor crossing midline with skeletal metastases distinguishes neuroblastoma.",
    "trap": "Nephroblastoma (Wilms tumor) is a common pediatric abdominal tumor, but is smooth, unilateral, renal-confined, and rarely crosses the midline.",
    "options": {
     "A": {
@@ -2216,12 +2574,29 @@
      "text": "worsening, diffuse abdominal pain and loss of appetite"
     }
    ],
-   "topic": "pediatric-abdominal-masses"
+   "topic": "pediatric-abdominal-masses",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Smooth flank mass**, hematuria, confined to one side",
+     "then": "Nephroblastoma (Wilms tumor)"
+    },
+    {
+     "opt": "E",
+     "if": "**Bilateral smooth enlarged kidneys**, hypertension, hepatic fibrosis",
+     "then": "Polycystic kidney disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Diaphyseal onion-skinning bone lesion** with fever, no abdominal mass",
+     "then": "Ewing sarcoma"
+    }
+   ]
   },
   "c-peds-03-q023": {
    "task": "Diagnosis",
-   "boardCall": "Male newborn + no urination since birth + distended lower abdomen midline mass -> posterior urethral valves",
-   "hinge": "A distended palpable bladder producing a midline mass and failure to void in a male neonate confirms bladder outlet obstruction from posterior urethral valves.",
+   "boardCall": "12-hour-old boy + **no urination since birth** + **distended midline lower abdomen** → Posterior urethral valves",
+   "hinge": "Congenital urethral membrane obstruction causes bladder distention and hydronephrosis in male neonates.",
    "trap": "Meconium ileus causes abdominal distention in neonates, but presents with failure to pass meconium and bilious emesis rather than anuria.",
    "options": {
     "A": {
@@ -2313,12 +2688,29 @@
      "text": "His mother received no prenatal care"
     }
    ],
-   "topic": "congenital-urinary-tract-anomalies"
+   "topic": "congenital-urinary-tract-anomalies",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Failure to pass meconium**, bilious vomiting, cystic fibrosis",
+     "then": "Meconium ileus"
+    },
+    {
+     "opt": "B",
+     "if": "**Vomiting, hyponatremia**, hyperkalemia at week 2, ambiguous genitalia",
+     "then": "Congenital adrenal hyperplasia"
+    },
+    {
+     "opt": "D",
+     "if": "**Unilateral flank mass** in healthy 3-year-old with hematuria",
+     "then": "Nephroblastoma (Wilms tumor)"
+    }
+   ]
   },
   "c-peds-03-q024": {
    "task": "Diagnosis",
-   "boardCall": "Superior mediastinal mass + facial swelling + serosanguineous pleural effusion -> malignant pleural effusion",
-   "hinge": "Superior vena cava compression and a large serosanguineous pleural effusion with a superior mediastinal mass indicate malignancy.",
+   "boardCall": "5-year-old + **superior mediastinal mass** + **JVD + facial swelling** + **bloody effusion** → Malignant pleural effusion",
+   "hinge": "SVC syndrome and serosanguineous effusion in a child indicate thoracic malignancy.",
    "trap": "Traumatic hemothorax yields bloody fluid, but occurs following thoracic trauma and lacks an underlying superior mediastinal mass.",
    "options": {
     "A": {
@@ -2402,12 +2794,29 @@
      "text": "jugular venous distention"
     }
    ],
-   "topic": "pleural-effusion"
+   "topic": "pleural-effusion",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Chest wall trauma** or rib fracture without mediastinal mass",
+     "then": "Traumatic hemothorax"
+    },
+    {
+     "opt": "E",
+     "if": "**Night sweats**, positive PPD, lymphocytic fluid without mediastinal mass",
+     "then": "Tuberculous pleural effusion"
+    },
+    {
+     "opt": "A",
+     "if": "**Gallop rhythm**, hepatomegaly, bilateral transudates without mediastinal mass",
+     "then": "Congestive heart failure"
+    }
+   ]
   },
   "c-peds-03-q025": {
    "task": "Diagnosis",
-   "boardCall": "Toddler + sudden drooling + vomiting + oral lip and tongue ulcers -> drain cleaner (caustic ingestion)",
-   "hinge": "Superficial chemical burn ulcers on the lips and tongue accompanied by acute drooling indicate caustic alkali ingestion from drain cleaner.",
+   "boardCall": "18-month-old in bathroom + vomiting + **drooling** + **lip and tongue ulcers** → Drain cleaner",
+   "hinge": "Alkali caustics cause oral liquefactive burns, unlike systemic insecticide toxicity.",
    "trap": "Organophosphate poisoning causes profuse secretions and drooling, but does not cause chemical ulcerations of the lips and tongue.",
    "options": {
     "A": {
@@ -2506,7 +2915,24 @@
      "text": "drain cleaner, and insecticide spray in the bathroom"
     }
    ],
-   "topic": "caustic-ingestion"
+   "topic": "caustic-ingestion",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Miosis, bradycardia**, wheezing, fasciculations without oral ulcers",
+     "then": "Organophosphate"
+    },
+    {
+     "opt": "B",
+     "if": "**Flushed dry skin**, mydriasis, delirium, urinary retention",
+     "then": "Diphenhydramine"
+    },
+    {
+     "opt": "A",
+     "if": "**Asymptomatic early** or RUQ tenderness at 24–48 h",
+     "then": "Acetaminophen"
+    }
+   ]
   },
   "c-peds-03-q026": {
    "task": "Pharmacology",
@@ -9636,5 +10062,5 @@
    "evidence": "Checked 2026-10-30: [IDSA cUTI 2025](https://www.idsociety.org/practice-guideline/complicated-urinary-tract-infections/), [IDSA ASB 2019](https://academic.oup.com/cid/article/68/10/e83/5407612)."
   }
  },
- "updatedAt": "2026-11-23T05:02:05Z"
+ "updatedAt": "2026-11-23T10:13:17Z"
 }

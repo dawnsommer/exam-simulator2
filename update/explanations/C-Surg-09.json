@@ -8,8 +8,8 @@
  "items": {
   "1299229": {
    "task": "Diagnosis",
-   "boardCall": "Hypotension + tachycardia + left shoulder pain hours after splenectomy -> intra-abdominal bleeding",
-   "hinge": "Hypotension and Kehr sign within hours of splenectomy indicate hemoperitoneum from splenic bed hemorrhage.",
+   "boardCall": "**4 h after splenectomy** + **left shoulder pain** + BP 88/50, pulse 114 + pallor, diaphoresis + sinus tachycardia → Intra-abdominal bleeding",
+   "hinge": "Blood irritating the left diaphragm refers pain upward (Kehr sign).",
    "trap": "Left shoulder pain and tachycardia can suggest myocardial infarction or pulmonary embolism.",
    "options": {
     "A": {
@@ -94,12 +94,34 @@
      "text": "pallor and diaphoresis"
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**ST elevation**, troponin rise, chest pressure",
+     "then": "Acute myocardial infarction"
+    },
+    {
+     "opt": "E",
+     "if": "**Day 5–7**, sudden dyspnea, hypoxemia, stable Hb",
+     "then": "Pulmonary embolism"
+    },
+    {
+     "opt": "D",
+     "if": "**Amylase-rich drain fluid** days later, LUQ collection",
+     "then": "Pancreatic leak"
+    },
+    {
+     "opt": "B",
+     "if": "**Fever, peritonitis**, free air days later",
+     "then": "Colonic injury"
+    }
+   ]
   },
   "1299230": {
    "task": "Next step",
-   "boardCall": "Blunt chest trauma + hypotension + jugular venous distention + clear lungs -> FAST",
-   "hinge": "Hypotension with distended neck veins after chest trauma suggests cardiac tamponade, evaluated rapidly at bedside with FAST.",
+   "boardCall": "head-on crash + chest pain + **BP 80/60** + **JVD** + clear lungs + GCS 15 → FAST",
+   "hinge": "Shock with full neck veins is obstructive; ultrasound finds pericardial blood.",
    "trap": "Hypotension tempts immediate blood transfusion, but obstructive shock requires rapid sonographic identification of pericardial fluid.",
    "options": {
     "A": {
@@ -186,12 +208,34 @@
      "text": "Lungs are clear to auscultation"
     }
    ],
-   "topic": "pericardial-disease"
+   "topic": "pericardial-disease",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Stable**, chest pain, suspected rib fractures",
+     "then": "Chest x-ray"
+    },
+    {
+     "opt": "E",
+     "if": "**Flat neck veins**, pulse 130, falling Hb",
+     "then": "Transfusion of packed RBCs"
+    },
+    {
+     "opt": "D",
+     "if": "**GCS 8** or cannot protect airway",
+     "then": "Intubation and mechanical ventilation"
+    },
+    {
+     "opt": "B",
+     "if": "**Stable**, sternal tenderness, new irregular pulse",
+     "then": "ECG"
+    }
+   ]
   },
   "1299231": {
    "task": "Diagnosis",
-   "boardCall": "12 units RBC + 2 units FFP + diffuse intraoperative ooze -> dilutional thrombocytopenia",
-   "hinge": "Massive transfusion with PRBCs and minimal plasma without platelets causes dilutional thrombocytopenia and coagulopathy.",
+   "boardCall": "massive hemorrhage + **12 units RBCs** + 6 L crystalloid + **only 2 units FFP, no platelets** + diffuse ooze → Platelets",
+   "hinge": "Dilution with platelet-free products drops the count first.",
    "trap": "Large-volume PRBC transfusion causes citrate-mediated hypocalcemia, but platelets deplete faster and drive diffuse microvascular oozing.",
    "options": {
     "A": {
@@ -285,12 +329,34 @@
      "text": "tear in the portal vein"
     }
    ],
-   "topic": "transfusion-reactions"
+   "topic": "transfusion-reactions",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Perioral tingling, prolonged QT**, hypotension during transfusion",
+     "then": "Calcium"
+    },
+    {
+     "opt": "E",
+     "if": "**Warfarin or malnutrition**, prolonged PT alone",
+     "then": "Vitamin K"
+    },
+    {
+     "opt": "F",
+     "if": "**Lifelong mucosal bleeding**, normal platelets, long PTT",
+     "then": "von Willebrand factor"
+    },
+    {
+     "opt": "C",
+     "if": "**Boy with hemarthroses**, isolated long PTT",
+     "then": "Factor VIII"
+    }
+   ]
   },
   "1299232": {
    "task": "Diagnosis",
-   "boardCall": "High-energy deceleration fall + widened mediastinum on chest radiograph -> blunt thoracic aortic injury",
-   "hinge": "Rapid deceleration injury with widened mediastinum and left apical capping on chest x-ray represents traumatic aortic transection.",
+   "boardCall": "**3-story fall** + pulse 120 + left chest tenderness + femur deformity + negative FAST + **widened mediastinum** → Transected thoracic aorta",
+   "hinge": "Deceleration tears the aorta at the ligamentum; mediastinal widening signals it.",
    "trap": "Left chest tenderness and tachypnea suggest pulmonary contusion or hemothorax, but mediastinal widening identifies aortic disruption.",
    "options": {
     "A": {
@@ -379,12 +445,34 @@
      "text": "pulse is 120/min, respirations are 28/min"
     }
    ],
-   "topic": "thoracic-trauma"
+   "topic": "thoracic-trauma",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Dull hemithorax**, meniscus on film",
+     "then": "Hemothorax"
+    },
+    {
+     "opt": "B",
+     "if": "**Beck triad** after anterior chest blow",
+     "then": "Pericardial tamponade"
+    },
+    {
+     "opt": "C",
+     "if": "**Patchy infiltrate** worsening over 48 h",
+     "then": "Pulmonary contusion"
+    },
+    {
+     "opt": "D",
+     "if": "**Young child**, anterior mediastinal fullness, normal aorta",
+     "then": "Thymic hematoma"
+    }
+   ]
   },
   "1299233": {
    "task": "Next step",
-   "boardCall": "Crohn disease + RLQ tender mass + psoas sign + abscess on CT -> IV antibiotics + percutaneous drainage",
-   "hinge": "Intra-abdominal or psoas abscess complicating Crohn disease requires source control with drainage plus broad-spectrum antibiotics, avoiding steroids.",
+   "boardCall": "ileal Crohn disease + on prednisone + fever + **RLQ tender mass** + painful hip extension + **psoas abscess on CT** → Antibiotics and drainage of abscess",
+   "hinge": "An undrained abscess worsens with steroids; source control comes first.",
    "trap": "Active Crohn symptoms tempt escalating corticosteroids, but corticosteroids suppress immunity and worsen an undrained abscess.",
    "options": {
     "A": {
@@ -471,12 +559,34 @@
      "text": "psoas muscle abscess"
     }
    ],
-   "topic": "inflammatory-bowel-disease"
+   "topic": "inflammatory-bowel-disease",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Flare without abscess**, severe inflammation, poor intake",
+     "then": "High-dose corticosteroids and TPN"
+    },
+    {
+     "opt": "A",
+     "if": "**Phlegmon under 3 cm**, no drainable collection",
+     "then": "Antibiotics and TPN"
+    },
+    {
+     "opt": "D",
+     "if": "**Mild colonic Crohn flare**, no infection",
+     "then": "Corticosteroid and sulfasalazine"
+    },
+    {
+     "opt": null,
+     "if": "**Fixed fibrotic stricture** with obstruction after abscess heals",
+     "then": "Elective bowel resection"
+    }
+   ]
   },
   "1299234": {
    "task": "Diagnosis",
-   "boardCall": "Postoperative TPN catheter + high fever + gram-positive bacteremia + benign wound -> catheter sepsis",
-   "hinge": "Sudden septic shock with gram-positive cocci in a patient with a central line and benign abdomen/wound indicates central line-associated bloodstream infection.",
+   "boardCall": "**TPN via subclavian line** + fever 39.7°C + shock + **gram-positive cocci in blood** + clean wound, soft abdomen → Catheter sepsis",
+   "hinge": "Skin flora in blood with a nontender abdomen points to the line.",
    "trap": "Recent colonic resection tempts anastomotic leak or wound infection, but the wound is clean, abdomen nontender, and blood cultures show gram-positive cocci.",
    "options": {
     "A": {
@@ -577,12 +687,34 @@
      "text": "Blood cultures grow gram-positive cocci"
     }
    ],
-   "topic": "catheter-related-bloodstream-infection"
+   "topic": "catheter-related-bloodstream-infection",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Peritonitis**, feculent drain output, polymicrobial culture",
+     "then": "Anastomotic leak"
+    },
+    {
+     "opt": "D",
+     "if": "**Crackles, purulent sputum**, new infiltrate",
+     "then": "Pneumonia"
+    },
+    {
+     "opt": "G",
+     "if": "**Red, draining incision**, fluctuant wound",
+     "then": "Wound infection"
+    },
+    {
+     "opt": "F",
+     "if": "**Pyuria**, gram-negative rods, Foley catheter",
+     "then": "Urinary tract infection"
+    }
+   ]
   },
   "1299235": {
    "task": "Diagnosis",
-   "boardCall": "Pulsatile popliteal mass + calf/posterior knee pain + fullness -> compression of the tibial nerve",
-   "hinge": "A large popliteal artery aneurysm in the popliteal fossa compresses the adjacent tibial nerve, causing posterior knee and calf pain.",
+   "boardCall": "smoker + **5-cm pulsatile popliteal mass** + posterior knee and calf pain + fullness + **foot warm, no pallor** → Compression of the tibial nerve",
+   "hinge": "Perfusion is adequate, so the bulging aneurysm is pressing the nerve.",
    "trap": "Absent pedal pulses indicate peripheral arterial disease, tempting arterial embolus or compartment ischemia, but fullness and rest pain behind knee point to local nerve compression.",
    "options": {
     "A": {
@@ -670,12 +802,34 @@
      "trap": true
     }
    ],
-   "topic": "peripheral-artery-disease"
+   "topic": "peripheral-artery-disease",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Sudden cold, pale foot**, no pulses",
+     "then": "Arterial embolus"
+    },
+    {
+     "opt": "D",
+     "if": "**Tense anterior leg**, pain on passive toe flexion",
+     "then": "Ischemia of the anterior compartment"
+    },
+    {
+     "opt": "E",
+     "if": "**Crepitus, joint-line pain**, no pulsatile mass",
+     "then": "Osteoarthritis of the knee"
+    },
+    {
+     "opt": null,
+     "if": "**Nonpulsatile mass**, calf swelling",
+     "then": "Baker cyst"
+    }
+   ]
   },
   "1299236": {
    "task": "Diagnosis",
-   "boardCall": "Postprandial RUQ pain + positive Murphy sign + fever + leukocytosis -> acute cholecystitis",
-   "hinge": "Steady RUQ pain after fatty food with positive Murphy sign, low-grade fever, and leukocytosis represents acute cholecystitis.",
+   "boardCall": "obese woman + **RUQ pain after fatty meal** + prior similar episode + fever, WBC 16,000 + **Murphy sign** + normal LFTs → Cholecystitis",
+   "hinge": "Unremarkable liver tests keep the stone in the cystic duct.",
    "trap": "Postprandial back-radiating epigastric/RUQ pain can suggest pancreatitis, but positive Murphy sign and normal liver enzymes point to gallbladder disease.",
    "options": {
     "A": {
@@ -762,12 +916,34 @@
      "text": "leukocyte count of 16,000/mm³"
     }
    ],
-   "topic": "gallstone-disease"
+   "topic": "gallstone-disease",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Jaundice, high bilirubin**, rigors",
+     "then": "Cholangitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Lipase 5× normal**, epigastric pain to back",
+     "then": "Pancreatitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Periumbilical pain migrating to RLQ**",
+     "then": "Appendicitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Bloody diarrhea**, lower abdominal cramps",
+     "then": "Colitis"
+    }
+   ]
   },
   "1299237": {
    "task": "Diagnosis",
-   "boardCall": "Head trauma + lucid interval + lens-shaped biconvex hyperdensity -> epidural hematoma",
-   "hinge": "Biconvex lens-shaped hyperdense extra-axial collection with mass effect after head trauma is pathognomonic for epidural hematoma.",
+   "boardCall": "bicycle fall + **brief loss of consciousness then lucid** + worsening drowsiness + right weakness + **lens-shaped hyperdensity** → Epidural hematoma",
+   "hinge": "Arterial bleeding strips dura from skull, so it stays biconvex.",
    "trap": "Traumatic intracranial hemorrhage can tempt subdural hematoma, but subdural bleeding is crescent-shaped and crosses suture lines.",
    "options": {
     "A": {
@@ -864,12 +1040,34 @@
      "text": "shift of midline structures"
     }
    ],
-   "topic": "traumatic-brain-injury"
+   "topic": "traumatic-brain-injury",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Crescent-shaped** collection crossing sutures, elderly",
+     "then": "Subdural hematoma"
+    },
+    {
+     "opt": "E",
+     "if": "**Thunderclap headache**, blood in basal cisterns",
+     "then": "Subarachnoid hemorrhage"
+    },
+    {
+     "opt": "B",
+     "if": "**Ring-enhancing lesion**, fever, recent sinusitis",
+     "then": "Bacterial abscess"
+    },
+    {
+     "opt": "C",
+     "if": "**Fever, back pain**, IV drug use, spinal tenderness",
+     "then": "Epidural abscess"
+    }
+   ]
   },
   "1299238": {
    "task": "Next step",
-   "boardCall": "Cushing syndrome + high-normal ACTH + high-dose dexamethasone suppression -> pituitary MRI",
-   "hinge": "Cortisol suppression > 50% (to 40% of baseline) with high-dose dexamethasone localizes hypercortisolemia to a pituitary ACTH adenoma (Cushing disease), evaluated next with pituitary MRI.",
+   "boardCall": "Cushing features + new diabetes + **ACTH high-normal** + high urine cortisol + **suppresses on high-dose dexamethasone** → MRI of the brain",
+   "hinge": "Suppression means pituitary ACTH; image the pituitary first.",
    "trap": "Cushing syndrome with high ACTH can tempt inferior petrosal sinus sampling or abdominal CT, but IPSS is reserved for when MRI is negative, and abdominal CT is for ACTH-independent causes.",
    "options": {
     "A": {
@@ -969,12 +1167,34 @@
      "text": "suppression of cortisol to 40% of baseline"
     }
    ],
-   "topic": "cushing-syndrome"
+   "topic": "cushing-syndrome",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**ACTH suppressed**, high cortisol",
+     "then": "CT scan of the abdomen"
+    },
+    {
+     "opt": "E",
+     "if": "**Pituitary MRI normal**, ACTH-dependent",
+     "then": "Inferior petrosal sinus sampling"
+    },
+    {
+     "opt": "C",
+     "if": "**No suppression**, very high ACTH, hypokalemia",
+     "then": "Octreotide scan"
+    },
+    {
+     "opt": "A",
+     "if": "**Episodic headaches, palpitations, sweating**",
+     "then": "Adrenal medullary scan"
+    }
+   ]
   },
   "1299239": {
    "task": "Next step",
-   "boardCall": "Metastatic colon cancer + extensive bilobar unresectable liver metastases -> systemic chemotherapy",
-   "hinge": "Unresectable metastatic colorectal cancer without acute bowel obstruction or perforation is treated primarily with systemic chemotherapy.",
+   "boardCall": "colon adenocarcinoma + occult blood + weight loss + **liver ¾ replaced by metastases** + **no obstruction** → Chemotherapy",
+   "hinge": "Unresectable liver disease decides survival; the quiet primary can wait.",
    "trap": "Colon cancer diagnosis tempts immediate primary tumor resection, but asymptomatic nonobstructing primary tumors do not require resection in metastatic disease.",
    "options": {
     "A": {
@@ -1066,12 +1286,34 @@
      "text": "multiple 1- to 3.2-cm lesions replacing three-fourths of the liver"
     }
    ],
-   "topic": "colorectal-carcinoma"
+   "topic": "colorectal-carcinoma",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Obstructing** transverse colon tumor, distended",
+     "then": "Stenting of the transverse colon"
+    },
+    {
+     "opt": "E",
+     "if": "**No metastases** on staging CT",
+     "then": "Transverse colon resection"
+    },
+    {
+     "opt": null,
+     "if": "**Few resectable liver metastases**",
+     "then": "Resect primary and metastases"
+    },
+    {
+     "opt": "C",
+     "if": "**Rectal** cancer, locally advanced, no spread",
+     "then": "Radiation therapy"
+    }
+   ]
   },
   "1299240": {
    "task": "Next step",
-   "boardCall": "Motor vehicle collision after syncope + sternal fracture + ST-elevation ECG -> serum troponin measurement",
-   "hinge": "Elderly driver crashing into a telephone pole with diaphoresis, chest pain, and ischemic ECG changes likely suffered an acute myocardial infarction that caused the crash.",
+   "boardCall": "age 77 + **low-speed crash, no memory of it** + diaphoresis + chest pain + **ischemic ECG** + sternal fracture → Measurement of serum troponin I",
+   "hinge": "A minor crash with these ECG changes suggests MI caused it.",
    "trap": "Sternal fracture from a seatbelt tempts blunt aortic injury imaging or sternal MRI, but ischemic ECG changes prioritize troponin.",
    "options": {
     "A": {
@@ -1161,12 +1403,34 @@
      "text": "chest x-ray shows a sternal fracture"
     }
    ],
-   "topic": "acute-coronary-syndromes"
+   "topic": "acute-coronary-syndromes",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Widened mediastinum**, high-speed deceleration",
+     "then": "Thoracic aortography"
+    },
+    {
+     "opt": "B",
+     "if": "**Low pretest PE**, pleuritic pain, normal ECG",
+     "then": "Serum D-dimer assay"
+    },
+    {
+     "opt": "C",
+     "if": "**Suspected small pneumothorax**, equivocal film",
+     "then": "Inspiratory and expiratory x-rays"
+    },
+    {
+     "opt": null,
+     "if": "**ST elevation** with troponin rise",
+     "then": "Cardiac catheterization"
+    }
+   ]
   },
   "1299241": {
    "task": "Next step",
-   "boardCall": "Postprandial chest pain + dysphagia + intrathoracic stomach with normal GE junction -> operative repair of hernia",
-   "hinge": "Symptomatic paraesophageal hiatal hernia (type II/III) has a high risk of gastric volvulus, strangulation, and infarction, warranting operative repair.",
+   "boardCall": "age 72 + **postprandial chest pain** + dysphagia, regurgitation + **stomach in chest, GE junction below** → Operative repair of the hernia",
+   "hinge": "Paraesophageal hernias can strangulate, so symptomatic ones are repaired.",
    "trap": "Postprandial discomfort and regurgitation resemble GERD, tempting medical therapy or lifestyle changes, but paraesophageal hernia requires surgical correction.",
    "options": {
     "A": {
@@ -1253,12 +1517,34 @@
      "text": "Barium upper gastrointestinal series shows a hiatal hernia"
     }
    ],
-   "topic": "hiatal-hernia"
+   "topic": "hiatal-hernia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**GE junction above diaphragm**, heartburn only",
+     "then": "H2-receptor blocking agents"
+    },
+    {
+     "opt": "B",
+     "if": "**Sliding hernia**, nocturnal reflux symptoms",
+     "then": "Elevate head of bed"
+    },
+    {
+     "opt": null,
+     "if": "**Retching, cannot pass NG tube**, severe pain",
+     "then": "Gastric volvulus; emergent surgery"
+    },
+    {
+     "opt": "C",
+     "if": "**Gastroparesis**, early satiety, no hernia",
+     "then": "Administration of cisapride"
+    }
+   ]
   },
   "1299242": {
    "task": "Next step",
-   "boardCall": "Enclosed house fire + soot around mouth + singed nasal hairs + hypoxia -> endotracheal intubation",
-   "hinge": "Signs of thermal airway injury and hypoxemia require immediate preemptive endotracheal intubation before rapid progressive laryngeal edema obstructs the airway.",
+   "boardCall": "**enclosed house fire** + 40% TBSA + **singed nasal hairs and soot** + SpO₂ 92% on mask + awake → Endotracheal intubation",
+   "hinge": "Airway edema worsens with resuscitation, making later intubation impossible.",
    "trap": "Awake and responsive status tempts delaying intubation for chest imaging, but edema rapidly makes delayed intubation impossible.",
    "options": {
     "A": {
@@ -1345,12 +1631,34 @@
      "text": "singed nasal hairs and soot around the nose and mouth"
     }
    ],
-   "topic": "burn-injuries"
+   "topic": "burn-injuries",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Circumferential chest burn**, rising airway pressures",
+     "then": "Escharotomy"
+    },
+    {
+     "opt": "D",
+     "if": "**Electrical burn**, dark urine",
+     "then": "Evaluate for myoglobinuria"
+    },
+    {
+     "opt": "A",
+     "if": "**No airway signs**, intubated already, check tube",
+     "then": "Chest x-ray"
+    },
+    {
+     "opt": "E",
+     "if": "**Prolonged ventilation** expected beyond 2 weeks",
+     "then": "Percutaneous tracheostomy"
+    }
+   ]
   },
   "1299243": {
    "task": "Diagnosis",
-   "boardCall": "PPI-refractory multiple duodenal ulcers + prominent gastric folds + diarrhea -> gastrinoma (Zollinger-Ellison syndrome)",
-   "hinge": "Multiple peptic ulcers refractory to proton pump inhibitors with diarrhea and hypertrophic gastric folds indicate gastrin-secreting neuroendocrine tumor (gastrinoma).",
+   "boardCall": "**PPI-refractory peptic ulcers** + diarrhea + weight loss + **prominent gastric folds** + multiple duodenal ulcers → Gastrinoma",
+   "hinge": "Gastrin excess thickens folds and acid inactivates enzymes, causing diarrhea.",
    "trap": "Peptic ulcer disease is most commonly caused by Helicobacter pylori, but prominent gastric rugal folds and secretory diarrhea indicate gastrin hypersecretion.",
    "options": {
     "A": {
@@ -1449,12 +1757,34 @@
      "text": "nausea, and epigastric pain"
     }
    ],
-   "topic": "pancreatic-cancer"
+   "topic": "pancreatic-cancer",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Single duodenal ulcer**, heals with PPI, positive urea breath test",
+     "then": "Helicobacter pylori infection"
+    },
+    {
+     "opt": "F",
+     "if": "**Watery diarrhea, hypokalemia**, no ulcers",
+     "then": "VIPoma"
+    },
+    {
+     "opt": "E",
+     "if": "**Fasting hypoglycemia**, high insulin and C-peptide",
+     "then": "Insulinoma"
+    },
+    {
+     "opt": "B",
+     "if": "**Vomiting undigested food**, succussion splash",
+     "then": "Gastric outlet obstruction"
+    }
+   ]
   },
   "1299244": {
    "task": "Next step",
-   "boardCall": "Triple-negative breast cancer with 5-cm residual tumor + persistent palpable axillary nodes post-chemotherapy -> modified radical mastectomy",
-   "hinge": "Locally advanced breast cancer with a large residual tumor and persistent palpable axillary adenopathy post-neoadjuvant chemotherapy requires total mastectomy with axillary lymph node dissection.",
+   "boardCall": "triple-negative breast cancer + **5-cm residual mass after chemotherapy** + **palpable axillary nodes** + no distant spread → Modified radical mastectomy",
+   "hinge": "Bulky residual tumor with positive nodes needs mastectomy plus axillary dissection.",
    "trap": "Lumpectomy and sentinel node biopsy are preferred for small tumors and clinically negative nodes, but large residual tumors with palpable nodes require modified radical mastectomy.",
    "options": {
     "A": {
@@ -1536,12 +1866,34 @@
      "text": "PET scan shows no disease beyond the right breast and axilla"
     }
    ],
-   "topic": "breast-neoplasia"
+   "topic": "breast-neoplasia",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Small residual tumor**, clinically negative axilla",
+     "then": "Lumpectomy and sentinel node biopsy"
+    },
+    {
+     "opt": "D",
+     "if": "**Estrogen receptor positive** after surgery",
+     "then": "Tamoxifen therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Distant metastases** on PET",
+     "then": "Additional chemotherapy"
+    },
+    {
+     "opt": null,
+     "if": "**HER2 positive** residual disease after surgery",
+     "then": "Adjuvant trastuzumab emtansine"
+    }
+   ]
   },
   "1299245": {
    "task": "Diagnosis",
-   "boardCall": "Long-standing dysphagia + regurgitation of undigested food + bird-beak tapering -> achalasia",
-   "hinge": "Progressive dysphagia with regurgitation of undigested food and smooth tapered narrowing of the lower esophageal sphincter (bird-beak sign) on barium swallow indicates achalasia.",
+   "boardCall": "**2½ years of solid dysphagia** + regurgitates undigested food + weight loss + **smooth tapered LES narrowing** → Achalasia",
+   "hinge": "Long course and smooth taper favor failed LES relaxation over tumor.",
    "trap": "Weight loss and progressive dysphagia can raise suspicion for esophageal cancer, but the 2.5-year indolent course and smooth tapered narrowing point to achalasia.",
    "options": {
     "A": {
@@ -1622,12 +1974,34 @@
      "text": "smooth tapered narrowing of the lower esophageal sphincter"
     }
    ],
-   "topic": "esophageal-motility-disorders"
+   "topic": "esophageal-motility-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Months of rapid progression**, irregular shouldered stricture",
+     "then": "Esophageal carcinoma"
+    },
+    {
+     "opt": "E",
+     "if": "**Raynaud phenomenon**, sclerodactyly, weak LES",
+     "then": "Systemic sclerosis"
+    },
+    {
+     "opt": "D",
+     "if": "**Iron deficiency anemia**, upper esophageal web",
+     "then": "Plummer-Vinson syndrome"
+    },
+    {
+     "opt": "C",
+     "if": "**Heartburn**, peptic stricture after years of reflux",
+     "then": "Gastroesophageal reflux disease"
+    }
+   ]
   },
   "1299246": {
    "task": "Diagnosis",
-   "boardCall": "Enlarging pigmented facial plaque with asymmetric irregular borders -> malignant melanoma (lentigo maligna melanoma)",
-   "hinge": "A slowly enlarging, asymmetric, pigmented maculopapular facial lesion with irregular borders and color variegation in an elderly patient is melanoma until proven otherwise.",
+   "boardCall": "age 70 + **cheek lesion enlarging for 5 years** + **pigmented, irregular, variegated** → Malignant melanoma",
+   "hinge": "Lentigo maligna grows slowly on sun-damaged faces before invading.",
    "trap": "Long-standing slow enlargement on sun-exposed facial skin can tempt seborrheic keratosis, but lack of a stuck-on waxy appearance and presence of ABCDE features indicate melanoma.",
    "options": {
     "A": {
@@ -1719,12 +2093,34 @@
      "text": "gradually enlarged to its present size"
     }
    ],
-   "topic": "skin-cancer"
+   "topic": "skin-cancer",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Waxy stuck-on** plaque with horn cysts",
+     "then": "Seborrheic keratosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Pearly papule** with telangiectasia, nonpigmented",
+     "then": "Basal cell carcinoma"
+    },
+    {
+     "opt": "A",
+     "if": "**Rough scaly pink macule**, sandpaper feel",
+     "then": "Actinic keratosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Hyperkeratotic ulcerating nodule**, rapid growth",
+     "then": "Squamous cell carcinoma"
+    }
+   ]
   },
   "1299247": {
    "task": "Next step",
-   "boardCall": "Palpable 1.5-cm thyroid nodule unresponsive to TSH suppression -> fine-needle aspiration biopsy",
-   "hinge": "A discrete palpable thyroid nodule >= 1 cm that fails to regress requires fine-needle aspiration biopsy to exclude thyroid carcinoma.",
+   "boardCall": "prior benign thyroid nodule + **new 1.5-cm right nodule** + **no shrinkage on levothyroxine** + euthyroid → Fine-needle aspiration biopsy",
+   "hinge": "A persistent dominant nodule over 1 cm needs cytology to exclude cancer.",
    "trap": "Prior benign nodule resection and diffuse scan uptake tempt observation or calcitonin, but a discrete dominant nodule requires tissue diagnosis.",
    "options": {
     "A": {
@@ -1816,12 +2212,34 @@
      "text": "1.5-cm mass on the right anterior aspect of the neck"
     }
    ],
-   "topic": "thyroid-nodules-and-cancer"
+   "topic": "thyroid-nodules-and-cancer",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**MEN2 family history** or medullary cytology",
+     "then": "Measurement of serum calcitonin"
+    },
+    {
+     "opt": "E",
+     "if": "**Malignant cytology** on FNA",
+     "then": "Surgical exploration"
+    },
+    {
+     "opt": "A",
+     "if": "**Benign cytology**, stable size",
+     "then": "Follow-up examination"
+    },
+    {
+     "opt": "C",
+     "if": "**Large substernal goiter**, tracheal compression",
+     "then": "CT scan of the neck"
+    }
+   ]
   },
   "1299248": {
    "task": "Diagnosis",
-   "boardCall": "Mid-to-distal humeral shaft fracture + post-ORIF loss of elbow and MCP extension -> radial nerve injury",
-   "hinge": "The radial nerve traverses the spiral groove along the midshaft and distal humerus, and injury results in weakness of elbow, wrist, and metacarpophalangeal extension.",
+   "boardCall": "**midshaft-distal humerus fracture** + ORIF + **weak elbow, MCP extension** + grip and sensation intact → Radial",
+   "hinge": "The radial nerve hugs the spiral groove and drives all extensors.",
    "trap": "Intact grip strength and palmar sensation tempt excluding nerve injury, but flexion is median/ulnar while extension is radial.",
    "options": {
     "A": {
@@ -1913,12 +2331,34 @@
      "text": "weakness with extension of the left elbow and the metacarpophalangeal joints"
     }
    ],
-   "topic": "humeral-fractures"
+   "topic": "humeral-fractures",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Surgical neck fracture**, weak abduction, lateral shoulder numb",
+     "then": "Axillary"
+    },
+    {
+     "opt": "E",
+     "if": "**Medial epicondyle** fracture, weak finger abduction",
+     "then": "Ulnar"
+    },
+    {
+     "opt": "B",
+     "if": "**Supracondylar fracture**, weak thumb opposition",
+     "then": "Median"
+    },
+    {
+     "opt": "C",
+     "if": "**Weak elbow flexion**, numb lateral forearm",
+     "then": "Musculocutaneous"
+    }
+   ]
   },
   "1299249": {
    "task": "Diagnosis",
-   "boardCall": "Positive-pressure ventilation after rib fractures + sudden hypotension + hypoxia -> tension pneumothorax with JVD",
-   "hinge": "Mechanical positive-pressure ventilation can convert a traumatic occult pneumothorax into a tension pneumothorax, causing high intrathoracic pressure, impaired venous return, and jugular venous distention.",
+   "boardCall": "**four rib fractures** + positive-pressure ventilation in OR + **sudden hypotension and hypoxia** + falling end-tidal CO₂ → Jugular venous distention",
+   "hinge": "Ventilating an occult pneumothorax converts it to tension, blocking venous return.",
    "trap": "Decreased end-tidal CO2 and shock can tempt bradycardia, but compensatory sympathetic drive causes tachycardia, while airway pressure rises and tidal volume decreases.",
    "options": {
     "A": {
@@ -1998,12 +2438,34 @@
      "text": "end-tidal CO is decreased"
     }
    ],
-   "topic": "pneumothorax"
+   "topic": "pneumothorax",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Circuit disconnect** or extubation",
+     "then": "Decreased peak airway pressure"
+    },
+    {
+     "opt": "A",
+     "if": "**High spinal cord injury**, hypotension",
+     "then": "Bradycardia"
+    },
+    {
+     "opt": "C",
+     "if": "**Ventilator settings raised**, no pneumothorax",
+     "then": "Increased tidal volume"
+    },
+    {
+     "opt": null,
+     "if": "**Muffled heart sounds**, equal breath sounds",
+     "then": "Cardiac tamponade"
+    }
+   ]
   },
   "1299250": {
    "task": "Diagnosis",
-   "boardCall": "Necrotizing pancreatitis + persistent high fever and worsening leukocytosis 1 week later -> infected pancreatic necrosis",
-   "hinge": "Secondary bacterial infection of devitalized pancreatic tissue (infected necrosis) typically occurs 1-2 weeks after acute necrotizing pancreatitis.",
+   "boardCall": "binge drinking + **2/3 of pancreas not perfused** + 1 week later + **fever 39°C, WBC 20,000** + worsening distention → Infected pancreatic necrosis",
+   "hinge": "Necrotic pancreas becomes infected in weeks 1–2, causing new sepsis.",
    "trap": "Pancreatic pseudocyst is a walled-off fluid collection developing 4 or more weeks later, not explaining early septic deterioration.",
    "options": {
     "A": {
@@ -2093,12 +2555,34 @@
      "text": "leukocyte count is 20,000/mm³"
     }
    ],
-   "topic": "pancreatitis"
+   "topic": "pancreatitis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**4+ weeks later**, walled-off fluid, early satiety",
+     "then": "Pancreatic pseudocyst"
+    },
+    {
+     "opt": "A",
+     "if": "**Gallbladder present**, dilated CBD, rising bilirubin",
+     "then": "Impacted common duct calculus"
+    },
+    {
+     "opt": "C",
+     "if": "**High-amylase ascites**, afebrile, disrupted duct",
+     "then": "Pancreatic ascites"
+    },
+    {
+     "opt": "D",
+     "if": "**Painless jaundice**, weight loss, head mass",
+     "then": "Pancreatic carcinoma"
+    }
+   ]
   },
   "1299251": {
    "task": "Next step",
-   "boardCall": "Isolated prolonged PTT + maternal menorrhagia before tonsillectomy -> delay operation and measure von Willebrand factor",
-   "hinge": "Isolated prolonged PTT in a young girl with maternal menorrhagia suggests von Willebrand disease (vWF stabilizes factor VIII), requiring preoperative evaluation.",
+   "boardCall": "tonsillectomy planned + **PTT 40, repeated 42** + normal PT and platelets + **mother with heavy menses** → Delay operation for von Willebrand factor",
+   "hinge": "Low vWF shortens factor VIII survival, lengthening PTT.",
    "trap": "Tonsillectomy can tempt proceeding with surgery because the patient has no bleeding history, but tonsillectomy carries severe hemorrhage risk if vWD is unrecognized.",
    "options": {
     "A": {
@@ -2195,12 +2679,34 @@
      "text": "Her mother has prolonged menses"
     }
    ],
-   "topic": "inherited-bleeding-disorders"
+   "topic": "inherited-bleeding-disorders",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Boy**, maternal uncle with hemarthroses",
+     "then": "Measure factor IX"
+    },
+    {
+     "opt": "D",
+     "if": "**Long PT**, on antibiotics, poor diet",
+     "then": "Vitamin K and proceed"
+    },
+    {
+     "opt": "F",
+     "if": "**Lupus anticoagulant**, no bleeding history in patient or family",
+     "then": "Proceed with the operation"
+    },
+    {
+     "opt": "E",
+     "if": "**Platelets 30,000**, operation urgent",
+     "then": "Transfuse platelets and proceed"
+    }
+   ]
   },
   "1299252": {
    "task": "Next step",
-   "boardCall": "Elderly demented patient + abdominal distention + coffee-bean sign on abdominal radiograph -> flexible sigmoidoscopy",
-   "hinge": "Sigmoid volvulus in a stable patient without peritonitis is treated initially with endoscopic detorsion and decompression via flexible sigmoidoscopy.",
+   "boardCall": "age 76 + dementia + lethargy + **distended tender abdomen** + no rebound + **coffee-bean sign** → Flexible sigmoidoscopy",
+   "hinge": "Without peritonitis, endoscopic detorsion is first and spares an emergency colectomy.",
    "trap": "Tender abdomen and leukocytosis can tempt emergent laparotomy, but without frank peritonitis or gangrene, sigmoidoscopic detorsion is the first-line intervention.",
    "options": {
     "A": {
@@ -2287,12 +2793,34 @@
      "text": "Abdominal x-ray is shown"
     }
    ],
-   "topic": "bowel-obstruction"
+   "topic": "bowel-obstruction",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Peritonitis** or dusky mucosa at scope",
+     "then": "Exploratory laparotomy"
+    },
+    {
+     "opt": "A",
+     "if": "**Diagnosis unclear**, no peritonitis, stable",
+     "then": "Contrast enema"
+    },
+    {
+     "opt": "E",
+     "if": "**Colonic pseudo-obstruction**, no twist, mild dilation",
+     "then": "Rectal tube placement"
+    },
+    {
+     "opt": "D",
+     "if": "**Chronic constipation**, no obstruction",
+     "then": "Docusate therapy"
+    }
+   ]
   },
   "1299253": {
    "task": "Diagnosis",
-   "boardCall": "Zenker diverticulum + nocturnal cough + dysphagia + right upper lobe infiltrate -> silent aspiration",
-   "hinge": "Pharyngoesophageal (Zenker) diverticulum traps saliva and food particles, leading to microaspiration and pulmonary infiltrates without overt choking.",
+   "boardCall": "age 77 + **Zenker diverticulum** + **nocturnal coughing** + dysphagia + RUL patchy infiltrate → Silent aspiration",
+   "hinge": "The pouch spills retained food into the airway when lying down.",
    "trap": "Long-standing heavy smoking history tempts bronchogenic carcinoma, but Zenker diverticulum directly explains recurrent regurgitation and silent aspiration.",
    "options": {
     "A": {
@@ -2379,12 +2907,34 @@
      "text": "patchy infiltrate in the right upper lobe"
     }
    ],
-   "topic": "esophageal-motility-disorders"
+   "topic": "esophageal-motility-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Spiculated mass**, hemoptysis, weight loss",
+     "then": "Occult bronchogenic carcinoma"
+    },
+    {
+     "opt": "D",
+     "if": "**Coughing with every swallow**, esophageal cancer",
+     "then": "Tracheoesophageal fistula"
+    },
+    {
+     "opt": "A",
+     "if": "**Acute fever, lobar consolidation**, no dysphagia",
+     "then": "Community-acquired pneumonitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Bilateral interstitial** pattern, flu season",
+     "then": "Viral pneumonitis"
+    }
+   ]
   },
   "1299254": {
    "task": "Ethics",
-   "boardCall": "Capacitated Jehovah's Witness refusing blood products suffers cardiac arrest -> resuscitate without transfusion",
-   "hinge": "A competent adult patient's contemporaneous informed refusal of blood transfusions remains legally and ethically binding even during life-threatening emergencies.",
+   "boardCall": "pelvic fracture + Hct 18 + **alert, refused all blood on arrival** + husband agrees + cardiac arrest → Resuscitate without transfusion",
+   "hinge": "A capable adult's clear refusal still binds after she loses consciousness.",
    "trap": "Cardiac arrest and life-threatening hemorrhage tempt transfusing blood under the doctrine of emergency implied consent, but known explicit refusal overrides implied consent.",
    "options": {
     "A": {
@@ -2476,12 +3026,34 @@
      "text": "Ten minutes after admission, she has a cardiac arrest"
     }
    ],
-   "topic": "informed-consent-and-capacity"
+   "topic": "informed-consent-and-capacity",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Unconscious on arrival**, no documented refusal",
+     "then": "Transfuse packed red blood cells"
+    },
+    {
+     "opt": "A",
+     "if": "**Incapable patient**, husband is health care proxy",
+     "then": "Ask husband about transfusion"
+    },
+    {
+     "opt": "B",
+     "if": "**Unclear validity** of refusal, time allows",
+     "then": "Consult hospital administration"
+    },
+    {
+     "opt": "C",
+     "if": "**Patient accepts blood fractions** but refuses RBCs",
+     "then": "Administer albumin"
+    }
+   ]
   },
   "1299255": {
    "task": "Diagnosis",
-   "boardCall": "Newborn choking on feeds + polyhydramnios + NG tube arrested at 10 cm + absent gas bubble -> tracheoesophageal fistula / esophageal atresia",
-   "hinge": "Feeding-triggered coughing/cyanosis with inability to advance an NG tube beyond 10 cm and absent subdiaphragmatic gas indicates pure esophageal atresia or proximal tracheoesophageal fistula.",
+   "boardCall": "polyhydramnios + **choking, cyanosis with first feed** + **NG tube stops at 10 cm** + no gastric bubble → Tracheoesophageal fistula",
+   "hinge": "A blind esophageal pouch explains feeding-only distress; heart lesions cause constant cyanosis.",
    "trap": "Cyanosis and respiratory distress in a newborn tempt congenital cyanotic heart disease, but distress triggered specifically by feeding with coiled NG tube indicates esophageal atresia.",
    "options": {
     "A": {
@@ -2573,12 +3145,34 @@
      "text": "chest x-ray shows no gastric bubble"
     }
    ],
-   "topic": "esophageal-atresia-and-tracheoesophageal-fistula"
+   "topic": "esophageal-atresia-and-tracheoesophageal-fistula",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Scaphoid abdomen**, bowel loops in left chest",
+     "then": "Diaphragmatic hernia"
+    },
+    {
+     "opt": "B",
+     "if": "**Stridor** worse with feeds, NG passes normally",
+     "then": "Double aortic arch"
+    },
+    {
+     "opt": "E",
+     "if": "**Persistent cyanosis** unrelieved by oxygen, egg-on-string",
+     "then": "Transposition of great arteries"
+    },
+    {
+     "opt": "C",
+     "if": "**Boot-shaped heart**, harsh systolic murmur, tet spells",
+     "then": "Tetralogy of Fallot"
+    }
+   ]
   },
   "1299256": {
    "task": "Diagnosis",
-   "boardCall": "Infant episodic colicky pain + legs drawn up + lethargy between episodes -> contrast enema",
-   "hinge": "Episodic screaming and knees-to-chest drawing with interval pallor and lethargy in an infant is classic for intussusception, confirmed and treated with contrast or air enema.",
+   "boardCall": "10-month-old + **colicky episodes, knees to chest** + **pallor, lethargy between attacks** + prior similar episode → Contrast enema",
+   "hinge": "Interval lethargy reflects bowel ischemia, not seizures; enema confirms and reduces.",
    "trap": "Interval lethargy and pallor between pain spasms can mimic a postictal state or encephalitis, tempting EEG or brain MRI.",
    "options": {
     "A": {
@@ -2670,12 +3264,29 @@
      "text": "pulse is 100/min, respirations are 20/min, and blood pressure is 80/50 mm Hg"
     }
    ],
-   "topic": "intussusception"
+   "topic": "intussusception",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Rhythmic jerking** with postictal drowsiness, no pain cues",
+     "then": "EEG"
+    },
+    {
+     "opt": "E",
+     "if": "**Bulging fontanel**, focal deficits",
+     "then": "MRI of the brain"
+    },
+    {
+     "opt": "A",
+     "if": "**Jaundice**, acholic stools, hepatomegaly",
+     "then": "Liver function tests"
+    }
+   ]
   },
   "1299257": {
    "task": "Next step",
-   "boardCall": "Pyloric stenosis + hypochloremic hypokalemic metabolic alkalosis -> IV dextrose in normal saline with potassium",
-   "hinge": "Pyloric stenosis is a medical resuscitation emergency before a surgical one; volume depletion and hypochloremic hypokalemic metabolic alkalosis must be corrected prior to pyloromyotomy.",
+   "boardCall": "5-week-old + nonbilious vomiting + **dry diaper, sunken fontanel** + **HCO3 38, K 3, Cl 95** → IV dextrose-saline, then potassium",
+   "hinge": "Fix volume and alkalosis first; surgery on an alkalotic infant risks apnea.",
    "trap": "Pyloric stenosis is definitively treated with pyloromyotomy, but performing surgery before electrolyte and volume resuscitation causes postoperative apnea and cardiac arrhythmias.",
    "options": {
     "A": {
@@ -2760,12 +3371,29 @@
      "text": "urea nitrogen 35 mg/dL, and creatinine 1.5 mg/dL"
     }
    ],
-   "topic": "hypertrophic-pyloric-stenosis"
+   "topic": "hypertrophic-pyloric-stenosis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Electrolytes normalized**, good urine output",
+     "then": "Pyloromyotomy"
+    },
+    {
+     "opt": "A",
+     "if": "**Viral gastroenteritis**, mild dehydration, tolerating sips",
+     "then": "Oral electrolyte solution"
+    },
+    {
+     "opt": null,
+     "if": "**Poor perfusion**, capillary refill >3 s",
+     "then": "Isotonic saline bolus first"
+    }
+   ]
   },
   "1299258": {
    "task": "Next step",
-   "boardCall": "Post-cholecystectomy fever + jaundice + intrahepatic ductal dilation -> ERCP",
-   "hinge": "Jaundice and intrahepatic biliary dilation following complicated laparoscopic cholecystectomy suggest iatrogenic bile duct injury or clip ligation, best diagnosed and decompressed by ERCP.",
+   "boardCall": "**2 months after complicated cholecystectomy** + fever, jaundice, pruritus + cholestatic LFTs + **dilated intrahepatic ducts, normal CBD** → Endoscopic retrograde cholangiopancreatography",
+   "hinge": "Proximal dilation suggests a clipped duct; ERCP defines and stents it.",
    "trap": "Abdominal MRI/MRCP is noninvasive, but in acute cholangitis/obstruction, ERCP provides definitive direct fluoroscopic cholangiography and therapeutic stent placement.",
    "options": {
     "A": {
@@ -2855,12 +3483,35 @@
      "text": "dilation of the intrahepatic biliary ducts and a normal-sized common bile duct"
     }
    ],
-   "topic": "gallstone-disease"
+   "topic": "gallstone-disease",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Afebrile, stable**, biliary anatomy unclear",
+     "then": "MRI of the abdomen",
+     "step": "MRCP sequences"
+    },
+    {
+     "opt": "A",
+     "if": "**Fever with hepatic lesion**, suspected liver abscess",
+     "then": "CT scan of the liver"
+    },
+    {
+     "opt": "E",
+     "if": "**Nondilated ducts**, positive ANA, high IgG",
+     "then": "Liver biopsy"
+    },
+    {
+     "opt": "D",
+     "if": "**Bile leak with peritonitis** after cholecystectomy",
+     "then": "Laparoscopy"
+    }
+   ]
   },
   "1299259": {
    "task": "Next step",
-   "boardCall": "Unilateral leg swelling + pain + warmth -> compression venous duplex ultrasonography",
-   "hinge": "Unilateral lower extremity edema, erythema, and warmth create a high pretest probability for deep venous thrombosis, diagnosed definitively with compression venous duplex ultrasound.",
+   "boardCall": "47-year-old smoker + **2 weeks unilateral leg pain, swelling** + erythema, warmth + no trauma → Venous duplex ultrasonography",
+   "hinge": "High pretest probability skips D-dimer; compression ultrasound confirms DVT directly.",
    "trap": "D-dimer assay is sensitive for ruling out DVT in low-risk patients, but has no role in high-probability presentations where ultrasound is required directly.",
    "options": {
     "A": {
@@ -2949,12 +3600,35 @@
      "text": "edema, erythema, and warmth of the right lower extremity"
     }
    ],
-   "topic": "venous-thromboembolism"
+   "topic": "venous-thromboembolism",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Low Wells score**, minimal swelling",
+     "then": "D-dimer assay"
+    },
+    {
+     "opt": "C",
+     "if": "**Ultrasound nondiagnostic**, suspected iliac vein clot",
+     "then": "Venography"
+    },
+    {
+     "opt": "E",
+     "if": "**Cool pale limb**, absent pulses",
+     "then": "Femoral arteriography"
+    },
+    {
+     "opt": "B",
+     "if": "**Unprovoked recurrent clots** in a young patient",
+     "then": "Protein S and C levels",
+     "step": "test off anticoagulation"
+    }
+   ]
   },
   "1299260": {
    "task": "Diagnosis",
-   "boardCall": "Elderly patient + large-volume painless hematochezia + orthostasis + known diverticula -> diverticulosis",
-   "hinge": "Abrupt, painless, large-volume bright red hematochezia with orthostasis in an elderly patient with known diverticula represents diverticular bleeding from ruptured vasa recta.",
+   "boardCall": "82-year-old + **painless large-volume bright red blood** + orthostasis + **known diverticula** + prior bleeds → Diverticulosis",
+   "hinge": "Painless massive bleeding with clots is arterial vasa recta, not hemorrhoidal oozing.",
    "trap": "Hematochezia can tempt hemorrhoids or colon cancer, but large-volume bleeding with orthostasis and clots in an abdomen that is completely nontender points to diverticulosis.",
    "options": {
     "A": {
@@ -3042,12 +3716,34 @@
      "text": "Rectal examination shows bright red blood with some fresh clots"
     }
    ],
-   "topic": "diverticular-disease"
+   "topic": "diverticular-disease",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Blood streaks on toilet paper**, stable vitals",
+     "then": "Hemorrhoids"
+    },
+    {
+     "opt": "D",
+     "if": "**Crampy LLQ pain** then bloody diarrhea",
+     "then": "Ischemic colitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Weight loss**, iron deficiency, changing stool caliber",
+     "then": "Carcinoma of the sigmoid colon"
+    },
+    {
+     "opt": "E",
+     "if": "**Young straining patient**, mucus, anterior rectal ulcer",
+     "then": "Solitary rectal ulcer"
+    }
+   ]
   },
   "1299261": {
    "task": "Next step",
-   "boardCall": "Stage 4 sacral pressure ulcer + 12-kg weight loss + tolerating oral diet -> increase calorie intake with oral supplements",
-   "hinge": "Severe weight loss and malnutrition impair wound healing; optimizing nutrition with oral high-protein calorie supplements is the critical next step in a patient already tolerating an oral diet.",
+   "boardCall": "6 weeks severe pancreatitis + **12-kg weight loss** + **tolerating oral diet** + stage 4 sacral ulcer, clean base → Oral calorie supplements",
+   "hinge": "Catabolic wounds will not heal; the gut works, so feed orally.",
    "trap": "Deep stage 4 ulcer tempts surgical debridement or flap closure, but surgery will fail without correcting profound malnutrition, and parenteral nutrition is unnecessary when oral intake is intact.",
    "options": {
     "A": {
@@ -3139,12 +3835,34 @@
      "text": "Granulation tissue is minimal"
     }
    ],
-   "topic": "pressure-injuries"
+   "topic": "pressure-injuries",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Cannot swallow safely** after stroke, functioning gut",
+     "then": "PEG tube feeding"
+    },
+    {
+     "opt": "C",
+     "if": "**Prolonged ileus** or high-output fistula",
+     "then": "Total parenteral nutrition"
+    },
+    {
+     "opt": "A",
+     "if": "**Black eschar or purulence** in the wound",
+     "then": "Debride the wound in the OR"
+    },
+    {
+     "opt": "E",
+     "if": "**Nutrition restored**, healthy granulation, wound persists",
+     "then": "Rotational flap closure"
+    }
+   ]
   },
   "1299262": {
    "task": "Diagnosis",
-   "boardCall": "Neonate + bilious emesis + passed meconium day 1 + cecum in RUQ/midline -> malrotation with midgut volvulus",
-   "hinge": "Sudden onset of bilious (green) emesis in a full-term newborn who passed normal meconium, with contrast enema showing a misplaced cecum, indicates intestinal malrotation.",
+   "boardCall": "4-day-old + **green vomiting** + **meconium passed day 1** + distention + abnormal cecal position on enema → Malrotation",
+   "hinge": "Bilious emesis after normal meconium suggests volvulus; atresia shows day 1.",
    "trap": "Bilious vomiting in a newborn can suggest duodenal atresia or Hirschsprung disease, but duodenal atresia presents day 1 with double-bubble, and Hirschsprung causes delayed meconium passage (>48 h).",
    "options": {
     "A": {
@@ -3245,12 +3963,34 @@
      "text": "Results of a barium enema are shown"
     }
    ],
-   "topic": "neonatal-intestinal-obstruction"
+   "topic": "neonatal-intestinal-obstruction",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Day 1 vomiting**, double-bubble, Down syndrome",
+     "then": "Duodenal atresia"
+    },
+    {
+     "opt": "A",
+     "if": "**No meconium by 48 h**, explosive stool on rectal exam",
+     "then": "Hirschsprung disease"
+    },
+    {
+     "opt": "F",
+     "if": "**Cystic fibrosis**, microcolon, soap-bubble ileum",
+     "then": "Meconium ileus"
+    },
+    {
+     "opt": "G",
+     "if": "**Preterm, formula-fed**, pneumatosis",
+     "then": "Necrotizing enterocolitis"
+    }
+   ]
   },
   "1299263": {
    "task": "Next step",
-   "boardCall": "Post-carotid endarterectomy neck swelling + stridor + orthopnea -> emergent surgical exploration of neck",
-   "hinge": "An expanding postoperative neck hematoma after carotid surgery compresses the airway, causing stridor and acute respiratory failure; immediate bedside incision opening or surgical exploration is life-saving.",
+   "boardCall": "4 days after carotid endarterectomy + clopidogrel + **expanding neck swelling across midline** + **orthopnea, raspy breath sounds** → Surgical exploration of the neck",
+   "hinge": "Hematoma is compressing the airway; any trip to imaging risks asphyxia.",
    "trap": "Progressive neck swelling tempts noninvasive imaging like CT scan or ultrasound, but any imaging delay in an expanding compressive neck hematoma can lead to fatal asphyxiation.",
    "options": {
     "A": {
@@ -3337,12 +4077,30 @@
      "text": "ecchymosis over the left aspect of the neck extending across the midline"
     }
    ],
-   "topic": "carotid-artery-stenosis"
+   "topic": "carotid-artery-stenosis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Stable airway**, small localized swelling, no stridor",
+     "then": "CT scan of the neck"
+    },
+    {
+     "opt": "A",
+     "if": "**New hemispheric deficit** after endarterectomy, no swelling",
+     "then": "Carotid duplex ultrasonography",
+     "step": "reexplore if occluded"
+    },
+    {
+     "opt": null,
+     "if": "**Hoarseness alone** after endarterectomy, airway clear",
+     "then": "Recurrent laryngeal nerve injury"
+    }
+   ]
   },
   "1299264": {
    "task": "Next step",
-   "boardCall": "Severe chest and back pain post-esophageal dilation + fever + tachycardia -> upright chest x-ray",
-   "hinge": "Acute severe chest and back pain with fever and tachycardia immediately following esophageal dilation indicates iatrogenic esophageal perforation, evaluated initially with upright chest radiography.",
+   "boardCall": "**right after esophageal dilation** + severe chest and back pain + fever, HR 115 + **decreased basal breath sounds** → Chest x-ray",
+   "hinge": "Suspected perforation; a quick film looks for mediastinal air before contrast study.",
    "trap": "Severe chest and back pain can tempt repeat endoscopy to look for damage, but endoscopy introduces air under pressure and expands the perforation and mediastinal contamination.",
    "options": {
     "A": {
@@ -3434,12 +4192,29 @@
      "text": "Breath sounds are decreased at the lung bases bilaterally"
     }
    ],
-   "topic": "esophageal-perforation"
+   "topic": "esophageal-perforation",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**No instrumentation**, crushing chest pain, cardiac risk factors",
+     "then": "ECG"
+    },
+    {
+     "opt": "E",
+     "if": "**Confirmed free perforation**, sepsis, mediastinitis",
+     "then": "Operative mediastinal exploration"
+    },
+    {
+     "opt": "A",
+     "if": "**Mild ache**, normal vitals, normal exam",
+     "then": "Reassurance"
+    }
+   ]
   },
   "1299265": {
    "task": "Mechanism",
-   "boardCall": "Platelet drop > 50% on day 9 of heparin + thrombosis -> heparin-induced antibodies (HIT type 2)",
-   "hinge": "A > 50% drop in platelet count (150k to 45k) occurring 5-10 days after heparin exposure indicates type 2 heparin-induced thrombocytopenia mediated by anti-platelet factor 4/heparin antibodies.",
+   "boardCall": "IV heparin + **day 9, platelets 150,000 to 45,000** + **new PE on heparin** → Heparin-induced antibodies",
+   "hinge": "Timing and thrombosis fit anti-PF4 antibodies; aspirin affects function, not count.",
    "trap": "Aspirin impairs platelet aggregation, and vancomycin can cause drug-induced thrombocytopenia, but the timing (day 9 of heparin) and 4T score point directly to HIT antibodies.",
    "options": {
     "A": {
@@ -3531,12 +4306,34 @@
      "text": "Two days after admission, he had a pulmonary embolism"
     }
    ],
-   "topic": "thrombocytopenia"
+   "topic": "thrombocytopenia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Sepsis or trauma**, low fibrinogen, schistocytes",
+     "then": "Disseminated intravascular coagulation"
+    },
+    {
+     "opt": "A",
+     "if": "**Massive transfusion and crystalloid** within hours",
+     "then": "Dilutional effect of fluids"
+    },
+    {
+     "opt": "D",
+     "if": "**Normal count**, prolonged bleeding time on aspirin",
+     "then": "Aspirin platelet inhibition"
+    },
+    {
+     "opt": "E",
+     "if": "**Neutropenia and anemia too** after weeks of vancomycin",
+     "then": "Marrow suppression by vancomycin"
+    }
+   ]
   },
   "1299266": {
    "task": "Next step",
-   "boardCall": "Perihilar centrally located lung mass with endobronchial occlusion -> bronchoscopic biopsy",
-   "hinge": "Centrally located or perihilar pulmonary masses causing bronchial occlusion are directly accessible by flexible fiberoptic bronchoscopy for tissue biopsy.",
+   "boardCall": "55-year-old + 2 months cough, dyspnea + **perihilar mass** + **right lower lobe bronchus occluded** → Bronchoscopic biopsy",
+   "hinge": "Central endobronchial masses are reached through the airway, not chest wall.",
    "trap": "CT-guided transthoracic needle biopsy is ideal for peripheral lung lesions, but perihilar central masses carry high vascular injury/pneumothorax risk and are best biopsied bronchoscopically.",
    "options": {
     "A": {
@@ -3628,12 +4425,29 @@
      "text": "perihilar mass and occlusion of the right lower lobe"
     }
    ],
-   "topic": "lung-cancer"
+   "topic": "lung-cancer",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Peripheral nodule** near the pleura",
+     "then": "CT-guided biopsy"
+    },
+    {
+     "opt": "E",
+     "if": "**Biopsy-proven NSCLC**, staging before resection",
+     "then": "PET scan"
+    },
+    {
+     "opt": "D",
+     "if": "**Superior sulcus tumor**, brachial plexus symptoms",
+     "then": "MRI of the chest"
+    }
+   ]
   },
   "1299267": {
    "task": "Diagnosis",
-   "boardCall": "Postprandial RUQ pain + gallstones without gallbladder wall thickening or fever -> biliary colic",
-   "hinge": "Episodic postprandial RUQ pain with ultrasound showing gallstones but no gallbladder wall thickening, pericholecystic fluid, or fever represents uncomplicated biliary colic.",
+   "boardCall": "27-year-old + postprandial RUQ pain + prior similar episodes + **gallstones, no wall thickening** + **afebrile, WBC 9000** → Biliary colic",
+   "hinge": "Stones without inflammation mean transient cystic duct blockage, not cholecystitis.",
    "trap": "Severe pain after a pizza meal can suggest acute cholecystitis, but lack of fever, normal WBC count (9,000), and absence of wall thickening rule out acute cholecystitis.",
    "options": {
     "A": {
@@ -3728,12 +4542,34 @@
      "text": "leukocyte count is 9000/mm³"
     }
    ],
-   "topic": "gallstone-disease"
+   "topic": "gallstone-disease",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Fever, Murphy sign**, pericholecystic fluid",
+     "then": "Acute cholecystitis"
+    },
+    {
+     "opt": "B",
+     "if": "**Jaundice and fever**, dilated common bile duct",
+     "then": "Ascending cholangitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Lipase ×3**, pain radiating to back",
+     "then": "Pancreatitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Pain relieved by meals**, NSAID use, no stones",
+     "then": "Duodenal ulcer"
+    }
+   ]
   },
   "1299268": {
    "task": "Diagnosis",
-   "boardCall": "Preserved arm strength + paraplegia + sensory level at nipples (T4) -> T2-T3 vertebral injury",
-   "hinge": "A sensory level at the nipple line corresponds to the T4 dermatome; the spinal cord injury is at T4, which anatomically correlates with the T2-T3 vertebrae.",
+   "boardCall": "fall + **5/5 arm strength** + flaccid leg paralysis + absent rectal tone + **sensory level at nipples** → T2–3",
+   "hinge": "Nipple line is T4 dermatome; cord segments sit above their numbered vertebrae.",
    "trap": "Inability to move the legs with hypotension tempts cervical cord injury (neurogenic shock), but intact 5/5 arm strength rules out injury above T1.",
    "options": {
     "A": {
@@ -3821,12 +4657,34 @@
      "text": "Sensation to pinprick and touch are absent below the nipples"
     }
    ],
-   "topic": "spinal-cord-injury"
+   "topic": "spinal-cord-injury",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Hand intrinsic weakness**, sensory loss below clavicle",
+     "then": "C7–T1"
+    },
+    {
+     "opt": "D",
+     "if": "**Sensory level at umbilicus**",
+     "then": "T9–10"
+    },
+    {
+     "opt": "E",
+     "if": "**Sensory level at inguinal ligament**",
+     "then": "T11–12"
+    },
+    {
+     "opt": "B",
+     "if": "**Saddle anesthesia only**, legs strong",
+     "then": "S1–S2"
+    }
+   ]
   },
   "1299269": {
    "task": "Next step",
-   "boardCall": "Postoperative unresponsiveness + shallow tachypnea + 70-pack-year smoking -> arterial blood gas analysis",
-   "hinge": "Acute postoperative somnolence and hypoventilation in an elderly smoker suggests acute hypercapnic respiratory failure (CO2 narcosis), diagnosed rapidly with arterial blood gas analysis.",
+   "boardCall": "92-year-old 70-pack-year smoker + **unresponsive 30 min after surgery** + RR 32 + **shallow distant breath sounds** + reactive pupils → Arterial blood gas analysis",
+   "hinge": "Suspect hypercapnic narcosis; ABG gives CO2 and oxygenation in minutes.",
    "trap": "Unresponsiveness after orthopedic surgery tempts stroke workup (carotid ultrasound) or pulmonary embolism (calf Doppler), but normal pupils and hypoventilation point to hypercapnic ventilatory failure.",
    "options": {
     "A": {
@@ -3911,12 +4769,34 @@
      "text": "Shallow, distant breath sounds are heard bilaterally"
     }
    ],
-   "topic": "acute-respiratory-failure"
+   "topic": "acute-respiratory-failure",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Unilateral calf swelling** days after hip surgery",
+     "then": "Doppler ultrasonography of calf"
+    },
+    {
+     "opt": "B",
+     "if": "**Unilateral weakness**, aphasia after surgery",
+     "then": "Head CT before carotid duplex"
+    },
+    {
+     "opt": "E",
+     "if": "**Large effusion**, dullness on one side",
+     "then": "Thoracentesis"
+    },
+    {
+     "opt": null,
+     "if": "**Pinpoint pupils**, RR 6 on opioids",
+     "then": "IV naloxone"
+    }
+   ]
   },
   "1299270": {
    "task": "Next step",
-   "boardCall": "Brisk hematochezia + bile on NG aspirate + stabilized hemodynamics -> colonoscopy",
-   "hinge": "After hemodynamic stabilization, hematochezia warrants bowel preparation and colonoscopy; a clear NG aspirate cannot exclude upper bleeding.",
+   "boardCall": "87-year-old + brisk hematochezia + BP 80/50 + **stabilized with fluids** + **bilious NG aspirate** → Colonoscopy",
+   "hinge": "Stabilized lower bleed with upper source excluded: prep and scope.",
    "trap": "Severe bleeding and baseline renal insufficiency tempt mesenteric angiography, but angiography requires active brisk extravasation (>0.5 mL/min) and carries nephrotoxicity risk; colonoscopy is first-line.",
    "options": {
     "A": {
@@ -3998,12 +4878,30 @@
      "text": "nasogastric tube is inserted and yields 200 mL of bile"
     }
    ],
-   "topic": "gastrointestinal-bleeding"
+   "topic": "gastrointestinal-bleeding",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Persistent shock** despite resuscitation, brisk bleeding",
+     "then": "Mesenteric angiography",
+     "step": "CTA first to localize"
+    },
+    {
+     "opt": "B",
+     "if": "**Localized bleed** failing endoscopy and embolization",
+     "then": "Laparotomy"
+    },
+    {
+     "opt": "E",
+     "if": "**Minor self-limited** bright red spotting, stable",
+     "then": "Observation only"
+    }
+   ]
   },
   "1299271": {
    "task": "Other",
-   "boardCall": "pH 7.24 + HCO3 16.7 + PCO2 40 (normal, not decreased) -> uncompensated metabolic acidosis",
-   "hinge": "Metabolic acidosis (pH 7.24, HCO3 16.7) with PCO2 at 40 mm Hg (expected PCO2 is 31-35 by Winter formula) indicates an uncompensated metabolic acidosis (with relative respiratory depression).",
+   "boardCall": "post aortofemoral bypass + pulseless cold leg + **pH 7.24, HCO3 16.7** + **PCO2 40** → Uncompensated metabolic acidosis",
+   "hinge": "Winter formula predicts about 33; a normal value means no compensation.",
    "trap": "Normal PCO2 of 40 mm Hg tempts calling the acidosis compensated, but true compensation requires hyperventilation lowering PCO2 into the low 30s.",
    "options": {
     "A": {
@@ -4087,12 +4985,29 @@
      "text": "pH 7.24, PCO₂ 40 mm Hg, PO₂ 88 mm Hg, HCO₃⁻ 16.7 mEq/L"
     }
    ],
-   "topic": "acid-base-disorders"
+   "topic": "acid-base-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**PCO2 33**, pH still below 7.35",
+     "then": "Metabolic acidosis with respiratory compensation"
+    },
+    {
+     "opt": "C",
+     "if": "**PCO2 22**, pH near normal",
+     "then": "Mixed respiratory alkalosis, metabolic acidosis"
+    },
+    {
+     "opt": "D",
+     "if": "**PCO2 60**, HCO3 30, low pH",
+     "then": "Respiratory acidosis with compensation"
+    }
+   ]
   },
   "1299272": {
    "task": "Next step",
-   "boardCall": "Preoperative grade 4/6 systolic ejection murmur + click at 2nd right intercostal space -> transthoracic echocardiography",
-   "hinge": "A loud grade 4/6 systolic murmur with an ejection click at the right upper sternal border suggests significant aortic stenosis, which must be characterized by echocardiography prior to elective surgery.",
+   "boardCall": "81-year-old + elective inguinal hernia repair + good exercise capacity + **grade 4/6 systolic murmur** + **click at right upper sternal border** → Echocardiography",
+   "hinge": "Possible severe aortic stenosis must be graded before elective anesthesia.",
    "trap": "Good functional capacity (working on a ranch) tempts proceeding directly to hernia repair or exercise stress test, but a loud uncharacterized murmur requires echocardiography to rule out severe aortic stenosis.",
    "options": {
     "A": {
@@ -4174,12 +5089,34 @@
      "text": "has not seen a health care provider during the past 15 years"
     }
    ],
-   "topic": "valvular-heart-disease"
+   "topic": "valvular-heart-disease",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Echo shows mild AS**, normal LV function",
+     "then": "Left inguinal hernia repair"
+    },
+    {
+     "opt": "C",
+     "if": "**Poor functional capacity**, high-risk surgery, no murmur",
+     "then": "Pharmacologic stress testing"
+    },
+    {
+     "opt": "A",
+     "if": "**Known coronary disease**, low-risk surgery planned",
+     "then": "Preoperative ECG"
+    },
+    {
+     "opt": null,
+     "if": "**Hernia irreducible, tender**, vomiting",
+     "then": "Emergency repair"
+    }
+   ]
   },
   "1299273": {
    "task": "Diagnosis",
-   "boardCall": "Neonate + sudden bilious emesis + shock + occult blood in stool -> midgut volvulus",
-   "hinge": "Acute bilious emesis, lethargy, hypotension (BP 52/30), and occult bloody stool in a previously healthy term neonate indicates midgut volvulus with acute intestinal ischemia.",
+   "boardCall": "term 2-day-old + normal stools until now + **sudden bilious vomiting** + **hypotension, lethargy** + occult blood stool → Midgut volvulus",
+   "hinge": "Healthy feeding then bilious shock means twisted midgut cutting off blood supply.",
    "trap": "Duodenal atresia causes bilious vomiting but presents immediately on day 1 with failure to pass distal meconium, whereas this infant fed normally for 2 days before sudden ischemic shock.",
    "options": {
     "A": {
@@ -4274,12 +5211,34 @@
      "text": "transitional stool that is positive for occult blood"
     }
    ],
-   "topic": "neonatal-intestinal-obstruction"
+   "topic": "neonatal-intestinal-obstruction",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Vomiting from first feed**, double-bubble",
+     "then": "Duodenal atresia"
+    },
+    {
+     "opt": "E",
+     "if": "**Preterm, formula-fed**, pneumatosis on x-ray",
+     "then": "Necrotizing enterocolitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Free air** with meconium ileus, cystic fibrosis",
+     "then": "Ileal perforation"
+    },
+    {
+     "opt": "A",
+     "if": "**Palpable cystic mass**, intermittent obstruction",
+     "then": "Colonic duplication cyst"
+    }
+   ]
   },
   "1299274": {
    "task": "Diagnosis",
-   "boardCall": "10-year slowly enlarging anterior neck mass + compressive dysphagia + no adenopathy -> multinodular goiter",
-   "hinge": "A 10-year slowly enlarging anterior lower neck mass causing progressive compressive dysphagia without lymphadenopathy represents multinodular goiter.",
+   "boardCall": "67-year-old + **10-year enlarging anterior neck mass** + solid dysphagia + **no adenopathy** → Multinodular goiter",
+   "hinge": "Slow decade-long growth compressing the esophagus is benign thyroid enlargement.",
    "trap": "Dysphagia with food sticking can suggest an esophageal diverticulum, but the prominent visible lower anterior neck thyroid mass confirms goiter.",
    "options": {
     "A": {
@@ -4371,12 +5330,34 @@
      "text": "There is no cervical lymphadenopathy"
     }
    ],
-   "topic": "thyroid-nodules-and-cancer"
+   "topic": "thyroid-nodules-and-cancer",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Regurgitating undigested food**, halitosis, no visible mass",
+     "then": "Esophageal diverticulum"
+    },
+    {
+     "opt": "C",
+     "if": "**Rubbery nodes**, night sweats, young adult",
+     "then": "Hodgkin disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Young adult**, lateral neck cyst anterior to sternocleidomastoid",
+     "then": "Branchial cleft cyst"
+    },
+    {
+     "opt": "D",
+     "if": "**Anterior mediastinal mass**, myasthenia gravis",
+     "then": "Thymoma"
+    }
+   ]
   },
   "1299275": {
    "task": "Screening",
-   "boardCall": "Japanese immigrant + family history of gastric cancer in first-degree relative -> screening esophagogastroduodenoscopy",
-   "hinge": "High-risk individuals (East Asian origin and strong family history of gastric cancer) undergo direct mucosal screening with upper endoscopy (EGD).",
+   "boardCall": "55-year-old Japanese immigrant + **sister, aunt with gastric cancer** + asymptomatic → Esophagogastroduodenoscopy",
+   "hinge": "High-risk groups need mucosa seen and biopsied; blood tests miss early cancer.",
    "trap": "FOBT is standard for colorectal cancer screening, but has poor sensitivity for early gastric cancer; upper endoscopy is the gold standard screening modality.",
    "options": {
     "A": {
@@ -4465,12 +5446,30 @@
      "text": "Palpation of the abdomen shows no tenderness or masses"
     }
    ],
-   "topic": "gastric-cancer"
+   "topic": "gastric-cancer",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Average-risk adult 45 or older**, colorectal screening",
+     "then": "Annual FIT stool testing"
+    },
+    {
+     "opt": "C",
+     "if": "**Resected colon cancer**, surveillance for recurrence",
+     "then": "CEA assay"
+    },
+    {
+     "opt": null,
+     "if": "**Diffuse gastric cancer** in multiple young relatives",
+     "then": "CDH1 testing",
+     "step": "consider prophylactic gastrectomy"
+    }
+   ]
   },
   "1299276": {
    "task": "Next step",
-   "boardCall": "Fluctuant tender erythematous breast mass + fever -> incision and drainage",
-   "hinge": "A fluctuant, erythematous, tender mass in the setting of fever indicates a breast abscess requiring drainage (incision and drainage or needle aspiration) and antibiotics.",
+   "boardCall": "57-year-old, not lactating + fever + **4-cm fluctuant, tender, red area** + axillary nodes + mammogram 6 months ago normal → Incision and drainage",
+   "hinge": "Fluctuance means pus; drain it and biopsy the wall in nonlactating women.",
    "trap": "Non-lactational breast mass with axillary adenopathy can raise concern for inflammatory breast cancer, but acute fluctuance and fever require immediate abscess drainage and biopsy of abscess wall.",
    "options": {
     "A": {
@@ -4562,12 +5561,35 @@
      "text": "4-cm, erythematous, fluctuant, tender area in the upper outer quadrant of the right breast"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Firm nonfluctuant mass**, no fever, postmenopausal",
+     "then": "Mammography"
+    },
+    {
+     "opt": null,
+     "if": "**Peau d'orange**, diffuse redness, no fluctuance, no response to antibiotics",
+     "then": "Inflammatory breast cancer",
+     "step": "skin punch biopsy"
+    },
+    {
+     "opt": "B",
+     "if": "**Implants** or ultrasound and mammogram inconclusive",
+     "then": "MRI of the breast"
+    },
+    {
+     "opt": "E",
+     "if": "**Biopsy shows invasive carcinoma**, multicentric",
+     "then": "Mastectomy"
+    }
+   ]
   },
   "1299277": {
    "task": "Next step",
-   "boardCall": "Severe chest pain post-achalasia dilation + normal chest x-ray -> water-soluble contrast esophagography",
-   "hinge": "A normal chest radiograph does not rule out acute esophageal perforation; fluoroscopic esophagography with water-soluble contrast (Gastrografin) is the definitive next step.",
+   "boardCall": "**30 min after achalasia dilation** + severe chest and abdominal pain + HR 115 + **normal chest x-ray** → Water-soluble contrast esophagography",
+   "hinge": "Early films miss perforation; contrast shows the leak without insufflating air.",
    "trap": "Severe chest pain tempts repeat EGD or ECG, but repeat endoscopy risks worsening the tear by insufflating air into the mediastinum, and cardiac ischemia is unlikely in a 27-year-old.",
    "options": {
     "A": {
@@ -4659,12 +5681,29 @@
      "text": "x-ray of the chest shows no abnormalities"
     }
    ],
-   "topic": "esophageal-perforation"
+   "topic": "esophageal-perforation",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Food impaction** after procedure, no perforation signs",
+     "then": "Second EGD"
+    },
+    {
+     "opt": "A",
+     "if": "**Older patient**, exertional pain, no recent procedure",
+     "then": "ECG"
+    },
+    {
+     "opt": null,
+     "if": "**Contrast study negative**, suspicion persists",
+     "then": "Thin barium esophagram"
+    }
+   ]
   },
   "1299278": {
    "task": "Diagnosis",
-   "boardCall": "Fever + jaundice + RUQ pain + leukocytosis (18,200) -> acute ascending cholangitis",
-   "hinge": "The combination of fever, jaundice, and RUQ pain (Charcot triad) with cholestatic labs and leukocytosis indicates acute ascending cholangitis secondary to biliary ductal obstruction.",
+   "boardCall": "recurrent episodic abdominal pain + **fever 38.6** + **jaundice, dark urine** + RUQ tenderness + WBC 18,200 + alk phos 328 → Cholangitis",
+   "hinge": "Charcot triad with cholestatic labs means an infected obstructed duct.",
    "trap": "Dark urine and jaundice can tempt acute viral or autoimmune hepatitis, but intense episodic pain and marked alkaline phosphatase elevation point to biliary obstruction.",
    "options": {
     "A": {
@@ -4748,7 +5787,29 @@
      "text": "total bilirubin concentration of 5 mg/dL, and serum alkaline phosphatase activity of 328 U/L"
     }
    ],
-   "topic": "gallstone-disease"
+   "topic": "gallstone-disease",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**ALT in thousands**, travel, prodrome",
+     "then": "Acute hepatitis A"
+    },
+    {
+     "opt": "B",
+     "if": "**Neuropsychiatric symptoms**, no fever, urine darkens standing",
+     "then": "Acute intermittent porphyria"
+    },
+    {
+     "opt": "C",
+     "if": "**Painless jaundice**, weight loss, Courvoisier sign",
+     "then": "Pancreatic adenocarcinoma"
+    },
+    {
+     "opt": "D",
+     "if": "**High IgG**, anti-smooth muscle antibody, no fever",
+     "then": "Autoimmune hepatitis"
+    }
+   ]
   }
  },
  "topics": {
@@ -8869,5 +9930,5 @@
    "evidence": "Checked 2026-10-30: [AHA/ACC PE (2026)](https://www.jacc.org/doi/10.1016/j.jacc.2025.11.005), [ASH diagnosis (2018)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6258916/)."
   }
  },
- "updatedAt": "2026-11-07T08:13:49Z"
+ "updatedAt": "2026-11-23T12:05:48Z"
 }

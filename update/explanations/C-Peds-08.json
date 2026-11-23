@@ -2909,8 +2909,8 @@
   },
   "746251": {
    "task": "Mechanism",
-   "boardCall": "Recurrent pneumonia + thrush + hepatosplenomegaly + maternal wasting and candidiasis -> vertical transmission of HIV infection.",
-   "hinge": "Failure to thrive, recurrent bacterial infections, persistent thrush, generalized lymphadenopathy, and polyclonal hypergammaglobulinemia point to vertical HIV infection.",
+   "boardCall": "2-year-old + recurrent otitis, pneumonia + **persistent thrush** + lymphadenopathy, hepatosplenomegaly + **mother wasting with candidiasis** + high IgG → HIV infection",
+   "hinge": "Polyclonal B-cell activation raises immunoglobulins while CD4 loss allows thrush.",
    "trap": "Severe combined immunodeficiency also presents with failure to thrive and thrush, but marked hypergammaglobulinemia rules out SCID.",
    "options": {
     "A": {
@@ -3015,12 +3015,34 @@
      "text": "IgG 2200 mg/dL (N=345-1236)"
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Absent thymus**, **low immunoglobulins**, lymphopenia in infancy",
+     "then": "Severe combined immunodeficiency"
+    },
+    {
+     "opt": "H",
+     "if": "**Boy with eczema** and small platelets",
+     "then": "Wiskott-Aldrich syndrome"
+    },
+    {
+     "opt": "C",
+     "if": "**Low IgG, IgA, IgM** after age 2",
+     "then": "Common variable immunodeficiency"
+    },
+    {
+     "opt": "G",
+     "if": "**Recurrent Neisseria** with normal immunoglobulins",
+     "then": "Terminal complement deficiency"
+    }
+   ]
   },
   "746252": {
    "task": "Next step",
-   "boardCall": "Prolonged jaundice + umbilical hernia + somnolence (\"good baby\") + cool extremities -> thyroid function tests for congenital hypothyroidism.",
-   "hinge": "Prolonged unconjugated jaundice, umbilical hernia, somnolence, and poor peripheral perfusion in a 2-month-old indicate congenital hypothyroidism.",
+   "boardCall": "2-month-old + **persistent jaundice** + sleepy \"good\" baby + **umbilical hernia** + cool extremities → Thyroid function tests",
+   "hinge": "Low thyroid hormone slows bilirubin conjugation, gut tone, and metabolism.",
    "trap": "Mild jaundice alone tempts hepatic imaging, but the constellation of umbilical hernia and cool extremities points directly to thyroid failure.",
    "options": {
     "A": {
@@ -3102,12 +3124,35 @@
      "text": "described as a \"good\" baby"
     }
    ],
-   "topic": "newborn-screening"
+   "topic": "newborn-screening",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Meconium ileus**, salty skin, poor weight gain",
+     "then": "Sweat chloride concentration"
+    },
+    {
+     "opt": "A",
+     "if": "**Upslanting eyes**, single palmar crease, hypotonia",
+     "then": "Karyotype analysis"
+    },
+    {
+     "opt": null,
+     "if": "**Acholic stools**, high direct bilirubin",
+     "then": "Biliary atresia workup"
+    },
+    {
+     "opt": null,
+     "if": "Low free T4 with **low TSH**",
+     "then": "Central hypothyroidism",
+     "step": "brain MRI"
+    }
+   ]
   },
   "746253": {
    "task": "Diagnosis",
-   "boardCall": "Pet lizards + bloody diarrhea + high fever + gram-negative bacteremia in a 3-week-old neonate -> Salmonella enteritidis infection.",
-   "hinge": "Exposure to pet reptiles (lizards) causing bloody diarrhea and gram-negative bacteremia in a young infant is classic for nontyphoidal Salmonella.",
+   "boardCall": "3-week-old + fever 39.1°C + bloody diarrhea + **pet lizards** + **gram-negative rods in blood** → Salmonella enteritidis",
+   "hinge": "Reptiles carry Salmonella, which invades the bloodstream in young infants.",
    "trap": "E. coli O157:H7 and Shigella cause bloody diarrhea, but pet reptile contact and infant bacteremia specifically point to Salmonella.",
    "options": {
     "A": {
@@ -3192,12 +3237,34 @@
      "trap": true
     }
    ],
-   "topic": "gastroenteritis"
+   "topic": "gastroenteritis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Undercooked hamburger**, afebrile, then HUS",
+     "then": "Escherichia coli O157:H7"
+    },
+    {
+     "opt": "A",
+     "if": "**Undercooked poultry**, **curved gram-negative rods**",
+     "then": "Campylobacter jejuni"
+    },
+    {
+     "opt": "E",
+     "if": "**Day-care outbreak**, high fever, febrile seizure",
+     "then": "Shigella sonnei"
+    },
+    {
+     "opt": "C",
+     "if": "**Gram-positive rods**, unpasteurized cheese",
+     "then": "Listeria monocytogenes"
+    }
+   ]
   },
   "746254": {
    "task": "Diagnosis",
-   "boardCall": "Home delivery without prophylaxis + marked eyelid swelling + profuse purulent eye discharge at day 2 -> gonococcal ophthalmia neonatorum.",
-   "hinge": "Hyperacute onset (days 2 to 5) of profound eyelid edema and copious purulent discharge after unprophylaxed delivery signifies gonococcal conjunctivitis.",
+   "boardCall": "**home birth, no prophylaxis** + **day 2** + marked eyelid swelling + profuse purulent discharge → Gonococcal conjunctivitis",
+   "hinge": "Hyperacute purulent conjunctivitis in days 2–5 is gonococcal until stained.",
    "trap": "Chlamydial conjunctivitis also causes neonatal eye discharge, but onset is typically later (days 5 to 14) and milder.",
    "options": {
     "A": {
@@ -3282,12 +3349,34 @@
      "text": "conjunctivae cannot be visualized because of the swelling"
     }
    ],
-   "topic": "gonococcal-infection"
+   "topic": "gonococcal-infection",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Onset day 5–14**, watery to mucopurulent, mild swelling",
+     "then": "Chlamydial conjunctivitis"
+    },
+    {
+     "opt": "B",
+     "if": "**First 24 h** after silver nitrate drops",
+     "then": "Chemical conjunctivitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever 5 days**, nonpurulent injection, toddler",
+     "then": "Kawasaki disease"
+    },
+    {
+     "opt": null,
+     "if": "**Corneal ulceration** present",
+     "then": "Urgent ophthalmology"
+    }
+   ]
   },
   "746255": {
    "task": "Mechanism",
-   "boardCall": "12-15 watery diarrheal stools daily + hyperchloremic non-anion gap metabolic acidosis (pH 7.28, HCO3 10, Cl 115) -> stool losses of bicarbonate.",
-   "hinge": "Severe secretory/watery diarrhea causes massive gastrointestinal loss of bicarbonate, resulting in normal-anion-gap hyperchloremic metabolic acidosis.",
+   "boardCall": "22-month-old + **12–15 watery stools daily** + **Cl 115, HCO3 10** + anion gap 10 + PCO2 30 → Stool losses of bicarbonate",
+   "hinge": "Normal-gap acidosis with chloride retention reflects intestinal bicarbonate loss.",
    "trap": "Vomiting causes hypochloremic metabolic alkalosis, but massive diarrhea predominates, driving non-gap acidosis from intestinal bicarbonate loss.",
    "options": {
     "A": {
@@ -3372,12 +3461,34 @@
      "trap": true
     }
    ],
-   "topic": "acid-base-disorders"
+   "topic": "acid-base-disorders",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Vomiting predominates**, low chloride, high bicarbonate",
+     "then": "Vomiting"
+    },
+    {
+     "opt": "B",
+     "if": "**Urine pH above 5.5** despite acidosis",
+     "then": "Renal losses of bicarbonate"
+    },
+    {
+     "opt": "C",
+     "if": "**PCO2 elevated**, shallow breathing",
+     "then": "Respiratory insufficiency"
+    },
+    {
+     "opt": null,
+     "if": "**Anion gap 20**, poor perfusion",
+     "then": "Lactic acidosis"
+    }
+   ]
   },
   "746256": {
    "task": "Next step",
-   "boardCall": "Severe bleeding (subdural, GI, mucous membranes) from neonatal vitamin K deficiency -> IV vitamin K plus fresh frozen plasma.",
-   "hinge": "Active life-threatening neonatal hemorrhage from vitamin K deficiency requires immediate replacement of all vitamin K-dependent factors using fresh frozen plasma.",
+   "boardCall": "5-day-old + **vitamin K deficiency** + bleeding nose, mouth, GI + **subdural hemorrhage** → Fresh frozen plasma",
+   "hinge": "Vitamin K acts slowly; plasma replaces factors II, VII, IX, X now.",
    "trap": "Cryoprecipitate contains fibrinogen and factor VIII, but lacks factors II, VII, IX, and X needed for vitamin K deficiency coagulopathy.",
    "options": {
     "A": {
@@ -3463,12 +3574,34 @@
      "text": "5-day-old newborn"
     }
    ],
-   "topic": "vitamin-k-deficiency"
+   "topic": "vitamin-k-deficiency",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Platelets 20,000** with petechiae, normal PT",
+     "then": "Platelets"
+    },
+    {
+     "opt": "A",
+     "if": "**Low fibrinogen** in DIC with bleeding",
+     "then": "Cryoprecipitates"
+    },
+    {
+     "opt": "B",
+     "if": "**Isolated prolonged PTT**, boy with circumcision bleeding",
+     "then": "Factor VIII concentrate"
+    },
+    {
+     "opt": null,
+     "if": "**Mild oozing only**, stable",
+     "then": "Vitamin K alone"
+    }
+   ]
   },
   "746257": {
    "task": "Diagnosis",
-   "boardCall": "5-week-old male with forceful nonbilious vomiting after feeds + weight loss + dehydration -> gastric outlet obstruction at pyloric junction.",
-   "hinge": "Vomiting immediately after feeding in a thriving 5-week-old infant with acute weight loss and dehydration indicates hypertrophic pyloric stenosis.",
+   "boardCall": "5-week-old boy + **vomits right after each feed** + fewer wet diapers + weight loss + **nonbilious vomiting** → Pyloric junction",
+   "hinge": "Obstruction above the ampulla keeps vomitus free of bile.",
    "trap": "Duodenal and jejunal obstructions cause bilious vomiting and present earlier in neonatal life, whereas pyloric obstruction is nonbilious.",
    "options": {
     "A": {
@@ -3552,12 +3685,34 @@
      "text": "only two wet diapers"
     }
    ],
-   "topic": "hypertrophic-pyloric-stenosis"
+   "topic": "hypertrophic-pyloric-stenosis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Bilious vomiting** day 1, **double bubble**",
+     "then": "Duodenum"
+    },
+    {
+     "opt": "C",
+     "if": "**Bilious vomiting** with several dilated loops",
+     "then": "Jejunum"
+    },
+    {
+     "opt": "D",
+     "if": "**Drooling**, coughing with first feed, NG tube coils",
+     "then": "Midesophagus (TE fistula)"
+    },
+    {
+     "opt": "B",
+     "if": "**Effortless spit-up**, normal weight gain",
+     "then": "Gastroesophageal junction"
+    }
+   ]
   },
   "746258": {
    "task": "Pharmacology",
-   "boardCall": "Confluent beefy-red diaper rash + satellite papules and pustules post-antibiotics -> Candida diaper dermatitis treated with topical nystatin.",
-   "hinge": "Confluent erythema involving skin folds with characteristic satellite pustules and papules indicates Candida diaper dermatitis, treated with topical nystatin.",
+   "boardCall": "4-month-old + **recent antibiotics** + confluent red diaper rash + **satellite papules and pustules** + sharp borders → Topical nystatin",
+   "hinge": "Satellite lesions involving skin folds mark Candida overgrowth after antibiotics.",
    "trap": "Topical mupirocin treats bacterial folliculitis, but satellite papules and inguinal crease involvement post-antibiotics point to Candida.",
    "options": {
     "A": {
@@ -3650,12 +3805,34 @@
      "text": "4-month-old female infant"
     }
    ],
-   "topic": "candidiasis"
+   "topic": "candidiasis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Honey-crusted** lesions or bullae",
+     "then": "Topical mupirocin"
+    },
+    {
+     "opt": "F",
+     "if": "Erythema **spares skin folds**, no satellites",
+     "then": "No pharmacotherapy is indicated"
+    },
+    {
+     "opt": "C",
+     "if": "**Spreading cellulitis**, fever",
+     "then": "Oral cephalexin"
+    },
+    {
+     "opt": null,
+     "if": "**No response to antifungal**, perioral lesions, diarrhea",
+     "then": "Zinc deficiency"
+    }
+   ]
   },
   "746259": {
    "task": "Ethics",
-   "boardCall": "Well-controlled pediatric HIV + mother with CD4 count of 4/mm³ and opportunistic infection -> discuss care of the child in case of the mother's death (guardianship planning).",
-   "hinge": "The mother has end-stage AIDS (CD4 count 4/mm³, chronic cryptosporidiosis, wasting) and is the sole caregiver, making advance child custody planning critical.",
+   "boardCall": "2-year-old + **HIV suppressed and thriving** + **mother CD4 4** + cryptosporidiosis, weight loss + father absent → Care of the child if mother dies",
+   "hinge": "The child is stable; the sole caregiver is dying, so plan guardianship.",
    "trap": "The child's HIV is well suppressed, tempting focus on antiretroviral drugs or vaccines, but the urgent issue is impending maternal mortality.",
    "options": {
     "A": {
@@ -3736,12 +3913,34 @@
      "text": "father is not in contact with the family"
     }
    ],
-   "topic": "advance-directives-and-surrogates"
+   "topic": "advance-directives-and-surrogates",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Missed vaccines**, mother well",
+     "then": "Immunization schedule"
+    },
+    {
+     "opt": "A",
+     "if": "**Child viral load rising** on therapy",
+     "then": "Antiretroviral regimen options"
+    },
+    {
+     "opt": "E",
+     "if": "**Teenager** with perinatal HIV asks about future",
+     "then": "Long-term complications of HIV"
+    },
+    {
+     "opt": null,
+     "if": "Mother **hesitant to plan**",
+     "then": "Social work and revisit"
+    }
+   ]
   },
   "746260": {
    "task": "Next step",
-   "boardCall": "Term 2-day-old newborn with small yellow papules on erythematous base -> erythema toxicum neonatorum managed with reassurance.",
-   "hinge": "Flea-bitten appearance (yellow-white papules on blotchy erythematous bases) in a healthy term neonate is erythema toxicum neonatorum, which resolves spontaneously.",
+   "boardCall": "2-day-old + **well and afebrile** + **yellow papules on erythematous base** + trunk → Reassurance to the parents",
+   "hinge": "Erythema toxicum is benign, eosinophil-filled, and fades within days.",
    "trap": "Pustular-appearing lesions tempt bacterial or HSV cultures, but a healthy afebrile neonate with classic trunk lesions needs only reassurance.",
    "options": {
     "A": {
@@ -3827,12 +4026,34 @@
      "text": "Her temperature is 36.8°C (98.2°F)"
     }
    ],
-   "topic": "normal-pediatric-variants"
+   "topic": "normal-pediatric-variants",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Grouped vesicles** or maternal genital herpes",
+     "then": "HSV culture of lesions"
+    },
+    {
+     "opt": "A",
+     "if": "**Large pustules** with fever, gram-positive cocci",
+     "then": "Culture and anti-staphylococcal antibiotics"
+    },
+    {
+     "opt": "C",
+     "if": "**Satellite pustules** in diaper area",
+     "then": "KOH stain for Candida"
+    },
+    {
+     "opt": null,
+     "if": "**Pustules at birth** leaving hyperpigmented macules",
+     "then": "Transient neonatal pustular melanosis"
+    }
+   ]
   },
   "746261": {
    "task": "Diagnosis",
-   "boardCall": "Paroxysmal cough with posttussive vomiting + leukocyte count 28,000 with 80% lymphocytes in 5-week-old -> Bordetella pertussis (whooping cough).",
-   "hinge": "Paroxysmal coughing paroxysms, posttussive vomiting, household contact cough, and profound absolute lymphocytosis (80% of 28,000) define Bordetella pertussis.",
+   "boardCall": "5-week-old + **paroxysmal cough to vomiting** + afebrile + father coughing 3 weeks + **WBC 28,000, 80% lymphocytes** + clear CXR → Bordetella pertussis",
+   "hinge": "Pertussis toxin blocks lymphocyte homing, producing marked lymphocytosis.",
    "trap": "RSV causes severe infant cough, but typically presents with wheezing, tachypnea, and rales rather than clear lungs with isolated lymphocytosis.",
    "options": {
     "A": {
@@ -3916,12 +4137,34 @@
      "text": "chest x-ray shows no abnormalities"
     }
    ],
-   "topic": "pertussis"
+   "topic": "pertussis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Wheezing, crackles**, winter, normal WBC",
+     "then": "Respiratory syncytial virus"
+    },
+    {
+     "opt": "C",
+     "if": "**School-age child**, headache, patchy infiltrates",
+     "then": "Mycoplasma pneumoniae"
+    },
+    {
+     "opt": "E",
+     "if": "**High fever**, lobar consolidation, neutrophilia",
+     "then": "Streptococcus pneumoniae"
+    },
+    {
+     "opt": null,
+     "if": "**Staccato cough**, conjunctivitis, eosinophilia",
+     "then": "Chlamydia trachomatis pneumonia"
+    }
+   ]
   },
   "746262": {
    "task": "Next step",
-   "boardCall": "Elevated blood pressure on automated oscillometric device in an adolescent -> confirm by auscultation using manual sphygmomanometer.",
-   "hinge": "Elevated blood pressure readings obtained by automated oscillometric devices must be confirmed by manual auscultation before initiating a hypertension workup.",
+   "boardCall": "17-year-old + sports physical + BMI 29 + **oscillometric BP 138/88, then 140/89** → Blood pressure measurement by auscultation",
+   "hinge": "Automated cuffs overestimate in youth; manual readings confirm before labeling hypertension.",
    "trap": "Echocardiography or ambulatory monitoring are used in confirmed hypertension, but the immediate next step is verifying the reading manually.",
    "options": {
     "A": {
@@ -4007,12 +4250,34 @@
      "text": "examination prior to participating in football"
     }
    ],
-   "topic": "essential-hypertension"
+   "topic": "essential-hypertension",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Elevated auscultatory BP** over 3 visits, white coat suspected",
+     "then": "24-Hour ambulatory monitoring"
+    },
+    {
+     "opt": "B",
+     "if": "**Confirmed hypertension** before treatment",
+     "then": "Echocardiography"
+    },
+    {
+     "opt": null,
+     "if": "**Leg BP lower** than arm",
+     "then": "Coarctation evaluation"
+    },
+    {
+     "opt": null,
+     "if": "**BP over 180/120** with headache",
+     "then": "Hypertensive emergency"
+    }
+   ]
   },
   "746263": {
    "task": "Next step",
-   "boardCall": "High fever + petechiae + hepatosplenomegaly + pancytopenia in a child previously diagnosed with sJIA -> bone marrow aspiration to evaluate for acute leukemia.",
-   "hinge": "Pancytopenia (anemia, leukopenia, thrombocytopenia) with massive hepatosplenomegaly and low ESR (12 mm/h) in suspected sJIA warrants urgent bone marrow aspiration.",
+   "boardCall": "3-year-old + presumed sJIA + fever 40°C + petechiae + **hepatosplenomegaly** + **pancytopenia with low ESR** → Bone marrow aspiration",
+   "hinge": "Cytopenias with low ESR contradict active sJIA, suggesting leukemia or MAS.",
    "trap": "Prior diagnosis of juvenile idiopathic arthritis tempts imaging of joint/abdomen, but new pancytopenia demands marrow evaluation for acute lymphoblastic leukemia.",
    "options": {
     "A": {
@@ -4102,12 +4367,34 @@
      "trap": true
     }
    ],
-   "topic": "acute-leukemias"
+   "topic": "acute-leukemias",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Focal bone pain**, fever, normal counts",
+     "then": "Bone scan"
+    },
+    {
+     "opt": "A",
+     "if": "**Abdominal mass** crossing midline",
+     "then": "Abdominal CT scan"
+    },
+    {
+     "opt": "E",
+     "if": "**Isolated transaminase rise**, normal counts",
+     "then": "Liver biopsy"
+    },
+    {
+     "opt": null,
+     "if": "**Ferritin extremely high**, hemophagocytosis",
+     "then": "Macrophage activation syndrome"
+    }
+   ]
   },
   "746264": {
    "task": "Diagnosis",
-   "boardCall": "Anterior midline neck tenderness over thyroid isthmus exacerbated by swallowing and tongue protrusion -> infected thyroglossal duct cyst.",
-   "hinge": "Pain in the anterior midline of the neck that elevates or worsens with swallowing or tongue protrusion is pathognomonic for an infected thyroglossal duct cyst.",
+   "boardCall": "7-year-old + fever + **midline neck pain near thyroid isthmus** + **worse with tongue protrusion** + cat scratches → Infected thyroglossal duct cyst",
+   "hinge": "The tract tethers the cyst to the tongue base, so protrusion pulls it.",
    "trap": "Cat scratches on the arm suggest Bartonella, but cat-scratch disease causes regional axillary or lateral lymphadenopathy, not midline tracheal pain.",
    "options": {
     "A": {
@@ -4189,12 +4476,34 @@
      "trap": true
     }
    ],
-   "topic": "pediatric-neck-masses"
+   "topic": "pediatric-neck-masses",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Tender axillary node** weeks after scratch",
+     "then": "Cat-scratch disease"
+    },
+    {
+     "opt": "C",
+     "if": "**Posterior cervical nodes**, splenomegaly, fatigue",
+     "then": "Infectious mononucleosis"
+    },
+    {
+     "opt": "D",
+     "if": "**Tonsillar exudate**, no midline mass",
+     "then": "Tonsillitis"
+    },
+    {
+     "opt": null,
+     "if": "**Lateral neck mass** anterior to sternocleidomastoid",
+     "then": "Branchial cleft cyst"
+    }
+   ]
   },
   "746265": {
    "task": "Diagnosis",
-   "boardCall": "Beckwith-Wiedemann syndrome + right upper quadrant abdominal mass + AFP 15,678 ng/mL -> hepatoblastoma.",
-   "hinge": "In an infant with Beckwith-Wiedemann syndrome and hemihypertrophy, a firm RUQ mass with markedly elevated serum alpha-fetoprotein confirms hepatoblastoma.",
+   "boardCall": "6-month-old + Beckwith-Wiedemann + hemihypertrophy + **firm RUQ mass** + **AFP 15,678** + normal HVA/VMA → Hepatoblastoma",
+   "hinge": "BWS predisposes to embryonal tumors; liver site plus huge AFP decides.",
    "trap": "Wilms tumor is also associated with Beckwith-Wiedemann syndrome, but it arises in the renal fossa and does not elevate alpha-fetoprotein.",
    "options": {
     "A": {
@@ -4275,12 +4584,34 @@
      "text": "Beckwith-Wiedemann syndrome"
     }
    ],
-   "topic": "pediatric-abdominal-masses"
+   "topic": "pediatric-abdominal-masses",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Flank mass**, normal AFP",
+     "then": "Nephroblastoma (Wilms tumor)"
+    },
+    {
+     "opt": "D",
+     "if": "**Elevated HVA and VMA**, periorbital bruising",
+     "then": "Neuroblastoma"
+    },
+    {
+     "opt": "A",
+     "if": "**Sacrococcygeal mass** with high β-hCG",
+     "then": "Germ cell tumor"
+    },
+    {
+     "opt": "E",
+     "if": "**Hair tuft or dimple** over lumbar spine",
+     "then": "Spina bifida occulta"
+    }
+   ]
   },
   "746266": {
    "task": "Diagnosis",
-   "boardCall": "12-year-old girl with recurrent pneumonia + pan-hypogammaglobulinemia (low IgG, IgA, IgM) with normal T cells -> common variable immunodeficiency.",
-   "hinge": "Profoundly decreased IgG, IgA, and IgM with preserved T-cell subsets presenting after infancy in a female defines common variable immunodeficiency.",
+   "boardCall": "12-year-old girl + chronic sinusitis + recurrent pneumonia + **low IgG, IgA, IgM** + **normal T cells** → Common variable immunodeficiency",
+   "hinge": "Onset after infancy in a girl with B cells fits CVID, not XLA.",
    "trap": "X-linked agammaglobulinemia presents in infant boys with absent B cells, whereas CVID presents in adolescents or adults of either sex.",
    "options": {
     "A": {
@@ -4376,12 +4707,34 @@
      "text": "Serum IgA 20 mg/dL IgG 150 mg/dL IgM 30 mg/dL"
     }
    ],
-   "topic": "primary-immunodeficiencies"
+   "topic": "primary-immunodeficiencies",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Boy**, infections after 6 months, **absent B cells**",
+     "then": "X-linked agammaglobulinemia"
+    },
+    {
+     "opt": "E",
+     "if": "**Infant**, normal vaccine response, rising IgG",
+     "then": "Transient agammaglobulinemia of infancy"
+    },
+    {
+     "opt": "C",
+     "if": "**Infant**, lymphopenia, thrush, chronic diarrhea",
+     "then": "Severe combined immunodeficiency"
+    },
+    {
+     "opt": null,
+     "if": "**Isolated low IgA**, anaphylaxis to transfusion",
+     "then": "Selective IgA deficiency"
+    }
+   ]
   },
   "746267": {
    "task": "Diagnosis",
-   "boardCall": "Social detachment + inflexible attachment to yard-sale doll + echolalia + poor eye contact -> pervasive developmental disorder (autism spectrum disorder).",
-   "hinge": "Deficits in social-emotional reciprocity, poor eye contact, echolalia, and abnormal intense attachment to an unusual object define pervasive developmental disorder.",
+   "boardCall": "8-year-old + **prefers solitude** + rigid attachment to doll + **echolalia** + poor eye contact + large head → Pervasive developmental disorder",
+   "hinge": "Absent social reciprocity plus rigid behavior defines autism, not inattention.",
    "trap": "Distraction in the classroom tempts learning disorder or ADHD, but social disinterest, echolalia, and rigidity indicate pervasive developmental disorder.",
    "options": {
     "A": {
@@ -4466,12 +4819,34 @@
      "trap": true
     }
    ],
-   "topic": "autism-spectrum-disorder"
+   "topic": "autism-spectrum-disorder",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Isolated reading deficit**, normal social skills",
+     "then": "Learning disorder"
+    },
+    {
+     "opt": "C",
+     "if": "**Argues with adults**, spiteful, **normal social interest**",
+     "then": "Oppositional defiant disorder"
+    },
+    {
+     "opt": "B",
+     "if": "**IQ 55–70**, global delays, social interest intact",
+     "then": "Mild intellectual developmental disorder"
+    },
+    {
+     "opt": null,
+     "if": "**Inattention in two settings**, normal social reciprocity",
+     "then": "ADHD"
+    }
+   ]
   },
   "746268": {
    "task": "Diagnosis",
-   "boardCall": "Migratory polyarthritis + new apical holosystolic murmur radiating to axilla (mitral regurgitation) in a refugee child -> acute rheumatic fever.",
-   "hinge": "Fever, acute migratory polyarthritis of large joints, and a new apical holosystolic murmur of mitral regurgitation fulfill Jones criteria for acute rheumatic fever.",
+   "boardCall": "10-year-old + refugee camp + fever + **migratory large-joint arthritis** + **apical holosystolic murmur to axilla** → Rheumatic fever",
+   "hinge": "Carditis plus polyarthritis after untreated strep satisfies Jones major criteria.",
    "trap": "Severe joint swelling with fever tempts Lyme disease or Kawasaki, but apical holosystolic murmur of mitral carditis specifically identifies rheumatic fever.",
    "options": {
     "A": {
@@ -4563,12 +4938,34 @@
      "text": "family recently lived in a refugee camp"
     }
    ],
-   "topic": "acute-rheumatic-fever"
+   "topic": "acute-rheumatic-fever",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Tick exposure**, erythema migrans, knee effusion",
+     "then": "Lyme disease"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever 5 days**, cracked lips, conjunctivitis, toddler",
+     "then": "Kawasaki disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Retro-orbital pain**, low platelets, tropical travel",
+     "then": "Dengue fever"
+    },
+    {
+     "opt": "C",
+     "if": "**Cyclic fevers**, anemia, splenomegaly",
+     "then": "Malaria"
+    }
+   ]
   },
   "746269": {
    "task": "Diagnosis",
-   "boardCall": "7-week-old with hungry forceful vomiting + hypochloremic metabolic alkalosis (Cl 90, HCO3 36) -> infantile hypertrophic pyloric stenosis.",
-   "hinge": "Forceful postprandial vomiting in a persistently hungry infant with hypochloremic metabolic alkalosis is diagnostic of pyloric stenosis.",
+   "boardCall": "7-week-old + **progressive forceful nonbilious vomiting** + hungry after + **Cl 90, HCO3 36** → Pyloric stenosis",
+   "hinge": "Lost gastric acid produces hypochloremic alkalosis in this age window.",
    "trap": "Spitting up after feeds tempts gastroesophageal reflux, but progression to forceful vomiting with hypochloremia and alkalosis indicates pyloric stenosis.",
    "options": {
     "A": {
@@ -4671,12 +5068,34 @@
      "trap": true
     }
    ],
-   "topic": "hypertrophic-pyloric-stenosis"
+   "topic": "hypertrophic-pyloric-stenosis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Effortless spit-up**, normal electrolytes, gaining weight",
+     "then": "Gastroesophageal reflux"
+    },
+    {
+     "opt": "E",
+     "if": "**Bilious vomiting**, abdominal distension",
+     "then": "Malrotation of the intestine"
+    },
+    {
+     "opt": "A",
+     "if": "**Lethargy**, respiratory alkalosis, very high ammonia",
+     "then": "Acute hyperammonemia"
+    },
+    {
+     "opt": "B",
+     "if": "**Diarrhea and fever**, sick contacts",
+     "then": "Acute viral gastroenteritis"
+    }
+   ]
   },
   "746270": {
    "task": "Diagnosis",
-   "boardCall": "Nontender indurated genital ulcer with raised borders in sexually active adolescent -> primary syphilis chancre caused by a spirochete (Treponema pallidum).",
-   "hinge": "A solitary painless genital ulcer with clean base and raised indurated borders (chancre) represents primary syphilis caused by the spirochete Treponema pallidum.",
+   "boardCall": "17-year-old + 3 partners, inconsistent condoms + **painless ulcer** + **raised indurated borders** → Spirochete",
+   "hinge": "A painless clean-based chancre is primary syphilis.",
    "trap": "Genital herpes is viral and chancroid is a gram-negative rod, but both produce exquisitely painful ulcers unlike this painless chancre.",
    "options": {
     "A": {
@@ -4768,12 +5187,34 @@
      "text": "use condoms inconsistently"
     }
    ],
-   "topic": "syphilis"
+   "topic": "syphilis",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Painful grouped vesicles** that ulcerate",
+     "then": "Virus (HSV)"
+    },
+    {
+     "opt": "A",
+     "if": "**Painful ragged ulcer**, suppurative inguinal nodes",
+     "then": "Gram-negative bacillus (H ducreyi)"
+    },
+    {
+     "opt": "C",
+     "if": "**Transient painless papule**, then fluctuant buboes",
+     "then": "Obligate intracellular bacterium"
+    },
+    {
+     "opt": null,
+     "if": "**Beefy red painless** ulcer, Donovan bodies",
+     "then": "Granuloma inguinale"
+    }
+   ]
   },
   "746271": {
    "task": "Next step",
-   "boardCall": "Asymptomatic 3+ proteinuria on dipstick in a 12-year-old boy -> repeat urinalysis at bedtime and on awakening to rule out orthostatic proteinuria.",
-   "hinge": "Isolated asymptomatic proteinuria in an adolescent is most commonly orthostatic (postural), evaluated by comparing first-morning to daytime urine protein.",
+   "boardCall": "12-year-old + well, normal exam + normal BP + **3+ protein on one dipstick** → Repeat urinalysis at bedtime and on awakening",
+   "hinge": "Orthostatic proteinuria is common in adolescents and vanishes in morning urine.",
    "trap": "Renal ultrasound or biopsy tempts consideration for glomerular disease, but benign transient and orthostatic causes must be excluded first.",
    "options": {
     "A": {
@@ -4859,12 +5300,34 @@
      "text": "12-year-old boy is brought for a well-child examination"
     }
    ],
-   "topic": "proteinuria"
+   "topic": "proteinuria",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Protein persists** in first-morning urine with hematuria",
+     "then": "Renal ultrasonography"
+    },
+    {
+     "opt": "D",
+     "if": "**Edema**, albumin low, UPCR above 2",
+     "then": "Trial of corticosteroid therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Steroid-resistant** nephrotic syndrome",
+     "then": "Renal biopsy"
+    },
+    {
+     "opt": null,
+     "if": "**Recent fever** or heavy exercise",
+     "then": "Transient proteinuria: repeat later"
+    }
+   ]
   },
   "746272": {
    "task": "Mechanism",
-   "boardCall": "Breech birth + painless limp + left leg length discrepancy + limited hip abduction to 30 degrees -> developmental dysplasia of the hip from a poorly developed acetabulum.",
-   "hinge": "Breech delivery leading to shallow acetabular roof, femoral head subluxation, limb shortening, and restricted abduction indicates developmental dysplasia of the hip.",
+   "boardCall": "**breech birth** + 16-month-old + painless limp since walking + short left leg + **abduction limited to 30°** → Poorly developed acetabulum",
+   "hinge": "Breech positioning prevents normal hip seating, leaving a shallow socket.",
    "trap": "Slipped capital femoral epiphysis causes hip pathology, but occurs in overweight adolescents, whereas toddler hip dislocation is acetabular dysplasia.",
    "options": {
     "A": {
@@ -4956,12 +5419,34 @@
      "text": "painless right-sided limp since she began to walk 4 months ago"
     }
    ],
-   "topic": "pediatric-hip-disorders"
+   "topic": "pediatric-hip-disorders",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Obese adolescent**, knee pain, external rotation with flexion",
+     "then": "Displacement of capital femoral epiphysis"
+    },
+    {
+     "opt": "B",
+     "if": "**Fever**, refuses to bear weight, hip held flexed",
+     "then": "Acute suppurative arthritis"
+    },
+    {
+     "opt": "E",
+     "if": "**Bowed legs**, widened wrists, breast-fed, no vitamin D",
+     "then": "Failure of osteoid to mineralize"
+    },
+    {
+     "opt": "C",
+     "if": "**Sprinting adolescent**, sudden pain at pelvic apophysis",
+     "then": "Avulsion of muscle origin"
+    }
+   ]
   },
   "746273": {
    "task": "Screening",
-   "boardCall": "Sexually active 16-year-old female without condoms -> annual screening with nucleic acid amplification testing for Chlamydia trachomatis and Neisseria gonorrhoeae.",
-   "hinge": "Annual NAAT screening for Chlamydia and gonorrhea is recommended for all sexually active females under age 25, regardless of symptoms.",
+   "boardCall": "16-year-old + **sexually active 1 year** + **no condoms** + normal exam + mother breast cancer at 40 → NAAT for Chlamydia trachomatis and Neisseria gonorrhoeae",
+   "hinge": "Every sexually active woman under 25 gets yearly screening; Pap waits.",
    "trap": "Maternal breast cancer at 40 tempts mammography and sexual activity tempts Pap smear, but Pap starts at 21 and mammography is not indicated in teens.",
    "options": {
     "A": {
@@ -5044,12 +5529,34 @@
      "text": "Breast and pubic hair development are sexual maturity rating stage 5"
     }
    ],
-   "topic": "chlamydia-infection"
+   "topic": "chlamydia-infection",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "Patient is **age 21**",
+     "then": "Pap smear"
+    },
+    {
+     "opt": "B",
+     "if": "**BMI 85th percentile or more** plus diabetes risk factors at age 10+",
+     "then": "Fasting serum glucose"
+    },
+    {
+     "opt": "A",
+     "if": "**BRCA mutation** confirmed, age 30",
+     "then": "Mammography with MRI"
+    },
+    {
+     "opt": "C",
+     "if": "**Heavy menses**, fatigue, pallor",
+     "then": "Hemoglobin concentration"
+    }
+   ]
   },
   "746274": {
    "task": "Next step",
-   "boardCall": "Initial dysuria + pyuria with absent bacteriuria on urinalysis (sterile pyuria) -> testing for sexually transmitted diseases (Chlamydia, gonorrhea).",
-   "hinge": "Acute dysuria with marked leukocyte esterase/pus but negative urine bacteria (sterile pyuria) strongly suggests acute urethritis caused by Chlamydia or gonorrhea.",
+   "boardCall": "17-year-old + **dysuria at start of stream** + first episode + **marked pyuria, no bacteria** → Testing for sexually transmitted diseases",
+   "hinge": "Sterile pyuria in a sexually active teen suggests chlamydial or gonococcal urethritis.",
    "trap": "Absence of bacteria tempts symptom relief with sitz baths or no intervention, but sterile pyuria in an adolescent demands STI testing.",
    "options": {
     "A": {
@@ -5135,12 +5642,34 @@
      "text": "She has no history of similar symptoms"
     }
    ],
-   "topic": "chlamydia-infection"
+   "topic": "chlamydia-infection",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Vaginal discharge** and itching",
+     "then": "Wet mount with KOH"
+    },
+    {
+     "opt": "D",
+     "if": "**Recurrent febrile UTIs** in young child",
+     "then": "Imaging for urinary anomaly"
+    },
+    {
+     "opt": null,
+     "if": "**Bacteriuria and nitrites**, suprapubic pain",
+     "then": "Cystitis: urine culture"
+    },
+    {
+     "opt": null,
+     "if": "**NAAT negative**, pyuria persists",
+     "then": "Consider renal tuberculosis"
+    }
+   ]
   },
   "746275": {
    "task": "Diagnosis",
-   "boardCall": "6-month-old with frequent postprandial spitting up + drop from 50th to 35th percentile for weight + decreased subcutaneous fat -> gastroesophageal reflux disease (GERD).",
-   "hinge": "Frequent regurgitation causing poor weight gain and loss of subcutaneous fat differentiates pathologic gastroesophageal reflux disease (GERD) from benign physiologic reflux.",
+   "boardCall": "6-month-old + frequent spit-up + vigorous feeding + **weight 50th to 35th** + **less subcutaneous fat** + length spared → Gastroesophageal reflux disease",
+   "hinge": "Reflux becomes disease when it impairs growth, unlike happy spitters.",
    "trap": "Weight deceleration and vomiting at 6 months tempts pyloric stenosis, but pyloric stenosis presents with projectile vomiting at 3-6 weeks, not chronic spit-up.",
    "options": {
     "A": {
@@ -5232,7 +5761,29 @@
      "text": "6-month-old boy"
     }
    ],
-   "topic": "gastroesophageal-reflux-disease"
+   "topic": "gastroesophageal-reflux-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Age 3–6 weeks**, projectile vomiting, olive mass",
+     "then": "Pyloric stenosis"
+    },
+    {
+     "opt": "C",
+     "if": "**Preterm infant**, bloody stools, pneumatosis",
+     "then": "Necrotizing enterocolitis"
+    },
+    {
+     "opt": "B",
+     "if": "**Older child**, bloody diarrhea, perianal disease",
+     "then": "Inflammatory bowel disease"
+    },
+    {
+     "opt": null,
+     "if": "**Bilious vomiting**",
+     "then": "Malrotation: upper GI series"
+    }
+   ]
   }
  },
  "topics": {
@@ -9645,5 +10196,5 @@
    "evidence": "Prophylaxis checked 2026-10-30: [AAP vitamin K policy, 2022](https://publications.aap.org/aapnews/news/19601/Vitamin-K-policy-addresses-birth-dose-for-term)."
   }
  },
- "updatedAt": "2026-11-23T05:02:05Z"
+ "updatedAt": "2026-11-23T12:05:48Z"
 }
