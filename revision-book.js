@@ -280,14 +280,14 @@
     const order = {expl: ['others', 'obj', 'note'], explrep: ['branch', 'hinge', 'note'], rr: ['branch', 'note']}[VIEW] || [];
     const below = {branch: page.font_pt_trim || 7.5, obj: page.font_pt_trim || 7.5, others: page.font_pt_trim || 7.5, note: page.font_pt_trim || 7.5, hinge: page.font_pt_trim_hinge || 8};
     let f = await fit1(page); const trimmed = [], moved = [];
-    // my note: below 8.5 pt it moves to the question column (bordered box under the choices) when the text is not
-    // smaller there; only then do the trims run (user 2026-11-23)
+    // my note: it moves to the question column (bordered box under the choices) whenever that gives the Rapid Review a
+    // bigger font, and below 8.5 pt also when the font stays the same; only then do the trims run (user 2026-11-23)
     const mn = card.querySelector('[data-trim="note"]');
-    if(mn && (f.overflow || f.fs < (page.note_move_pt || 8.5))){
+    if(mn){
       const home = mn.parentNode, next = mn.nextSibling;
       card.querySelector('.col.l').appendChild(mn); mn.classList.add('mnq'); card.style.removeProperty('--imgh');
       const g = await fit1(page);
-      if(!g.overflow && (f.overflow || g.fs >= f.fs)){ f = g; moved.push('note'); }
+      if(!g.overflow && (f.overflow || g.fs > f.fs || (g.fs === f.fs && f.fs < (page.note_move_pt || 8.5)))){ f = g; moved.push('note'); }
       else { home.insertBefore(mn, next); mn.classList.remove('mnq'); card.style.removeProperty('--imgh'); f = await fit1(page); }
     }
     for(const t of order){
@@ -297,13 +297,29 @@
       const g = await fit1(page);
       if((!g.overflow && (f.overflow || g.fs > f.fs)) || (f.overflow && g.overflow)){ f = g; trimmed.push(t); } else { el.style.display = ''; card.style.removeProperty('--imgh'); f = await fit1(page); }
     }
+    if(!f.overflow) growStem(f, page);
     return Object.assign(f, {trimmed, moved});
+  }
+  // the stem column often has room left once the Rapid Review side is fitted (the Rapid Review is already as big as its own
+  // text allows at the narrowest split): grow the stem font in 0.25-pt steps while the column (stem, exhibit, choices and,
+  // when it moved there, my note) still fits, up to font_pt_max, so only a small gap stays (user 2026-11-23)
+  function growStem(f, page){
+    const bd = card.querySelector('.bd'), L = card.querySelector('.col.l');
+    const fits = () => L.scrollHeight <= L.clientHeight + 1 && L.scrollWidth <= L.clientWidth + 1;
+    let v = f.fsl == null ? f.fs : f.fsl;
+    const cap = page.font_pt_max || 10.5;
+    while(v + 0.25 <= cap + 1e-9){
+      bd.style.setProperty('--fsl', v + 0.25);
+      if(!fits()){ bd.style.setProperty('--fsl', v); break; }
+      v += 0.25;
+    }
+    f.fsl = v;
   }
   // binary search per split: the largest 0.25-pt step that fits. Same answer as the linear walk from 10.5 pt down
   // (overflow only grows with the font), with ~4 layouts per split instead of up to 15.
   async function fit1(page){
     const bd = card.querySelector('.bd'), max = page.font_pt_max || 10.5, min = page.font_pt_min || 7;
-    const splits = [[56, 44], [50, 50], [45, 55], [40, 60], [62, 38], [36, 64], [68, 32]];
+    const splits = [[56, 44], [50, 50], [45, 55], [40, 60], [62, 38], [36, 64], [68, 32], [32, 68], [28, 72]];
     const steps = Math.round((max - min) / 0.25), fsAt = k => min + k * 0.25;
     // stem column a step smaller than the Rapid Review (same rule as snap.js)
     const D = page.stem_minus_pt || 0, LMIN = page.stem_pt_min || min, LMAX = page.stem_pt_max || max;
