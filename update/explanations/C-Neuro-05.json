@@ -8,8 +8,8 @@
  "items": {
   "c-neuro-05-q001": {
    "task": "Diagnosis",
-   "boardCall": "Infant + minor fall story + bilateral retinal hemorrhages + subdural blood along falx -> Shaken baby syndrome (abusive head trauma)",
-   "hinge": "Bilateral retinal hemorrhages with interhemispheric subdural blood and minor fall history signify abusive head trauma.",
+   "boardCall": "6-month-old + couch fall history + **bilateral retinal hemorrhages** + **falx subdural blood** → Shaken baby syndrome",
+   "hinge": "Interhemispheric subdural bleeding and retinal hemorrhages cannot follow a low couch fall.",
    "trap": "A low-height fall from a couch cannot produce bilateral retinal hemorrhages and interhemispheric subdural hematoma.",
    "options": {
     "A": {
@@ -158,12 +158,29 @@
      "trap": true
     }
    ],
-   "topic": "child-abuse-and-neglect"
+   "topic": "child-abuse-and-neglect",
+   "branches": [
+    {
+     "opt": "M",
+     "if": "**Temporal skull fracture**, lucid interval, lens-shaped hematoma",
+     "then": "Epidural hematoma"
+    },
+    {
+     "opt": "K",
+     "if": "**High-speed MVC**, coma, normal initial CT, shear injuries",
+     "then": "Diffuse axonal injury"
+    },
+    {
+     "opt": "E",
+     "if": "**Uncomplicated forceps delivery**, subperiosteal swelling bounded by sutures",
+     "then": "Cephalhematoma"
+    }
+   ]
   },
   "c-neuro-05-q002": {
    "task": "Diagnosis",
-   "boardCall": "Sudden painless monocular vision loss + pale retina with cherry-red fovea -> Central retinal artery occlusion",
-   "hinge": "Abrupt, painless visual loss in one eye with retinal pallor indicates central retinal artery occlusion.",
+   "boardCall": "diabetes + prior MI + **sudden painless monocular vision loss** + **pale retina, cherry-red macula** → Central retinal artery occlusion",
+   "hinge": "Abrupt painless unilateral blindness with retinal whitening signals acute ophthalmic thromboembolism.",
    "trap": "Chronic vascular risk factors suggest diabetic retinopathy, but acute painless total monocular vision loss is arterial occlusion.",
    "options": {
     "A": {
@@ -288,12 +305,30 @@
      "text": "myocardial infarction 2 years ago"
     }
    ],
-   "topic": "retinal-vascular-occlusion"
+   "topic": "retinal-vascular-occlusion",
+   "branches": [
+    {
+     "opt": "J",
+     "if": "**Age > 50**, jaw claudication, temporal headache, ESR 100",
+     "then": "Temporal arteritis",
+     "step": "start high-dose corticosteroids immediately"
+    },
+    {
+     "opt": "A",
+     "if": "**Severe eye pain**, halos, mid-dilated fixed pupil, high IOP",
+     "then": "Acute angle-closure glaucoma"
+    },
+    {
+     "opt": "I",
+     "if": "**Gradual bilateral vision loss**, microaneurysms, cotton-wool spots",
+     "then": "Diabetic retinopathy"
+    }
+   ]
   },
   "c-neuro-05-q003": {
    "task": "Next step",
-   "boardCall": "Parkinson disease + major depression + desires smoking cessation -> Bupropion",
-   "hinge": "Desire for smoking cessation combined with depression in Parkinson disease makes bupropion the ideal single drug.",
+   "boardCall": "Parkinson disease + depressed mood + **desires smoking cessation** → Bupropion",
+   "hinge": "Dopaminergic-noradrenergic activity treats both major depression and tobacco craving without worsening parkinsonism.",
    "trap": "Weight loss and anorexia suggest mirtazapine, but smoking cessation goal specifically indicates bupropion.",
    "options": {
     "A": {
@@ -380,12 +415,29 @@
      "trap": true
     }
    ],
-   "topic": "antidepressants"
+   "topic": "antidepressants",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Severe insomnia** and poor appetite without smoking cessation goal",
+     "then": "Mirtazapine"
+    },
+    {
+     "opt": "B",
+     "if": "**Seizure disorder** or eating disorder contraindicating bupropion",
+     "then": "Citalopram"
+    },
+    {
+     "opt": "C",
+     "if": "**Comorbid neuropathic pain** alongside depression",
+     "then": "Duloxetine"
+    }
+   ]
   },
   "c-neuro-05-q004": {
    "task": "Next step",
-   "boardCall": "Alcohol withdrawal day 2 + autonomic instability + visual hallucinations + disorientation -> Benzodiazepine (chlordiazepoxide)",
-   "hinge": "Delirium tremens with visual hallucinations and autonomic hyperactivity mandates benzodiazepine therapy to prevent seizures and death.",
+   "boardCall": "alcohol detox day 2 + fever + BP 190/120 + **visual hallucinations** → Oral chlordiazepoxide therapy",
+   "hinge": "Delirium tremens with autonomic hyperactivity demands GABAergic sedation; antipsychotics lower seizure threshold.",
    "trap": "Visual hallucinations suggest antipsychotics, but neuroleptics lower the seizure threshold in alcohol withdrawal.",
    "options": {
     "A": {
@@ -472,12 +524,29 @@
      "text": "blood pressure is 190/120 mm Hg"
     }
    ],
-   "topic": "alcohol-withdrawal"
+   "topic": "alcohol-withdrawal",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Ophthalmoplegia, ataxia**, acute confusion without autonomic surge",
+     "then": "Intravenous vitamin B1"
+    },
+    {
+     "opt": "D",
+     "if": "**Nuchal rigidity**, petechiae, purulent CSF",
+     "then": "Intravenous antibiotic therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Decompensated cirrhosis** needing withdrawal sedation",
+     "then": "Lorazepam or oxazepam"
+    }
+   ]
   },
   "c-neuro-05-q005": {
    "task": "Diagnosis",
-   "boardCall": "10-day-old neonate + focal seizures + CSF lymphocytic pleocytosis with RBCs + negative Gram stain -> Neonatal HSV encephalitis",
-   "hinge": "Acute neonatal seizures around day 10 with CSF pleocytosis and prominent erythrocytes indicate herpes simplex encephalitis.",
+   "boardCall": "10-day-old newborn + **focal seizures** + **CSF pleocytosis with 860 RBCs** + negative Gram stain → Neonatal herpes simplex encephalitis",
+   "hinge": "Clonic seizures with hemorrhagic CSF pleocytosis at day 10 indicate maternal HSV.",
    "trap": "A normal CT head and negative Gram stain distract from viral encephalitis, which typically shows temporal localization later.",
    "options": {
     "A": {
@@ -572,12 +641,29 @@
      "text": "Gram stain is negative"
     }
    ],
-   "topic": "encephalitis"
+   "topic": "encephalitis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Day 2 sepsis**, bulging fontanel, gram-positive cocci in chains",
+     "then": "Neonatal group B streptococcus meningitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Microcephaly at birth**, periventricular calcifications, sensorineural deafness",
+     "then": "Congenital cytomegalovirus"
+    },
+    {
+     "opt": "C",
+     "if": "**Chorioretinitis, hydrocephalus**, diffuse intracranial calcifications at birth",
+     "then": "Congenital toxoplasmosis"
+    }
+   ]
   },
   "c-neuro-05-q006": {
    "task": "Diagnosis",
-   "boardCall": "Immunosuppressed + subacute meningitis + basilar enhancement + CSF marked lymphocytic pleocytosis with very low glucose -> Tuberculous meningitis",
-   "hinge": "Basilar meningeal enhancement with lymphocytic pleocytosis and markedly depressed CSF glucose in a steroid user confirms tuberculous meningitis.",
+   "boardCall": "chronic steroid use + subacute meningitis + **basilar enhancement** + **CSF glucose 17, 86% lymphs** → Tuberculous meningitis",
+   "hinge": "Lymphocytic meningitis with basilar exudates and very low glucose points to mycobacteria.",
    "trap": "Lymphocytic predominance suggests viral encephalitis or sarcoidosis, but profoundly low glucose (17 mg/dL) points to tuberculosis.",
    "options": {
     "A": {
@@ -665,12 +751,29 @@
      "text": "courses of corticosteroids during the past year"
     }
    ],
-   "topic": "meningitis"
+   "topic": "meningitis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Temporal lobe enhancement**, normal CSF glucose, elevated RBCs",
+     "then": "Herpes simplex encephalitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Bilateral hilar adenopathy**, cranial nerve VII palsy, sterile cultures",
+     "then": "Neurosarcoidosis"
+    },
+    {
+     "opt": "D",
+     "if": "**Argyll Robertson pupils**, positive CSF VDRL, normal glucose",
+     "then": "Neurosyphilis"
+    }
+   ]
   },
   "c-neuro-05-q007": {
    "task": "Next step",
-   "boardCall": "Dialysis catheter + spinal epidural abscess + S. aureus bacteremia -> Remove the tunneled catheter",
-   "hinge": "Staphylococcus aureus bacteremia with an indwelling tunneled vascular catheter requires catheter removal to eradicate the source.",
+   "boardCall": "dialysis tunneled catheter + **L4 epidural abscess** + **S. aureus bacteremia** → Removal of the catheter",
+   "hinge": "Tunneled hardware harbors biofilms and requires removal despite a clean exit site.",
    "trap": "A normal-appearing catheter exit site tempts retaining it, but intravascular hardware harbors S. aureus biofilms.",
    "options": {
     "A": {
@@ -760,12 +863,29 @@
      "trap": true
     }
    ],
-   "topic": "catheter-related-bloodstream-infection"
+   "topic": "catheter-related-bloodstream-infection",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Fever, nuchal rigidity**, no lumbar abscess on MRI",
+     "then": "Lumbar puncture"
+    },
+    {
+     "opt": "B",
+     "if": "**Afebrile ascending weakness**, areflexia, normal spine MRI",
+     "then": "Electromyography"
+    },
+    {
+     "opt": null,
+     "if": "**Rapidly worsening paraparesis** alongside catheter removal",
+     "then": "Emergent surgical decompression"
+    }
+   ]
   },
   "c-neuro-05-q008": {
    "task": "Next step",
-   "boardCall": "Young woman + episodic multifocal CNS deficits + internuclear ophthalmoplegia -> Brain MRI for multiple sclerosis",
-   "hinge": "Internuclear ophthalmoplegia and multifocal CNS deficits separated in time and space indicate multiple sclerosis, diagnosed by brain MRI.",
+   "boardCall": "32-year-old woman + episodic deficits + **internuclear ophthalmoplegia** + **Romberg and Babinski signs** → MRI of the brain",
+   "hinge": "Multifocal CNS lesions separated in time and space warrant neuroimaging for demyelination.",
    "trap": "Paresthesias and posterior column signs mimic B12 deficiency, but internuclear ophthalmoplegia localizes to brainstem demyelination.",
    "options": {
     "A": {
@@ -879,12 +999,29 @@
      "text": "Babinski sign is present on the left"
     }
    ],
-   "topic": "multiple-sclerosis"
+   "topic": "multiple-sclerosis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Symmetric dorsal column loss**, macrocytic anemia, no INO",
+     "then": "Serum vitamin B12 concentration"
+    },
+    {
+     "opt": "I",
+     "if": "**High-risk sexual history**, tabes dorsalis, Argyll Robertson pupils",
+     "then": "CSF VDRL test"
+    },
+    {
+     "opt": "D",
+     "if": "**Kayser-Fleischer rings**, cirrhosis, dysarthria, asterixis",
+     "then": "Serum copper concentration"
+    }
+   ]
   },
   "c-neuro-05-q009": {
    "task": "Prognosis",
-   "boardCall": "Neurofibromatosis type 1 de novo patient -> Autosomal dominant inheritance with 50% risk to offspring",
-   "hinge": "NF1 is autosomal dominant, so an affected individual transmits the mutation to 50% of offspring regardless of family history.",
+   "boardCall": "cafe au lait spots + **multiple neurofibromas** + **unaffected parents and siblings** → 50% for each child (autosomal dominant)",
+   "hinge": "De novo autosomal dominant mutations still pass to half of future offspring.",
    "trap": "Absence of disease in parents reflects a de novo mutation, not a lack of heritability for future offspring.",
    "options": {
     "A": {
@@ -963,12 +1100,29 @@
      "trap": true
     }
    ],
-   "topic": "neurocutaneous-disorders"
+   "topic": "neurocutaneous-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Cystic fibrosis** or Tay-Sachs carrier parents",
+     "then": "25% for each child (autosomal recessive)"
+    },
+    {
+     "opt": "E",
+     "if": "**Somatic post-zygotic mosaicism** sparing gonads",
+     "then": "No risk to children"
+    },
+    {
+     "opt": null,
+     "if": "**Enlarging plexiform neurofibroma** causing pain or deficit",
+     "then": "MEK inhibitor or resection"
+    }
+   ]
   },
   "c-neuro-05-q010": {
    "task": "Diagnosis",
-   "boardCall": "Metastatic breast cancer + isolated mental nerve chin numbness (numb chin syndrome) -> Mandible metastasis",
-   "hinge": "Isolated mental nerve distribution anesthesia (numb chin syndrome) points to metastatic infiltration of the mandible.",
+   "boardCall": "metastatic breast cancer + **isolated left chin numbness** + supraclavicular nodes → Mandible",
+   "hinge": "Numb chin syndrome reflects metastatic mental nerve compression inside the bone.",
    "trap": "Supraclavicular adenopathy suggests brachial plexus pathology, but chin sensory loss is cranial nerve V3.",
    "options": {
     "A": {
@@ -1054,12 +1208,29 @@
      "trap": true
     }
    ],
-   "topic": "bone-tumors"
+   "topic": "bone-tumors",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Shoulder pain**, hand wasting, medial forearm numbness, Horner",
+     "then": "Brachial plexus"
+    },
+    {
+     "opt": "B",
+     "if": "**Ophthalmoplegia**, proptosis, V1/V2 facial sensory loss",
+     "then": "Cavernous sinus"
+    },
+    {
+     "opt": "C",
+     "if": "**Unilateral sensorineural deafness**, facial palsy, ataxia",
+     "then": "Cerebellopontine angle"
+    }
+   ]
   },
   "c-neuro-05-q011": {
    "task": "Diagnosis",
-   "boardCall": "HIV + ring-enhancing brain lesions failing 2-week toxoplasmosis therapy -> CNS lymphoma",
-   "hinge": "Failure of ring-enhancing lesions to shrink after 2 weeks of pyrimethamine-sulfadiazine points to primary CNS lymphoma.",
+   "boardCall": "HIV + ring-enhancing brain lesions + **enlarges after 2 weeks pyrimethamine-sulfadiazine** → Central nervous system lymphoma",
+   "hinge": "Lack of radiographic response to empiric anti-Toxoplasma therapy points toward EBV-driven malignancy.",
    "trap": "Multiple ring-enhancing lesions suggest toxoplasmosis, but progression on empiric therapy points to lymphoma.",
    "options": {
     "A": {
@@ -1152,12 +1323,29 @@
      "text": "no decrease in the size of the lesions, and some have increased in size"
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Shrinkage of lesions** on repeat MRI after 2 weeks",
+     "then": "Toxoplasmal encephalitis"
+    },
+    {
+     "opt": "C",
+     "if": "**High opening pressure**, India ink yeast, basal meningitis",
+     "then": "Cryptococcal meningitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Pulmonary cavitary nodules** plus brain abscess, beaded gram-positive rods",
+     "then": "Nocardial abscesses"
+    }
+   ]
   },
   "c-neuro-05-q012": {
    "task": "Diagnosis",
-   "boardCall": "Metastatic breast cancer + urinary retention/overflow incontinence + lax anal tone + back pain -> Cauda equina metastasis",
-   "hinge": "Acute urinary retention with overflow incontinence and decreased anal sphincter tone in metastatic spine cancer indicates cauda equina syndrome.",
+   "boardCall": "metastatic breast cancer + **urinary overflow retention** + **lax anal sphincter** + spine percussion pain → Metastases to the cauda equina",
+   "hinge": "Spine tenderness with overflow retention and lax sphincter localizes to lumbosacral roots.",
    "trap": "Medication list includes fluoxetine, but lax rectal tone and distended bladder confirm neurogenic cauda equina compression.",
    "options": {
     "A": {
@@ -1242,12 +1430,29 @@
      "text": "decreased sphincter tone"
     }
    ],
-   "topic": "spinal-cord-compression"
+   "topic": "spinal-cord-compression",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Confusion, polyuria**, constipation, serum calcium 14, normal tone",
+     "then": "Hypercalcemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Amitriptyline or diphenhydramine**, dry mouth, normal sphincter tone",
+     "then": "Anticholinergic medication effect"
+    },
+    {
+     "opt": "C",
+     "if": "**Painless gross hematuria**, normal spine exam and rectal tone",
+     "then": "Metastases to the bladder"
+    }
+   ]
   },
   "c-neuro-05-q013": {
    "task": "Diagnosis",
-   "boardCall": "Heavy smoker + thoracic tenderness + T9 sensory level + bilateral hyperreflexia + sphincter incontinence -> Epidural metastatic carcinoma",
-   "hinge": "Thoracic spine tenderness with a sensory level at T9 and upper motor neuron signs signifies epidural cord compression from cancer.",
+   "boardCall": "60 pack-year smoker + **T9 sensory level** + **hyperreflexia + flaccid sphincter** → Epidural metastatic carcinoma",
+   "hinge": "Thoracic tenderness with hyperreflexia and a sensory level defines epidural cord compression.",
    "trap": "Low back pain suggests lumbar spinal stenosis, but hyperreflexia and a thoracic sensory level at T9 confirm spinal cord compression.",
    "options": {
     "A": {
@@ -1354,12 +1559,29 @@
      "text": "smoked two packs of cigarettes daily for 60 years"
     }
    ],
-   "topic": "spinal-cord-compression"
+   "topic": "spinal-cord-compression",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Pseudoclaudication**, relieved by leaning forward, no sensory level",
+     "then": "Lumbar spinal stenosis"
+    },
+    {
+     "opt": "A",
+     "if": "**Patchy cranial neuropathies**, headache, malignant cells in CSF",
+     "then": "Carcinomatous meningitis"
+    },
+    {
+     "opt": "G",
+     "if": "**Loss of vibration**, wide-based gait, Argyll Robertson pupils",
+     "then": "Tabes dorsalis"
+    }
+   ]
   },
   "c-neuro-05-q014": {
    "task": "Diagnosis",
-   "boardCall": "Adult woman + parasagittal uniformly intensely enhancing extra-axial mass + focal seizure -> Meningioma",
-   "hinge": "A uniformly and intensely enhancing parasagittal mass in a woman is the classic presentation of a benign meningioma.",
+   "boardCall": "57-year-old woman + focal seizure + **uniformly enhancing parasagittal mass** → Meningioma",
+   "hinge": "Dural-based parasagittal tumors with uniform enhancement represent benign extra-axial neoplasms.",
    "trap": "Focal seizure and contralateral leg weakness suggest an intra-axial glioma, but uniform intense enhancement and parasagittal location indicate meningioma.",
    "options": {
     "A": {
@@ -1444,12 +1666,29 @@
      "text": "left frontal region"
     }
    ],
-   "topic": "brain-tumors"
+   "topic": "brain-tumors",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Ring-enhancing necrotic mass** crossing the corpus callosum",
+     "then": "Glioblastoma multiforme"
+    },
+    {
+     "opt": "E",
+     "if": "**Cerebellopontine angle mass** with unilateral hearing loss",
+     "then": "Schwannoma"
+    },
+    {
+     "opt": "B",
+     "if": "**Fourth-ventricle mass** causing obstructive hydrocephalus in child",
+     "then": "Ependymoma"
+    }
+   ]
   },
   "c-neuro-05-q015": {
    "task": "Next step",
-   "boardCall": "Thunderclap headache + syncope + meningismus + negative noncontrast head CT -> Lumbar puncture",
-   "hinge": "A high-suspicion thunderclap headache with a negative noncontrast head CT mandates lumbar puncture to rule out subarachnoid hemorrhage.",
+   "boardCall": "thunderclap headache + syncope + **neck stiffness** + **negative head CT** → Lumbar puncture",
+   "hinge": "Normal noncontrast CT cannot exclude subarachnoid hemorrhage; CSF xanthochromia must be checked.",
    "trap": "A normal noncontrast head CT does not exclude subarachnoid hemorrhage; xanthochromia on lumbar puncture must be evaluated.",
    "options": {
     "A": {
@@ -1536,12 +1775,29 @@
      "trap": true
     }
    ],
-   "topic": "subarachnoid-hemorrhage"
+   "topic": "subarachnoid-hemorrhage",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Subacute headache**, fever, focal seizures, temporal abnormality suspected",
+     "then": "MRI of the brain"
+    },
+    {
+     "opt": "C",
+     "if": "**Transient monocular blindness** or brief hemiparesis, normal CT",
+     "then": "Carotid ultrasonography"
+    },
+    {
+     "opt": "B",
+     "if": "**Gradual bilateral bandlike pain**, normal neuro exam",
+     "then": "Discharging with analgesic therapy"
+    }
+   ]
   },
   "c-neuro-05-q016": {
    "task": "Diagnosis",
-   "boardCall": "Neck manipulation + Wallenberg syndrome (hoarseness, Horner syndrome, crossed sensory loss, ataxia) -> Left vertebral artery occlusion",
-   "hinge": "Lateral medullary syndrome with ipsilateral Horner, ataxia, hoarseness, and crossed sensory loss indicates left vertebral artery occlusion.",
+   "boardCall": "chiropractic neck manipulation + hoarseness + **left Horner + ataxia** + **crossed pain loss** → Left vertebral",
+   "hinge": "Lateral medullary stroke impairs ipsilateral sympathetics, nucleus ambiguus, cerebellum, and crossed pain tracts.",
    "trap": "Neck manipulation also causes carotid dissection, but Wallenberg syndrome localizes strictly to the vertebral artery or PICA territory.",
    "options": {
     "A": {
@@ -1685,12 +1941,29 @@
      "text": "ataxia on the left"
     }
    ],
-   "topic": "cervical-artery-dissection"
+   "topic": "cervical-artery-dissection",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Left Horner** with right hemiparesis and aphasia",
+     "then": "Left carotid"
+    },
+    {
+     "opt": "A",
+     "if": "**Locked-in quadriplegia**, pinpoint pupils, coma",
+     "then": "Basilar"
+    },
+    {
+     "opt": "G",
+     "if": "**Right face/arm weakness** and aphasia without Horner",
+     "then": "Left middle cerebral"
+    }
+   ]
   },
   "c-neuro-05-q017": {
    "task": "Prevention",
-   "boardCall": "Hypertensive woman + prevent vascular (multi-infarct) dementia -> Continued blood pressure control",
-   "hinge": "Hypertension is the most potent modifiable risk factor for vascular dementia, so sustained BP control is paramount.",
+   "boardCall": "67-year-old + **hypertension on HCTZ** + **prevent multi-infarct dementia** → Continued control of blood pressure",
+   "hinge": "Sustained blood pressure control is the strongest modifier preventing recurrent lacunar infarcts.",
    "trap": "Her father has Alzheimer dementia, but the question specifically asks for prevention of multi-infarct vascular dementia.",
    "options": {
     "A": {
@@ -1784,12 +2057,29 @@
      "text": "blood pressure is 124/84 mm Hg"
     }
    ],
-   "topic": "dementia"
+   "topic": "dementia",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**History of prior ischemic stroke** or symptomatic carotid plaque",
+     "then": "Daily aspirin prophylaxis"
+    },
+    {
+     "opt": "B",
+     "if": "**Normal blood pressure**, sedentary lifestyle, mild cognitive concerns",
+     "then": "Regular aerobic exercise"
+    },
+    {
+     "opt": null,
+     "if": "**New atrial fibrillation** discovered on exam",
+     "then": "Oral anticoagulation"
+    }
+   ]
   },
   "c-neuro-05-q018": {
    "task": "Diagnosis",
-   "boardCall": "Diplopia + dizziness + ataxia + left carotid bruit -> Vertebrobasilar (vertebral) artery atherosclerosis",
-   "hinge": "Diplopia, ataxia, and vertigo localize to the posterior vertebrobasilar circulation, not the carotid system.",
+   "boardCall": "atherosclerosis + **diplopia and ataxia** + **dizziness** + incidental carotid bruit → Vertebral",
+   "hinge": "Brainstem and cerebellar ischemia localizes posteriorly despite an incidental neck bruit.",
    "trap": "A left carotid bruit tempts selecting the carotid artery, but diplopia and ataxia localize to the vertebral territory.",
    "options": {
     "A": {
@@ -1889,12 +2179,29 @@
      "text": "Pulses are decreased in the lower extremities"
     }
    ],
-   "topic": "ischemic-stroke-and-tia"
+   "topic": "ischemic-stroke-and-tia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Transient monocular blindness** with contralateral arm weakness",
+     "then": "Internal carotid"
+    },
+    {
+     "opt": "F",
+     "if": "**Arm exercise triggers dizziness** with unequal arm pressures",
+     "then": "Subclavian"
+    },
+    {
+     "opt": "E",
+     "if": "**Contralateral face/arm weakness** and aphasia",
+     "then": "Middle cerebral"
+    }
+   ]
   },
   "c-neuro-05-q019": {
    "task": "Diagnosis",
-   "boardCall": "BP 240/150 mm Hg + acute confusion + retinopathy (flame hemorrhages and exudates) -> Hypertensive encephalopathy",
-   "hinge": "Severe hypertension (240/150 mm Hg) with acute confusion and grade IV retinopathy defines hypertensive encephalopathy.",
+   "boardCall": "med nonadherence + **BP 240/150** + **confusion** + retinal hemorrhages/exudates → Hypertensive encephalopathy",
+   "hinge": "Extreme blood pressure elevation with encephalopathy and papilledema reflects cerebral autoregulatory breakdown.",
    "trap": "Severe acute headache suggests subarachnoid hemorrhage, but profound hypertension with retinopathy points to hypertensive encephalopathy.",
    "options": {
     "A": {
@@ -1993,12 +2300,29 @@
      "text": "Funduscopic examination shows hemorrhages and exudates"
     }
    ],
-   "topic": "hypertensive-crises"
+   "topic": "hypertensive-crises",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Focal hemiparesis**, gaze deviation, CT hyperdensity",
+     "then": "Cerebral hemorrhage"
+    },
+    {
+     "opt": "F",
+     "if": "**Abrupt worst headache**, nuchal rigidity, normal fundi",
+     "then": "Subarachnoid hemorrhage"
+    },
+    {
+     "opt": "D",
+     "if": "**Normal BP**, obese young woman, papilledema, clear mentation",
+     "then": "Idiopathic intracranial hypertension"
+    }
+   ]
   },
   "c-neuro-05-q020": {
    "task": "Diagnosis",
-   "boardCall": "Recent anterior transmural MI (3 weeks ago) + transient aphasia + mild 40% carotid stenosis -> Left ventricular aneurysm mural thrombus cardioembolism",
-   "hinge": "Transmural anterior myocardial infarction leads to apical ventricular aneurysm with mural thrombus that embolizes to cause TIA.",
+   "boardCall": "transmural anterior MI 3 weeks ago + **transient aphasia** + **40% carotid stenosis** → Embolus from a ventricular aneurysm",
+   "hinge": "Nonstenotic carotid plaque points to apical mural thrombus after recent anterior infarction.",
    "trap": "Mild carotid stenosis of 40% is non-hemodynamic, pointing instead to a cardioembolic source from the recent transmural MI.",
    "options": {
     "A": {
@@ -2080,12 +2404,29 @@
      "text": "Carotid duplex ultrasonography shows 40% stenosis of the left carotid artery"
     }
    ],
-   "topic": "acute-coronary-syndromes"
+   "topic": "acute-coronary-syndromes",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Pure motor hemiparesis** without cortical aphasia, chronic HTN",
+     "then": "Infarct of the lacunar artery"
+    },
+    {
+     "opt": "C",
+     "if": "**Progressive headache, vomiting**, focal deficit on dual antiplatelets",
+     "then": "Intraparenchymal cerebral hemorrhage"
+    },
+    {
+     "opt": null,
+     "if": "**Carotid stenosis ≥70%** ipsilateral to aphasia",
+     "then": "Carotid endarterectomy"
+    }
+   ]
   },
   "c-neuro-05-q021": {
    "task": "Diagnosis",
-   "boardCall": "Child with asymmetric leg atrophy + pes cavus + mixed UMN/LMN signs + sacral tuft of hair -> Tethered spinal cord",
-   "hinge": "A cutaneous sacral tuft of hair with asymmetric lower motor neuron signs and pes cavus indicates a tethered spinal cord.",
+   "boardCall": "5-year-old + **left leg atrophy, pes cavus** + **sacral hair tuft** → Tethered spinal cord",
+   "hinge": "Midline lumbosacral cutaneous stigmata with asymmetric lower-limb neurologic deficits signal spinal dysraphism.",
    "trap": "Pes cavus suggests Friedreich ataxia, but cutaneous midline sacral hair and asymmetry localize to tethered cord.",
    "options": {
     "A": {
@@ -2171,12 +2512,29 @@
      "text": "sacral tuft of hair"
     }
    ],
-   "topic": "neural-tube-defects"
+   "topic": "neural-tube-defects",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Symmetric gait ataxia**, cardiomyopathy, kyphoscoliosis, absent tuft",
+     "then": "Friedreich ataxia"
+    },
+    {
+     "opt": "A",
+     "if": "**Oculocutaneous telangiectasias**, recurrent sinopulmonary infections, ataxia",
+     "then": "Ataxia-telangiectasia"
+    },
+    {
+     "opt": "D",
+     "if": "**Premature birth**, symmetric lower extremity spasticity, scissoring gait",
+     "then": "Spastic diplegia"
+    }
+   ]
   },
   "c-neuro-05-q022": {
    "task": "Next step",
-   "boardCall": "Neurogenic claudication relieved by lumbar spine flexion (shopping cart sign) -> Lumbar spine MRI",
-   "hinge": "Bilateral leg pain provoked by walking and upright posture and relieved by forward bending signifies neurogenic claudication from lumbar stenosis.",
+   "boardCall": "elderly + **bilateral leg pain walking** + **relieved leaning forward** → MRI of the lumbar spine",
+   "hinge": "Pain relief with spinal flexion distinguishes neurogenic claudication from vascular insufficiency.",
    "trap": "Extensive vascular disease suggests arterial claudication, but relief with forward flexion confirms neurogenic stenosis.",
    "options": {
     "A": {
@@ -2263,12 +2621,29 @@
      "trap": true
     }
    ],
-   "topic": "low-back-pain"
+   "topic": "low-back-pain",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Unilateral calf cramping** relieved simply by standing still",
+     "then": "Lower extremity Doppler studies"
+    },
+    {
+     "opt": "E",
+     "if": "**Pacemaker present** contraindicating magnetic resonance imaging",
+     "then": "Myelography"
+    },
+    {
+     "opt": "C",
+     "if": "**Symmetric distal stocking-glove numbness**, absent ankle reflexes",
+     "then": "Electromyography and nerve studies"
+    }
+   ]
   },
   "c-neuro-05-q023": {
    "task": "Diagnosis",
-   "boardCall": "Cancer history + progressive paraparesis + bilateral Babinski + T4 sensory level (nipples) -> Metastatic spinal cord compression",
-   "hinge": "A sensory level at the nipples (T4) with bilateral hyperreflexia and Babinski signs confirms thoracic spinal cord compression.",
+   "boardCall": "prior lymphoma + progressive paraparesis + **bilateral Babinski** + **T4 sensory level** → Metastatic spinal cord compression",
+   "hinge": "Nipple-level anesthesia with upper motor neuron signs localizes an epidural mass.",
    "trap": "Past chemotherapy suggests toxic neuropathy, but a thoracic sensory level and hyperreflexia indicate spinal cord compression.",
    "options": {
     "A": {
@@ -2353,12 +2728,29 @@
      "text": "Babinski sign is present bilaterally"
     }
    ],
-   "topic": "spinal-cord-compression"
+   "topic": "spinal-cord-compression",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Absent reflexes**, ascending weakness, no sensory level",
+     "then": "Guillain-Barré syndrome"
+    },
+    {
+     "opt": "A",
+     "if": "**Symmetric glove-stocking paresthesias** without sphincter or UMN signs",
+     "then": "Chemotherapy-induced polyneuropathy"
+    },
+    {
+     "opt": "D",
+     "if": "**Isolated proximal weakness**, normal sensation and reflexes",
+     "then": "Myopathy"
+    }
+   ]
   },
   "c-neuro-05-q024": {
    "task": "Diagnosis",
-   "boardCall": "Diving injury + weak wrist extension + thumb and radial forearm sensory loss -> Bilateral facet dislocation with left C6 root impingement",
-   "hinge": "Wrist extension weakness (3/5) with thumb and radial forearm sensory loss specifically localizes to the C6 nerve root.",
+   "boardCall": "diving trauma + **weak wrist extension** + **thumb/radial forearm numbness** → Bilateral facet dislocation with left C6 root impingement",
+   "hinge": "Wrist extensors and thumb dermatome localize radicular injury precisely to C6.",
    "trap": "Shoulder pain suggests C5 nerve root, but weakness of wrist extension and sensory loss in the thumb identify C6.",
    "options": {
     "A": {
@@ -2443,12 +2835,29 @@
      "text": "over the palmar and dorsal aspects of the left thumb"
     }
    ],
-   "topic": "cervical-radiculopathy"
+   "topic": "cervical-radiculopathy",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Weak shoulder abduction** and lateral deltoid numbness",
+     "then": "Bilateral dislocation affecting C5"
+    },
+    {
+     "opt": "D",
+     "if": "**Ipsilateral leg paralysis** with contralateral pain-temperature loss",
+     "then": "Brown-Séquard syndrome"
+    },
+    {
+     "opt": "A",
+     "if": "**Bilateral paralysis** and pain loss sparing vibration",
+     "then": "Anterior spinal artery thrombosis"
+    }
+   ]
   },
   "c-neuro-05-q025": {
    "task": "Next step",
-   "boardCall": "Acute central L4-5 disc herniation + perineal numbness + motor weakness + absent ankle jerk -> Emergent lumbar laminectomy",
-   "hinge": "Perineal (saddle) numbness with acute motor deficits and large central disc herniation indicates cauda equina syndrome requiring emergency surgery.",
+   "boardCall": "large central L4–L5 herniation + foot weakness + **perineal numbness** → Lumbar laminectomy",
+   "hinge": "Saddle anesthesia with acute weakness signals cauda equina syndrome needing urgent decompression.",
    "trap": "Acute sciatica is usually managed conservatively with analgesics, but saddle anesthesia and motor deficits demand emergency decompression.",
    "options": {
     "A": {
@@ -2534,12 +2943,29 @@
      "text": "large central herniation at L4-5 that compresses the L5 and S1 nerves"
     }
    ],
-   "topic": "spinal-cord-compression"
+   "topic": "spinal-cord-compression",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Isolated sciatica** without motor weakness or saddle numbness",
+     "then": "Bed rest and analgesic therapy"
+    },
+    {
+     "opt": "B",
+     "if": "**Subacute radicular pain** improving after initial weeks",
+     "then": "Physical therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Concurrent urinary retention** while awaiting surgery",
+     "then": "Immediate urinary catheterization"
+    }
+   ]
   },
   "c-neuro-05-q026": {
    "task": "Diagnosis",
-   "boardCall": "Prior breast cancer radiation + upper extremity lymphedema + flaccid anesthetic arm + MRI fibrosis without mass -> Radiation-induced brachial plexopathy",
-   "hinge": "Delayed, progressive brachial plexopathy years after chest wall radiation with MRI demonstrating extensive fibrosis without mass indicates radiation plexopathy.",
+   "boardCall": "**chest radiation 15 yr ago** + arm lymphedema + sensory-motor loss + **MRI fibrosis, no mass** → Radiation-induced brachial plexopathy",
+   "hinge": "Delayed arm weakness with diffuse plexus fibrosis reflects prior chest radiation injury.",
    "trap": "Severe arm pain and lymphedema suggest reflex sympathetic dystrophy or tumor recurrence, but MRI fibrosis without mass confirms radiation injury.",
    "options": {
     "A": {
@@ -2624,12 +3050,34 @@
      "text": "shows fibrosis but no masses"
     }
    ],
-   "topic": "brachial-plexus-disorders"
+   "topic": "brachial-plexus-disorders",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Burning allodynia**, **skin temperature asymmetry**, and bone demineralization",
+     "then": "Reflex sympathetic dystrophy"
+    },
+    {
+     "opt": "A",
+     "if": "**Neck pain radiating down** **single dermatome**, no lymphedema",
+     "then": "Cervical nerve root entrapment"
+    },
+    {
+     "opt": "E",
+     "if": "**Bilateral cape-like loss** of **pain and temperature**",
+     "then": "Syringomyelia"
+    },
+    {
+     "opt": null,
+     "if": "**Severe pain and Horner syndrome** with **enhancing plexus mass**",
+     "then": "Tumor recurrence"
+    }
+   ]
   },
   "c-neuro-05-q027": {
    "task": "Diagnosis",
-   "boardCall": "Symmetric motor-sensory polyneuropathy > 8 weeks (6 months) + absent reflexes + slowed conduction velocity -> CIDP",
-   "hinge": "Progressive symmetric demyelinating polyneuropathy persisting beyond 8 weeks (6 months here) distinguishes CIDP from Guillain-Barré.",
+   "boardCall": "19-year-old + **6-mo progressive weakness** + **absent LE reflexes** + slowed conduction → Chronic inflammatory demyelinating polyradiculoneuropathy",
+   "hinge": "Symmetric demyelinating weakness evolving over six months distinguishes chronic neuropathy from Guillain-Barré.",
    "trap": "Ascending weakness and absent reflexes mimic Guillain-Barré syndrome, but 6-month progression establishes CIDP.",
    "options": {
     "A": {
@@ -2763,12 +3211,34 @@
      "text": "Peroneal motor conduction velocity is moderately slowed"
     }
    ],
-   "topic": "guillain-barre-syndrome"
+   "topic": "guillain-barre-syndrome",
+   "branches": [
+    {
+     "opt": "G",
+     "if": "**Acute ascending weakness** peaking **within 4 weeks**",
+     "then": "Guillain-Barré syndrome"
+    },
+    {
+     "opt": "L",
+     "if": "**Hyperreflexia** with **lost vibration sense** and macrocytosis",
+     "then": "Vitamin B12 deficiency"
+    },
+    {
+     "opt": "I",
+     "if": "**Optic neuritis**, **brisk reflexes**, and periventricular T2 lesions",
+     "then": "Multiple sclerosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Back pain**, **sensory level**, and hyperreflexia in legs",
+     "then": "Spinal cord tumor"
+    }
+   ]
   },
   "c-neuro-05-q028": {
    "task": "Diagnosis",
-   "boardCall": "Insidious short-term memory loss + word-finding difficulty + executive dysfunction in older adult -> Alzheimer dementia",
-   "hinge": "Insidious loss of short-term memory and executive function interfering with daily activities establishes Alzheimer dementia.",
+   "boardCall": "67-year-old + **1-yr worsening disorganization** + **short-term memory loss** + word-finding trouble → Dementia, Alzheimer type",
+   "hinge": "Insidious short-term memory and executive decline interfering with work defines Alzheimer dementia.",
    "trap": "Moderate evening alcohol consumption tempts alcohol amnestic disorder, but 1-2 drinks does not cause progressive global dementia.",
    "options": {
     "A": {
@@ -2938,12 +3408,34 @@
      "trap": true
     }
    ],
-   "topic": "dementia"
+   "topic": "dementia",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Stepwise cognitive decline** with **focal deficits** and infarcts",
+     "then": "Multi-infarct dementia"
+    },
+    {
+     "opt": "N",
+     "if": "**Early disinhibition**, **apathy**, and preserved visuospatial memory",
+     "then": "Pick disease"
+    },
+    {
+     "opt": "J",
+     "if": "**Magnetic gait**, **urinary incontinence**, and ventriculomegaly",
+     "then": "Normal-pressure hydrocephalus"
+    },
+    {
+     "opt": "D",
+     "if": "**Depressed mood**, **poor effort** with \"I don't know\" answers",
+     "then": "Major depressive disorder"
+    }
+   ]
   },
   "c-neuro-05-q029": {
    "task": "Diagnosis",
-   "boardCall": "Bulbar symptoms + intrinsic hand muscle wasting (LMN) + hyperreflexia and hyperactive jaw jerk (UMN) -> Amyotrophic lateral sclerosis",
-   "hinge": "Coexisting upper motor neuron signs (hyperreflexia, brisk jaw jerk) and lower motor neuron signs (hand wasting) confirm ALS.",
+   "boardCall": "dysarthria and dysphagia + **hand muscle wasting** + **hyperreflexia and brisk jaw jerk** → Amyotrophic lateral sclerosis",
+   "hinge": "Coexisting upper and lower motor neuron signs across segments confirm ALS.",
    "trap": "Mild hypokalemia of 3.2 mEq/L is an incidental lab finding that tempts hypokalemic paralysis.",
    "options": {
     "A": {
@@ -3112,12 +3604,34 @@
      "text": "Deep tendon reflexes are 3+ in the left upper extremity"
     }
    ],
-   "topic": "amyotrophic-lateral-sclerosis"
+   "topic": "amyotrophic-lateral-sclerosis",
+   "branches": [
+    {
+     "opt": "K",
+     "if": "**Neck pain** with **absent biceps reflex** and leg spasticity",
+     "then": "Cervical spondylosis"
+    },
+    {
+     "opt": "J",
+     "if": "**Fatigable ptosis and diplopia** with **normal reflexes** and no wasting",
+     "then": "Myasthenia gravis"
+    },
+    {
+     "opt": "B",
+     "if": "**Episodic paralysis** after **heavy carbohydrate meal** with K 2.1",
+     "then": "Hypokalemic periodic paralysis"
+    },
+    {
+     "opt": "G",
+     "if": "**Symmetric descending paralysis** with **dilated pupils** after canned food",
+     "then": "Botulism"
+    }
+   ]
   },
   "c-neuro-05-q030": {
    "task": "Pharmacology",
-   "boardCall": "Resting tremor + cogwheel rigidity + slow shuffling gait -> Carbidopa-levodopa",
-   "hinge": "Resting tremor with cogwheel rigidity and bradykinesia confirms Parkinson disease, treated initially with carbidopa-levodopa in older patients.",
+   "boardCall": "72-year-old + **resting hand tremor** + **cogwheel rigidity** + shuffling gait → Carbidopa-levodopa",
+   "hinge": "Parkinsonian bradykinesia and rigidity in older adults respond best to initial carbidopa-levodopa.",
    "trap": "Tremor exacerbated with movement suggests essential tremor, but cogwheel rigidity and shuffling gait confirm Parkinson disease.",
    "options": {
     "A": {
@@ -3204,12 +3718,34 @@
      "trap": true
     }
    ],
-   "topic": "parkinson-disease"
+   "topic": "parkinson-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Symmetric postural hand tremor** relieved by **alcohol**, no rigidity",
+     "then": "Primidone"
+    },
+    {
+     "opt": "A",
+     "if": "**Bilateral action tremor** in **young adult** without asthma",
+     "then": "Atenolol or propranolol"
+    },
+    {
+     "opt": "C",
+     "if": "**Progressive memory loss** without **rigidity or tremor**",
+     "then": "Donepezil"
+    },
+    {
+     "opt": null,
+     "if": "**Younger patient (< 65)** with **mild tremor**, no cognitive decline",
+     "then": "Pramipexole or ropinirole"
+    }
+   ]
   },
   "c-neuro-05-q031": {
    "task": "Diagnosis",
-   "boardCall": "Episodic numbness and tingling spreading from hand to arm to face -> Contralateral parietal lobe lesion",
-   "hinge": "Jacksonian march of positive sensory symptoms localizes to the primary somatosensory cortex in the postcentral parietal gyrus.",
+   "boardCall": "1–2 min episodes + **marching hand-to-face numbness** + normal exam → Parietal lobe",
+   "hinge": "Contralateral sensory Jacksonian march localizes focal seizure activity to the postcentral gyrus.",
    "trap": "Motor Jacksonian march arises from the frontal precentral gyrus, but primary sensory march originates in the postcentral parietal lobe.",
    "options": {
     "A": {
@@ -3316,12 +3852,34 @@
      "text": "Neurologic examination shows normal findings"
     }
    ],
-   "topic": "epilepsy"
+   "topic": "epilepsy",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Clonic jerking** marching from **hand to arm to face**",
+     "then": "Frontal lobe"
+    },
+    {
+     "opt": "D",
+     "if": "**Unformed elementary visual hallucinations** on **one side**",
+     "then": "Occipital lobe"
+    },
+    {
+     "opt": "H",
+     "if": "**Rising epigastric sensation**, **déjà vu**, and lip smacking",
+     "then": "Temporal lobe"
+    },
+    {
+     "opt": "F",
+     "if": "**Persistent crossed sensory loss** with **diplopia and facial palsy**",
+     "then": "Pons"
+    }
+   ]
   },
   "c-neuro-05-q032": {
    "task": "Next step",
-   "boardCall": "Baseline migraine with sudden escalation after starting HRT -> Discontinue conjugated estrogen therapy",
-   "hinge": "Exogenous estrogen therapy frequently triggers or exacerbates migraine headaches, so stopping estrogens is the first management step.",
+   "boardCall": "throbbing unilateral headaches + **tripled frequency** + **started conjugated estrogen 4 mo ago** → Discontinue conjugated estrogen",
+   "hinge": "Exogenous estrogen frequently worsens migraine frequency, making hormone withdrawal the first step.",
    "trap": "Escalating headache frequency prompts neuroimaging, but the clear temporal relationship to initiating estrogen identifies the correct target.",
    "options": {
     "A": {
@@ -3408,12 +3966,34 @@
      "text": "conjugated estrogen therapy was begun for treatment of menopausal symptoms"
     }
    ],
-   "topic": "primary-headaches"
+   "topic": "primary-headaches",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Sudden thunderclap headache** or **new focal neurologic deficit**",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever and nuchal rigidity** with **photophobia**",
+     "then": "Lumbar puncture"
+    },
+    {
+     "opt": null,
+     "if": "**Frequent migraines persist** after **stopping estrogen**",
+     "then": "Start topiramate or propranolol"
+    },
+    {
+     "opt": null,
+     "if": "**Migraine with aura** in **woman requesting contraception**",
+     "then": "Avoid estrogen contraceptives"
+    }
+   ]
   },
   "c-neuro-05-q033": {
    "task": "Pharmacology",
-   "boardCall": "Excessive daytime sleepiness + sleep attacks during conversation + cataplexy -> Narcolepsy -> Stimulant (methylphenidate)",
-   "hinge": "Sleep attacks during active conversations coupled with cataplexy define narcolepsy, treated with wakefulness-promoting stimulants such as methylphenidate.",
+   "boardCall": "daytime sleep attacks + **collapse with preserved awareness** + normal ECG/EEG → Methylphenidate",
+   "hinge": "Sleep attacks with cataplexy define narcolepsy, managed initially with wakefulness stimulants.",
    "trap": "Collapse to the floor mimics cardiac syncope, but preserved conscious awareness and rapid recovery confirm cataplexy.",
    "options": {
     "A": {
@@ -3496,12 +4076,34 @@
      "text": "aware of her surroundings but unable to move"
     }
    ],
-   "topic": "narcolepsy"
+   "topic": "narcolepsy",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Refractory cataplexy episodes** despite **wakefulness stimulant therapy**",
+     "then": "Nortriptyline"
+    },
+    {
+     "opt": "E",
+     "if": "**Short-term sleep-onset insomnia** without **daytime sleepiness**",
+     "then": "Zaleplon"
+    },
+    {
+     "opt": null,
+     "if": "**Loud snoring and morning headaches** with **BMI 38**",
+     "then": "Polysomnography for sleep apnea"
+    },
+    {
+     "opt": null,
+     "if": "**Acting out violent dreams** in **older man**",
+     "then": "REM sleep behavior disorder"
+    }
+   ]
   },
   "c-neuro-05-q034": {
    "task": "Diagnosis",
-   "boardCall": "Post-aneurysm clipping + abulia (unmotivated, sits like a bump on a log) + reduced spontaneous speech without depression -> Frontal lobe lesion",
-   "hinge": "Abulia, apathy, psychomotor slowing, and reduced spontaneous speech following anterior communicating aneurysm surgery reflect frontal lobe injury.",
+   "boardCall": "post-aneurysm repair + **abulia** + **sparse spontaneous speech** + normal mood → Frontal",
+   "hinge": "Apathy and psychomotor slowing without sadness localize to the frontal lobe.",
    "trap": "Apathy and psychomotor retardation mimic major depression, but preserved mood and lack of spontaneity identify frontal abulia.",
    "options": {
     "A": {
@@ -3590,12 +4192,34 @@
      "text": "little spontaneous speech during conversation"
     }
    ],
-   "topic": "subarachnoid-hemorrhage"
+   "topic": "subarachnoid-hemorrhage",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Left hemispatial neglect** with **dressing apraxia**",
+     "then": "Parietal"
+    },
+    {
+     "opt": "C",
+     "if": "**Cortical blindness** or **visual field cut** with macular sparing",
+     "then": "Occipital"
+    },
+    {
+     "opt": "E",
+     "if": "**Fluent nonsensical speech** with **impaired comprehension**",
+     "then": "Temporal"
+    },
+    {
+     "opt": null,
+     "if": "**Apathy** with **gait apraxia, incontinence**, and ventriculomegaly",
+     "then": "Communicating hydrocephalus"
+    }
+   ]
   },
   "c-neuro-05-q035": {
    "task": "Diagnosis",
-   "boardCall": "Child + MVC blunt head trauma + momentary loss of consciousness + normal neurologic exam -> Cerebral concussion (mild TBI)",
-   "hinge": "Momentary loss of consciousness following blunt head impact with a completely normal neurological examination defines cerebral concussion.",
+   "boardCall": "6-year-old in MVC + **momentary loss of consciousness** + **normal neurologic exam** → Cerebral concussion",
+   "hinge": "Brief unconsciousness after head trauma with intact neurology defines mild concussion.",
    "trap": "Forehead scalp hematoma tempts skull fracture or epidural bleed, but fleeting loss of consciousness and normal exam signify concussion.",
    "options": {
     "A": {
@@ -3688,12 +4312,36 @@
      "text": "Neurologic findings are normal"
     }
    ],
-   "topic": "traumatic-brain-injury"
+   "topic": "traumatic-brain-injury",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Lucid interval** followed by **somnolence and blown pupil**",
+     "then": "Epidural hematoma",
+     "step": "emergent head CT"
+    },
+    {
+     "opt": "B",
+     "if": "**Midline neck tenderness** or **paresthesias** after collision",
+     "then": "Cervical spine fracture"
+    },
+    {
+     "opt": "F",
+     "if": "**Boggy parietal hematoma** with **palpable step-off**",
+     "then": "Skull fracture",
+     "step": "obtain noncontrast head CT"
+    },
+    {
+     "opt": null,
+     "if": "**Repeated vomiting** or **worsening headache** in child",
+     "then": "Immediate head CT"
+    }
+   ]
   },
   "c-neuro-05-q036": {
    "task": "Mechanism",
-   "boardCall": "Obese young female + papilledema + high opening pressure (290 mm H2O) + small ventricles -> Impaired resorption of CSF",
-   "hinge": "Pseudotumor cerebri causes elevated ICP with slit-like ventricles primarily via impaired resorption of CSF at arachnoid granulations.",
+   "boardCall": "obese woman + papilledema + **opening pressure 290** + **small ventricles** → Impaired resorption of CSF",
+   "hinge": "Idiopathic intracranial hypertension elevates pressure via reduced CSF clearance at arachnoid granulations.",
    "trap": "Elevated ICP tempts obstructive hydrocephalus from aqueductal stenosis, but small ventricles confirm impaired CSF resorption.",
    "options": {
     "A": {
@@ -3778,12 +4426,34 @@
      "text": "opening pressure is 290 mm H O"
     }
    ],
-   "topic": "increased-intracranial-pressure"
+   "topic": "increased-intracranial-pressure",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Enlarged lateral and third ventricles** with **normal fourth ventricle**",
+     "then": "Aqueductal stenosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Hypercoagulable state** with **empty delta sign** on MR venography",
+     "then": "Venous sinus thrombosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Child with ataxia**, **vomiting**, and enhancing cerebellar mass",
+     "then": "Cerebellar astrocytoma"
+    },
+    {
+     "opt": null,
+     "if": "**Confirmed pseudotumor cerebri** needing **first-line therapy**",
+     "then": "Acetazolamide and weight loss"
+    }
+   ]
   },
   "c-neuro-05-q037": {
    "task": "Diagnosis",
-   "boardCall": "Chronic hypertension + sudden severe headache + contralateral hemiparesis + basal ganglia hyperdensity -> Hypertensive intracerebral hematoma",
-   "hinge": "Acute headache with progressive focal neurologic deficit and severe hypertension in basal ganglia territory defines hypertensive intracerebral hemorrhage.",
+   "boardCall": "chronic hypertension + **BP 180/100** + **progressive hemiparesis** + CT hematoma → Hypertensive intracerebral hematoma",
+   "hinge": "Acute progressive deficit with severe hypertension localizes hemorrhage to deep perforating arteries.",
    "trap": "Daily aspirin therapy tempts cerebral amyloid angiopathy, but deep basal ganglia hemorrhage in chronic hypertension confirms hypertensive ICH.",
    "options": {
     "A": {
@@ -3868,12 +4538,34 @@
      "text": "moderate weakness of the lower left side of the face"
     }
    ],
-   "topic": "intracranial-hemorrhage"
+   "topic": "intracranial-hemorrhage",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Normotensive 80-year-old** with **recurrent lobar hemorrhages**",
+     "then": "Cerebral amyloid angiopathy"
+    },
+    {
+     "opt": "E",
+     "if": "**Sudden thunderclap headache** with **diffuse subarachnoid blood**",
+     "then": "Ruptured berry aneurysm"
+    },
+    {
+     "opt": "C",
+     "if": "**Focal deficit** with **normal initial noncontrast CT**",
+     "then": "Ischemic cerebral infarction"
+    },
+    {
+     "opt": "D",
+     "if": "**Young adult** with **seizures** and serpiginous flow voids",
+     "then": "Arteriovenous malformation"
+    }
+   ]
   },
   "c-neuro-05-q038": {
    "task": "Diagnosis",
-   "boardCall": "Ipsilateral CN III palsy (ptosis, fixed dilated pupil, adduction deficit) + contralateral hemiparesis -> Weber syndrome -> Ventral midbrain lesion",
-   "hinge": "Left third nerve palsy combined with contralateral (right-sided) hemiparesis defines Weber syndrome in the ventral midbrain (cerebral peduncle).",
+   "boardCall": "72-yr woman + **left CN III palsy** + fixed 5-mm pupil + **right hemiparesis** → Left midbrain",
+   "hinge": "Ipsilateral oculomotor palsy with contralateral hemiparesis defines Weber syndrome in the midbrain.",
    "trap": "Right-sided facial droop and hemiparesis suggest an internal capsule stroke, but ipsilateral CN III palsy localizes to the midbrain.",
    "options": {
     "A": {
@@ -3959,12 +4651,34 @@
      "trap": true
     }
    ],
-   "topic": "ischemic-stroke-and-tia"
+   "topic": "ischemic-stroke-and-tia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Pure right hemiparesis** without **cranial nerve deficits**",
+     "then": "Left internal capsule"
+    },
+    {
+     "opt": "E",
+     "if": "**Left lateral gaze palsy** and **facial paralysis** with right hemiparesis",
+     "then": "Left pons"
+    },
+    {
+     "opt": "C",
+     "if": "**Crossed pain/temp loss**, **dysphagia**, and ipsilateral Horner",
+     "then": "Left medulla"
+    },
+    {
+     "opt": "A",
+     "if": "**Right face/arm weakness** with **expressive aphasia**",
+     "then": "Left cerebral cortex"
+    }
+   ]
   },
   "c-neuro-05-q039": {
    "task": "Diagnosis",
-   "boardCall": "Parkinson disease + recent carbidopa-levodopa dose increase + visual hallucinations of figures -> Adverse effect of carbidopa-levodopa",
-   "hinge": "Onset of visual hallucinations shortly after increasing carbidopa-levodopa points to medication-induced dopaminergic psychosis.",
+   "boardCall": "Parkinson disease + **carbidopa-levodopa dose raised** + **visual hallucinations** → Adverse effect of carbidopa-levodopa",
+   "hinge": "Psychosis emerging shortly after dopaminergic escalation points to medication toxicity.",
    "trap": "Hallucinations in Parkinson disease can reflect disease progression to dementia, but onset right after dose escalation indicates medication effect.",
    "options": {
     "A": {
@@ -4049,12 +4763,34 @@
      "text": "sees ghost-like figures entering the room"
     }
    ],
-   "topic": "parkinson-disease"
+   "topic": "parkinson-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Hallucinations** appearing **alongside cognitive decline** on stable dose",
+     "then": "Progression of Parkinson disease"
+    },
+    {
+     "opt": "D",
+     "if": "**Magnetic gait**, **urinary incontinence**, and dilated ventricles",
+     "then": "Normal-pressure hydrocephalus"
+    },
+    {
+     "opt": null,
+     "if": "**Hallucinations persist** despite **lowering levodopa dose**",
+     "then": "Add pimavanserin or quetiapine"
+    },
+    {
+     "opt": null,
+     "if": "**UTI or pneumonia** precipitating **acute hallucinations** in Parkinson",
+     "then": "Treat underlying delirium trigger"
+    }
+   ]
   },
   "c-neuro-05-q040": {
    "task": "Diagnosis",
-   "boardCall": "AIDS patient + focal neurologic deficits + multiple ring-enhancing lesions with edema on CT -> Cerebral toxoplasmosis",
-   "hinge": "Multiple ring-enhancing lesions with surrounding edema in an untreated AIDS patient represent reactivation cerebral toxoplasmosis.",
+   "boardCall": "AIDS + focal deficits + **multiple ring-enhancing lesions with edema** → Toxoplasmosis",
+   "hinge": "Immunocompromised reactivation of Toxoplasma produces multifocal abscesses with surrounding edema.",
    "trap": "Primary CNS lymphoma also causes ring enhancement in AIDS, but multiple lesions with edema favor toxoplasmosis as initial diagnosis.",
    "options": {
     "A": {
@@ -4141,12 +4877,35 @@
      "trap": true
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Solitary periventricular lesion** failing **2 weeks of toxoplasma therapy**",
+     "then": "Primary CNS lymphoma",
+     "step": "obtain stereotactic biopsy"
+    },
+    {
+     "opt": "D",
+     "if": "**Nonenhancing white matter lesions** without **mass effect**",
+     "then": "Progressive multifocal leukoencephalopathy"
+    },
+    {
+     "opt": "A",
+     "if": "**Headache and high CSF pressure** with **India ink yeast**",
+     "then": "Cryptococcosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Seizures in immigrant** with **calcified parenchymal cysts**",
+     "then": "Cysticercosis"
+    }
+   ]
   },
   "c-neuro-05-q041": {
    "task": "Diagnosis",
-   "boardCall": "Overhead athlete (volleyball) + supraspinatus/infraspinatus atrophy + preserved sensation -> Suprascapular nerve entrapment",
-   "hinge": "Atrophy and weakness of supraspinatus and infraspinatus with completely normal cutaneous sensation identifies isolated suprascapular nerve entrapment.",
+   "boardCall": "volleyball player + **dorsal scapular atrophy** + weak external rotation + **intact sensation** → Suprascapular nerve irritation",
+   "hinge": "Wasting of supraspinatus and infraspinatus with spared cutaneous sensation isolates this nerve.",
    "trap": "Shoulder weakness and muscle wasting suggest a rotator cuff tear or axillary nerve injury, but intact sensation excludes axillary nerve.",
    "options": {
     "A": {
@@ -4231,12 +4990,34 @@
      "text": "Sensory examination shows no cutaneous deficits"
     }
    ],
-   "topic": "mononeuropathies"
+   "topic": "mononeuropathies",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Deltoid atrophy** with **lateral shoulder numbness** after dislocation",
+     "then": "Axillary nerve damage"
+    },
+    {
+     "opt": "A",
+     "if": "**Global loss of passive and active** **shoulder motion**",
+     "then": "Adhesive capsulitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Neck pain radiating down arm** with **decreased biceps reflex**",
+     "then": "Herniated cervical disc"
+    },
+    {
+     "opt": null,
+     "if": "**Winging of scapula** after **axillary lymph node dissection**",
+     "then": "Long thoracic nerve injury"
+    }
+   ]
   },
   "c-neuro-05-q042": {
    "task": "Next step",
-   "boardCall": "Acute mechanical low back pain (< 4-6 weeks) + no red flags + normal neurologic exam -> Continue NSAIDs (ibuprofen)",
-   "hinge": "Acute uncomplicated musculoskeletal low back pain without red flags or neurologic deficits is managed with continued NSAIDs and early mobilization.",
+   "boardCall": "1-wk back pain + paraspinal tenderness + **no red flags** + **normal neuro exam** → Continue ibuprofen therapy",
+   "hinge": "Acute uncomplicated back strain improves with NSAIDs and activity, not bed rest.",
    "trap": "Patient spending time in bed tempts prescribing bed rest, but prolonged bed rest delays recovery; continued NSAIDs and activity are best.",
    "options": {
     "A": {
@@ -4322,12 +5103,34 @@
      "text": "Neurologic examination shows no focal findings"
     }
    ],
-   "topic": "low-back-pain"
+   "topic": "low-back-pain",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Saddle anesthesia or urinary retention** with **progressive leg weakness**",
+     "then": "MRI of the lumbar spine"
+    },
+    {
+     "opt": "B",
+     "if": "**Osteoporosis** or **major trauma** with focal bony tenderness",
+     "then": "X-ray of the lumbar spine"
+    },
+    {
+     "opt": null,
+     "if": "**Pain persists beyond 6 weeks** without **red flag symptoms**",
+     "then": "Physical therapy and imaging"
+    },
+    {
+     "opt": null,
+     "if": "**NSAID contraindication** such as **CKD or peptic ulcer**",
+     "then": "Acetaminophen or muscle relaxant"
+    }
+   ]
   },
   "c-neuro-05-q043": {
    "task": "Pharmacology",
-   "boardCall": "Isoniazid therapy + peripheral neuropathy + microcytic/sideroblastic anemia -> Vitamin B6 (pyridoxine)",
-   "hinge": "Isoniazid promotes excretion and inhibits activation of pyridoxine, causing peripheral neuropathy and sideroblastic anemia treatable with vitamin B6.",
+   "boardCall": "**isoniazid therapy** + paresthesias + **microcytic anemia (MCV 78)** → Vitamin B6 (pyridoxine)",
+   "hinge": "Isoniazid depletes pyridoxine, impairing heme synthesis and myelin maintenance.",
    "trap": "Microcytic anemia of MCV 78 suggests iron deficiency, but isoniazid-induced sideroblastic anemia responds specifically to pyridoxine.",
    "options": {
     "A": {
@@ -4417,12 +5220,34 @@
      "trap": true
     }
    ],
-   "topic": "tuberculosis"
+   "topic": "tuberculosis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Low ferritin** with **normal isoniazid history** and occult GI bleed",
+     "then": "Iron"
+    },
+    {
+     "opt": "E",
+     "if": "**Macrocytic anemia** with **hypersegmented neutrophils** and ataxia",
+     "then": "Vitamin B12"
+    },
+    {
+     "opt": "A",
+     "if": "**Macrocytic anemia** with **normal methylmalonic acid**, goat milk diet",
+     "then": "Folic acid"
+    },
+    {
+     "opt": "C",
+     "if": "**Alcoholism** with **ophthalmoplegia, ataxia**, and confusion",
+     "then": "Vitamin B1 (thiamine)"
+    }
+   ]
   },
   "c-neuro-05-q044": {
    "task": "Next step",
-   "boardCall": "Elderly female + sensory ataxia (slapping gait, impaired proprioception/vibration) + bilateral leg weakness -> Serum vitamin B12 concentration",
-   "hinge": "Impaired vibration and proprioception with sensory ataxia (slapping gait) points to dorsal column degeneration from vitamin B12 deficiency.",
+   "boardCall": "87-year-old + **slapping gait** + **lost proprioception and vibration** + intact light touch → Serum vitamin B12",
+   "hinge": "Dorsal column sensory ataxia with preserved light touch points to cobalamin deficiency.",
    "trap": "Frequent falls in an 87-year-old suggest musculoskeletal spine disease or seizure, but lost proprioception indicates B12 deficiency.",
    "options": {
     "A": {
@@ -4508,12 +5333,34 @@
      "text": "slapping gait"
     }
    ],
-   "topic": "macrocytic-anemia"
+   "topic": "macrocytic-anemia",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Midline spine tenderness** after **fall** with radicular pain",
+     "then": "X-rays of lumbosacral spine"
+    },
+    {
+     "opt": "A",
+     "if": "**Shoulder/hip stiffness** with **temporal headache** and jaw claudication",
+     "then": "Erythrocyte sedimentation rate"
+    },
+    {
+     "opt": null,
+     "if": "**Borderline B12 (250 pg/mL)** with **dorsal column signs**",
+     "then": "Check methylmalonic acid"
+    },
+    {
+     "opt": null,
+     "if": "**Argyll Robertson pupils** with **tabes dorsalis**",
+     "then": "Check treponemal serology"
+    }
+   ]
   },
   "c-neuro-05-q045": {
    "task": "Next step",
-   "boardCall": "Trailer park resident + found unconscious in bed + cherry-pink mucous membranes + normal PaO2 -> Carbon monoxide poisoning -> Hyperbaric oxygen",
-   "hinge": "Severe carbon monoxide poisoning presenting with loss of consciousness and normal PaO2 mandates hyperbaric oxygen therapy.",
+   "boardCall": "trailer resident found unconscious + **pink mucosa** + **normal PaO2 80** → Hyperbaric oxygen",
+   "hinge": "Carbon monoxide coma with normal dissolved oxygen mandates hyperbaric oxygen therapy.",
    "trap": "Coma in an unknown unresponsive patient tempts empiric naloxone, but trailer heating exposure and pink mucosa confirm CO poisoning.",
    "options": {
     "A": {
@@ -4600,12 +5447,34 @@
      "text": "PCO₂ of 30 mm Hg and PO₂ of 80 mm Hg"
     }
    ],
-   "topic": "carbon-monoxide-poisoning"
+   "topic": "carbon-monoxide-poisoning",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Pinpoint pupils** with **respirations 6/min** and needle tracks",
+     "then": "Naloxone"
+    },
+    {
+     "opt": "B",
+     "if": "**Dapsone exposure** with **chocolate-brown blood** and SpO2 85%",
+     "then": "Methylene blue"
+    },
+    {
+     "opt": "D",
+     "if": "**Anticholinergic delirium** with **flushed dry skin** and mydriasis",
+     "then": "Physostigmine"
+    },
+    {
+     "opt": null,
+     "if": "**Mild CO headache** with **COHb 18%**, no syncope",
+     "then": "100% nonrebreather mask"
+    }
+   ]
   },
   "c-neuro-05-q046": {
    "task": "Ethics",
-   "boardCall": "Locked-in syndrome patient + intact decision-making capacity via blink code + requests withdrawal of life support -> Honor patient wishes",
-   "hinge": "A patient with locked-in syndrome possessing decision-making capacity has the autonomous right to decline life support, regardless of family disagreement.",
+   "boardCall": "locked-in syndrome + **intact capacity via blink code** + **wants life support stopped** → DNR, extubate, and withdraw fluids",
+   "hinge": "A capable patient's refusal of ventilator and fluids overrides estranged family objections.",
    "trap": "Threat of litigation by an estranged daughter tempts seeking a court order, but a capable patient's autonomous decision is paramount.",
    "options": {
     "A": {
@@ -4692,12 +5561,34 @@
      "trap": true
     }
    ],
-   "topic": "informed-consent-and-capacity"
+   "topic": "informed-consent-and-capacity",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Patient wants extubation** but **explicitly requests artificial hydration**",
+     "then": "DNR, extubate, continue artificial hydration"
+    },
+    {
+     "opt": "B",
+     "if": "**Incapacitated patient with no directive** and **divided family**",
+     "then": "Ethics team consultation"
+    },
+    {
+     "opt": null,
+     "if": "**Incapacitated patient** with **prior valid DNR directive**",
+     "then": "Follow advance directive"
+    },
+    {
+     "opt": null,
+     "if": "**Air hunger** develops **during compassionate extubation**",
+     "then": "Administer IV morphine"
+    }
+   ]
   },
   "c-neuro-05-q047": {
    "task": "Diagnosis",
-   "boardCall": "Diabetic patient + thigh pain + weak iliopsoas/quadriceps + absent patellar reflex + medial calf sensory loss -> Femoral nerve lesion",
-   "hinge": "Quadriceps weakness and reduced patellar reflex combined with saphenous (medial calf) sensory loss establish a femoral nerve lesion.",
+   "boardCall": "30-yr diabetes + **weak iliopsoas and quadriceps** + **reduced patellar reflex** + medial calf loss → Femoral nerve",
+   "hinge": "Hip flexor and knee extensor weakness with saphenous sensory loss indicates this lesion.",
    "trap": "Lateral thigh sensory changes tempt lateral femoral cutaneous nerve (meralgia paresthetica), but motor weakness and reflex loss confirm femoral neuropathy.",
    "options": {
     "A": {
@@ -4838,12 +5729,35 @@
      "text": "Sensation to pinprick is decreased over the left lateral thigh and medial calf"
     }
    ],
-   "topic": "mononeuropathies"
+   "topic": "mononeuropathies",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Pure lateral thigh burning** with **normal strength and reflexes**",
+     "then": "Lateral femoral cutaneous nerve"
+    },
+    {
+     "opt": "I",
+     "if": "**Foot drop** with **weak eversion** and dorsal foot numbness",
+     "then": "Peroneal nerve"
+    },
+    {
+     "opt": "F",
+     "if": "**Sciatic pain** with **weak plantar flexion** and absent ankle reflex",
+     "then": "S1 radiculopathy"
+    },
+    {
+     "opt": null,
+     "if": "**Anticoagulated patient** with **acute femoral palsy** and hypotension",
+     "then": "Retroperitoneal hematoma",
+     "step": "obtain abdominal CT"
+    }
+   ]
   },
   "c-neuro-05-q048": {
    "task": "Diagnosis",
-   "boardCall": "Consanguinity + developmental regression + hypertonia/opisthotonos + optic atrophy -> Krabbe disease -> Degeneration of white matter",
-   "hinge": "Infantile regression with spasticity, irritability, optic atrophy, and consanguinity defines Krabbe leukodystrophy, characterized by diffuse white matter degeneration.",
+   "boardCall": "8-mo infant + consanguinity + **regression and spasticity** + **optic atrophy** → Degeneration of white matter",
+   "hinge": "Infantile neurodevelopmental decline with hypertonia and pale optic discs characterizes Krabbe leukodystrophy.",
    "trap": "Intermittent low-grade fever tempts congenital infection with periventricular calcifications, but developmental regression with spasticity signifies leukodystrophy.",
    "options": {
     "A": {
@@ -4939,12 +5853,34 @@
      "text": "hyperextension of the head and back, ankle spasticity, and fisting"
     }
    ],
-   "topic": "lysosomal-storage-diseases"
+   "topic": "lysosomal-storage-diseases",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Microcephaly and chorioretinitis** with **hepatosplenomegaly** at birth",
+     "then": "Periventricular calcifications"
+    },
+    {
+     "opt": "D",
+     "if": "**Rapid head circumference growth** with **bulging fontanelle**",
+     "then": "Hydrocephalus"
+    },
+    {
+     "opt": null,
+     "if": "**Infantile cherry-red macula and hyperacusis** with **normal white matter**",
+     "then": "Tay-Sachs disease"
+    },
+    {
+     "opt": null,
+     "if": "**Suspected Krabbe disease** needing **definitive enzyme test**",
+     "then": "Galactocerebrosidase assay"
+    }
+   ]
   },
   "c-neuro-05-q049": {
    "task": "Pharmacology",
-   "boardCall": "AIDS patient + distal burning neuropathic pain -> Tricyclic antidepressant (nortriptyline)",
-   "hinge": "Distal sensory polyneuropathy in AIDS is treated first-line with neuropathic pain agents, specifically tricyclic antidepressants like nortriptyline.",
+   "boardCall": "AIDS + **2-wk burning pain** + **hands and feet** → Oral nortriptyline",
+   "hinge": "HIV distal sensory polyneuropathy responds first-line to tricyclic neuromodulators like nortriptyline.",
    "trap": "Burning pain in the feet tempts localized topical lidocaine, but diffuse bilateral hands and feet involvement requires systemic neuromodulation.",
    "options": {
     "A": {
@@ -5023,12 +5959,34 @@
      "text": "Neurologic examination shows no focal findings"
     }
    ],
-   "topic": "peripheral-neuropathy"
+   "topic": "peripheral-neuropathy",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Localized focal neuralgia** limited to **one small dermatome**",
+     "then": "Topical lidocaine"
+    },
+    {
+     "opt": "D",
+     "if": "**Acute inflammatory demyelinating** **CIDP weakness**, no sensory burning",
+     "then": "Oral prednisone"
+    },
+    {
+     "opt": null,
+     "if": "**Orthostatic hypotension** or **glaucoma** contraindicating TCAs",
+     "then": "Gabapentin or duloxetine"
+    },
+    {
+     "opt": null,
+     "if": "**Burning neuropathy** starting **after stavudine or didanosine**",
+     "then": "Switch neurotoxic antiretroviral"
+    }
+   ]
   },
   "c-neuro-05-q050": {
    "task": "Diagnosis",
-   "boardCall": "Prolonged IV gentamicin therapy + bilateral hearing loss + tinnitus + oscillopsia/ataxia -> Aminoglycoside ototoxicity",
-   "hinge": "Bilateral sensorineural deafness with vestibular ataxia following prolonged parenteral gentamicin defines aminoglycoside vestibulotoxicity and ototoxicity.",
+   "boardCall": "**prolonged IV gentamicin** + **bilateral hearing loss** + vestibular ataxia → Aminoglycoside-induced ototoxicity",
+   "hinge": "Parenteral gentamicin destroys inner ear hair cells, causing bilateral deafness and imbalance.",
    "trap": "Episodic vertigo and tinnitus mimic Meniere disease, but recent prolonged gentamicin therapy and bilateral sensorineural loss establish ototoxicity.",
    "options": {
     "A": {
@@ -5121,7 +6079,29 @@
      "text": "unable to walk in tandem"
     }
    ],
-   "topic": "hearing-loss"
+   "topic": "hearing-loss",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Vertigo attacks** with **low-frequency hearing loss** and tinnitus",
+     "then": "Meniere disease"
+    },
+    {
+     "opt": "E",
+     "if": "**Acute vertigo after URI** with **completely intact hearing**",
+     "then": "Vestibular neuronitis"
+    },
+    {
+     "opt": "B",
+     "if": "**Unilateral progressive SNHL** with **tinnitus and facial numbness**",
+     "then": "Cerebellopontine angle tumor"
+    },
+    {
+     "opt": "D",
+     "if": "**Acute diplopia and dysarthria** with **crossed motor deficits**",
+     "then": "Pontine infarction"
+    }
+   ]
   }
  },
  "topics": {
@@ -8761,5 +9741,5 @@
    "evidence": "Treatment checked 2026-10-30: [CDC TB 2026 Yellow Book](https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/tuberculosis.html), [CDC latent regimens](https://www.cdc.gov/tb/webcourses/TB101/page16680.html)."
   }
  },
- "updatedAt": "2026-11-07T08:13:47Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

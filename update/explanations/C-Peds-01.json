@@ -8,8 +8,8 @@
  "items": {
   "c-peds-01-q001": {
    "task": "Diagnosis",
-   "boardCall": "TMP-SMX prophylaxis + isolated neutropenia (ANC 480) -> Trimethoprim-sulfamethoxazole",
-   "hinge": "Isolated neutropenia with normal red cells and platelets after 3 weeks of TMP-SMX indicates drug-induced marrow suppression.",
+   "boardCall": "4-year-old girl + **TMP-SMX 3 wk** + **ANC 480** + normal Hb and platelets → Trimethoprim-sulfamethoxazole",
+   "hinge": "Folate-antagonist prophylaxis selectively suppresses granulocyte precursors while sparing red cells and platelets.",
    "trap": "Aplastic anemia causes pancytopenia, not isolated neutropenia with preserved hemoglobin and platelets.",
    "options": {
     "A": {
@@ -93,12 +93,35 @@
      "text": "Segmented neutrophils 20%"
     }
    ],
-   "topic": "neutropenia"
+   "topic": "neutropenia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Pancytopenia with low reticulocytes** and **hypocellular marrow**",
+     "then": "Aplastic anemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Isolated beta-lactam rash** or **mild eosinophilia** after ear treatment",
+     "then": "Amoxicillin"
+    },
+    {
+     "opt": "C",
+     "if": "**Biliary sludge** or **reversible leukopenia** during inpatient cephalosporin therapy",
+     "then": "Cefotaxime"
+    },
+    {
+     "opt": null,
+     "if": "**Fever develops** while **ANC stays below 500**",
+     "then": "Cefepime immediately",
+     "step": "add vancomycin if unstable"
+    }
+   ]
   },
   "c-peds-01-q002": {
    "task": "Prevention",
-   "boardCall": "Toddler + irritability + poor coordination + microcytic anemia -> Elimination of lead from the child's home",
-   "hinge": "Neurobehavioral regression with GI symptoms and microcytic anemia in a toddler reflects lead poisoning prevented by lead abatement.",
+   "boardCall": "3-year-old boy + **irritability and ataxia** + vomiting + **microcytic anemia** → Elimination of lead from the child's home",
+   "hinge": "Neurobehavioral decline paired with hypochromic red cells points to environmental heavy-metal exposure.",
    "trap": "Microcytic anemia tempts dietary iron supplementation, but systemic neurotoxicity points to environmental lead exposure.",
    "options": {
     "A": {
@@ -181,12 +204,34 @@
      "trap": true
     }
    ],
-   "topic": "lead-poisoning"
+   "topic": "lead-poisoning",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Pale toddler drinking excessive milk** with **normal neurologic exam**",
+     "then": "Dietary supplementation with iron"
+    },
+    {
+     "opt": "E",
+     "if": "**Isolated speech delay** without **anemia, vomiting, or gait change**",
+     "then": "Enrollment in an early intervention program"
+    },
+    {
+     "opt": "A",
+     "if": "**Infant under 12 months** fed **unmodified dairy** causing GI bleed",
+     "then": "Delayed introduction of cow's milk"
+    },
+    {
+     "opt": null,
+     "if": "**Venous lead level** measures **above 45 micrograms/dL**",
+     "then": "Oral succimer chelation"
+    }
+   ]
   },
   "c-peds-01-q003": {
    "task": "Mechanism",
-   "boardCall": "Newborn + Ortolani clunk on hip abduction -> Shallow, poorly developed acetabulum",
-   "hinge": "A palpable clunk on abduction and forward lifting is a positive Ortolani sign, diagnostic of developmental dysplasia of the hip.",
+   "boardCall": "Newborn girl + **Ortolani clunk** + **breech or female risk** → Shallow, poorly developed acetabulum",
+   "hinge": "Inadequate socket depth lets the femoral head dislocate on adduction.",
    "trap": "Avascular necrosis and slipped epiphysis cause hip disorders in older children, not congenital newborn hip instability.",
    "options": {
     "A": {
@@ -275,12 +320,34 @@
      "text": "hip is abducted, flexed, and lifted forward"
     }
    ],
-   "topic": "pediatric-hip-disorders"
+   "topic": "pediatric-hip-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Obese adolescent** with **groin pain and externally rotated hip**",
+     "then": "Displacement of the capital femoral epiphysis"
+    },
+    {
+     "opt": "A",
+     "if": "**6-year-old boy** with **painless limp and collapsed epiphysis**",
+     "then": "Decreased epiphyseal blood flow"
+    },
+    {
+     "opt": "D",
+     "if": "**Febrile toddler** refusing weight-bearing with **erythrocyte sedimentation rate elevation**",
+     "then": "Increased intra-articular pressure"
+    },
+    {
+     "opt": null,
+     "if": "**Reducible hip** confirmed in **infant under 6 months**",
+     "then": "Pavlik harness"
+    }
+   ]
   },
   "c-peds-01-q004": {
    "task": "Diagnosis",
-   "boardCall": "Child + minor trauma + proximal humeral cystic expansile lucency -> Unicameral bone cyst",
-   "hinge": "Acute arm pain after minor trauma with an expansile lucent humeral lesion indicates a unicameral bone cyst causing a pathologic fracture.",
+   "boardCall": "5-year-old boy + **acute shoulder trauma** + **proximal humeral expansile cyst** → Unicameral bone cyst",
+   "hinge": "Minor sports injury unmasked a preexisting fluid-filled cavity thinning the humeral cortex.",
    "trap": "Pathologic fracture describes the acute mechanism of pain, but the underlying predisposing lesion is the bone cyst.",
    "options": {
     "A": {
@@ -361,12 +428,34 @@
      "text": "exquisite tenderness of the humeral area"
     }
    ],
-   "topic": "bone-tumors"
+   "topic": "bone-tumors",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Fall onto shoulder** with **palpable step-off** and normal cortex",
+     "then": "Clavicle fracture"
+    },
+    {
+     "opt": "C",
+     "if": "**Squared-off shoulder contour** after **abduction external rotation force**",
+     "then": "Glenohumeral dislocation"
+    },
+    {
+     "opt": "A",
+     "if": "**Distal clavicle elevation** with **intact humerus** after direct blow",
+     "then": "Acromioclavicular separation"
+    },
+    {
+     "opt": null,
+     "if": "**Asymptomatic simple cyst** without **cortical compromise**",
+     "then": "Observation and serial radiographs"
+    }
+   ]
   },
   "c-peds-01-q005": {
    "task": "Diagnosis",
-   "boardCall": "Adolescent + 6 weeks irritability + anhedonia + weight loss -> Major depressive disorder",
-   "hinge": "Six weeks of irritability, anhedonia, poor concentration, fatigue, and weight loss fulfill criteria for major depressive disorder.",
+   "boardCall": "13-year-old girl + **6 wk anhedonia** + **fatigue and poor concentration** + weight loss → Major depressive disorder",
+   "hinge": "Persistent neurovegetative changes exceeding two weeks surpass stress reactions or dysthymia.",
    "trap": "Adjustment disorder requires an identifiable psychosocial stressor and subthreshold symptoms, whereas full MDD criteria are met here.",
    "options": {
     "A": {
@@ -468,12 +557,34 @@
      "text": "1.8-kg (4-lb) weight loss during the past month"
     }
    ],
-   "topic": "depressive-disorders"
+   "topic": "depressive-disorders",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Chronically low mood** lasting **more than one year** without full criteria",
+     "then": "Dysthymic disorder"
+    },
+    {
+     "opt": "B",
+     "if": "**Sadness beginning within 3 months** of **identifiable life stressor**",
+     "then": "Adjustment disorder with depressed mood"
+    },
+    {
+     "opt": "D",
+     "if": "**Inattention before age 12** across **two settings without weight loss**",
+     "then": "Attention-deficit/hyperactivity disorder"
+    },
+    {
+     "opt": "G",
+     "if": "**Erratic behavior and bloodshot eyes** with **acute school decline**",
+     "then": "Substance abuse"
+    }
+   ]
   },
   "c-peds-01-q006": {
    "task": "Mechanism",
-   "boardCall": "1-week-old + shock + unobtainable lower extremity BP + normal PO2 -> Closure of the ductus arteriosus",
-   "hinge": "Acute circulatory collapse at 1 week with differential lower-extremity hypoperfusion marks closure of a ductal-dependent coarctation.",
+   "boardCall": "1-week newborn + **unobtainable lower pulses** + **cardiogenic shock** + normal PO2 → Closure of the ductus arteriosus",
+   "hinge": "Spontaneous ductal constriction cuts off distal aortic flow past a severe coarctation.",
    "trap": "Cyanosis and dusky extremities tempt right-to-left shunting, but PO2 of 98 mm Hg indicates systemic hypoperfusion rather than cyanotic shunt.",
    "options": {
     "A": {
@@ -561,12 +672,34 @@
      "text": "PO₂ 98 mm Hg"
     }
    ],
-   "topic": "congenital-heart-disease"
+   "topic": "congenital-heart-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Bounding pulses and continuous murmur** in **preterm infant with apnea**",
+     "then": "Opening of the ductus arteriosus"
+    },
+    {
+     "opt": "C",
+     "if": "**Severe hypoxemia refractory** to oxygen from **persistent fetal circulation**",
+     "then": "Increased pulmonary vascular resistance"
+    },
+    {
+     "opt": "D",
+     "if": "**Profound cyanosis unresponsive** to oxygen with **boot-shaped heart**",
+     "then": "Intracardiac right-to-left shunting"
+    },
+    {
+     "opt": null,
+     "if": "**Ductal-dependent shock** recognized **before surgical repair**",
+     "then": "Prostaglandin E1 infusion"
+    }
+   ]
   },
   "c-peds-01-q007": {
    "task": "Next step",
-   "boardCall": "Travel to Asia + paroxysmal fever + anemia + splenomegaly -> Thick and thin blood smears",
-   "hinge": "Cyclic fever, hemolytic anemia, thrombocytopenia, and splenomegaly after tropical travel require blood smears to diagnose malaria.",
+   "boardCall": "5-year-old boy + **Asia travel** + **chloroquine failure** + splenomegaly + thrombocytopenia → Thick and thin blood smears",
+   "hinge": "Recurrent fevers despite chloroquine demand direct parasite visualization for chloroquine-resistant malaria.",
    "trap": "Prior chloroquine prophylaxis tempts excluding malaria, but chloroquine resistance is widespread across Asia.",
    "options": {
     "A": {
@@ -655,12 +788,34 @@
      "trap": true
     }
    ],
-   "topic": "malaria"
+   "topic": "malaria",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Adolescent with exudative pharyngitis**, **posterior cervical nodes**, atypical lymphocytes",
+     "then": "Assay for heterophile antibody"
+    },
+    {
+     "opt": "D",
+     "if": "**Jaundice and right upper quadrant tenderness** after **contaminated food**",
+     "then": "Measurement of serum AST and ALT"
+    },
+    {
+     "opt": "C",
+     "if": "**Mucosal bleeding and petechiae** with **normal spleen and hematocrit**",
+     "then": "Measurement of prothrombin times"
+    },
+    {
+     "opt": null,
+     "if": "**Malaria confirmed** with **severe organ dysfunction or altered sensorium**",
+     "then": "Intravenous artesunate"
+    }
+   ]
   },
   "c-peds-01-q008": {
    "task": "Diagnosis",
-   "boardCall": "Grip myotonia + distal weakness + dysarthria + father affected -> Myotonic dystrophy",
-   "hinge": "Impaired relaxation after hand grip (myotonia) with autosomal dominant inheritance and distal weakness confirms myotonic dystrophy.",
+   "boardCall": "4-year-old girl + **grip myotonia** + **distal weakness** + affected father → Myotonic dystrophy",
+   "hinge": "Delayed muscle relaxation and autosomal-dominant distal involvement distinguish CTG-repeat disease.",
    "trap": "Motor delay and dysarthria tempt cerebral palsy, but delayed muscle relaxation and normal reflexes exclude upper motor neuron pathology.",
    "options": {
     "A": {
@@ -752,12 +907,34 @@
      "text": "impaired enunciation"
     }
    ],
-   "topic": "muscular-dystrophies"
+   "topic": "muscular-dystrophies",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Boy with calf pseudohypertrophy** and **Gowers sign** from proximal weakness",
+     "then": "Duchenne muscular dystrophy"
+    },
+    {
+     "opt": "D",
+     "if": "**Fatigable ptosis and diplopia** worsening **toward evening**",
+     "then": "Myasthenia gravis"
+    },
+    {
+     "opt": "A",
+     "if": "**Static spastic hyperreflexia** following **perinatal hypoxic injury**",
+     "then": "Cerebral palsy"
+    },
+    {
+     "opt": "B",
+     "if": "**Hypotonia at birth** with **contractures and absent myotonia**",
+     "then": "Congenital muscular dystrophy"
+    }
+   ]
   },
   "c-peds-01-q009": {
    "task": "Diagnosis",
-   "boardCall": "DKA treatment + rapid glucose drop + bradycardia + hypertension + papilledema -> Cerebral edema",
-   "hinge": "Acute headache, lethargy, Cushing triad (bradycardia, hypertension), and absent venous pulsations during DKA hydration signal cerebral edema.",
+   "boardCall": "12-year-old girl + **DKA fluid resuscitation** + **headache and bradycardia** + hypertension → Cerebral edema",
+   "hinge": "Rapid osmolar shifts during ketoacidosis rehydration trigger Cushing-triad brain swelling.",
    "trap": "Falling serum glucose tempts hypoglycemia, but the glucose remains elevated at 400 mg/dL.",
    "options": {
     "A": {
@@ -846,12 +1023,35 @@
      "text": "absence of venous pulsations"
     }
    ],
-   "topic": "hyperglycemic-crises"
+   "topic": "hyperglycemic-crises",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Diaphoresis and tremor** with **serum glucose below 60**",
+     "then": "Hypoglycemia"
+    },
+    {
+     "opt": "C",
+     "if": "**Tachycardia and dry mucosa** with **low blood pressure**",
+     "then": "Hypovolemia"
+    },
+    {
+     "opt": "D",
+     "if": "**Kussmaul respirations** with **widening anion gap** and improving mentation",
+     "then": "Metabolic acidosis"
+    },
+    {
+     "opt": null,
+     "if": "**Acute neurologic decline** during **DKA rehydration**",
+     "then": "Intravenous mannitol",
+     "step": "slow intravenous fluids"
+    }
+   ]
   },
   "c-peds-01-q010": {
    "task": "Next step",
-   "boardCall": "Adolescent + BMI 35 + LDL 144 mg/dL + elevated BP -> Reduced-calorie diet",
-   "hinge": "Adolescent obesity with mild dyslipidemia requires first-line lifestyle modification and caloric reduction before considering pharmacotherapy.",
+   "boardCall": "16-year-old boy + **BMI 35** + **borderline hypertension** + mild dyslipidemia → Reduced-calorie diet",
+   "hinge": "Weight reduction via nutrition and activity is first-line before starting adolescent pharmacotherapy.",
    "trap": "Strong family history of premature CAD tempts statin therapy, but lifestyle modification is first-line for moderate LDL elevation.",
    "options": {
     "A": {
@@ -941,12 +1141,34 @@
      "trap": true
     }
    ],
-   "topic": "dyslipidemia"
+   "topic": "dyslipidemia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**LDL persistently above 190** after **6 months of diet change**",
+     "then": "Statin agent therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Sustained stage 2 hypertension** despite **lifestyle weight management**",
+     "then": "Beta-adrenergic blocking agent therapy"
+    },
+    {
+     "opt": "D",
+     "if": "**Refractory familial hypercholesterolemia** needing **second-line lipid lowering**",
+     "then": "Cholesterol-binding resin therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Dietary counseling alone** fails to **lower weight and BP**",
+     "then": "Structured aerobic exercise"
+    }
+   ]
   },
   "c-peds-01-q011": {
    "task": "Diagnosis",
-   "boardCall": "Tinea pedis portal of entry + acute fever + spreading foot erythema + adenopathy -> Staphylococcus aureus",
-   "hinge": "Acute fever, ascending cellulitis, and tender lymphadenopathy after skin breakdown from tinea pedis indicate secondary bacterial infection with Staphylococcus aureus.",
+   "boardCall": "16-year-old boy + **interdigital tinea pedis** + **acute foot cellulitis** + lymphadenitis → Staphylococcus aureus",
+   "hinge": "Fissured toe-web skin allows gram-positive cocci to invade subcutaneous tissue rapidly.",
    "trap": "Trichophyton rubrum causes the antecedent scaly interdigital rash, but the acute fever, pain, and cellulitis stem from bacterial superinfection.",
    "options": {
     "A": {
@@ -1035,12 +1257,34 @@
      "text": "tender lymph node is palpated in the right side of the groin"
     }
    ],
-   "topic": "skin-and-soft-tissue-infections"
+   "topic": "skin-and-soft-tissue-infections",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Scaly pruritic toe webs** without **fever, warmth, or induration**",
+     "then": "Trichophyton rubrum"
+    },
+    {
+     "opt": "C",
+     "if": "**Plantar puncture wound** through **rubber sneaker sole**",
+     "then": "Pseudomonas aeruginosa"
+    },
+    {
+     "opt": "A",
+     "if": "**Perianal cellulitis** or **neutropenic ecthyma** from enteric flora",
+     "then": "Escherichia coli"
+    },
+    {
+     "opt": null,
+     "if": "**Purulent skin infection** plus **athlete's foot portal**",
+     "then": "TMP-SMX plus topical antifungal"
+    }
+   ]
   },
   "c-peds-01-q012": {
    "task": "Diagnosis",
-   "boardCall": "5-year-old boy + insidious painful limp + limited internal rotation + dense femoral epiphysis -> Legg-Calve-Perthes disease",
-   "hinge": "An insidious painful limp with reduced internal rotation and a collapsed, dense femoral capital epiphysis on AP radiograph defines Legg-Calve-Perthes disease.",
+   "boardCall": "5-year-old boy + **3 wk limp** + **limited hip internal rotation** + dense epiphysis → Legg-Calve-Perthes disease",
+   "hinge": "Idiopathic femoral head ischemia in a young boy causes sclerosis before flattening.",
    "trap": "Slipped capital femoral epiphysis causes hip pain and restricted internal rotation but typically occurs in obese adolescents, not 5-year-olds.",
    "options": {
     "A": {
@@ -1188,12 +1432,34 @@
      "text": "dense, contracted right femoral capital epiphysis"
     }
    ],
-   "topic": "pediatric-hip-disorders"
+   "topic": "pediatric-hip-disorders",
+   "branches": [
+    {
+     "opt": "L",
+     "if": "**Obese adolescent** with **posteriorly slipped femoral epiphysis**",
+     "then": "Slipped capital femoral epiphysis"
+    },
+    {
+     "opt": "K",
+     "if": "**High fever and leukocytosis** with **acute inability to bear weight**",
+     "then": "Septic arthritis of the hip"
+    },
+    {
+     "opt": "H",
+     "if": "**Teen athlete** with **tender tibial tubercle** after running",
+     "then": "Osgood-Schlatter disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Asymmetric gluteal folds** and **positive Galeazzi sign in infancy**",
+     "then": "Congenital hip dysplasia"
+    }
+   ]
   },
   "c-peds-01-q013": {
    "task": "Next step",
-   "boardCall": "Cyclic pelvic pain + Tanner 4 + bluish bulging interlabial mass -> Cruciate incision of the hymen",
-   "hinge": "Monthly cyclic lower abdominal pain with primary amenorrhea and a bluish bulging introital mass indicates hematocolpos from an imperforate hymen treated by hymenotomy.",
+   "boardCall": "14-year-old girl + **cyclic pelvic pain** + **Tanner 4 primary amenorrhea** + bluish bulge → Cruciate incision of the hymen",
+   "hinge": "Hematocolpos trapped behind an imperforate membrane requires simple surgical drainage.",
    "trap": "Operative laparoscopy or hysteroscopy is indicated for endometriosis or uterine anomalies, but the lesion is external and directly visible.",
    "options": {
     "A": {
@@ -1279,12 +1545,34 @@
      "text": "bluish red smooth bulge between the labia"
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Delayed puberty** without **pelvic mass or monthly cramping**",
+     "then": "Observation only"
+    },
+    {
+     "opt": "C",
+     "if": "**Endometrioma or ovarian torsion** seen on **pelvic ultrasound**",
+     "then": "Operative laparoscopy"
+    },
+    {
+     "opt": "B",
+     "if": "**Intrauterine septum or polyp** causing **refractory menorrhagia**",
+     "then": "Operative hysteroscopy"
+    },
+    {
+     "opt": "E",
+     "if": "**Ruptured adnexal malignancy** with **hemoperitoneum and instability**",
+     "then": "Exploratory laparotomy"
+    }
+   ]
   },
   "c-peds-01-q014": {
    "task": "Diagnosis",
-   "boardCall": "Anti-HAV positive + HBsAg positive + anti-HBc positive + anti-HBs negative -> Immune | Not immune",
-   "hinge": "Anti-HAV confers hepatitis A immunity, whereas positive HBsAg and negative anti-HBs signify active hepatitis B infection without immunity.",
+   "boardCall": "13-month-old adoptee + **anti-HAV positive** + **HBsAg positive** + anti-HBs negative → Immune | Not immune",
+   "hinge": "Past hepatitis A confers protection, whereas surface antigen indicates active hepatitis B.",
    "trap": "Positive hepatitis B core antibody proves prior infection exposure, but absent surface antibody means lack of protective immunity.",
    "options": {
     "A": {
@@ -1362,12 +1650,34 @@
      "text": "Hepatitis B surface antibody negative"
     }
    ],
-   "topic": "viral-hepatitis"
+   "topic": "viral-hepatitis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Anti-HAV IgG positive** with **anti-HBs immunity** and absent surface antigen",
+     "then": "Immune | Immune"
+    },
+    {
+     "opt": "C",
+     "if": "**Negative anti-HAV** with **anti-HBs positive after vaccine**",
+     "then": "Not immune | Immune"
+    },
+    {
+     "opt": "D",
+     "if": "**Negative hepatitis A and B serologies** without **prior immunization**",
+     "then": "Not immune | Not immune"
+    },
+    {
+     "opt": null,
+     "if": "**Chronic hepatitis B** confirmed with **elevated transaminases**",
+     "then": "Hepatology follow-up"
+    }
+   ]
   },
   "c-peds-01-q015": {
    "task": "Mechanism",
-   "boardCall": "Down syndrome + unrepaired VSD + loud S2 + cyanosis + polycythemia -> Pulmonary artery hypertension",
-   "hinge": "Long-standing unrepaired large VSD causes severe pulmonary artery hypertension with shunt reversal (Eisenmenger syndrome), leading to hypoxemia-driven polycythemia.",
+   "boardCall": "14-year-old girl + **Down syndrome** + large VSD + clubbing + **loud S2 without murmur** → Pulmonary artery hypertension",
+   "hinge": "Chronic left-to-right shunting elevates pulmonary pressures until flow reverses into Eisenmenger syndrome.",
    "trap": "Erythropoietin drives polycythemia, but chronic tissue hypoxemia increases EPO rather than decreasing it.",
    "options": {
     "A": {
@@ -1456,12 +1766,34 @@
      "text": "large ventricular septal defect and a dilated main pulmonary artery"
     }
    ],
-   "topic": "congenital-heart-disease"
+   "topic": "congenital-heart-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Boot-shaped heart** with **harsh systolic ejection murmur** since infancy",
+     "then": "Tetralogy of Fallot"
+    },
+    {
+     "opt": "C",
+     "if": "**Low hemoglobin and microcytosis** causing **fatigue without cyanosis**",
+     "then": "Iron deficiency anemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Hypotension, JVD, and muffled heart sounds** with **large pericardial effusion**",
+     "then": "Cardiac tamponade"
+    },
+    {
+     "opt": null,
+     "if": "**Eisenmenger physiology** confirmed with **bidirectional VSD flow**",
+     "then": "Endothelin blocker or transplant"
+    }
+   ]
   },
   "c-peds-01-q016": {
    "task": "Diagnosis",
-   "boardCall": "Cold exposure + J-wave (Osborn wave) on ECG + core temp 32 C -> Hypothermia",
-   "hinge": "J waves (Osborn waves) at the QRS-ST junction in an intoxicated patient with core temperature 32 C are pathognomonic for hypothermia.",
+   "boardCall": "17-year-old + cold exposure + **core temp 32°C** + bradycardia + **Osborn J-waves** → Hypothermia",
+   "hinge": "Ethanol blunts shivering and vasodilation drops temperature, producing distinct J-point ECG deflections.",
    "trap": "Ethanol odor explains the predisposing intoxication and impaired thermoregulation, but hypothermia itself causes the Osborn waves.",
    "options": {
     "A": {
@@ -1557,12 +1889,34 @@
      "trap": true
     }
    ],
-   "topic": "hypothermia-and-frostbite"
+   "topic": "hypothermia-and-frostbite",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Peaked T waves** and **widened QRS** in renal failure",
+     "then": "Hyperkalemia"
+    },
+    {
+     "opt": "D",
+     "if": "**Prolonged QT interval** with **tetany and Chvostek sign**",
+     "then": "Hypocalcemia"
+    },
+    {
+     "opt": "F",
+     "if": "**Hypertension, bradycardia, and papilledema** after **head trauma**",
+     "then": "Increased intracranial pressure"
+    },
+    {
+     "opt": null,
+     "if": "**Moderate hypothermia (28-32°C)** without **ventricular arrhythmias**",
+     "then": "Active external rewarming"
+    }
+   ]
   },
   "c-peds-01-q017": {
    "task": "Diagnosis",
-   "boardCall": "Chronic sinopulmonary infections + steatorrhea + new snoring -> Nasal polyps",
-   "hinge": "In a child with cystic fibrosis (sinopulmonary infections, steatorrhea), new-onset snoring and nasal obstruction are caused by nasal polyps.",
+   "boardCall": "12-year-old boy + **chronic URIs** + **steatorrhea** + new loud snoring → Nasal polyps",
+   "hinge": "Malabsorption and sinopulmonary infections signal cystic fibrosis obstructing the nares.",
    "trap": "Tonsillar hypertrophy is the commonest cause of snoring in children, but steatorrhea specifically identifies cystic fibrosis and nasal polyps.",
    "options": {
     "A": {
@@ -1644,12 +1998,35 @@
      "text": "steatorrhea"
     }
    ],
-   "topic": "cystic-fibrosis"
+   "topic": "cystic-fibrosis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Healthy child** with **snoring and kissing tonsils** without malabsorption",
+     "then": "Tonsillar hypertrophy"
+    },
+    {
+     "opt": "B",
+     "if": "**Unilateral nasal obstruction** immediately following **facial trauma**",
+     "then": "Deviated septum"
+    },
+    {
+     "opt": "A",
+     "if": "**Painless lateral neck mass** anterior to **sternocleidomastoid border**",
+     "then": "Branchial cleft cyst"
+    },
+    {
+     "opt": null,
+     "if": "**Suspected cystic fibrosis** with **obstructive nasal polyps**",
+     "then": "Sweat chloride test",
+     "step": "intranasal corticosteroids"
+    }
+   ]
   },
   "c-peds-01-q018": {
    "task": "Diagnosis",
-   "boardCall": "Tanner stage 4 boy + 1-cm smooth firm subareolar breast mass -> Physiologic pubertal development",
-   "hinge": "A mobile, smooth subareolar breast mass without skin retraction or lymphadenopathy in a pubertal male represents benign physiologic gynecomastia.",
+   "boardCall": "16-year-old boy + **Tanner 4** + **firm subareolar nodule** + no skin changes → Physiologic pubertal development",
+   "hinge": "Transient estrogen-to-androgen imbalance during mid-adolescence causes benign subareolar glandular enlargement.",
    "trap": "A unilateral breast mass tempts carcinoma, but male breast cancer is vanishingly rare in adolescents and presents with skin retraction or hard fixation.",
    "options": {
     "A": {
@@ -1730,12 +2107,34 @@
      "text": "no nipple or skin retraction and no axillary lymphadenopathy"
     }
    ],
-   "topic": "pubertal-development"
+   "topic": "pubertal-development",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Hard fixed eccentric mass** with **skin dimpling or bloody nipple**",
+     "then": "Carcinoma"
+    },
+    {
+     "opt": "A",
+     "if": "**Soft tissue mass** located along **the embryonic milk line**",
+     "then": "Accessory breast tissue"
+    },
+    {
+     "opt": "D",
+     "if": "**Mobile rubbery mass** in an **adolescent female**",
+     "then": "Fibroadenoma"
+    },
+    {
+     "opt": null,
+     "if": "**Benign pubertal gynecomastia** confirmed in **healthy Tanner 4 boy**",
+     "then": "Reassurance and observation"
+    }
+   ]
   },
   "c-peds-01-q019": {
    "task": "Next step",
-   "boardCall": "Untreated maternal HIV discovered postpartum -> A 6-week course of triple antiretroviral therapy within 24 hours after delivery",
-   "hinge": "Untreated maternal HIV places this newborn at high transmission risk and requires immediate presumptive three-drug therapy.",
+   "boardCall": "Term newborn + **untreated mother** + **positive rapid HIV** → Triple antiretroviral therapy within 24 hours",
+   "hinge": "Absent maternal viral suppression demands immediate newborn three-drug prophylaxis.",
    "trap": "Zidovudine monotherapy is reserved for low-risk infants born to suppressed mothers, not untreated high-risk exposures.",
    "options": {
     "A": {
@@ -1840,12 +2239,34 @@
      "trap": true
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Mother achieved viral suppression** on **prenatal antiretroviral therapy**",
+     "then": "A 6-week course of oral AZT"
+    },
+    {
+     "opt": "A",
+     "if": "**Delayed prophylaxis** waiting **14 days after birth**",
+     "then": "A 6-week course beginning at 2-week"
+    },
+    {
+     "opt": "B",
+     "if": "**Child already HIV-infected** with **opportunistic infection prophylaxis criteria**",
+     "then": "Only if CD4 decreases"
+    },
+    {
+     "opt": "G",
+     "if": "**Negative maternal HIV screen** confirmed **near delivery**",
+     "then": "No therapy indicated"
+    }
+   ]
   },
   "c-peds-01-q020": {
    "task": "Next step",
-   "boardCall": "Sickle cell disease + fever 39 C + leukocytosis 23,000 -> Intravenous cefotaxime",
-   "hinge": "Functional asplenia in sickle cell disease predisposes to lethal encapsulated bacteremia, requiring emergency parenteral third-generation cephalosporins for any fever.",
+   "boardCall": "12-month-old + **sickle cell disease** + **fever 39°C** + missed penicillin → Intravenous cefotaxime",
+   "hinge": "Functional asplenia exposes febrile infants to rapid pneumococcal sepsis.",
    "trap": "Maintenance oral penicillin prophylaxis tempts oral or IV penicillin, but empiric coverage of resistant pneumococci requires a broad third-generation cephalosporin.",
    "options": {
     "A": {
@@ -1942,12 +2363,34 @@
      "trap": true
     }
    ],
-   "topic": "sickle-cell-disease"
+   "topic": "sickle-cell-disease",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Afebrile well infant** needing **routine daily prophylaxis**",
+     "then": "Oral penicillin"
+    },
+    {
+     "opt": "E",
+     "if": "**Confirmed methicillin-sensitive Staphylococcus aureus** osteomyelitis without **pneumococcal risk**",
+     "then": "Intravenous nafcillin"
+    },
+    {
+     "opt": "D",
+     "if": "**Kawasaki disease** or **acute immune thrombocytopenia** needing immunomodulation",
+     "then": "Intravenous immune globulin"
+    },
+    {
+     "opt": null,
+     "if": "**Febrile sickle cell infant** receives **empiric third-generation cephalosporin**",
+     "then": "Blood culture and admit"
+    }
+   ]
   },
   "c-peds-01-q021": {
    "task": "Diagnosis",
-   "boardCall": "Recurrent pneumonias + recurrent sinusitis + encapsulated bacteria -> Impaired humoral immunity",
-   "hinge": "Recurrent sinopulmonary infections with encapsulated bacteria (Streptococcus pneumoniae, Haemophilus influenzae) in an adolescent point to impaired humoral immunity.",
+   "boardCall": "16-year-old boy + **recurrent pneumococcal pneumonia** + **H. influenzae sinusitis** → Impaired humoral immunity",
+   "hinge": "Repeated sinopulmonary infections with encapsulated bacteria signify deficient opsonizing antibodies.",
    "trap": "Complement deficiency predisposes to encapsulated Neisseria, whereas sinopulmonary encapsulated infections classically reflect B-cell defects.",
    "options": {
     "A": {
@@ -2035,12 +2478,34 @@
      "text": "sputum culture grows Haemophilus influenzae"
     }
    ],
-   "topic": "primary-immunodeficiencies"
+   "topic": "primary-immunodeficiencies",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Thrush, Pneumocystis, and viral infections** in **first months of life**",
+     "then": "Impaired cell-mediated immunity"
+    },
+    {
+     "opt": "D",
+     "if": "**Delayed umbilical separation** with **neutrophilia and nonpurulent ulcers**",
+     "then": "Impaired chemotaxis"
+    },
+    {
+     "opt": "B",
+     "if": "**Recurrent Neisseria meningitidis** bacteremia with **low CH50**",
+     "then": "Complement deficiency"
+    },
+    {
+     "opt": "A",
+     "if": "**Both severe opportunistic infections** and **absent immunoglobulins**",
+     "then": "Combined immunodeficiency"
+    }
+   ]
   },
   "c-peds-01-q022": {
    "task": "Next step",
-   "boardCall": "High fever + new systolic murmur + splenomegaly -> Serial blood cultures",
-   "hinge": "Persistent bacteremia documented by serial blood cultures combined with echocardiography confirms infective endocarditis via Duke criteria.",
+   "boardCall": "2-year-old boy + **5 days fever** + **new systolic murmur** + splenomegaly → Serial blood cultures",
+   "hinge": "Sustained fever, regurgitant murmur, and splenic enlargement demand detecting continuous bacteremia.",
    "trap": "Erythrocyte sedimentation rate is elevated in endocarditis, but inflammatory markers are nonspecific and cannot confirm diagnosis.",
    "options": {
     "A": {
@@ -2122,12 +2587,34 @@
      "text": "spleen tip is palpated 4 cm below the left costal margin"
     }
    ],
-   "topic": "infective-endocarditis"
+   "topic": "infective-endocarditis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Suspected rheumatic carditis** looking for **PR prolongation**",
+     "then": "ECG"
+    },
+    {
+     "opt": "C",
+     "if": "**Chest pain and friction rub** suggesting **viral myocarditis**",
+     "then": "Measurement of serum cardiac enzyme"
+    },
+    {
+     "opt": "A",
+     "if": "**Malar rash and arthritis** in **adolescent female**",
+     "then": "Antinuclear antibody assay"
+    },
+    {
+     "opt": null,
+     "if": "**Three blood culture sets** obtained **for suspected endocarditis**",
+     "then": "Transthoracic echocardiogram"
+    }
+   ]
   },
   "c-peds-01-q023": {
    "task": "Diagnosis",
-   "boardCall": "Delayed meconium passage + steatorrhea + failure to thrive -> Exocrine pancreatic insufficiency",
-   "hinge": "Delayed meconium passage (meconium ileus equivalent) with greasy malabsorptive stools and failure to thrive indicates CF-induced exocrine pancreatic insufficiency.",
+   "boardCall": "3-year-old girl + failure to thrive + **greasy stools** + **delayed meconium** → Exocrine pancreatic insufficiency",
+   "hinge": "Meconium ileus followed by fat malabsorption identifies pancreatic damage from cystic fibrosis.",
    "trap": "Hirschsprung disease causes delayed meconium passage, but causes distal intestinal obstruction and constipation rather than greasy steatorrhea.",
    "options": {
     "A": {
@@ -2220,12 +2707,34 @@
      "text": "decreased soft tissue mass"
     }
    ],
-   "topic": "cystic-fibrosis"
+   "topic": "cystic-fibrosis",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Bloating and diarrhea** beginning **after wheat introduction**",
+     "then": "Villous atrophy of the small bowel"
+    },
+    {
+     "opt": "B",
+     "if": "**Acholic stools and direct hyperbilirubinemia** in **first 8 weeks**",
+     "then": "Biliary atresia"
+    },
+    {
+     "opt": "A",
+     "if": "**Severe chronic constipation** and **explosive stool on rectal exam**",
+     "then": "Aganglionic segmented colon"
+    },
+    {
+     "opt": "C",
+     "if": "**Steatorrhea accompanied by chylous ascites** and **profound hypoalbuminemia**",
+     "then": "Dilation of the intestinal lymphatic vessels"
+    }
+   ]
   },
   "c-peds-01-q024": {
    "task": "Diagnosis",
-   "boardCall": "Syncope + convulsive jerks + ECG showing P waves without QRS complexes -> Adams-Stokes attack",
-   "hinge": "Syncope and convulsive jerking caused by transient high-grade/complete AV block with ventricular asystole on ECG define an Adams-Stokes attack.",
+   "boardCall": "3-year-old girl + **brief syncope** + **arm jerks during 20s asystole** → Adams-Stokes attack",
+   "hinge": "Complete heart block starves the brain of blood, causing anoxic convulsive jerks.",
    "trap": "Convulsive twitching after syncope tempts primary epilepsy or absence seizure, but ECG shows complete AV dissociation with ventricular arrest.",
    "options": {
     "A": {
@@ -2331,12 +2840,34 @@
      "text": "normal sinus rhythm resumes in 20 seconds"
     }
    ],
-   "topic": "atrioventricular-block"
+   "topic": "atrioventricular-block",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Brief staring spells** with **3-Hz spike-and-wave EEG**",
+     "then": "Absence seizure"
+    },
+    {
+     "opt": "D",
+     "if": "**Toddler crying vigorously** before **turning blue and fainting**",
+     "then": "Breath-holding episode"
+    },
+    {
+     "opt": "H",
+     "if": "**Syncope during exertion** with **wide-complex tachycardia**",
+     "then": "Ventricular tachyarrhythmia"
+    },
+    {
+     "opt": null,
+     "if": "**Symptomatic third-degree AV block** confirmed **on cardiac monitor**",
+     "then": "Permanent pacemaker"
+    }
+   ]
   },
   "c-peds-01-q025": {
    "task": "Diagnosis",
-   "boardCall": "14-day fever + headache + purulent nasal discharge + normal lungs and chest x-ray -> Sinusitis",
-   "hinge": "Fever, purulent rhinorrhea, headache, and nocturnal postnasal cough lasting > 10 days with normal lungs and chest x-ray indicate acute bacterial sinusitis.",
+   "boardCall": "11-year-old boy + **14 days fever** + **purulent nasal discharge** + normal chest x-ray → Sinusitis",
+   "hinge": "Fever and purulent rhinorrhea past ten days with clear lungs indicate bacterial sinusitis.",
    "trap": "Nocturnal cough tempts lower respiratory infections like bacterial pneumonia or asthma, but lungs and chest x-ray are normal.",
    "options": {
     "A": {
@@ -2498,12 +3029,34 @@
      "text": "pulse is 100/min, and respirations are 18/min"
     }
    ],
-   "topic": "acute-rhinosinusitis"
+   "topic": "acute-rhinosinusitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Focal crackles and tachypnea** with **lobar consolidation on radiograph**",
+     "then": "Bacterial pneumonia"
+    },
+    {
+     "opt": "L",
+     "if": "**Paroxysmal cough with inspiratory whoop** and **posttussive emesis**",
+     "then": "Pertussis"
+    },
+    {
+     "opt": "H",
+     "if": "**Sudden choking episode** followed by **unilateral wheeze and hyperinflation**",
+     "then": "Foreign body aspiration"
+    },
+    {
+     "opt": null,
+     "if": "**Acute bacterial sinusitis** diagnosed **without penicillin allergy**",
+     "then": "Amoxicillin-clavulanate"
+    }
+   ]
   },
   "c-peds-01-q026": {
    "task": "Diagnosis",
-   "boardCall": "High fever + tachypnea + focal decreased breath sounds + right lower lobe density -> Bacterial pneumonia",
-   "hinge": "Acute high fever, tachypnea, hypoxemia, decreased breath sounds, and a right lower lobe consolidation confirm bacterial pneumonia with referred abdominal pain.",
+   "boardCall": "5-yr boy + **39.2°C, tachypnea, SpO2 92%** + **RLL density** + diffuse abdominal tenderness → Bacterial pneumonia",
+   "hinge": "Lower-lobe diaphragmatic irritation causes referred abdominal tenderness alongside acute lobar consolidation.",
    "trap": "Diffuse abdominal tenderness tempts primary intra-abdominal pathology, but lower lobe diaphragmatic irritation refers pain to the abdomen.",
    "options": {
     "A": {
@@ -2672,12 +3225,30 @@
      "text": "diffuse tenderness without guarding or rebound"
     }
    ],
-   "topic": "pneumonia"
+   "topic": "pneumonia",
+   "branches": [
+    {
+     "opt": "J",
+     "if": "**School-aged child** with **dry cough and interstitial markings**",
+     "then": "Mycoplasma pneumoniae infection"
+    },
+    {
+     "opt": "H",
+     "if": "**Afebrile toddler** with **sudden unilateral hyperinflation**",
+     "then": "Foreign body aspiration",
+     "step": "perform rigid bronchoscopy"
+    },
+    {
+     "opt": "K",
+     "if": "**Bilious vomiting** with **elevated lipase**, clear lungs",
+     "then": "Pancreatitis"
+    }
+   ]
   },
   "c-peds-01-q027": {
    "task": "Risk factor",
-   "boardCall": "Adolescent athlete + BMI 17 + 18 months amenorrhea -> Osteoporosis",
-   "hinge": "Functional hypothalamic amenorrhea from relative energy deficiency leads to chronic hypoestrogenism, predisposing to low bone density and osteoporosis.",
+   "boardCall": "teen athlete + **BMI 17** + **18 mo amenorrhea** → Osteoporosis",
+   "hinge": "Athletic energy deficit suppresses GnRH and estrogen, impairing peak adolescent bone accrual.",
    "trap": "Secondary amenorrhea tempts polycystic ovarian syndrome or endometrial hyperplasia, but athletic low energy availability causes estrogen deficiency, not excess.",
    "options": {
     "A": {
@@ -2766,12 +3337,29 @@
      "text": "BMI is 17 kg/m²"
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**BMI 32 and hirsutism** with **irregular cycles**",
+     "then": "Polycystic ovarian syndrome"
+    },
+    {
+     "opt": "A",
+     "if": "**Postmenopausal obesity** with **unopposed estrogen**",
+     "then": "Endometrial cancer"
+    },
+    {
+     "opt": "B",
+     "if": "**Cold intolerance and bradycardia** with **delayed puberty**",
+     "then": "Hypothyroidism"
+    }
+   ]
   },
   "c-peds-01-q028": {
    "task": "Diagnosis",
-   "boardCall": "Male newborn + urinary dribbling + oliguria + distended suprapubic bladder mass -> Posterior urethral valves",
-   "hinge": "Urinary dribbling, oliguria, and a palpable distended bladder (6-cm suprapubic mass) in a male neonate indicate bladder outlet obstruction from posterior urethral valves.",
+   "boardCall": "male newborn + **urinary dribbling, oliguria** + **6-cm suprapubic bladder mass** → Posterior urethral valves",
+   "hinge": "Dribbling with a distended bladder in a newborn boy indicates urethral obstruction.",
    "trap": "Uncircumcised status tempts phimosis, but physiologic newborn phimosis is normal and does not cause a large palpable bladder.",
    "options": {
     "A": {
@@ -2861,12 +3449,30 @@
      "text": "Creatinine 0.5 mg/dL"
     }
    ],
-   "topic": "congenital-urinary-tract-anomalies"
+   "topic": "congenital-urinary-tract-anomalies",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Recurrent febrile UTIs** with **normal voiding stream**",
+     "then": "Vesicoureteral reflux",
+     "step": "confirm with VCUG"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever, poor feeding**, and **pyuria**, empty bladder",
+     "then": "Urinary tract infection"
+    },
+    {
+     "opt": "B",
+     "if": "**Ballooning foreskin** with **obstructed meatus**, older boy",
+     "then": "Phimosis"
+    }
+   ]
   },
   "c-peds-01-q029": {
    "task": "Diagnosis",
-   "boardCall": "2-month-old boy + forceful nonbilious vomiting + hypochloremic metabolic alkalosis -> Pyloric stenosis",
-   "hinge": "Forceful nonbilious emesis after feeds in an infant with hypochloremic, hypokalemic metabolic alkalosis (chloride 85, bicarbonate 34) is pathognomonic for hypertrophic pyloric stenosis.",
+   "boardCall": "2-mo boy + **forceful nonbilious vomiting** + **Cl 85, HCO3 34** → Pyloric stenosis",
+   "hinge": "Projectile nonbilious vomiting with hypochloremic alkalosis signals hypertrophic gastric outlet obstruction.",
    "trap": "Intolerance to cow milk formula tempts formula intolerance, but projectile vomiting with hypochloremic alkalosis indicates anatomical gastric outlet obstruction.",
    "options": {
     "A": {
@@ -2959,12 +3565,30 @@
      "text": "HCO₃⁻ 34 mEq/L"
     }
    ],
-   "topic": "hypertrophic-pyloric-stenosis"
+   "topic": "hypertrophic-pyloric-stenosis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Bilious green vomiting** in **first weeks of life**",
+     "then": "Volvulus",
+     "step": "obtain emergent upper GI series"
+    },
+    {
+     "opt": "C",
+     "if": "**Intermittent colicky pain** with **currant-jelly stools**",
+     "then": "Intussusception"
+    },
+    {
+     "opt": "A",
+     "if": "**Blood-streaked stools** and **eczema** without alkalosis",
+     "then": "Formula intolerance"
+    }
+   ]
   },
   "c-peds-01-q030": {
    "task": "Diagnosis",
-   "boardCall": "Persistent thrush + severe parainfluenza + absent lymph nodes + cardiac murmur -> T lymphocytes",
-   "hinge": "Persistent candidiasis, severe viral infections, failure to thrive, absent lymphoid tissue, and a conotruncal heart murmur point to primary T-lymphocyte deficiency.",
+   "boardCall": "8-mo girl + **recurrent thrush, parainfluenza** + **absent lymph nodes** + harsh murmur → T lymphocytes",
+   "hinge": "Severe opportunistic infections, absent nodes, and conotruncal defect point to cellular deficiency.",
    "trap": "Mucosal immunoglobulin deficiency causes recurrent mucosal infections, but severe opportunistic thrush and absent lymph nodes require cellular T-cell immunity defects.",
    "options": {
     "A": {
@@ -3049,12 +3673,29 @@
      "text": "grade 3/6, harsh systolic murmur is heard at the left sternal border"
     }
    ],
-   "topic": "primary-immunodeficiencies"
+   "topic": "primary-immunodeficiencies",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Catalase-positive abscesses** and **granulomas**, normal nodes",
+     "then": "NADPH oxidase"
+    },
+    {
+     "opt": "D",
+     "if": "**Recurrent Neisseria** bacteremia with **normal thrush history**",
+     "then": "Serum complement"
+    },
+    {
+     "opt": "A",
+     "if": "**Recurrent sinopulmonary bacterial infections** after **6 months**",
+     "then": "Mucosal immunoglobulin"
+    }
+   ]
   },
   "c-peds-01-q031": {
    "task": "Diagnosis",
-   "boardCall": "Spreading facial crusted erosive rash for 2 weeks -> Impetigo contagiosa",
-   "hinge": "Gradual spread of honey-colored crusted erosions over the chin and face indicates nonbullous impetigo contagiosa.",
+   "boardCall": "16-yr boy + **spreading chin rash for 2 wk** + honey crusts → Impetigo contagiosa",
+   "hinge": "Contagious superficial skin infection spreads gradually via autoinoculation with characteristic adherent crusts.",
    "trap": "Perioral location tempts herpes simplex, but continuous 2-week gradual spread of honey-crusted lesions characterizes impetigo.",
    "options": {
     "A": {
@@ -3136,12 +3777,29 @@
      "text": "Examination shows no other abnormalities"
     }
    ],
-   "topic": "impetigo"
+   "topic": "impetigo",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Grouped painful vesicles** on **erythematous lip border**",
+     "then": "Herpes simplex"
+    },
+    {
+     "opt": "E",
+     "if": "**Annular scaly plaque** with **central clearing**",
+     "then": "Tinea faciei"
+    },
+    {
+     "opt": "D",
+     "if": "**Umbilicated pearly papules** without **crusting or erythema**",
+     "then": "Molluscum contagiosum"
+    }
+   ]
   },
   "c-peds-01-q032": {
    "task": "Diagnosis",
-   "boardCall": "Toddler + high fever + bloody diarrhea + generalized seizure -> Shigellosis",
-   "hinge": "Rapid onset of high fever, abdominal cramps, bloody diarrhea, and an associated seizure in a toddler is classic for Shigella sonnei enteritis.",
+   "boardCall": "toddler + **39.7°C** + bloody diarrhea + **generalized seizure** → Shigellosis",
+   "hinge": "Fever, bloody stools, and an early neurotoxic seizure strongly indicate Shigella enteritis.",
    "trap": "Bloody diarrhea and seizure tempt hemolytic-uremic syndrome, but HUS develops days later with microangiopathic hemolytic anemia and acute renal failure.",
    "options": {
     "A": {
@@ -3226,12 +3884,29 @@
      "text": "no nuchal rigidity, and slightly decreased skin turgor"
     }
    ],
-   "topic": "gastroenteritis"
+   "topic": "gastroenteritis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Afebrile bloody diarrhea** followed by **oliguria and schistocytes**",
+     "then": "Hemolytic-uremic syndrome"
+    },
+    {
+     "opt": "B",
+     "if": "**Palpable buttock purpura** with **arthralgias and abdominal pain**",
+     "then": "Henoch-Schonlein purpura"
+    },
+    {
+     "opt": "E",
+     "if": "**Ulcerative colitis** with **colonic dilation > 6 cm**",
+     "then": "Toxic megacolon"
+    }
+   ]
   },
   "c-peds-01-q033": {
    "task": "Next step",
-   "boardCall": "HIV clues + severe hypoxemia + diffuse interstitial infiltrates -> Silver stain of bronchoalveolar fluid",
-   "hinge": "In an immunocompromised child with severe hypoxemia and diffuse interstitial infiltrates, silver stain of bronchoalveolar lavage fluid confirms Pneumocystis jirovecii pneumonia.",
+   "boardCall": "maternal drug use + **FTT, thrush, HSM** + **SpO2 82%, interstitial infiltrates** → Silver stain of BAL fluid",
+   "hinge": "Hypoxemic interstitial pneumonia in pediatric AIDS requires silver staining for Pneumocystis cysts.",
    "trap": "Routine sputum or blood cultures evaluate common bacteria, but Pneumocystis cannot be cultured and requires microscopic silver staining.",
    "options": {
     "A": {
@@ -3317,12 +3992,29 @@
      "text": "diffuse interstitial infiltrates"
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Lobar consolidation** in **immunocompetent child**",
+     "then": "Sputum culture"
+    },
+    {
+     "opt": "C",
+     "if": "**Neonate with snuffles**, **rash on palms/soles**, and hepatosplenomegaly",
+     "then": "Serologic VDRL test"
+    },
+    {
+     "opt": "E",
+     "if": "**Suspected pulmonary abscess** or **necrotizing empyema**",
+     "then": "CT scan of the chest"
+    }
+   ]
   },
   "c-peds-01-q034": {
    "task": "Next step",
-   "boardCall": "Infant of diabetic mother + neonatal seizure + prolonged QT interval -> Calcium",
-   "hinge": "In an infant of a diabetic mother, neonatal seizures accompanied by a prolonged QT interval indicate acute hypocalcemia requiring serum calcium measurement.",
+   "boardCall": "infant of diabetic mother + **12 hr old, seizure** + **prolonged QT interval** → Calcium",
+   "hinge": "Transient neonatal hypoparathyroidism in diabetic pregnancies causes symptomatic hypocalcemia with QT prolongation.",
    "trap": "Hypomagnesemia frequently coexists with hypocalcemia in diabetic pregnancies, but prolonged QT is the hallmark of hypocalcemia.",
    "options": {
     "A": {
@@ -3404,12 +4096,29 @@
      "text": "ECG shows a prolonged QT interval"
     }
    ],
-   "topic": "hypocalcemia"
+   "topic": "hypocalcemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Refractory hypocalcemia** failing **calcium gluconate**",
+     "then": "Magnesium"
+    },
+    {
+     "opt": "B",
+     "if": "**Jaundice to thighs** on **day 3 of life**",
+     "then": "Bilirubin"
+    },
+    {
+     "opt": "A",
+     "if": "**Kussmaul tachypnea** with **poor perfusion and shock**",
+     "then": "Bicarbonate"
+    }
+   ]
   },
   "c-peds-01-q035": {
    "task": "Diagnosis",
-   "boardCall": "9-month-old: sits only with support + bangs blocks + nonspecific mama/dada -> Delayed | Normal | Normal",
-   "hinge": "Independent sitting is expected by 9 months (gross motor delayed), while banging blocks (fine motor) and nonspecific babbling (language) are normal.",
+   "boardCall": "9-mo boy + **sits only with support** + bangs blocks + nonspecific mama/dada → Delayed | Normal | Normal",
+   "hinge": "Unsupported sitting is expected by 9 months; blocks and babbling are normal.",
    "trap": "Inability to scribble tempts calling fine motor delayed, but scribbling is a 15- to 18-month milestone, not a 9-month skill.",
    "options": {
     "A": {
@@ -3520,12 +4229,29 @@
      "text": "says \"mama\" and \"dada\" but not specifically to his parents"
     }
    ],
-   "topic": "child-growth-and-development"
+   "topic": "child-growth-and-development",
+   "branches": [
+    {
+     "opt": "H",
+     "if": "**Sits independently** without **hand support** at 9 months",
+     "then": "Normal | Normal | Normal"
+    },
+    {
+     "opt": "C",
+     "if": "**No babbling** or **consonant sounds** at 9 months",
+     "then": "Delayed | Normal | Delayed"
+    },
+    {
+     "opt": "B",
+     "if": "**Unable to transfer** objects **hand to hand**",
+     "then": "Delayed | Delayed | Normal"
+    }
+   ]
   },
   "c-peds-01-q036": {
    "task": "Diagnosis",
-   "boardCall": "Postoperative T1DM + glucose 642 mg/dL + sodium 128 mEq/L -> Hyperglycemia",
-   "hinge": "Marked hyperglycemia causes an osmotic shift of water from the intracellular to extracellular space, producing translocational hyponatremia.",
+   "boardCall": "post-op T1DM + **glucose 642** + **Na 128 mEq/L** → Hyperglycemia",
+   "hinge": "Excess extracellular glucose draws intracellular water outward, causing translocational dilutional hyponatremia.",
    "trap": "Postoperative IV fluids tempt excessive free water administration, but lactated Ringer is an isotonic crystalloid solution.",
    "options": {
     "A": {
@@ -3621,12 +4347,29 @@
      "text": "Creatinine 0.9 mg/dL"
     }
    ],
-   "topic": "hyponatremia"
+   "topic": "hyponatremia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**D5W infusion** post-op with **normal glucose and low osmolality**",
+     "then": "Excessive free water"
+    },
+    {
+     "opt": "F",
+     "if": "**TURP surgery** using **hypotonic bladder irrigation**",
+     "then": "Glycine"
+    },
+    {
+     "opt": "A",
+     "if": "**Muddy brown casts** with **BUN 60 and oliguria**",
+     "then": "Acute tubular necrosis"
+    }
+   ]
   },
   "c-peds-01-q037": {
    "task": "Screening",
-   "boardCall": "17-year-old + smoking + father and grandfather died of CAD in 30s -> Serum lipid studies",
-   "hinge": "A strong family history of premature cardiovascular disease (father and grandfather died in their 30s) warrants lipid screening in an adolescent.",
+   "boardCall": "17-yr girl + smoker + **early family CAD deaths** → Serum lipid studies",
+   "hinge": "Premature coronary deaths in first-degree relatives warrant early fasting lipid screening.",
    "trap": "Mother diagnosed with breast cancer tempts screening mammography, but routine mammography is not recommended at age 17.",
    "options": {
     "A": {
@@ -3713,12 +4456,29 @@
      "text": "blood pressure is 130/70 mm Hg"
     }
    ],
-   "topic": "dyslipidemia"
+   "topic": "dyslipidemia",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Age 40–74** or **age 30 with BRCA1 mutation**",
+     "then": "Mammography"
+    },
+    {
+     "opt": "E",
+     "if": "**Exertional chest pain** in **adult with stable angina**",
+     "then": "Exercise stress test"
+    },
+    {
+     "opt": "D",
+     "if": "**Age 50 with 20-pack-year** smoking history",
+     "then": "Low-dose chest CT (not x-ray)"
+    }
+   ]
   },
   "c-peds-01-q038": {
    "task": "Diagnosis",
-   "boardCall": "Painless scrotal mass + reducible into abdomen through inguinal ring -> Inguinal hernia",
-   "hinge": "A painless scrotal mass that can be reduced ('milked') through the external inguinal ring into the peritoneal cavity defines an indirect inguinal hernia.",
+   "boardCall": "16-yr boy + **painless scrotal mass** + **reducible through inguinal ring** → Inguinal hernia",
+   "hinge": "A scrotal mass reducible into the abdomen confirms a patent processus vaginalis.",
    "trap": "A fluid collection tempts hydrocele, but hydroceles are non-reducible and do not communicate freely with the abdominal cavity through the ring.",
    "options": {
     "A": {
@@ -3813,12 +4573,30 @@
      "text": "mass can be \"milked\" into the abdomen through the inguinal ring"
     }
    ],
-   "topic": "inguinal-hernia"
+   "topic": "inguinal-hernia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Non-reducible, transilluminating** painless **fluid collection**",
+     "then": "Hydrocele"
+    },
+    {
+     "opt": "G",
+     "if": "**Left bag-of-worms** mass **decompressed when supine**",
+     "then": "Varicocele"
+    },
+    {
+     "opt": "F",
+     "if": "**Sudden severe scrotal pain** with **absent cremasteric reflex**",
+     "then": "Torsion of testis",
+     "step": "emergent surgical detorsion"
+    }
+   ]
   },
   "c-peds-01-q039": {
    "task": "Next step",
-   "boardCall": "Pubertal girl + amenorrhea + breast tenderness + weight gain + pelvic mass -> Measurement of serum beta-hCG concentration",
-   "hinge": "Pregnancy must be excluded first in any adolescent with a midline pelvic mass and breast tenderness, as first ovulation can precede menarche.",
+   "boardCall": "13-yr premenarchal girl + **breast tenderness, weight gain** + **infraumbilical mass** → Serum beta-hCG concentration",
+   "hinge": "Ovulation can precede menarche, so pregnancy must be excluded before pelvic imaging.",
    "trap": "Having never had a menstrual period tempts pelvic CT or germ cell tumor markers, but first ovulation occurs prior to menarche.",
    "options": {
     "A": {
@@ -3905,12 +4683,29 @@
      "text": "nontender mass below the umbilicus"
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Negative β-hCG** with **solid ovarian mass** on ultrasound",
+     "then": "Serum alpha-fetoprotein concentration"
+    },
+    {
+     "opt": "E",
+     "if": "**Negative β-hCG** with **complex pelvic mass** staging",
+     "then": "CT scan of pelvis"
+    },
+    {
+     "opt": "A",
+     "if": "**Dysuria and frequency** without **pelvic mass**",
+     "then": "Urinalysis"
+    }
+   ]
   },
   "c-peds-01-q040": {
    "task": "Next step",
-   "boardCall": "Toddler + sudden dyspnea + unilateral hyperresonance + right lung overexpansion -> Bronchoscopy",
-   "hinge": "Sudden respiratory distress with unilateral decreased breath sounds and hyperinflation from a ball-valve obstruction requires rigid bronchoscopy for retrieval.",
+   "boardCall": "3-yr boy + **1-hr acute dyspnea** + **right hyperresonance, overexpansion on CXR** → Bronchoscopy",
+   "hinge": "Unilateral air trapping without pleural air indicates bronchial obstruction requiring rigid retrieval.",
    "trap": "Unilateral hyperresonance and decreased breath sounds tempt tube thoracostomy for pneumothorax, but chest x-ray shows air trapping without pleural air.",
    "options": {
     "A": {
@@ -3993,12 +4788,29 @@
      "text": "x-ray of the chest shows slight overexpansion of the right lung compared with the left"
     }
    ],
-   "topic": "foreign-body-aspiration"
+   "topic": "foreign-body-aspiration",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Visible visceral pleural line** without **lung markings**",
+     "then": "Tube thoracostomy"
+    },
+    {
+     "opt": "B",
+     "if": "**Subacute mediastinal mass** needing **anatomic staging**",
+     "then": "CT scan of chest"
+    },
+    {
+     "opt": null,
+     "if": "**Choking toddler** with **complete aphonia and cyanosis**",
+     "then": "Abdominal thrusts (Heimlich)"
+    }
+   ]
   },
   "c-peds-01-q041": {
    "task": "Diagnosis",
-   "boardCall": "Continuous vibratory murmur sitting + disappears when supine or neck rotated -> Venous hum",
-   "hinge": "A continuous low-pitched murmur loudest while sitting that disappears completely with supine positioning or ipsilateral neck rotation is a benign venous hum.",
+   "boardCall": "asymptomatic child + **continuous vibratory murmur sitting** + **vanishes supine or neck turn** → Venous hum",
+   "hinge": "Jugular venous turbulence vanishes when supine or turning head, confirming benign flow.",
    "trap": "A continuous murmur tempts patent ductus arteriosus, but PDA produces a fixed machine-like murmur that does not vary with posture or neck rotation.",
    "options": {
     "A": {
@@ -4082,12 +4894,29 @@
      "text": "murmur disappears when the child is in the supine position"
     }
    ],
-   "topic": "innocent-murmurs"
+   "topic": "innocent-murmurs",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Fixed machinery murmur** unaffected by **position or neck turn**",
+     "then": "Patent ductus arteriosus"
+    },
+    {
+     "opt": "A",
+     "if": "**Fixed wide split S2** with **systolic ejection murmur**",
+     "then": "Atrial septal defect"
+    },
+    {
+     "opt": "B",
+     "if": "**Weak femoral pulses** with **upper-extremity hypertension**",
+     "then": "Coarctation of aorta"
+    }
+   ]
   },
   "c-peds-01-q042": {
    "task": "Diagnosis",
-   "boardCall": "Profound pancytopenia (Hb 4.5, WBC 300, platelets 2000) + no organomegaly -> Aplastic anemia",
-   "hinge": "Severe pancytopenia (anemia, neutropenia, thrombocytopenia) with mucosal ulcers and ecchymoses without lymphadenopathy or hepatosplenomegaly indicates aplastic anemia.",
+   "boardCall": "3-yr girl + **Hb 4.5, WBC 300, platelets 2000** + **no hepatosplenomegaly/adenopathy** → Aplastic anemia",
+   "hinge": "Severe trilineage pancytopenia without organomegaly or blasts points to bone marrow aplasia.",
    "trap": "Acetaminophen ingestion tempts drug-induced cytopenia, but acetaminophen does not cause sudden marrow aplasia; leukemia is ruled down by lack of blasts and organomegaly.",
    "options": {
     "A": {
@@ -4203,12 +5032,29 @@
      "text": "Platelet count 2000/mm³"
     }
    ],
-   "topic": "aplastic-anemia"
+   "topic": "aplastic-anemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**WBC 120,000 and splenomegaly** with **Philadelphia chromosome**",
+     "then": "Chronic myelocytic leukemia"
+    },
+    {
+     "opt": "F",
+     "if": "**Predictable 21-day fever** and **oral ulcers**, normal Hb/platelets",
+     "then": "Cyclic neutropenia"
+    },
+    {
+     "opt": "H",
+     "if": "**Delayed umbilical separation** with **neutrophilia without pus**",
+     "then": "Leukocyte adhesion deficiency"
+    }
+   ]
   },
   "c-peds-01-q043": {
    "task": "Diagnosis",
-   "boardCall": "Fever + bizarre behavior + right temporal hemorrhage + lymphocytic CSF with elevated RBCs -> Herpes simplex virus",
-   "hinge": "Acute behavioral changes, fever, seizures, temporal lobe hemorrhagic lesions, and lymphocytic pleocytosis with prominent RBCs are diagnostic of herpes simplex virus encephalitis.",
+   "boardCall": "14-yr girl + **38.9°C, bizarre behavior, seizure** + **temporal hemorrhage, CSF 1250 RBCs** → Herpes simplex virus",
+   "hinge": "Neuropsychiatric changes, fever, and red cells in lymphocytic CSF diagnose HSV encephalitis.",
    "trap": "Seizure at a party tempts substance intoxication or arboviral infection, but focal temporal lobe hemorrhagic necrosis points specifically to HSV.",
    "options": {
     "A": {
@@ -4336,12 +5182,30 @@
      "text": "Erythrocyte count 1250/mm³"
     }
    ],
-   "topic": "encephalitis"
+   "topic": "encephalitis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Summer aseptic meningitis** with **normal brain CT** and behavior",
+     "then": "Enterovirus"
+    },
+    {
+     "opt": "B",
+     "if": "**Erythema migrans** with **cranial nerve VII palsy**",
+     "then": "Borrelia burgdorferi"
+    },
+    {
+     "opt": "H",
+     "if": "**Tick bite** with **wrist-to-trunk petechial rash**",
+     "then": "Rickettsia rickettsii",
+     "step": "start oral or IV doxycycline"
+    }
+   ]
   },
   "c-peds-01-q044": {
    "task": "Next step",
-   "boardCall": "Infant first febrile UTI + resolved on antibiotics + normal renal ultrasound -> Observation for recurrent symptoms",
-   "hinge": "In an infant with a first resolved febrile UTI and a completely normal renal and bladder ultrasound, routine VCUG is not indicated; manage with clinical observation.",
+   "boardCall": "6-mo boy + **first febrile E coli UTI** + **resolved, normal renal US** → Observation for recurrent symptoms",
+   "hinge": "Normal renal ultrasound after an initial febrile UTI eliminates routine VCUG.",
    "trap": "Guidelines previously recommended routine voiding cystourethrography after a first febrile UTI, but VCUG is now reserved for abnormal ultrasound or recurrent febrile UTIs.",
    "options": {
     "A": {
@@ -4423,12 +5287,29 @@
      "text": "Renal ultrasonography shows no abnormalities"
     }
    ],
-   "topic": "congenital-urinary-tract-anomalies"
+   "topic": "congenital-urinary-tract-anomalies",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Dilated collecting system** or **second febrile UTI**",
+     "then": "Voiding cystourethrography"
+    },
+    {
+     "opt": "E",
+     "if": "**Suspected bladder mass** or **recurrent gross hematuria**",
+     "then": "Cystoscopy"
+    },
+    {
+     "opt": "B",
+     "if": "**Asymptomatic** after **uncomplicated resolved UTI** (never routine)",
+     "then": "Avoid repeat urine culture"
+    }
+   ]
   },
   "c-peds-01-q045": {
    "task": "Diagnosis",
-   "boardCall": "Infantile spasms + hypopigmented macules + periventricular subependymal nodules -> Tuberous sclerosis",
-   "hinge": "Flexion spasms in clusters after waking (infantile spasms) with ash-leaf hypopigmented macules, subependymal nodules, and a cardiac murmur indicate tuberous sclerosis complex.",
+   "boardCall": "8-mo boy + **clustered flexion spasms** + hypopigmented macules + **periventricular nodules** → Tuberous sclerosis",
+   "hinge": "Infantile spasms with ash-leaf macules and subependymal nodules define tuberous sclerosis complex.",
    "trap": "Skin hypopigmentation and family cognitive impairment tempt neurofibromatosis, but ash-leaf spots and subependymal nodules define tuberous sclerosis (NF1 causes cafe-au-lait spots).",
    "options": {
     "A": {
@@ -4523,12 +5404,29 @@
      "text": "four periventricular nodules that distort the normally smooth ventricular margins"
     }
    ],
-   "topic": "neurocutaneous-disorders"
+   "topic": "neurocutaneous-disorders",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Cafe au lait spots** with **axillary freckling** and Lisch nodules",
+     "then": "Neurofibromatosis"
+    },
+    {
+     "opt": "C",
+     "if": "**School-age liver failure and dysarthria** with **Kayser-Fleischer rings**",
+     "then": "Hepatolenticular degeneration"
+    },
+    {
+     "opt": "A",
+     "if": "**Gowers sign** and **calf pseudohypertrophy** in 4-year-old boy",
+     "then": "Duchenne muscular dystrophy"
+    }
+   ]
   },
   "c-peds-01-q046": {
    "task": "Diagnosis",
-   "boardCall": "Adolescent goiter + hypothyroidism (low T4, high TSH) -> Lymphocytic infiltration",
-   "hinge": "A firm, nontender goiter with overt primary hypothyroidism in an adolescent girl indicates Hashimoto thyroiditis, characterized by diffuse lymphocytic infiltration with germinal centers.",
+   "boardCall": "teen girl + **firm nontender goiter** + **low T4, high TSH** → Lymphocytic infiltration",
+   "hinge": "Hashimoto thyroiditis causes primary hypothyroidism with dense lymphocytic infiltration and germinal centers.",
    "trap": "Patchy irregular uptake on thyroid scan tempts toxic multinodular goiter or viral thyroiditis, but low T4 and high TSH confirm primary hypothyroid autoimmune thyroiditis.",
    "options": {
     "A": {
@@ -4613,12 +5511,29 @@
      "trap": true
     }
    ],
-   "topic": "hypothyroidism"
+   "topic": "hypothyroidism",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Painful tender thyroid** after **viral illness** (de Quervain)",
+     "then": "Granulomas"
+    },
+    {
+     "opt": "D",
+     "if": "**Hard thyroid nodule** with **diarrhea and flushing**",
+     "then": "Medullary carcinoma"
+    },
+    {
+     "opt": "E",
+     "if": "**Acute suppurative thyroiditis** with **fever and fluctuation**",
+     "then": "Microabscesses"
+    }
+   ]
   },
   "c-peds-01-q047": {
    "task": "Diagnosis",
-   "boardCall": "Aspirin ingestion + tachypnea 46/min + lethargy -> Mixed metabolic acidosis and respiratory alkalosis",
-   "hinge": "Salicylate poisoning directly stimulates medullary hyperventilation (respiratory alkalosis) while uncoupling oxidative phosphorylation, producing lactic and ketoacid accumulation (anion gap metabolic acidosis).",
+   "boardCall": "2-yr girl + **open aspirin bottle** + **RR 46, 38°C, lethargy** → Mixed metabolic acidosis and respiratory alkalosis",
+   "hinge": "Salicylates stimulate medullary hyperventilation while uncoupling oxidative phosphorylation to generate organic acids.",
    "trap": "Pure metabolic acidosis is common in very young infants, but early salicylate toxicity characteristically produces a mixed respiratory alkalosis and metabolic acidosis.",
    "options": {
     "A": {
@@ -4720,12 +5635,29 @@
      "text": "Measurement of serum aspirin concentration is ordered"
     }
    ],
-   "topic": "salicylate-toxicity"
+   "topic": "salicylate-toxicity",
+   "branches": [
+    {
+     "opt": "G",
+     "if": "**Opioid overdose** with **RR 6/min** and pinpoint pupils",
+     "then": "Respiratory acidosis"
+    },
+    {
+     "opt": "H",
+     "if": "**Early pulmonary embolism** or **panic hyperventilation**",
+     "then": "Respiratory alkalosis"
+    },
+    {
+     "opt": "A",
+     "if": "**Diabetic ketoacidosis** or **ethylene glycol** without tachypnea stimulus",
+     "then": "Metabolic acidosis"
+    }
+   ]
   },
   "c-peds-01-q048": {
    "task": "Prevention",
-   "boardCall": "Day-care picnic + barbecued chicken + Salmonella enteritis -> Cooking meats completely",
-   "hinge": "Nontyphoidal Salmonella gastroenteritis following consumption of barbecued poultry at a picnic is prevented by thorough cooking of poultry to safe internal temperatures.",
+   "boardCall": "day-care picnic + **barbecued chicken** + **Salmonella stool culture** → Cooking meats completely",
+   "hinge": "Nontyphoidal Salmonella outbreaks linked to poultry are prevented by cooking meats thoroughly.",
    "trap": "The day care's pet hamster tempts removing pets, but an acute foodborne outbreak linked to barbecued chicken points to undercooked meat.",
    "options": {
     "A": {
@@ -4842,12 +5774,29 @@
      "text": "stool culture grows Salmonella species"
     }
    ],
-   "topic": "foodborne-illnesses"
+   "topic": "foodborne-illnesses",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Day-care watery diarrhea** with **positive rotavirus**",
+     "then": "Strict hand-washing techniques"
+    },
+    {
+     "opt": "G",
+     "if": "**Travel to endemic area** preventing **Salmonella Typhi**",
+     "then": "Typhoid immunization"
+    },
+    {
+     "opt": "F",
+     "if": "**Watery diarrhea** after **swallowing lake water** (Cryptosporidium)",
+     "then": "Swimming prohibition"
+    }
+   ]
   },
   "c-peds-01-q049": {
    "task": "Prevention",
-   "boardCall": "Day-care watery diarrhea outbreak + positive rotavirus -> Strict hand-washing techniques at the day-care center",
-   "hinge": "Rotavirus transmits readily via the fecal-oral route and fomites in day-care centers; transmission is interrupted by strict hand-washing techniques and surface disinfection.",
+   "boardCall": "day-care diarrhea outbreak + **rotavirus positive** + pet turtle, well water → Strict hand-washing techniques",
+   "hinge": "Rotavirus spreads readily person-to-person via contaminated hands and fomites, stopped by handwashing.",
    "trap": "A private well and pet turtle tempt well filtration or removing pets, but rotavirus is confirmed and spreads child-to-child via hands and fomites.",
    "options": {
     "A": {
@@ -4961,12 +5910,29 @@
      "text": "stool culture grows no enteric pathogens"
     }
    ],
-   "topic": "gastroenteritis"
+   "topic": "gastroenteritis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Picnic poultry outbreak** growing **Salmonella species**",
+     "then": "Cooking meats completely"
+    },
+    {
+     "opt": "I",
+     "if": "**Well water outbreak** of **Giardia cysts**",
+     "then": "Well water filtration"
+    },
+    {
+     "opt": "D",
+     "if": "**Toddler handles pet turtle** developing **Salmonella**",
+     "then": "Removing pets"
+    }
+   ]
   },
   "c-peds-01-q050": {
    "task": "Next step",
-   "boardCall": "Term newborn day 4 + cephalhematoma + bilirubin 20.8 mg/dL -> Phototherapy",
-   "hinge": "Marked unconjugated hyperbilirubinemia (total bilirubin 20.8 mg/dL) at 4 days of life with cephalhematoma breakdown requires immediate phototherapy to prevent kernicterus.",
+   "boardCall": "4-day breastfed term newborn + **cephalhematoma** + **bilirubin 20.8** → Phototherapy",
+   "hinge": "Resorbing cephalhematoma pushes unconjugated bilirubin past 20, requiring immediate phototherapy against kernicterus.",
    "trap": "Normal breastfeeding and output tempt observation or formula supplementation, but a bilirubin exceeding 20 mg/dL mandates immediate phototherapy.",
    "options": {
     "A": {
@@ -5069,7 +6035,24 @@
      "text": "Serum total bilirubin concentration is 20.8 mg/dL"
     }
    ],
-   "topic": "hyperbilirubinemia"
+   "topic": "hyperbilirubinemia",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Bilirubin ≥ 25** or **opisthotonos / acute encephalopathy**",
+     "then": "Exchange transfusion"
+    },
+    {
+     "opt": "C",
+     "if": "**Day-4 bilirubin 13** in **well-hydrated term newborn**",
+     "then": "Repeat bilirubin in 6 hr"
+    },
+    {
+     "opt": "G",
+     "if": "**Mild breast milk jaundice** at **day 10, bilirubin 11**",
+     "then": "No intervention indicated"
+    }
+   ]
   }
  },
  "topics": {
@@ -8852,5 +9835,5 @@
    "evidence": "Checked 2026-10-30: [CDC HCV care](https://www.cdc.gov/hepatitis-c/hcp/clinical-care/), [CDC HBV exposure guidance](https://www.cdc.gov/std/treatment-guidelines/hbv.htm)."
   }
  },
- "updatedAt": "2026-11-07T08:13:48Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

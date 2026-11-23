@@ -8,8 +8,8 @@
  "items": {
   "C-OBGyn-12:Q001": {
    "task": "Next step",
-   "boardCall": "T1DM + missed insulin + hypotension + glucose 280 -> IV 0.9% saline first.",
-   "hinge": "Hypotension and dehydration in pregnancy DKA require immediate maternal volume resuscitation before insulin or delivery.",
+   "boardCall": "28 weeks + type 1 diabetes + missed insulin 2 days + **BP 90/60** + confusion + glucose 280 → IV 0.9% saline",
+   "hinge": "Fetal distress reflects maternal acidosis; fixing the mother rescues the fetus.",
    "trap": "Fetal minimal variability and contractions pull toward betamethasone or immediate cesarean delivery.",
    "options": {
     "A": {
@@ -92,12 +92,35 @@
      "trap": true
     }
    ],
-   "topic": "hyperglycemic-crises"
+   "topic": "hyperglycemic-crises",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Fetal bradycardia persists** after maternal DKA corrected",
+     "then": "Immediate cesarean delivery"
+    },
+    {
+     "opt": "B",
+     "if": "**Stable mother**, preterm labor at 30 weeks",
+     "then": "IM betamethasone",
+     "step": "watch for steroid hyperglycemia"
+    },
+    {
+     "opt": "C",
+     "if": "**Unresponsive with glucose 35**, no IV access",
+     "then": "IM glucagon"
+    },
+    {
+     "opt": null,
+     "if": "**Potassium 3.0** on initial labs",
+     "then": "Replete K+ before insulin"
+    }
+   ]
   },
   "C-OBGyn-12:Q002": {
    "task": "Diagnosis",
-   "boardCall": "Age 32 + 6-month amenorrhea + FSH 60 mIU/mL -> primary ovarian insufficiency.",
-   "hinge": "Markedly elevated FSH with hypoestrogenic mucosa in a woman under 40 confirms primary ovarian insufficiency.",
+   "boardCall": "age 32 + 6 months amenorrhea + pale vaginal mucosa + normal prolactin, TSH + **FSH 60** → Primary ovarian insufficiency",
+   "hinge": "High FSH means the ovary, not the pituitary, has failed before 40.",
    "trap": "Weight gain pulls toward PCOS, which has normal FSH rather than 60 mIU/mL.",
    "options": {
     "A": {
@@ -187,12 +210,34 @@
      "trap": true
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Hirsutism**, normal FSH, polycystic ovaries",
+     "then": "Polycystic ovarian syndrome"
+    },
+    {
+     "opt": "B",
+     "if": "**Low FSH**, intense exercise, low BMI",
+     "then": "Hypothalamic-pituitary amenorrhea"
+    },
+    {
+     "opt": "A",
+     "if": "**Low FSH**, headaches, empty sella on MRI",
+     "then": "Empty sella syndrome"
+    },
+    {
+     "opt": null,
+     "if": "**Age 52**, hot flashes",
+     "then": "Menopause"
+    }
+   ]
   },
   "C-OBGyn-12:Q003": {
    "task": "Next step",
-   "boardCall": "Bicornuate uterus on sonohysterography -> renal ultrasonography for associated anomalies.",
-   "hinge": "Paramesonephric duct anomalies share embryologic origin with the urinary tract, requiring renal ultrasonography.",
+   "boardCall": "three first-trimester losses + normal karyotypes + **two divergent cavities** + **indented fundus** → Renal ultrasonography",
+   "hinge": "Müllerian and renal structures develop together, so renal anomalies often coexist.",
    "trap": "Recurrent losses and uterine shape pull toward diagnostic laparoscopy, though imaging already confirmed bicornuate uterus.",
    "options": {
     "A": {
@@ -275,12 +320,30 @@
      "text": "two divergent endometrial cavities with an indented fundal contour"
     }
    ],
-   "topic": "recurrent-pregnancy-loss"
+   "topic": "recurrent-pregnancy-loss",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Absent vagina** with vertebral anomalies on exam",
+     "then": "X-ray of the spine"
+    },
+    {
+     "opt": "B",
+     "if": "**Dysmenorrhea and dyspareunia** with nodular uterosacrals",
+     "then": "Diagnostic laparoscopy"
+    },
+    {
+     "opt": null,
+     "if": "**Positive lupus anticoagulant** on repeat testing",
+     "then": "Antiphospholipid syndrome treatment",
+     "step": "heparin + low-dose aspirin next pregnancy"
+    }
+   ]
   },
   "C-OBGyn-12:Q004": {
    "task": "Next step",
-   "boardCall": "Preconception visit using partner's oocytes -> check serum rubella IgG.",
-   "hinge": "Live attenuated MMR vaccine is contraindicated in pregnancy, so rubella immunity must be checked beforehand.",
+   "boardCall": "preconception visit + **partner's oocytes** + donor sperm + oral HSV only + **immunization status unknown** → Serum rubella IgG",
+   "hinge": "MMR is live, so immunity must be confirmed before conception.",
    "trap": "IVF planning pulls toward ovarian reserve tests (AMH or FSH), which are irrelevant using partner's oocytes.",
    "options": {
     "A": {
@@ -355,12 +418,29 @@
      "text": "episodic oral herpes simplex"
     }
    ],
-   "topic": "routine-prenatal-care"
+   "topic": "routine-prenatal-care",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Using her own oocytes** at age 38",
+     "then": "Serum anti-müllerian hormone"
+    },
+    {
+     "opt": "A",
+     "if": "**Egg donor** not yet screened, family CF history",
+     "then": "Cystic fibrosis carrier screening"
+    },
+    {
+     "opt": "D",
+     "if": "**Partner has genital HSV**, her status unknown",
+     "then": "Serum HSV-2 antibody"
+    }
+   ]
   },
   "C-OBGyn-12:Q005": {
    "task": "Risk factor",
-   "boardCall": "Pregestational T1DM + A1c 10.8% at 8 weeks -> ventricular septal defect.",
-   "hinge": "Congenital heart defects such as VSD are the most common malformations from first-trimester maternal hyperglycemia.",
+   "boardCall": "8 weeks + pregestational type 1 diabetes + **HbA1c 10.8%** + glucose 180 → Ventricular septal defect",
+   "hinge": "Heart defects are the commonest diabetic embryopathy; NTDs are less frequent.",
    "trap": "Hyperglycemia during organogenesis also causes neural tube defects, pulling toward anencephaly or myelomeningocele.",
    "options": {
     "A": {
@@ -442,12 +522,34 @@
      "text": "hemoglobin A1c of 10.8%"
     }
    ],
-   "topic": "type-1-diabetes-mellitus"
+   "topic": "type-1-diabetes-mellitus",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Valproate** or carbamazepine exposure",
+     "then": "Myelomeningocele"
+    },
+    {
+     "opt": "B",
+     "if": "**Maternal SLE with anti-Ro** antibodies",
+     "then": "Atrioventricular block"
+    },
+    {
+     "opt": "A",
+     "if": "**Folate deficiency** at conception, no diabetes",
+     "then": "Anencephaly"
+    },
+    {
+     "opt": null,
+     "if": "**Most specific** diabetic anomaly asked",
+     "then": "Caudal regression syndrome"
+    }
+   ]
   },
   "C-OBGyn-12:Q006": {
    "task": "Diagnosis",
-   "boardCall": "Postmenopausal + breast mass + stippled calcifications -> breast cancer.",
-   "hinge": "Clustered stippled microcalcifications on mammography in a postmenopausal woman strongly indicate breast malignancy.",
+   "boardCall": "age 57 + postmenopausal + 2-cm mobile mass + **stippled microcalcifications** → Breast cancer",
+   "hinge": "Mobility does not reassure after menopause; microcalcifications suggest malignancy.",
    "trap": "Mobile, nontender mass pulls toward fibroadenoma, which occurs in younger women without stippled microcalcifications.",
    "options": {
     "A": {
@@ -550,12 +652,34 @@
      "text": "solid mass with multiple, small, stippled calcifications"
     }
    ],
-   "topic": "breast-neoplasia"
+   "topic": "breast-neoplasia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Age 22**, rubbery mobile mass, no calcifications",
+     "then": "Fibroadenoma"
+    },
+    {
+     "opt": "D",
+     "if": "**Recent breast trauma**, oil cyst on imaging",
+     "then": "Fat necrosis"
+    },
+    {
+     "opt": "H",
+     "if": "**Bloody nipple discharge**, small subareolar mass",
+     "then": "Intraductal papilloma"
+    },
+    {
+     "opt": "F",
+     "if": "**Cyclic tenderness**, bilateral lumpy breasts, age 35",
+     "then": "Fibrocystic changes"
+    }
+   ]
   },
   "C-OBGyn-12:Q007": {
    "task": "Ethics",
-   "boardCall": "Omits nonsurgical options during consent -> violates patient autonomy.",
-   "hinge": "Withholding reasonable nonsurgical alternatives prevents informed consent and violates patient autonomy.",
+   "boardCall": "uterine prolapse + **nonsurgical options not discussed** + surgery done + good recovery → Autonomy",
+   "hinge": "Consent without alternatives is not informed, regardless of the outcome.",
    "trap": "Good surgical outcome pulls toward thinking beneficence was upheld, but informed choice requires disclosing alternatives.",
    "options": {
     "A": {
@@ -622,12 +746,29 @@
      "text": "successfully undergoes the procedure and recovers well"
     }
    ],
-   "topic": "informed-consent-and-capacity"
+   "topic": "informed-consent-and-capacity",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Unneeded risky surgery** causing harm",
+     "then": "Nonmaleficence"
+    },
+    {
+     "opt": "B",
+     "if": "**Withholds effective treatment** the patient wants",
+     "then": "Beneficence"
+    },
+    {
+     "opt": "C",
+     "if": "**Denies pessary** because of insurance status",
+     "then": "Justice"
+    }
+   ]
   },
   "C-OBGyn-12:Q008": {
    "task": "Next step",
-   "boardCall": "Pregnant rubella exposure + titer < 1:10 at 2 days -> repeat titer in 14-21 days.",
-   "hinge": "Antibodies take 2-3 weeks to rise after rubella exposure, so repeat serology in 14-21 days checks seroconversion.",
+   "boardCall": "8 weeks + rubella exposure + no rubella history + **titer below 1:10** + 2 days after exposure → Repeat titer in 14–21 days",
+   "hinge": "Antibodies need weeks to appear; one early titer cannot show infection.",
    "trap": "Low titer pulls toward immediate rubella vaccination, which is live attenuated and contraindicated in pregnancy.",
    "options": {
     "A": {
@@ -702,12 +843,30 @@
      "text": "Two days later, a rubella antibody titer shows less than 1:10 dilution"
     }
    ],
-   "topic": "congenital-infections"
+   "topic": "congenital-infections",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Titer 1:16** before exposure",
+     "then": "Reassurance of immunity"
+    },
+    {
+     "opt": "E",
+     "if": "**Seroconversion** with rubella IgM at 8 weeks",
+     "then": "Counsel; offer therapeutic abortion"
+    },
+    {
+     "opt": "C",
+     "if": "**Nonimmune and not pregnant**",
+     "then": "Rubella vaccine now",
+     "step": "avoid conception for 1 month"
+    }
+   ]
   },
   "C-OBGyn-12:Q009": {
    "task": "Screening",
-   "boardCall": "Routine 6-week postpartum visit -> screen for major depressive disorder.",
-   "hinge": "All postpartum patients should be universally screened for postpartum depression regardless of uncomplicated delivery.",
+   "boardCall": "6 weeks postpartum + breast-feeding well + uncomplicated delivery + **routine postpartum visit** → Major depressive disorder",
+   "hinge": "Depression screening is universal postpartum; the other screens have no trigger.",
    "trap": "Asymptomatic uncomplicated visit pulls toward routine metabolic screens like diabetes or lipids, which lack indication at age 31.",
    "options": {
     "A": {
@@ -781,12 +940,35 @@
      "text": "exclusively breast-fed"
     }
    ],
-   "topic": "postpartum-care"
+   "topic": "postpartum-care",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Gestational diabetes** this pregnancy",
+     "then": "Type 2 diabetes mellitus",
+     "step": "75-g OGTT at 4–12 weeks"
+    },
+    {
+     "opt": "C",
+     "if": "**Galactorrhea and amenorrhea** months after weaning",
+     "then": "Hyperprolactinemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 40** with average risk",
+     "then": "Breast cancer"
+    },
+    {
+     "opt": "B",
+     "if": "**Preeclampsia** this pregnancy",
+     "then": "Hyperlipidemia"
+    }
+   ]
   },
   "C-OBGyn-12:Q010": {
    "task": "Diagnosis",
-   "boardCall": "Postpartum fever + uterine tenderness + malodorous lochia -> endometritis.",
-   "hinge": "Uterine fundal tenderness and malodorous lochia after prolonged rupture of membranes confirm postpartum endometritis.",
+   "boardCall": "1 week postpartum + fever 38.8 + **tender fundus** + **malodorous lochia** + 15-h ROM → Endometritis",
+   "hinge": "Bilateral engorgement without erythema explains pain, not this fever source.",
    "trap": "Firm, engorged, tender breasts pull toward mastitis, which shows localized erythema rather than uterine tenderness.",
    "options": {
     "A": {
@@ -875,12 +1057,34 @@
      "trap": true
     }
    ],
-   "topic": "postpartum-care"
+   "topic": "postpartum-care",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Unilateral wedge of erythema**, flu-like symptoms",
+     "then": "Mastitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Ovarian vein clot** on CT, spiking fevers",
+     "then": "Septic pelvic thrombophlebitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Dysuria and flank pain**, nontender uterus",
+     "then": "Urinary tract infection"
+    },
+    {
+     "opt": "A",
+     "if": "**Low-grade fever**, bilateral firm breasts, normal uterus",
+     "then": "Breast engorgement"
+    }
+   ]
   },
   "C-OBGyn-12:Q011": {
    "task": "Next step",
-   "boardCall": "HSIL on cervical cytology -> colposcopic-directed biopsy.",
-   "hinge": "High-grade squamous intraepithelial lesion requires colposcopy and directed biopsy to evaluate for CIN 2/3 or invasive cancer.",
+   "boardCall": "age 42 + routine exam + normal pelvic exam + **HSIL on cytology** → Colposcopic-directed biopsy",
+   "hinge": "A high-grade smear needs tissue diagnosis to exclude invasion.",
    "trap": "Normal physical and pelvic exams pull toward repeating cytology, which delays needed histologic evaluation.",
    "options": {
     "A": {
@@ -964,12 +1168,34 @@
      "text": "high-grade squamous intraepithelial lesion"
     }
    ],
-   "topic": "cervical-cancer-screening"
+   "topic": "cervical-cancer-screening",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Lesion extends into canal**, unsatisfactory colposcopy",
+     "then": "Cone biopsy"
+    },
+    {
+     "opt": "C",
+     "if": "**Recurrent CIN 3**, childbearing complete",
+     "then": "Hysterectomy"
+    },
+    {
+     "opt": "D",
+     "if": "**ASC-US, HPV unknown**, age 23",
+     "then": "Repeat cytology"
+    },
+    {
+     "opt": "E",
+     "if": "**Trichomonads** with inflammation only",
+     "then": "Metronidazole therapy"
+    }
+   ]
   },
   "C-OBGyn-12:Q012": {
    "task": "Next step",
-   "boardCall": "Advanced ovarian cancer + peritoneal carcinomatosis + SBO + comfort goal -> palliative care.",
-   "hinge": "Poor functional status, diffuse peritoneal metastases, and patient goals centered on pain relief call for palliative care.",
+   "boardCall": "ovarian cancer + **peritoneal carcinomatosis** + bowel obstruction + mostly bedbound + **goal is comfort** → Palliative care",
+   "hinge": "Diffuse disease and poor function make surgery futile; her goals decide.",
    "trap": "Dilated small bowel loops on CT pull toward exploratory laparotomy, which carries high morbidity with low benefit here.",
    "options": {
     "A": {
@@ -1051,12 +1277,34 @@
      "text": "goal is to be pain free to enjoy time with her family"
     }
    ],
-   "topic": "palliative-and-hospice-care"
+   "topic": "palliative-and-hospice-care",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Single adhesive band**, good function, wants surgery",
+     "then": "Exploratory laparotomy"
+    },
+    {
+     "opt": "B",
+     "if": "**Newly diagnosed**, active, wants treatment",
+     "then": "Chemotherapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Headache and vomiting**, no obstruction on CT",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "A",
+     "if": "**Single painful bone metastasis**",
+     "then": "Palliative radiation therapy"
+    }
+   ]
   },
   "C-OBGyn-12:Q013": {
    "task": "Diagnosis",
-   "boardCall": "Sexually active + dysuria + sterile pyuria + failed nitrofurantoin -> Chlamydia trachomatis.",
-   "hinge": "Sterile pyuria (WBCs without bacteria on Gram stain) unresponsive to nitrofurantoin indicates Chlamydia trachomatis urethritis.",
+   "boardCall": "age 19 + sexually active + dysuria + **WBCs without bacteria** + **no response to nitrofurantoin** → Chlamydia trachomatis",
+   "hinge": "Intracellular chlamydia doesn't Gram stain and ignores nitrofurantoin.",
    "trap": "Urinary frequency, urgency, and dysuria pull toward Escherichia coli cystitis, which shows bacteria on Gram stain.",
    "options": {
     "A": {
@@ -1142,12 +1390,34 @@
      "text": "treatment with nitrofurantoin is begun"
     }
    ],
-   "topic": "chlamydia-infection"
+   "topic": "chlamydia-infection",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Gram-negative diplococci** on smear",
+     "then": "Neisseria gonorrhoeae"
+    },
+    {
+     "opt": "D",
+     "if": "**Gram-negative rods**, prompt nitrofurantoin response",
+     "then": "Escherichia coli"
+    },
+    {
+     "opt": "C",
+     "if": "**Gram-positive cocci in chains**, recent catheter",
+     "then": "Enterococcus faecalis"
+    },
+    {
+     "opt": "A",
+     "if": "**Thick white discharge**, vulvar itching",
+     "then": "Candida albicans"
+    }
+   ]
   },
   "C-OBGyn-12:Q014": {
    "task": "Next step",
-   "boardCall": "Positive urine pregnancy test + LMP 4 months ago + nonpalpable fundus -> pelvic ultrasonography.",
-   "hinge": "Size-date discrepancy with a positive pregnancy test requires pelvic ultrasonography to establish location, viability, and gestational age.",
+   "boardCall": "age 41 + LMP 4 months ago + nausea + **positive urine hCG** + **fundus not palpable** → Pelvic ultrasonography",
+   "hinge": "Size-date mismatch needs location, viability and dating, which only imaging gives.",
    "trap": "Uncertain gestational age pulls toward serum beta-hCG, which cannot locate or date the pregnancy without ultrasound.",
    "options": {
     "A": {
@@ -1215,12 +1485,30 @@
      "text": "Urine pregnancy test is positive"
     }
    ],
-   "topic": "routine-prenatal-care"
+   "topic": "routine-prenatal-care",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Empty uterus** on ultrasound",
+     "then": "Serum β-hCG concentration"
+    },
+    {
+     "opt": null,
+     "if": "**Snowstorm pattern**, hCG very high",
+     "then": "Molar pregnancy",
+     "step": "suction curettage, then hCG to zero"
+    },
+    {
+     "opt": null,
+     "if": "**Negative urine hCG**, hot flashes",
+     "then": "Serum FSH"
+    }
+   ]
   },
   "C-OBGyn-12:Q015": {
    "task": "Diagnosis",
-   "boardCall": "Bladder pain worse with filling, relieved by voiding + normal UA -> interstitial cystitis.",
-   "hinge": "Chronic suprapubic pain aggravated by bladder filling and relieved by voiding with negative urinalysis is interstitial cystitis.",
+   "boardCall": "3 months suprapubic pain + **worse with filling, eased by voiding** + urgency, frequency + **normal urinalysis** → Interstitial cystitis",
+   "hinge": "Pain tied to bladder filling with sterile urine defines bladder pain syndrome.",
    "trap": "Urinary urgency and frequency pull toward bacterial cystitis or urge incontinence, which lack filling-related pain relief after voiding.",
    "options": {
     "A": {
@@ -1306,12 +1594,34 @@
      "text": "10,000 colonies/mL of Lactobacillus species"
     }
    ],
-   "topic": "interstitial-cystitis"
+   "topic": "interstitial-cystitis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Pyuria, nitrites**, E. coli over 100,000",
+     "then": "Bacterial cystitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Tender anterior vaginal mass** with postvoid dribbling",
+     "then": "Urethral diverticulum"
+    },
+    {
+     "opt": "E",
+     "if": "**Leakage on the way** to the toilet, no pain",
+     "then": "Urge incontinence"
+    },
+    {
+     "opt": "C",
+     "if": "**Leakage with cough** or sneeze",
+     "then": "Stress incontinence"
+    }
+   ]
   },
   "C-OBGyn-12:Q016": {
    "task": "Diagnosis",
-   "boardCall": "Adolescent + cyclic menstrual cramps since menarche + normal exam -> primary dysmenorrhea.",
-   "hinge": "Cyclic menstrual pain starting near menarche with normal pelvic exam and OCP response is primary dysmenorrhea.",
+   "boardCall": "age 17 + **cramps since menarche** + regular cycles + **normal pelvic exam** + responds to OCPs → Primary dysmenorrhea",
+   "hinge": "Prostaglandin pain from the start of ovulatory cycles, without pathology.",
    "trap": "Worsening cramps over 6 months pulls toward endometriosis, which typically presents later with dyspareunia or abnormal exam.",
    "options": {
     "A": {
@@ -1403,12 +1713,34 @@
      "text": "Treatment with an oral contraceptive improves her symptoms"
     }
    ],
-   "topic": "dysmenorrhea"
+   "topic": "dysmenorrhea",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Dyspareunia**, nodular uterosacral ligaments, fails OCPs",
+     "then": "Endometriosis"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 45**, boggy enlarged uterus, heavy bleeding",
+     "then": "Adenomyosis"
+    },
+    {
+     "opt": "F",
+     "if": "**Mid-cycle unilateral pain** for hours",
+     "then": "Mittelschmerz"
+    },
+    {
+     "opt": "E",
+     "if": "**Enlarged irregular uterus** with heavy menses",
+     "then": "Leiomyomata uteri"
+    }
+   ]
   },
   "C-OBGyn-12:Q017": {
    "task": "Diagnosis",
-   "boardCall": "17-year-old + day-1 cyclic cramps + nausea + normal pelvic exam -> primary dysmenorrhea.",
-   "hinge": "Day-1 menstrual cramping and nausea within 2 years of menarche with normal pelvic exam indicates primary dysmenorrhea.",
+   "boardCall": "age 17 + **day-1 cramps** + nausea + regular cycles + **normal pelvic exam** → Primary dysmenorrhea",
+   "hinge": "Onset with ovulatory cycles and no pelvic findings means no secondary cause.",
    "trap": "8-month progressive history pulls toward secondary dysmenorrhea, which typically involves older age or abnormal pelvic findings.",
    "options": {
     "A": {
@@ -1494,12 +1826,34 @@
      "text": "Pelvic examination shows normal findings"
     }
    ],
-   "topic": "dysmenorrhea"
+   "topic": "dysmenorrhea",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**New onset at 30** with dyspareunia, fixed uterus",
+     "then": "Secondary dysmenorrhea"
+    },
+    {
+     "opt": "B",
+     "if": "**Mid-cycle one-sided pain**",
+     "then": "Mittelschmerz"
+    },
+    {
+     "opt": "A",
+     "if": "**Multiparous 45-year-old**, boggy enlarged uterus",
+     "then": "Adenomyosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Adnexal mass** recurring on ultrasound",
+     "then": "Recurrent ovarian cysts"
+    }
+   ]
   },
   "C-OBGyn-12:Q018": {
    "task": "Mechanism",
-   "boardCall": "Epidural analgesia -> BP 90/50 -> fetal heart rate 90/min -> maternal hypotension.",
-   "hinge": "Sympathetic blockade from epidural anesthesia causes maternal hypotension and reduced uteroplacental perfusion, triggering fetal bradycardia.",
+   "boardCall": "term labor + epidural placed + **BP 130/70 to 90/50** + maternal tachycardia + FHR 90 → Maternal hypotension",
+   "hinge": "Sympathetic block drops uterine perfusion; nothing suggests a mechanical fetal event.",
    "trap": "Persistent fetal bradycardia after labor progression pulls toward umbilical cord prolapse or uterine rupture.",
    "options": {
     "A": {
@@ -1582,12 +1936,34 @@
      "trap": true
     }
    ],
-   "topic": "intrapartum-fetal-monitoring"
+   "topic": "intrapartum-fetal-monitoring",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Membranes rupture**, cord palpable in vagina",
+     "then": "Umbilical cord prolapse"
+    },
+    {
+     "opt": "E",
+     "if": "**Fetal parts palpable** abdominally, contractions stop",
+     "then": "Uterine rupture"
+    },
+    {
+     "opt": "A",
+     "if": "**Tinnitus, perioral numbness**, seizure after epidural dose",
+     "then": "Intravenous lidocaine injection"
+    },
+    {
+     "opt": "C",
+     "if": "**Brief decelerations** during rapid second-stage descent",
+     "then": "Rapid fetal descent"
+    }
+   ]
   },
   "C-OBGyn-12:Q019": {
    "task": "Diagnosis",
-   "boardCall": "Post-menses abdominal pain + fever + purulent cervical discharge + painful uterus -> salpingitis.",
-   "hinge": "Purulent cervical os discharge with uterine tenderness and leukocytosis after menses defines pelvic inflammatory disease/salpingitis.",
+   "boardCall": "LMP 6 days ago + lower abdominal pain + temp 37.8 + **purulent cervical discharge** + **uterine tenderness** → Salpingitis",
+   "hinge": "Post-menstrual onset with cervical pus points to ascending infection, not appendix.",
    "trap": "Lower abdominal tenderness with slight rebound and hypoactive bowel sounds pulls toward appendicitis.",
    "options": {
     "A": {
@@ -1673,12 +2049,34 @@
      "text": "leukocyte count is 15,000/mm3"
     }
    ],
-   "topic": "cervicitis-pid"
+   "topic": "cervicitis-pid",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Periumbilical pain** migrating to RLQ, normal cervix",
+     "then": "Appendicitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Sudden unilateral pain** with adnexal mass, afebrile",
+     "then": "Torsion of an ovarian cyst"
+    },
+    {
+     "opt": "B",
+     "if": "**Months of discharge**, no pain or fever",
+     "then": "Chronic cervicitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Child after viral URI**, enlarged mesenteric nodes",
+     "then": "Mesenteric adenitis"
+    }
+   ]
   },
   "C-OBGyn-12:Q020": {
    "task": "Next step",
-   "boardCall": "Missed abortion + minimal bleeding + closed os + wants time -> discharge with 48-h follow-up.",
-   "hinge": "Hemodynamically stable early pregnancy loss with a closed os and minimal bleeding can be safely managed expectantly at home.",
+   "boardCall": "12 weeks + **no cardiac activity** + **closed os, minimal bleeding** + stable vitals + wants time with family → Discharge, follow-up in 48 h",
+   "hinge": "Stable missed abortion allows expectant care; her choice of timing is valid.",
    "trap": "Fetal pole without cardiac activity pulls toward immediate misoprostol or D&C, overriding patient preference for time.",
    "options": {
     "A": {
@@ -1758,12 +2156,34 @@
      "text": "asks to go home to discuss the results with her family"
     }
    ],
-   "topic": "early-pregnancy-loss"
+   "topic": "early-pregnancy-loss",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Heavy bleeding** with hypotension",
+     "then": "Dilatation and curettage"
+    },
+    {
+     "opt": "D",
+     "if": "**Wants medical completion** today",
+     "then": "Vaginal misoprostol"
+    },
+    {
+     "opt": "B",
+     "if": "**No sac seen**, uterus empty",
+     "then": "Quantitative serum β-hCG"
+    },
+    {
+     "opt": null,
+     "if": "**Rh-negative**",
+     "then": "Rh immune globulin"
+    }
+   ]
   },
   "C-OBGyn-12:Q021": {
    "task": "Mechanism",
-   "boardCall": "Strong urges to void + daily urine loss + no cough leakage -> detrusor instability.",
-   "hinge": "Urinary urgency with involuntary leakage and no stress triggers or infection is caused by uninhibited detrusor contractions.",
+   "boardCall": "age 67 + **strong urges with leakage** + **no leakage on cough** + normal urinalysis + small cystocele → Detrusor muscle instability",
+   "hinge": "Urge leakage reflects uninhibited contractions; anterior wall laxity causes stress leakage.",
    "trap": "Small cystocele on pelvic exam pulls toward anterior vaginal wall relaxation, which causes stress incontinence rather than urgency.",
    "options": {
     "A": {
@@ -1852,12 +2272,35 @@
      "text": "0–1 RBC/hpf, 0–1 WBC/hpf"
     }
    ],
-   "topic": "urinary-incontinence"
+   "topic": "urinary-incontinence",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Leakage with cough** and urethral hypermobility",
+     "then": "Relaxation of the anterior vaginal wall"
+    },
+    {
+     "opt": "A",
+     "if": "**Pyuria and bacteriuria** with dysuria",
+     "then": "Acute cystitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Painless hematuria** in a smoker",
+     "then": "Transitional cell carcinoma",
+     "step": "cystoscopy"
+    },
+    {
+     "opt": null,
+     "if": "**Postvoid residual 400 mL**, diabetic neuropathy",
+     "then": "Overflow incontinence"
+    }
+   ]
   },
   "C-OBGyn-12:Q022": {
    "task": "Pharmacology",
-   "boardCall": "Irregular heavy menses + day-30 progesterone 0.5 ng/mL + normal ultrasound -> medroxyprogesterone.",
-   "hinge": "Low luteal progesterone confirms anovulatory bleeding from unopposed estrogen, treated with cyclic progestin such as medroxyprogesterone.",
+   "boardCall": "age 27 + irregular heavy menses + normal TSH, prolactin + **progesterone 0.5 on day 30** + normal ultrasound → Medroxyprogesterone",
+   "hinge": "No ovulation means no progesterone; adding a progestin stabilizes the endometrium.",
    "trap": "Heavy bleeding and irregular cycles pull toward ethinyl estradiol or clomiphene, which worsen unopposed estrogen or induce ovulation.",
    "options": {
     "A": {
@@ -1932,12 +2375,35 @@
      "text": "Pelvic ultrasonography shows no abnormalities"
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Prolactin 120** with galactorrhea",
+     "then": "Bromocriptine"
+    },
+    {
+     "opt": "B",
+     "if": "**Wants pregnancy** now, anovulatory",
+     "then": "Clomiphene",
+     "step": "letrozole if PCOS"
+    },
+    {
+     "opt": "C",
+     "if": "**Acute heavy bleeding**, hemodynamically stable",
+     "then": "High-dose ethinyl estradiol"
+    },
+    {
+     "opt": "D",
+     "if": "**Low FSH and LH**, hypothalamic amenorrhea, wants pregnancy",
+     "then": "Gonadotropin"
+    }
+   ]
   },
   "C-OBGyn-12:Q023": {
    "task": "Diagnosis",
-   "boardCall": "New partner + inconsistent condoms + yellow-pink os discharge + friable cervix -> cervicitis.",
-   "hinge": "Mucopurulent discharge from the cervical os and a cervix that bleeds easily on touch indicate infectious cervicitis.",
+   "boardCall": "new partner + inconsistent condoms + **mucopurulent os discharge** + **friable cervix** + negative hCG → Cervicitis",
+   "hinge": "Depot bleeding would not cause pus; unprotected sex makes infection likely.",
    "trap": "Two-year depot medroxyprogesterone use pulls toward breakthrough bleeding, which does not cause a friable cervix or purulent discharge.",
    "options": {
     "A": {
@@ -2023,12 +2489,34 @@
      "text": "cervix bleeds easily to touch"
     }
    ],
-   "topic": "cervicitis-pid"
+   "topic": "cervicitis-pid",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Normal cervix**, spotting on depot medroxyprogesterone",
+     "then": "Breakthrough bleeding"
+    },
+    {
+     "opt": "C",
+     "if": "**Exophytic friable mass**, no screening for years",
+     "then": "Cervical cancer"
+    },
+    {
+     "opt": "D",
+     "if": "**Smooth red lesion** protruding from os",
+     "then": "Cervical polyp"
+    },
+    {
+     "opt": null,
+     "if": "**Adnexal or uterine tenderness** added",
+     "then": "Pelvic inflammatory disease"
+    }
+   ]
   },
   "C-OBGyn-12:Q024": {
    "task": "Next step",
-   "boardCall": "Palpable 1.5-cm breast mass + dense breasts on negative mammogram -> breast ultrasonography.",
-   "hinge": "Dense breast tissue limits mammographic sensitivity, so a persistent palpable mass requires targeted breast ultrasonography.",
+   "boardCall": "age 42 + **persistent 1.5-cm palpable mass** + **dense breasts** + negative mammogram → Breast ultrasonography",
+   "hinge": "Dense tissue hides masses; a palpable lump still needs characterization.",
    "trap": "Negative mammogram pulls toward 3-month follow-up, which risks missing malignancy in dense breasts.",
    "options": {
     "A": {
@@ -2103,12 +2591,35 @@
      "text": "dense breast tissue bilaterally; no masses or calcifications are seen"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Cyclic tenderness**, no discrete mass",
+     "then": "Follow-up in 3 months",
+     "step": "after menses"
+    },
+    {
+     "opt": "D",
+     "if": "**BRCA carrier** needing annual screening",
+     "then": "MRI of the breast"
+    },
+    {
+     "opt": "A",
+     "if": "**Atypia on core biopsy**",
+     "then": "Excisional biopsy"
+    },
+    {
+     "opt": "C",
+     "if": "**Large ulcerated mass** too big to excise",
+     "then": "Incisional biopsy"
+    }
+   ]
   },
   "C-OBGyn-12:Q025": {
    "task": "Prevention",
-   "boardCall": "Anaphylaxis to cefazolin despite charted cephalosporin allergy -> surgical time-out.",
-   "hinge": "A structured pre-procedure surgical time-out requires active verbal verification of allergies by the team before drug administration.",
+   "boardCall": "cesarean + **cephalosporin allergy charted** + cefazolin given + anaphylaxis → Surgical time-out",
+   "hinge": "The allergy was already recorded; the failure was verification at dosing.",
    "trap": "Charted allergy pulls toward admission allergy review, which is passive and failed to stop perioperative cefazolin.",
    "options": {
     "A": {
@@ -2192,7 +2703,24 @@
      "text": "undergoes cesarean delivery because of arrest of dilation"
     }
    ],
-   "topic": "medical-errors-and-patient-safety"
+   "topic": "medical-errors-and-patient-safety",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Allergy never recorded** in the chart",
+     "then": "Review allergies on admission"
+    },
+    {
+     "opt": null,
+     "if": "**Retained sponge** found after closure",
+     "then": "Standardized surgical counts"
+    },
+    {
+     "opt": null,
+     "if": "**Wrong patient** receives a transfusion",
+     "then": "Two-identifier bedside check"
+    }
+   ]
   },
   "C-OBGyn-12:Q026": {
    "task": "Diagnosis",
@@ -7439,5 +7967,5 @@
    "evidence": "Checked 2026-10-30: [AHA/ACC PE (2026)](https://www.jacc.org/doi/10.1016/j.jacc.2025.11.005), [ASH diagnosis (2018)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6258916/)."
   }
  },
- "updatedAt": "2026-11-18T23:36:14Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

@@ -8,8 +8,8 @@
  "items": {
   "746226": {
    "task": "Next step",
-   "boardCall": "Pearly gray retracted tympanic membranes with decreased mobility after treated AOM -> observation without antibiotics.",
-   "hinge": "Retracted pearly gray tympanic membranes with fluid but no acute inflammation represent otitis media with effusion, which resolves spontaneously.",
+   "boardCall": "age 2 + amoxicillin finished 5 days ago + 3 AOM in a year + **pearly gray retracted TMs** + **no fever or bulging** → No management indicated",
+   "hinge": "Fluid without inflammation is effusion, which clears on its own for months.",
    "trap": "History of three otitis media episodes tempts antibiotic re-treatment or surgery, but effusion without acute inflammation requires observation.",
    "options": {
     "A": {
@@ -92,12 +92,34 @@
      "trap": true
     }
    ],
-   "topic": "acute-otitis-media"
+   "topic": "acute-otitis-media",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Bulging red TM** again within 30 days of amoxicillin",
+     "then": "Amoxicillin-clavulanate or cefdinir"
+    },
+    {
+     "opt": "B",
+     "if": "**New fever and bulging TM** months later",
+     "then": "Amoxicillin therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Effusion over 3 months** with hearing loss",
+     "then": "Tympanostomy tubes"
+    },
+    {
+     "opt": "A",
+     "if": "**Tubes failed**, recurrent effusion, age 4",
+     "then": "Adenoidectomy with repeat tubes"
+    }
+   ]
   },
   "746227": {
    "task": "Diagnosis",
-   "boardCall": "Infantile hypotonia + hyperphagia starting at age 3 + almond-shaped eyes -> Prader-Willi syndrome.",
-   "hinge": "Infantile hypotonia shifting to severe hyperphagia, developmental delay, and obesity indicates Prader-Willi syndrome.",
+   "boardCall": "infant hypotonia + **hyperphagia from age 3** + 98th percentile weight + **almond-shaped eyes** + speech delay → Prader-Willi syndrome",
+   "hinge": "Poor-feeding floppy infancy turning into insatiable appetite defines paternal 15q loss.",
    "trap": "Severe hypotonia in infancy tempts neuromuscular disorders or Angelman syndrome, but hyperphagia and obesity point to Prader-Willi.",
    "options": {
     "A": {
@@ -192,12 +214,34 @@
      "text": "almond-shaped eyes and a prominent nasal bridge"
     }
    ],
-   "topic": "chromosomal-and-genetic-disorders"
+   "topic": "chromosomal-and-genetic-disorders",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Inappropriate laughter**, hand flapping, no speech",
+     "then": "Angelman syndrome"
+    },
+    {
+     "opt": "F",
+     "if": "**Elfin face**, supravalvular aortic stenosis, hypercalcemia",
+     "then": "Williams syndrome"
+    },
+    {
+     "opt": "E",
+     "if": "**Girl loses hand skills** with hand-wringing after 1 year",
+     "then": "Rett disorder"
+    },
+    {
+     "opt": "B",
+     "if": "**Upslanting fissures**, single palmar crease, AV canal",
+     "then": "Down syndrome"
+    }
+   ]
   },
   "746228": {
    "task": "Other",
-   "boardCall": "Acrocyanosis (1) + pulse 80 (1) + grimace (1) + tone (1) + irregular breathing (1) -> Apgar 5 (range 4-6).",
-   "hinge": "Each of the five parameters (acrocyanosis, pulse <100, decreased tone, decreased reflex, irregular respiration) scores 1 point, yielding 5.",
+   "boardCall": "5 minutes + **acrocyanosis** + HR 80 + some grimace + some flexion + **irregular breathing** → Apgar 4–6",
+   "hinge": "Every sign is present but impaired, so each scores 1 for 5.",
    "trap": "Severely decreased tone and slow heart rate tempt a score of 2-3, but every category still earns 1 point.",
    "options": {
     "A": {
@@ -282,12 +326,34 @@
      "text": "Five minutes after delivery"
     }
    ],
-   "topic": "neonatal-resuscitation"
+   "topic": "neonatal-resuscitation",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Limp, no response**, HR 80, gasping",
+     "then": "Apgar 2–3"
+    },
+    {
+     "opt": "A",
+     "if": "**No heart rate**, apneic, blue, limp",
+     "then": "Apgar 0–1"
+    },
+    {
+     "opt": "D",
+     "if": "**HR 120**, strong cry, acrocyanosis, some flexion",
+     "then": "Apgar 7–8"
+    },
+    {
+     "opt": "E",
+     "if": "**Pink all over**, crying, active motion",
+     "then": "Apgar 9–10"
+    }
+   ]
   },
   "746229": {
    "task": "Risk factor",
-   "boardCall": "Bicuspid aortic valve with mild gradient in childhood -> increased risk for bacterial endocarditis.",
-   "hinge": "Turbulent flow across a bicuspid aortic valve creates endothelial injury and predisposition to bacterial endocarditis during childhood.",
+   "boardCall": "age 14 + **bicuspid aortic valve** + mild gradient + early diastolic murmur + asymptomatic → Bacterial endocarditis",
+   "hinge": "Turbulent jets injure endothelium early; dissection and stenosis come in adulthood.",
    "trap": "Aortic dissection is a classic adult complication of bicuspid valve, but infective endocarditis is the primary childhood risk.",
    "options": {
     "A": {
@@ -372,12 +438,34 @@
      "text": "asymptomatic 14-year-old boy"
     }
    ],
-   "topic": "valvular-heart-disease"
+   "topic": "valvular-heart-disease",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Adult** with dilated ascending aorta",
+     "then": "Dissecting aortic aneurysm"
+    },
+    {
+     "opt": "E",
+     "if": "**Severe gradient**, exertional chest pain",
+     "then": "Syncope"
+    },
+    {
+     "opt": "B",
+     "if": "**Cyanotic heart disease** with right-to-left shunt",
+     "then": "Brain abscess"
+    },
+    {
+     "opt": "C",
+     "if": "**Severe regurgitation**, dilated LV",
+     "then": "Congestive heart failure"
+    }
+   ]
   },
   "746230": {
    "task": "Diagnosis",
-   "boardCall": "Recurrent oral ulcers + fever every 3 weeks + segmented neutrophils 4% -> cyclic neutropenia.",
-   "hinge": "Regular 3-week periodicity of fever and aphthous ulcers with profound isolated neutropenia (ANC 160/mm³) defines cyclic neutropenia.",
+   "boardCall": "age 2 + fever and mouth ulcers + **episodes every 3 weeks** + **neutrophils 4%** + normal Hb, platelets → Cyclic neutropenia",
+   "hinge": "Predictable 21-day nadirs with recovery between episodes mark a cycling marrow.",
    "trap": "Severe congenital neutropenia and leukemia cause severe persistent neutropenia or pancytopenia, not self-resolving 21-day cycles.",
    "options": {
     "A": {
@@ -490,12 +578,34 @@
      "text": "fever and mouth sores"
     }
    ],
-   "topic": "neutropenia"
+   "topic": "neutropenia",
+   "branches": [
+    {
+     "opt": "G",
+     "if": "**Persistent ANC under 200** from birth, severe infections",
+     "then": "Severe congenital neutropenia"
+    },
+    {
+     "opt": "F",
+     "if": "**Pancytopenia**, blasts, hepatosplenomegaly",
+     "then": "Leukemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Albinism**, giant granules, neuropathy",
+     "then": "Chédiak-Higashi syndrome"
+    },
+    {
+     "opt": "H",
+     "if": "**Single episode**, vesicles on gums, no cycling",
+     "then": "Viral illness"
+    }
+   ]
   },
   "746231": {
    "task": "Diagnosis",
-   "boardCall": "Fever + severe headache + June presentation + petechiae on palms and wrists -> Rocky Mountain spotted fever.",
-   "hinge": "High fever, severe headache, and petechiae spreading to the palms and distal upper extremities in summer signify Rocky Mountain spotted fever.",
+   "boardCall": "June + rural + fever, severe headache 4 days + **petechiae on palms and forearms** + conjunctival injection → Rocky Mountain spotted fever",
+   "hinge": "Distal-to-central petechiae after days of fever and headache are rickettsial.",
    "trap": "Frequent mosquito bites pull toward dengue, but petechial palmar lesions in rural North America during summer indicate tick-borne RMSF.",
    "options": {
     "A": {
@@ -612,12 +722,34 @@
      "trap": true
     }
    ],
-   "topic": "tick-borne-diseases"
+   "topic": "tick-borne-diseases",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Hours of illness**, purpura, hypotension",
+     "then": "Meningococcemia"
+    },
+    {
+     "opt": "G",
+     "if": "**Fever 5 days**, cracked lips, peeling fingers, no petechiae",
+     "then": "Kawasaki disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Travel to tropics**, retro-orbital pain, low platelets",
+     "then": "Dengue fever"
+    },
+    {
+     "opt": "E",
+     "if": "**Cough, coryza**, Koplik spots, rash from face down",
+     "then": "Measles"
+    }
+   ]
   },
   "746232": {
    "task": "Diagnosis",
-   "boardCall": "Cannot copy circle + only 50% speech understood + cannot balance on one foot at age 4 -> global developmental delay (Delayed | Delayed | Delayed).",
-   "hinge": "At age 4, fine motor (copying circle), language (100% speech intelligible), and gross motor (balancing on one foot) milestones are all delayed.",
+   "boardCall": "age 4 + **cannot copy a circle** + **half of speech understood** + cannot balance on one foot → Delayed | Delayed | Delayed",
+   "hinge": "Circle by 3, one-foot balance by 4, clear speech by 4: missed.",
    "trap": "Jumping and combining words are 2-year skills, tempting an assessment of normal if age expectations are confused.",
    "options": {
     "A": {
@@ -727,12 +859,29 @@
      "trap": true
     }
    ],
-   "topic": "child-growth-and-development"
+   "topic": "child-growth-and-development",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Hops on one foot**, fully intelligible speech",
+     "then": "Delayed | Normal | Normal"
+    },
+    {
+     "opt": "H",
+     "if": "**Copies a cross**, stories, hops",
+     "then": "Normal | Normal | Normal"
+    },
+    {
+     "opt": null,
+     "if": "**Isolated speech delay** only",
+     "then": "Audiology evaluation first"
+    }
+   ]
   },
   "746233": {
    "task": "Diagnosis",
-   "boardCall": "IUGR + microcephaly + petechial rash + hepatosplenomegaly + direct hyperbilirubinemia + sensorineural hearing loss -> congenital cytomegalovirus.",
-   "hinge": "Sensorineural hearing loss with microcephaly, petechiae, hepatosplenomegaly, and direct hyperbilirubinemia at birth points to congenital CMV.",
+   "boardCall": "growth restriction + microcephaly + petechiae + hepatosplenomegaly + direct hyperbilirubinemia + **bilateral sensorineural hearing loss** → Cytomegalovirus",
+   "hinge": "Hearing loss with periventricular calcification is CMV; toxoplasma calcifies diffusely with chorioretinitis.",
    "trap": "Toxoplasmosis also causes petechiae and hepatosplenomegaly, but absence of cat exposure and periventricular calcifications favor CMV.",
    "options": {
     "A": {
@@ -830,12 +979,34 @@
      "text": "There are no pets in the home"
     }
    ],
-   "topic": "congenital-infections"
+   "topic": "congenital-infections",
+   "branches": [
+    {
+     "opt": "G",
+     "if": "**Diffuse calcifications**, hydrocephalus, chorioretinitis",
+     "then": "Toxoplasma gondii"
+    },
+    {
+     "opt": "D",
+     "if": "**Cataracts**, PDA, blueberry muffin rash",
+     "then": "Rubella"
+    },
+    {
+     "opt": "C",
+     "if": "**Fetal hydrops**, severe anemia",
+     "then": "Parvovirus B19"
+    },
+    {
+     "opt": "B",
+     "if": "**Maternal deli meat**, granulomatous rash, preterm sepsis",
+     "then": "Listeria monocytogenes"
+    }
+   ]
   },
   "746234": {
    "task": "Diagnosis",
-   "boardCall": "Crying infant with oxygen desaturation from 85% to 60% + systolic ejection murmur that softens during spells -> Tetralogy of Fallot (hypercyanotic 'tet' spell).",
-   "hinge": "Acute agitation causing worsening cyanosis and a disappearing systolic murmur represents dynamic right ventricular outflow spasm in Tetralogy of Fallot.",
+   "boardCall": "3 months + cyanosis + harsh SEM + **agitation drops SpO2 to 60%** + **murmur softens during spell** → Tetralogy of Fallot",
+   "hinge": "Infundibular spasm cuts pulmonary flow, so the murmur fades as shunting reverses.",
    "trap": "Harsh systolic murmur tempts isolated VSD or pulmonary stenosis, but acute hypercyanotic spells with agitation are unique to Tetralogy of Fallot.",
    "options": {
     "A": {
@@ -920,12 +1091,34 @@
      "text": "grade 3/6, harsh systolic ejection murmur"
     }
    ],
-   "topic": "congenital-heart-disease"
+   "topic": "congenital-heart-disease",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Acyanotic**, ejection click, murmur loud steadily",
+     "then": "Pulmonary stenosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Acyanotic**, holosystolic LLSB murmur, heart failure",
+     "then": "Ventricular septal defect"
+    },
+    {
+     "opt": "B",
+     "if": "**Weak femoral pulses**, arm-leg BP gap",
+     "then": "Coarctation of the aorta"
+    },
+    {
+     "opt": "A",
+     "if": "**Fixed split S2**, asymptomatic child",
+     "then": "Atrial septal defect"
+    }
+   ]
   },
   "746235": {
    "task": "Mechanism",
-   "boardCall": "Maternal sulfamethoxazole + Coombs-negative unconjugated hyperbilirubinemia + anemia in Mediterranean male -> erythrocyte enzyme deficiency (G6PD deficiency).",
-   "hinge": "Profound unconjugated hyperbilirubinemia (20 mg/dL) and anemia following maternal sulfonamide exposure with negative Coombs tests point to G6PD enzyme deficiency.",
+   "boardCall": "Mediterranean boy + day 5 + **maternal sulfonamide** + Hct 33% + **bilirubin 20, Coombs negative** → Enzyme deficiency",
+   "hinge": "Oxidant exposure with nonimmune hemolysis fits G6PD; physiologic jaundice spares hematocrit.",
    "trap": "Timing at day 5 tempts physiologic jaundice, but bilirubin of 20 mg/dL and low hematocrit of 33% indicate pathologic hemolysis.",
    "options": {
     "A": {
@@ -1010,12 +1203,34 @@
      "trap": true
     }
    ],
-   "topic": "hemolytic-anemias"
+   "topic": "hemolytic-anemias",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Bilirubin 10**, normal Hct, day 3",
+     "then": "Physiologic jaundice"
+    },
+    {
+     "opt": "A",
+     "if": "**Poor breast-feeding**, weight loss over 10%",
+     "then": "Dehydration (suboptimal intake)"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever, lethargy**, direct hyperbilirubinemia",
+     "then": "Sepsis"
+    },
+    {
+     "opt": null,
+     "if": "**Positive direct Coombs**, mother O, baby A",
+     "then": "ABO hemolytic disease"
+    }
+   ]
   },
   "746236": {
    "task": "Diagnosis",
-   "boardCall": "Puncture wound through rubber sole of shoe + persistent foot pain and erythema -> Pseudomonas aeruginosa osteochondritis/osteomyelitis.",
-   "hinge": "Nail puncture through the rubber sole of an athletic shoe creates a unique warm, moist environment inoculating Pseudomonas aeruginosa.",
+   "boardCall": "age 7 + **nail through sneaker** + 3 weeks of pain + warm red tender site → Pseudomonas aeruginosa",
+   "hinge": "Rubber shoe soles harbor Pseudomonas, driven into foot cartilage by the nail.",
    "trap": "Staphylococcus aureus is the most common cause of osteomyelitis overall, but puncture through a shoe specifically implicates Pseudomonas.",
    "options": {
     "A": {
@@ -1100,12 +1315,29 @@
      "text": "wound was thoroughly cleaned and bandaged"
     }
    ],
-   "topic": "osteomyelitis"
+   "topic": "osteomyelitis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Barefoot puncture**, or osteomyelitis without puncture",
+     "then": "Staphylococcus aureus"
+    },
+    {
+     "opt": "A",
+     "if": "**Laceration in fresh water** or leech therapy",
+     "then": "Aeromonas hydrophila"
+    },
+    {
+     "opt": "B",
+     "if": "**Rapidly spreading erythema**, fever within 1 day",
+     "then": "Group A streptococcus"
+    }
+   ]
   },
   "746237": {
    "task": "Next step",
-   "boardCall": "Primary amenorrhea + Tanner stage 4 breasts + minimal pubic/axillary hair + absent cervix -> karyotype analysis for androgen insensitivity.",
-   "hinge": "Breast development without pubic hair and absent internal female reproductive organs suggests 46,XY androgen insensitivity, confirmed by karyotype.",
+   "boardCall": "age 16 + primary amenorrhea + **breasts SMR 4** + minimal pubic, axillary hair + **no cervix visible** → Karyotype analysis",
+   "hinge": "Breasts without hair and no cervix point to 46,XY androgen insensitivity.",
    "trap": "Normal female external genitalia tempts follow-up or pituitary imaging, but absent cervix/uterus indicates abnormal internal duct differentiation.",
    "options": {
     "A": {
@@ -1191,12 +1423,35 @@
      "text": "cervix is not visible"
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Normal pubic hair**, absent uterus",
+     "then": "Müllerian agenesis",
+     "step": "check renal ultrasound"
+    },
+    {
+     "opt": "D",
+     "if": "**Low FSH**, headaches, galactorrhea",
+     "then": "MRI of the pituitary gland"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 13**, breasts SMR 2, normal exam",
+     "then": "Follow-up in 6 months"
+    },
+    {
+     "opt": null,
+     "if": "**Cyclic pain**, bulging blue hymen",
+     "then": "Hymenotomy"
+    }
+   ]
   },
   "746238": {
    "task": "Diagnosis",
-   "boardCall": "Malar butterfly rash + arthralgias + dark urine in adolescent girl -> systemic lupus erythematosus with decreased serum C3.",
-   "hinge": "Immune complex deposition in lupus nephritis activates the classical complement pathway, leading to consumption and decreased serum C3.",
+   "boardCall": "age 14 + **malar rash** + joint pain + **dark urine** + pale → Serum C3 concentration",
+   "hinge": "Immune complexes trigger the classical pathway, consuming C3 and C4.",
    "trap": "Factor D and Factor P belong to the alternative complement pathway, which is not primarily consumed in classical immune-complex lupus.",
    "options": {
     "A": {
@@ -1281,12 +1536,34 @@
      "text": "She appears pale and thin"
     }
    ],
-   "topic": "systemic-lupus-erythematosus"
+   "topic": "systemic-lupus-erythematosus",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Recurrent Neisseria infections**",
+     "then": "Serum C9 concentration"
+    },
+    {
+     "opt": "C",
+     "if": "**Recurrent meningococcal disease**, normal C5-C9",
+     "then": "Factor P (properdin)"
+    },
+    {
+     "opt": "A",
+     "if": "**Adrenal insufficiency** or high-dose steroids",
+     "then": "Eosinophil count"
+    },
+    {
+     "opt": null,
+     "if": "**Facial swelling** without urticaria, low C4",
+     "then": "C1 esterase inhibitor"
+    }
+   ]
   },
   "746239": {
    "task": "Mechanism",
-   "boardCall": "Episodic exertion-induced wheezing + dyspnea unresponsive to oxygen -> acute asthma exacerbation via activation of mast cells.",
-   "hinge": "Cross-linking of IgE triggers immediate activation of mast cells and release of histamine and leukotrienes causing bronchoconstriction.",
+   "boardCall": "age 9 + recurrent episodes for 12 weeks + **exertion trigger** + **expiratory wheeze** + distant breath sounds → Activation of mast cells",
+   "hinge": "Airway cooling and drying release mast-cell mediators that constrict bronchi.",
    "trap": "Distant breath sounds and shortness of breath tempt heart failure or pulmonary hypertension, but reversible wheezing is bronchospastic.",
    "options": {
     "A": {
@@ -1382,12 +1659,34 @@
      "trap": true
     }
    ],
-   "topic": "asthma"
+   "topic": "asthma",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Orthopnea**, gallop, crackles",
+     "then": "Increased capillary hydrostatic pressure"
+    },
+    {
+     "opt": "E",
+     "if": "**Loud P2**, exertional syncope, RV heave",
+     "then": "Increased pulmonary vascular resistance"
+    },
+    {
+     "opt": "F",
+     "if": "**Chronic dry cough**, crackles, restrictive pattern",
+     "then": "Parenchymal lymphocyte infiltration"
+    },
+    {
+     "opt": "C",
+     "if": "**Sepsis-related ARDS**, bilateral infiltrates",
+     "then": "Neutrophil-endothelial adhesion"
+    }
+   ]
   },
   "746240": {
    "task": "Diagnosis",
-   "boardCall": "8-day-old neonate with apnea + focal seizures + CSF lymphocytic pleocytosis with elevated RBCs -> neonatal Herpes simplex virus encephalitis.",
-   "hinge": "Neonatal seizures in the second week of life with hemorrhagic lymphocytic CSF (elevated RBCs and 80% lymphocytes) indicate HSV encephalitis.",
+   "boardCall": "day 8 + apnea + focal seizures + **CSF lymphocytes 80%** + **CSF RBCs 350** + normal glucose → Herpes simplex virus",
+   "hinge": "Hemorrhagic lymphocytic CSF in the second week suggests HSV encephalitis.",
    "trap": "Group B Streptococcus and E. coli are common neonatal pathogens, but they produce neutrophilic CSF with markedly depressed glucose.",
    "options": {
     "A": {
@@ -1472,12 +1771,34 @@
      "text": "Segmented neutrophils 20% Lymphocytes 80%"
     }
    ],
-   "topic": "herpes-simplex-virus"
+   "topic": "herpes-simplex-virus",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**CSF neutrophils**, glucose 15, gram-positive cocci",
+     "then": "Group B streptococcus"
+    },
+    {
+     "opt": "B",
+     "if": "**Gram-negative rods**, low CSF glucose",
+     "then": "Escherichia coli"
+    },
+    {
+     "opt": "A",
+     "if": "**At birth**: microcephaly, periventricular calcifications, deafness",
+     "then": "Cytomegalovirus"
+    },
+    {
+     "opt": "E",
+     "if": "**At birth**: hydrocephalus, diffuse calcifications, chorioretinitis",
+     "then": "Toxoplasma gondii"
+    }
+   ]
   },
   "746241": {
    "task": "Next step",
-   "boardCall": "Lethargy + BP 68/54 + pulse 180 + capillary refill 4 seconds after gastroenteritis -> hypovolemic shock treated with IV bolus of 0.9% saline.",
-   "hinge": "Hypotension, lethargy, tachycardia, and prolonged capillary refill indicate uncompensated hypovolemic shock requiring rapid isotonic crystalloid boluses.",
+   "boardCall": "10 months + profuse diarrhea and vomiting + **lethargic** + HR 180 + **BP 68/54** + refill 4 seconds → IV bolus of 0.9% saline",
+   "hinge": "Hypotension means decompensated shock; only rapid isotonic volume restores perfusion.",
    "trap": "Oral rehydration is first-line for mild-to-moderate dehydration, but hemodynamic instability and lethargy require immediate intravenous resuscitation.",
    "options": {
     "A": {
@@ -1559,12 +1880,34 @@
      "text": "3-day history of profuse watery diarrhea, frequent vomiting, and poor feeding"
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Alert**, tears present, normal refill",
+     "then": "Oral rehydration"
+    },
+    {
+     "opt": "C",
+     "if": "**Shock persists** after three 20-mL/kg boluses",
+     "then": "Vasoactive infusion (dopamine)"
+    },
+    {
+     "opt": "B",
+     "if": "**Perfusion restored** but cannot drink",
+     "then": "Maintenance fluid infusion"
+    },
+    {
+     "opt": "D",
+     "if": "**Bleeding with prolonged PT**, DIC",
+     "then": "Fresh frozen plasma"
+    }
+   ]
   },
   "746242": {
    "task": "Next step",
-   "boardCall": "Brown urine + RBC casts + hypertension + edema 2 weeks post-pharyngitis -> measurement of serum concentration of C3 for PSGN.",
-   "hinge": "Nephritic syndrome (hypertension, edema, RBC casts) 2 weeks after pharyngitis is classic poststreptococcal glomerulonephritis, supported by depressed serum C3.",
+   "boardCall": "age 8 + **sore throat 2 weeks ago** + brown urine + BP 138/88 + edema + **RBC casts** → Serum C3",
+   "hinge": "Low C3 normalizing by 8 weeks supports post-strep over lupus.",
    "trap": "Serum ANA is considered in glomerulonephritis, but acute post-pharyngitis nephritic sediment in a child strongly favors PSGN, tested by C3 and streptococcal antibodies.",
    "options": {
     "A": {
@@ -1646,12 +1989,34 @@
      "text": "brown urine"
     }
    ],
-   "topic": "glomerulonephritis"
+   "topic": "glomerulonephritis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Malar rash**, arthritis, low C3 and C4",
+     "then": "Serum antinuclear antibody assay"
+    },
+    {
+     "opt": "C",
+     "if": "**Dysuria, fever**, pyuria without casts",
+     "then": "Urine culture"
+    },
+    {
+     "opt": "D",
+     "if": "**Migratory arthritis**, new mitral murmur",
+     "then": "Echocardiography"
+    },
+    {
+     "opt": "E",
+     "if": "**Abdominal mass** with hematuria",
+     "then": "Renal ultrasonography"
+    }
+   ]
   },
   "746243": {
    "task": "Mechanism",
-   "boardCall": "Prior untreated Kawasaki disease + cardiomegaly + ST-segment depressions + tachypnea -> coronary artery aneurysm thrombosis causing congestive heart failure.",
-   "hinge": "Untreated Kawasaki disease leads to giant coronary aneurysms and myocardial infarction, resulting in acute ischemic left ventricular dysfunction and congestive heart failure.",
+   "boardCall": "Kawasaki 2 months ago, untreated + tachypnea + BP 60/40 + **cardiomegaly** + **ischemic ST depression** → Congestive heart failure",
+   "hinge": "Coronary aneurysm thrombosis infarcts myocardium, flooding the lungs with venous congestion.",
    "trap": "History of fever and rapid breathing tempts primary respiratory disease, but cardiomegaly and ischemic ST depression reveal cardiac pulmonary edema.",
    "options": {
     "A": {
@@ -1732,12 +2097,34 @@
      "text": "ST-segment depression in leads II and III"
     }
    ],
-   "topic": "kawasaki-disease"
+   "topic": "kawasaki-disease",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Muffled heart sounds**, pulsus paradoxus, low-voltage ECG",
+     "then": "Pericardial effusion"
+    },
+    {
+     "opt": "C",
+     "if": "**Diastolic rumble**, prior rheumatic fever",
+     "then": "Mitral valve obstruction"
+    },
+    {
+     "opt": "E",
+     "if": "**Large untreated VSD**, loud P2, cyanosis",
+     "then": "Thickened pulmonary arteriolar intima"
+    },
+    {
+     "opt": "A",
+     "if": "**Months of cough**, clubbing, restrictive pattern",
+     "then": "Chronic interstitial lung disease"
+    }
+   ]
   },
   "746244": {
    "task": "Diagnosis",
-   "boardCall": "Recent flu-like illness + acute severe bilateral calf tenderness and refusal to walk -> benign acute childhood influenza-induced myositis.",
-   "hinge": "Acute bilateral gastrocnemius-soleus tenderness and gait refusal following recovery from an influenza-like viral illness defines benign acute childhood myositis.",
+   "boardCall": "age 12 + **flu-like illness last week** + **sudden bilateral calf pain** + afebrile + calf tenderness → Influenza-induced myositis",
+   "hinge": "Self-limited calf myositis follows influenza B as the fever settles.",
    "trap": "Severe muscle tenderness tempts dermatomyositis, but abrupt calf pain following a self-limited febrile respiratory prodrome is typical viral myositis.",
    "options": {
     "A": {
@@ -1818,12 +2205,35 @@
      "text": "12-year-old boy"
     }
    ],
-   "topic": "influenza"
+   "topic": "influenza",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Heliotrope rash**, Gottron papules, proximal weakness",
+     "then": "Dermatomyositis"
+    },
+    {
+     "opt": "E",
+     "if": "**Migratory large-joint arthritis**, carditis after strep",
+     "then": "Rheumatic fever"
+    },
+    {
+     "opt": "D",
+     "if": "**Slapped cheek**, symmetric small-joint arthritis",
+     "then": "Parvovirus B19 arthritis"
+    },
+    {
+     "opt": null,
+     "if": "**Cola-colored urine**, CK over 10,000",
+     "then": "Rhabdomyolysis",
+     "step": "IV isotonic fluids"
+    }
+   ]
   },
   "746245": {
    "task": "Prevention",
-   "boardCall": "T-cell deficiency (CD4 100/mm³) + recurrent pneumonia -> administer inactivated/conjugate Haemophilus influenzae type b vaccine; avoid live vaccines.",
-   "hinge": "In patients with severe T-cell deficiency, live viral or bacterial vaccines are contraindicated, but inactivated conjugate vaccines like Hib are safe and indicated.",
+   "boardCall": "age 12 months + no vaccines + 3 bacterial pneumonias + **CD4 100** + **poor T-cell function** → Haemophilus influenzae type b",
+   "hinge": "Conjugate vaccines cannot replicate, so they are safe despite T-cell loss.",
    "trap": "Severe T-cell deficiency tempts withholding all vaccines, but inactivated and conjugate vaccines do not carry infection risk and provide crucial protection.",
    "options": {
     "A": {
@@ -1909,12 +2319,34 @@
      "text": "She has received no immunizations"
     }
    ],
-   "topic": "childhood-and-adolescent-immunizations"
+   "topic": "childhood-and-adolescent-immunizations",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Normal T cells**, isolated IgA deficiency",
+     "then": "Varicella"
+    },
+    {
+     "opt": "C",
+     "if": "**Age 2 months**, healthy",
+     "then": "Rotavirus"
+    },
+    {
+     "opt": "A",
+     "if": "**Healthy infant** in TB-endemic country",
+     "then": "BCG"
+    },
+    {
+     "opt": null,
+     "if": "**Prior anaphylaxis** to a Hib dose",
+     "then": "Withhold Hib vaccine"
+    }
+   ]
   },
   "746246": {
    "task": "Pharmacology",
-   "boardCall": "Perineal erythema + white discharge at introitus in a 5-year-old girl -> Candida vulvovaginitis treated with topical nystatin.",
-   "hinge": "Erythema involving the vagina and perianal perineum with white introital discharge represents superficial Candida vulvovaginitis treated with topical antifungals.",
+   "boardCall": "age 5 + dysuria + **erythema of vulva, perineum, perianal area** + **white introital discharge** + no vesicles → Topical nystatin",
+   "hinge": "Confluent perineal redness with white discharge is candidal irritation.",
    "trap": "Vaginal discharge in a child raises concern for sexual abuse and bacterial STIs, but white discharge without vesicles indicates candidiasis.",
    "options": {
     "A": {
@@ -1997,12 +2429,35 @@
      "trap": true
     }
    ],
-   "topic": "vaginitis"
+   "topic": "vaginitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Painful grouped vesicles** on vulva",
+     "then": "Oral acyclovir"
+    },
+    {
+     "opt": "C",
+     "if": "**Perianal bright red rash**, positive rapid strep",
+     "then": "Oral amoxicillin"
+    },
+    {
+     "opt": "D",
+     "if": "**Frothy green discharge**, motile trichomonads",
+     "then": "Oral metronidazole",
+     "step": "evaluate for abuse"
+    },
+    {
+     "opt": "A",
+     "if": "**Purulent discharge**, gonorrhea NAAT positive",
+     "then": "IM ceftriaxone + oral azithromycin"
+    }
+   ]
   },
   "746247": {
    "task": "Diagnosis",
-   "boardCall": "Runny nose + mild cough for 5 days with afebrile yellow discharge -> viral rhinosinusitis (common cold).",
-   "hinge": "Symptoms lasting under 10 days with fever resolving early indicate viral rhinosinusitis; purulent discharge alone does not signify bacterial infection.",
+   "boardCall": "age 7 + **only 5 days of symptoms** + rhinorrhea, cough + yellow discharge for 1 day + **fever resolved** + father had cold → Viral rhinosinusitis",
+   "hinge": "Discharge color does not mark bacteria; duration and severity do.",
    "trap": "Yellow nasal discharge tempts bacterial sinusitis, but duration <10 days without severe fever or double sickening is viral.",
    "options": {
     "A": {
@@ -2087,12 +2542,35 @@
      "text": "patient's father recently had a cold"
     }
    ],
-   "topic": "acute-rhinosinusitis"
+   "topic": "acute-rhinosinusitis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Day 12**, congestion and cough unchanged",
+     "then": "Bacterial sinusitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Seasonal sneezing**, itchy eyes, pale boggy mucosa",
+     "then": "Allergic rhinitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Tender warm 3-cm node**, fever",
+     "then": "Cervical lymphadenitis"
+    },
+    {
+     "opt": null,
+     "if": "**Eyelid swelling**, painful eye movements",
+     "then": "Orbital cellulitis",
+     "step": "CT orbits"
+    }
+   ]
   },
   "746248": {
    "task": "Risk factor",
-   "boardCall": "> 6 café-au-lait macules > 1.5 cm + axillary freckles -> neurofibromatosis type 1 with increased risk for optic nerve glioma.",
-   "hinge": "Crowe sign (axillary freckling) and multiple café-au-lait macules diagnose neurofibromatosis type 1, which carries high risk for optic nerve glioma.",
+   "boardCall": "age 17 + **about 10 café-au-lait macules** + **axillary freckling** + asymptomatic → Optic nerve glioma",
+   "hinge": "These meet NF1 criteria, whose classic CNS tumor is optic pathway glioma.",
    "trap": "Arteriovenous malformations and intracranial aneurysms occur in other vascular syndromes, but NF1 is predisposed to optic pathway gliomas.",
    "options": {
     "A": {
@@ -2173,12 +2651,34 @@
      "text": "asymptomatic 17-year-old boy"
     }
    ],
-   "topic": "neurocutaneous-disorders"
+   "topic": "neurocutaneous-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Polycystic kidneys** or Ehlers-Danlos",
+     "then": "Cerebral aneurysm"
+    },
+    {
+     "opt": "A",
+     "if": "**Recurrent epistaxis**, mucosal telangiectasias",
+     "then": "Arteriovenous malformation"
+    },
+    {
+     "opt": "D",
+     "if": "**Nevoid basal cell syndrome** with jaw cysts",
+     "then": "Medulloblastoma"
+    },
+    {
+     "opt": null,
+     "if": "**Bilateral hearing loss**, few café-au-lait",
+     "then": "Vestibular schwannoma (NF2)"
+    }
+   ]
   },
   "746249": {
    "task": "Pharmacology",
-   "boardCall": "Annular erythematous scaly plaque with central clearing in a high school wrestler -> tinea corporis treated with topical clotrimazole.",
-   "hinge": "Annular scaly plaque on the arm in a wrestler (tinea corporis gladiatorum) is a dermatophyte infection treated first-line with topical azoles like clotrimazole.",
+   "boardCall": "age 14 + **wrestler** + farm, pet dog + **single 3-cm annular scaly plaque** → Topical clotrimazole",
+   "hinge": "One localized dermatophyte plaque responds to a topical azole.",
    "trap": "Topical nystatin treats Candida, not dermatophytes; oral antifungals are reserved for extensive or tinea capitis.",
    "options": {
     "A": {
@@ -2261,12 +2761,34 @@
      "trap": true
     }
    ],
-   "topic": "dermatophyte-infections"
+   "topic": "dermatophyte-infections",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Scalp involvement** or widespread lesions",
+     "then": "Oral antifungal (terbinafine/itraconazole)"
+    },
+    {
+     "opt": "B",
+     "if": "**Honey-colored crusts** on face",
+     "then": "Topical mupirocin"
+    },
+    {
+     "opt": "C",
+     "if": "**Moist red plaques** with satellite pustules in folds",
+     "then": "Topical nystatin"
+    },
+    {
+     "opt": "D",
+     "if": "**Spreading warm erythema**, fever",
+     "then": "Oral cephalexin"
+    }
+   ]
   },
   "746250": {
    "task": "Mechanism",
-   "boardCall": "Microcephaly + frequent laughter + hand flapping + ataxic gait + absent speech -> Angelman syndrome from maternally inherited chromosome 15 deletion.",
-   "hinge": "Happy demeanor with paroxysmal laughter, severe speech impairment, hand flapping, ataxia, and microcephaly indicates Angelman syndrome (maternal 15q11-q13 loss).",
+   "boardCall": "age 3 + microcephaly + **frequent laughter** + hand flapping + ataxic gait + **no words** → Chromosome 15 deletion, maternally inherited",
+   "hinge": "Loss of maternal UBE3A causes this happy-puppet picture; paternal loss causes Prader-Willi.",
    "trap": "Paternally inherited 15q deletion causes Prader-Willi syndrome (hyperphagia, obesity, and hypotonia), not the happy puppet Angelman phenotype.",
    "options": {
     "A": {
@@ -2361,7 +2883,29 @@
      "text": "3rd percentile for head circumference"
     }
    ],
-   "topic": "chromosomal-and-genetic-disorders"
+   "topic": "chromosomal-and-genetic-disorders",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Hyperphagia, obesity**, infant hypotonia",
+     "then": "Chromosome 15 deletion, paternally inherited"
+    },
+    {
+     "opt": "D",
+     "if": "**Normal until 1 year**, then hand-wringing, lost speech",
+     "then": "MECP2 mutation"
+    },
+    {
+     "opt": "A",
+     "if": "**Elfin face**, friendly, supravalvular aortic stenosis",
+     "then": "Chromosome 7 deletion"
+    },
+    {
+     "opt": "F",
+     "if": "**Flat face**, single palmar crease, AV canal",
+     "then": "Trisomy 21"
+    }
+   ]
   },
   "746251": {
    "task": "Mechanism",
@@ -9101,5 +9645,5 @@
    "evidence": "Prophylaxis checked 2026-10-30: [AAP vitamin K policy, 2022](https://publications.aap.org/aapnews/news/19601/Vitamin-K-policy-addresses-birth-dose-for-term)."
   }
  },
- "updatedAt": "2026-11-07T08:13:48Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

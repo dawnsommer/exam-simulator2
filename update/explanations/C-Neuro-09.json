@@ -8,8 +8,8 @@
  "items": {
   "1224182": {
    "task": "Diagnosis",
-   "boardCall": "Vertigo + right Horner + right limb ataxia -> Right lateral medullary infarction",
-   "hinge": "Right Horner syndrome and right arm ataxia localize to the right lateral medulla.",
+   "boardCall": "vascular risk + episodic vertigo + **right Horner syndrome** + **right arm ataxia** + slurred speech → Right lateral medullary infarction",
+   "hinge": "Ipsilateral Horner and limb ataxia localize to the same-side lateral medulla.",
    "trap": "Intermittent vertigo sounds like labyrinthitis, but Horner syndrome and dysarthria confirm brainstem stroke.",
    "options": {
     "A": {
@@ -98,12 +98,34 @@
      "trap": true
     }
    ],
-   "topic": "ischemic-stroke-and-tia"
+   "topic": "ischemic-stroke-and-tia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Left Horner**, left arm ataxia, right body pain loss",
+     "then": "Left lateral medullary infarction"
+    },
+    {
+     "opt": "B",
+     "if": "**Isolated vertigo, hearing loss**, no brainstem signs",
+     "then": "Acute right-sided labyrinthitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Quadriparesis**, coma, bilateral signs",
+     "then": "Basilar occlusion with cerebellar infarction"
+    },
+    {
+     "opt": null,
+     "if": "**Contralateral hemiparesis**, tongue deviates toward lesion",
+     "then": "Medial medullary infarction"
+    }
+   ]
   },
   "1224183": {
    "task": "Ethics",
-   "boardCall": "Capacitated patient requests nondisclosure -> Explore reasons and encourage family support without lying",
-   "hinge": "A capacitated patient can withhold information, but the physician should encourage support and never lie.",
+   "boardCall": "glioblastoma + **fully oriented, decisional capacity** + **wants no disclosure** + will need help → Encourage involving family for support",
+   "hinge": "A capable patient controls disclosure; the physician encourages support without deceiving anyone.",
    "trap": "The patient asks to tell his family he had a mild stroke, tempting active deception.",
    "options": {
     "A": {
@@ -192,12 +214,34 @@
      "trap": true
     }
    ],
-   "topic": "physician-patient-communication"
+   "topic": "physician-patient-communication",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Cannot explain** choices or consequences",
+     "then": "Lacks capacity to make this decision"
+    },
+    {
+     "opt": "C",
+     "if": "**Wife asks directly**, patient wants a lie",
+     "then": "Never tell wife it's stroke"
+    },
+    {
+     "opt": "E",
+     "if": "**Expected to lose capacity** soon",
+     "then": "Consider appointing a health care proxy"
+    },
+    {
+     "opt": "D",
+     "if": "**Surrogates disagree** about incapacitated patient",
+     "then": "Consult the hospital ethics committee"
+    }
+   ]
   },
   "1224184": {
    "task": "Diagnosis",
-   "boardCall": "Neonatal seizures + fever + bloody CSF + negative Gram stain -> Herpes simplex virus",
-   "hinge": "Elevated CSF RBCs with lymphocytic pleocytosis, normal glucose, and no bacteria indicate HSV encephalitis.",
+   "boardCall": "3 week old + fever + **seizures** + **CSF RBC 5000** + no organisms on Gram stain → Herpes simplex virus",
+   "hinge": "Neonatal HSV encephalitis gives hemorrhagic lymphocytic CSF and seizures at 2–3 weeks.",
    "trap": "Maternal history of unknown GBS status and gonorrhea pulls toward bacterial neonatal meningitis.",
    "options": {
     "A": {
@@ -289,12 +333,34 @@
      "trap": true
     }
    ],
-   "topic": "encephalitis"
+   "topic": "encephalitis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Gram-positive cocci in chains**, first week",
+     "then": "Streptococcus agalactiae (group B)"
+    },
+    {
+     "opt": "A",
+     "if": "**Gram-negative rods**, premature neonate",
+     "then": "Escherichia coli"
+    },
+    {
+     "opt": "C",
+     "if": "**Purulent conjunctivitis**, day 3",
+     "then": "Neisseria gonorrhoeae"
+    },
+    {
+     "opt": "D",
+     "if": "**Adolescent**, petechiae, gram-negative diplococci",
+     "then": "Neisseria meningitidis"
+    }
+   ]
   },
   "1224185": {
    "task": "Diagnosis",
-   "boardCall": "Toddler head trauma + transient unresponsiveness + normal head CT -> Concussion",
-   "hinge": "Transient loss of consciousness with a completely normal head CT and normal neurologic exam defines concussion.",
+   "boardCall": "toddler fall + **unresponsive 1 minute** + now awake, nonfocal + **normal head CT** → Concussion",
+   "hinge": "Transient dysfunction without structural injury on imaging defines concussion.",
    "trap": "Scalp ecchymosis and brief unresponsiveness tempt epidural hematoma or skull fracture, but CT is normal.",
    "options": {
     "A": {
@@ -403,12 +469,34 @@
      "text": "no focal findings"
     }
    ],
-   "topic": "traumatic-brain-injury"
+   "topic": "traumatic-brain-injury",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Lucid interval**, then blown pupil, lens-shaped bleed",
+     "then": "Epidural hematoma"
+    },
+    {
+     "opt": "B",
+     "if": "**CT shows frontal hemorrhagic foci**",
+     "then": "Cerebral contusion"
+    },
+    {
+     "opt": "F",
+     "if": "**Retinal hemorrhages**, infant, inconsistent story",
+     "then": "Shaken baby syndrome"
+    },
+    {
+     "opt": "A",
+     "if": "**Newborn scalp swelling**, doesn't cross sutures",
+     "then": "Cephalohematoma"
+    }
+   ]
   },
   "1224186": {
    "task": "Next step",
-   "boardCall": "Infantile flexion spasms + hypsarrhythmia on EEG -> Adrenocorticotropic hormone (ACTH)",
-   "hinge": "Infantile spasms (West syndrome) with hypsarrhythmia on EEG is treated first-line with ACTH or vigabatrin.",
+   "boardCall": "6 mo + **flexion spasms in clusters** + **hypsarrhythmia** + normal MRI → Adrenocorticotropic hormone",
+   "hinge": "West syndrome responds best to ACTH; vigabatrin is preferred with tuberous sclerosis.",
    "trap": "Frequent infant seizures tempt standard anticonvulsants like phenobarbital, which fail in infantile spasms.",
    "options": {
     "A": {
@@ -497,12 +585,34 @@
      "text": "increasingly irritable during the past 2 weeks"
     }
    ],
-   "topic": "epilepsy"
+   "topic": "epilepsy",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Ash-leaf macules**, infantile spasms",
+     "then": "Vigabatrin"
+    },
+    {
+     "opt": "E",
+     "if": "**Neonatal seizures refractory**, stop with pyridoxine",
+     "then": "Vitamin B6 (pyridoxine)"
+    },
+    {
+     "opt": "B",
+     "if": "**Ongoing seizure** over 5 minutes",
+     "then": "Diazepam"
+    },
+    {
+     "opt": "C",
+     "if": "**Neonatal seizures**, first-line maintenance",
+     "then": "Phenobarbital"
+    }
+   ]
   },
   "1224187": {
    "task": "Next step",
-   "boardCall": "Acute cervical radiculopathy without motor deficit or myelopathy -> Ibuprofen and arm rest",
-   "hinge": "Acute mild cervical radiculopathy without progressive motor weakness or myelopathy is treated conservatively.",
+   "boardCall": "neck pain to elbow + **lateral arm numbness** + low biceps reflex + **normal strength, no myelopathy** → Ibuprofen and rest",
+   "hinge": "C5–C6 radiculopathy without motor deficit resolves conservatively in most patients.",
    "trap": "Diminished biceps reflex tempts invasive imaging or epidural steroids, but conservative NSAID therapy comes first.",
    "options": {
     "A": {
@@ -591,12 +701,34 @@
      "text": "decreased over the lateral aspect of the right upper arm"
     }
    ],
-   "topic": "cervical-radiculopathy"
+   "topic": "cervical-radiculopathy",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Hyperreflexia legs**, Babinski, gait change",
+     "then": "MRI cervical spine urgently"
+    },
+    {
+     "opt": "C",
+     "if": "**Persistent pain** after 6 weeks conservative care",
+     "then": "Cervical epidural dexamethasone"
+    },
+    {
+     "opt": "E",
+     "if": "**Progressive weakness** or myelopathy on MRI",
+     "then": "Cervical laminectomy and fusion"
+    },
+    {
+     "opt": "D",
+     "if": "**Unclear root versus peripheral** after weeks",
+     "then": "Electromyography and nerve conduction studies"
+    }
+   ]
   },
   "1224188": {
    "task": "Diagnosis",
-   "boardCall": "Rear-ended collision + neck pain + straightened cervical lordosis + normal exam -> Hyperextension injury",
-   "hinge": "Rear-end collision causing neck pain and paracervical spasm with straightened lordosis on X-ray is hyperextension whiplash.",
+   "boardCall": "**rear-ended at low speed** + neck pain day after + **normal neuro exam** + lost lordosis on x-ray → Hyperextension injury",
+   "hinge": "Whiplash strains soft tissue; muscle spasm straightens cervical lordosis.",
    "trap": "The patient is a construction worker, which tempts malingering, but objective muscle spasm straightens lordosis.",
    "options": {
     "A": {
@@ -688,12 +820,34 @@
      "trap": true
     }
    ],
-   "topic": "cervical-spine-injury"
+   "topic": "cervical-spine-injury",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Unilateral neck pain, headache**, young, after chiropractic",
+     "then": "Vertebral artery dissection"
+    },
+    {
+     "opt": "A",
+     "if": "**Dermatomal arm pain**, reflex loss",
+     "then": "Herniated disc"
+    },
+    {
+     "opt": "C",
+     "if": "**Pending lawsuit**, findings inconsistent on retesting",
+     "then": "Malingering"
+    },
+    {
+     "opt": "D",
+     "if": "**Step-off on lumbar x-ray**, adolescent athlete",
+     "then": "Spondylolisthesis"
+    }
+   ]
   },
   "1224189": {
    "task": "Pharmacology",
-   "boardCall": "Migraine headaches + history of myocardial infarction -> Sumatriptan is contraindicated",
-   "hinge": "Triptans cause coronary vasospasm via 5-HT1B/1D agonism and are contraindicated in patients with coronary disease.",
+   "boardCall": "recurrent migraine + red wine trigger + **prior myocardial infarction** + coronary artery disease → Sumatriptan is contraindicated",
+   "hinge": "Triptans constrict coronary arteries via 5-HT1B receptors.",
    "trap": "Amitriptyline has cardiac arrhythmias on toxicity, tempting selection over the absolute contraindication of triptans.",
    "options": {
     "A": {
@@ -778,12 +932,34 @@
      "text": "associated with nausea, vomiting, and sensitivity to light and noise"
     }
    ],
-   "topic": "primary-headaches"
+   "topic": "primary-headaches",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Prophylaxis in cardiac patient**, angina",
+     "then": "Verapamil is acceptable"
+    },
+    {
+     "opt": "A",
+     "if": "**Prolonged QT** or recent MI arrhythmia",
+     "then": "Avoid amitriptyline"
+    },
+    {
+     "opt": "B",
+     "if": "**Child with viral illness**",
+     "then": "Avoid aspirin (Reye)"
+    },
+    {
+     "opt": null,
+     "if": "**Asthma**, migraine prophylaxis needed",
+     "then": "Avoid propranolol"
+    }
+   ]
   },
   "1224190": {
    "task": "Next step",
-   "boardCall": "Dementia + severe persecutory delusions + acute aggression -> Quetiapine therapy",
-   "hinge": "When nonpharmacologic measures fail for severe aggressive dementia-related psychosis, an atypical antipsychotic is indicated.",
+   "boardCall": "vascular dementia + **month of aggression** + **persecutory delusions** + other causes excluded → Quetiapine therapy",
+   "hinge": "Dangerous psychosis in dementia warrants low-dose atypical antipsychotic despite mortality warning.",
    "trap": "Benzodiazepines like lorazepam tempt rapid tranquilization but worsen confusion and increase falls in elderly dementia.",
    "options": {
     "A": {
@@ -869,12 +1045,34 @@
      "trap": true
     }
    ],
-   "topic": "antipsychotics"
+   "topic": "antipsychotics",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Alcohol withdrawal** tremor, tachycardia",
+     "then": "Lorazepam therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Macrocytosis**, low B12, posterior column loss",
+     "then": "Vitamin B12 (cyanocobalamin) therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Resting saturation 88%** or below",
+     "then": "Oxygen therapy at home"
+    },
+    {
+     "opt": "A",
+     "if": "**Depression** with insomnia, young adult",
+     "then": "Amitriptyline therapy"
+    }
+   ]
   },
   "1224191": {
    "task": "Mechanism",
-   "boardCall": "Teenager + recurrent stroke-like episodes + seizures + elevated CSF lactate -> Mitochondria (MELAS)",
-   "hinge": "Recurrent stroke-like episodes, seizures, basal ganglia calcification, and elevated CSF lactate indicate mitochondrial disease (MELAS).",
+   "boardCall": "13 yo + **stroke-like episodes** + seizures + **CSF lactate 5** + basal ganglia calcification → Mitochondria",
+   "hinge": "MELAS: maternal mtDNA defect impairs oxidative phosphorylation, raising lactate.",
    "trap": "Stroke-like weakness in a teenager tempts vascular or structural disease, but elevated CSF lactate signals mitochondrial failure.",
    "options": {
     "A": {
@@ -966,12 +1164,34 @@
      "text": "restricted diffusion in the subcortical white matter"
     }
    ],
-   "topic": "mitochondrial-disorders"
+   "topic": "mitochondrial-disorders",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Cherry-red spot**, hepatosplenomegaly, regression",
+     "then": "Lysosome"
+    },
+    {
+     "opt": "B",
+     "if": "**Sickle cell child**, sudden hemiparesis",
+     "then": "Erythrocytes"
+    },
+    {
+     "opt": "C",
+     "if": "**Joint hypermobility**, arterial dissection",
+     "then": "Fibroblasts (collagen)"
+    },
+    {
+     "opt": "A",
+     "if": "**Misfolded protein retention**, liver disease",
+     "then": "Endoplasmic reticulum"
+    }
+   ]
   },
   "1224192": {
    "task": "Diagnosis",
-   "boardCall": "Rapid cognitive decline + myoclonus + periodic EEG complexes -> Creutzfeldt-Jakob disease",
-   "hinge": "Dementia progressing over weeks with myoclonus and periodic sharp wave complexes indicates Creutzfeldt-Jakob disease.",
+   "boardCall": "**rapid decline over weeks** + gait loss + myoclonus + **periodic sharp-wave EEG** → Creutzfeldt-Jakob disease",
+   "hinge": "Prion dementia progresses over months with startle myoclonus and periodic complexes.",
    "trap": "Recent bereavement and beta-blocker use tempt depression or medication toxicity, but rapid decline and myoclonus confirm prion disease.",
    "options": {
     "A": {
@@ -1071,12 +1291,34 @@
      "trap": true
     }
    ],
-   "topic": "prion-disease"
+   "topic": "prion-disease",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Years of gradual memory loss**, no myoclonus",
+     "then": "Dementia, Alzheimer type"
+    },
+    {
+     "opt": "E",
+     "if": "**Visual hallucinations**, fluctuations, parkinsonism",
+     "then": "Lewy body dementia"
+    },
+    {
+     "opt": "D",
+     "if": "**Low CD4**, apathy, psychomotor slowing",
+     "then": "Dementia secondary to HIV infection"
+    },
+    {
+     "opt": "F",
+     "if": "**Resting tremor** years before cognitive change",
+     "then": "Parkinson disease"
+    }
+   ]
   },
   "1224193": {
    "task": "Diagnosis",
-   "boardCall": "Mid back pain + bilateral leg weakness + hyperreflexia + Babinski + incontinence -> Spinal cord compression",
-   "hinge": "Mid back tenderness with upper motor neuron signs (3+ reflexes, Babinski) and incontinence indicates spinal cord compression.",
+   "boardCall": "**progressive mid back pain** + leg weakness + **hyperreflexia, bilateral Babinski** + incontinence → Spinal cord compression",
+   "hinge": "Upper motor neuron signs with back pain localize to the thoracic cord.",
    "trap": "Urinary incontinence and lower extremity weakness tempt cauda equina syndrome, which causes lower motor neuron signs instead.",
    "options": {
     "A": {
@@ -1164,12 +1406,34 @@
      "text": "Babinski sign is present bilaterally"
     }
    ],
-   "topic": "spinal-cord-compression"
+   "topic": "spinal-cord-compression",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Areflexia**, saddle anesthesia, low back pain",
+     "then": "Cauda equina syndrome"
+    },
+    {
+     "opt": "C",
+     "if": "**Stocking sensory loss**, absent ankle reflexes",
+     "then": "Peripheral neuropathy"
+    },
+    {
+     "opt": "B",
+     "if": "**Proximal weakness**, normal reflexes, high CK",
+     "then": "Myopathy"
+    },
+    {
+     "opt": "D",
+     "if": "**One limb**, multiple roots, shoulder pain",
+     "then": "Plexopathy"
+    }
+   ]
   },
   "1224194": {
    "task": "Diagnosis",
-   "boardCall": "Loss of proprioception + positive Romberg + dysmetria with eyes closed only -> Sensory ataxia",
-   "hinge": "Coordination corrects with visual input (eyes open) and fails with eyes closed due to loss of dorsal column proprioception.",
+   "boardCall": "smoker + **lost vibration, position** + **Romberg positive** + steady only with eyes open → Sensory ataxia",
+   "hinge": "Proprioceptive loss is compensated by vision; closing eyes unmasks ataxia.",
    "trap": "Difficulty climbing stairs and combing hair tempts myopathic gait, but motor strength is intact and sensory loss is severe.",
    "options": {
     "A": {
@@ -1279,12 +1543,34 @@
      "trap": true
     }
    ],
-   "topic": "gait-impairment-and-falls"
+   "topic": "gait-impairment-and-falls",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Ataxic with eyes open**, intact proprioception",
+     "then": "Cerebellar ataxia"
+    },
+    {
+     "opt": "C",
+     "if": "**Shuffling, accelerating steps**, resting tremor",
+     "then": "Festinating gait"
+    },
+    {
+     "opt": "G",
+     "if": "**Scissoring**, hyperreflexia",
+     "then": "Spastic gait"
+    },
+    {
+     "opt": "H",
+     "if": "**Pelvis drops** on swing side",
+     "then": "Trendelenburg gait"
+    }
+   ]
   },
   "1224195": {
    "task": "Prevention",
-   "boardCall": "Partial gastrectomy + anemia treated with folate alone + subacute dementia -> Vitamin B12 (cyanocobalamin)",
-   "hinge": "Folic acid administration without vitamin B12 corrects anemia temporarily while allowing irreversible neurologic degeneration.",
+   "boardCall": "**partial gastrectomy** + anemia treated with iron, folate + **pancytopenia** + progressive dementia → Vitamin B12 (cyanocobalamin)",
+   "hinge": "Gastrectomy removes intrinsic factor; folate masks anemia while neurologic damage progresses.",
    "trap": "Confabulation about past events tempts thiamine for Korsakoff psychosis, but gastrectomy causes B12 malabsorption.",
    "options": {
     "A": {
@@ -1373,12 +1659,34 @@
      "trap": true
     }
    ],
-   "topic": "macrocytic-anemia"
+   "topic": "macrocytic-anemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Alcohol use**, confusion, ophthalmoplegia",
+     "then": "Vitamin B1 (thiamine)"
+    },
+    {
+     "opt": "C",
+     "if": "**Cold intolerance**, bradycardia, high TSH",
+     "then": "Thyroid hormone"
+    },
+    {
+     "opt": "B",
+     "if": "**Argyll Robertson pupils**, positive FTA",
+     "then": "Penicillin"
+    },
+    {
+     "opt": "A",
+     "if": "**Rest tremor**, bradykinesia",
+     "then": "Levodopa"
+    }
+   ]
   },
   "1224196": {
    "task": "Diagnosis",
-   "boardCall": "Obese young woman + morning headache + papilledema + CSF opening pressure 380 -> Idiopathic intracranial hypertension",
-   "hinge": "Elevated opening pressure with normal CSF cell count and no mass lesion on MRI confirms idiopathic intracranial hypertension.",
+   "boardCall": "obese young woman + morning headaches + **papilledema, CN VI palsy** + **opening pressure 380, normal CSF** → Idiopathic intracranial hypertension",
+   "hinge": "Raised pressure with normal imaging and CSF composition defines pseudotumor cerebri.",
    "trap": "Morning headaches and papilledema tempt brain tumor or obstructive hydrocephalus, but neuroimaging shows no mass.",
    "options": {
     "A": {
@@ -1466,12 +1774,34 @@
      "text": "Opening pressure 380 mm H₂O"
     }
    ],
-   "topic": "increased-intracranial-pressure"
+   "topic": "increased-intracranial-pressure",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Enlarged ventricles** on MRI",
+     "then": "Obstructive hydrocephalus"
+    },
+    {
+     "opt": "A",
+     "if": "**Ataxia**, posterior fossa mass",
+     "then": "Cerebellar tumor"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever**, CSF lymphocytes",
+     "then": "Viral meningitis"
+    },
+    {
+     "opt": "B",
+     "if": "**Infant**, communicating hydrocephalus, ventricular mass",
+     "then": "Choroid plexus papilloma"
+    }
+   ]
   },
   "1224197": {
    "task": "Mechanism",
-   "boardCall": "Post-carotid endarterectomy headache + severe hypertension + intraparenchymal bleed -> Hypertension (Hyperperfusion syndrome)",
-   "hinge": "Restored cerebral blood flow in a chronically dilated vascular bed without autoregulation leads to hypertensive hyperperfusion hemorrhage.",
+   "boardCall": "post carotid endarterectomy + **ipsilateral headache** + **BP 170/95** + intraparenchymal hemorrhage → Hypertension",
+   "hinge": "Restored flow into autoregulation-impaired bed causes hyperperfusion bleeding.",
    "trap": "Daily aspirin use tempts platelet dysfunction, but postoperative intraparenchymal hemorrhage is driven by severe hypertension.",
    "options": {
     "A": {
@@ -1564,12 +1894,34 @@
      "trap": true
     }
    ],
-   "topic": "carotid-artery-stenosis"
+   "topic": "carotid-artery-stenosis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Ischemic infarct on CT**, hours after surgery",
+     "then": "Plaque embolization"
+    },
+    {
+     "opt": "B",
+     "if": "**Thunderclap headache**, subarachnoid blood",
+     "then": "Intracranial aneurysm"
+    },
+    {
+     "opt": "E",
+     "if": "**Uremia**, prolonged bleeding time",
+     "then": "Platelet dysfunction"
+    },
+    {
+     "opt": "C",
+     "if": "**Weeks of headaches**, enhancing mass with bleed",
+     "then": "Intracranial tumor"
+    }
+   ]
   },
   "1224198": {
    "task": "Diagnosis",
-   "boardCall": "Large hemispheric infarct + day 2 obtundation + ipsilateral fixed dilated pupil -> Uncal herniation",
-   "hinge": "Peak cerebral edema 2 to 5 days post-infarct compresses the uncus against the tentorium, causing third nerve palsy and coma.",
+   "boardCall": "large right hemispheric infarct + **day 2 obtundation** + **fixed dilated right pupil** → Uncal herniation",
+   "hinge": "Infarct edema peaks days 2–4, pushing the uncus onto CN III.",
    "trap": "An isolated third nerve palsy tempts a primary midbrain lesion, but progressive mass effect indicates uncal herniation.",
    "options": {
     "A": {
@@ -1654,12 +2006,34 @@
      "text": "severe left-sided weakness, sensory loss, and a left homonymous hemianopia"
     }
    ],
-   "topic": "increased-intracranial-pressure"
+   "topic": "increased-intracranial-pressure",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Vertical gaze palsy**, new contralateral weakness",
+     "then": "New midbrain lesion"
+    },
+    {
+     "opt": "B",
+     "if": "**Pinpoint pupils**, locked-in",
+     "then": "New pontine lesion"
+    },
+    {
+     "opt": "C",
+     "if": "**Thunderclap headache**, neck stiffness",
+     "then": "Subarachnoid hemorrhage"
+    },
+    {
+     "opt": "D",
+     "if": "**Postpartum**, headache, bilateral parasagittal hemorrhage",
+     "then": "Superior sagittal sinus thrombosis"
+    }
+   ]
   },
   "1224199": {
    "task": "Next step",
-   "boardCall": "Terminal hospice patient + severe intractable pain -> Titrate opioid dose as needed for comfort (double effect)",
-   "hinge": "In terminal hospice care, the primary duty is pain relief; opioids are titrated to comfort even if respiration is impaired.",
+   "boardCall": "terminal myeloma in hospice + **severe pain** + **sedation, respiratory depression at relief** → Give whatever dose relieves pain",
+   "hinge": "Double effect: intent to relieve suffering justifies foreseen respiratory depression.",
    "trap": "Fear of respiratory depression or hastening death tempts withholding opioids, violating the principle of double effect.",
    "options": {
     "A": {
@@ -1745,12 +2119,34 @@
      "text": "when she is free of pain, respiratory function is impaired"
     }
    ],
-   "topic": "palliative-and-hospice-care"
+   "topic": "palliative-and-hospice-care",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Family fears addiction**",
+     "then": "Do not reduce for addiction risk"
+    },
+    {
+     "opt": "D",
+     "if": "**Worry dose hastens death**",
+     "then": "Do not reduce dose"
+    },
+    {
+     "opt": "C",
+     "if": "**Dose capped** by PO2, PCO2 limits",
+     "then": "Increase only within normal PO2"
+    },
+    {
+     "opt": "A",
+     "if": "**Bone metastasis pain**, adjuvant options",
+     "then": "Other pain relief added, not substituted"
+    }
+   ]
   },
   "1224200": {
    "task": "Next step",
-   "boardCall": "Argyll Robertson pupils + sensory ataxia + Charcot joint -> Intravenous penicillin (Neurosyphilis)",
-   "hinge": "Light-near dissociation (Argyll Robertson pupil) with tabes dorsalis and positive STD history indicates neurosyphilis, treated with IV penicillin.",
+   "boardCall": "**Argyll Robertson pupils** + absent position sense, Romberg + Charcot joint + **CSF protein 69** → Intravenous penicillin",
+   "hinge": "Tabes dorsalis is neurosyphilis; IV penicillin G is the only reliable treatment.",
    "trap": "A positive PPD skin test or sensory ataxia tempts tuberculosis therapy or vitamin B12, but Argyll Robertson pupils confirm neurosyphilis.",
    "options": {
     "A": {
@@ -1850,12 +2246,34 @@
      "trap": true
     }
    ],
-   "topic": "syphilis"
+   "topic": "syphilis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Penicillin allergy**, early syphilis, not pregnant",
+     "then": "Oral tetracycline (doxycycline)"
+    },
+    {
+     "opt": "C",
+     "if": "**Macrocytic anemia**, posterior columns, no pupil change",
+     "then": "Intramuscular vitamin B12"
+    },
+    {
+     "opt": "B",
+     "if": "**Active TB** with cough, cavitary lesion",
+     "then": "Rifampin and isoniazid"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever, temporal lobe signs**, hemorrhagic CSF",
+     "then": "Intravenous acyclovir"
+    }
+   ]
   },
   "1224201": {
    "task": "Diagnosis",
-   "boardCall": "Facial angiofibromas + ash-leaf macule + subependymal calcifications -> Tuberous sclerosis",
-   "hinge": "Facial angiofibromas, periungual fibromas, and subependymal calcified ventricular nodules are diagnostic of tuberous sclerosis.",
+   "boardCall": "teen seizure + **facial angiofibromas, ash-leaf macule** + ungual fibromas + **subependymal calcified nodules** → Tuberous sclerosis",
+   "hinge": "TSC1/2 loss produces hamartomas in skin, brain, kidney, and heart.",
    "trap": "Cutaneous lesions and seizures tempt neurofibromatosis, but hypopigmented macules and subependymal nodules define tuberous sclerosis.",
    "options": {
     "A": {
@@ -1943,12 +2361,34 @@
      "text": "multiple calcified lesions lining the inner surface of the lateral ventricles"
     }
    ],
-   "topic": "neurocutaneous-disorders"
+   "topic": "neurocutaneous-disorders",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Port-wine stain**, tram-track calcification",
+     "then": "Sturge-Weber syndrome"
+    },
+    {
+     "opt": "B",
+     "if": "**Café-au-lait spots**, axillary freckling",
+     "then": "Neurofibromatosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Retinal hemangioblastoma**, renal cell carcinoma",
+     "then": "von Hippel disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Hutchinson teeth**, saddle nose",
+     "then": "Congenital syphilis"
+    }
+   ]
   },
   "1224202": {
    "task": "Diagnosis",
-   "boardCall": "Small cell lung cancer + subacute psychosis/memory loss + medial temporal hyperintensity -> Paraneoplastic limbic encephalitis",
-   "hinge": "Bilateral medial temporal FLAIR hyperintensity and CSF pleocytosis in small cell lung cancer indicate paraneoplastic limbic encephalitis.",
+   "boardCall": "**small cell lung cancer** + **months of paranoia, memory loss** + seizure + medial temporal hyperintensity → Paraneoplastic limbic encephalitis",
+   "hinge": "Anti-Hu antibodies attack limbic neurons, preceding or accompanying SCLC.",
    "trap": "Temporal lobe seizures and inflammation tempt HSV encephalitis, but HSV PCR is negative and cancer is present.",
    "options": {
     "A": {
@@ -2036,12 +2476,34 @@
      "text": "focal epileptiform discharges in the right temporal regions"
     }
    ],
-   "topic": "encephalitis"
+   "topic": "encephalitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Ring-enhancing lesions** at gray-white junction",
+     "then": "Metastatic disease"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever**, hemorrhagic temporal lesion, CSF RBC",
+     "then": "Viral infection"
+    },
+    {
+     "opt": "D",
+     "if": "**Myoclonus**, periodic sharp waves",
+     "then": "Prion disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Seizure starts after new antibiotic**, normal MRI",
+     "then": "Medication adverse effect"
+    }
+   ]
   },
   "1224203": {
    "task": "Next step",
-   "boardCall": "Acute lumbosacral radicular pain + positive straight-leg raise + intact neuro exam -> Oral nonsteroidal anti-inflammatory therapy",
-   "hinge": "Acute low back pain with radiculopathy without motor deficit or red flags is managed conservatively with oral NSAIDs.",
+   "boardCall": "low back pain after gardening + **mild radiating tingling** + **no red flags, no deficit** → Oral nonsteroidal anti-inflammatory therapy",
+   "hinge": "Acute back pain with mild radiculopathy responds to NSAIDs and activity.",
    "trap": "Radiating leg tingling and positive straight-leg raise tempt invasive imaging or epidural steroids, but conservative NSAIDs come first.",
    "options": {
     "A": {
@@ -2130,12 +2592,34 @@
      "text": "Straight-leg raise test is positive"
     }
    ],
-   "topic": "low-back-pain"
+   "topic": "low-back-pain",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Progressive weakness** or cauda equina",
+     "then": "Lumbar laminectomy"
+    },
+    {
+     "opt": "A",
+     "if": "**Radicular pain persists** after 6 weeks",
+     "then": "Corticosteroid injection therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**NSAIDs fail**, muscle spasm",
+     "then": "Add oral muscle relaxant therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Fever, IV drug use**, spinal tenderness",
+     "then": "MRI spine"
+    }
+   ]
   },
   "1224204": {
    "task": "Next step",
-   "boardCall": "Positional vertigo + Dix-Hallpike elicits nystagmus -> Canalith repositioning (Epley maneuver)",
-   "hinge": "Dix-Hallpike triggering vertigo and nystagmus diagnoses BPPV, which is treated definitively with canalith repositioning.",
+   "boardCall": "**vertigo on rolling over in bed** + nausea + head trauma history + **positive Dix-Hallpike** → Canalith repositioning",
+   "hinge": "Displaced otoconia in the posterior canal are cleared by the Epley maneuver.",
    "trap": "Meclizine is commonly used for dizziness, but canalith repositioning is the definitive first-line therapy for BPPV.",
    "options": {
     "A": {
@@ -2224,12 +2708,34 @@
      "text": "dizziness that occur primarily when she turns over in bed"
     }
    ],
-   "topic": "vertigo"
+   "topic": "vertigo",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Hours-long attacks**, low-frequency hearing loss, tinnitus",
+     "then": "Low-sodium diet"
+    },
+    {
+     "opt": "E",
+     "if": "**Vestibular neuritis**, days of vertigo after virus",
+     "then": "Short course meclizine"
+    },
+    {
+     "opt": "B",
+     "if": "**Vertigo with dysarthria**, posterior circulation TIA",
+     "then": "Clopidogrel"
+    },
+    {
+     "opt": "C",
+     "if": "**Severe acute attack**, vomiting",
+     "then": "Diazepam"
+    }
+   ]
   },
   "1224205": {
    "task": "Diagnosis",
-   "boardCall": "Adolescent headache + growth deceleration + bitemporal superior field deficit -> Optic chiasm (Craniopharyngioma)",
-   "hinge": "Bitemporal superior visual field defect with growth failure indicates compression of the inferior optic chiasm by a suprasellar mass.",
+   "boardCall": "15 yo + worsening headaches + **growth deceleration** + **bitemporal superior field loss** → Optic chiasm",
+   "hinge": "Craniopharyngioma compresses the chiasm from above, sparing lower fibers first.",
    "trap": "Superior quadrantanopia tempts temporal optic radiations (Meyer loop), but bilateral temporal defects localize to the chiasm.",
    "options": {
     "A": {
@@ -2314,12 +2820,34 @@
      "text": "change of the prescription in his glasses provided no relief"
     }
    ],
-   "topic": "pituitary-adenomas"
+   "topic": "pituitary-adenomas",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Monocular vision loss**, afferent pupil defect",
+     "then": "Optic nerve"
+    },
+    {
+     "opt": "E",
+     "if": "**Incongruous homonymous hemianopia**",
+     "then": "Optic tract"
+    },
+    {
+     "opt": "D",
+     "if": "**Contralateral upper quadrantanopia**, temporal lesion",
+     "then": "Optic radiations (Meyer loop)"
+    },
+    {
+     "opt": "A",
+     "if": "**Homonymous hemianopia with macular sparing**",
+     "then": "Occipital lobe"
+    }
+   ]
   },
   "1224206": {
    "task": "Next step",
-   "boardCall": "Blood pressure 280/140 + encephalopathy + papilledema + RBC casts -> Administration of antihypertensive agents, intravenously",
-   "hinge": "Severe hypertension with acute encephalopathy, papilledema, and renal casts is hypertensive emergency, managed with IV antihypertensives.",
+   "boardCall": "**BP 280/140** + somnolence + **papilledema, retinal hemorrhages** + RBC casts + normal CT → Intravenous antihypertensive agents",
+   "hinge": "Hypertensive encephalopathy needs controlled IV lowering, about 25% in the first hour.",
    "trap": "Somnolence and papilledema tempt invasive ICP control or airway clearance, but blood pressure reduction is the immediate emergency step.",
    "options": {
     "A": {
@@ -2415,12 +2943,34 @@
      "text": "CT scan of the head without contrast enhancement shows normal findings"
     }
    ],
-   "topic": "hypertensive-crises"
+   "topic": "hypertensive-crises",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Snoring respirations**, GCS 7",
+     "then": "Clear airway, give oxygen"
+    },
+    {
+     "opt": "E",
+     "if": "**CT shows mass effect**, normal blood pressure",
+     "then": "Control increased intracranial pressure"
+    },
+    {
+     "opt": "F",
+     "if": "**Fever, neck stiffness**, normal CT",
+     "then": "Lumbar puncture"
+    },
+    {
+     "opt": "D",
+     "if": "**Hypotension**, hemorrhagic shock",
+     "then": "Colloid expansion of volume"
+    }
+   ]
   },
   "1224207": {
    "task": "Diagnosis",
-   "boardCall": "Acute hemiparesis post-breakup + non-anatomic sensory split + normal neuroimaging -> Conversion disorder",
-   "hinge": "Inconsistent non-anatomic neurologic deficits (give-way weakness, midline split) following acute emotional stress with normal MRI indicate conversion disorder.",
+   "boardCall": "25yo + **acute stressor 2 days ago** + left hemiplegia + **no withdrawal to pain** + normal reflexes → Conversion disorder",
+   "hinge": "Deficits inconsistent with anatomy and preserved reflexes indicate functional weakness.",
    "trap": "Sudden hemiparesis in a woman on oral contraceptives tempts stroke or venous thrombosis, but neuroimaging and reflexes are normal.",
    "options": {
     "A": {
@@ -2512,12 +3062,34 @@
      "trap": true
     }
    ],
-   "topic": "somatic-symptom-disorders"
+   "topic": "somatic-symptom-disorders",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Oral contraceptive**, worsening headache, papilledema, seizures",
+     "then": "Venous sinus thrombosis"
+    },
+    {
+     "opt": "A",
+     "if": "**Weakness follows aura** and headache, resolves within hours",
+     "then": "Complicated migraine"
+    },
+    {
+     "opt": "D",
+     "if": "**Aphasia or neglect**, face-arm weakness, Babinski",
+     "then": "Middle cerebral artery occlusion"
+    },
+    {
+     "opt": "C",
+     "if": "**Pure motor**, hypertensive older adult, hyperreflexia",
+     "then": "Lacunar infarct"
+    }
+   ]
   },
   "1224208": {
    "task": "Other",
-   "boardCall": "Multiple sclerosis living alone + motor weakness + higher level of care assessment -> Transferring (Basic ADL)",
-   "hinge": "Ability to perform basic ADLs, particularly transferring safely between bed and chair, dictates whether an individual can live alone.",
+   "boardCall": "MS + **lives alone** + needs a walker + **leg weakness and lost proprioception** + intact cognition → Transferring",
+   "hinge": "Basic mobility ADLs decide whether she can safely live alone.",
    "trap": "Instrumental ADLs like managing finances or preparing meals tempt assessment, but failure of basic physical transfers mandates facility care.",
    "options": {
     "A": {
@@ -2612,12 +3184,34 @@
      "text": "Proprioception is decreased"
     }
    ],
-   "topic": "geriatric-assessment"
+   "topic": "geriatric-assessment",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Cognitive decline** with intact mobility",
+     "then": "Managing finances"
+    },
+    {
+     "opt": "C",
+     "if": "**Complex regimen**, memory lapses",
+     "then": "Managing medications"
+    },
+    {
+     "opt": "A",
+     "if": "**Visual loss** or slowed reaction time, still drives",
+     "then": "Driving"
+    },
+    {
+     "opt": null,
+     "if": "**Incontinent**, cannot feed self",
+     "then": "Assess toileting and feeding"
+    }
+   ]
   },
   "1224209": {
    "task": "Next step",
-   "boardCall": "Pennsylvania camp counselor + bilateral facial palsy + headache -> IgG and IgM Lyme antibody testing (CSF)",
-   "hinge": "Bilateral facial nerve palsy in a Lyme-endemic region indicates neuroborreliosis, confirmed by serum and CSF Lyme antibody testing.",
+   "boardCall": "Pennsylvania summer camp + **bilateral facial palsy** + headache + **hearing intact** → IgG and IgM Lyme antibody testing",
+   "hinge": "CSF antibody index confirms neuroborreliosis; culture and PCR are insensitive.",
    "trap": "PCR or culture tempts definitive pathogen detection, but antibody testing is the established diagnostic standard for Lyme disease.",
    "options": {
     "A": {
@@ -2706,12 +3300,34 @@
      "text": "progressed to a global headache"
     }
    ],
-   "topic": "lyme-disease"
+   "topic": "lyme-disease",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Relapsing** optic neuritis and sensory deficits",
+     "then": "Oligoclonal bands"
+    },
+    {
+     "opt": "C",
+     "if": "**Cancer history**, multiple cranial neuropathies",
+     "then": "Cytomorphology of lymphocytes"
+    },
+    {
+     "opt": null,
+     "if": "**Unilateral palsy**, no tick exposure",
+     "then": "Bell palsy: prednisone"
+    },
+    {
+     "opt": null,
+     "if": "**Ear vesicles**, hearing loss",
+     "then": "Ramsay Hunt: valacyclovir"
+    }
+   ]
   },
   "1224210": {
    "task": "Diagnosis",
-   "boardCall": "Left CN III palsy + contralateral right hemiparesis -> Left midbrain (Weber syndrome)",
-   "hinge": "An ipsilateral third nerve palsy (down and out, dilated pupil) combined with contralateral hemiparesis localizes to the left midbrain cerebral peduncle.",
+   "boardCall": "**left CN III palsy, blown pupil** + **right hemiparesis** + right lower face weakness → Left midbrain",
+   "hinge": "Weber syndrome: ipsilateral oculomotor palsy with contralateral hemiparesis.",
    "trap": "Right hemiparesis tempts left internal capsule, but an ipsilateral third nerve palsy can only arise from the midbrain.",
    "options": {
     "A": {
@@ -2806,12 +3422,34 @@
      "text": "Babinski sign is present on the right"
     }
    ],
-   "topic": "ischemic-stroke-and-tia"
+   "topic": "ischemic-stroke-and-tia",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Pure right hemiparesis**, normal eye movements",
+     "then": "Left internal capsule"
+    },
+    {
+     "opt": "C",
+     "if": "**Tongue deviates left**, right arm-leg weakness",
+     "then": "Left medulla"
+    },
+    {
+     "opt": "F",
+     "if": "**Right CN III palsy**, left hemiparesis",
+     "then": "Right midbrain"
+    },
+    {
+     "opt": "D",
+     "if": "**Right Horner**, hoarseness, left body pain loss",
+     "then": "Right medulla"
+    }
+   ]
   },
   "1224211": {
    "task": "Next step",
-   "boardCall": "Insidious memory loss + impaired clock drawing + normal reversible lab workup + atrophy -> No additional testing indicated",
-   "hinge": "Alzheimer disease is a clinical diagnosis established after comprehensive cognitive exam, normal laboratory screen, and neuroimaging.",
+   "boardCall": "77yo + **2-year progressive memory loss** + anomia + poor clock drawing + **normal B12, TSH, chemistry** → No additional testing",
+   "hinge": "Typical Alzheimer disease with reversible causes excluded needs no more tests.",
    "trap": "APOE genotyping is strongly associated with Alzheimer disease, tempting genetic testing that is not clinically indicated.",
    "options": {
     "A": {
@@ -2900,12 +3538,34 @@
      "trap": true
     }
    ],
-   "topic": "dementia"
+   "topic": "dementia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Young patient**, tremor, liver disease, KF rings",
+     "then": "Serum ceruloplasmin"
+    },
+    {
+     "opt": null,
+     "if": "**Visual hallucinations**, parkinsonism, fluctuations",
+     "then": "Lewy body dementia"
+    },
+    {
+     "opt": null,
+     "if": "**Triad**: gait, incontinence, dementia",
+     "then": "MRI for hydrocephalus"
+    },
+    {
+     "opt": "A",
+     "if": "**Research setting** genetic risk counseling",
+     "then": "Apolipoprotein E haplotype"
+    }
+   ]
   },
   "1224212": {
    "task": "Diagnosis",
-   "boardCall": "Acute anterograde amnesia + repetitive questioning + full recovery in hours -> Transient global amnesia",
-   "hinge": "Abrupt anterograde amnesia with preserved self-identity and repetitive questions that resolves within 24 hours is transient global amnesia.",
+   "boardCall": "55yo + **sudden anterograde amnesia** + **repetitive questioning** + knows identity + recovers within hours → Transient global amnesia",
+   "hinge": "Isolated temporary amnesia with preserved identity and no deficits.",
    "trap": "Severe anterograde memory deficit tempts Korsakoff syndrome or stroke, but absence of other deficits and rapid resolution confirm TGA.",
    "options": {
     "A": {
@@ -2993,12 +3653,34 @@
      "text": "cognition is normal but he has only a vague recollection"
     }
    ],
-   "topic": "transient-global-amnesia"
+   "topic": "transient-global-amnesia",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Sedation**, slurred speech, pills found",
+     "then": "Benzodiazepine intoxication"
+    },
+    {
+     "opt": "E",
+     "if": "**Ophthalmoplegia**, ataxia, confabulation in a drinker",
+     "then": "Wernicke-Korsakoff syndrome"
+    },
+    {
+     "opt": "B",
+     "if": "**Gradual progressive** memory loss over years",
+     "then": "Dementia, Alzheimer type"
+    },
+    {
+     "opt": "C",
+     "if": "**Stepwise decline**, focal signs, vascular risk",
+     "then": "Multi-infarct (vascular) dementia"
+    }
+   ]
   },
   "1224213": {
    "task": "Diagnosis",
-   "boardCall": "Prolonged bed rest/intubation + footdrop + dorsiflexion and eversion weakness -> Common peroneal nerves",
-   "hinge": "Weakness of dorsiflexion and eversion with sensory loss over the lateral leg points to compression of the common peroneal nerve at the fibular head.",
+   "boardCall": "prolonged ICU stay with weight loss + **bilateral footdrop** + weak eversion + **lateral shin numbness** → Common peroneal nerves",
+   "hinge": "Bedridden weight loss compresses peroneal nerves at fibular heads.",
    "trap": "Sciatic neuropathy and L5 radiculopathy also cause footdrop, but common peroneal sparing of inversion and knee flexion confirms localized fibular head compression.",
    "options": {
     "A": {
@@ -3086,12 +3768,34 @@
      "text": "Straight-leg raising does not produce pain"
     }
    ],
-   "topic": "mononeuropathies"
+   "topic": "mononeuropathies",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Weak plantar flexion**, numb soles",
+     "then": "Tibial nerves"
+    },
+    {
+     "opt": "D",
+     "if": "**Hamstring weakness** plus all foot muscles",
+     "then": "Sciatic nerves"
+    },
+    {
+     "opt": "A",
+     "if": "**Saddle anesthesia**, urinary retention",
+     "then": "Cauda equina"
+    },
+    {
+     "opt": "C",
+     "if": "**Retroperitoneal hematoma** on anticoagulation, thigh weakness",
+     "then": "Lumbosacral plexus"
+    }
+   ]
   },
   "1224214": {
    "task": "Diagnosis",
-   "boardCall": "Adolescent unilateral headache + flashing lights aura + school absence -> Migraine",
-   "hinge": "Episodic unilateral headaches accompanied by visual flashing lights (aura) causing school absenteeism indicate migraine.",
+   "boardCall": "12yo + **recurrent unilateral headaches under 6 hours** + visual difficulty + pubertal moodiness + normal exam → Migraine",
+   "hinge": "Pediatric migraine is often shorter, and irritability fits normal adolescence.",
    "trap": "Pubertal irritability and a family history of bipolar disorder tempt psychiatric diagnoses, but flashing lights confirm migraine aura.",
    "options": {
     "A": {
@@ -3194,12 +3898,34 @@
      "trap": true
     }
    ],
-   "topic": "primary-headaches"
+   "topic": "primary-headaches",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Decreased sleep**, grandiosity, pressured speech",
+     "then": "Bipolar disorder"
+    },
+    {
+     "opt": "D",
+     "if": "**Depressed mood** most days for a year",
+     "then": "Dysthymic disorder"
+    },
+    {
+     "opt": "A",
+     "if": "**Symptoms began** after a move or divorce",
+     "then": "Adjustment disorder"
+    },
+    {
+     "opt": null,
+     "if": "**Morning headache**, vomiting, focal sign",
+     "then": "MRI for mass"
+    }
+   ]
   },
   "1224215": {
    "task": "Diagnosis",
-   "boardCall": "Haloperidol + hyperthermia 40.6 C + lead-pipe rigidity + autonomic instability -> Neuroleptic malignant syndrome",
-   "hinge": "High fever, generalized muscle rigidity, altered mental status, and labile blood pressure following haloperidol indicate NMS.",
+   "boardCall": "**new haloperidol 10 days ago** + fever 40.6 + **rigidity** + labile BP + confusion → Neuroleptic malignant syndrome",
+   "hinge": "Dopamine blockade causes hyperthermia, lead-pipe rigidity, and autonomic instability.",
    "trap": "Extreme hyperpyrexia (105.1 F) and low TSH tempt heat stroke or thyroid storm, but diffuse muscle rigidity points to NMS.",
    "options": {
     "A": {
@@ -3288,12 +4014,34 @@
      "trap": true
     }
    ],
-   "topic": "antipsychotics"
+   "topic": "antipsychotics",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Low TSH, high free T4**, tremor, no rigidity",
+     "then": "Thyrotoxicosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Hot environment**, dry skin, no rigidity",
+     "then": "Heat stroke"
+    },
+    {
+     "opt": "A",
+     "if": "**Neck stiffness**, CSF neutrophils",
+     "then": "Bacterial meningitis"
+    },
+    {
+     "opt": null,
+     "if": "**Clonus, hyperreflexia** after serotonergic drug",
+     "then": "Serotonin syndrome"
+    }
+   ]
   },
   "1224216": {
    "task": "Diagnosis",
-   "boardCall": "Hospitalized elderly patient + acute fluctuating confusion + pneumonia + asterixis -> Toxic-metabolic encephalopathy (Delirium)",
-   "hinge": "Acute fluctuating inattention, disorientation, and asterixis triggered by pneumonia and psychoactive medications define toxic-metabolic encephalopathy.",
+   "boardCall": "89yo + pneumonia + **fluctuating confusion** + **asterixis** + new drugs → Toxic-metabolic encephalopathy",
+   "hinge": "Asterixis marks diffuse metabolic delirium, not focal brain disease.",
    "trap": "Asterixis tempts liver failure, but asterixis is a nonspecific sign of any severe toxic-metabolic encephalopathy.",
    "options": {
     "A": {
@@ -3381,12 +4129,34 @@
      "text": "hands flap forward repeatedly"
     }
    ],
-   "topic": "delirium"
+   "topic": "delirium",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Jaundice, INR elevated**, no prior liver disease",
+     "then": "Acute liver failure"
+    },
+    {
+     "opt": "D",
+     "if": "**Sudden focal deficit** or aphasia",
+     "then": "Stroke"
+    },
+    {
+     "opt": "C",
+     "if": "**Neck stiffness**, fever, CSF pleocytosis",
+     "then": "Meningitis"
+    },
+    {
+     "opt": "B",
+     "if": "**Bradycardia, hypothermia**, missed levothyroxine",
+     "then": "Hypothyroidism"
+    }
+   ]
   },
   "1224217": {
    "task": "Next step",
-   "boardCall": "Daytime sleep attacks + sleep paralysis/hallucinations + sleep-onset REM -> Modafinil (Narcolepsy)",
-   "hinge": "Excessive daytime sleepiness with sleep-onset REM episodes on multiple sleep latency testing is narcolepsy, treated first-line with modafinil.",
+   "boardCall": "27yo + **sleep attacks** + vivid dreams + **sleep paralysis-like weakness** + short REM latency → Modafinil",
+   "hinge": "Wake-promoting agents treat narcolepsy's daytime sleepiness first.",
    "trap": "Anticataplectic antidepressants (imipramine) treat cataplexy, but modafinil is the primary first-line treatment for daytime sleepiness.",
    "options": {
     "A": {
@@ -3475,12 +4245,34 @@
      "text": "Multiple sleep latency test shows REM sleep at the onset of sleep"
     }
    ],
-   "topic": "narcolepsy"
+   "topic": "narcolepsy",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Frequent cataplexy** with laughter",
+     "then": "Imipramine"
+    },
+    {
+     "opt": null,
+     "if": "**Cataplexy plus sleepiness**, refractory",
+     "then": "Sodium oxybate"
+    },
+    {
+     "opt": null,
+     "if": "**Snoring, obesity**, witnessed apneas",
+     "then": "Polysomnography, CPAP"
+    },
+    {
+     "opt": "B",
+     "if": "**Situational insomnia** with anxiety",
+     "then": "Diazepam"
+    }
+   ]
   },
   "1224218": {
    "task": "Diagnosis",
-   "boardCall": "Isoniazid therapy + distal stocking-glove paresthesias + hyporeflexia -> Vitamin B6 (Pyridoxine)",
-   "hinge": "Isoniazid chemically binds pyridoxal phosphate and promotes urinary excretion, causing vitamin B6 deficiency and peripheral neuropathy.",
+   "boardCall": "**isoniazid for 1 year** + stocking-glove numbness + hyporeflexia + **optic atrophy** → Vitamin B6",
+   "hinge": "Isoniazid depletes pyridoxine, causing peripheral neuropathy.",
    "trap": "Paresthesias and optic atrophy tempt vitamin B12 or thiamine, but isoniazid specifically depletes vitamin B6.",
    "options": {
     "A": {
@@ -3603,12 +4395,34 @@
      "text": "bilateral optic atrophy"
     }
    ],
-   "topic": "tuberculosis"
+   "topic": "tuberculosis",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Vegan**, macrocytosis, lost vibration and proprioception",
+     "then": "Vitamin B12 (cobalamin)"
+    },
+    {
+     "opt": "C",
+     "if": "**Alcoholic**, ophthalmoplegia, high-output heart failure",
+     "then": "Vitamin B1 (thiamine)"
+    },
+    {
+     "opt": "A",
+     "if": "**Dermatitis, diarrhea**, dementia on isoniazid",
+     "then": "Niacin"
+    },
+    {
+     "opt": "I",
+     "if": "**Fat malabsorption**, ataxia, hemolysis",
+     "then": "Vitamin E"
+    }
+   ]
   },
   "1224219": {
    "task": "Next step",
-   "boardCall": "Chorea + psychiatric symptoms + cognitive decline in adult -> Genetic testing (CAG repeats in HTT)",
-   "hinge": "Adult-onset chorea with psychiatric changes and progressive dementia indicates Huntington disease, confirmed definitively by genetic testing.",
+   "boardCall": "42yo + **chorea** + depression and mood swings + **progressive forgetfulness** → Genetic testing",
+   "hinge": "Adult chorea with psychiatric and cognitive decline: confirm Huntington CAG repeats.",
    "trap": "MRI demonstrates caudate atrophy, but genetic testing for CAG repeats is the definitive diagnostic next step.",
    "options": {
     "A": {
@@ -3698,12 +4512,34 @@
      "text": "increased muscle tone diffusely"
     }
    ],
-   "topic": "huntington-disease"
+   "topic": "huntington-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Young**, tremor, liver disease, dysarthria",
+     "then": "Slit-lamp ophthalmologic examination"
+    },
+    {
+     "opt": "A",
+     "if": "**Rest tremor**, bradykinesia, rigidity",
+     "then": "Carbidopa-levodopa therapy"
+    },
+    {
+     "opt": "D",
+     "if": "**Acute unilateral** flinging, diabetic",
+     "then": "MRI of the brain"
+    },
+    {
+     "opt": null,
+     "if": "**Recent strep**, child, chorea",
+     "then": "Sydenham chorea: ASO titer"
+    }
+   ]
   },
   "1224220": {
    "task": "Diagnosis",
-   "boardCall": "Blunt knee trauma + footdrop + dorsiflexion/eversion weakness with preserved inversion -> Common peroneal palsy",
-   "hinge": "Weakness of dorsiflexion and eversion with normal foot inversion distinguishes common peroneal palsy from an L5 radiculopathy.",
+   "boardCall": "trauma + **weak dorsiflexion and eversion** + **inversion normal** + lateral shin numbness + normal reflexes → Common peroneal palsy",
+   "hinge": "Spared inversion (tibialis posterior) localizes footdrop below the L5 root.",
    "trap": "Lumbosacral spine tenderness tempts L5 radiculopathy, but normal inversion proves the L5-innervated tibial nerve is intact.",
    "options": {
     "A": {
@@ -3791,12 +4627,34 @@
      "text": "decreased over the right anterior and lateral shin"
     }
    ],
-   "topic": "mononeuropathies"
+   "topic": "mononeuropathies",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Inversion also weak**, back pain radiating",
+     "then": "L5 radiculopathy"
+    },
+    {
+     "opt": "D",
+     "if": "**Hip dislocation**, plantar flexion also weak",
+     "then": "Sciatic mononeuropathy"
+    },
+    {
+     "opt": "E",
+     "if": "**Weak plantar flexion**, numb sole",
+     "then": "Tibial mononeuropathy"
+    },
+    {
+     "opt": "C",
+     "if": "**Pelvic fracture**, multiple roots, gluteal weakness",
+     "then": "Lumbosacral plexopathy"
+    }
+   ]
   },
   "1224221": {
    "task": "Diagnosis",
-   "boardCall": "Unconscious in mobile home + flushed skin + pink oral mucosa -> Carbon monoxide poisoning",
-   "hinge": "Unexplained coma in an enclosed heated space with cherry-red flushed skin and pink mucous membranes indicates carbon monoxide toxicity.",
+   "boardCall": "found unconscious + **mobile home** + **flushed skin, pink mucosa** + tachycardia + no focal signs → Carbon monoxide",
+   "hinge": "Enclosed heater exposure: carboxyhemoglobin and cherry-red color.",
    "trap": "Standard pulse oximetry is falsely normal in carbon monoxide poisoning because it cannot distinguish carboxyhemoglobin from oxyhemoglobin.",
    "options": {
     "A": {
@@ -3888,12 +4746,34 @@
      "text": "oculocephalic reflex is present"
     }
    ],
-   "topic": "carbon-monoxide-poisoning"
+   "topic": "carbon-monoxide-poisoning",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**House fire**, lactic acidosis, almond breath",
+     "then": "Hydrogen cyanide"
+    },
+    {
+     "opt": "E",
+     "if": "**Miosis**, salivation, bradycardia, farm worker",
+     "then": "Organophosphates"
+    },
+    {
+     "opt": "D",
+     "if": "**Blurry snowstorm vision**, high anion gap",
+     "then": "Methanol"
+    },
+    {
+     "opt": "A",
+     "if": "**Descending paralysis**, dilated pupils, home canning",
+     "then": "Botulinum toxin"
+    }
+   ]
   },
   "1224222": {
    "task": "Diagnosis",
-   "boardCall": "Adolescent behavioral change + cleaning rags + chemical odor + perioral rash -> Inhalant abuse",
-   "hinge": "Chemical odor on clothes, cleaning rags in the bedroom, and perioral/perinasal rash ('glue-sniffer's rash') indicate inhalant abuse.",
+   "boardCall": "13yo + **perioral and perinasal rash** + chemical-smelling clothes + **rags in his room** + slurred speech and ataxia → Inhalant",
+   "hinge": "Huffing solvents causes huffer's rash and cerebellar toxicity.",
    "trap": "Slurred speech and ataxia suggest alcohol intoxication, but solvent rags and perioral dermatitis confirm inhalants.",
    "options": {
     "A": {
@@ -3981,12 +4861,34 @@
      "text": "grades have been declining during the past 3 months"
     }
    ],
-   "topic": "substance-use-disorders"
+   "topic": "substance-use-disorders",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Red eyes**, increased appetite, laughter",
+     "then": "Cannabis"
+    },
+    {
+     "opt": "E",
+     "if": "**Rotten teeth**, weight loss, paranoia",
+     "then": "Methamphetamine"
+    },
+    {
+     "opt": "B",
+     "if": "**Nasal septum** perforation, chest pain, dilated pupils",
+     "then": "Cocaine"
+    },
+    {
+     "opt": "A",
+     "if": "**Breath odor** of ethanol, positive breath test",
+     "then": "Alcohol"
+    }
+   ]
   },
   "1224223": {
    "task": "Diagnosis",
-   "boardCall": "Lymphoma/chemotherapy + 14-day indolent headache + neck stiffness -> Cryptococcus neoformans",
-   "hinge": "Subacute meningitis in an immunocompromised host following lymphoma chemotherapy is classically caused by Cryptococcus neoformans.",
+   "boardCall": "**Hodgkin disease after chemotherapy** + **subacute headache** + mild neck stiffness + low-grade fever → Cryptococcus neoformans",
+   "hinge": "Impaired cell-mediated immunity predisposes to indolent cryptococcal meningitis.",
    "trap": "Tuberculous meningitis also causes subacute meningitis, but Cryptococcus is the classic encapsulated opportunistic yeast following hematologic chemotherapy.",
    "options": {
     "A": {
@@ -4071,12 +4973,34 @@
      "text": "serum glucose concentration is 70 mg/dL"
     }
    ],
-   "topic": "meningitis"
+   "topic": "meningitis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Basilar enhancement**, cranial nerve palsies, endemic exposure",
+     "then": "Mycobacterium tuberculosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Lung and brain abscesses**, weakly acid-fast",
+     "then": "Nocardia asteroides"
+    },
+    {
+     "opt": "A",
+     "if": "**Prolonged neutropenia**, hemorrhagic lung nodules",
+     "then": "Aspergillus fumigatus"
+    },
+    {
+     "opt": "C",
+     "if": "**Unvaccinated infant**, acute meningitis",
+     "then": "Haemophilus influenzae type b"
+    }
+   ]
   },
   "1224224": {
    "task": "Diagnosis",
-   "boardCall": "Brown-Séquard hemicord signs + T9 sensory level + CSF oligoclonal bands -> Transverse myelitis",
-   "hinge": "Unilateral UMN signs with contralateral spinothalamic loss (hemicord pattern), thoracic MRI lesion, and CSF oligoclonal bands indicate transverse myelitis.",
+   "boardCall": "25yo + **right hyperreflexia, left pain loss** + **T9 sensory level** + oligoclonal bands + cord signal on MRI → Transverse myelitis",
+   "hinge": "Inflammatory cord lesion produces a hemicord pattern with CSF inflammation.",
    "trap": "Preserved vibration and proprioception mimics anterior spinal artery infarction, but oligoclonal bands and subacute onset confirm demyelinating myelitis.",
    "options": {
     "A": {
@@ -4164,12 +5088,34 @@
      "text": "abnormal signal within the thoracic spinal cord"
     }
    ],
-   "topic": "multiple-sclerosis"
+   "topic": "multiple-sclerosis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Bilateral optic neuritis**, longitudinally extensive lesion, AQP4",
+     "then": "Neuromyelitis optica"
+    },
+    {
+     "opt": "D",
+     "if": "**Sudden paraplegia**, vibration spared, after aortic surgery",
+     "then": "Thrombosis of anterior spinal artery"
+    },
+    {
+     "opt": "A",
+     "if": "**Radicular pain**, disc compressing root",
+     "then": "Herniated nucleus pulposus"
+    },
+    {
+     "opt": "B",
+     "if": "**Fever**, neck stiffness, high CSF neutrophils",
+     "then": "Meningitis"
+    }
+   ]
   },
   "1224225": {
    "task": "Next step",
-   "boardCall": "Canned food ingestion + ptosis + mydriasis + descending flaccid paralysis -> Botulinum antitoxin",
-   "hinge": "Acute symmetric descending flaccid paralysis with cranial neuropathies (ptosis, mydriasis, dysphagia) following food ingestion is botulism, treated with antitoxin.",
+   "boardCall": "15yo + vomiting after a meal + **ptosis with dilated pupils** + **descending flaccid paralysis** → Botulinum antitoxin",
+   "hinge": "Antitoxin neutralizes circulating toxin; give promptly on clinical suspicion.",
    "trap": "Ptosis and muscle weakness tempt pyridostigmine for myasthenia, but mydriatic pupils and rapid descending paralysis confirm botulism.",
    "options": {
     "A": {
@@ -4258,12 +5204,34 @@
      "text": "She is alert"
     }
    ],
-   "topic": "neuromuscular-junction-disorders"
+   "topic": "neuromuscular-junction-disorders",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Pinpoint pupils**, salivation, wheezing",
+     "then": "Atropine"
+    },
+    {
+     "opt": "D",
+     "if": "**Fatigable weakness**, normal pupils, AChR antibodies",
+     "then": "Pyridostigmine"
+    },
+    {
+     "opt": null,
+     "if": "**Infant** with honey exposure, constipation",
+     "then": "Botulism immune globulin"
+    },
+    {
+     "opt": null,
+     "if": "**Ascending weakness**, areflexia after diarrhea",
+     "then": "IVIG or plasmapheresis"
+    }
+   ]
   },
   "1224226": {
    "task": "Diagnosis",
-   "boardCall": "Purplish periorbital hue + scaly rash over knuckles and knees -> Dermatomyositis",
-   "hinge": "Heliotrope periorbital purplish erythema and Gottron papules over knuckles and knees are pathognomonic for dermatomyositis.",
+   "boardCall": "9yo + myalgia and fever + **purplish periorbital swelling** + **scaly rash over knuckles** → Dermatomyositis",
+   "hinge": "Heliotrope rash and Gottron papules are pathognomonic.",
    "trap": "Systemic lupus erythematosus causes facial rashes and arthritis, but knuckle papules (Gottron) and heliotrope rash define dermatomyositis.",
    "options": {
     "A": {
@@ -4349,12 +5317,34 @@
      "text": "scaly rash over the knees and knuckles"
     }
    ],
-   "topic": "inflammatory-myopathies"
+   "topic": "inflammatory-myopathies",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Malar rash**, arthritis, nephritis, ANA",
+     "then": "Systemic lupus erythematosus"
+    },
+    {
+     "opt": "A",
+     "if": "**Recent strep**, migratory arthritis, carditis",
+     "then": "Acute rheumatic fever"
+    },
+    {
+     "opt": "C",
+     "if": "**Quotidian fever**, salmon rash, arthritis",
+     "then": "Juvenile idiopathic arthritis"
+    },
+    {
+     "opt": "D",
+     "if": "**Single hot joint**, refuses to bear weight",
+     "then": "Septic arthritis"
+    }
+   ]
   },
   "1224227": {
    "task": "Diagnosis",
-   "boardCall": "Low back pain + leg weakness + absent reflexes + bladder incontinence + weight loss -> MRI of the lumbosacral spine",
-   "hinge": "Back pain with cauda equina syndrome (absent reflexes, bladder dysfunction) and cancer red flags requires urgent MRI of the lumbosacral spine.",
+   "boardCall": "75yo smoker + **weight loss and cough** + back pain with percussion tenderness + **leg weakness, areflexia, bladder loss** → MRI of the lumbosacral spine",
+   "hinge": "Suspected metastatic cauda equina compression needs urgent MRI.",
    "trap": "Thoracic spine CT or EMG tempts testing, but lumbosacral MRI is the gold standard to visualize cauda equina compression.",
    "options": {
     "A": {
@@ -4442,12 +5432,34 @@
      "text": "Babinski sign are absent bilaterally"
     }
    ],
-   "topic": "spinal-cord-compression"
+   "topic": "spinal-cord-compression",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Hyperreflexia**, Babinski, thoracic sensory level",
+     "then": "CT of the thoracic spine"
+    },
+    {
+     "opt": "B",
+     "if": "**Chronic stocking sensory loss**, no bladder change",
+     "then": "EMG and nerve conduction studies"
+    },
+    {
+     "opt": "C",
+     "if": "**Fever, neck stiffness**, no back mass",
+     "then": "Lumbar puncture for CSF"
+    },
+    {
+     "opt": "E",
+     "if": "**Bone pain**, bowed tibias, normal neuro exam",
+     "then": "Serum alkaline phosphatase activity"
+    }
+   ]
   },
   "1224228": {
    "task": "Next step",
-   "boardCall": "Pontine stroke + waking gasping for air + morning headache + suffocation dreams -> Polysomnography",
-   "hinge": "Nocturnal awakenings gasping for air and morning headaches following pontine stroke indicate sleep-disordered breathing (sleep apnea), diagnosed by polysomnography.",
+   "boardCall": "**brainstem stroke** + nightmares of suffocation + **gasping awakenings** + morning headaches + heart failure → Polysomnography",
+   "hinge": "Choking dreams after a pontine infarct suggest sleep apnea; study first.",
    "trap": "Mefloquine is known to cause vivid nightmares, tempting discontinuation, but awakening gasping for air and morning headaches identify sleep apnea.",
    "options": {
     "A": {
@@ -4544,12 +5556,34 @@
      "trap": true
     }
    ],
-   "topic": "obstructive-sleep-apnea"
+   "topic": "obstructive-sleep-apnea",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Vivid dreams only**, no gasping, started with mefloquine",
+     "then": "Discontinuing mefloquine"
+    },
+    {
+     "opt": "E",
+     "if": "**Trauma-themed nightmares**, PTSD",
+     "then": "Initiating prazosin"
+    },
+    {
+     "opt": "D",
+     "if": "**Acts out dreams** violently, polysomnography confirmed",
+     "then": "Initiating clonazepam"
+    },
+    {
+     "opt": "A",
+     "if": "**Chronic insomnia** without breathing events",
+     "then": "Cognitive behavioral therapy"
+    }
+   ]
   },
   "1224229": {
    "task": "Diagnosis",
-   "boardCall": "AIDS + progressive visual loss + bilateral funduscopic exudates and hemorrhages -> Retina (CMV retinitis)",
-   "hinge": "Bilateral funduscopic fluffy yellow-white soft exudates with retinal hemorrhages ('pizza-pie' appearance) in advanced AIDS localize to the retina.",
+   "boardCall": "**AIDS** + progressive vision loss + **cotton-wool exudates with hemorrhages** + normal fields → Retina",
+   "hinge": "CMV retinitis gives pizza-pie fundi in advanced AIDS.",
    "trap": "Bilateral visual loss tempts the optic chiasm or occipital lobe, but visible hemorrhages and soft exudates confirm retinal infection.",
    "options": {
     "A": {
@@ -4662,12 +5696,34 @@
      "text": "Examination of the visual fields shows no abnormalities"
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Amaurosis fugax** with carotid bruit",
+     "then": "Ophthalmic artery"
+    },
+    {
+     "opt": "F",
+     "if": "**Bitemporal field loss**",
+     "then": "Optic chiasm"
+    },
+    {
+     "opt": "C",
+     "if": "**Cloudy red reflex**, glare",
+     "then": "Lens"
+    },
+    {
+     "opt": "B",
+     "if": "**Left afferent pupillary defect**, pain with eye movement",
+     "then": "Left optic nerve"
+    }
+   ]
   },
   "1224230": {
    "task": "Diagnosis",
-   "boardCall": "Midthoracic back pain + bilateral UMN signs + T10 sensory level + lytic lesions -> Epidural spinal cord metastasis",
-   "hinge": "Thoracic spine tenderness with UMN signs (hyperreflexia, Babinski), T10 sensory level, and destructive vertebral lesions indicates metastatic spinal cord compression.",
+   "boardCall": "67yo + weight loss with cough + thoracic pain + **upper motor neuron paraparesis** + **destructive vertebral lesions** → Epidural spinal cord metastasis",
+   "hinge": "Lung cancer metastasis compresses the cord; give steroids and urgent MRI.",
    "trap": "Spine percussion tenderness tempts epidural abscess or osteomyelitis, but weight loss, cough, and multiple lytic lesions identify metastatic cancer.",
    "options": {
     "A": {
@@ -4758,12 +5814,34 @@
      "text": "X-rays of the spine show destructive lesions of T2 and T10"
     }
    ],
-   "topic": "spinal-cord-compression"
+   "topic": "spinal-cord-compression",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Fever**, IV drug use, rapidly worsening back pain",
+     "then": "Epidural abscess"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever**, disc space destruction, no cord signs",
+     "then": "Vertebral osteomyelitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Areflexia**, saddle anesthesia, urinary retention",
+     "then": "Cauda equina syndrome"
+    },
+    {
+     "opt": "D",
+     "if": "**Asymmetric leg pain**, weakness, diabetes or pelvic tumor",
+     "then": "Lumbosacral plexopathy"
+    }
+   ]
   },
   "1224231": {
    "task": "Ethics",
-   "boardCall": "Two seizures + temporal sharp waves + depression history concerns -> Counsel benefits outweigh risks and monitor depression",
-   "hinge": "With high seizure recurrence risk on EEG, the benefit of levetiracetam outweighs rare psychiatric risks when monitored closely.",
+   "boardCall": "new epilepsy + **left temporal sharp waves** + **prior depression** + fears suicide warning → Benefits outweigh risks; monitor for depression",
+   "hinge": "Antiseizure drug suicidality risk is small; counsel and monitor rather than stop.",
    "trap": "A remote treated major depression episode tempts stopping levetiracetam, but epileptogenic temporal sharp waves mandate effective anticonvulsant therapy.",
    "options": {
     "A": {
@@ -4848,7 +5926,29 @@
      "text": "patient expresses concern about the risk for suicide"
     }
    ],
-   "topic": "epilepsy"
+   "topic": "epilepsy",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Single provoked seizure**, normal EEG and MRI",
+     "then": "Discontinue levetiracetam"
+    },
+    {
+     "opt": null,
+     "if": "**Irritability and depression** emerge on levetiracetam",
+     "then": "Switch to lamotrigine"
+    },
+    {
+     "opt": "B",
+     "if": "**Recurrent depression** while stable on levetiracetam",
+     "then": "Escitalopram as preventive therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Infantile spasms** with tuberous sclerosis",
+     "then": "Initiate vigabatrin"
+    }
+   ]
   }
  },
  "topics": {
@@ -8517,5 +9617,5 @@
    "evidence": "Checked 2026-10-30: [SAEM GRACE-3, 2023](https://www.saem.org/publications/grace/grace-3); [AAO-HNS BPPV guideline, 2017](https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/bppv/)."
   }
  },
- "updatedAt": "2026-11-07T08:13:47Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

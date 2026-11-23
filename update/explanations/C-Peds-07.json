@@ -8,8 +8,8 @@
  "items": {
   "c-peds-07-q001": {
    "task": "Diagnosis",
-   "boardCall": "Red bulging immobile tympanic membrane + ear pain -> Acute otitis media",
-   "hinge": "Bulging erythematous immobile eardrum indicates middle ear infection, not external canal inflammation.",
+   "boardCall": "age 6 + right ear pain + lake swimming + **normal canal, no tragal pain** + **red bulging immobile TM** → Acute otitis media",
+   "hinge": "The eardrum, not the canal, is inflamed; swimming is a red herring.",
    "trap": "Recent lake swimming pulls toward otitis externa, but the ear canal and tragus are normal.",
    "options": {
     "A": {
@@ -102,12 +102,34 @@
      "text": "eardrum is red, bulging, and immobile"
     }
    ],
-   "topic": "acute-otitis-media"
+   "topic": "acute-otitis-media",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Tragal tenderness**, swollen canal with debris",
+     "then": "Otitis externa"
+    },
+    {
+     "opt": "F",
+     "if": "**Retracted dull TM** with air-fluid level, no pain",
+     "then": "Otitis media with effusion"
+    },
+    {
+     "opt": "B",
+     "if": "**Hemorrhagic blisters** on the TM",
+     "then": "Bullous otitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Vertigo, hearing loss**, nystagmus after URI",
+     "then": "Labyrinthitis"
+    }
+   ]
   },
   "c-peds-07-q002": {
    "task": "Next step",
-   "boardCall": "Recurrent pneumonia + rectal prolapse + digital clubbing -> Sweat chloride test",
-   "hinge": "Recurrent sinopulmonary infections combined with rectal prolapse and failure to thrive diagnostic for cystic fibrosis.",
+   "boardCall": "toddler + recurrent pneumonias + **rectal prolapse** + clubbing + upper-lobe bronchial thickening → Sweat chloride test",
+   "hinge": "Asthma does not cause clubbing, prolapse, or recurrent lobar pneumonia.",
    "trap": "Family history of asthma and wheezing pull toward asthma testing, but rectal prolapse and clubbing indicate CF.",
    "options": {
     "A": {
@@ -197,12 +219,34 @@
      "trap": true
     }
    ],
-   "topic": "cystic-fibrosis"
+   "topic": "cystic-fibrosis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Episodic wheeze**, normal growth, no clubbing, normal spirometry",
+     "then": "Methacholine challenge test"
+    },
+    {
+     "opt": "E",
+     "if": "**Situs inversus**, chronic wet cough since birth",
+     "then": "Nasal mucosal biopsy (ciliary dyskinesia)"
+    },
+    {
+     "opt": "B",
+     "if": "**TB-exposed household**, hilar adenopathy",
+     "then": "PPD skin test"
+    },
+    {
+     "opt": "A",
+     "if": "**Asthma with brown mucus plugs**, central bronchiectasis",
+     "then": "Serum IgE (ABPA)"
+    }
+   ]
   },
   "c-peds-07-q003": {
    "task": "Diagnosis",
-   "boardCall": "Preterm infant <34 weeks + respiratory distress + diffuse reticulogranular haziness -> Hyaline membrane disease",
-   "hinge": "Prematurity at 32 weeks with diffuse reticulogranular infiltrates and air bronchograms indicates surfactant deficiency.",
+   "boardCall": "**32 weeks** + distress within 25 minutes + grunting, retractions + SpO2 84% + **diffuse bilateral haziness** → Hyaline membrane disease",
+   "hinge": "Surfactant is immature before 34 weeks; GBS-negative, afebrile mother lowers pneumonia odds.",
    "trap": "Early onset tachypnea mimics transient tachypnea of the newborn, but diffuse haziness and prematurity point to RDS.",
    "options": {
     "A": {
@@ -290,12 +334,34 @@
      "text": "diffuse, bilateral haziness in the lungs"
     }
    ],
-   "topic": "neonatal-respiratory-distress"
+   "topic": "neonatal-respiratory-distress",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Term cesarean**, fluid in fissures, resolves by 48 h",
+     "then": "Transient tachypnea of the newborn"
+    },
+    {
+     "opt": "E",
+     "if": "**Post-term**, meconium-stained fluid, patchy hyperinflation",
+     "then": "Meconium aspiration"
+    },
+    {
+     "opt": "A",
+     "if": "**Maternal fever**, prolonged rupture, GBS-positive",
+     "then": "Bacterial pneumonia"
+    },
+    {
+     "opt": "C",
+     "if": "**SpO2 unchanged by 100% oxygen**, clear lungs",
+     "then": "Cyanotic congenital heart disease"
+    }
+   ]
   },
   "c-peds-07-q004": {
    "task": "Next step",
-   "boardCall": "Pediatric SVT (HR >220/min) + hypotension + poor perfusion -> Synchronized cardioversion",
-   "hinge": "Hemodynamic instability with hypotension and poor perfusion in supraventricular tachycardia mandates immediate synchronized cardioversion.",
+   "boardCall": "age 6 months + lethargy + **HR 245 regular** + **BP 60/40** + gray, poorly perfused → Cardioversion",
+   "hinge": "Sinus tachycardia rarely exceeds 220; the shock is rhythm-driven, not septic.",
    "trap": "Lethargy and poor perfusion mimic septic shock, tempting saline bolus or antibiotics, but heart rate is 245/min.",
    "options": {
     "A": {
@@ -385,12 +451,35 @@
      "trap": true
     }
    ],
-   "topic": "supraventricular-tachycardia"
+   "topic": "supraventricular-tachycardia",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Good perfusion**, normal BP",
+     "then": "IV adenosine",
+     "step": "vagal maneuver first"
+    },
+    {
+     "opt": "C",
+     "if": "**No pulse**, HR under 60 despite oxygen",
+     "then": "Chest compressions"
+    },
+    {
+     "opt": "B",
+     "if": "**HR 180, variable**, vomiting and dry mucosa",
+     "then": "0.9% saline bolus"
+    },
+    {
+     "opt": "E",
+     "if": "**Apneic or gasping**, unable to protect airway",
+     "then": "Endotracheal intubation"
+    }
+   ]
   },
   "c-peds-07-q005": {
    "task": "Mechanism",
-   "boardCall": "Heavy menstrual bleeding at menarche + normal platelets + prolonged PTT -> von Willebrand disease",
-   "hinge": "Severe menorrhagia with menarche accompanied by isolated prolonged PTT points to von Willebrand factor deficiency.",
+   "boardCall": "age 12 + **heavy bleeding from menarche** + Hb 10 + normal platelets + PT normal + **PTT 45** → von Willebrand disease",
+   "hinge": "Low factor VIII from vWF loss prolongs PTT; anovulation leaves labs normal.",
    "trap": "Adolescent onset of heavy irregular menses suggests anovulatory cycles, but prolonged PTT reveals a bleeding diathesis.",
    "options": {
     "A": {
@@ -482,12 +571,34 @@
      "text": "Partial thromboplastin time 45 sec"
     }
    ],
-   "topic": "inherited-bleeding-disorders"
+   "topic": "inherited-bleeding-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Normal PTT**, irregular cycles, no bleeding history",
+     "then": "Anovulatory menstrual cycles"
+    },
+    {
+     "opt": "A",
+     "if": "**Pancytopenia**, blasts, bone pain",
+     "then": "Acute lymphocytic leukemia"
+    },
+    {
+     "opt": "D",
+     "if": "**Umbilical stump bleeding**, normal PT and PTT",
+     "then": "Factor XIII deficiency"
+    },
+    {
+     "opt": "C",
+     "if": "**Ashkenazi**, post-surgical bleeding, normal ristocetin cofactor",
+     "then": "Factor XI deficiency"
+    }
+   ]
   },
   "c-peds-07-q006": {
    "task": "Diagnosis",
-   "boardCall": "Microcephaly + short palpebral fissures + thin upper lip + IUGR -> Fetal alcohol syndrome",
-   "hinge": "Classic triad of growth restriction, facial dysmorphism (short palpebral fissures, thin vermilion border), and CNS impairment.",
+   "boardCall": "growth restriction + small head + **short palpebral fissures** + **thin upper lip** + maxillary hypoplasia + hypotonia → Fetal alcohol syndrome",
+   "hinge": "This facial triad with symmetric smallness defines prenatal alcohol injury.",
    "trap": "Hypotonia and cardiac murmur mimic Down syndrome, but facial dysmorphisms point specifically to FAS.",
    "options": {
     "A": {
@@ -583,12 +694,34 @@
      "text": "mild hypotonia"
     }
    ],
-   "topic": "fetal-alcohol-syndrome"
+   "topic": "fetal-alcohol-syndrome",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Brushfield spots**, sandal gap, AV canal defect",
+     "then": "Down syndrome"
+    },
+    {
+     "opt": "F",
+     "if": "**Cleft lip**, polydactyly, scalp defect",
+     "then": "Trisomy 13 syndrome"
+    },
+    {
+     "opt": "A",
+     "if": "**Cat litter exposure** in pregnancy, macrocephaly",
+     "then": "Congenital toxoplasmosis"
+    },
+    {
+     "opt": "D",
+     "if": "**School-age boy**, long face, large ears",
+     "then": "Fragile X syndrome"
+    }
+   ]
   },
   "c-peds-07-q007": {
    "task": "Other",
-   "boardCall": "Exclusively breastfed toddler + motor delay + widened wrists -> Elevated alkaline phosphatase",
-   "hinge": "Nutritional rickets from unsupplemented breastfeeding increases osteoblast turnover, dramatically elevating alkaline phosphatase.",
+   "boardCall": "15 months + **exclusively breast-fed** + not crawling or walking + normal language + **widened wrists** → Alkaline phosphatase",
+   "hinge": "Unmineralized osteoid drives osteoblast activity; calcium and phosphate run low-normal.",
    "trap": "Motor delay suggests neuromuscular disease, but widened wrists indicate defective bone mineralization.",
    "options": {
     "A": {
@@ -674,12 +807,29 @@
      "text": "widening of the wrists"
     }
    ],
-   "topic": "rickets"
+   "topic": "rickets",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Short stubby fingers**, low PTH, seizures",
+     "then": "Hypoparathyroidism (low calcium)"
+    },
+    {
+     "opt": "E",
+     "if": "**Chronic kidney disease** with rickets",
+     "then": "Phosphorus concentration"
+    },
+    {
+     "opt": "A",
+     "if": "**Jaundice**, hepatomegaly, rickets from cholestasis",
+     "then": "ALT activity"
+    }
+   ]
   },
   "c-peds-07-q008": {
    "task": "Mechanism",
-   "boardCall": "Age >5 years + never dry at night + normal daytime voiding and urinalysis -> Maturational delay",
-   "hinge": "Lifelong nocturnal bed-wetting without daytime symptoms or abnormal urinalysis is primary nocturnal enuresis due to developmental delay.",
+   "boardCall": "age 6 + **never dry at night** + dry by day + heavy sleeper + **normal urinalysis** → Maturational delay",
+   "hinge": "Lifelong isolated night wetting reflects slow arousal and bladder control development.",
    "trap": "Recently starting school without making friends suggests an adjustment disorder, but bed-wetting was lifelong.",
    "options": {
     "A": {
@@ -765,12 +915,34 @@
      "trap": true
     }
    ],
-   "topic": "nocturnal-enuresis"
+   "topic": "nocturnal-enuresis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Dry 6 months**, wetting resumes after new sibling",
+     "then": "Adjustment disorder"
+    },
+    {
+     "opt": "B",
+     "if": "**Daytime urgency** and leaks",
+     "then": "Detrusor muscle overactivity"
+    },
+    {
+     "opt": "E",
+     "if": "**Dysuria**, positive nitrites",
+     "then": "Urinary tract infection"
+    },
+    {
+     "opt": "D",
+     "if": "**Loud snoring**, witnessed apneas",
+     "then": "Primary sleep disorder (OSA)"
+    }
+   ]
   },
   "c-peds-07-q009": {
    "task": "Next step",
-   "boardCall": "Primary amenorrhea + absent breast development + elevated FSH (>40 mIU/mL) -> Karyotype analysis",
-   "hinge": "Hypergonadotropic hypogonadism with present uterus requires karyotype analysis to distinguish Turner syndrome from 46,XX gonadal dysgenesis.",
+   "boardCall": "age 18 + primary amenorrhea + **no breast development** + uterus present + **FSH 92** → Karyotype analysis",
+   "hinge": "Gonadal failure is proven; the chromosomes decide Turner, Swyer or 46,XX.",
    "trap": "Pubic hair development suggests functioning adrenals, tempting progesterone evaluation, but elevated FSH indicates ovarian failure.",
    "options": {
     "A": {
@@ -864,12 +1036,34 @@
      "text": "serum follicle-stimulating hormone concentration is 92 mIU/mL"
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Low FSH**, headaches, visual field loss",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "B",
+     "if": "**Normal breasts**, irregular cycles, confirm ovulation",
+     "then": "Serum progesterone concentration"
+    },
+    {
+     "opt": null,
+     "if": "**Normal breasts**, absent uterus, scant pubic hair",
+     "then": "Karyotype for 46,XY"
+    },
+    {
+     "opt": null,
+     "if": "**Normal breasts**, cyclic pain, bulging membrane",
+     "then": "Imperforate hymen repair"
+    }
+   ]
   },
   "c-peds-07-q010": {
    "task": "Diagnosis",
-   "boardCall": "Winter bronchiolitis + wheezing + chest hyperinflation in infant -> Respiratory syncytial virus",
-   "hinge": "Premature infant presenting in winter with copious rhinorrhea, wheezing, and hyperinflation classic for RSV bronchiolitis.",
+   "boardCall": "3-month-old ex-preemie + **January** + rhinorrhea then tachypnea + **bilateral wheezes** + hyperinflation → Respiratory syncytial virus",
+   "hinge": "Winter URI progressing to wheeze in an infant is viral bronchiolitis.",
    "trap": "Wheezing and crackles mimic atypical bacterial infection, but winter seasonality and infant age point to viral bronchiolitis.",
    "options": {
     "A": {
@@ -978,12 +1172,34 @@
      "text": "chest x-ray shows hyperinflation and peribronchial thickening"
     }
    ],
-   "topic": "bronchiolitis"
+   "topic": "bronchiolitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Afebrile**, staccato cough, conjunctivitis at 6 weeks",
+     "then": "Chlamydia trachomatis"
+    },
+    {
+     "opt": "A",
+     "if": "**Paroxysms** with whoop or apnea, lymphocytosis",
+     "then": "Bordetella pertussis"
+    },
+    {
+     "opt": "H",
+     "if": "**High fever, lobar consolidation**, no wheeze",
+     "then": "Streptococcus pneumoniae"
+    },
+    {
+     "opt": "G",
+     "if": "**Pneumatoceles** after influenza",
+     "then": "Staphylococcus aureus"
+    }
+   ]
   },
   "c-peds-07-q011": {
    "task": "Mechanism",
-   "boardCall": "Isolated severe thrombocytopenia (platelets 1,000/mm³) + petechiae + normal PT/PTT -> Increased platelet destruction",
-   "hinge": "Well-appearing toddler with profound isolated thrombocytopenia following viral trigger has immune thrombocytopenia.",
+   "boardCall": "age 4 + petechiae + bruising + **platelets 1000** + **normal Hb, WBC, PT, PTT** → Increased platelet destruction",
+   "hinge": "Isolated thrombocytopenia in a well child is ITP; marrow output is intact.",
    "trap": "Ecchymoses in various stages of healing arouse suspicion for child abuse, but platelets are 1,000/mm³.",
    "options": {
     "A": {
@@ -1072,12 +1288,34 @@
      "trap": true
     }
    ],
-   "topic": "thrombocytopenia"
+   "topic": "thrombocytopenia",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Pancytopenia**, bone pain, hepatosplenomegaly",
+     "then": "Decreased platelet production"
+    },
+    {
+     "opt": "D",
+     "if": "**Septic**, prolonged PT and PTT, low fibrinogen",
+     "then": "Disseminated intravascular coagulation"
+    },
+    {
+     "opt": "B",
+     "if": "**Normal platelets**, patterned bruises in protected areas",
+     "then": "Child abuse"
+    },
+    {
+     "opt": "A",
+     "if": "**Normal count**, prolonged bleeding time, giant platelets",
+     "then": "Abnormal platelet function"
+    }
+   ]
   },
   "c-peds-07-q012": {
    "task": "Diagnosis",
-   "boardCall": "Rapid virilization + elevated DHEA-S + normal testosterone and pelvic ultrasound -> Adrenal adenoma",
-   "hinge": "Elevated DHEA-S originates exclusively from adrenal cortex, pointing to an androgen-secreting adrenal neoplasm.",
+   "boardCall": "age 10 + facial hair, acne + clitoral enlargement + normal testosterone + **DHEA-S 9** + normal pelvic US → Adrenal adenoma",
+   "hinge": "DHEA-S comes almost only from the adrenal, so the ovary is spared.",
    "trap": "Acne and hirsutism in an adolescent suggest PCOS, but clitoromegaly and high DHEA-S indicate adrenal androgen excess.",
    "options": {
     "A": {
@@ -1162,12 +1400,34 @@
      "text": "Pelvic ultrasonography shows no abnormalities"
     }
    ],
-   "topic": "hirsutism"
+   "topic": "hirsutism",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Testosterone very high**, DHEA-S normal, adnexal mass",
+     "then": "Ovarian tumor"
+    },
+    {
+     "opt": "E",
+     "if": "**Post-menarche** oligomenorrhea, mild hirsutism, no clitoromegaly",
+     "then": "Polycystic ovarian syndrome"
+    },
+    {
+     "opt": null,
+     "if": "**High 17-hydroxyprogesterone** that suppresses with dexamethasone",
+     "then": "Nonclassic CAH"
+    },
+    {
+     "opt": "D",
+     "if": "**High ACTH**, cushingoid habitus",
+     "then": "Pituitary adenoma"
+    }
+   ]
   },
   "c-peds-07-q013": {
    "task": "Diagnosis",
-   "boardCall": "Male newborn + poor stream / dribbling + bilateral hydroureteronephrosis + thick-walled bladder -> Posterior urethral valve",
-   "hinge": "Congenital obstructing urethral folds in male infant cause bladder outlet obstruction, bladder hypertrophy, and bilateral hydronephrosis.",
+   "boardCall": "male newborn + prenatal hydronephrosis + **dribbling, poor stream** + bilateral hydroureteronephrosis + **thick-walled bladder** → Posterior urethral valve",
+   "hinge": "Bilateral dilation with a hypertrophied bladder means obstruction below the bladder.",
    "trap": "Hydronephrosis on prenatal ultrasound suggests UPJ obstruction, but UPJ obstruction is unilateral and bladder is normal.",
    "options": {
     "A": {
@@ -1250,12 +1510,34 @@
      "text": "bilateral hydronephrosis and hydroureter and a thick-walled bladder"
     }
    ],
-   "topic": "congenital-urinary-tract-anomalies"
+   "topic": "congenital-urinary-tract-anomalies",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Unilateral hydronephrosis**, normal ureter and bladder",
+     "then": "Ureteropelvic junction obstruction"
+    },
+    {
+     "opt": "E",
+     "if": "**Febrile UTI**, normal stream, dilation on voiding only",
+     "then": "Vesicoureteral reflux"
+    },
+    {
+     "opt": "B",
+     "if": "**Lumbosacral myelomeningocele**",
+     "then": "Neurogenic bladder"
+    },
+    {
+     "opt": "A",
+     "if": "**Girl with constant dribbling**, normal voids, upper-pole dilation",
+     "then": "Duplicated system, ectopic ureter"
+    }
+   ]
   },
   "c-peds-07-q014": {
    "task": "Next step",
-   "boardCall": "Mild-to-moderate dehydration + acute gastroenteritis in toddler -> Oral hydration solution",
-   "hinge": "Hemodynamically stable toddler with mild-to-moderate dehydration from acute gastroenteritis should receive oral rehydration solution first-line.",
+   "boardCall": "15 months + vomiting then diarrhea + **tears present** + slightly dry mucosa + **normal capillary refill** → Oral hydration solution",
+   "hinge": "Mild dehydration with vomiting still responds to small frequent oral volumes.",
    "trap": "Persistent vomiting tempts IV hydration or antiemetics, but oral rehydration therapy in small volumes is standard.",
    "options": {
     "A": {
@@ -1340,12 +1622,29 @@
      "text": "tear production and slightly dry mucous membranes"
     }
    ],
-   "topic": "gastroenteritis"
+   "topic": "gastroenteritis",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Lethargic, refill 4 seconds**, no tears",
+     "then": "IV isotonic saline bolus"
+    },
+    {
+     "opt": null,
+     "if": "**Vomits all small oral sips**",
+     "then": "Single dose ondansetron"
+    },
+    {
+     "opt": "C",
+     "if": "**Adult traveler**, nonbloody diarrhea, afebrile",
+     "then": "Oral loperamide"
+    }
+   ]
   },
   "c-peds-07-q015": {
    "task": "Prevention",
-   "boardCall": "4-month well-child examination + routine immunization schedule -> Rotavirus vaccine",
-   "hinge": "Rotavirus vaccine is administered at 2 and 4 months (and 6 months for three-dose series); varicella and MMR are given at ≥12 months.",
+   "boardCall": "**age 4 months** + well-child in October + up-to-date + healthy → Rotavirus",
+   "hinge": "Influenza starts at 6 months; live MMR and varicella wait until 12.",
    "trap": "October timing tempts influenza vaccination, but the influenza vaccine is not approved until 6 months of age.",
    "options": {
     "A": {
@@ -1431,12 +1730,35 @@
      "text": "Growth and development are appropriate for age"
     }
    ],
-   "topic": "childhood-and-adolescent-immunizations"
+   "topic": "childhood-and-adolescent-immunizations",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Age 7 months** at an October visit",
+     "then": "Influenza",
+     "step": "two doses 4 weeks apart"
+    },
+    {
+     "opt": "C",
+     "if": "**Age 12 months**, or 6 months before international travel",
+     "then": "Measles-mumps-rubella"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 12–15 months**",
+     "then": "Chickenpox"
+    },
+    {
+     "opt": "E",
+     "if": "**Age 50 or older**",
+     "then": "Shingles"
+    }
+   ]
   },
   "c-peds-07-q016": {
    "task": "Diagnosis",
-   "boardCall": "Cross-country runner + copious water consumption + disorientation + peripheral edema -> Exercise-associated hyponatremia",
-   "hinge": "Excessive hypotonic water intake replacing sweat losses produces acute dilutional hyponatremia with cerebral and peripheral edema.",
+   "boardCall": "cross-country runner + **heavy water intake** + disorientation + vomiting + **hand and foot edema** + temp 37.6 → Hyponatremia",
+   "hinge": "Normal temperature and fluid overload point to dilution, not heat illness.",
    "trap": "Running in 90°F heat suggests heat stroke or exhaustion, but normal core temperature and fluid overload point to hyponatremia.",
    "options": {
     "A": {
@@ -1525,12 +1847,34 @@
      "text": "edema of the hands and feet"
     }
    ],
-   "topic": "hyponatremia"
+   "topic": "hyponatremia",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Temp 41°C**, confusion, hot dry skin",
+     "then": "Heat stroke"
+    },
+    {
+     "opt": "B",
+     "if": "**Temp 39°C**, alert, heavy sweating",
+     "then": "Heat exhaustion"
+    },
+    {
+     "opt": "A",
+     "if": "**Little water intake**, dry mucosa, orthostasis",
+     "then": "Dehydration"
+    },
+    {
+     "opt": "D",
+     "if": "**Insulin-treated diabetic**, sweaty, shaky",
+     "then": "Hypoglycemia"
+    }
+   ]
   },
   "c-peds-07-q017": {
    "task": "Mechanism",
-   "boardCall": "Normal anion gap metabolic acidosis + hypokalemia + alkaline urine (pH 7.6) -> Type 1 distal renal tubular acidosis",
-   "hinge": "Non-anion gap metabolic acidosis with inability to acidify urine below pH 5.5 and hypokalemia diagnostic of distal RTA.",
+   "boardCall": "18 months + poor growth + normal BP + K 3.1 + **normal-gap acidosis, HCO3 16** + **urine pH 7.6** → Renal tubular acidosis",
+   "hinge": "Alkaline urine despite acidemia means the distal tubule cannot secrete acid.",
    "trap": "Hypokalemia with growth failure suggests Bartter syndrome or aldosterone excess, but normal BP and hyperchloremic acidosis confirm RTA.",
    "options": {
     "A": {
@@ -1646,12 +1990,34 @@
      "text": "pH 7.28"
     }
    ],
-   "topic": "acid-base-disorders"
+   "topic": "acid-base-disorders",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Hypertension**, metabolic alkalosis, low renin",
+     "then": "Primary hyperaldosteronism"
+    },
+    {
+     "opt": "D",
+     "if": "**Normal BP**, alkalosis, high renin, hypercalciuria",
+     "then": "Juxtaglomerular hyperplasia (Bartter)"
+    },
+    {
+     "opt": "G",
+     "if": "**Hyperkalemia**, salt wasting, high aldosterone",
+     "then": "Pseudohypoaldosteronism"
+    },
+    {
+     "opt": "H",
+     "if": "**Severe hypertension**, abdominal bruit, alkalosis",
+     "then": "Renal artery stenosis"
+    }
+   ]
   },
   "c-peds-07-q018": {
    "task": "Diagnosis",
-   "boardCall": "Newborn + early systolic murmur in pulmonic area radiating to axillae and back -> Peripheral pulmonary stenosis",
-   "hinge": "Innocent physiologic systolic murmur radiating to lung fields and bilateral axillae in newborn is peripheral pulmonary stenosis.",
+   "boardCall": "3-day-old + well, SpO2 99% + **soft early systolic pulmonic murmur** + **radiates to axillae** + normal pulses → Pulmonary stenosis (peripheral)",
+   "hinge": "Small branch arteries cause turbulence that fades as they grow.",
    "trap": "Murmur loudest at pulmonic area suggests congenital heart disease, but axillary radiation and normal oximetry indicate physiologic PPS.",
    "options": {
     "A": {
@@ -1732,12 +2098,34 @@
      "text": "Peripheral pulses are normal"
     }
    ],
-   "topic": "innocent-murmurs"
+   "topic": "innocent-murmurs",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Harsh holosystolic** LLSB murmur at 6 weeks",
+     "then": "Ventricular septal defect"
+    },
+    {
+     "opt": "C",
+     "if": "**Continuous machinery murmur**, bounding pulses",
+     "then": "Patent ductus arteriosus"
+    },
+    {
+     "opt": "B",
+     "if": "**Fixed split S2**, soft pulmonic flow murmur",
+     "then": "Atrial septal defect"
+    },
+    {
+     "opt": "A",
+     "if": "**Ejection click**, murmur to carotids",
+     "then": "Aortic stenosis"
+    }
+   ]
   },
   "c-peds-07-q019": {
    "task": "Diagnosis",
-   "boardCall": "Intermittent severe colicky pain + vomiting + currant-jelly stool + RUQ tubular mass -> Intussusception",
-   "hinge": "Classic triad of episodic abdominal pain with leg flexion, palpable sausage-shaped RUQ mass, and rectal currant-jelly blood.",
+   "boardCall": "10 months + **episodic crying with legs drawn up** + vomiting + bloody mucoid stool + **RUQ sausage mass** → Intussusception",
+   "hinge": "Telescoping bowel causes intermittent colic and venous congestion bleeding between calm spells.",
    "trap": "Painless gastrointestinal bleeding occurs in Meckel diverticulum, but intermittent severe spasms and RUQ mass indicate intussusception.",
    "options": {
     "A": {
@@ -1822,12 +2210,34 @@
      "text": "bloody mucoid stool in the rectal vault"
     }
    ],
-   "topic": "intussusception"
+   "topic": "intussusception",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Bilious vomiting** in a neonate, no mass",
+     "then": "Malrotation volvulus"
+    },
+    {
+     "opt": "E",
+     "if": "**Nonbilious projectile vomiting**, olive mass, age 4 weeks",
+     "then": "Pyloric stenosis"
+    },
+    {
+     "opt": "A",
+     "if": "**Painless brisk rectal bleeding**, age 2",
+     "then": "Bleeding Meckel diverticulum"
+    },
+    {
+     "opt": "D",
+     "if": "**Epigastric pain**, hematemesis on NSAIDs",
+     "then": "Peptic ulcer"
+    }
+   ]
   },
   "c-peds-07-q020": {
    "task": "Next step",
-   "boardCall": "Obese adolescent + groin pain and limp + limited internal rotation + epiphyseal widening -> Immediate internal fixation",
-   "hinge": "Slipped capital femoral epiphysis requires urgent percutaneous in situ screw fixation to prevent further displacement and avascular necrosis.",
+   "boardCall": "age 13 + **obese** + groin pain with limp + **obligate external rotation on flexion** + widened physis → Internal fixation",
+   "hinge": "SCFE keeps slipping until pinned; nonoperative care risks avascular necrosis.",
    "trap": "Gradual non-traumatic limp tempts conservative therapy or bracing, but SCFE requires immediate non-weight-bearing and surgery.",
    "options": {
     "A": {
@@ -1916,12 +2326,35 @@
      "text": "irregular widening of the epiphyseal plate of the left femur"
     }
    ],
-   "topic": "pediatric-hip-disorders"
+   "topic": "pediatric-hip-disorders",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Newborn with positive Ortolani** sign",
+     "then": "Abduction bracing (Pavlik harness)"
+    },
+    {
+     "opt": "D",
+     "if": "**Age 9 months**, dislocated hip, failed harness",
+     "then": "Closed reduction, spica cast"
+    },
+    {
+     "opt": null,
+     "if": "**Fever, refuses to bear weight**, high CRP",
+     "then": "Septic arthritis",
+     "step": "urgent hip aspiration"
+    },
+    {
+     "opt": null,
+     "if": "**Age 5 after URI**, afebrile, mild limp",
+     "then": "Transient synovitis"
+    }
+   ]
   },
   "c-peds-07-q021": {
    "task": "Diagnosis",
-   "boardCall": "9-month-old + sits only with support + feeds crackers + nonspecific mama/dada -> Normal fine motor | delayed gross motor | normal language | normal social",
-   "hinge": "At 9 months, inability to sit unsupported is abnormal gross motor delay, while self-feeding crackers and babbling are normal.",
+   "boardCall": "9 months + **sits only with support** + feeds self crackers + babbles mama/dada + happy, social → Normal | delayed | normal | normal",
+   "hinge": "Sitting alone is expected by 6 months; other domains are on time.",
    "trap": "Rolling and supported sitting sound active, tempting all normal, but sitting unsupported is expected by 9 months.",
    "options": {
     "A": {
@@ -2024,12 +2457,34 @@
      "text": "says \"Dada\" and \"Mama\" to everyone and everything"
     }
    ],
-   "topic": "child-growth-and-development"
+   "topic": "child-growth-and-development",
+   "branches": [
+    {
+     "opt": "H",
+     "if": "**Sits alone**, pulls to stand",
+     "then": "Normal in all domains"
+    },
+    {
+     "opt": "F",
+     "if": "**No babbling**, no response to name",
+     "then": "Language delayed"
+    },
+    {
+     "opt": "D",
+     "if": "**Raking only**, cannot transfer objects",
+     "then": "Fine motor delayed"
+    },
+    {
+     "opt": null,
+     "if": "**Delays in two or more** domains",
+     "then": "Formal testing + audiology"
+    }
+   ]
   },
   "c-peds-07-q022": {
    "task": "Next step",
-   "boardCall": "Primary dysmenorrhea refractory to NSAIDs + normal pelvic exam -> Combined oral contraceptives",
-   "hinge": "NSAID-refractory primary dysmenorrhea is treated with combined oral contraceptives to suppress ovulation and endometrial prostaglandins.",
+   "boardCall": "age 15 + **cramps since menarche** + regular cycles + **NSAIDs failed** + normal pelvic exam → Oral contraceptive therapy",
+   "hinge": "Suppressing ovulation thins endometrium and lowers prostaglandins when NSAIDs fail.",
    "trap": "Severe pelvic pain tempts diagnostic laparoscopy for endometriosis, but hormonal therapy is tried first.",
    "options": {
     "A": {
@@ -2111,12 +2566,29 @@
      "text": "pelvic examination, shows no abnormalities"
     }
    ],
-   "topic": "dysmenorrhea"
+   "topic": "dysmenorrhea",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Pain persists** after 6 months of OCPs and NSAIDs",
+     "then": "Laparoscopy"
+    },
+    {
+     "opt": "A",
+     "if": "**Mild cramps** relieved by NSAIDs",
+     "then": "Reassurance"
+    },
+    {
+     "opt": null,
+     "if": "**Migraine with aura** or estrogen contraindicated",
+     "then": "Levonorgestrel IUD or implant"
+    }
+   ]
   },
   "c-peds-07-q023": {
    "task": "Diagnosis",
-   "boardCall": "School-age child + indolent cough/fever + bilateral crackles + diffuse perihilar infiltrates -> Mycoplasma pneumoniae",
-   "hinge": "Subacute onset of cough, low-grade fever, and reticulonodular perihilar infiltrates in school-age child is typical of Mycoplasma.",
+   "boardCall": "age 10 + **10-day gradual cough** + low-grade fever + diffuse crackles + **diffuse perihilar infiltrate** → Mycoplasma pneumoniae",
+   "hinge": "School-age walking pneumonia looks worse on film than the patient looks.",
    "trap": "Crackles and perihilar infiltrates suggest congestive heart failure, but fever and 10-day cough point to atypical pneumonia.",
    "options": {
     "A": {
@@ -2198,12 +2670,34 @@
      "text": "diffuse perihilar infiltrate"
     }
    ],
-   "topic": "pneumonia"
+   "topic": "pneumonia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Abrupt high fever**, lobar consolidation",
+     "then": "Streptococcus pneumoniae pneumonia"
+    },
+    {
+     "opt": "A",
+     "if": "**Infant in winter**, wheeze and hyperinflation",
+     "then": "RSV pneumonia"
+    },
+    {
+     "opt": "E",
+     "if": "**Weight loss, night sweats**, hilar adenopathy",
+     "then": "Tuberculosis"
+    },
+    {
+     "opt": "D",
+     "if": "**Gallop, hepatomegaly**, cardiomegaly, no fever",
+     "then": "Congestive heart failure"
+    }
+   ]
   },
   "c-peds-07-q024": {
    "task": "Diagnosis",
-   "boardCall": "Newborn + palpable bilateral flank masses + enlarged echogenic kidneys -> Autosomal recessive polycystic kidney disease",
-   "hinge": "Neonatal presentation of bilateral symmetric nephromegaly with diffuse microcystic mixed echogenicity diagnostic of ARPKD.",
+   "boardCall": "term newborn + **bilateral flank masses** + hematuria + low specific gravity + **enlarged kidneys, mixed echogenicity** → Polycystic kidney disease",
+   "hinge": "Symmetric bilateral nephromegaly at birth is ARPKD; tumors are unilateral and solid.",
    "trap": "Abdominal masses in a newborn tempt neuroblastoma or Wilms tumor, but those are solid, unilateral, and rare at birth.",
    "options": {
     "A": {
@@ -2288,12 +2782,34 @@
      "text": "bilateral enlargement of the kidneys with mixed echogenicity"
     }
    ],
-   "topic": "polycystic-kidney-disease"
+   "topic": "polycystic-kidney-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Infant of diabetic mother**, hematuria, low platelets, unilateral mass",
+     "then": "Renal vein thrombosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Adrenal mass** crossing midline, high urine catecholamines",
+     "then": "Neuroblastoma"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 3**, unilateral smooth mass, aniridia",
+     "then": "Wilms tumor"
+    },
+    {
+     "opt": "D",
+     "if": "**Adult smoker**, hematuria, flank pain",
+     "then": "Renal cell carcinoma"
+    }
+   ]
   },
   "c-peds-07-q025": {
    "task": "Next step",
-   "boardCall": "Tender erythematous eyelid margin nodule (hordeolum) -> Warm compresses",
-   "hinge": "Acute painful localized nodule at the eyelid margin is an external hordeolum, managed conservatively with warm compresses.",
+   "boardCall": "age 10 + **tender 3-mm lid margin nodule** + mild lid redness + afebrile → Warm compresses",
+   "hinge": "A stye drains spontaneously with heat; antibiotics add nothing without spreading cellulitis.",
    "trap": "Conjunctival erythema tempts topical steroids or vasoconstrictors, but eyelid margin nodule is an infectious/inflammatory hordeolum.",
    "options": {
     "A": {
@@ -2372,7 +2888,24 @@
      "text": "conjunctival edema and tenderness and a 3-mm nodule at the lower lateral lid margin"
     }
    ],
-   "topic": "hordeolum-and-chalazion"
+   "topic": "hordeolum-and-chalazion",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Spreading eyelid erythema**, fever",
+     "then": "Oral amoxicillin-clavulanate"
+    },
+    {
+     "opt": "A",
+     "if": "**Infant with tearing**, mucous discharge, swollen inner canthus",
+     "then": "Nasolacrimal massage"
+    },
+    {
+     "opt": null,
+     "if": "**Painless firm nodule** lasting weeks",
+     "then": "Chalazion: incision and curettage"
+    }
+   ]
   },
   "c-peds-07-q026": {
    "task": "Diagnosis",
@@ -8861,5 +9394,5 @@
    }
   }
  },
- "updatedAt": "2026-11-07T08:13:48Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

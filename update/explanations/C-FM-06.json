@@ -8,8 +8,8 @@
  "items": {
   "FM-06:Q001": {
    "task": "Next step",
-   "boardCall": "Goiter + elevated TSH + anti-TPO antibodies -> Levothyroxine therapy",
-   "hinge": "Autoimmune hypothyroidism (Hashimoto thyroiditis) requires thyroid hormone replacement with levothyroxine.",
+   "boardCall": "14 yo + fatigue + firm nontender goiter + **TSH 150, T4 2** + **anti-TPO positive** → Levothyroxine therapy",
+   "hinge": "Hashimoto goiter is hypothyroid; replacing T4 shrinks the TSH drive.",
    "trap": "Goiter tempts antithyroid medications, but high TSH and low T4 indicate hypothyroidism.",
    "options": {
     "A": {
@@ -91,12 +91,34 @@
      "text": "antithyroid peroxidase and antithyroglobulin antibodies are positive"
     }
    ],
-   "topic": "hypothyroidism"
+   "topic": "hypothyroidism",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Low TSH**, high T4, exophthalmos, pregnant first trimester",
+     "then": "Propylthiouracil therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Graves relapse** after antithyroid drugs, not pregnant",
+     "then": "Radioiodine ablation"
+    },
+    {
+     "opt": "A",
+     "if": "**Thyroid storm** with fever, delirium",
+     "then": "Add dexamethasone"
+    },
+    {
+     "opt": "D",
+     "if": "**Myxedema coma**, cardiac disease absent",
+     "then": "Add triiodothyronine"
+    }
+   ]
   },
   "FM-06:Q002": {
    "task": "Diagnosis",
-   "boardCall": "Unilateral headache + jaw claudication + ESR > 50 mm/h -> Temporal arteritis",
-   "hinge": "Pain while chewing (jaw claudication) in an older adult with headache and high ESR confirms temporal arteritis.",
+   "boardCall": "67 yo + new unilateral headache + **jaw claudication** + low-grade fever, anemia + **ESR 56** → Temporal arteritis",
+   "hinge": "Pain chewing plus inflammation in an older adult is vasculitis, not TMJ.",
    "trap": "Pain while chewing mimics temporomandibular joint dysfunction, but fever and elevated ESR indicate vasculitis.",
    "options": {
     "A": {
@@ -181,12 +203,34 @@
      "text": "erythrocyte sedimentation rate is 56 mm/h"
     }
    ],
-   "topic": "giant-cell-arteritis"
+   "topic": "giant-cell-arteritis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Jaw clicking**, normal ESR, bruxism",
+     "then": "Temporomandibular joint syndrome"
+    },
+    {
+     "opt": "D",
+     "if": "**Seconds-long electric pain** triggered by touch",
+     "then": "Trigeminal neuralgia"
+    },
+    {
+     "opt": "A",
+     "if": "**Purulent nasal discharge**, maxillary tenderness",
+     "then": "Sinusitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Bilateral band-like pressure**, normal labs",
+     "then": "Tension-type headache"
+    }
+   ]
   },
   "FM-06:Q003": {
    "task": "Next step",
-   "boardCall": "Isolated thrombocytopenia + petechiae -> Peripheral blood smear",
-   "hinge": "Peripheral blood smear rules out pseudothrombocytopenia from platelet clumping and confirms true isolated thrombocytopenia.",
+   "boardCall": "37 yo + painless petechiae + fatigue + **isolated platelets 84,000** + otherwise normal CBC → Peripheral blood smear",
+   "hinge": "Smear excludes clumping artifact and shows large platelets of immune destruction.",
    "trap": "Petechiae tempt coagulation testing, but primary platelet defects cause petechiae with normal PT and PTT.",
    "options": {
     "A": {
@@ -267,12 +311,34 @@
      "text": "remainder of the complete blood count was within the reference ranges"
     }
    ],
-   "topic": "thrombocytopenia"
+   "topic": "thrombocytopenia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Joint or deep muscle bleeding**, normal platelets",
+     "then": "Prothrombin time and activated PTT"
+    },
+    {
+     "opt": "E",
+     "if": "**ITP confirmed** on smear",
+     "then": "HIV antibody test"
+    },
+    {
+     "opt": "B",
+     "if": "**Fever, bone pain**, pancytopenia",
+     "then": "Leukocyte differential"
+    },
+    {
+     "opt": "A",
+     "if": "**Schistocytes, confusion**, rising creatinine",
+     "then": "Metabolic panel: TTP workup"
+    }
+   ]
   },
   "FM-06:Q004": {
    "task": "Screening",
-   "boardCall": "Age 50-80 + ≥ 20 pack-year smoking history -> Low-dose CT scan of the chest",
-   "hinge": "USPSTF recommends annual low-dose chest CT for adults aged 50-80 with at least 20 pack-years of smoking.",
+   "boardCall": "55 yo + **20 pack-years** + **currently smoking** + mother's breast cancer at 80 → Low-dose CT scan of the chest",
+   "hinge": "Age 50–80 with heavy smoking history qualifies for annual lung screening.",
    "trap": "Mother's breast cancer tempts BRCA testing, but onset at age 80 does not suggest hereditary cancer.",
    "options": {
     "A": {
@@ -355,12 +421,34 @@
      "text": "BMI is 24 kg/m2"
     }
    ],
-   "topic": "lung-cancer"
+   "topic": "lung-cancer",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Mother diagnosed at 40** or ovarian cancer in family",
+     "then": "Testing for BRCA mutation"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 65** or prior fragility fracture",
+     "then": "Bone density screening"
+    },
+    {
+     "opt": null,
+     "if": "**Quit 16 years ago**",
+     "then": "No lung cancer screening"
+    },
+    {
+     "opt": "D",
+     "if": "**Changing pigmented mole**",
+     "then": "Skin cancer examination"
+    }
+   ]
   },
   "FM-06:Q005": {
    "task": "Other",
-   "boardCall": "Addressing patient culture + family + personal goals in chronic disease -> Comprehensive and contextual care",
-   "hinge": "Tailoring chronic disease management to the patient's individual life circumstances, culture, and personal goals defines contextual care.",
+   "boardCall": "multimorbidity + **9-month relationship** + **culture, family, goals incorporated** + motivational interviewing → Comprehensive and contextual care",
+   "hinge": "Whole-person care in the patient's life context drove the gains.",
    "trap": "Mention of lifestyle modification and counseling tempts behavioral health integration, but the physician provided this care.",
    "options": {
     "A": {
@@ -441,12 +529,34 @@
      "text": "requiring fewer emergency department visits"
     }
    ],
-   "topic": "physician-patient-communication"
+   "topic": "physician-patient-communication",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**On-site psychologist** delivered the counseling",
+     "then": "Behavioral health integration"
+    },
+    {
+     "opt": "E",
+     "if": "**Nurse, dietitian, pharmacist** each managed parts",
+     "then": "Interdisciplinary team-based care"
+    },
+    {
+     "opt": "B",
+     "if": "**Care manager** tracked labs and calls between visits",
+     "then": "Care management"
+    },
+    {
+     "opt": "D",
+     "if": "**Medication errors fell** after reporting system",
+     "then": "Culture of safety"
+    }
+   ]
   },
   "FM-06:Q006": {
    "task": "Risk factor",
-   "boardCall": "Healthy 17-year-old adolescent male -> Unintentional injury as leading cause of death",
-   "hinge": "Unintentional injuries (predominantly motor vehicle collisions) are the leading cause of mortality in adolescents.",
+   "boardCall": "17 yo + **healthy, high-achieving** + no substance use + normal exam → Unintentional injury",
+   "hinge": "Motor vehicle crashes lead adolescent deaths regardless of school success.",
    "trap": "High-achieving student status makes suicide less immediate, though suicide is the second leading cause.",
    "options": {
     "A": {
@@ -527,12 +637,34 @@
      "text": "Vital signs are within normal limits."
     }
    ],
-   "topic": "adolescent-preventive-care"
+   "topic": "adolescent-preventive-care",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Depressed mood**, prior attempt, firearm at home",
+     "then": "Suicide"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 70**",
+     "then": "Heart disease"
+    },
+    {
+     "opt": null,
+     "if": "**Black male teen**, urban violence exposure",
+     "then": "Homicide"
+    },
+    {
+     "opt": "D",
+     "if": "**Asks most common cancer** at 17",
+     "then": "Testicular cancer"
+    }
+   ]
   },
   "FM-06:Q007": {
    "task": "Prevention",
-   "boardCall": "Scaly erythematous papules on sun-exposed hand -> Use of sunscreen for prevention",
-   "hinge": "Actinic keratoses arise from ultraviolet radiation exposure and are prevented by regular sunscreen use.",
+   "boardCall": "63 yo + tennis outdoors + **scaly lesions on dorsal hand** + **sun-exposed site** → Use of sunscreen",
+   "hinge": "Actinic keratoses come from cumulative UV damage, not tobacco or eczema.",
    "trap": "History of heavy smoking tempts smoking cessation, but ultraviolet radiation drives actinic keratosis.",
    "options": {
     "A": {
@@ -614,12 +746,34 @@
      "text": "photograph of lesions over the dorsum of the left hand is shown"
     }
    ],
-   "topic": "skin-cancer"
+   "topic": "skin-cancer",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Itchy flexural eczema flare**",
+     "then": "Use of unscented soap"
+    },
+    {
+     "opt": "C",
+     "if": "**Annular scaly plaque**, central clearing, KOH positive",
+     "then": "Clotrimazole cream"
+    },
+    {
+     "opt": "B",
+     "if": "**Lichenified eczema** recurring on hands",
+     "then": "Topical betamethasone"
+    },
+    {
+     "opt": "A",
+     "if": "**Lip or oral SCC** in smoker",
+     "then": "Smoking cessation"
+    }
+   ]
   },
   "FM-06:Q008": {
    "task": "Prevention",
-   "boardCall": "Pregnant woman rubella nonimmune -> Rubella vaccine after delivery",
-   "hinge": "MMR is a live attenuated vaccine contraindicated in pregnancy; administer in the immediate postpartum period.",
+   "boardCall": "20 weeks pregnant + **rubella nonimmune** + well → Rubella vaccine after delivery",
+   "hinge": "MMR is live; give it postpartum, even while breastfeeding.",
    "trap": "Nonimmune status tempts immediate vaccination, but live vaccines are contraindicated during pregnancy.",
    "options": {
     "A": {
@@ -698,12 +852,34 @@
      "text": "Results of a serum rubella titer are reported as nonimmune."
     }
    ],
-   "topic": "adult-immunizations"
+   "topic": "adult-immunizations",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Not pregnant**, nonimmune, planning conception",
+     "then": "Vaccine now"
+    },
+    {
+     "opt": null,
+     "if": "**Rash exposure** during pregnancy",
+     "then": "Check rubella IgM"
+    },
+    {
+     "opt": "B",
+     "if": "**Equivocal titer** result",
+     "then": "Repeat titer now"
+    },
+    {
+     "opt": "E",
+     "if": "**Missed postpartum dose**, at infant's 2-month visit",
+     "then": "Vaccine when newborn vaccinated"
+    }
+   ]
   },
   "FM-06:Q009": {
    "task": "Ethics",
-   "boardCall": "Patient appears stunned after serious cancer diagnosis -> Allow the patient to express his feelings",
-   "hinge": "After delivering bad news, pause to allow emotional processing before presenting further information.",
+   "boardCall": "nodular melanoma + **axillary node** + just told the diagnosis + **appears stunned** → Allow him to express feelings",
+   "hinge": "Emotion must be acknowledged before any information can be absorbed.",
    "trap": "Patient shock tempts rushing into treatment options or consultations, bypassing emotional acknowledgment.",
    "options": {
     "A": {
@@ -782,12 +958,34 @@
      "text": "patient appears stunned"
     }
    ],
-   "topic": "physician-patient-communication"
+   "topic": "physician-patient-communication",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Patient asks** what this means for his future",
+     "then": "Assess desire to discuss prognosis"
+    },
+    {
+     "opt": "D",
+     "if": "**Ready, asking** what comes next",
+     "then": "Outline treatment options"
+    },
+    {
+     "opt": "E",
+     "if": "**Asks for wife** to be present",
+     "then": "Family conference"
+    },
+    {
+     "opt": "B",
+     "if": "**Asks detailed staging questions** beyond your scope",
+     "then": "Oncology consultant"
+    }
+   ]
   },
   "FM-06:Q010": {
    "task": "Diagnosis",
-   "boardCall": "1-year-old child head-banging when frustrated + normal development -> Normal behavior",
-   "hinge": "Rhythmic head-banging during frustration with normal development is a benign self-soothing behavioral variation.",
+   "boardCall": "1 yo + **head banging when frustrated** + **normal growth and development** + bruises only → Normal behavior",
+   "hinge": "Tantrum head banging in a typically developing toddler is self-soothing, not disease.",
    "trap": "Head-banging is seen in autism, but normal milestones and absence of social deficits exclude ASD.",
    "options": {
     "A": {
@@ -871,12 +1069,34 @@
      "text": "discrete ecchymoses over the forehead"
     }
    ],
-   "topic": "child-growth-and-development"
+   "topic": "child-growth-and-development",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**No name response**, lost words, poor eye contact",
+     "then": "Autism spectrum disorder"
+    },
+    {
+     "opt": "D",
+     "if": "**Elfin face**, supravalvular aortic stenosis, hypercalcemia",
+     "then": "Williams syndrome"
+    },
+    {
+     "opt": "C",
+     "if": "**Age 8**, motor and vocal tics over 1 year",
+     "then": "Tourette disorder"
+    },
+    {
+     "opt": "B",
+     "if": "**Age 7**, defiance for 6 months",
+     "then": "Oppositional defiant disorder"
+    }
+   ]
   },
   "FM-06:Q011": {
    "task": "Pharmacology",
-   "boardCall": "Recurrent unexpected panic attacks with impending doom -> Sertraline",
-   "hinge": "First-line pharmacotherapy for panic disorder consists of SSRIs (such as sertraline) or SNRIs.",
+   "boardCall": "27 yo + **recurrent sudden episodes** + palpitations, dyspnea + **impending doom** + normal exam → Sertraline",
+   "hinge": "SSRIs prevent panic attacks long term with little dependence risk.",
    "trap": "Propranolol or buspirone treat performance anxiety or GAD, but SSRIs are first-line for panic disorder.",
    "options": {
     "A": {
@@ -958,12 +1178,34 @@
      "text": "He is currently asymptomatic."
     }
    ],
-   "topic": "panic-disorder"
+   "topic": "panic-disorder",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Tremor only before performances**",
+     "then": "Propranolol"
+    },
+    {
+     "opt": "A",
+     "if": "**Chronic worry**, SSRI side effects",
+     "then": "Buspirone"
+    },
+    {
+     "opt": "C",
+     "if": "**SSRIs and SNRIs failed**",
+     "then": "Imipramine"
+    },
+    {
+     "opt": null,
+     "if": "**Severe attacks** while SSRI starts",
+     "then": "Short lorazepam course"
+    }
+   ]
   },
   "FM-06:Q012": {
    "task": "Next step",
-   "boardCall": "Mitral valve prolapse prior to dental cleaning -> Reassurance that antibiotic prophylaxis is not indicated",
-   "hinge": "Infective endocarditis prophylaxis is only indicated for high-risk cardiac conditions, not native mitral valve prolapse.",
+   "boardCall": "dental cleaning + **mild mitral valve prolapse** + asymptomatic + systolic click → No prophylaxis",
+   "hinge": "Only prosthetic valves, prior endocarditis, certain CHD or transplant valvulopathy qualify.",
    "trap": "Murmurs and valve prolapse historically received prophylaxis, tempting amoxicillin administration.",
    "options": {
     "A": {
@@ -1045,12 +1287,34 @@
      "text": "early systolic click is heard"
     }
    ],
-   "topic": "infective-endocarditis"
+   "topic": "infective-endocarditis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Prosthetic valve** or prior endocarditis",
+     "then": "Amoxicillin therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Prosthetic valve** with penicillin anaphylaxis",
+     "then": "Azithromycin"
+    },
+    {
+     "opt": "C",
+     "if": "**New holosystolic murmur**, dyspnea",
+     "then": "Repeat echocardiography"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever, positive blood cultures**, normal TTE",
+     "then": "Transesophageal echocardiography"
+    }
+   ]
   },
   "FM-06:Q013": {
    "task": "Diagnosis",
-   "boardCall": "Pivot knee injury + audible \"pop\" + rapid hemarthrosis -> Anterior cruciate ligament tear",
-   "hinge": "A sudden deceleration or pivoting move with an audible pop and rapid effusion is classic for an ACL tear.",
+   "boardCall": "football + **noncontact pivot** + **audible pop** + rapid effusion + can't bear weight → Anterior cruciate ligament",
+   "hinge": "Hemarthrosis within hours after a twisting pop is ACL rupture.",
    "trap": "A valgus blow might tear the MCL, but noncontact pivoting with an audible pop points to the ACL.",
    "options": {
     "A": {
@@ -1135,12 +1399,34 @@
      "text": "swollen knee with effusion"
     }
    ],
-   "topic": "knee-injuries"
+   "topic": "knee-injuries",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Blow to lateral knee**, valgus laxity",
+     "then": "Medial collateral ligament"
+    },
+    {
+     "opt": "E",
+     "if": "**Dashboard injury**, posterior sag",
+     "then": "Posterior cruciate ligament"
+    },
+    {
+     "opt": "B",
+     "if": "**Medial blow**, varus laxity",
+     "then": "Lateral collateral ligament"
+    },
+    {
+     "opt": "D",
+     "if": "**Can't extend knee**, high-riding patella",
+     "then": "Patellar tendon"
+    }
+   ]
   },
   "FM-06:Q014": {
    "task": "Diagnosis",
-   "boardCall": "Severe anal pain with defecation + rectal bleeding on wiping -> Anal fissure",
-   "hinge": "Intense tearing anal pain during and after defecation with bleeding and intolerance to DRE defines anal fissure.",
+   "boardCall": "blood on paper + **painful defecation** + **anal tenderness prevents DRE** + normal perineum → Anal fissure",
+   "hinge": "Tearing pain with bright blood means fissure; internal hemorrhoids don't hurt.",
    "trap": "Rectal bleeding on toilet paper is common in internal hemorrhoids, but internal hemorrhoids are painless.",
    "options": {
     "A": {
@@ -1232,12 +1518,34 @@
      "text": "Digital rectal examination cannot be performed due to pain."
     }
    ],
-   "topic": "anorectal-disorders"
+   "topic": "anorectal-disorders",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Painless bright bleeding**, prolapse",
+     "then": "Internal hemorrhoids"
+    },
+    {
+     "opt": "C",
+     "if": "**Tender blue perianal lump**",
+     "then": "External hemorrhoids"
+    },
+    {
+     "opt": "D",
+     "if": "**Persistent perianal drainage** after abscess",
+     "then": "Fistula in ano"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 60**, weight loss, iron deficiency",
+     "then": "Rectal adenocarcinoma"
+    }
+   ]
   },
   "FM-06:Q015": {
    "task": "Next step",
-   "boardCall": "High-dose chronic opioid therapy without clear benefit -> Taper the patient's daily oxycodone dosage",
-   "hinge": "Chronic noncancer pain on high-dose opioids warrants gradual tapering to reduce risks of overdose and dependence.",
+   "boardCall": "chronic back pain + **long-acting plus short-acting oxycodone** + **amitriptyline** + exercising, working part time → Taper oxycodone",
+   "hinge": "High-dose opioids add overdose risk without proven long-term pain benefit.",
    "trap": "Immediate discontinuation tempts clinicians, but abrupt cessation precipitates severe opioid withdrawal.",
    "options": {
     "A": {
@@ -1319,12 +1627,34 @@
      "text": "physical examination shows no abnormalities"
     }
    ],
-   "topic": "opioid-prescribing-and-safety"
+   "topic": "opioid-prescribing-and-safety",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Diverted pills** or overdose",
+     "then": "Discontinue opioid therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Craving, loss of control** with opioids",
+     "then": "Buprenorphine for opioid use disorder"
+    },
+    {
+     "opt": null,
+     "if": "**Saddle anesthesia** or new weakness",
+     "then": "Urgent MRI of the spine"
+    },
+    {
+     "opt": "D",
+     "if": "**Acute muscle spasm**, no opioids",
+     "then": "Short cyclobenzaprine course"
+    }
+   ]
   },
   "FM-06:Q016": {
    "task": "Next step",
-   "boardCall": "IVDU + fever + new heart murmur + pulmonary infiltrates + hematuria -> Blood culture for infective endocarditis",
-   "hinge": "In an IV drug user with a heart murmur, leukocytosis, and septic pulmonary emboli, blood cultures diagnose infective endocarditis.",
+   "boardCall": "IV drug use + fever + **new systolic murmur** + lung opacity + **conjunctival hemorrhage** + hematuria → Blood culture",
+   "hinge": "Septic emboli to lung, eye and kidney all trace to infected valves.",
    "trap": "Pulmonary infiltrate tempts sputum culture, but pulmonary lesions are septic emboli from endocarditis.",
    "options": {
     "A": {
@@ -1412,12 +1742,34 @@
      "text": "Urine WBCs 20–50/hpf RBCs 10/hpf"
     }
    ],
-   "topic": "infective-endocarditis"
+   "topic": "infective-endocarditis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**No murmur**, lobar consolidation",
+     "then": "Sputum culture"
+    },
+    {
+     "opt": "B",
+     "if": "**Bacteremia confirmed**, nodules need characterizing",
+     "then": "CT scan of the chest"
+    },
+    {
+     "opt": "C",
+     "if": "**Floaters**, visual change with candidemia",
+     "then": "Ocular examination"
+    },
+    {
+     "opt": "E",
+     "if": "**Flank pain**, rising creatinine",
+     "then": "Renal ultrasonography"
+    }
+   ]
   },
   "FM-06:Q017": {
    "task": "Prognosis",
-   "boardCall": "Parkinson disease + progressive cognitive decline -> Dementia as strongest predictor of mortality",
-   "hinge": "Dementia is the strongest predictor of nursing home placement and mortality in Parkinson disease.",
+   "boardCall": "Parkinson disease + **2 years forgetful** + **lost while driving** + recalls 1/3 → Dementia",
+   "hinge": "Cognitive decline predicts death and institutionalization in PD more than motor signs.",
    "trap": "Tremor and rigidity are salient motor features, but cognitive impairment (dementia) most strongly dictates mortality.",
    "options": {
     "A": {
@@ -1502,12 +1854,34 @@
      "text": "recalls one of three objects after 5 minutes"
     }
    ],
-   "topic": "dementia"
+   "topic": "dementia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Recurrent falls**, no cognitive deficit",
+     "then": "Shuffling gait"
+    },
+    {
+     "opt": "C",
+     "if": "**Suicidal ideation**, normal cognition",
+     "then": "Major depressive disorder"
+    },
+    {
+     "opt": null,
+     "if": "**Visual hallucinations** early, fluctuating alertness",
+     "then": "Lewy body dementia"
+    },
+    {
+     "opt": null,
+     "if": "**Dysphagia**, recurrent aspiration",
+     "then": "Aspiration pneumonia risk"
+    }
+   ]
   },
   "FM-06:Q018": {
    "task": "Screening",
-   "boardCall": "25-year-old woman regardless of sexual history -> Cervical cancer screening",
-   "hinge": "USPSTF recommends cervical cancer screening with cervical cytology alone every 3 years for women aged 21-29.",
+   "boardCall": "**25 yo woman** + **never sexually active** + healthy + BMI 27 → Cervical cancer screening",
+   "hinge": "Cytology starts at 21 regardless of sexual history.",
    "trap": "Absence of sexual history tempts withholding Pap smear, but guidelines recommend starting at age 21 regardless.",
    "options": {
     "A": {
@@ -1594,12 +1968,34 @@
      "text": "BMI is 27 kg/m2"
     }
    ],
-   "topic": "cervical-cancer-screening"
+   "topic": "cervical-cancer-screening",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Sexually active**, age ≤24",
+     "then": "Testing for Chlamydia"
+    },
+    {
+     "opt": "C",
+     "if": "**BMI ≥25 at age 35** or more",
+     "then": "Hemoglobin A1c"
+    },
+    {
+     "opt": "B",
+     "if": "**Familial hypercholesterolemia** history",
+     "then": "Fasting lipid studies"
+    },
+    {
+     "opt": null,
+     "if": "**Age 20**",
+     "then": "No cervical screening yet"
+    }
+   ]
   },
   "FM-06:Q019": {
    "task": "Next step",
-   "boardCall": "Chronic constipation refractory to docusate -> Polyethylene glycol daily",
-   "hinge": "Polyethylene glycol is an osmotic laxative superior to stool softeners (docusate) for chronic constipation.",
+   "boardCall": "cerebral palsy + **new G-tube feeds** + **hard stools every 3–4 days** + docusate failing + soft abdomen → Polyethylene glycol daily",
+   "hinge": "Osmotic laxatives work better than stool softeners; docusate adds little.",
    "trap": "Patient already receives docusate, tempting continuation or adding stimulant senna before osmotic laxatives.",
    "options": {
     "A": {
@@ -1684,12 +2080,34 @@
      "text": "abdomen is soft and nontender to palpation"
     }
    ],
-   "topic": "constipation-and-fecal-impaction"
+   "topic": "constipation-and-fecal-impaction",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**PEG inadequate** after weeks",
+     "then": "Add senna"
+    },
+    {
+     "opt": "D",
+     "if": "**Fecal impaction** on rectal exam",
+     "then": "Enemas as needed"
+    },
+    {
+     "opt": null,
+     "if": "**Distension, vomiting**, absent bowel sounds",
+     "then": "Abdominal x-ray for obstruction"
+    },
+    {
+     "opt": "E",
+     "if": "**Peritonitis** or dislodged tube",
+     "then": "Remove gastrostomy tube"
+    }
+   ]
   },
   "FM-06:Q020": {
    "task": "Diagnosis",
-   "boardCall": "Cough + bilateral wheezing + bilateral hilar adenopathy + reticulogranular infiltrates -> Sarcoidosis",
-   "hinge": "Bilateral hilar lymphadenopathy with reticulogranular interstitial opacities on chest x-ray is hallmark sarcoidosis.",
+   "boardCall": "nonsmoker + cough, wheeze, weight loss + **bilateral hilar adenopathy** + **reticular opacities** → Sarcoidosis",
+   "hinge": "Symmetric hilar nodes with interstitial change are granulomatous until biopsy.",
    "trap": "Wheezing and cough mimic asthma, but bilateral hilar adenopathy points to sarcoidosis.",
    "options": {
     "A": {
@@ -1774,12 +2192,34 @@
      "text": "chest x-ray shows bilateral hilar adenopathy and a reticulogranular appearance"
     }
    ],
-   "topic": "sarcoidosis"
+   "topic": "sarcoidosis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Normal CXR**, reversible obstruction on spirometry",
+     "then": "Asthma"
+    },
+    {
+     "opt": "B",
+     "if": "**Unilateral hilar mass** in smoker",
+     "then": "Lung cancer"
+    },
+    {
+     "opt": "C",
+     "if": "**Fever**, lobar consolidation",
+     "then": "Pneumonia"
+    },
+    {
+     "opt": null,
+     "if": "**Night sweats**, cavitary apical lesion",
+     "then": "Tuberculosis"
+    }
+   ]
   },
   "FM-06:Q021": {
    "task": "Next step",
-   "boardCall": "Prior DVT + prolonged standing + weeping erythematous ankle lesion -> Leg elevation and saline-soaked dressing",
-   "hinge": "Acute weeping stasis dermatitis without systemic infection is managed non-operatively with leg elevation and moist saline dressings.",
+   "boardCall": "**3 days standing** + prior DVT same leg + weeping, peeling ankle + **afebrile, no purulence** → Elevation and saline dressing",
+   "hinge": "Venous stasis dermatitis needs drainage of edema, not antibiotics.",
    "trap": "Erythema and weeping mimic cellulitis, but absence of warmth, systemic signs, or purulence excludes bacterial infection.",
    "options": {
     "A": {
@@ -1861,12 +2301,34 @@
      "text": "Her temperature is 37.2°C (98.9°F)"
     }
    ],
-   "topic": "chronic-venous-insufficiency"
+   "topic": "chronic-venous-insufficiency",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Spreading warm erythema**, afebrile",
+     "then": "Oral antibiotic therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever, hypotension**, rapid spread",
+     "then": "IV antibiotic therapy"
+    },
+    {
+     "opt": "B",
+     "if": "**Partial-thickness burn**",
+     "then": "Silver sulfadiazine"
+    },
+    {
+     "opt": null,
+     "if": "**ABI 0.4**",
+     "then": "Avoid compression; vascular referral"
+    }
+   ]
   },
   "FM-06:Q022": {
    "task": "Ethics",
-   "boardCall": "Operating on a decision-making competent patient who explicitly refuses -> Assault and battery",
-   "hinge": "Performing an invasive surgical procedure against the explicit refusal of a decision-capable patient constitutes battery.",
+   "boardCall": "ruptured appendix + **oriented, understands risks** + **refuses surgery** + surgeon proceeds → Assault and battery",
+   "hinge": "Touching a competent patient against his refusal is battery, whatever the intent.",
    "trap": "Life-threatening surgical emergency tempts invocation of standard of care, but competent refusal overrides beneficence.",
    "options": {
     "A": {
@@ -1947,12 +2409,34 @@
      "text": "patient refuses to undergo the operation"
     }
    ],
-   "topic": "informed-consent-and-capacity"
+   "topic": "informed-consent-and-capacity",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Consents** after risk discussion",
+     "then": "Standard of care"
+    },
+    {
+     "opt": null,
+     "if": "**Delirious**, cannot explain choice",
+     "then": "Surrogate decides"
+    },
+    {
+     "opt": "C",
+     "if": "**Consents** to high-risk surgery others would decline",
+     "then": "Heroic care"
+    },
+    {
+     "opt": "D",
+     "if": "**Chooses comfort care** only",
+     "then": "Palliative care"
+    }
+   ]
   },
   "FM-06:Q023": {
    "task": "Diagnosis",
-   "boardCall": "Shoulder pain + decreased active AND passive range of motion -> Adhesive capsulitis",
-   "hinge": "Loss of both active and passive glenohumeral range of motion in multiple planes defines adhesive capsulitis (frozen shoulder).",
+   "boardCall": "56 yo + 8 weeks shoulder pain + **sling immobilization** + **active and passive ROM both lost** → Adhesive capsulitis",
+   "hinge": "Capsular contracture blocks passive motion; cuff tears spare it.",
    "trap": "Rotator cuff tear causes pain with abduction and reduced active motion, but passive motion is preserved.",
    "options": {
     "A": {
@@ -2037,12 +2521,34 @@
      "text": "Both passive and active range of motion are markedly decreased."
     }
    ],
-   "topic": "shoulder-pain"
+   "topic": "shoulder-pain",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Weak active abduction**, passive motion full",
+     "then": "Rotator cuff tear"
+    },
+    {
+     "opt": "C",
+     "if": "**Anterior pain** with resisted supination",
+     "then": "Bicipital tendinitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Pain on cross-body adduction**, AC tenderness",
+     "then": "AC joint arthritis"
+    },
+    {
+     "opt": "D",
+     "if": "**Clicking, catching** after throwing",
+     "then": "Labral tear"
+    }
+   ]
   },
   "FM-06:Q024": {
    "task": "Next step",
-   "boardCall": "Toddler with social deficits + language regression -> Hearing screening",
-   "hinge": "Before diagnosing a neurodevelopmental disorder like autism, formal audiologic testing must rule out hearing impairment.",
+   "boardCall": "2 yo + **no response to name** + **lost words** + poor eye contact + no peer interest → Hearing screening",
+   "hinge": "Deafness can mimic autism; rule it out before developmental workup.",
    "trap": "Social withdrawal and lack of eye contact suggest autism, tempting neuroimaging, but hearing screening comes first.",
    "options": {
     "A": {
@@ -2127,12 +2633,34 @@
      "text": "using fewer words now than she did a few months ago"
     }
    ],
-   "topic": "autism-spectrum-disorder"
+   "topic": "autism-spectrum-disorder",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Normal hearing**",
+     "then": "M-CHAT-R/F, refer for ASD evaluation"
+    },
+    {
+     "opt": "C",
+     "if": "**Focal deficits**, macrocephaly or seizures",
+     "then": "MRI of the brain"
+    },
+    {
+     "opt": "E",
+     "if": "**Cataracts, jaundice** in newborn",
+     "then": "Urine reducing substances"
+    },
+    {
+     "opt": "D",
+     "if": "**Shy but responds**, normal language",
+     "then": "Reassurance"
+    }
+   ]
   },
   "FM-06:Q025": {
    "task": "Next step",
-   "boardCall": "Urinary urgency + pelvic pain relieved by voiding + normal urinalysis -> Cystoscopy for interstitial cystitis",
-   "hinge": "Chronic pelvic pain relieved by voiding with tender anterior vaginal wall and normal urinalysis indicates interstitial cystitis, evaluated by cystoscopy.",
+   "boardCall": "6 months urgency + **pain relieved by voiding** + anterior vaginal wall tenderness + **normal urinalysis** → Cystoscopy",
+   "hinge": "Bladder-filling pain with sterile urine points to interstitial cystitis.",
    "trap": "Pelvic cramps and anterior vaginal wall tenderness tempt laparoscopy for endometriosis, but urinary relief points to the bladder.",
    "options": {
     "A": {
@@ -2218,12 +2746,34 @@
      "text": "Urinalysis shows no abnormalities."
     }
    ],
-   "topic": "interstitial-cystitis"
+   "topic": "interstitial-cystitis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Cyclic pain with menses**, dyspareunia",
+     "then": "Laparoscopy"
+    },
+    {
+     "opt": "D",
+     "if": "**Postmenopausal bleeding** or intrauterine lesion",
+     "then": "Hysteroscopy"
+    },
+    {
+     "opt": "A",
+     "if": "**Fever, adnexal mass**",
+     "then": "CT scan of abdomen and pelvis"
+    },
+    {
+     "opt": null,
+     "if": "**Post-void dribbling**, tender anterior wall mass",
+     "then": "Urethral diverticulum: MRI"
+    }
+   ]
   },
   "FM-06:Q026": {
    "task": "Next step",
-   "boardCall": "Adolescent sleep-onset delay + weekend oversleeping -> Establish a set bedtime and awakening time",
-   "hinge": "Delayed sleep-wake phase disorder in adolescents is treated by establishing consistent bed and wake times every day.",
+   "boardCall": "13yo + **variable bedtime 9 pm–12 am** + night awakenings + daytime sleepiness + **good mood and grades** → Establish a set bedtime and awakening time",
+   "hinge": "Irregular schedule is the problem; consistency fixes it without drugs.",
    "trap": "Insomnia tempts over-the-counter diphenhydramine or antidepressants, but behavioral sleep hygiene is first-line.",
    "options": {
     "A": {
@@ -2305,12 +2855,34 @@
      "text": "good appetite, energy, mood, and school performance"
     }
    ],
-   "topic": "insomnia"
+   "topic": "insomnia",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Anhedonia**, low mood, falling grades for weeks",
+     "then": "Begin taking fluoxetine"
+    },
+    {
+     "opt": "E",
+     "if": "**Adult with acute pruritus** keeping her awake",
+     "then": "Diphenhydramine at bedtime"
+    },
+    {
+     "opt": "C",
+     "if": "**Fixed schedule**, still needs more sleep before 6 am",
+     "then": "Move bedtime one hour earlier"
+    },
+    {
+     "opt": "D",
+     "if": "**Shift worker** adult needing alertness, not teen",
+     "then": "Short afternoon nap"
+    }
+   ]
   },
   "FM-06:Q027": {
    "task": "Diagnosis",
-   "boardCall": "Alcohol abuse + thiazide diuretic + acute monoarthritis -> Monosodium urate crystals (gout)",
-   "hinge": "Thiazide diuretics and heavy alcohol intake trigger hyperuricemia and acute gout with monosodium urate crystals.",
+   "boardCall": "**hydrochlorothiazide** + **six beers daily** + obese + sudden hot swollen ankle + afebrile → Urate",
+   "hinge": "Thiazides and beer raise uric acid; pyrophosphate favors knees and wrists.",
    "trap": "Ankle involvement in an 84-year-old may suggest pseudogout (calcium pyrophosphate), but beer and thiazide point to urate.",
    "options": {
     "A": {
@@ -2395,12 +2967,34 @@
      "text": "swelling, erythema, warmth, and exquisite tenderness to palpation of the right ankle"
     }
    ],
-   "topic": "gout"
+   "topic": "gout",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Knee** with **chondrocalcinosis**, hyperparathyroidism",
+     "then": "Calcium pyrophosphate"
+    },
+    {
+     "opt": "A",
+     "if": "**Ethylene glycol ingestion**, flank pain",
+     "then": "Calcium oxalate"
+    },
+    {
+     "opt": "D",
+     "if": "**Proteus UTI** with staghorn stone",
+     "then": "Struvite"
+    },
+    {
+     "opt": "C",
+     "if": "**Hexagonal urine crystals**, young recurrent stones",
+     "then": "Cystine"
+    }
+   ]
   },
   "FM-06:Q028": {
    "task": "Next step",
-   "boardCall": "Racing pigeon exposure + chronic cough + digital clubbing -> Removal of the pigeons from the patient's home",
-   "hinge": "Definitive management of hypersensitivity pneumonitis (bird fancier's lung) is complete elimination of the avian antigen.",
+   "boardCall": "nonsmoker + 6 months dry cough + dyspnea + weight loss + **racing pigeons at home** + **clubbing** → Removal of the pigeons",
+   "hinge": "Hypersensitivity pneumonitis resolves only when the antigen is gone.",
    "trap": "Dyspnea and weight loss tempt systemic corticosteroids, but antigen avoidance must precede or accompany any therapy.",
    "options": {
     "A": {
@@ -2482,12 +3076,34 @@
      "text": "mild digital clubbing in both hands"
     }
    ],
-   "topic": "hypersensitivity-pneumonitis"
+   "topic": "hypersensitivity-pneumonitis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Hypoxemia persists** after antigen removal",
+     "then": "Oral corticosteroid therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Episodic wheeze**, normal spirometry",
+     "then": "Methacholine challenge test"
+    },
+    {
+     "opt": "B",
+     "if": "**Reversible obstruction** on spirometry",
+     "then": "Inhaled β-agonist therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**Seasonal allergic rhinitis** uncontrolled by medication",
+     "then": "Allergy desensitization injections"
+    }
+   ]
   },
   "FM-06:Q029": {
    "task": "Pharmacology",
-   "boardCall": "T2D with HbA1c > 9% on dual oral agents + sulfa allergy + peripheral edema -> Add bedtime basal insulin",
-   "hinge": "Poor control despite dual oral therapy and edema limiting pioglitazone make basal insulin the best listed escalation.",
+   "boardCall": "**HbA1c 9.3%** + max metformin + pioglitazone + **pedal edema** + sulfa allergy → Add a bedtime dose of basal insulin",
+   "hinge": "Edema limits pioglitazone; A1c far above goal needs insulin.",
    "trap": "Glipizide is a common add-on oral agent, but is contraindicated due to sulfa allergy; pioglitazone worsens edema.",
    "options": {
     "A": {
@@ -2569,12 +3185,34 @@
      "text": "Hemoglobin A1c 9.3%"
     }
    ],
-   "topic": "type-2-diabetes-mellitus"
+   "topic": "type-2-diabetes-mellitus",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**No sulfa reaction**, cost limits insulin",
+     "then": "Add glipizide"
+    },
+    {
+     "opt": "E",
+     "if": "**No edema** or heart failure, A1c 7.5%",
+     "then": "Increase the dose of pioglitazone"
+    },
+    {
+     "opt": "D",
+     "if": "**LDL above goal**, diabetes, age 55",
+     "then": "Increase the dose of atorvastatin"
+    },
+    {
+     "opt": null,
+     "if": "**Established ASCVD** or CKD",
+     "then": "Add GLP-1 agonist or SGLT2 inhibitor"
+    }
+   ]
   },
   "FM-06:Q030": {
    "task": "Other",
-   "boardCall": "Attributable risk of harm = 12% - 2% = 10% -> Number needed to harm = 1 / 0.10 = 10",
-   "hinge": "NNH = 1 / (Adverse event rate in drug group - Adverse event rate in placebo group) = 1 / (0.12 - 0.02) = 10.",
+   "boardCall": "RCT + **libido 12/100 drug** + **2/100 placebo** + asks number to harm one → 10",
+   "hinge": "Subtract the placebo rate before inverting: 1/0.10.",
    "trap": "Selecting 12 directly from the table ignores the 2% background rate of increased libido in the placebo group.",
    "options": {
     "A": {
@@ -2656,12 +3294,34 @@
      "text": "100 individuals are randomized to be treated for 1 week with a similar looking placebo"
     }
    ],
-   "topic": "measures-of-association"
+   "topic": "measures-of-association",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Asks number to treat** to clear lice",
+     "then": "2"
+    },
+    {
+     "opt": "D",
+     "if": "**No placebo arm**, 12 per 100 affected",
+     "then": "About 8 (100/12)"
+    },
+    {
+     "opt": "A",
+     "if": "**Every treated patient** develops increased libido",
+     "then": "1"
+    },
+    {
+     "opt": "E",
+     "if": "**Libido 3% versus 2%**",
+     "then": "100"
+    }
+   ]
   },
   "FM-06:Q031": {
    "task": "Mechanism",
-   "boardCall": "Paresthesias worsening with heat + optic neuritis -> Autoimmune demyelination (multiple sclerosis)",
-   "hinge": "Uhthoff phenomenon and optic neuritis in a young woman are classic for central nervous system autoimmune demyelination.",
+   "boardCall": "38yo woman + **paresthesias worse with temperature** + fatigue + **intermittent blurred vision** + normal exam → Autoimmune demyelination",
+   "hinge": "Relapsing CNS symptoms in separate sites with heat sensitivity fit MS.",
    "trap": "Living in a wooded area tempts Lyme disease (Borrelia), but heat sensitivity points specifically to MS.",
    "options": {
     "A": {
@@ -2754,12 +3414,34 @@
      "trap": true
     }
    ],
-   "topic": "multiple-sclerosis"
+   "topic": "multiple-sclerosis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Erythema migrans** and facial palsy",
+     "then": "Borrelia burgdorferi infection"
+    },
+    {
+     "opt": "E",
+     "if": "**Vegan** with macrocytosis and **lost vibration sense**",
+     "then": "Vitamin deficiency"
+    },
+    {
+     "opt": "D",
+     "if": "**Fasciculations** with upper and lower motor signs",
+     "then": "Neuromuscular degeneration"
+    },
+    {
+     "opt": "C",
+     "if": "**Age 75**, visual hallucinations, parkinsonism",
+     "then": "Lewy body dementia"
+    }
+   ]
   },
   "FM-06:Q032": {
    "task": "Diagnosis",
-   "boardCall": "10-year-old athlete + bilateral heel pain exacerbated by running -> Calcaneal apophysitis (Sever disease)",
-   "hinge": "Bilateral posterior calcaneal tenderness in an active growing child is classic for calcaneal apophysitis (Sever disease).",
+   "boardCall": "10yo softball player + **bilateral heel pain with running** + relieved by rest + **posterior calcaneal tenderness** → Calcaneal apophysitis",
+   "hinge": "Open calcaneal growth plate stressed by running in a growing child.",
    "trap": "Pain exacerbated by running tempts Achilles tendinitis or plantar fasciitis, but apophyseal growth plate tenderness defines Sever disease.",
    "options": {
     "A": {
@@ -2854,12 +3536,34 @@
      "text": "tenderness to palpation over the posterior aspect of the calcaneus bilaterally"
     }
    ],
-   "topic": "ankle-and-foot-injuries"
+   "topic": "ankle-and-foot-injuries",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Adult** with sharp heel pain on morning steps",
+     "then": "Plantar fasciitis"
+    },
+    {
+     "opt": "A",
+     "if": "**Adult runner**, tender tendon above insertion",
+     "then": "Achilles tendinitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Focal bony tenderness** after training surge, unilateral",
+     "then": "Stress fracture"
+    },
+    {
+     "opt": "F",
+     "if": "**Burning sole paresthesias**, positive Tinel behind malleolus",
+     "then": "Tarsal tunnel syndrome"
+    }
+   ]
   },
   "FM-06:Q033": {
    "task": "Next step",
-   "boardCall": "Fever + tonsillar exudates + tender anterior cervical adenopathy + no cough -> Oral penicillin",
-   "hinge": "Fever, exudates, tender anterior cervical nodes, and absent cough suggest GAS; oral penicillin is first-line once confirmed.",
+   "boardCall": "18yo + **fever 38.8** + sore throat + **tender anterior cervical nodes** + tonsillar exudate + no cough → Oral penicillin",
+   "hinge": "Narrow-spectrum penicillin covers GAS, which remains universally sensitive.",
    "trap": "Severe symptoms and exudates tempt broad-spectrum fluoroquinolones or cephalosporins, but penicillin is the drug of choice for GAS.",
    "options": {
     "A": {
@@ -2948,12 +3652,34 @@
      "text": "photograph of the oropharynx is shown"
     }
    ],
-   "topic": "pharyngitis"
+   "topic": "pharyngitis",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Drooling, trismus**, uvula deviation",
+     "then": "Peritonsillar abscess drainage"
+    },
+    {
+     "opt": "A",
+     "if": "**Severe odynophagia**, adult on penicillin",
+     "then": "Oral dexamethasone"
+    },
+    {
+     "opt": "D",
+     "if": "**Neonatal sepsis**, with ampicillin",
+     "then": "Intramuscular gentamicin"
+    },
+    {
+     "opt": "E",
+     "if": "**Gonococcal pharyngitis** after oral sex",
+     "then": "Ceftriaxone"
+    }
+   ]
   },
   "FM-06:Q034": {
    "task": "Next step",
-   "boardCall": "Dehydration + jaw tenderness + purulent Stensen duct discharge -> Salivary gland massage (acute suppurative parotitis)",
-   "hinge": "Milking/massaging the parotid gland expresses purulent material for culture and decompresses acute suppurative parotitis.",
+   "boardCall": "frail 84yo + poor oral intake + diuretic + **jaw-angle tenderness** + **pus from parotid duct** → Perform salivary gland massage",
+   "hinge": "Dehydration causes duct stasis; massage drains the gland.",
    "trap": "Poor oral intake and dehydration tempt fluid restriction concern or MRI, but manual gland massage is an immediate local therapy.",
    "options": {
     "A": {
@@ -3039,12 +3765,34 @@
      "text": "Mucopurulent material is expressed from the right parotid duct opening."
     }
    ],
-   "topic": "salivary-gland-disorders"
+   "topic": "salivary-gland-disorders",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Sepsis** or unable to drink",
+     "then": "Admit for IV antibiotics"
+    },
+    {
+     "opt": "B",
+     "if": "**Fluctuant mass** with suspected deep extension",
+     "then": "MRI of the soft tissue"
+    },
+    {
+     "opt": "D",
+     "if": "**Severe pain** despite acetaminophen",
+     "then": "Prescribe oral morphine"
+    },
+    {
+     "opt": "E",
+     "if": "**Decompensated heart failure** with edema, no parotitis",
+     "then": "Restrict oral fluid intake"
+    }
+   ]
   },
   "FM-06:Q035": {
    "task": "Diagnosis",
-   "boardCall": "Postmenopausal dyspareunia + pH 7.0 + parabasal cells on wet mount -> Vaginal atrophy (genitourinary syndrome of menopause)",
-   "hinge": "Estrogen deficiency causes loss of superficial squames, high vaginal pH > 5.0, and parabasal cells on microscopy.",
+   "boardCall": "postmenopausal + **dyspareunia** + watery nonmalodorous discharge + **pH 7.0 with parabasal cells** → Vaginal atrophy",
+   "hinge": "Estrogen loss raises pH and leaves immature cells, without pathogens.",
    "trap": "Vaginal discharge and elevated pH tempt bacterial vaginosis or trichomoniasis, but parabasal cells and lack of malodor confirm atrophy.",
    "options": {
     "A": {
@@ -3128,12 +3876,34 @@
      "text": "shows a pH of 7.0, few bacilli, and parabasal epithelial cells"
     }
    ],
-   "topic": "vaginitis"
+   "topic": "vaginitis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Fishy odor** with **clue cells**",
+     "then": "Bacterial vaginosis"
+    },
+    {
+     "opt": "C",
+     "if": "**Frothy discharge** with motile organisms",
+     "then": "Trichomoniasis"
+    },
+    {
+     "opt": "B",
+     "if": "**Thick curdy discharge**, pH 4, hyphae",
+     "then": "Candidiasis"
+    },
+    {
+     "opt": "E",
+     "if": "**pH 4**, superficial cells, lactobacilli",
+     "then": "Normal findings"
+    }
+   ]
   },
   "FM-06:Q036": {
    "task": "Diagnosis",
-   "boardCall": "Fever prodrome + \"slapped cheek\" rash + reticular rash on extremities -> Erythema infectiosum (fifth disease)",
-   "hinge": "Bright erythematous facial rash (\"slapped cheek\") followed by a lacy reticular body rash is pathognomonic for parvovirus B19.",
+   "boardCall": "3yo + mild fever + coryza + **red cheeks rash** + **lacy rash on trunk and limbs** + well-appearing → Erythema infectiosum",
+   "hinge": "Slapped cheeks then lacy body rash in a well child means parvovirus.",
    "trap": "High fever followed by rash resembles roseola, but slapped cheek and lacy extremity rash define erythema infectiosum.",
    "options": {
     "A": {
@@ -3214,12 +3984,34 @@
      "text": "Physical examination discloses a rash over the face, trunk, and all extremities."
     }
    ],
-   "topic": "pediatric-exanthems"
+   "topic": "pediatric-exanthems",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Rash appears as high fever breaks**",
+     "then": "Roseola"
+    },
+    {
+     "opt": "B",
+     "if": "**Koplik spots**, conjunctivitis, cephalocaudal rash",
+     "then": "Measles"
+    },
+    {
+     "opt": "E",
+     "if": "**Sandpaper rash**, strawberry tongue, exudates",
+     "then": "Scarlet fever"
+    },
+    {
+     "opt": "D",
+     "if": "**Postauricular nodes** with fleeting pink rash",
+     "then": "Rubella"
+    }
+   ]
   },
   "FM-06:Q037": {
    "task": "Next step",
-   "boardCall": "Asymptomatic African American with isolated benign neutropenia + family history -> No follow-up is necessary (Duffy-null)",
-   "hinge": "Benign ethnic neutropenia (Duffy-null phenotype) in an asymptomatic patient requires no further evaluation or treatment.",
+   "boardCall": "healthy African American + **ANC 1000** + **normal smear and other counts** + father with low WBC → No follow-up is necessary",
+   "hinge": "Duffy-null neutropenia is a benign normal variant.",
    "trap": "Absolute neutrophil count of 1000/mm3 tempts bone marrow biopsy, but benign ethnic neutropenia is an incidental normal variant.",
    "options": {
     "A": {
@@ -3301,12 +4093,34 @@
      "text": "A blood smear shows normal morphology."
     }
    ],
-   "topic": "neutropenia"
+   "topic": "neutropenia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Low platelets** or blasts on smear",
+     "then": "Bone marrow aspiration and biopsy"
+    },
+    {
+     "opt": "A",
+     "if": "**ANC <500** with recurrent bacterial infections",
+     "then": "Antibiotic prophylaxis"
+    },
+    {
+     "opt": "C",
+     "if": "**Low IgG** with recurrent sinopulmonary infections",
+     "then": "Monthly IV immune globulin"
+    },
+    {
+     "opt": "B",
+     "if": "**Autoimmune neutropenia** with severe infections, rare",
+     "then": "Corticosteroid therapy"
+    }
+   ]
   },
   "FM-06:Q038": {
    "task": "Diagnosis",
-   "boardCall": "Swimmer with overhead pain + positive Hawkins-Kennedy test + preserved muscle strength -> Subacromial impingement syndrome",
-   "hinge": "Pain on overhead motion and Hawkins test with normal rotator cuff muscle strength indicates subacromial impingement.",
+   "boardCall": "76yo swimmer + **increased training** + painful overhead motion + **normal cuff strength** + positive Hawkins sign → Impingement syndrome",
+   "hinge": "Pain without weakness means tendon irritation, not a tear.",
    "trap": "Night pain and overhead difficulty tempt rotator cuff tear, but completely intact muscle strength distinguishes impingement.",
    "options": {
     "A": {
@@ -3394,12 +4208,34 @@
      "text": "arm held in 90 degrees of forward flexion causes severe pain"
     }
    ],
-   "topic": "shoulder-pain"
+   "topic": "shoulder-pain",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Weak external rotation** or drop-arm sign",
+     "then": "Rotator cuff tear"
+    },
+    {
+     "opt": "A",
+     "if": "**Point tenderness at AC joint**, cross-body pain",
+     "then": "Acromioclavicular osteoarthritis"
+    },
+    {
+     "opt": "B",
+     "if": "**Bicipital groove tenderness**, positive Speed test",
+     "then": "Biceps tendinitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Clicking and catching**, young thrower",
+     "then": "Labrum tear"
+    }
+   ]
   },
   "FM-06:Q039": {
    "task": "Next step",
-   "boardCall": "Steatorrhea + iron deficiency anemia + elevated anti-tTG IgA -> Dietary avoidance of barley (celiac disease)",
-   "hinge": "Celiac disease is triggered by gluten found in wheat, rye, and barley; strict lifelong dietary avoidance is required.",
+   "boardCall": "6 months diarrhea + **floating malodorous stools** + weight loss + iron deficiency + **tTG-IgA 10.3** → Barley",
+   "hinge": "Positive tTG means celiac; wheat, rye, and barley contain gluten.",
    "trap": "Alcohol consumption (10 glasses/wk) tempts alcohol cessation, but elevated anti-tTG proves gluten enteropathy.",
    "options": {
     "A": {
@@ -3485,12 +4321,34 @@
      "text": "Tissue transglutaminase antibody, IgA 10.3 U/mL (N<4)"
     }
    ],
-   "topic": "celiac-disease"
+   "topic": "celiac-disease",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Heavy drinking** with fatty liver, negative tTG",
+     "then": "Alcohol"
+    },
+    {
+     "opt": "C",
+     "if": "**Postprandial RUQ pain**, gallstones",
+     "then": "Animal fat"
+    },
+    {
+     "opt": "A",
+     "if": "**Heartburn** worse after citrus and tomato",
+     "then": "Acidic food"
+    },
+    {
+     "opt": null,
+     "if": "**Diarrhea after dairy**, negative tTG",
+     "then": "Lactose"
+    }
+   ]
   },
   "FM-06:Q040": {
    "task": "Next step",
-   "boardCall": "Patient in precontemplation unwilling to discuss smoking cessation -> Repeat discussion at follow-up visit",
-   "hinge": "In the precontemplation stage of change, avoid arguing or pushing medications; revisit smoking cessation at the next visit.",
+   "boardCall": "COPD + 70 pack-years + **3 failed quit attempts** + **refuses to discuss quitting** → Repeat discussion at 2-week follow-up",
+   "hinge": "Precontemplation: pushing now damages rapport; revisit later.",
    "trap": "Pharmacotherapy (varenicline/bupropion) is effective, but requires patient readiness; forcing it damages physician-patient rapport.",
    "options": {
     "A": {
@@ -3576,12 +4434,34 @@
      "text": "Trying to quit is depressing, and I don’t want to talk about it anymore."
     }
    ],
-   "topic": "motivational-interviewing"
+   "topic": "motivational-interviewing",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Sets a quit date** this month",
+     "then": "Varenicline therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**Ready to quit**, also depressed",
+     "then": "Bupropion therapy"
+    },
+    {
+     "opt": "B",
+     "if": "**Contemplating**, ambivalent about quitting",
+     "then": "Discuss smoking and chronic cough"
+    },
+    {
+     "opt": "C",
+     "if": "**Never had spirometry**, chronic dyspnea",
+     "then": "Pulmonary function testing"
+    }
+   ]
   },
   "FM-06:Q041": {
    "task": "Next step",
-   "boardCall": "Elderly patient on daily NSAID with rising serum creatinine -> Replace naproxen with acetaminophen",
-   "hinge": "NSAIDs inhibit renal vasodilatory prostaglandins causing prerenal azotemia and nephrotoxicity; replace with acetaminophen.",
+   "boardCall": "78yo + **daily naproxen** + thiazide + **creatinine rising to 1.8** + normal exam → Replace naproxen with acetaminophen",
+   "hinge": "NSAIDs block renal prostaglandins; remove the most likely nephrotoxin first.",
    "trap": "Hydrochlorothiazide can cause volume contraction, but chronic daily naproxen is the classic nephrotoxic offender.",
    "options": {
     "A": {
@@ -3667,12 +4547,34 @@
      "text": "serum creatinine concentration has increased from 1.2 mg/dL to 1.8 mg/dL"
     }
    ],
-   "topic": "nonsteroidal-anti-inflammatory-drugs"
+   "topic": "nonsteroidal-anti-inflammatory-drugs",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Orthostatic dizziness**, high BUN:Cr, no NSAID",
+     "then": "Decrease hydrochlorothiazide"
+    },
+    {
+     "opt": "C",
+     "if": "**Foamy urine**, edema, diabetes",
+     "then": "24-hour urine protein"
+    },
+    {
+     "opt": "D",
+     "if": "**Myalgias** with elevated CK on atorvastatin",
+     "then": "Replace with pravastatin"
+    },
+    {
+     "opt": null,
+     "if": "**Fever, rash, eosinophilia**, pyuria",
+     "then": "Acute interstitial nephritis"
+    }
+   ]
   },
   "FM-06:Q042": {
    "task": "Next step",
-   "boardCall": "Hyponatremia + hyperkalemia + fatigue + nausea -> Morning serum cortisol concentration (primary adrenal insufficiency)",
-   "hinge": "Initial screening for suspected primary adrenal insufficiency (Addison disease) is 8 AM morning serum cortisol.",
+   "boardCall": "3 months fatigue + nausea + **Na 128** + **K 5.3** + normal BP → Morning serum cortisol concentration",
+   "hinge": "Low sodium with high potassium suggests adrenal insufficiency; screen with cortisol first.",
    "trap": "Cosyntropin stimulation test is the confirmatory test, but morning serum cortisol is the initial screen.",
    "options": {
     "A": {
@@ -3754,12 +4656,34 @@
      "text": "Physical examination shows no abnormalities."
     }
    ],
-   "topic": "adrenal-insufficiency"
+   "topic": "adrenal-insufficiency",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Borderline morning cortisol**, still suspected",
+     "then": "Corticotropin stimulation test"
+    },
+    {
+     "opt": "E",
+     "if": "**Biochemical hormone excess** confirmed",
+     "then": "MRI of the adrenal gland"
+    },
+    {
+     "opt": "B",
+     "if": "**Episodic headache**, sweating, hypertension",
+     "then": "24-hour urine metanephrines"
+    },
+    {
+     "opt": "D",
+     "if": "**Low libido**, erectile dysfunction, gynecomastia",
+     "then": "Morning serum testosterone"
+    }
+   ]
   },
   "FM-06:Q043": {
    "task": "Screening",
-   "boardCall": "56-year-old woman with prior hysterectomy for benign disease -> Biennial screening mammography",
-   "hinge": "USPSTF recommends biennial screening mammography for women aged 40-74; cervical screening stops after benign hysterectomy.",
+   "boardCall": "56yo + **hysterectomy for fibroids** + normal Paps + **mammogram 2 years ago** + monogamous → Mammography",
+   "hinge": "Biennial mammography is due; cervical screening ended with benign hysterectomy.",
    "trap": "Routine preventive visit tempts Pap smear, but cervical cytology is discontinued after total hysterectomy for benign disease.",
    "options": {
     "A": {
@@ -3845,12 +4769,34 @@
      "text": "Mammography 2 years ago showed normal findings."
     }
    ],
-   "topic": "breast-cancer-screening"
+   "topic": "breast-cancer-screening",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Hysterectomy for CIN 3**",
+     "then": "Pap smear (vaginal cuff)"
+    },
+    {
+     "opt": "B",
+     "if": "**Age 65**, or low weight with prior fracture",
+     "then": "DEXA scan"
+    },
+    {
+     "opt": "A",
+     "if": "**New partner**, age under 25",
+     "then": "Gonorrhea testing"
+    },
+    {
+     "opt": "D",
+     "if": "**Adnexal mass** found on exam",
+     "then": "Serum CA 125 with ultrasound"
+    }
+   ]
   },
   "FM-06:Q044": {
    "task": "Diagnosis",
-   "boardCall": "Shoulder pain with overhead reaching + painful arc at 90 degrees + normal muscle strength -> Impingement syndrome",
-   "hinge": "Painful arc of abduction (60-120 degrees) with normal muscle strength confirms subacromial impingement syndrome.",
+   "boardCall": "57yo + night shoulder pain + **pain reaching high shelves** + **painful arc near 90°** + normal strength → Impingement syndrome",
+   "hinge": "Painful arc with full motion and strength is subacromial impingement.",
    "trap": "Pain awakening him at night tempts adhesive capsulitis, but passive range of motion is completely preserved.",
    "options": {
     "A": {
@@ -3938,12 +4884,34 @@
      "text": "Range of motion is otherwise full."
     }
    ],
-   "topic": "shoulder-pain"
+   "topic": "shoulder-pain",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Frozen shoulder**: passive motion also lost, diabetic",
+     "then": "Adhesive capsulitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Anterior pain** with resisted forearm supination",
+     "then": "Biceps tendinitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Fall**, arm held externally rotated, squared shoulder",
+     "then": "Shoulder dislocation"
+    },
+    {
+     "opt": "A",
+     "if": "**Fall on shoulder tip**, step-off deformity",
+     "then": "Acromioclavicular joint separation"
+    }
+   ]
   },
   "FM-06:Q045": {
    "task": "Diagnosis",
-   "boardCall": "Nocturnal hand numbness relieved by hand shaking (flick sign) -> Median nerve compression at the wrist (carpal tunnel syndrome)",
-   "hinge": "Nocturnal paresthesias relieved by shaking the hands ('flick sign') in a manual worker is classic for carpal tunnel syndrome.",
+   "boardCall": "construction worker + **bilateral hand numbness** + **wakes to shake hands** + normal strength and ROM → Median nerve compression at the wrist",
+   "hinge": "Nocturnal paresthesias relieved by flicking are classic carpal tunnel.",
    "trap": "Pain in forearms and diffuse hand numbness may tempt cervical radiculopathy, but bilateral symptoms and flick sign point to CTS.",
    "options": {
     "A": {
@@ -4028,12 +4996,34 @@
      "text": "Range of motion of both upper extremities is full."
     }
    ],
-   "topic": "carpal-tunnel-syndrome"
+   "topic": "carpal-tunnel-syndrome",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Fourth and fifth finger numbness**, elbow flexion worsens",
+     "then": "Ulnar nerve compression at the elbow"
+    },
+    {
+     "opt": "B",
+     "if": "**Neck pain** radiating down arm, positive Spurling",
+     "then": "Cervical radiculopathy"
+    },
+    {
+     "opt": "C",
+     "if": "**Radial wrist pain**, positive Finkelstein test",
+     "then": "de Quervain disease"
+    },
+    {
+     "opt": "A",
+     "if": "**Cannot make OK sign**, no sensory loss",
+     "then": "Anterior interosseous nerve syndrome"
+    }
+   ]
   },
   "FM-06:Q046": {
    "task": "Next step",
-   "boardCall": "Left-sided scrotal 'bag of worms' mass decompressing when supine -> No further diagnostic studies are indicated (varicocele)",
-   "hinge": "A classic left-sided varicocele ('bag of worms') that decompresses in the supine position is a clinical diagnosis requiring no imaging.",
+   "boardCall": "45yo + **left scrotal bag of worms** + larger standing + **decompresses supine** + painless → No further diagnostic studies",
+   "hinge": "A classic left varicocele is a clinical diagnosis.",
    "trap": "Scrotal mass tempts scrotal ultrasonography, but a classic left varicocele with typical postural variation is diagnosed clinically.",
    "options": {
     "A": {
@@ -4115,12 +5105,34 @@
      "text": "soft, nontender, 1 × 3-cm mass with the consistency of a \"bag of worms\""
     }
    ],
-   "topic": "scrotal-masses"
+   "topic": "scrotal-masses",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Testis not separately palpable** or firm testicular mass",
+     "then": "Ultrasonography of the scrotum"
+    },
+    {
+     "opt": "B",
+     "if": "**Ultrasound equivocal**, mass characterization needed",
+     "then": "MRI of the scrotum"
+    },
+    {
+     "opt": "D",
+     "if": "**Dysuria** with tender epididymis",
+     "then": "Urinalysis"
+    },
+    {
+     "opt": null,
+     "if": "**Sudden severe pain**, high-riding testis",
+     "then": "Emergent surgical exploration"
+    }
+   ]
   },
   "FM-06:Q047": {
    "task": "Next step",
-   "boardCall": "Positive IGRA screening in asymptomatic immigrant -> Chest x-ray to rule out active pulmonary tuberculosis",
-   "hinge": "A positive IGRA indicates Mycobacterium tuberculosis infection; chest x-ray is mandatory to rule out active disease before treating latent TB.",
+   "boardCall": "Laos immigrant + **prior BCG** + asymptomatic + normal exam + **positive IGRA** → Chest x-ray",
+   "hinge": "Exclude active TB before treating latent infection; BCG does not affect IGRA.",
    "trap": "Asymptomatic status tempts starting isoniazid immediately, but active TB must be excluded by chest radiography first.",
    "options": {
     "A": {
@@ -4202,12 +5214,34 @@
      "text": "Results of an interferon gamma release assay are positive."
     }
    ],
-   "topic": "tuberculosis"
+   "topic": "tuberculosis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Normal chest x-ray**, asymptomatic",
+     "then": "Treat latent TB (isoniazid)"
+    },
+    {
+     "opt": "E",
+     "if": "**Health care worker** starting job, no prior BCG",
+     "then": "Two-step tuberculin skin test"
+    },
+    {
+     "opt": "D",
+     "if": "**Indeterminate** IGRA result",
+     "then": "Repeat interferon gamma release assay"
+    },
+    {
+     "opt": null,
+     "if": "**Apical cavity** or cough on x-ray",
+     "then": "Three sputum AFB samples"
+    }
+   ]
   },
   "FM-06:Q048": {
    "task": "Diagnosis",
-   "boardCall": "Shoulder pain with resisted abduction at 90 degrees and internal rotation (Jobe test) -> Supraspinatus injury",
-   "hinge": "Resisted abduction at 90 degrees forward flexion in internal rotation (empty can / Jobe test) isolates the supraspinatus.",
+   "boardCall": "47yo + **overhead shoulder pain** + **pain on resisted abduction at 90°** + internal rotation + normal x-ray → Supraspinatus",
+   "hinge": "The empty-can maneuver stresses the supraspinatus tendon specifically.",
    "trap": "Internal rotation in the maneuver tempts subscapularis, but the empty can test specifically stresses supraspinatus.",
    "options": {
     "A": {
@@ -4292,12 +5326,34 @@
      "text": "X-rays of the left shoulder show no abnormalities."
     }
    ],
-   "topic": "shoulder-pain"
+   "topic": "shoulder-pain",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Weakness turning arm outward**",
+     "then": "Infraspinatus"
+    },
+    {
+     "opt": "D",
+     "if": "**Cannot push hand off lower back**",
+     "then": "Subscapularis"
+    },
+    {
+     "opt": "A",
+     "if": "**Pain with resisted supination**, bicipital groove tenderness",
+     "then": "Biceps brachii"
+    },
+    {
+     "opt": "C",
+     "if": "**Bench-press injury**, axillary fold bruising",
+     "then": "Pectoralis major"
+    }
+   ]
   },
   "FM-06:Q049": {
    "task": "Next step",
-   "boardCall": "Tense, fluctuant, erythematous cutaneous nodule -> Incision and drainage of abscess",
-   "hinge": "Incision and drainage is the definitive primary treatment for a fluctuant cutaneous abscess.",
+   "boardCall": "growing painful back lump + 1 week + afebrile + **tense fluctuant nodule** + **surrounding erythema** → Incision and drainage",
+   "hinge": "Pus must be drained; antibiotics cannot sterilize an abscess cavity.",
    "trap": "Erythema tempts oral clindamycin, but antibiotics cannot penetrate an undrained purulent collection.",
    "options": {
     "A": {
@@ -4379,12 +5435,34 @@
      "text": "tense, fluctuant nodule with surrounding erythema on the left shoulder"
     }
    ],
-   "topic": "skin-and-soft-tissue-infections"
+   "topic": "skin-and-soft-tissue-infections",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Cellulitis >2 cm** or fever after drainage",
+     "then": "Add oral clindamycin"
+    },
+    {
+     "opt": "A",
+     "if": "**Fever, hypotension**, systemic toxicity",
+     "then": "Blood cultures"
+    },
+    {
+     "opt": "E",
+     "if": "**Honey-crusted superficial lesions**, localized",
+     "then": "Topical mupirocin 2%"
+    },
+    {
+     "opt": "D",
+     "if": "**Slow-growing firm painless nodule** with central punctum",
+     "then": "Excision of epidermoid cyst"
+    }
+   ]
   },
   "FM-06:Q050": {
    "task": "Next step",
-   "boardCall": "Pale blue nasal turbinates + clear rhinorrhea + allergic shiners -> Intranasal glucocorticoid therapy (allergic rhinitis)",
-   "hinge": "Intranasal corticosteroids (such as fluticasone or mometasone) are the most effective first-line therapy for allergic rhinitis.",
+   "boardCall": "10yo + sneezing and congestion + **worse spring and summer** + **pale blue edematous turbinates** + itchy eyes → Intranasal glucocorticoid therapy",
+   "hinge": "Allergic rhinitis responds best to daily intranasal steroids.",
    "trap": "Serous otitis and cobblestoning tempt allergy blood tests or ENT referral, but intranasal steroids are first-line.",
    "options": {
     "A": {
@@ -4473,7 +5551,29 @@
      "text": "posterior pharynx shows hyperplastic lymphoid tissue"
     }
    ],
-   "topic": "allergic-rhinitis"
+   "topic": "allergic-rhinitis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Refractory despite therapy**, considering immunotherapy",
+     "then": "Allergen-specific IgE testing"
+    },
+    {
+     "opt": "D",
+     "if": "**Effusion persisting 3 months** with hearing loss",
+     "then": "Otolaryngology referral"
+    },
+    {
+     "opt": null,
+     "if": "**Purulent discharge >10 days** with facial pain",
+     "then": "Amoxicillin-clavulanate"
+    },
+    {
+     "opt": "C",
+     "if": "**Adult**, short-term congestion relief needed",
+     "then": "Oral decongestant therapy"
+    }
+   ]
   }
  },
  "topics": {
@@ -8289,5 +9389,5 @@
    "evidence": "Checked 2026-10-30: [CDC trichomoniasis](https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm), [Candida](https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm), [BV](https://www.cdc.gov/std/treatment-guidelines/BV.htm), [ACOG partner update](https://www.acog.org/news/news-releases/2025/10/acog-recommends-concurrent-sexual-partner-treatment-recurrent-bacterial-vaginosis-first-time)."
   }
  },
- "updatedAt": "2026-11-07T08:13:46Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

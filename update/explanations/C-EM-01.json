@@ -8,8 +8,8 @@
  "items": {
   "c-em-01-q001": {
    "task": "Next step",
-   "boardCall": "Anuria + vomiting + lethargy + hyperkalemic ECG changes -> IV calcium gluconate",
-   "hinge": "ECG changes from acute hyperkalemia require immediate membrane stabilization with IV calcium gluconate.",
+   "boardCall": "renal insufficiency + 24h anuria + **hyperkalemic ECG changes** → Calcium gluconate",
+   "hinge": "Membrane stabilization prevents fatal arrhythmia before potassium-shifting agents act.",
    "trap": "Dextrose with insulin shifts potassium but does not stabilize cardiac membranes against arrhythmia.",
    "options": {
     "A": {
@@ -106,12 +106,35 @@
      "trap": true
     }
    ],
-   "topic": "potassium-disorders"
+   "topic": "potassium-disorders",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Hypoglycemia** with normal ECG",
+     "then": "Dextrose",
+     "step": "recheck glucose in 15 min"
+    },
+    {
+     "opt": "E",
+     "if": "**Pulmonary edema** with brisk urine output, normal K+",
+     "then": "Furosemide"
+    },
+    {
+     "opt": "D",
+     "if": "**Refractory cardiogenic shock** with normal K+",
+     "then": "Dopamine"
+    },
+    {
+     "opt": "F",
+     "if": "**Pinpoint pupils** and respiratory rate 6/min",
+     "then": "Naloxone"
+    }
+   ]
   },
   "c-em-01-q002": {
    "task": "Ethics",
-   "boardCall": "Oriented adult after minor crash + repeats risks of refusal -> allow patient to leave against medical advice",
-   "hinge": "A fully oriented adult who demonstrates decision-making capacity can refuse care and leave against medical advice.",
+   "boardCall": "47yo man + minor MVC + elbow swelling + **alert** + **verbalizes risks** → Allow to leave against medical advice",
+   "hinge": "Oriented adults who articulate refusal risks hold capacity despite prior alcohol intake.",
    "trap": "Recent alcohol consumption tempts involuntary detention, but capacity depends on cognitive assessment, not BAC.",
    "options": {
     "A": {
@@ -197,12 +220,29 @@
      "trap": false
     }
    ],
-   "topic": "informed-consent-and-capacity"
+   "topic": "informed-consent-and-capacity",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Intoxicated, confused**, and unable to state risks",
+     "then": "Obtain x-rays despite wishes"
+    },
+    {
+     "opt": "D",
+     "if": "**Patient agrees to x-rays** and imaging is normal",
+     "then": "Discharge with contusion diagnosis"
+    },
+    {
+     "opt": null,
+     "if": "**Suicidal intent** or acute danger to others",
+     "then": "Involuntary psychiatric hold"
+    }
+   ]
   },
   "c-em-01-q003": {
    "task": "Ethics",
-   "boardCall": "Limited-English proficiency + incidental lung mass + bilingual family member present -> wait for professional medical interpreter",
-   "hinge": "Critical medical findings and discharge plans in limited-English patients require a certified medical interpreter, not family.",
+   "boardCall": "limited English + **1-cm lung mass** + **bilingual son present** → Wait for interpreter before discharge instructions",
+   "hinge": "Serious incidental findings require a certified medical interpreter rather than family translation.",
    "trap": "Having the bilingual adult son translate is tempting for speed, but family members make frequent translation errors.",
    "options": {
     "A": {
@@ -291,12 +331,34 @@
      "trap": false
     }
    ],
-   "topic": "physician-patient-communication"
+   "topic": "physician-patient-communication",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Immediate life-threatening crash** with zero interpreter access",
+     "then": "Ask the son to translate"
+    },
+    {
+     "opt": "B",
+     "if": "**Outpatient test result returns** after discharge",
+     "then": "Call primary care physician"
+    },
+    {
+     "opt": null,
+     "if": "**In-person interpreter delayed**, phone/video available",
+     "then": "Use remote medical interpreter"
+    },
+    {
+     "opt": null,
+     "if": "**Patient declines interpreter** despite risks explained",
+     "then": "Document refusal, offer interpreter"
+    }
+   ]
   },
   "c-em-01-q004": {
    "task": "Diagnosis",
-   "boardCall": "Antivenin infusion + acute hypotension + hypoxemia + flushing within 15 minutes -> anaphylaxis",
-   "hinge": "Acute shock with cutaneous flushing and bronchospasm within minutes of foreign protein antivenin administration is anaphylaxis.",
+   "boardCall": "rattlesnake bite + CroFab infusion + **flushing, BP 75/34 at 15 min** → Anaphylaxis",
+   "hinge": "Immediate flushing and shock after antivenin indicate IgE-mediated allergy, not serum sickness.",
    "trap": "Serum sickness is a type III hypersensitivity to antivenin that presents days to weeks later, not within 15 minutes.",
    "options": {
     "A": {
@@ -385,12 +447,35 @@
      "trap": false
     }
    ],
-   "topic": "anaphylaxis"
+   "topic": "anaphylaxis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Fever, rash, arthralgias 10 days** after antivenom",
+     "then": "Acute serum sickness",
+     "step": "give oral corticosteroids"
+    },
+    {
+     "opt": "D",
+     "if": "**Oozing venipuncture sites**, thrombocytopenia, low fibrinogen",
+     "then": "Disseminated intravascular coagulation"
+    },
+    {
+     "opt": "E",
+     "if": "**Purulent cellulitis**, warm extremities, high lactate",
+     "then": "Septic shock"
+    },
+    {
+     "opt": "C",
+     "if": "**Elevated JVP**, pulmonary crackles, S3 gallop",
+     "then": "Cardiogenic shock"
+    }
+   ]
   },
   "c-em-01-q005": {
    "task": "Diagnosis",
-   "boardCall": "Immunosuppressed RA patient + fever + hypotension + leukocytosis + hyperdynamic precordium -> sepsis",
-   "hinge": "Immunosuppression with fever, leukocytosis, left lung crackles, vasodilation, and organ dysfunction indicates sepsis.",
+   "boardCall": "etanercept + **fever 38.4°C** + **WBC 20,500** + BP 90/50 → Sepsis",
+   "hinge": "Fever, leukocytosis, and crackles in an immunosuppressed host indicate infectious shock.",
    "trap": "Hyperdynamic precordium and hypotension mimic cardiogenic or obstructive shock, but fever and leukocytosis point to infection.",
    "options": {
     "A": {
@@ -479,12 +564,35 @@
      "trap": false
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Elevated JVP**, muffled heart sounds, pulsus paradoxus",
+     "then": "Cardiac tamponade",
+     "step": "perform bedside pericardiocentesis"
+    },
+    {
+     "opt": "B",
+     "if": "**Melena**, orthostasis, afebrile, normal WBC",
+     "then": "Gastrointestinal bleeding"
+    },
+    {
+     "opt": "D",
+     "if": "**Unilateral leg swelling**, clear lungs, pleuritic pain",
+     "then": "Pulmonary embolism"
+    },
+    {
+     "opt": "C",
+     "if": "**Substernal chest pressure**, dynamic ST depression",
+     "then": "Non–ST-elevation myocardial infarction"
+    }
+   ]
   },
   "c-em-01-q006": {
    "task": "Next step",
-   "boardCall": "Somnolent elderly diabetic after fall + BP 78/40 + tachycardia 130/min -> IV 0.9% saline bolus",
-   "hinge": "Profound hypotension with tachycardia requires immediate intravenous isotonic crystalloid resuscitation before secondary investigations.",
+   "boardCall": "somnolent after fall + **BP 78/40** + pulse 130/min + glucose 90 → Administration of 0.9% saline",
+   "hinge": "Severe hypotension demands immediate volume resuscitation before imaging or metabolic workup.",
    "trap": "Fall with somnolence tempts head CT, but hemodynamic instability must be resuscitated before moving to the scanner.",
    "options": {
     "A": {
@@ -574,12 +682,35 @@
      "trap": false
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Hemodynamically stable** with focal neurologic deficit",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "C",
+     "if": "**Symptomatic hypoglycemia** in somnolent patient",
+     "then": "Administration of 5% dextrose"
+    },
+    {
+     "opt": "D",
+     "if": "**Diabetic ketoacidosis**, stable BP, normal potassium",
+     "then": "Administration of insulin",
+     "step": "start after initial saline bolus"
+    },
+    {
+     "opt": "A",
+     "if": "**Stable vitals**, pinpoint pupils, track marks",
+     "then": "Urine toxicology screening"
+    }
+   ]
   },
   "c-em-01-q007": {
    "task": "Risk factor",
-   "boardCall": "Major depression + suicidal ideation + daily heavy drinking -> alcohol use is strongest suicide risk factor",
-   "hinge": "Alcohol and substance use disinhibit impulses and markedly increase suicide attempt risk in depression.",
+   "boardCall": "29yo woman + major depression + **suicidal ideation** + **3–4 drinks daily** → Alcohol use",
+   "hinge": "Active heavy drinking impairs impulse control and sharply raises suicide attempt risk.",
    "trap": "Female gender has higher overall attempt rates, but active alcohol abuse confers a much greater individual risk.",
    "options": {
     "A": {
@@ -664,12 +795,34 @@
      "trap": false
     }
    ],
-   "topic": "suicide-risk-assessment"
+   "topic": "suicide-risk-assessment",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Specific lethal plan** and **intent to act**",
+     "then": "Inpatient psychiatric admission"
+    },
+    {
+     "opt": null,
+     "if": "**Prior suicide attempt** in depressed patient",
+     "then": "Strongest historical risk factor"
+    },
+    {
+     "opt": "D",
+     "if": "**Assessing completed suicide mortality** rather than attempts",
+     "then": "Male gender"
+    },
+    {
+     "opt": "C",
+     "if": "**Active interpersonal conflict** or isolation",
+     "then": "Loss of family support"
+    }
+   ]
   },
   "c-em-01-q008": {
    "task": "Next step",
-   "boardCall": "Heavy alcohol consumption + last drink 28h ago + generalized seizure + autonomic hyperactivity -> IV lorazepam",
-   "hinge": "Alcohol withdrawal seizures with autonomic arousal require intravenous benzodiazepines to prevent status epilepticus and delirium tremens.",
+   "boardCall": "heavy alcohol use + **last drink 28 h ago** + brief generalized seizure → Administration of lorazepam",
+   "hinge": "GABA-enhancing benzodiazepines treat alcohol withdrawal seizures, whereas phenytoin has no efficacy.",
    "trap": "Phenytoin is used for epileptic seizures but has zero efficacy for alcohol withdrawal seizures.",
    "options": {
     "A": {
@@ -759,12 +912,36 @@
      "trap": false
     }
    ],
-   "topic": "alcohol-withdrawal"
+   "topic": "alcohol-withdrawal",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**New hemiparesis** or scalp laceration",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "C",
+     "if": "**Non-withdrawal epilepsy** with prolonged generalized seizure",
+     "then": "Administration of phenytoin",
+     "step": "give after initial benzodiazepine"
+    },
+    {
+     "opt": "A",
+     "if": "**Confusion, ataxia, ophthalmoplegia** with hypoglycemia",
+     "then": "Administration of dextrose and thiamine",
+     "step": "give thiamine before dextrose"
+    },
+    {
+     "opt": "E",
+     "if": "**Apnea** or persistent airway compromise",
+     "then": "Intubation"
+    }
+   ]
   },
   "c-em-01-q009": {
    "task": "Mechanism",
-   "boardCall": "TIAs with vertigo and diplopia + coma + pinpoint pupils + absent doll's eyes + normal CT -> brainstem ischemia",
-   "hinge": "Coma with absent cranial nerve reflexes (oculocephalic) and extensor posturing with normal early CT is basilar artery brainstem ischemia.",
+   "boardCall": "vertigo TIAs + coma + **pinpoint pupils** + **absent oculocephalic reflex** + normal CT → Brain stem ischemia",
+   "hinge": "Absent brainstem reflexes without early CT hemorrhage localize to basilar occlusion.",
    "trap": "Brainstem hemorrhage produces a hyperdense hematoma on CT, while acute ischemia is occult on early noncontrast CT.",
    "options": {
     "A": {
@@ -863,12 +1040,34 @@
      "trap": false
     }
    ],
-   "topic": "ischemic-stroke-and-tia"
+   "topic": "ischemic-stroke-and-tia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Hyperdense pons** on noncontrast head CT",
+     "then": "Brain stem hemorrhage"
+    },
+    {
+     "opt": "F",
+     "if": "**Aphasia**, gaze preference toward lesion, intact reflexes",
+     "then": "Cerebral hemispheric ischemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Rapid sodium overcorrection** followed by locked-in state",
+     "then": "Brain stem demyelination"
+    },
+    {
+     "opt": "G",
+     "if": "**Reactive pupils**, intact oculocephalic reflex, severe uremia",
+     "then": "Toxic-metabolic encephalopathy"
+    }
+   ]
   },
   "c-em-01-q010": {
    "task": "Diagnosis",
-   "boardCall": "Gasoline explosion 5 feet away + acute otalgia + blood in canal + hearing loss -> tympanic membrane rupture",
-   "hinge": "Direct blast overpressure rupture of the delicate tympanic membrane causes sudden ear pain, bleeding, and conductive hearing loss.",
+   "boardCall": "nearby gasoline explosion + ear pain + **blood in canal** + **hearing loss** → Rupture of tympanic membrane",
+   "hinge": "Blast overpressure tears the eardrum directly without requiring basilar skull fracture.",
    "trap": "Temporal bone fracture causes hemotympanum and conductive hearing loss but requires major skull base impact with Battle sign.",
    "options": {
     "A": {
@@ -954,12 +1153,35 @@
      "trap": false
     }
    ],
-   "topic": "tympanic-membrane-perforation"
+   "topic": "tympanic-membrane-perforation",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Battle sign, hemotympanum**, and **CSF otorrhea** after impact",
+     "then": "Fracture of the temporal bone"
+    },
+    {
+     "opt": "C",
+     "if": "**Vertigo, tinnitus**, and **sensorineural loss**",
+     "then": "Vestibulocochlear nerve injury"
+    },
+    {
+     "opt": null,
+     "if": "**Blast exposure** with **hypoxia and pulmonary infiltrates**",
+     "then": "Blast lung injury"
+    },
+    {
+     "opt": null,
+     "if": "**Painful swollen pinna** with **subperichondrial hematoma**",
+     "then": "Incision and drainage",
+     "step": "prevent cauliflower ear"
+    }
+   ]
   },
   "c-em-01-q011": {
    "task": "Diagnosis",
-   "boardCall": "Elderly woman + acute delirium + incontinence + fever + leukocytosis 24,000 -> urinalysis",
-   "hinge": "Acute encephalopathy with fever, leukocytosis, and new urinary incontinence points to complicated UTI/urosepsis diagnosed by urinalysis.",
+   "boardCall": "70yo woman + **acute delirium** + **new urinary incontinence** + fever 39°C + WBC 24,000 → Urinalysis",
+   "hinge": "New incontinence with systemic infection points to urosepsis as the delirium trigger.",
    "trap": "Acute confusion tempts emergent head CT or lumbar puncture, but urinary signs and systemic SIRS prioritize urinalysis.",
    "options": {
     "A": {
@@ -1048,12 +1270,34 @@
      "trap": false
     }
    ],
-   "topic": "delirium"
+   "topic": "delirium",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Nuchal rigidity**, photophobia, and **petechial rash**",
+     "then": "Lumbar puncture"
+    },
+    {
+     "opt": "A",
+     "if": "**Focal neurologic deficit**, head trauma, or papilledema",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "D",
+     "if": "**Pyuria with rising creatinine** and flank fullness",
+     "then": "Renal ultrasonography"
+    },
+    {
+     "opt": "B",
+     "if": "**Headache, jaw claudication**, and vision loss",
+     "then": "Erythrocyte sedimentation rate"
+    }
+   ]
   },
   "c-em-01-q012": {
    "task": "Next step",
-   "boardCall": "Toddler + viral URI + generalized seizure < 15 min + return to normal baseline -> oral acetaminophen",
-   "hinge": "A simple febrile seizure requires only symptomatic antipyresis and parental reassurance without invasive testing.",
+   "boardCall": "2-year-old + **1-min generalized seizure** + fever 39.1°C + **back to baseline** → Administration of acetaminophen",
+   "hinge": "Normal alertness after a brief generalized febrile seizure needs only antipyresis.",
    "trap": "First-time seizure with high fever tempts lumbar puncture, but normal alertness and absence of meningismus exclude meningitis.",
    "options": {
     "A": {
@@ -1139,12 +1383,35 @@
      "trap": false
     }
    ],
-   "topic": "febrile-seizures"
+   "topic": "febrile-seizures",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Nuchal rigidity**, petechiae, or persistent lethargy",
+     "then": "Lumbar puncture",
+     "step": "give empiric antibiotics concurrently"
+    },
+    {
+     "opt": "A",
+     "if": "**Recurrent seizures** within 24 hours or prolonged postictal state",
+     "then": "Admission for observation"
+    },
+    {
+     "opt": "B",
+     "if": "**Focal deficit**, papilledema, or head trauma",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "D",
+     "if": "**Ill-appearing** with bulging fontanel or meningismus",
+     "then": "Administration of ceftriaxone"
+    }
+   ]
   },
   "c-em-01-q013": {
    "task": "Next step",
-   "boardCall": "Outboard boat motor exhaust + headache + nausea + acute confusion -> hyperbaric oxygen therapy",
-   "hinge": "Acute carbon monoxide poisoning from motor exhaust with neurologic manifestations (confusion) warrants hyperbaric oxygen.",
+   "boardCall": "boat motor exhaust + headache + **acute confusion** + normal exam → Hyperbaric oxygen therapy",
+   "hinge": "Carbon monoxide poisoning with neurologic impairment like confusion warrants hyperbaric oxygen.",
    "trap": "History of oxycodone PRN tempts naloxone, but respirations and pupil size are normal.",
    "options": {
     "A": {
@@ -1241,12 +1508,36 @@
      "trap": true
     }
    ],
-   "topic": "carbon-monoxide-poisoning"
+   "topic": "carbon-monoxide-poisoning",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Mild headache only** without confusion or pregnancy",
+     "then": "100% normobaric oxygen",
+     "step": "continue until COHb normalizes"
+    },
+    {
+     "opt": "F",
+     "if": "**Pinpoint pupils** and respiratory depression after oxycodone",
+     "then": "Naloxone therapy"
+    },
+    {
+     "opt": "D",
+     "if": "**Metabolic acidosis**, visual loss after methanol",
+     "then": "Hemodialysis",
+     "step": "start fomepizole immediately"
+    },
+    {
+     "opt": "B",
+     "if": "**Ataxia, ophthalmoplegia**, confusion after heavy drinking",
+     "then": "0.9% saline and thiamine"
+    }
+   ]
   },
   "c-em-01-q014": {
    "task": "Next step",
-   "boardCall": "Gardener + bradycardia + miosis + wheezing + fasciculations -> IV atropine",
-   "hinge": "Acute organophosphate poisoning with life-threatening muscarinic signs (bronchorrhea, wheezes, bradycardia) requires immediate intravenous atropine.",
+   "boardCall": "gardener + bradycardia + **miosis** + **wheezing** + fasciculations → Administration of atropine",
+   "hinge": "Atropine reverses fatal bronchorrhea and bradycardia immediately, before pralidoxime reverses neuromuscular weakness.",
    "trap": "Pralidoxime regenerates acetylcholinesterase at nicotinic synapses but must never delay immediate life-saving atropine.",
    "options": {
     "A": {
@@ -1346,12 +1637,34 @@
      "trap": true
     }
    ],
-   "topic": "organophosphate-poisoning"
+   "topic": "organophosphate-poisoning",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**After atropine**, persistent weakness and fasciculations",
+     "then": "Administration of pralidoxime"
+    },
+    {
+     "opt": "E",
+     "if": "**Anticholinergic delirium** with mydriasis, dry skin",
+     "then": "Administration of physostigmine"
+    },
+    {
+     "opt": "D",
+     "if": "**Asthma flare** without cholinergic signs, SpO2 88%",
+     "then": "Administration of oxygen"
+    },
+    {
+     "opt": "B",
+     "if": "**Refractory bronchospasm** without cholinergic toxicity",
+     "then": "Administration of methylprednisolone"
+    }
+   ]
   },
   "c-em-01-q015": {
    "task": "Mechanism",
-   "boardCall": "Infant gastroenteritis + sunken fontanel + BP 60/32 + pulse 188 -> decreased cardiac preload",
-   "hinge": "Severe hypovolemic dehydration reduces circulating intravascular volume and end-diastolic filling (preload), causing hypotension.",
+   "boardCall": "4mo infant + vomiting/diarrhea + **sunken fontanel** + **HR 188 + BP 60/32** → Decreased cardiac preload",
+   "hinge": "Severe fluid depletion lowers venous return and ventricular filling, causing hypovolemic shock.",
    "trap": "Septic shock produces decreased venous tone, but profound fluid loss with sunken fontanelle indicates true hypovolemia.",
    "options": {
     "A": {
@@ -1440,12 +1753,29 @@
      "trap": false
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Warm extremities, bounding pulses**, and **flash capillary refill**",
+     "then": "Decreased venous tone (sepsis)"
+    },
+    {
+     "opt": "C",
+     "if": "**Massive pulmonary embolism** with RV strain and JVD",
+     "then": "Increased pulmonary vascular resistance"
+    },
+    {
+     "opt": null,
+     "if": "**Rapid isotonic bolus fails** to restore perfusion",
+     "then": "Repeat isotonic crystalloid bolus"
+    }
+   ]
   },
   "c-em-01-q016": {
    "task": "Diagnosis",
-   "boardCall": "Neck pain after aerobics + Horner syndrome + crossed facial/body sensory loss -> vertebral artery dissection",
-   "hinge": "Acute unilateral neck pain followed by lateral medullary syndrome (Wallenberg) and Horner syndrome is vertebral artery dissection.",
+   "boardCall": "vigorous aerobics + **neck pain** + Horner syndrome + **crossed sensory loss** → Vertebral artery dissection",
+   "hinge": "Aerobics-triggered posterior circulation symptoms with lateral medullary signs localize to vertebral dissection.",
    "trap": "Internal carotid dissection also causes Horner syndrome and neck pain, but produces anterior circulation hemispheric deficits.",
    "options": {
     "A": {
@@ -1538,12 +1868,35 @@
      "trap": false
     }
    ],
-   "topic": "cervical-artery-dissection"
+   "topic": "cervical-artery-dissection",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "Neck pain + Horner + **contralateral hemiparesis, aphasia**",
+     "then": "Carotid artery occlusion"
+    },
+    {
+     "opt": "D",
+     "if": "**Thunderclap headache**, photophobia, nuchal rigidity",
+     "then": "Ruptured aneurysm",
+     "step": "get noncontrast head CT"
+    },
+    {
+     "opt": "C",
+     "if": "Hypertensive patient with **pure motor hemiparesis**",
+     "then": "Lacunar infarct"
+    },
+    {
+     "opt": "B",
+     "if": "**Subacute headache**, multifocal strokes, elevated ESR",
+     "then": "Cerebral vasculitis"
+    }
+   ]
   },
   "c-em-01-q017": {
    "task": "Next step",
-   "boardCall": "Pleuritic chest pain relieved by leaning forward + pericardial friction rub -> oral ibuprofen",
-   "hinge": "Acute viral pericarditis presenting with pleuritic positional chest pain and friction rub is treated first-line with NSAIDs.",
+   "boardCall": "viral prodrome + **positional pleuritic pain** + **friction rub** → Ibuprofen",
+   "hinge": "Acute viral pericarditis responds to anti-inflammatory NSAIDs, whereas anticoagulants risk hemorrhagic tamponade.",
    "trap": "Heparin is used for ACS or PE, but anticoagulants in acute pericarditis risk hemorrhagic pericardial effusion and tamponade.",
    "options": {
     "A": {
@@ -1633,12 +1986,35 @@
      "trap": true
     }
    ],
-   "topic": "pericardial-disease"
+   "topic": "pericardial-disease",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Recent myocardial infarction** with Dressler pericarditis",
+     "then": "High-dose aspirin",
+     "step": "add colchicine"
+    },
+    {
+     "opt": "B",
+     "if": "**Unilateral leg swelling**, clear lungs, pleuritic pain",
+     "then": "Heparin"
+    },
+    {
+     "opt": "D",
+     "if": "**Exertional substernal pressure** without rub",
+     "then": "Nitroglycerin"
+    },
+    {
+     "opt": "A",
+     "if": "**Productive cough**, fever, lobar infiltrate",
+     "then": "Azithromycin"
+    }
+   ]
   },
   "c-em-01-q018": {
    "task": "Next step",
-   "boardCall": "BP 245/113 + flash pulmonary edema + accessory muscle use -> IV nitroglycerin infusion",
-   "hinge": "Sympathetic crashing acute pulmonary edema with severe hypertension requires immediate intravenous nitroglycerin for rapid preload and afterload reduction.",
+   "boardCall": "severe dyspnea + **BP 245/113** + **diffuse crackles** + trace edema → Nitroglycerin",
+   "hinge": "Hypertensive flash pulmonary edema is afterload-driven, so rapid vasodilation beats diuresis.",
    "trap": "Furosemide is traditional for volume overload, but flash pulmonary edema is driven by high afterload rather than hypervolemia.",
    "options": {
     "A": {
@@ -1728,12 +2104,35 @@
      "trap": true
     }
    ],
-   "topic": "heart-failure"
+   "topic": "heart-failure",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Normal BP**, 3+ pitting edema, weight gain",
+     "then": "Furosemide"
+    },
+    {
+     "opt": "D",
+     "if": "**BP 80/50**, cool extremities, low cardiac output",
+     "then": "Milrinone"
+    },
+    {
+     "opt": "C",
+     "if": "**ST-segment elevations** or positive troponin",
+     "then": "Heparin",
+     "step": "prepare urgent PCI"
+    },
+    {
+     "opt": null,
+     "if": "**Recent sildenafil use** with hypertensive pulmonary edema",
+     "then": "IV nicardipine"
+    }
+   ]
   },
   "c-em-01-q019": {
    "task": "Diagnosis",
-   "boardCall": "Empty sleep aid bottle + tachycardia 124/min + dry mucous membranes + 6-mm pupils + hypobowel sounds -> diphenhydramine",
-   "hinge": "The classic anticholinergic toxidrome (mydriasis, tachycardia, dry mucosa, decreased bowel sounds, somnolence) is caused by diphenhydramine.",
+   "boardCall": "sleeping pills + somnolent + **HR 124** + **dry mucosa + 6-mm pupils** + hypoactive bowel sounds → Diphenhydramine",
+   "hinge": "Anticholinergic toxidrome (mydriasis, xerostomia, ileus, tachycardia) pinpoints antihistamine overdose over ethanol.",
    "trap": "Finding an empty bottle of vodka tempts alcohol intoxication, but ethanol causes diaphoresis and normal pupils, not anticholinergic signs.",
    "options": {
     "A": {
@@ -1822,12 +2221,35 @@
      "trap": true
     }
    ],
-   "topic": "anticholinergic-toxicity"
+   "topic": "anticholinergic-toxicity",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Slurred speech, ataxia**, diaphoresis, and **normal pupils**",
+     "then": "Alcohol"
+    },
+    {
+     "opt": "A",
+     "if": "**24h post-ingestion RUQ pain** and rising transaminases",
+     "then": "Acetaminophen",
+     "step": "check level, give NAC"
+    },
+    {
+     "opt": "D",
+     "if": "**Conjunctival injection**, euphoria, and **increased appetite**",
+     "then": "Marijuana"
+    },
+    {
+     "opt": null,
+     "if": "**QRS >100 ms** on ECG after anticholinergic overdose",
+     "then": "IV sodium bicarbonate"
+    }
+   ]
   },
   "c-em-01-q020": {
    "task": "Next step",
-   "boardCall": "Rest angina after prior exertional pain + normal serial troponins and ECG + symptom resolution -> myocardial perfusion testing within 3 days",
-   "hinge": "Intermediate-risk unstable angina with symptom resolution, normal ECG, and negative serial troponins warrants outpatient stress testing within 72 hours.",
+   "boardCall": "rest angina + **pain resolved** + **normal ECG and serial troponins** → Myocardial perfusion testing within 3 days",
+   "hinge": "Resolved intermediate-risk unstable angina with negative serial troponins needs prompt stress imaging.",
    "trap": "Emergent catheterization is reserved for refractory angina, hemodynamic instability, or positive troponin/STEMI.",
    "options": {
     "A": {
@@ -1910,12 +2332,35 @@
      "trap": false
     }
    ],
-   "topic": "acute-coronary-syndromes"
+   "topic": "acute-coronary-syndromes",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Persistent chest pain** or dynamic ST changes",
+     "then": "Emergent cardiac catheterization"
+    },
+    {
+     "opt": null,
+     "if": "**Rising troponin** without ST elevation",
+     "then": "Admit for NSTEMI",
+     "step": "start heparin and P2Y12 inhibitor"
+    },
+    {
+     "opt": "A",
+     "if": "**Pleuritic pain**, tachycardia, unilateral leg swelling",
+     "then": "CT pulmonary angiography"
+    },
+    {
+     "opt": "D",
+     "if": "**Reproducible chest wall tenderness**, low risk",
+     "then": "Primary care follow-up within 1 week"
+    }
+   ]
   },
   "c-em-01-q021": {
    "task": "Next step",
-   "boardCall": "Tearing upper back pain + BP 180/90 + AR murmur + widened mediastinum -> IV esmolol then nitroprusside",
-   "hinge": "Acute aortic dissection with hypertension and aortic regurgitation requires immediate heart rate and blood pressure control with IV beta-blocker before vasodilator.",
+   "boardCall": "sudden upper back pain + **BP 180/90** + **diastolic murmur** + widened mediastinum → Administration of esmolol and nitroprusside",
+   "hinge": "Aortic dissection needs beta-blockade before vasodilators to blunt shear stress.",
    "trap": "Brother's recent MI tempts acute coronary syndrome therapy with aspirin and nitroglycerin, which risks fatal hemorrhage.",
    "options": {
     "A": {
@@ -2009,12 +2454,34 @@
      "trap": true
     }
    ],
-   "topic": "aortic-dissection"
+   "topic": "aortic-dissection",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**ST-segment depression**, normal mediastinum, no murmur",
+     "then": "Aspirin, nitroglycerin, and morphine"
+    },
+    {
+     "opt": "C",
+     "if": "**ST-segment elevation** without dissection, PCI unavailable",
+     "then": "Tissue plasminogen activator"
+    },
+    {
+     "opt": "D",
+     "if": "**Clear mediastinum**, pleuritic pain, unilateral leg swelling",
+     "then": "CT pulmonary embolism protocol"
+    },
+    {
+     "opt": null,
+     "if": "**Ascending dissection** confirmed on imaging",
+     "then": "Emergent surgical repair"
+    }
+   ]
   },
   "c-em-01-q022": {
    "task": "Diagnosis",
-   "boardCall": "Sickle cell disease + fever 38.4°C + new right lung infiltrate + cough -> infection precipitating acute chest syndrome",
-   "hinge": "Fever, cough, and a new pulmonary infiltrate in sickle cell disease signify acute chest syndrome, most commonly triggered by bacterial or viral infection.",
+   "boardCall": "sickle cell disease + **fever 38.4°C** + **cough + infiltrate** → Infection",
+   "hinge": "Prodromal fever and cough identify infection triggering acute chest syndrome.",
    "trap": "In situ pulmonary thrombosis occurs in acute chest syndrome, but the antecedent fever and cough indicate underlying infection.",
    "options": {
     "A": {
@@ -2103,12 +2570,35 @@
      "trap": false
     }
    ],
-   "topic": "sickle-cell-disease"
+   "topic": "sickle-cell-disease",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Severe anemia** with **near-zero reticulocytes**, clear lungs",
+     "then": "Aplastic crisis",
+     "step": "check parvovirus B19 and transfuse"
+    },
+    {
+     "opt": "C",
+     "if": "**Opioid oversedation** with rib pain, shallow breaths",
+     "then": "Hypoventilation"
+    },
+    {
+     "opt": "B",
+     "if": "**Bone crisis** then petechiae, confusion, hypoxemia",
+     "then": "Embolism"
+    },
+    {
+     "opt": "E",
+     "if": "**Afebrile** with unilateral leg swelling, pleuritic pain",
+     "then": "Thrombosis"
+    }
+   ]
   },
   "c-em-01-q023": {
    "task": "Diagnosis",
-   "boardCall": "Multiple myeloma + acute lobar pneumonia + gram-positive diplococci -> pneumococcal pneumonia",
-   "hinge": "Extracellular gram-positive diplococci on sputum Gram stain in an immunocompromised myeloma patient identify Streptococcus pneumoniae.",
+   "boardCall": "multiple myeloma + lobar pneumonia + **WBC 24,000** + **gram-positive diplococci** → Pneumococcal pneumonia",
+   "hinge": "Humoral immunodeficiency in myeloma predisposes to encapsulated Streptococcus pneumoniae, confirmed by diplococci.",
    "trap": "Underlying multiple myeloma tempts opportunistic pathogens like PCP or Klebsiella, but encapsulated bacteria predominate.",
    "options": {
     "A": {
@@ -2225,12 +2715,34 @@
      "trap": true
     }
    ],
-   "topic": "pneumonia"
+   "topic": "pneumonia",
+   "branches": [
+    {
+     "opt": "H",
+     "if": "**Dry cough, hypoxia**, bilateral infiltrates, **CD4 <200**",
+     "then": "Pneumocystis jirovecii"
+    },
+    {
+     "opt": "D",
+     "if": "**Alcohol use disorder** with **currant-jelly sputum** + bulging fissure",
+     "then": "Klebsiella pneumoniae"
+    },
+    {
+     "opt": "E",
+     "if": "**Pneumonia + diarrhea**, hyponatremia, negative Gram stain",
+     "then": "Legionella pneumophila"
+    },
+    {
+     "opt": "I",
+     "if": "**Post-influenza** necrotizing pneumonia with **cavitation**",
+     "then": "Staphylococcal"
+    }
+   ]
   },
   "c-em-01-q024": {
    "task": "Next step",
-   "boardCall": "Pleuritic chest pain + unilateral leg swelling + tachycardia 130/min -> CT angiography of the chest",
-   "hinge": "High pretest probability for pulmonary embolism (unilateral leg swelling + tachycardia) mandates immediate CT pulmonary angiography.",
+   "boardCall": "sudden pleuritic pain + **unilateral leg swelling** + **pulse 130/min** → CT angiography of the chest",
+   "hinge": "High pretest probability skips D-dimer and goes straight to angiography.",
    "trap": "D-dimer assay is only appropriate to rule out PE in low/unlikely probability patients; it causes dangerous delay in high-probability PE.",
    "options": {
     "A": {
@@ -2316,12 +2828,35 @@
      "trap": false
     }
    ],
-   "topic": "venous-thromboembolism"
+   "topic": "venous-thromboembolism",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Low pretest probability** (Wells ≤ 4), no DVT signs",
+     "then": "D-dimer assay"
+    },
+    {
+     "opt": "D",
+     "if": "**Unstable BP 75/40** unable to travel to CT",
+     "then": "Echocardiography",
+     "step": "give empiric anticoagulation or thrombolysis"
+    },
+    {
+     "opt": null,
+     "if": "**Pregnancy** with unilateral leg swelling and dyspnea",
+     "then": "Lower-extremity venous duplex"
+    },
+    {
+     "opt": "A",
+     "if": "**Crushing substernal pain** without leg swelling",
+     "then": "Measurement of serum troponin I"
+    }
+   ]
   },
   "c-em-01-q025": {
    "task": "Next step",
-   "boardCall": "Bilateral pulmonary emboli + BP 80/50 + SpO2 86% + tachycardia 145/min -> IV alteplase",
-   "hinge": "Massive pulmonary embolism complicated by obstructive shock (hypotension SBP < 90 mm Hg) requires immediate systemic fibrinolysis with alteplase.",
+   "boardCall": "bilateral pulmonary emboli + **BP 80/50** + SpO2 86% → Intravenous administration of alteplase",
+   "hinge": "Massive PE with obstructive shock requires systemic fibrinolysis rather than anticoagulation alone.",
    "trap": "Heparin prevents clot propagation, but in massive PE with shock, active clot dissolution with thrombolytics is required to restore perfusion.",
    "options": {
     "A": {
@@ -2407,12 +2942,34 @@
      "trap": false
     }
    ],
-   "topic": "venous-thromboembolism"
+   "topic": "venous-thromboembolism",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Hemodynamically stable** PE without right heart strain",
+     "then": "Subcutaneous administration of enoxaparin"
+    },
+    {
+     "opt": "B",
+     "if": "**Submassive PE**, normal BP, possible upcoming procedure",
+     "then": "Intravenous unfractionated heparin"
+    },
+    {
+     "opt": "D",
+     "if": "**Active GI bleeding** contraindicating anticoagulation",
+     "then": "Placement of an IVC filter"
+    },
+    {
+     "opt": null,
+     "if": "**Recent intracranial hemorrhage** with massive PE",
+     "then": "Catheter or surgical embolectomy"
+    }
+   ]
   },
   "c-em-01-q026": {
    "task": "Next step",
-   "boardCall": "Submersion injury + wheezing + hypoxemia 94% + interstitial markings on CXR -> hospital admission for observation",
-   "hinge": "Drowning victims with any respiratory symptoms, hypoxia, or chest x-ray changes must be admitted for observation to detect delayed ARDS.",
+   "boardCall": "freshwater submersion + **wheezes + SpO2 94%** + **CXR markings** → Admission to the hospital for observation",
+   "hinge": "Respiratory signs or abnormal imaging after drowning warrant monitoring for delayed ARDS.",
    "trap": "Freshwater aspiration tempts prophylactic antibiotics, but antibiotics do not prevent aspiration pneumonitis and are not routinely indicated.",
    "options": {
     "A": {
@@ -2502,12 +3059,34 @@
      "trap": true
     }
    ],
-   "topic": "drowning-and-submersion-injury"
+   "topic": "drowning-and-submersion-injury",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Asymptomatic**, normal lung exam and SpO2",
+     "then": "Observe 4–6 hours and discharge"
+    },
+    {
+     "opt": "B",
+     "if": "**Grossly contaminated water** or subsequent fever, leukocytosis",
+     "then": "Antibiotic therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Worsening hypoxemia** with intact airway and mentation",
+     "then": "Noninvasive positive-pressure ventilation"
+    },
+    {
+     "opt": "D",
+     "if": "**Elevated JVP**, S3 gallop, peripheral edema",
+     "then": "Diuretic therapy"
+    }
+   ]
   },
   "c-em-01-q027": {
    "task": "Next step",
-   "boardCall": "Acute asthma exacerbation + bilateral expiratory wheezes + SpO2 96% -> nebulized albuterol",
-   "hinge": "Acute bronchospasm in asthma is relieved immediately with inhaled short-acting beta-2 agonists like nebulized albuterol.",
+   "boardCall": "asthma + progressive dyspnea + **accessory muscle use** + **bilateral wheezes** → Administration of nebulized albuterol",
+   "hinge": "Acute bronchospasm demands immediate inhaled beta-agonist relief before steroids act.",
    "trap": "Systemic steroids reduce recurrence and inflammation, but albuterol is the fastest-acting therapy to relieve acute bronchospasm.",
    "options": {
     "A": {
@@ -2593,12 +3172,34 @@
      "trap": false
     }
    ],
-   "topic": "asthma"
+   "topic": "asthma",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Given alongside** initial albuterol to prevent relapse",
+     "then": "Intravenous administration of methylprednisolone"
+    },
+    {
+     "opt": "C",
+     "if": "**Refractory severe obstruction** after repeated nebulized bronchodilators",
+     "then": "Intravenous magnesium sulfate"
+    },
+    {
+     "opt": "A",
+     "if": "**Discharged after flare** for daily maintenance control",
+     "then": "Administration of inhaled fluticasone"
+    },
+    {
+     "opt": "E",
+     "if": "**COPD exacerbation** with hypercapnia and respiratory distress",
+     "then": "Noninvasive positive-pressure ventilation"
+    }
+   ]
   },
   "c-em-01-q028": {
    "task": "Next step",
-   "boardCall": "Penetrating chest trauma + hypotension BP 80/58 + JVD + absent left breath sounds -> needle thoracostomy",
-   "hinge": "Tension pneumothorax with hemodynamic collapse requires immediate needle decompression before formal tube thoracostomy.",
+   "boardCall": "chest stab wound + **BP 80/58 + JVD** + **absent left breath sounds** → Needle thoracostomy",
+   "hinge": "Tension pneumothorax with shock requires immediate needle decompression before formal chest tube.",
    "trap": "Tube thoracostomy is definitive, but in a crashing patient with tension physiology, needle thoracostomy must precede it.",
    "options": {
     "A": {
@@ -2695,12 +3296,35 @@
      "trap": false
     }
    ],
-   "topic": "pneumothorax"
+   "topic": "pneumothorax",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Hemodynamically stable** with **unilateral absent breath sounds**",
+     "then": "Tube thoracostomy"
+    },
+    {
+     "opt": "D",
+     "if": "**Equal breath sounds**, JVD, and **distant heart tones**",
+     "then": "Pericardiocentesis or window"
+    },
+    {
+     "opt": "E",
+     "if": "**Massive hemothorax** (>1.5 L initial chest-tube blood)",
+     "then": "Thoracotomy"
+    },
+    {
+     "opt": "A",
+     "if": "**Hypotension with clear lungs** and **flat neck veins**",
+     "then": "IV 0.9% saline",
+     "step": "search for bleeding"
+    }
+   ]
   },
   "c-em-01-q029": {
    "task": "Diagnosis",
-   "boardCall": "Epigastric pain + lipase 600 + direct bilirubin 2.4 + ALT > 150 -> common bile duct obstruction (gallstone pancreatitis)",
-   "hinge": "Acute pancreatitis with conjugated hyperbilirubinemia, elevated alkaline phosphatase, and ALT > 150 U/L indicates gallstone CBD obstruction.",
+   "boardCall": "epigastric pain + lipase 600 + **direct bilirubin 2.4** + **ALT 360** → Common bile duct obstruction",
+   "hinge": "Conjugated hyperbilirubinemia and ALT > 150 with pancreatitis point to a gallstone.",
    "trap": "Having three martinis at the party tempts alcoholic pancreatitis, but conjugated bilirubin and ALT > 150 point specifically to biliary obstruction.",
    "options": {
     "A": {
@@ -2793,12 +3417,35 @@
      "trap": true
     }
    ],
-   "topic": "gallstone-disease"
+   "topic": "gallstone-disease",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Chronic heavy drinking** with **normal bilirubin and ALT**",
+     "then": "Alcohol-induced pancreatitis"
+    },
+    {
+     "opt": "B",
+     "if": "**Murphy sign** and fever with **normal lipase and bilirubin**",
+     "then": "Cholecystitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Normal lipase and bilirubin** with isolated transaminitis",
+     "then": "Drug-induced hepatic dysfunction",
+     "step": "stop atorvastatin"
+    },
+    {
+     "opt": "E",
+     "if": "Epigastric pain **relieved by food**, **normal lipase**, melena",
+     "then": "Duodenal ulceration"
+    }
+   ]
   },
   "c-em-01-q030": {
    "task": "Next step",
-   "boardCall": "Low EF 20% + postprandial abdominal cramps + weight loss + food fear -> CT angiography for chronic/nonocclusive mesenteric ischemia",
-   "hinge": "Postprandial intestinal angina and weight loss in severe congestive heart failure indicates mesenteric ischemia, diagnosed by CT angiography.",
+   "boardCall": "EF 20% + **postprandial cramps** + **weight loss** + soft abdomen → CT angiography",
+   "hinge": "Intestinal angina in severe systolic heart failure demands vascular imaging before endoscopy.",
    "trap": "Postprandial pain and weight loss tempt upper endoscopy for peptic ulcer disease, but vascular hypoperfusion requires vascular imaging.",
    "options": {
     "A": {
@@ -2888,12 +3535,34 @@
      "trap": false
     }
    ],
-   "topic": "mesenteric-ischemia"
+   "topic": "mesenteric-ischemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Epigastric burning** relieved by food or antacids",
+     "then": "Esophagogastroduodenoscopy"
+    },
+    {
+     "opt": "A",
+     "if": "**Pulsatile mid-abdominal mass** with **flank pain**",
+     "then": "Abdominal ultrasonography"
+    },
+    {
+     "opt": null,
+     "if": "**Left-sided cramps** and **bloody diarrhea** after hypotension",
+     "then": "Ischemic colitis"
+    },
+    {
+     "opt": null,
+     "if": "**Atrial fibrillation** with **abrupt pain out of proportion**",
+     "then": "Acute mesenteric embolism"
+    }
+   ]
   },
   "c-em-01-q031": {
    "task": "Next step",
-   "boardCall": "Melena + hemorrhagic shock + stabilized after fluids and pRBCs -> upper endoscopy (esophagogastroduodenoscopy)",
-   "hinge": "Melena with severe orthostasis indicates an upper GI bleeding source, diagnosed and treated via upper endoscopy after hemodynamic resuscitation.",
+   "boardCall": "37yo man + **melena 4h** + orthostatic shock + **stabilized with saline/PRBCs** → Upper endoscopy",
+   "hinge": "Black tarry stool localizes upper GI bleeding, diagnosed and treated via EGD.",
    "trap": "Colonoscopy evaluates lower GI bleeding, which presents as bright red hematochezia rather than melena.",
    "options": {
     "A": {
@@ -2979,12 +3648,35 @@
      "trap": true
     }
    ],
-   "topic": "gastrointestinal-bleeding"
+   "topic": "gastrointestinal-bleeding",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Brisk bright-red hematochezia** with **clear NG lavage**",
+     "then": "Colonoscopy"
+    },
+    {
+     "opt": "D",
+     "if": "**Massive ongoing hemorrhage** obscuring endoscopic view",
+     "then": "Celiac angiography",
+     "step": "perform embolization"
+    },
+    {
+     "opt": "E",
+     "if": "**Refractory hemodynamic collapse** despite transfusion and embolization",
+     "then": "Exploratory operation"
+    },
+    {
+     "opt": null,
+     "if": "**Cirrhosis stigmata** alongside upper GI bleed",
+     "then": "IV octreotide + ceftriaxone"
+    }
+   ]
   },
   "c-em-01-q032": {
    "task": "Next step",
-   "boardCall": "Periumbilical pain migrating to RLQ + guarding + WBC 15,400 + negative pelvic ultrasound -> surgical consultation for appendectomy",
-   "hinge": "Classic visceral pain migration to the RLQ with peritoneal signs, leukocytosis, and normal pelvic imaging is appendicitis.",
+   "boardCall": "17yo girl + **periumbilical-to-RLQ migration** + guarding + WBC 15,400 + **normal pelvic US** → Surgery consultation for appendectomy",
+   "hinge": "Classic migration, leukocytosis, and normal pelvic scan confirm appendicitis over adnexal disease.",
    "trap": "Right adnexal tenderness tempts gynecologic laparoscopy, but negative pelvic ultrasound and periumbilical migration confirm appendicitis.",
    "options": {
     "A": {
@@ -3078,12 +3770,34 @@
      "trap": true
     }
    ],
-   "topic": "appendicitis"
+   "topic": "appendicitis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Bilateral pelvic pain**, cervical motion tenderness, **purulent discharge**",
+     "then": "Ceftriaxone and azithromycin"
+    },
+    {
+     "opt": "B",
+     "if": "**Sudden unilateral pelvic pain** with **absent ovarian Doppler flow**",
+     "then": "Gynecology diagnostic laparoscopy"
+    },
+    {
+     "opt": "E",
+     "if": "**Uncomplicated left-lower diverticulitis** for outpatient care",
+     "then": "Oral ciprofloxacin and metronidazole"
+    },
+    {
+     "opt": null,
+     "if": "**Positive urine hCG** with **empty uterus** and adnexal mass",
+     "then": "Ectopic pregnancy workup"
+    }
+   ]
   },
   "c-em-01-q033": {
    "task": "Next step",
-   "boardCall": "Post-sigmoidectomy + abdominal distention + vomiting + air-fluid levels on AXR -> nasogastric tube insertion",
-   "hinge": "Acute postoperative small bowel obstruction without peritonitis requires immediate nasogastric tube decompression, bowel rest, and fluid resuscitation.",
+   "boardCall": "2wk post-sigmoidectomy + vomiting + **no flatus** + **distended loops with air-fluid levels** → Insertion of nasogastric tube",
+   "hinge": "Uncomplicated postoperative small-bowel obstruction without peritonitis starts with decompression and bowel rest.",
    "trap": "Early reoperation with exploratory laparotomy is tempting, but uncomplicated adhesive SBO typically resolves with conservative NG decompression.",
    "options": {
     "A": {
@@ -3173,12 +3887,29 @@
      "trap": false
     }
    ],
-   "topic": "bowel-obstruction"
+   "topic": "bowel-obstruction",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Localized peritonitis**, high fever, or **pneumatosis intestinalis**",
+     "then": "Exploratory laparotomy"
+    },
+    {
+     "opt": "E",
+     "if": "**Hard fecal mass** in rectal vault on digital exam",
+     "then": "Manual disimpaction"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever, leukocytosis**, and **pericolic abscess** on CT",
+     "then": "Intravenous antibiotic therapy"
+    }
+   ]
   },
   "c-em-01-q034": {
    "task": "Next step",
-   "boardCall": "Abdominal gunshot wound + bullet crossed midline into left paraspinal area -> exploratory laparotomy",
-   "hinge": "Penetrating gunshot wounds traversing the peritoneal cavity carry > 90% risk of hollow viscus or vascular injury and mandate exploratory laparotomy.",
+   "boardCall": "RLQ gunshot entrance + **no exit** + **bullet in left paraspinal area** → Laparotomy",
+   "hinge": "Midline-crossing gunshot wounds mandate immediate exploration regardless of stable vitals.",
    "trap": "Mild abdominal tenderness with normal blood pressure tempts CT scanning, but abdominal gunshot wounds traversing the peritoneum require laparotomy.",
    "options": {
     "A": {
@@ -3296,12 +4027,36 @@
      "trap": false
     }
    ],
-   "topic": "abdominal-trauma"
+   "topic": "abdominal-trauma",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Flank or back wound** without **peritoneal signs** or hypotension",
+     "then": "CT scan of the abdomen",
+     "step": "use triple contrast"
+    },
+    {
+     "opt": "F",
+     "if": "**Left thoracoabdominal stab**, stable, suspected **diaphragm injury**",
+     "then": "Laparoscopy"
+    },
+    {
+     "opt": "A",
+     "if": "**Anterior stab wound**, **intact fascia** on local exploration",
+     "then": "Observation",
+     "step": "serial abdominal exams"
+    },
+    {
+     "opt": "I",
+     "if": "**Blunt trauma** with **hypotension** needing rapid free-fluid check",
+     "then": "Ultrasonography of the abdomen"
+    }
+   ]
   },
   "c-em-01-q035": {
    "task": "Next step",
-   "boardCall": "GI bleeding + persistent tachycardia 120/min + CVP 11 + Hb 8.0 after 2 L saline -> packed red blood cell transfusion",
-   "hinge": "Ongoing signs of hypoperfusion and low hemoglobin after initial crystalloid resuscitation in acute GI hemorrhage require packed red blood cell transfusion.",
+   "boardCall": "dark red stools + **shock after 2 L saline** + **Hb 8.0** → Packed RBC transfusion",
+   "hinge": "Persistent shock after crystalloid in active hemorrhage requires oxygen-carrying capacity, not vasopressors.",
    "trap": "CVP of 11 mm Hg and persistent hypotension tempt vasopressors like norepinephrine, but hemorrhagic shock requires blood, not vasoconstrictors.",
    "options": {
     "A": {
@@ -3391,12 +4146,35 @@
      "trap": true
     }
    ],
-   "topic": "gastrointestinal-bleeding"
+   "topic": "gastrointestinal-bleeding",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Septic shock** with **fever** refractory to fluid boluses",
+     "then": "Norepinephrine infusion"
+    },
+    {
+     "opt": "A",
+     "if": "**Nonhemorrhagic hypovolemia** with **normal hemoglobin**",
+     "then": "Continued 0.9% saline infusion"
+    },
+    {
+     "opt": null,
+     "if": "**Cirrhosis** with **hematemesis** and suspected varices",
+     "then": "Octreotide and ceftriaxone",
+     "step": "urgent endoscopic banding"
+    },
+    {
+     "opt": null,
+     "if": "**Warfarin use** with **INR 4.5** and active hemorrhage",
+     "then": "Four-factor PCC and vitamin K"
+    }
+   ]
   },
   "c-em-01-q036": {
    "task": "Diagnosis",
-   "boardCall": "Fever + foul discharge + cervical motion tenderness + left adnexal mass/pain -> pelvic ultrasonography for tubo-ovarian abscess",
-   "hinge": "Acute PID with severe unilateral adnexal tenderness and fever requires pelvic ultrasound to confirm or exclude a tubo-ovarian abscess.",
+   "boardCall": "fever 38.5°C + foul discharge + **cervical motion tenderness** + **left adnexal pain** → Pelvic ultrasonography",
+   "hinge": "Fever and unilateral adnexal pain in PID require ultrasound to exclude abscess.",
    "trap": "Foul-smelling discharge and lower abdominal pain tempt urinalysis or urine culture, but cervical motion tenderness localizes disease to the upper genital tract.",
    "options": {
     "A": {
@@ -3485,12 +4263,35 @@
      "trap": false
     }
    ],
-   "topic": "cervicitis-pid"
+   "topic": "cervicitis-pid",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Dysuria and frequency** without **cervical motion tenderness**",
+     "then": "Urinalysis"
+    },
+    {
+     "opt": null,
+     "if": "**Positive pregnancy test** with **unilateral adnexal pain**",
+     "then": "Ectopic pregnancy workup",
+     "step": "transvaginal US + β-hCG"
+    },
+    {
+     "opt": null,
+     "if": "**RUQ pleuritic pain** with **PID** and normal LFTs",
+     "then": "Fitz-Hugh-Curtis perihepatitis"
+    },
+    {
+     "opt": "A",
+     "if": "**High fever**, **hypotension**, and no clear pelvic source",
+     "then": "Blood cultures"
+    }
+   ]
   },
   "c-em-01-q037": {
    "task": "Next step",
-   "boardCall": "Sudden RLQ pain + right adnexal tenderness + negative abdominal CT -> pelvic ultrasound with Doppler for ovarian torsion",
-   "hinge": "Sudden unilateral pelvic pain with adnexal tenderness requires pelvic ultrasonography with Doppler to diagnose ovarian torsion, which normal abdominal CT cannot exclude.",
+   "boardCall": "sudden RLQ pain + **right adnexal tenderness** + **negative abdominal CT** → Pelvic ultrasonography",
+   "hinge": "Abdominal CT misses ovarian torsion; Doppler ultrasound evaluates adnexal blood flow.",
    "trap": "Negative abdominal CT tempts discharge with NSAIDs or observation, but pelvic ultrasound with Doppler is required to evaluate ovarian torsion.",
    "options": {
     "A": {
@@ -3576,12 +4377,35 @@
      "trap": true
     }
    ],
-   "topic": "ovarian-torsion"
+   "topic": "ovarian-torsion",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Fever and purulent discharge** with **cervical motion tenderness**",
+     "then": "Ceftriaxone and azithromycin"
+    },
+    {
+     "opt": "E",
+     "if": "**Diffuse peritonitis** or **hemodynamic instability**",
+     "then": "Schedule surgical exploration"
+    },
+    {
+     "opt": "C",
+     "if": "**Midcycle unilateral pain**, **normal ultrasound**, resolving symptoms",
+     "then": "Discharge home with ibuprofen"
+    },
+    {
+     "opt": null,
+     "if": "**Positive pregnancy test** with **free pelvic fluid**",
+     "then": "Ruptured ectopic pregnancy",
+     "step": "emergent laparoscopy"
+    }
+   ]
   },
   "c-em-01-q038": {
    "task": "Diagnosis",
-   "boardCall": "HIV on atazanavir + colicky flank pain + CVA tenderness + microscopic hematuria -> noncontrast CT scan of the abdomen",
-   "hinge": "Acute ureteral colic with costovertebral angle tenderness and microscopic hematuria is definitively diagnosed by noncontrast CT of the abdomen and pelvis.",
+   "boardCall": "**HIV on atazanavir** + **flank pain** + CVA tenderness + hematuria → CT scan of the abdomen",
+   "hinge": "Noncontrast CT detects radiolucent protease-inhibitor stones that plain radiographs miss.",
    "trap": "Atazanavir-induced stones are radiolucent on plain radiographs, making abdominal x-ray insensitive and confirming CT as the gold standard.",
    "options": {
     "A": {
@@ -3670,12 +4494,35 @@
      "trap": false
     }
    ],
-   "topic": "nephrolithiasis"
+   "topic": "nephrolithiasis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Fever and pyuria** with **positive nitrites** and flank pain",
+     "then": "Urine culture"
+    },
+    {
+     "opt": null,
+     "if": "**Pregnancy** with **acute renal colic** and hematuria",
+     "then": "Renal ultrasonography",
+     "step": "avoid ionizing radiation"
+    },
+    {
+     "opt": "C",
+     "if": "**Painless gross hematuria** in an **older smoker**",
+     "then": "Cystoscopy"
+    },
+    {
+     "opt": "D",
+     "if": "**Recurrent radiolucent stones** after **lymphoma chemotherapy**",
+     "then": "Serum uric acid"
+    }
+   ]
   },
   "c-em-01-q039": {
    "task": "Next step",
-   "boardCall": "Acute severe testicular pain + absent cremasteric reflex + prior transient episode -> immediate surgical consultation for orchiopexy",
-   "hinge": "Acute testicular pain with an absent cremasteric reflex indicates testicular torsion; immediate urologic consultation for orchiopexy takes priority to salvage the testis.",
+   "boardCall": "acute scrotal pain + **prior self-limited episode** + **absent cremasteric reflex** → Surgical consultation for orchiopexy",
+   "hinge": "Classic testicular torsion requires immediate surgical detorsion without waiting for imaging.",
    "trap": "Intramuscular ceftriaxone and azithromycin treat epididymitis, but treating for infection without surgical exploration causes irreversible testicular necrosis.",
    "options": {
     "A": {
@@ -3765,12 +4612,37 @@
      "trap": true
     }
    ],
-   "topic": "testicular-torsion"
+   "topic": "testicular-torsion",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Gradual onset**, intact cremasteric reflex, and **urethral discharge**",
+     "then": "Ceftriaxone and azithromycin"
+    },
+    {
+     "opt": "E",
+     "if": "**Older man with dysuria** and **positive Prehn sign**",
+     "then": "Urinalysis",
+     "step": "urine culture + fluoroquinolone"
+    },
+    {
+     "opt": null,
+     "if": "**Blue dot sign** at upper pole, **intact cremasteric reflex**",
+     "then": "Appendix testis torsion",
+     "step": "analgesia and scrotal support"
+    },
+    {
+     "opt": null,
+     "if": "**Painless testicular mass** that **fails to transilluminate**",
+     "then": "Testicular neoplasm workup",
+     "step": "scrotal US + radical orchiectomy"
+    }
+   ]
   },
   "c-em-01-q040": {
    "task": "Next step",
-   "boardCall": "Reproductive-age woman + lower abdominal cramps + adnexal tenderness -> serum beta-hCG measurement",
-   "hinge": "Every woman of reproductive age presenting with acute pelvic or lower abdominal pain must first be evaluated with pregnancy testing to exclude ectopic pregnancy.",
+   "boardCall": "reproductive-age woman + **inconsistent condoms** + **adnexal tenderness** → Serum β-hCG",
+   "hinge": "Reproductive-age women with pelvic pain require pregnancy testing first to exclude ectopic.",
    "trap": "Sexually active with inconsistent condoms and adnexal tenderness tempts GC/CT testing first, but excluding ectopic pregnancy is the primary emergency priority.",
    "options": {
     "A": {
@@ -3856,12 +4728,35 @@
      "trap": false
     }
    ],
-   "topic": "ectopic-pregnancy"
+   "topic": "ectopic-pregnancy",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Negative β-hCG** with **cervical motion tenderness** and discharge",
+     "then": "Gonorrhea and chlamydia testing"
+    },
+    {
+     "opt": "E",
+     "if": "**Negative β-hCG** with **dysuria**, urgency, and suprapubic pain",
+     "then": "Urinalysis"
+    },
+    {
+     "opt": null,
+     "if": "**Positive β-hCG** with **hypotension** and peritoneal signs",
+     "then": "Emergent laparoscopy"
+    },
+    {
+     "opt": "B",
+     "if": "**Pallor** and **orthostasis** with confirmed ectopic",
+     "then": "Complete blood count",
+     "step": "type and crossmatch"
+    }
+   ]
   },
   "c-em-01-q041": {
    "task": "Next step",
-   "boardCall": "Secondary postpartum hemorrhage + fever + tender uterus + intrauterine echogenic material -> dilatation and curettage",
-   "hinge": "Secondary postpartum hemorrhage with fever, leukocytosis, and retained products of conception on ultrasound requires surgical evacuation via dilatation and curettage.",
+   "boardCall": "1 wk postpartum + fever + **heavy bleeding** + **echogenic uterine material** → Dilatation and curettage",
+   "hinge": "Infected retained products of conception require surgical evacuation alongside broad-spectrum antibiotics.",
    "trap": "Vaginal packing and blood transfusion are temporizing measures for massive shock, but curettage is the definitive therapy to remove infected retained tissue.",
    "options": {
     "A": {
@@ -3955,12 +4850,35 @@
      "trap": false
     }
    ],
-   "topic": "postpartum-hemorrhage"
+   "topic": "postpartum-hemorrhage",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Hypotension and tachycardia** with **hematocrit below 21%**",
+     "then": "Packed RBC transfusion"
+    },
+    {
+     "opt": "B",
+     "if": "**Persistent β-hCG rise** with **unruptured ectopic**",
+     "then": "Methotrexate therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Fever and foul lochia** with **empty uterus** on ultrasound",
+     "then": "Postpartum endometritis",
+     "step": "IV clindamycin plus gentamicin"
+    },
+    {
+     "opt": null,
+     "if": "**Immediate postpartum hemorrhage** with **boggy fundus**, empty cavity",
+     "then": "Uterine massage and oxytocin"
+    }
+   ]
   },
   "c-em-01-q042": {
    "task": "Next step",
-   "boardCall": "Fluctuant tender erythematous prepatellar mass + full knee ROM -> incision and drainage",
-   "hinge": "A cutaneous fluctuant abscess requires surgical incision and drainage for definitive source control; antibiotics alone cannot penetrate the collection.",
+   "boardCall": "prepatellar erythema + **fluctuant swelling** + **full knee ROM** → Incision and drainage",
+   "hinge": "Fluctuance marks a superficial abscess needing drainage; full motion excludes septic arthritis.",
    "trap": "Oral antibiotics alone are tempting for localized infection, but fluctuant purulent fluid collections require incision and drainage.",
    "options": {
     "A": {
@@ -4046,12 +4964,35 @@
      "trap": false
     }
    ],
-   "topic": "skin-and-soft-tissue-infections"
+   "topic": "skin-and-soft-tissue-infections",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Nonfluctuant erythema** and warmth **without pus collection**",
+     "then": "Oral antibiotic therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Painful limited ROM** with **joint effusion** and fever",
+     "then": "Arthrocentesis for septic arthritis",
+     "step": "start empiric IV antibiotics"
+    },
+    {
+     "opt": "E",
+     "if": "**Deep bone tenderness** or **trauma** with inability to walk",
+     "then": "X-ray of the right knee"
+    },
+    {
+     "opt": "A",
+     "if": "**Chronic nonhealing ulcer** or **suspicious pigmented nodule**",
+     "then": "Biopsy of the affected area"
+    }
+   ]
   },
   "c-em-01-q043": {
    "task": "Next step",
-   "boardCall": "Human bite to forearm + 1-cm avulsion wound -> high-pressure irrigation and oral amoxicillin-clavulanate (leave open)",
-   "hinge": "Human bite wounds contain polymicrobial oral flora (Eikenella corrodens) and should be copiously irrigated and left open to heal by secondary intention with prophylactic antibiotics.",
+   "boardCall": "**human bite** + forearm avulsion + **9 h delay** → Irrigation and antibiotic therapy",
+   "hinge": "Oral flora in extremity bites cause severe infection if closed primarily.",
    "trap": "Primary closure traps virulent oral organisms under tension, causing severe cellulitis, abscess, or tenosynovitis.",
    "options": {
     "A": {
@@ -4137,12 +5078,35 @@
      "trap": true
     }
    ],
-   "topic": "bite-wounds"
+   "topic": "bite-wounds",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Clean facial laceration** presenting **under 12 hours** after bite",
+     "then": "Irrigation, closure, and antibiotics"
+    },
+    {
+     "opt": "C",
+     "if": "**Clean scalp laceration** under 12 hours, **no contamination**",
+     "then": "Closure only"
+    },
+    {
+     "opt": null,
+     "if": "**Clenched-fist injury** over MCP joint with **extensor lag**",
+     "then": "Operative washout and debridement",
+     "step": "IV ampicillin-sulbactam"
+    },
+    {
+     "opt": "A",
+     "if": "**Closed cat puncture** presenting **24 h later** with cellulitis",
+     "then": "Antibiotic therapy only"
+    }
+   ]
   },
   "c-em-01-q044": {
    "task": "Diagnosis",
-   "boardCall": "Elderly woman + mechanical fall + inability to bear weight + shortened externally rotated limb -> femoral neck fracture",
-   "hinge": "The classic presentation of an elderly hip fracture (femoral neck or intertrochanteric) is an inability to bear weight with a shortened, externally rotated leg.",
+   "boardCall": "elderly fall + inability to bear weight + **shortened, externally rotated leg** → Fracture of the femoral neck",
+   "hinge": "Abnormal limb position after a ground-level fall localizes to the proximal femur.",
    "trap": "Pelvic or acetabular fracture can cause severe hip pain after a fall, but leg shortening and external rotation specifically indicate a proximal femoral fracture.",
    "options": {
     "A": {
@@ -4231,12 +5195,35 @@
      "trap": false
     }
    ],
-   "topic": "hip-fractures"
+   "topic": "hip-fractures",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Dashboard trauma**, leg **shortened, internally rotated, adducted**",
+     "then": "Posterior hip dislocation",
+     "step": "urgent closed reduction"
+    },
+    {
+     "opt": "D",
+     "if": "**High-energy trauma**, **pelvic instability**, normal limb rotation",
+     "then": "Fracture of the pelvis"
+    },
+    {
+     "opt": null,
+     "if": "**Groin pain** after fall, **normal length and rotation**",
+     "then": "Pubic ramus fracture"
+    },
+    {
+     "opt": "E",
+     "if": "**Valgus knee force**, **hemarthrosis**, tenderness below joint line",
+     "then": "Fracture of the tibial plateau"
+    }
+   ]
   },
   "c-em-01-q045": {
    "task": "Next step",
-   "boardCall": "Acute back pain after lifting + paraspinal tenderness + intact neurology + no red flags -> no further diagnostic testing indicated",
-   "hinge": "Acute mechanical lumbosacral muscle strain without neurologic deficits or red flag features requires no diagnostic imaging or laboratory testing.",
+   "boardCall": "heavy lifting + paraspinal tenderness + **intact neurology** + **no red flags** → No further testing",
+   "hinge": "Uncomplicated acute mechanical back pain improves conservatively without diagnostic imaging.",
    "trap": "Severe pain and lack of relief with acetaminophen tempt lumbar spine x-ray or MRI, but imaging in uncomplicated back strain is contraindicated.",
    "options": {
     "A": {
@@ -4322,12 +5309,34 @@
      "trap": true
     }
    ],
-   "topic": "low-back-pain"
+   "topic": "low-back-pain",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Saddle anesthesia or urinary retention** with **progressive leg weakness**",
+     "then": "MRI of the lumbar spine"
+    },
+    {
+     "opt": "D",
+     "if": "**Older osteoporotic woman** with **focal vertebral tenderness**",
+     "then": "X-ray of the lumbar spine"
+    },
+    {
+     "opt": "A",
+     "if": "**Bilateral sciatica** with **new urinary incontinence** before MRI",
+     "then": "Postvoid residual volume"
+    },
+    {
+     "opt": "C",
+     "if": "**Costovertebral angle tenderness** with **fever and dysuria**",
+     "then": "Urinalysis"
+    }
+   ]
   },
   "c-em-01-q046": {
    "task": "Next step",
-   "boardCall": "Dislocated knee + absent distal pulses + ischemic limb -> immediate closed reduction of knee",
-   "hinge": "Acute knee dislocation with limb ischemia (absent distal pulses) mandates immediate closed reduction to relieve popliteal neurovascular traction before imaging.",
+   "boardCall": "MVC + **dislocated knee** + **absent distal pulses** + sensorimotor loss → Reduction of the dislocated knee",
+   "hinge": "Immediate joint reduction restores popliteal perfusion faster than waiting for angiography.",
    "trap": "CT arteriography is crucial to assess popliteal artery injury, but waiting for angiography before reducing the joint causes prolonged ischemia and limb loss.",
    "options": {
     "A": {
@@ -4428,12 +5437,35 @@
      "trap": true
     }
    ],
-   "topic": "knee-injuries"
+   "topic": "knee-injuries",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Mildly asymmetric pulse** in **hemodynamically stable** limb trauma",
+     "then": "Ankle-brachial indices"
+    },
+    {
+     "opt": "F",
+     "if": "**Diminished pulse** or **bruit** in stable extremity",
+     "then": "Arteriography"
+    },
+    {
+     "opt": "B",
+     "if": "**Unilateral calf swelling** and **warmth** after immobilization",
+     "then": "Venous duplex ultrasonography"
+    },
+    {
+     "opt": null,
+     "if": "**Pain on passive stretch** after **limb revascularization**",
+     "then": "Compartment syndrome",
+     "step": "emergent fasciotomy"
+    }
+   ]
   },
   "c-em-01-q047": {
    "task": "Diagnosis",
-   "boardCall": "New-onset type 1 diabetes + polydipsia + Kussmaul respirations 28/min + dehydration -> decreased serum bicarbonate (DKA)",
-   "hinge": "New-onset diabetic ketoacidosis produces severe ketoacid accumulation with high anion gap metabolic acidosis, marked by decreased serum bicarbonate.",
+   "boardCall": "polydipsia + BMI 17 + **respirations 28/min** + **dehydration** → Decreased bicarbonate",
+   "hinge": "Kussmaul hyperpnea compensates for ketoacidosis, which consumes serum bicarbonate.",
    "trap": "Total body potassium and phosphate are depleted, but extracellular shifts often keep their initial serum concentrations normal or elevated.",
    "options": {
     "A": {
@@ -4529,12 +5561,35 @@
      "trap": false
     }
    ],
-   "topic": "hyperglycemic-crises"
+   "topic": "hyperglycemic-crises",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Low BMI teen** with **self-induced vomiting** and normal breathing",
+     "then": "Increased bicarbonate"
+    },
+    {
+     "opt": "B",
+     "if": "**Malnourished patient** developing **weakness after refeeding**",
+     "then": "Decreased phosphate"
+    },
+    {
+     "opt": "C",
+     "if": "**DKA** after **starting insulin** without potassium replacement",
+     "then": "Decreased potassium"
+    },
+    {
+     "opt": null,
+     "if": "**Older type 2 diabetic** with **glucose > 600**, no acidosis",
+     "then": "Hyperosmolar hyperglycemic state",
+     "step": "IV fluids before insulin"
+    }
+   ]
   },
   "c-em-01-q048": {
    "task": "Diagnosis",
-   "boardCall": "Marathon runner in humid heat + core temperature 40.5°C + obtundation + hypotension -> exertional heat stroke",
-   "hinge": "Severe hyperthermia (temperature > 40°C) accompanied by central nervous system dysfunction (obtundation) after exertion defines heat stroke.",
+   "boardCall": "marathon collapse + **temp 40.5°C** + **obtundation** + hypotension → Heat stroke",
+   "hinge": "Core temperature above 40°C with central nervous system dysfunction defines heat stroke.",
    "trap": "Rhabdomyolysis with elevated CK is a common complication, but profound encephalopathy and core temp 40.5°C make heat stroke the overarching diagnosis.",
    "options": {
     "A": {
@@ -4619,12 +5674,36 @@
      "trap": true
     }
    ],
-   "topic": "heat-related-illness"
+   "topic": "heat-related-illness",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Antipsychotic use** with **lead-pipe rigidity** and hyperthermia",
+     "then": "Neuroleptic malignant syndrome"
+    },
+    {
+     "opt": "D",
+     "if": "**Alert runner** with **dark urine** and CK 25,000",
+     "then": "Rhabdomyolysis",
+     "step": "aggressive IV hydration"
+    },
+    {
+     "opt": "E",
+     "if": "**Pneumonia or UTI source** with **hypotension** and rigors",
+     "then": "Sepsis"
+    },
+    {
+     "opt": null,
+     "if": "**Exercise in heat** with **alert mental status** and temp 38.8°C",
+     "then": "Heat exhaustion",
+     "step": "rest, shade, oral/IV fluids"
+    }
+   ]
   },
   "c-em-01-q049": {
    "task": "Next step",
-   "boardCall": "Weight loss + heat intolerance + multinodular goiter + tachycardia 130/min + fever 38.5°C -> oral or IV propranolol",
-   "hinge": "Acute thyrotoxicosis with severe beta-adrenergic symptoms (tachycardia, diaphoresis, hyperthermia) is treated first-line with propranolol.",
+   "boardCall": "weight loss + heat intolerance + goiter + **HR 130** + **temp 38.5°C** → Propranolol",
+   "hinge": "Beta-blockade rapidly controls life-threatening adrenergic tone and peripheral T4-to-T3 conversion.",
    "trap": "Iodine blocks thyroid hormone release, but giving it before a thionamide provides substrate for new hormone synthesis and worsens storm.",
    "options": {
     "A": {
@@ -4718,12 +5797,35 @@
      "trap": false
     }
    ],
-   "topic": "hyperthyroidism"
+   "topic": "hyperthyroidism",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Prepared for thyroidectomy** after **achieving euthyroidism** on methimazole",
+     "then": "Iodine"
+    },
+    {
+     "opt": "C",
+     "if": "**Painful tender thyroid** after **viral illness**",
+     "then": "Prednisone"
+    },
+    {
+     "opt": "A",
+     "if": "**Post-thyroidectomy** **carpopedal spasm** and Chvostek sign",
+     "then": "Calcium"
+    },
+    {
+     "opt": "E",
+     "if": "**Hypothermia and bradycardia** with **hyponatremia** in myxedema coma",
+     "then": "Thyroxine",
+     "step": "give IV hydrocortisone first"
+    }
+   ]
   },
   "c-em-01-q050": {
    "task": "Next step",
-   "boardCall": "Severe hypoglycemia (15 mg/dL) + unresponsiveness + no IV access -> intramuscular glucagon",
-   "hinge": "Severe hypoglycemia with neuroglycopenia and impossible IV access requires immediate intramuscular glucagon to stimulate hepatic glycogenolysis.",
+   "boardCall": "glimepiride + **unresponsive** + glucose 15 mg/dL + **no IV access** → Intramuscular glucagon",
+   "hinge": "Oral sugar risks aspiration when obtunded, making parenteral rescue essential.",
    "trap": "Oral glucose or hard candies are strictly contraindicated in obtunded patients due to high aspiration risk.",
    "options": {
     "A": {
@@ -4817,7 +5919,30 @@
      "trap": true
     }
    ],
-   "topic": "hypoglycemia"
+   "topic": "hypoglycemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Awake, alert** patient able to **swallow safely**",
+     "then": "Oral ingestion of hard candies"
+    },
+    {
+     "opt": "A",
+     "if": "**Primary cold exposure** with **core temp 30°C** and normal glucose",
+     "then": "Application of a warming blanket"
+    },
+    {
+     "opt": "B",
+     "if": "**Normal glucose** with **pinpoint pupils and respirations 6/min**",
+     "then": "Bag-valve-mask ventilation",
+     "step": "administer naloxone"
+    },
+    {
+     "opt": null,
+     "if": "**Chronic alcohol use** with **hypoglycemia** and ataxia",
+     "then": "Thiamine plus IV dextrose"
+    }
+   ]
   }
  },
  "topics": {
@@ -9037,5 +10162,5 @@
    "evidence": "Checked 2026-10-30: [AHA/ACC PE (2026)](https://www.jacc.org/doi/10.1016/j.jacc.2025.11.005), [ASH diagnosis (2018)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6258916/)."
   }
  },
- "updatedAt": "2026-11-07T08:13:46Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

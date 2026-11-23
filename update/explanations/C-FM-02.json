@@ -8,8 +8,8 @@
  "items": {
   "c-fm-02-q001": {
    "task": "Diagnosis",
-   "boardCall": "Bruises of varying ages on defended areas + normal labs -> domestic abuse.",
-   "hinge": "Bruises in various healing stages on the forearms and abdomen with normal coagulation indicate abuse.",
+   "boardCall": "26 weeks pregnant + **varying-age ecchymoses** + forearms/abdomen + **normal platelets and BP** → Domestic abuse",
+   "hinge": "Healing bruises on defended areas without coagulopathy or hypertension indicate partner violence.",
    "trap": "Pregnancy combined with bruising suggests preeclampsia or HELLP, but blood pressure and platelets are normal.",
    "options": {
     "A": {
@@ -99,12 +99,35 @@
      "text": "bleeding time is 6 minutes"
     }
    ],
-   "topic": "intimate-partner-violence"
+   "topic": "intimate-partner-violence",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Hypertension, thrombocytopenia**, elevated transaminases, RUQ pain",
+     "then": "HELLP syndrome",
+     "step": "deliver urgently after stabilization"
+    },
+    {
+     "opt": "C",
+     "if": "**Isolated severe thrombocytopenia** with normal coagulation",
+     "then": "Immune thrombocytopenic purpura"
+    },
+    {
+     "opt": "D",
+     "if": "**New hypertension** with proteinuria after 20 weeks",
+     "then": "Preeclampsia"
+    },
+    {
+     "opt": "E",
+     "if": "**Lifelong mucosal bleeding**, prolonged bleeding time",
+     "then": "von Willebrand disease"
+    }
+   ]
   },
   "c-fm-02-q002": {
    "task": "Pharmacology",
-   "boardCall": "Bilateral ankle edema + normal heart and kidney + amlodipine -> adverse effect of medication.",
-   "hinge": "Amlodipine causes precapillary arteriolar vasodilation resulting in dependent bilateral edema without volume overload.",
+   "boardCall": "amlodipine use + bilateral ankle edema + **clear lungs** + **normal creatinine** → Adverse effect of medication",
+   "hinge": "Dihydropyridine calcium-channel blockers cause dependent hydrostatic edema without systemic volume overload.",
    "trap": "Longstanding diabetes and trace proteinuria suggest nephrotic syndrome or heart failure, but organs are normal.",
    "options": {
     "A": {
@@ -193,12 +216,35 @@
      "text": "Protein trace"
     }
    ],
-   "topic": "calcium-channel-blockers"
+   "topic": "calcium-channel-blockers",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Basilar crackles**, elevated JVP, S3 gallop",
+     "then": "Congestive heart failure"
+    },
+    {
+     "opt": "E",
+     "if": "**Heavy proteinuria**, hypoalbuminemia, periorbital edema",
+     "then": "Nephrotic syndrome"
+    },
+    {
+     "opt": "C",
+     "if": "**Unilateral calf swelling**, warmth, tenderness",
+     "then": "Deep venous thrombosis",
+     "step": "order venous duplex ultrasound"
+    },
+    {
+     "opt": "D",
+     "if": "**Nonpitting skin thickening** after pelvic radiation",
+     "then": "Lymphatic obstruction"
+    }
+   ]
   },
   "c-fm-02-q003": {
    "task": "Next step",
-   "boardCall": "Tender subareolar lump in 9-year-old girl + Tanner stage 2 -> follow-up examination in 6 months.",
-   "hinge": "A tender subareolar mass in a 9-year-old girl represents normal physiologic thelarche (breast budding).",
+   "boardCall": "9-year-old girl + **tender subareolar bud** + **Tanner stage 2** → Follow-up examination in 6 months",
+   "hinge": "Unilateral tender breast budding in early puberty is normal physiologic thelarche.",
    "trap": "Maternal breast cancer history provokes fear of pediatric malignancy and urges invasive biopsy.",
    "options": {
     "A": {
@@ -284,12 +330,30 @@
      "text": "mass is tender and slightly granular; there is no erythema"
     }
    ],
-   "topic": "pubertal-development"
+   "topic": "pubertal-development",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Fever, erythema**, fluctuant warm breast mass",
+     "then": "Antibiotic therapy",
+     "step": "get targeted ultrasound"
+    },
+    {
+     "opt": "C",
+     "if": "**Rapidly enlarging eccentric mass** in older adolescent",
+     "then": "Ultrasound-directed biopsy"
+    },
+    {
+     "opt": "B",
+     "if": "**Adult age ≥ 40** with new breast mass",
+     "then": "Mammography"
+    }
+   ]
   },
   "c-fm-02-q004": {
    "task": "Next step",
-   "boardCall": "Elderly falls + chair rise difficulty + gait instability on turns -> physical therapy.",
-   "hinge": "Multifactorial fall risk with motor deconditioning and balance instability on turns responds to physical therapy.",
+   "boardCall": "elderly falls + **chair-rise difficulty** + **instability on turns** + no syncope → Physical therapy",
+   "hinge": "Proximal weakness and gait imbalance without syncope respond best to structured rehabilitation.",
    "trap": "History of coronary artery disease pulls toward cardiac monitoring, but falls lack syncope.",
    "options": {
     "A": {
@@ -385,12 +449,34 @@
      "text": "instability on turns"
     }
    ],
-   "topic": "gait-impairment-and-falls"
+   "topic": "gait-impairment-and-falls",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Preceding syncope** or exertional lightheadedness",
+     "then": "24-Hour ambulatory ECG monitoring"
+    },
+    {
+     "opt": "E",
+     "if": "**Acute viral labyrinthitis** with severe nausea",
+     "then": "Meclizine therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Transient monocular blindness** or focal weakness",
+     "then": "Carotid duplex ultrasonography"
+    },
+    {
+     "opt": null,
+     "if": "**Orthostatic blood pressure drop** on standing",
+     "then": "Deprescribe or lower antihypertensives"
+    }
+   ]
   },
   "c-fm-02-q005": {
    "task": "Next step",
-   "boardCall": "Adolescent smoker -> inquire about attitudes toward smoking and health.",
-   "hinge": "Exploring an adolescent's perspective and readiness to quit using motivational interviewing is the initial step.",
+   "boardCall": "14-year-old girl + **weekly smoking** + weekend drinking → Inquire about her attitudes toward smoking",
+   "hinge": "Assessing an adolescent's perspective and readiness to quit initiates motivational interviewing.",
    "trap": "Lecturing on long-term consequences seems helpful, but direct advice without assessing motivation fails.",
    "options": {
     "A": {
@@ -477,12 +563,30 @@
      "text": "drinks beer and wine occasionally at weekend parties"
     }
    ],
-   "topic": "smoking-cessation"
+   "topic": "smoking-cessation",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Ready to quit** with heavy daily dependence",
+     "then": "Prescribe nicotine patch",
+     "step": "pair with behavioral counseling"
+    },
+    {
+     "opt": "E",
+     "if": "**Adult smoker** willing to quit, comorbid depression",
+     "then": "Prescribe sustained-release bupropion"
+    },
+    {
+     "opt": "C",
+     "if": "**Active suicidal plan** disclosed during confidential visit",
+     "then": "Notify parents and arrange safety"
+    }
+   ]
   },
   "c-fm-02-q006": {
    "task": "Next step",
-   "boardCall": "Microcytic anemia in young woman (MCV 73) -> serum iron and ferritin concentrations.",
-   "hinge": "Initial workup of microcytic anemia requires iron studies and ferritin to confirm or rule out iron deficiency.",
+   "boardCall": "32-year-old woman + hematocrit 27% + **MCV 73** + negative FOBT → Measurement of serum iron and ferritin",
+   "hinge": "Microcytic anemia needs iron studies before assuming thalassemia or starting empiric therapy.",
    "trap": "Regular menses and negative stool occult blood pull toward hemoglobin electrophoresis for thalassemia.",
    "options": {
     "A": {
@@ -569,12 +673,34 @@
      "text": "Mean corpuscular volume 73 µm³"
     }
    ],
-   "topic": "microcytic-anemia"
+   "topic": "microcytic-anemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Normal ferritin** with marked microcytosis and target cells",
+     "then": "Hemoglobin electrophoresis"
+    },
+    {
+     "opt": "B",
+     "if": "**Confirmed iron deficiency** intolerant of oral iron",
+     "then": "Parenteral iron therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**Macrocytic anemia** with hypersegmented neutrophils",
+     "then": "Administration of folic acid"
+    },
+    {
+     "opt": "E",
+     "if": "**Unexplained pancytopenia** with circulating blasts",
+     "then": "Bone marrow aspiration"
+    }
+   ]
   },
   "c-fm-02-q007": {
    "task": "Diagnosis",
-   "boardCall": "Recurrent sudden SOB, palpitations, sweating + fear of going crazy -> panic disorder.",
-   "hinge": "Discrete, unexpected autonomic surges peaking within minutes accompanied by persistent fear of attacks define panic disorder.",
+   "boardCall": "recurrent abrupt SOB + sweating + **fear of going crazy** → Panic disorder",
+   "hinge": "Unexpected autonomic surges with interattack worry define panic disorder; click is incidental.",
    "trap": "Opening systolic click suggests mitral valve prolapse, but it is an incidental finding and does not explain panic attacks.",
    "options": {
     "A": {
@@ -660,12 +786,34 @@
      "trap": true
     }
    ],
-   "topic": "panic-disorder"
+   "topic": "panic-disorder",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Persistent daily worry** across domains ≥ 6 months",
+     "then": "Generalized anxiety disorder"
+    },
+    {
+     "opt": "B",
+     "if": "**Heat intolerance**, lid lag, goiter, suppressed TSH",
+     "then": "Hyperthyroidism"
+    },
+    {
+     "opt": "E",
+     "if": "**Regular narrow-complex tachycardia** at 180/min",
+     "then": "Paroxysmal atrial tachycardia"
+    },
+    {
+     "opt": "C",
+     "if": "**Late systolic murmur** louder with Valsalva, asymptomatic",
+     "then": "Mitral valve prolapse"
+    }
+   ]
   },
   "c-fm-02-q008": {
    "task": "Next step",
-   "boardCall": "Withdrawn adolescent + anhedonia + hypersomnia + weight loss -> assessment for suicide risk.",
-   "hinge": "Adolescent presenting with symptoms of a major depressive episode requires immediate assessment of suicide risk.",
+   "boardCall": "withdrawn adolescent + **hypersomnia + weight loss** + **dropped grades** → Assessment for suicide risk",
+   "hinge": "Adolescents presenting with major depressive symptoms require immediate screening for self-harm risk.",
    "trap": "Tearfully attributing symptoms to mono pulls toward EBV testing, but depression safety takes precedence.",
    "options": {
     "A": {
@@ -755,12 +903,34 @@
      "text": "Maybe I have mono or something"
     }
    ],
-   "topic": "suicide-risk-assessment"
+   "topic": "suicide-risk-assessment",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Fever, exudative pharyngitis**, posterior cervical nodes",
+     "then": "Serologic testing for Epstein-Barr virus"
+    },
+    {
+     "opt": "C",
+     "if": "**Cold intolerance, bradycardia**, dry skin, constipation",
+     "then": "Thyroid function tests"
+    },
+    {
+     "opt": "D",
+     "if": "**Missed menses** with morning nausea, fatigue",
+     "then": "Urine pregnancy test"
+    },
+    {
+     "opt": "E",
+     "if": "**Dysphagia, persistent vomiting**, epigastric tenderness",
+     "then": "Endoscopy"
+    }
+   ]
   },
   "c-fm-02-q009": {
    "task": "Next step",
-   "boardCall": "Elderly insomnia + weight loss + slow responses + impaired clock drawing -> begin sertraline.",
-   "hinge": "Geriatric depression often manifests with psychomotor retardation and reversible cognitive deficits (pseudodementia), responding to SSRIs.",
+   "boardCall": "elderly insomnia + weight loss + **psychomotor slowing** + **reminded clock-draw** → Begin sertraline therapy",
+   "hinge": "Subacute cognitive slowing with depressive vegetative signs reflects pseudodementia responsive to SSRIs.",
    "trap": "Impaired clock drawing and delayed recall mimic Alzheimer dementia, but depressive features predominate.",
    "options": {
     "A": {
@@ -850,12 +1020,34 @@
      "trap": true
     }
    ],
-   "topic": "depressive-disorders"
+   "topic": "depressive-disorders",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Insidious memory decline**, intact mood, getting lost",
+     "then": "Begin donepezil therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**Isolated insomnia** without weight loss or sadness",
+     "then": "Emphasize good sleep hygiene"
+    },
+    {
+     "opt": "B",
+     "if": "**Normal daily functioning**, isolated sadness after bereavement",
+     "then": "Recommend grief counseling"
+    },
+    {
+     "opt": null,
+     "if": "**Severe melancholic stupor** with profound dehydration",
+     "then": "Electroconvulsive therapy"
+    }
+   ]
   },
   "c-fm-02-q010": {
    "task": "Next step",
-   "boardCall": "Major depressive episode following marital separation -> cognitive behavioral therapy.",
-   "hinge": "First-line evidence-based psychotherapy for major depressive disorder is cognitive behavioral therapy.",
+   "boardCall": "5 weeks post-separation + **anhedonia** + **insomnia and anorexia** + no SI → Cognitive behavioral therapy",
+   "hinge": "Five depressive symptoms lasting over two weeks meet MDD criteria for first-line psychotherapy.",
    "trap": "Marital stress suggests relaxation or psychoanalysis, but five SIGECAPS symptoms indicate MDD requiring CBT.",
    "options": {
     "A": {
@@ -942,12 +1134,29 @@
      "text": "mood is sad, and he is tearful"
     }
    ],
-   "topic": "depressive-disorders"
+   "topic": "depressive-disorders",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Severe depression** or strong preference for medication",
+     "then": "Add an SSRI to CBT"
+    },
+    {
+     "opt": "E",
+     "if": "**Specific phobia** such as fear of flying",
+     "then": "Systematic desensitization"
+    },
+    {
+     "opt": "D",
+     "if": "**Transient adjustment stress** without full depressive syndrome",
+     "then": "Relaxation therapy"
+    }
+   ]
   },
   "c-fm-02-q011": {
    "task": "Risk factor",
-   "boardCall": "Vascular risk factors + stroke prevention -> hypertension is strongest predisposing factor.",
-   "hinge": "Hypertension is the single strongest modifiable risk factor for ischemic and hemorrhagic cerebral infarction.",
+   "boardCall": "asymptomatic adult + **BP 160/98** + BMI 39 + paternal stroke → Hypertension",
+   "hinge": "Elevated blood pressure is the strongest modifiable risk factor for cerebral infarction.",
    "trap": "Paternal stroke at 55 provokes anxiety for familial genetic risk, but hypertension remains the primary driver.",
    "options": {
     "A": {
@@ -1040,12 +1249,29 @@
      "text": "BMI is 39 kg/m²"
     }
    ],
-   "topic": "ischemic-stroke-and-tia"
+   "topic": "ischemic-stroke-and-tia",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Markedly elevated LDL** with premature tendon xanthomas",
+     "then": "Hypercholesterolemia"
+    },
+    {
+     "opt": "E",
+     "if": "**Normal blood pressure**, severe obstructive sleep apnea",
+     "then": "Obesity"
+    },
+    {
+     "opt": "B",
+     "if": "**Multiple young strokes** in first-degree relatives",
+     "then": "Family history"
+    }
+   ]
   },
   "c-fm-02-q012": {
    "task": "Next step",
-   "boardCall": "Hand numbness in median nerve distribution + positive Tinel -> use of wrist splints.",
-   "hinge": "Nocturnal neutral wrist splinting is the initial non-invasive therapy for mild carpal tunnel syndrome.",
+   "boardCall": "palmar thumb-index-middle paresthesias + **awakens from sleep** + **positive Tinel** → Use of wrist splints",
+   "hinge": "Mild carpal tunnel without motor weakness responds first to nocturnal neutral splinting.",
    "trap": "Typing exacerbation suggests tendon inflammation requiring NSAIDs, but carpal tunnel compression responds best to splinting.",
    "options": {
     "A": {
@@ -1127,12 +1353,30 @@
      "text": "has not had any difficulty writing by longhand or grasping small objects"
     }
    ],
-   "topic": "carpal-tunnel-syndrome"
+   "topic": "carpal-tunnel-syndrome",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Persistent symptoms** after 6 weeks of splinting",
+     "then": "Corticosteroid injections"
+    },
+    {
+     "opt": "E",
+     "if": "**Thenar muscle atrophy** or grip weakness",
+     "then": "Decompression of median nerve",
+     "step": "confirm with nerve conduction studies"
+    },
+    {
+     "opt": "B",
+     "if": "**Acute wrist extensor tendinitis** without paresthesias",
+     "then": "Oral NSAID therapy"
+    }
+   ]
   },
   "c-fm-02-q013": {
    "task": "Next step",
-   "boardCall": "Alzheimer dementia + MMSE 22/30 + functional loss -> add donepezil.",
-   "hinge": "Acetylcholinesterase inhibitors (donepezil, rivastigmine, galantamine) are first-line pharmacotherapy for mild-to-moderate Alzheimer dementia.",
+   "boardCall": "6-month memory decline + **getting lost driving** + **MMSE 22/30** → Add donepezil to the current regimen",
+   "hinge": "Cholinesterase inhibition improves cognition and daily function in mild-to-moderate Alzheimer dementia.",
    "trap": "Wandering and confusion could suggest medication toxicity from diltiazem or statin, but insidious neurocognitive decline reflects Alzheimer.",
    "options": {
     "A": {
@@ -1229,12 +1473,34 @@
      "trap": true
     }
    ],
-   "topic": "dementia"
+   "topic": "dementia",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Prominent sadness, insomnia**, weight loss, poor effort",
+     "then": "Add sertraline"
+    },
+    {
+     "opt": "C",
+     "if": "**Stepwise cognitive decline** after strokes",
+     "then": "Add clopidogrel"
+    },
+    {
+     "opt": "A",
+     "if": "**Symptomatic bradycardia** on diltiazem with lightheadedness",
+     "then": "Decrease diltiazem dosage"
+    },
+    {
+     "opt": null,
+     "if": "**Advanced dementia** failing donepezil monotherapy",
+     "then": "Add memantine"
+    }
+   ]
   },
   "c-fm-02-q014": {
    "task": "Next step",
-   "boardCall": "Widespread pain > 3 months + unrefreshing sleep + 12 tender points -> antidepressant therapy.",
-   "hinge": "First-line pharmacotherapy for fibromyalgia alongside exercise consists of SNRIs (duloxetine, milnacipran) or TCAs (amitriptyline).",
+   "boardCall": "14-month widespread pain + **unrefreshing sleep** + **12 tender points** → Antidepressant therapy",
+   "hinge": "Central pain amplification responds to duloxetine or amitriptyline alongside graded aerobic exercise.",
    "trap": "Generalized muscle pain prompts considerations of polymyalgia rheumatica or opioids, but central pain responds to antidepressants.",
    "options": {
     "A": {
@@ -1331,12 +1597,29 @@
      "text": "Vital signs are within normal limits"
     }
    ],
-   "topic": "fibromyalgia"
+   "topic": "fibromyalgia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Age > 50**, shoulder-hip stiffness, ESR > 50",
+     "then": "Glucocorticoid therapy"
+    },
+    {
+     "opt": "F",
+     "if": "**Refractory daytime sleepiness** in narcolepsy",
+     "then": "Psychostimulant therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Prominent insomnia** or SNRI intolerance in fibromyalgia",
+     "then": "Pregabalin"
+    }
+   ]
   },
   "c-fm-02-q015": {
    "task": "Next step",
-   "boardCall": "Hypertension + frequent migraines -> beta-adrenergic blocking agent.",
-   "hinge": "Beta-blockers (propranolol, metoprolol) treat hypertension while concurrently providing prophylactic migraine prevention.",
+   "boardCall": "BP 152/92 + **twice-weekly migraines** + frequent ibuprofen → β-Adrenergic blocking agent",
+   "hinge": "Beta-blockers treat hypertension while simultaneously providing first-line migraine prophylaxis.",
    "trap": "ACE inhibitors are standard first-line for hypertension, but beta-blockers specifically cover comorbid migraine prophylaxis.",
    "options": {
     "A": {
@@ -1418,12 +1701,29 @@
      "text": "blood pressure is 152/92 mm Hg"
     }
    ],
-   "topic": "primary-headaches"
+   "topic": "primary-headaches",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Diabetic nephropathy** with albuminuria, no migraines",
+     "then": "ACE inhibitor"
+    },
+    {
+     "opt": "D",
+     "if": "**Asthma or bradycardia** precluding beta-blockers",
+     "then": "Angiotensin-receptor blocking agent"
+    },
+    {
+     "opt": "E",
+     "if": "**Prior ischemic stroke** needing antiplatelet prophylaxis",
+     "then": "Daily aspirin"
+    }
+   ]
   },
   "c-fm-02-q016": {
    "task": "Diagnosis",
-   "boardCall": "Chronic flexural eczema + acute clustered facial vesicles -> atopic dermatitis with eczema herpeticum.",
-   "hinge": "Acute eruption of painful, monomorphic umbilicated vesicles on skin affected by atopic dermatitis indicates eczema herpeticum.",
+   "boardCall": "13-year eczema + **acute facial vesicles** + pruritus + dry skin → Atopic dermatitis with eczema herpeticum",
+   "hinge": "Disseminated monomorphic vesicles erupting over atopic skin represent cutaneous herpes simplex superinfection.",
    "trap": "Chronic dermatitis with crusting mimics bacterial impetigo superinfection, but acute clustered vesicles indicate viral HSV.",
    "options": {
     "A": {
@@ -1510,12 +1810,34 @@
      "text": "vesicular facial rash and eczematous lichenified plaques on the cheeks, neck, and flexor surfaces"
     }
    ],
-   "topic": "atopic-dermatitis"
+   "topic": "atopic-dermatitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Honey-colored crusts**, purulent oozing, no vesicles",
+     "then": "Contact dermatitis with superinfection"
+    },
+    {
+     "opt": "C",
+     "if": "**Symmetric pruritic extensor vesicles** with celiac disease",
+     "then": "Dermatitis herpetiformis"
+    },
+    {
+     "opt": "D",
+     "if": "**Target lesions** and oral mucosal erosions",
+     "then": "Erythema multiforme with bullae"
+    },
+    {
+     "opt": "E",
+     "if": "**Silvery scales** over extensor knees and elbows",
+     "then": "Psoriasis"
+    }
+   ]
   },
   "c-fm-02-q017": {
    "task": "Next step",
-   "boardCall": "Expanding annular scaly arm rash with central clearing -> clotrimazole.",
-   "hinge": "Tinea corporis presents with an expanding annular scaly plaque and is treated first-line with topical azole antifungals.",
+   "boardCall": "6-year-old + **expanding itchy arm spot** + annular scaly plaque → Clotrimazole",
+   "hinge": "Superficial dermatophyte tinea corporis clears with topical azoles, whereas steroids worsen spread.",
    "trap": "Itchy arm rash tempts topical hydrocortisone, but topical steroids worsen dermatophytosis and cause tinea incognito.",
    "options": {
     "A": {
@@ -1605,12 +1927,34 @@
      "text": "previously healthy"
     }
    ],
-   "topic": "dermatophyte-infections"
+   "topic": "dermatophyte-infections",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Eczematous flexural patch** without central clearing",
+     "then": "Hydrocortisone"
+    },
+    {
+     "opt": "D",
+     "if": "**Nocturnal pruritus**, finger-web burrows, affected family",
+     "then": "Permethrin"
+    },
+    {
+     "opt": "A",
+     "if": "**Follicular pustules** or localized bacterial impetigo",
+     "then": "Clindamycin"
+    },
+    {
+     "opt": null,
+     "if": "**Extensive tinea** refractory to topical azoles",
+     "then": "Oral terbinafine"
+    }
+   ]
   },
   "c-fm-02-q018": {
    "task": "Prevention",
-   "boardCall": "Severe acne treated with oral antibiotics and topical retinoids -> avoidance of sun exposure.",
-   "hinge": "Tetracyclines (e.g., doxycycline) and topical retinoids induce marked cutaneous photosensitivity, requiring strict sun avoidance.",
+   "boardCall": "severe acne + **oral antibiotic** + **topical retinoid** → Avoidance of sun exposure",
+   "hinge": "Oral tetracyclines and vitamin A derivatives trigger severe phototoxicity requiring UV protection.",
    "trap": "Adolescent lifestyle (garage work, sodas, caffeine) suggests dietary triggers, but drug-induced photosensitivity is the primary risk.",
    "options": {
     "A": {
@@ -1696,12 +2040,30 @@
      "text": "occasionally drinks coffee in the morning and sodas after work"
     }
    ],
-   "topic": "acne-vulgaris"
+   "topic": "acne-vulgaris",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Excessive retinoid peeling** and skin irritation",
+     "then": "Use of moisturizers"
+    },
+    {
+     "opt": null,
+     "if": "**Nodulocystic scarring acne** failing oral antibiotics",
+     "then": "Isotretinoin",
+     "step": "enroll in pregnancy prevention"
+    },
+    {
+     "opt": null,
+     "if": "**Pregnancy** in patient with inflammatory acne",
+     "then": "Azelaic acid or benzoyl peroxide"
+    }
+   ]
   },
   "c-fm-02-q019": {
    "task": "Next step",
-   "boardCall": "Acute monoarticular knee effusion, warmth, erythema -> arthrocentesis.",
-   "hinge": "Acute monoarticular joint effusion with warmth and severe pain requires synovial fluid analysis via arthrocentesis to rule out septic arthritis.",
+   "boardCall": "acute knee swelling + **warmth** + **erythema** + limited ROM → Arthrocentesis",
+   "hinge": "Acute warm monoarticular effusion must be aspirated immediately to exclude septic arthritis.",
    "trap": "Kickboxing history suggests trauma or meniscal injury, but acute warmth, erythema, and effusion demand exclusion of infection.",
    "options": {
     "A": {
@@ -1788,12 +2150,30 @@
      "text": "Range of motion is limited by pain"
     }
    ],
-   "topic": "septic-arthritis"
+   "topic": "septic-arthritis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Sepsis or shock** alongside hot swollen joint",
+     "then": "Intravenous antibiotic therapy",
+     "step": "draw blood cultures first"
+    },
+    {
+     "opt": "C",
+     "if": "**Afebrile locking**, instability, negative effusion after trauma",
+     "then": "MRI of the knees"
+    },
+    {
+     "opt": "B",
+     "if": "**Mild ligament sprain** without warmth or erythema",
+     "then": "Knee brace, ice, and elevation"
+    }
+   ]
   },
   "c-fm-02-q020": {
    "task": "Next step",
-   "boardCall": "Hand osteoarthritis (bony PIP/DIP enlargement, pain with activity) -> acetaminophen.",
-   "hinge": "Initial oral pharmacotherapy for mild-to-moderate symptomatic osteoarthritis of the hands is acetaminophen or topical NSAIDs.",
+   "boardCall": "62-year-old woman + activity-related finger pain + **bony DIP and PIP nodes** → Acetaminophen",
+   "hinge": "Noninflammatory osteoarthritis starts with simple analgesics or topical NSAIDs rather than DMARDs.",
    "trap": "Joint pain and swelling suggest rheumatoid arthritis prompting methotrexate or steroids, but DIP involvement and bony nodes indicate osteoarthritis.",
    "options": {
     "A": {
@@ -1880,12 +2260,29 @@
      "text": "passive range of motion is limited by pain"
     }
    ],
-   "topic": "osteoarthritis"
+   "topic": "osteoarthritis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Symmetric MCP swelling**, morning stiffness >1 hour",
+     "then": "Methotrexate"
+    },
+    {
+     "opt": "B",
+     "if": "**Recurrent podagra**, tophi, chronic hyperuricemia",
+     "then": "Allopurinol"
+    },
+    {
+     "opt": "E",
+     "if": "**Bilateral shoulder-hip stiffness**, elevated ESR",
+     "then": "Prednisone"
+    }
+   ]
   },
   "c-fm-02-q021": {
    "task": "Next step",
-   "boardCall": "Lateral elbow pain on resisted wrist extension -> use of a forearm strap.",
-   "hinge": "A counterforce forearm strap unloads the common extensor origin, relieving lateral epicondylitis pain.",
+   "boardCall": "heavy lifting + lateral elbow tenderness + **pain on resisted wrist extension** → Use of a forearm strap",
+   "hinge": "Counterforce bracing unloads the common extensor tendon origin in refractory lateral epicondylitis.",
    "trap": "Severe localized elbow pain tempts systemic steroid therapy or surgical release, but conservative offloading comes first.",
    "options": {
     "A": {
@@ -1972,12 +2369,29 @@
      "text": "Extension of the right wrist against resistance produces pain"
     }
    ],
-   "topic": "elbow-injuries"
+   "topic": "elbow-injuries",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Severe disability persisting** beyond 6–12 months",
+     "then": "Surgical decompression"
+    },
+    {
+     "opt": null,
+     "if": "**Debilitating pain** unresponsive to bracing and therapy",
+     "then": "Local corticosteroid injection"
+    },
+    {
+     "opt": "B",
+     "if": "**Burning palmar paresthesias** in carpal tunnel syndrome",
+     "then": "Oral vitamin B6"
+    }
+   ]
   },
   "c-fm-02-q022": {
    "task": "Next step",
-   "boardCall": "Lateral ankle sprain + negative Ottawa rules -> soft protective brace and early motion.",
-   "hinge": "Negative Ottawa ankle rules exclude fracture; functional support with early mobilization accelerates recovery over rigid immobilization.",
+   "boardCall": "twisted ankle + **bears weight** + **posterior malleoli nontender** → Soft protective brace and early motion",
+   "hinge": "Negative Ottawa criteria exclude fracture, favoring functional bracing over casting or radiographs.",
    "trap": "Ecchymosis and swelling below the lateral malleolus tempt radiography, but Ottawa criteria for imaging are negative.",
    "options": {
     "A": {
@@ -2060,12 +2474,29 @@
      "text": "patient can bear weight as she walks across the room"
     }
    ],
-   "topic": "ankle-and-foot-injuries"
+   "topic": "ankle-and-foot-injuries",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Point tenderness** along posterior malleolus",
+     "then": "Ankle x-rays"
+    },
+    {
+     "opt": "D",
+     "if": "**Displaced ankle fracture** or neurovascular deficit",
+     "then": "Splint and orthopedist referral"
+    },
+    {
+     "opt": null,
+     "if": "**Midfoot tenderness** over navicular or fifth metatarsal",
+     "then": "Foot x-rays"
+    }
+   ]
   },
   "c-fm-02-q023": {
    "task": "Next step",
-   "boardCall": "Orthopnea + JVD + S3 gallop + basilar crackles -> measure left ventricular ejection fraction.",
-   "hinge": "Echocardiography measuring LVEF is the essential initial test to confirm heart failure and classify systolic versus diastolic dysfunction.",
+   "boardCall": "orthopnea + PND + JVD + **S3 gallop** + **displaced PMI** → Measurement of left ventricular ejection fraction",
+   "hinge": "Transthoracic echocardiography confirms heart failure and distinguishes reduced from preserved systolic function.",
    "trap": "Progressive dyspnea on exertion prompts stress testing or angiography, but initial heart failure requires echocardiography.",
    "options": {
     "A": {
@@ -2155,12 +2586,29 @@
      "text": "mild pitting edema bilaterally"
     }
    ],
-   "topic": "heart-failure"
+   "topic": "heart-failure",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Dynamic ST depressions**, positive troponin, chest pain",
+     "then": "Coronary artery angiography"
+    },
+    {
+     "opt": "D",
+     "if": "**Exertional chest pain** without volume overload",
+     "then": "Thallium stress test"
+    },
+    {
+     "opt": "B",
+     "if": "**Acute crushing substernal pain** with diaphoresis",
+     "then": "Serial cardiac enzymes"
+    }
+   ]
   },
   "c-fm-02-q024": {
    "task": "Next step",
-   "boardCall": "Polycystic kidney disease + uncontrolled hypertension + proteinuria -> lisinopril.",
-   "hinge": "ACE inhibitors are first-line antihypertensive therapy in ADPKD, reducing intraglomerular pressure and slowing cyst progression.",
+   "boardCall": "polycystic kidney disease + **BP 160/96** + **2+ proteinuria** → Lisinopril therapy",
+   "hinge": "ACE inhibition lowers intraglomerular pressure and slows renal decline in hypertensive ADPKD.",
    "trap": "Microscopic hematuria and ADPKD tempt IV pyelography or cerebral angiography, but blood pressure control is the primary need.",
    "options": {
     "A": {
@@ -2247,12 +2695,29 @@
      "text": "Urinalysis shows 2+ protein and 5–10 RBC/hpf"
     }
    ],
-   "topic": "polycystic-kidney-disease"
+   "topic": "polycystic-kidney-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Sudden thunderclap headache** with suspected aneurysm bleed",
+     "then": "Cerebral arteriography"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever, localized flank pain**, pyuria from cyst infection",
+     "then": "Trimethoprim-sulfamethoxazole"
+    },
+    {
+     "opt": "A",
+     "if": "**Midsystolic click** and late systolic murmur",
+     "then": "Echocardiography"
+    }
+   ]
   },
   "c-fm-02-q025": {
    "task": "Next step",
-   "boardCall": "Sedentary adult + low HDL + normal BMI 23 -> exercise program.",
-   "hinge": "Regular aerobic exercise specifically raises HDL-cholesterol and improves cardiovascular fitness in normal-weight sedentary individuals.",
+   "boardCall": "sedentary woman + **normal BMI 23** + **HDL 35** + BP 140/90 → Exercise program",
+   "hinge": "Regular aerobic exercise raises low HDL-cholesterol when body weight is already normal.",
    "trap": "Elevated cholesterol tempts a weight loss program, but the patient's BMI is normal (23 kg/m²).",
    "options": {
     "A": {
@@ -2348,12 +2813,29 @@
      "text": "LDL-cholesterol 179 mg/dL"
     }
    ],
-   "topic": "lifestyle-counseling"
+   "topic": "lifestyle-counseling",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**BMI ≥ 25** with elevated triglycerides and LDL",
+     "then": "Weight loss program"
+    },
+    {
+     "opt": "C",
+     "if": "**Obesity, acanthosis nigricans**, polyuria, polydipsia",
+     "then": "Glucose tolerance test"
+    },
+    {
+     "opt": "F",
+     "if": "**Refractory stage 2 hypertension** despite lifestyle change",
+     "then": "Antihypertensive therapy"
+    }
+   ]
   },
   "c-fm-02-q026": {
    "task": "Prevention",
-   "boardCall": "Diabetes + peripheral vascular disease (clinical ASCVD) -> lipid lowering therapy.",
-   "hinge": "Established peripheral vascular disease is a coronary heart disease risk equivalent mandating statin therapy to lower LDL below target.",
+   "boardCall": "type 2 diabetes + **decreased pedal pulses** + **LDL 135** → Lipid-lowering therapy (LDL < 100)",
+   "hinge": "Established peripheral arterial disease is a coronary risk equivalent requiring statin therapy.",
    "trap": "Total cholesterol appears modest (180 mg/dL), tempting dietary modification, but clinical ASCVD mandates pharmacotherapy.",
    "options": {
     "A": {
@@ -2436,12 +2918,34 @@
      "text": "LDL-cholesterol (mg/dL) 139 135"
     }
    ],
-   "topic": "dyslipidemia"
+   "topic": "dyslipidemia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Age 35 without ASCVD** or diabetes, **LDL 135**",
+     "then": "Dietary modification"
+    },
+    {
+     "opt": "E",
+     "if": "**Low 10-year risk** (< 5%) and **LDL 110**",
+     "then": "Repeat cholesterol testing annually"
+    },
+    {
+     "opt": null,
+     "if": "**LDL remains ≥ 70** despite **maximally tolerated statin**",
+     "then": "Add ezetimibe"
+    },
+    {
+     "opt": null,
+     "if": "**Statin-induced myopathy** with **elevated creatine kinase**",
+     "then": "Switch to PCSK9 inhibitor"
+    }
+   ]
   },
   "c-fm-02-q027": {
    "task": "Diagnosis",
-   "boardCall": "Hiking group cluster + nonproductive cough + diffuse crackles -> Mycoplasma pneumoniae.",
-   "hinge": "Clustered atypical pneumonia in young adults presenting with indolent nonproductive cough and crackles is characteristic of Mycoplasma pneumoniae.",
+   "boardCall": "30-year-old hiker + **friend also sick** + **dry cough** + diffuse crackles → Mycoplasma pneumoniae",
+   "hinge": "Clustered atypical pneumonia in young adults typically stems from Mycoplasma.",
    "trap": "Late August hiking trip tempts Borrelia burgdorferi, but respiratory symptoms and crackles point to Mycoplasma.",
    "options": {
     "A": {
@@ -2530,12 +3034,34 @@
      "text": "Mild diffuse crackles are heard"
     }
    ],
-   "topic": "pneumonia"
+   "topic": "pneumonia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Abrupt high fever** with **rusty sputum** and rigors",
+     "then": "Streptococcus pneumoniae"
+    },
+    {
+     "opt": "A",
+     "if": "**Expanding target rash** after **late-summer tick bite**",
+     "then": "Borrelia burgdorferi"
+    },
+    {
+     "opt": "C",
+     "if": "**Winter outbreak** with **abrupt myalgias** and high fever",
+     "then": "Influenza virus"
+    },
+    {
+     "opt": "B",
+     "if": "**Summer prodrome** with **paroxysmal sharp rib pain**",
+     "then": "Coxsackievirus"
+    }
+   ]
   },
   "c-fm-02-q028": {
    "task": "Diagnosis",
-   "boardCall": "Isolated cough worse in cold weather + normal exam and CXR -> asthma.",
-   "hinge": "Cough-variant asthma manifests as chronic isolated cough triggered by cold weather or exercise with normal examination and radiography.",
+   "boardCall": "19-year-old + **3-month isolated cough** + **worse in cold** + normal CXR → Asthma",
+   "hinge": "Chronic cough provoked by cold air with normal radiography reflects bronchial hyperreactivity.",
    "trap": "College student with isolated cough tempts environmental or substance causes, but cold exacerbation indicates bronchial hyperreactivity.",
    "options": {
     "A": {
@@ -2629,12 +3155,35 @@
      "text": "Examination and an x-ray of the chest show no abnormalities"
     }
    ],
-   "topic": "asthma"
+   "topic": "asthma",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Night sweats and weight loss** with **apical cavitary infiltrate**",
+     "then": "Tuberculosis"
+    },
+    {
+     "opt": "D",
+     "if": "**Bilateral hilar adenopathy** with **erythema nodosum**",
+     "then": "Sarcoidosis"
+    },
+    {
+     "opt": "C",
+     "if": "**Chronic sinusitis and hemoptysis** with **c-ANCA positivity**",
+     "then": "Granulomatosis with polyangiitis"
+    },
+    {
+     "opt": "F",
+     "if": "**Chronic hoarseness** in a **smoker or singer**",
+     "then": "Vocal cord polyp",
+     "step": "refer for laryngoscopy"
+    }
+   ]
   },
   "c-fm-02-q029": {
    "task": "Diagnosis",
-   "boardCall": "Prison guard + chronic cough with hemoptysis + right upper lobe infiltrate -> tuberculosis.",
-   "hinge": "Chronic cough with hemoptysis and apical infiltrate in an occupational correctional setting strongly indicates tuberculosis.",
+   "boardCall": "**prison guard** + 2-month blood-streaked cough + **RUL infiltrate** → Tuberculosis",
+   "hinge": "Apical lung infiltrate with hemoptysis in a correctional worker signals pulmonary TB.",
    "trap": "Long smoking history with hemoptysis tempts bronchogenic carcinoma, but apical infiltrate in a prison guard indicates TB.",
    "options": {
     "A": {
@@ -2730,12 +3279,35 @@
      "text": "right upper lung field infiltrate"
     }
    ],
-   "topic": "tuberculosis"
+   "topic": "tuberculosis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Heavy smoker with weight loss** and **hilar mass**",
+     "then": "Lung cancer",
+     "step": "obtain chest CT"
+    },
+    {
+     "opt": "D",
+     "if": "**Acute 3-day fever** with **lobar consolidation** and rigors",
+     "then": "Pneumonia"
+    },
+    {
+     "opt": "A",
+     "if": "**Chronic productive cough** ≥ 3 months with **normal CXR**",
+     "then": "Bronchitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Asymptomatic bilateral hilar adenopathy** with **hypercalcemia**",
+     "then": "Sarcoidosis"
+    }
+   ]
   },
   "c-fm-02-q030": {
    "task": "Diagnosis",
-   "boardCall": "Viral prodrome + paroxysmal sharp chest spasms + elevated CK 500 -> pleurodynia.",
-   "hinge": "Epidemic pleurodynia (Coxsackievirus B) causes sudden paroxysmal sharp intercostal muscle spasms with elevated serum CK.",
+   "boardCall": "viral prodrome + **paroxysmal sharp chest pain** + **CK 500 U/L** + normal CXR → Pleurodynia",
+   "hinge": "Spasmodic rib pain with elevated creatine kinase indicates Coxsackie B intercostal myositis.",
    "trap": "Sharp chest pain tempts pulmonary embolism or pericarditis, but paroxysmal spasms, viral prodrome, and elevated CK indicate pleurodynia.",
    "options": {
     "A": {
@@ -2830,12 +3402,36 @@
      "text": "An x-ray of the chest and an ECG show no abnormalities"
     }
    ],
-   "topic": "enterovirus-infections"
+   "topic": "enterovirus-infections",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Pleuritic pain improved leaning forward** with **diffuse ST elevation**",
+     "then": "Pericarditis",
+     "step": "NSAIDs plus colchicine"
+    },
+    {
+     "opt": "D",
+     "if": "**Tall thin smoker** with **absent unilateral breath sounds**",
+     "then": "Pneumothorax"
+    },
+    {
+     "opt": "E",
+     "if": "**Recent immobilization** with **tachycardia and hypoxemia**",
+     "then": "Pulmonary embolism"
+    },
+    {
+     "opt": "A",
+     "if": "**Persistent fever** after pneumonia with **loculated pleural fluid**",
+     "then": "Empyema",
+     "step": "chest tube drainage"
+    }
+   ]
   },
   "c-fm-02-q031": {
    "task": "Diagnosis",
-   "boardCall": "Barking cough + inspiratory stridor in 2-year-old -> laryngotracheobronchitis (croup).",
-   "hinge": "Parainfluenza infection causing subglottic tracheal edema manifests as barking cough and inspiratory stridor in young children.",
+   "boardCall": "2-year-old + **hoarse barking cough** + **inspiratory stridor** + up-to-date vaccines → Laryngotracheobronchitis",
+   "hinge": "Subglottic viral edema in an immunized toddler causes stridor and barking cough.",
    "trap": "Hypoxemia (86% saturation) and stridor tempt epiglottitis or bacterial tracheitis, but immunized status and barking cough indicate croup.",
    "options": {
     "A": {
@@ -2921,12 +3517,35 @@
      "text": "inspiratory stridor that can be heard without a stethoscope"
     }
    ],
-   "topic": "croup"
+   "topic": "croup",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Unimmunized child** with **drooling and tripod posture**",
+     "then": "Epiglottitis",
+     "step": "secure airway in OR"
+    },
+    {
+     "opt": "A",
+     "if": "**High fever and toxic look** with **poor epinephrine response**",
+     "then": "Bacterial tracheitis"
+    },
+    {
+     "opt": "B",
+     "if": "**Infant under 12 months** with **wheezing and crackles**",
+     "then": "Bronchiolitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever and neck stiffness** with **posterior pharyngeal bulge**",
+     "then": "Retropharyngeal abscess"
+    }
+   ]
   },
   "c-fm-02-q032": {
    "task": "Diagnosis",
-   "boardCall": "IV drug use + acute hepatitis + immune to HAV and HBV -> Hepatitis C infection.",
-   "hinge": "Active acute hepatitis in an injection drug user with documented immunity to hepatitis A and B indicates hepatitis C.",
+   "boardCall": "IV drug use + **acute jaundice** + **anti-HAV and anti-HBs positive** → Hepatitis C infection",
+   "hinge": "Injection drug use with documented HAV and HBV immunity indicates hepatitis C.",
    "trap": "History of hepatitis B immunity prompts consideration of Delta virus, but Delta requires active HBsAg coinfection.",
    "options": {
     "A": {
@@ -3018,12 +3637,34 @@
      "text": "jaundice and hepatomegaly"
     }
    ],
-   "topic": "viral-hepatitis"
+   "topic": "viral-hepatitis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Positive HBsAg** with **sudden fulminant worsening**",
+     "then": "Delta virus infection"
+    },
+    {
+     "opt": "E",
+     "if": "**Negative anti-HBs** and **newly positive HBsAg**",
+     "then": "Reinfection with hepatitis B"
+    },
+    {
+     "opt": null,
+     "if": "**Pregnant traveler** with **acute fulminant hepatitis**",
+     "then": "Hepatitis E infection"
+    },
+    {
+     "opt": null,
+     "if": "**Raw shellfish ingestion** with **positive anti-HAV IgM**",
+     "then": "Acute hepatitis A"
+    }
+   ]
   },
   "c-fm-02-q033": {
    "task": "Diagnosis",
-   "boardCall": "Alendronate/KCl use + acute dysphagia + shallow distal ulcers -> drug-induced esophagitis.",
-   "hinge": "Direct mucosal caustic contact from pills (alendronate, KCl, aspirin) produces discrete, shallow esophageal ulcers.",
+   "boardCall": "**alendronate and KCl** + acute odynophagia + **two shallow distal ulcers** → Drug-induced esophagitis",
+   "hinge": "Caustic pills lodge in the esophagus and produce focal shallow mucosal ulceration.",
    "trap": "Heartburn and distal ulcers suggest reflux esophagitis, but discrete focal shallow ulcers with alendronate indicate pill injury.",
    "options": {
     "A": {
@@ -3112,12 +3753,34 @@
      "text": "Upper endoscopy shows two shallow ulcers in the distal esophagus"
     }
    ],
-   "topic": "esophagitis"
+   "topic": "esophagitis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Chronic heartburn** with **linear distal erosions**, no pill history",
+     "then": "Reflux esophagitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Immunocompromised patient** with **punched-out ulcers** on endoscopy",
+     "then": "Herpes simplex esophagitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Progressive solid-to-liquid dysphagia** with **weight loss**",
+     "then": "Esophageal cancer"
+    },
+    {
+     "opt": "A",
+     "if": "**Long-standing GERD** with **salmon-colored mucosa** and metaplasia",
+     "then": "Barrett esophagus"
+    }
+   ]
   },
   "c-fm-02-q034": {
    "task": "Diagnosis",
-   "boardCall": "Post-viral gastroenteritis + watery diarrhea and gas after cow milk formula -> lactose intolerance.",
-   "hinge": "Transient loss of brush-border lactase following acute viral gastroenteritis results in secondary carbohydrate malabsorption.",
+   "boardCall": "**post-viral gastroenteritis** + **watery diarrhea on cow milk** + gas → Lactose intolerance",
+   "hinge": "Enterocyte brush-border injury depletes lactase transiently after acute viral enteritis.",
    "trap": "Symptom recurrence upon resuming cow milk formula mimics milk protein allergy, but onset after enteritis indicates lactase deficiency.",
    "options": {
     "A": {
@@ -3198,12 +3861,34 @@
      "text": "mild abdominal distention with increased bowel sounds"
     }
    ],
-   "topic": "lactose-intolerance"
+   "topic": "lactose-intolerance",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Newborn with bloody stools** and **eczema** on formula",
+     "then": "Cow milk allergy"
+    },
+    {
+     "opt": "B",
+     "if": "**Chronic diarrhea** after **wheat introduction** with failure to thrive",
+     "then": "Celiac disease"
+    },
+    {
+     "opt": "A",
+     "if": "**High fever** with **mucoid bloody stools** and tenesmus",
+     "then": "Bacterial enteritis"
+    },
+    {
+     "opt": null,
+     "if": "**Foul greasy stools** after **camping or daycare**",
+     "then": "Giardiasis"
+    }
+   ]
   },
   "c-fm-02-q035": {
    "task": "Diagnosis",
-   "boardCall": "Post-pasta bloating and diarrhea + fatigue + microcytic anemia -> anti-tissue transglutaminase antibodies.",
-   "hinge": "Diarrhea triggered by wheat (pasta) accompanied by iron deficiency anemia indicates celiac disease, confirmed by anti-tTG antibodies.",
+   "boardCall": "**bloating after pasta** + chronic diarrhea + **microcytic anemia** → Anti-transglutaminase antibodies",
+   "hinge": "Wheat-triggered malabsorption with iron deficiency anemia warrants serologic testing for celiac disease.",
    "trap": "Fatigue and microcytic anemia tempt folic acid or Schilling testing, but pasta-induced diarrhea points to gluten enteropathy.",
    "options": {
     "A": {
@@ -3299,12 +3984,34 @@
      "text": "Mean corpuscular volume 78 µm³"
     }
    ],
-   "topic": "celiac-disease"
+   "topic": "celiac-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Age over 45** with **hematochezia** or weight loss",
+     "then": "Colonoscopy"
+    },
+    {
+     "opt": "B",
+     "if": "**Macrocytic anemia and paresthesias** with **anti-parietal antibodies**",
+     "then": "Schilling test"
+    },
+    {
+     "opt": "A",
+     "if": "**Macrocytic anemia** with **normal neurologic exam**, tea-and-toast diet",
+     "then": "Serum folic acid"
+    },
+    {
+     "opt": "D",
+     "if": "**Steatorrhea** and **epigastric pain radiating to back**",
+     "then": "CT scan of the pancreas"
+    }
+   ]
   },
   "c-fm-02-q036": {
    "task": "Next step",
-   "boardCall": "Chronic constipation with recent hard stools and normal 3-year colonoscopy -> fiber supplementation.",
-   "hinge": "Initial conservative therapy for chronic non-alarm constipation is dietary bulk fiber supplementation (psyllium or methylcellulose).",
+   "boardCall": "chronic constipation + **normal exam** + **normal 3-yr colonoscopy** → Trial of fiber supplementation",
+   "hinge": "Hard stools without alarm features warrant initial bulk-forming fiber supplementation.",
    "trap": "Diffuse cramps and constipation prompt abdominal imaging or repeat colonoscopy, but normal exam and colonoscopy 3 years ago indicate fiber.",
    "options": {
     "A": {
@@ -3400,12 +4107,34 @@
      "text": "abdomen is soft, nondistended, and nontender"
     }
    ],
-   "topic": "constipation-and-fecal-impaction"
+   "topic": "constipation-and-fecal-impaction",
+   "branches": [
+    {
+     "opt": "G",
+     "if": "**Iron-deficiency anemia** or **rectal bleeding** despite recent screening",
+     "then": "Colonoscopy"
+    },
+    {
+     "opt": "B",
+     "if": "**Acute fever** with **LLQ tenderness** and leukocytosis",
+     "then": "CT abdomen and pelvis"
+    },
+    {
+     "opt": "A",
+     "if": "**Bilious vomiting** with **obstipation** and distention",
+     "then": "X-rays of the abdomen"
+    },
+    {
+     "opt": null,
+     "if": "**Refractory constipation** despite **adequate fiber and fluids**",
+     "then": "Add polyethylene glycol"
+    }
+   ]
   },
   "c-fm-02-q037": {
    "task": "Prevention",
-   "boardCall": "Recurrent postcoital cystitis in sexually active teen -> postcoital single-dose nitrofurantoin.",
-   "hinge": "Postcoital single-dose antibiotic prophylaxis (nitrofurantoin or TMP-SMX) prevents recurrent UTIs linked to sexual activity.",
+   "boardCall": "3 UTIs in 2 mo + **recent sexual onset** + **negative STIs** → Postcoital nitrofurantoin",
+   "hinge": "Intercourse-associated recurrent cystitis is prevented directly with single-dose postcoital antibiotic prophylaxis.",
    "trap": "Use of depot medroxyprogesterone tempts switching contraception, but postcoital antibiotic prophylaxis directly prevents reinfection.",
    "options": {
     "A": {
@@ -3493,12 +4222,34 @@
      "text": "bilateral pelvic tenderness to palpation and no costovertebral angle tenderness"
     }
    ],
-   "topic": "urinary-tract-infections"
+   "topic": "urinary-tract-infections",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Breakthrough bleeding** or **desire for reversible contraception** on depot",
+     "then": "Switch to oral contraceptive"
+    },
+    {
+     "opt": "D",
+     "if": "**Desires nonhormonal contraception** without **recurrent UTI history**",
+     "then": "Switch to diaphragm"
+    },
+    {
+     "opt": null,
+     "if": "**Recurrent UTIs** **unrelated to sexual activity**",
+     "then": "Daily antibiotic prophylaxis"
+    },
+    {
+     "opt": null,
+     "if": "**Postmenopausal woman** with **atrophic vaginitis** and UTIs",
+     "then": "Topical vaginal estrogen"
+    }
+   ]
   },
   "c-fm-02-q038": {
    "task": "Mechanism",
-   "boardCall": "Naproxen use + bilateral leg edema in diabetic -> impaired renal excretion of sodium.",
-   "hinge": "NSAIDs inhibit renal vasodilatory prostaglandins, decreasing renal blood flow and impairing tubular sodium excretion.",
+   "boardCall": "**naproxen** + diabetes + benazepril + **bilateral leg edema** → Impaired renal sodium excretion",
+   "hinge": "NSAIDs block vasodilatory prostaglandins, reducing renal perfusion and promoting sodium retention.",
    "trap": "Heel pain and walking suggest localized soft-tissue swelling, but bilateral symmetrical midcalf edema indicates systemic sodium retention.",
    "options": {
     "A": {
@@ -3583,12 +4334,36 @@
      "text": "Examination shows 1+ edema bilaterally to the midcalf"
     }
    ],
-   "topic": "nonsteroidal-anti-inflammatory-drugs"
+   "topic": "nonsteroidal-anti-inflammatory-drugs",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**JVD and crackles** with **S3 gallop**",
+     "then": "Decreased cardiac output",
+     "step": "obtain echocardiogram"
+    },
+    {
+     "opt": "D",
+     "if": "**Unilateral calf swelling** with **tenderness** after immobility",
+     "then": "Localized soft-tissue swelling",
+     "step": "venous duplex ultrasound"
+    },
+    {
+     "opt": "B",
+     "if": "**Acute urticaria and wheezing** with **hypotension** after dose",
+     "then": "Anaphylactoid reaction"
+    },
+    {
+     "opt": null,
+     "if": "**History of peptic ulcer** needing **chronic pain relief**",
+     "then": "Switch to acetaminophen"
+    }
+   ]
   },
   "c-fm-02-q039": {
    "task": "Next step",
-   "boardCall": "Thin gray discharge + fishy odor + clue cells on Gram stain -> metronidazole.",
-   "hinge": "Bacterial vaginosis presenting with thin gray malodorous discharge and clue cells is treated with oral or topical metronidazole.",
+   "boardCall": "**malodorous gray thin discharge** + **clue cells** + normal cervix → Metronidazole therapy",
+   "hinge": "Clinical and microscopic confirmation of bacterial vaginosis warrants immediate empiric treatment.",
    "trap": "Waiting for pending gonorrhea/chlamydia results delays treatment, but bacterial vaginosis is already confirmed and treated empirically.",
    "options": {
     "A": {
@@ -3675,12 +4450,36 @@
      "trap": true
     }
    ],
-   "topic": "vaginitis"
+   "topic": "vaginitis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Thick white cottage-cheese discharge** with **pseudohyphae**",
+     "then": "Fluconazole therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**Mucopurulent cervicitis** with **gram-negative intracellular diplococci**",
+     "then": "Ceftriaxone therapy",
+     "step": "add doxycycline"
+    },
+    {
+     "opt": "B",
+     "if": "**Mucopurulent cervicitis** with **positive chlamydia NAAT**",
+     "then": "Doxycycline therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Frothy yellow-green discharge** with **strawberry cervix**",
+     "then": "Metronidazole for trichomoniasis",
+     "step": "treat sexual partner too"
+    }
+   ]
   },
   "c-fm-02-q040": {
    "task": "Next step",
-   "boardCall": "Recurrent painful penile vesicles + inguinal LAD -> acyclovir.",
-   "hinge": "Recurrent grouped penile vesicles with fever and inguinal lymphadenopathy represent genital herpes simplex, treated with oral acyclovir.",
+   "boardCall": "**recurrent painful penile vesicles** + **inguinal adenopathy** + negative old culture → Acyclovir",
+   "hinge": "Recurrent grouped genital vesicles establish HSV even after negative cultures.",
    "trap": "Prior negative viral culture tempts antibacterial coverage or steroids, but false negative viral cultures are frequent in recurrent HSV.",
    "options": {
     "A": {
@@ -3778,12 +4577,35 @@
      "text": "multiple 3-mm vesicular lesions on the shaft"
     }
    ],
-   "topic": "herpes-simplex-virus"
+   "topic": "herpes-simplex-virus",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Single painless indurated chancre** with **nontender nodes**",
+     "then": "Penicillin"
+    },
+    {
+     "opt": "C",
+     "if": "**Painless papule** followed by **fluctuant inguinal buboes**",
+     "then": "Doxycycline"
+    },
+    {
+     "opt": "B",
+     "if": "**Purulent urethral discharge** with **dysuria**, no vesicles",
+     "then": "Ceftriaxone",
+     "step": "add doxycycline for chlamydia"
+    },
+    {
+     "opt": null,
+     "if": "**Six or more recurrences yearly** with **distressing flares**",
+     "then": "Daily suppressive valacyclovir"
+    }
+   ]
   },
   "c-fm-02-q041": {
    "task": "Screening",
-   "boardCall": "Family history of thyroid cancer + asymptomatic -> palpation of the thyroid gland.",
-   "hinge": "With one relative affected by papillary thyroid cancer and a normal examination, the keyed initial assessment is thyroid palpation.",
+   "boardCall": "asymptomatic 52-year-old + **father had papillary thyroid cancer** + normal exam → Palpation of thyroid gland",
+   "hinge": "Single-relative papillary thyroid cancer history warrants physical palpation rather than screening imaging.",
    "trap": "Paternal papillary thyroid cancer provokes anxiety for ultrasonography, but imaging in asymptomatic adults causes overdiagnosis.",
    "options": {
     "A": {
@@ -3863,12 +4685,35 @@
      "text": "Examination shows no abnormalities"
     }
    ],
-   "topic": "thyroid-nodules-and-cancer"
+   "topic": "thyroid-nodules-and-cancer",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Palpable thyroid nodule** or **cervical lymphadenopathy**",
+     "then": "Thyroid ultrasonography",
+     "step": "measure serum TSH"
+    },
+    {
+     "opt": "C",
+     "if": "**Palpable nodule** with **suppressed serum TSH**",
+     "then": "I-123 scintigraphy"
+    },
+    {
+     "opt": "B",
+     "if": "**Fatigue and elevated TSH** with **diffuse goiter**",
+     "then": "Serum thyroid antibodies"
+    },
+    {
+     "opt": null,
+     "if": "**Family history of MEN 2** or **medullary cancer**",
+     "then": "RET proto-oncogene testing"
+    }
+   ]
   },
   "c-fm-02-q042": {
    "task": "Pharmacology",
-   "boardCall": "Diabetic neuropathy refractory to gabapentin and carbamazepine -> nortriptyline.",
-   "hinge": "Tricyclic antidepressants (nortriptyline preferred in older adults due to fewer anticholinergic effects) are alternative first-line neuropathic agents.",
+   "boardCall": "82-year-old + diabetic neuropathy + **failed gabapentin and carbamazepine** → Nortriptyline",
+   "hinge": "Nortriptyline treats refractory neuropathic pain with fewer anticholinergic effects than amitriptyline.",
    "trap": "Severe chronic neuropathic pain tempts morphine, but opioids carry high addiction and fall risk in older adults.",
    "options": {
     "A": {
@@ -3954,12 +4799,34 @@
      "text": "Sensation to light touch is decreased to the midcalves bilaterally"
     }
    ],
-   "topic": "diabetic-neuropathy"
+   "topic": "diabetic-neuropathy",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Comorbid major depression** without **neuropathic pain**",
+     "then": "Fluoxetine"
+    },
+    {
+     "opt": "E",
+     "if": "**Primary insomnia** without **neuropathy**",
+     "then": "Trazodone"
+    },
+    {
+     "opt": null,
+     "if": "**Orthostatic hypotension** or **urinary retention**",
+     "then": "Duloxetine"
+    },
+    {
+     "opt": null,
+     "if": "**Persistent localized foot pain** despite **oral drugs**",
+     "then": "Topical capsaicin or lidocaine"
+    }
+   ]
   },
   "c-fm-02-q043": {
    "task": "Mechanism",
-   "boardCall": "Hyperventilation + Valsalva game in child -> cerebral hypoperfusion.",
-   "hinge": "Hyperventilation causes hypocapnic cerebral vasoconstriction, while Valsalva decreases venous return and cardiac output, producing syncope.",
+   "boardCall": "hyperventilation + **breath-hold against closed mouth** + **rapid recovery** → Cerebral hypoperfusion",
+   "hinge": "Hypocapnic vasoconstriction plus Valsalva-reduced venous return transiently drops cerebral blood flow.",
    "trap": "Occipital ecchymosis from striking the bed suggests epidural hematoma, but normal orientation confirms head strike was secondary.",
    "options": {
     "A": {
@@ -4045,12 +4912,36 @@
      "trap": true
     }
    ],
-   "topic": "syncope"
+   "topic": "syncope",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Lucid interval** followed by **worsening obtundation** and anisocoria",
+     "then": "Epidural hematoma",
+     "step": "stat head CT"
+    },
+    {
+     "opt": "A",
+     "if": "**Tonic-clonic movements** with **tongue biting** and postictal confusion",
+     "then": "Seizure"
+    },
+    {
+     "opt": "B",
+     "if": "**Exertional syncope** with **family history of sudden death**",
+     "then": "Cardiac arrhythmia",
+     "step": "obtain ECG and echo"
+    },
+    {
+     "opt": "E",
+     "if": "**COPD flare** with **somnolence and asterixis**",
+     "then": "Hypercarbia"
+    }
+   ]
   },
   "c-fm-02-q044": {
    "task": "Next step",
-   "boardCall": "Shoulder and hip girdle morning stiffness + ESR 70 in elderly -> prednisone.",
-   "hinge": "Polymyalgia rheumatica manifests as proximal shoulder and pelvic girdle stiffness with markedly elevated ESR, responding to low-dose prednisone.",
+   "boardCall": "77-year-old + **shoulder and hip morning stiffness** + **ESR 70** → Prednisone therapy",
+   "hinge": "Proximal girdle stiffness with high ESR defines polymyalgia rheumatica, needing low-dose steroids.",
    "trap": "Aching pain tempts NSAIDs (ibuprofen) or fibromyalgia drugs (amitriptyline), but markedly elevated ESR (70 mm/h) requires systemic steroids.",
    "options": {
     "A": {
@@ -4161,12 +5052,35 @@
      "text": "erythrocyte sedimentation rate is 70 mm/h"
     }
    ],
-   "topic": "giant-cell-arteritis"
+   "topic": "giant-cell-arteritis",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Moderate rheumatoid arthritis** failing **initial NSAIDs**",
+     "then": "Methotrexate therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Asymmetric joint pain** worse with use, **normal ESR**",
+     "then": "Ibuprofen therapy"
+    },
+    {
+     "opt": null,
+     "if": "**New headache and jaw claudication** or **vision loss**",
+     "then": "High-dose prednisone",
+     "step": "arrange temporal artery biopsy"
+    },
+    {
+     "opt": null,
+     "if": "**Proximal muscle weakness** with **elevated CK**",
+     "then": "Polymyositis workup"
+    }
+   ]
   },
   "c-fm-02-q045": {
    "task": "Next step",
-   "boardCall": "Severe obesity (BMI 38) + type 2 diabetes refractory to lifestyle -> gastric bypass.",
-   "hinge": "Bariatric surgery (gastric bypass) provides the greatest, most durable weight loss and glycemic control for patients with BMI >= 35 and diabetes.",
+   "boardCall": "**BMI 38** + **type 2 diabetes** + failed commercial diets → Gastric bypass",
+   "hinge": "Bariatric surgery yields the greatest durable weight loss and diabetes control.",
    "trap": "Previous diet failures tempt repeating low-carbohydrate diet or orlistat, but long-term sustained efficacy for severe obesity favors surgery.",
    "options": {
     "A": {
@@ -4252,12 +5166,34 @@
      "text": "BMI is 38 kg/m²"
     }
    ],
-   "topic": "obesity-and-bariatric-surgery"
+   "topic": "obesity-and-bariatric-surgery",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**BMI 31 without diabetes**, lifestyle failed, **declines GLP-1**",
+     "then": "Orlistat therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**BMI 27 without comorbidities** or **prior diet trial**",
+     "then": "Exercise program"
+    },
+    {
+     "opt": null,
+     "if": "**BMI 32 with hypertension**, **refuses surgery**",
+     "then": "Semaglutide or tirzepatide"
+    },
+    {
+     "opt": null,
+     "if": "**MEN 2 history** needing **pharmacologic weight loss**",
+     "then": "Avoid GLP-1 agonists"
+    }
+   ]
   },
   "c-fm-02-q046": {
    "task": "Other",
-   "boardCall": "Negative rapid strep + positive throat culture in child -> low sensitivity.",
-   "hinge": "Rapid antigen detection tests for group A Streptococcus have high specificity (> 95%) but moderate sensitivity (70-90%), causing false negatives.",
+   "boardCall": "child with exudative pharyngitis + **negative rapid strep** + **positive culture** → Low sensitivity",
+   "hinge": "False-negative rapid antigen screens reflect moderate sensitivity, requiring backup culture in children.",
    "trap": "A negative test in the presence of disease prompts selecting low negative predictive value, but the intrinsic assay flaw is low sensitivity.",
    "options": {
     "A": {
@@ -4344,12 +5280,34 @@
      "text": "throat cultures grow Streptococcus pyogenes (group A)"
     }
    ],
-   "topic": "diagnostic-test-accuracy"
+   "topic": "diagnostic-test-accuracy",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Positive rapid strep** with **negative throat culture**",
+     "then": "Low specificity"
+    },
+    {
+     "opt": "B",
+     "if": "**High disease prevalence** lowering **confidence in negative screen**",
+     "then": "Low negative predictive value"
+    },
+    {
+     "opt": "C",
+     "if": "**Low disease prevalence** increasing **false-positive proportion**",
+     "then": "Low positive predictive value"
+    },
+    {
+     "opt": null,
+     "if": "**Negative rapid strep** in a **healthy adult**",
+     "then": "No backup culture"
+    }
+   ]
   },
   "c-fm-02-q047": {
    "task": "Next step",
-   "boardCall": "Vaccine hesitancy citing flu after shot -> explain incidental virus misattribution.",
-   "hinge": "Addressing vaccine hesitancy requires explaining that inactivated influenza vaccine cannot cause infection and that coincidental viruses explain illness.",
+   "boardCall": "56-year-old + type 2 diabetes + October visit + **fears flu from shot** → Explain virus misattribution",
+   "hinge": "Nonjudgmental education correcting the coincidental-virus myth preserves rapport and boosts vaccination.",
    "trap": "Authoritarian demand or guilt-inducing warnings (options A and C) damage rapport and fail to educate the patient.",
    "options": {
     "A": {
@@ -4435,12 +5393,34 @@
      "text": "come down with the flu because of the shot"
     }
    ],
-   "topic": "adult-immunizations"
+   "topic": "adult-immunizations",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Patient still declines** after **thorough education**",
+     "then": "Document refusal and revisit"
+    },
+    {
+     "opt": null,
+     "if": "**Severe egg allergy** in a patient **wanting flu shot**",
+     "then": "Give inactivated vaccine normally"
+    },
+    {
+     "opt": null,
+     "if": "**Guillain-Barré** within **6 weeks of prior flu shot**",
+     "then": "Precaution against influenza vaccine"
+    },
+    {
+     "opt": null,
+     "if": "**Pregnant patient** in **any trimester**",
+     "then": "Give inactivated flu shot"
+    }
+   ]
   },
   "c-fm-02-q048": {
    "task": "Ethics",
-   "boardCall": "Mother requests clandestine drug testing of 16-year-old -> do not agree without son's assent.",
-   "hinge": "Involuntary or covert drug screening of an adolescent destroys therapeutic trust and violates autonomy; testing requires the minor's assent.",
+   "boardCall": "16-year-old + **dropping grades** + **mother requests secret drug screen** → Do not agree without son's assent",
+   "hinge": "Covert screening erodes adolescent trust and requires minor assent unless emergent.",
    "trap": "Parental legal custody tempts agreeing to testing or requesting written documentation, but minor assent is ethically required.",
    "options": {
     "A": {
@@ -4526,12 +5506,34 @@
      "text": "asks the physician to perform the drug screening without her son's knowledge"
     }
    ],
-   "topic": "adolescent-confidentiality-and-care"
+   "topic": "adolescent-confidentiality-and-care",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Adolescent arrives obtunded** from **suspected overdose**",
+     "then": "Perform drug testing immediately"
+    },
+    {
+     "opt": "D",
+     "if": "**16-year-old lives independently** or is **married**",
+     "then": "Emancipated minor status"
+    },
+    {
+     "opt": null,
+     "if": "**Adolescent gives assent** after **private confidential interview**",
+     "then": "Perform urine toxicology"
+    },
+    {
+     "opt": null,
+     "if": "**Adolescent refuses testing** despite **dropping grades**",
+     "then": "Continue counseling without test"
+    }
+   ]
   },
   "c-fm-02-q049": {
    "task": "Screening",
-   "boardCall": "55-year-old man for routine health maintenance -> serum lipid studies.",
-   "hinge": "Routine preventive health maintenance guidelines recommend universal lipid profile screening for all adult men aged 35 and older.",
+   "boardCall": "55-year-old man + **routine checkup** + smoker + BMI 34 → Serum lipid studies",
+   "hinge": "Universal lipid screening applies to all middle-aged adults to guide cardiovascular prevention.",
    "trap": "Heavy 35-pack-year smoking history tempts AAA screening, but abdominal ultrasound screening begins at age 65.",
    "options": {
     "A": {
@@ -4618,12 +5620,34 @@
      "text": "BMI is 34 kg/m²"
     }
    ],
-   "topic": "dyslipidemia"
+   "topic": "dyslipidemia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Man aged 65–75** who **ever smoked**",
+     "then": "Abdominal aortic aneurysm ultrasound"
+    },
+    {
+     "opt": "C",
+     "if": "**Urinary hesitancy** with **hard, nodular prostate** on exam",
+     "then": "Serum PSA"
+    },
+    {
+     "opt": "A",
+     "if": "**Exertional chest pain** with **intermediate pretest risk**",
+     "then": "Exercise stress test"
+    },
+    {
+     "opt": null,
+     "if": "**55-year-old with 35 pack-years** actively smoking",
+     "then": "Annual low-dose chest CT"
+    }
+   ]
   },
   "c-fm-02-q050": {
    "task": "Risk factor",
-   "boardCall": "Multiple cardiovascular risks in 55-year-old -> smoking is strongest 10-year mortality risk factor.",
-   "hinge": "Active cigarette smoking confers the greatest relative and absolute 10-year mortality risk among all modifiable cardiovascular factors.",
+   "boardCall": "55-year-old + **normal lipids** + BP 138/88 + BMI 34 + **35-pack-yr smoker** → Smoking",
+   "hinge": "Tobacco confers higher 10-year mortality than obesity or borderline hypertension.",
    "trap": "Obesity (BMI 34) and borderline hypertension (138/88) are prominent, but smoking confers the highest mortality hazard.",
    "options": {
     "A": {
@@ -4705,7 +5729,29 @@
      "text": "Physical findings are unchanged"
     }
    ],
-   "topic": "smoking-cessation"
+   "topic": "smoking-cessation",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Nonsmoker** with **BP persistently 175/105 mm Hg**",
+     "then": "Blood pressure"
+    },
+    {
+     "opt": "E",
+     "if": "**Nonsmoker with BMI 46** and **sleep apnea**",
+     "then": "Weight"
+    },
+    {
+     "opt": null,
+     "if": "**Smoker willing to quit** at **today's visit**",
+     "then": "Varenicline or NRT"
+    },
+    {
+     "opt": null,
+     "if": "**Smoker with seizure history** wanting **cessation pill**",
+     "then": "Use varenicline, avoid bupropion"
+    }
+   ]
   }
  },
  "topics": {
@@ -8836,5 +9882,5 @@
    "evidence": "Checked 2026-10-30: [CDC HCV care](https://www.cdc.gov/hepatitis-c/hcp/clinical-care/), [CDC HBV exposure guidance](https://www.cdc.gov/std/treatment-guidelines/hbv.htm)."
   }
  },
- "updatedAt": "2026-11-07T08:13:46Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

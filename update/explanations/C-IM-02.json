@@ -8,8 +8,8 @@
  "items": {
   "c-im-02-p02q001": {
    "task": "Diagnosis",
-   "boardCall": "Dyspnea + orthopnea + S3 + right pleural effusion -> transudate with pleural glucose equal to serum glucose.",
-   "hinge": "Congestive heart failure causes a transudative effusion with glucose equal to serum.",
+   "boardCall": "dyspnea + **4-pillow orthopnea** + **S3 gallop** + right pleural effusion → Pleural glucose equal to serum",
+   "hinge": "Decompensated heart failure causes a transudative effusion whose glucose equilibrates with blood.",
    "trap": "Right-sided effusion pulls toward exudative causes like pneumonia or malignancy.",
    "options": {
     "A": {
@@ -97,12 +97,29 @@
      "text": "base of the right hemithorax"
     }
    ],
-   "topic": "pleural-effusion"
+   "topic": "pleural-effusion",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Fever, pleuritic pain**, purulent exudate with lobar infiltrate",
+     "then": "Neutrophilic leukocyte count > 1000"
+    },
+    {
+     "opt": "A",
+     "if": "**Chest trauma**, hemorrhagic tap, or pulmonary infarction",
+     "then": "Erythrocyte count > 15,000"
+    },
+    {
+     "opt": "E",
+     "if": "**Weight loss**, unilateral exudative effusion, negative CHF signs",
+     "then": "Protein concentration ≥ 3"
+    }
+   ]
   },
   "c-im-02-p02q002": {
    "task": "Next step",
-   "boardCall": "Acute warm knee effusion + limited active and passive range of motion -> joint aspiration.",
-   "hinge": "Acute inflammatory monoarthritis requires arthrocentesis to exclude septic arthritis and crystal disease.",
+   "boardCall": "1 week post-fall + **warm knee effusion** + **limited ROM** + no fracture → Aspiration of the knee joint",
+   "hinge": "Acute warm monoarthritis requires synovial analysis to exclude septic joint or crystals.",
    "trap": "The fall and osteopenia pull toward imaging for occult fracture rather than synovial analysis.",
    "options": {
     "A": {
@@ -189,12 +206,29 @@
      "trap": true
     }
    ],
-   "topic": "septic-arthritis"
+   "topic": "septic-arthritis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Afebrile locking**, mechanical catching, no warmth",
+     "then": "MRI of the knee"
+    },
+    {
+     "opt": "A",
+     "if": "**Symmetric PIP/MCP swelling**, morning stiffness > 1 hour",
+     "then": "Serum rheumatoid factor assay"
+    },
+    {
+     "opt": "E",
+     "if": "**Diabetic foot ulcer** probing to bone, suspected osteomyelitis",
+     "then": "Bone biopsy"
+    }
+   ]
   },
   "c-im-02-p02q003": {
    "task": "Diagnosis",
-   "boardCall": "Heavy menses + fatigue + pale conjunctivae + reactive thrombocytosis -> microcytic anemia with decreased MCV.",
-   "hinge": "Chronic blood loss causes iron deficiency anemia with low MCV and low ferritin.",
+   "boardCall": "heavy menses + fatigue + **Hb 10.2** + **platelets 410,000** → Decreased mean red cell volume",
+   "hinge": "Chronic menstrual blood loss depletes iron stores, producing microcytosis and reactive thrombocytosis.",
    "trap": "Mild anemia with thrombocytosis can pull toward primary myeloproliferative disorders.",
    "options": {
     "A": {
@@ -284,12 +318,29 @@
      "text": "Platelet count 410,000/mm³"
     }
    ],
-   "topic": "microcytic-anemia"
+   "topic": "microcytic-anemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**After starting oral iron** or acute hemolysis",
+     "then": "Increased reticulocyte count"
+    },
+    {
+     "opt": "E",
+     "if": "**Chronic inflammation** with normal MCV, elevated ESR",
+     "then": "Increased serum ferritin concentration"
+    },
+    {
+     "opt": "C",
+     "if": "**Anemia of chronic disease** with elevated hepcidin",
+     "then": "Decreased serum total iron-binding capacity"
+    }
+   ]
   },
   "c-im-02-p02q004": {
    "task": "Risk factor",
-   "boardCall": "Preoperative cardiac risk assessment with MI 5 months ago -> recent MI is strongest predictor.",
-   "hinge": "Myocardial infarction within the preceding 6 months carries the highest perioperative cardiac risk.",
+   "boardCall": "lumpectomy pre-op + **MI 5 months ago** + 5 PVCs/min → MI within the past 6 months",
+   "hinge": "Recent myocardial infarction carries the greatest perioperative reinfarction risk, outweighing isolated PVCs.",
    "trap": "Frequent premature ventricular contractions on ECG pull toward arrhythmia as the main danger.",
    "options": {
     "A": {
@@ -378,12 +429,29 @@
      "trap": true
     }
    ],
-   "topic": "perioperative-care"
+   "topic": "perioperative-care",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Frequent runs of ventricular tachycardia** or mobitz II",
+     "then": "ECG findings"
+    },
+    {
+     "opt": "E",
+     "if": "**Chronic cough**, dyspnea, FEV1 < 50% (pulmonary risk)",
+     "then": "History of smoking"
+    },
+    {
+     "opt": null,
+     "if": "**Decompensated heart failure** prior to elective lumpectomy",
+     "then": "Postpone elective surgery"
+    }
+   ]
   },
   "c-im-02-p02q005": {
    "task": "Next step",
-   "boardCall": "Hematemesis + melena + persistent tachycardia + hematocrit 18% after crystalloid -> transfuse packed red blood cells.",
-   "hinge": "Severe upper GI bleed with hematocrit 18% and ongoing tachycardia requires packed RBC transfusion.",
+   "boardCall": "NSAID use + hematemesis + **pulse 130/min** + **hematocrit 18% post-saline** → Packed red blood cells",
+   "hinge": "Upper GI hemorrhage with tachycardia and profound anemia requires oxygen-carrying transfusion.",
    "trap": "Administering additional crystalloid or acid suppression delays essential oxygen-carrying blood transfusion.",
    "options": {
     "A": {
@@ -482,12 +550,31 @@
      "trap": true
     }
    ],
-   "topic": "gastrointestinal-bleeding"
+   "topic": "gastrointestinal-bleeding",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Known cirrhosis**, ascites, spider angiomas, esophageal varices",
+     "then": "Octreotide",
+     "step": "add prophylactic IV ceftriaxone"
+    },
+    {
+     "opt": "B",
+     "if": "**Elevated INR** on warfarin with active bleeding",
+     "then": "Fresh frozen plasma",
+     "step": "give vitamin K concurrently"
+    },
+    {
+     "opt": "A",
+     "if": "**Hematocrit 35%**, ongoing hypotension after initial bolus",
+     "then": "Additional 2 L of 0.9% saline"
+    }
+   ]
   },
   "c-im-02-p02q006": {
    "task": "Prevention",
-   "boardCall": "Linear vesicles and bullae after weeding outdoors -> allergic contact dermatitis prevented by avoiding weeds.",
-   "hinge": "Urushiol from toxic plants (poison ivy/oak/sumac) causes linear vesicular dermatitis preventable by weed avoidance.",
+   "boardCall": "weeding backyard + **linear papules and vesicles** + **exposed arms/face** → Avoidance of contact with weeds",
+   "hinge": "Urushiol oil from Toxicodendron plants triggers delayed type IV linear vesicular dermatitis.",
    "trap": "Rose bush scratches pull toward rose thorns and sporotrichosis rather than contact dermatitis.",
    "options": {
     "A": {
@@ -573,12 +660,29 @@
      "trap": true
     }
    ],
-   "topic": "contact-dermatitis"
+   "topic": "contact-dermatitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Painless nodular lymphangitis** climbing up arm after rose scratch",
+     "then": "Avoidance of rose thorns"
+    },
+    {
+     "opt": "E",
+     "if": "**Pruritic papules** on exposed ankles after dusk",
+     "then": "Wearing insect repellant"
+    },
+    {
+     "opt": "D",
+     "if": "**Erythematous rash** strictly matching sun-lotion borders",
+     "then": "Avoidance of sunscreen"
+    }
+   ]
   },
   "c-im-02-p02q007": {
    "task": "Next step",
-   "boardCall": "Exudative pharyngitis + posterior cervical lymphadenopathy + splenomegaly -> heterophile antibody test (Monospot).",
-   "hinge": "Exudative tonsillitis with posterior cervical adenopathy and splenomegaly indicates infectious mononucleosis.",
+   "boardCall": "18-year-old + exudative pharyngitis + **posterior cervical nodes** + **splenomegaly** → Monospot test",
+   "hinge": "Pharyngitis with posterior adenopathy and splenic enlargement points to EBV over streptococcus.",
    "trap": "Exudative pharyngitis prompts testing for streptococcal infection, but posterior adenopathy points to EBV.",
    "options": {
     "A": {
@@ -674,12 +778,29 @@
      "trap": true
     }
    ],
-   "topic": "infectious-mononucleosis"
+   "topic": "infectious-mononucleosis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Prior pharyngitis**, new migratory arthritis, elevated ASO",
+     "then": "Antistreptolysin O titer"
+    },
+    {
+     "opt": "E",
+     "if": "**Painless firm supraclavicular node**, night sweats, weight loss",
+     "then": "Lymph node biopsy"
+    },
+    {
+     "opt": "C",
+     "if": "**High fever**, changing regurgitant murmur, Osler nodes",
+     "then": "Blood culture"
+    }
+   ]
   },
   "c-im-02-p02q008": {
    "task": "Diagnosis",
-   "boardCall": "COPD patient with increased cough, purulent sputum, rhonchi, and hyperinflation without infiltrate -> acute bronchitis / COPD exacerbation.",
-   "hinge": "Acute increase in sputum and dyspnea in COPD without a chest x-ray infiltrate indicates acute bronchitis.",
+   "boardCall": "COPD + yellow sputum + **rhonchi** + **hyperinflation without infiltrate** → Bronchitis",
+   "hinge": "Worsening dyspnea and sputum without radiographic infiltrate indicate acute bronchitis.",
    "trap": "Yellow purulent sputum and homeless shelter exposure pull toward pneumonia or tuberculosis.",
    "options": {
     "A": {
@@ -766,12 +887,30 @@
      "text": "worked as a volunteer in a homeless shelter for the past 10 years"
     }
    ],
-   "topic": "copd"
+   "topic": "copd",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Focal lobar consolidation** on chest x-ray with fever",
+     "then": "Community-acquired pneumonia"
+    },
+    {
+     "opt": "E",
+     "if": "**Night sweats, weight loss**, apical cavitary lesion",
+     "then": "Tuberculosis",
+     "step": "isolate and check AFB smears"
+    },
+    {
+     "opt": "C",
+     "if": "**Hemoptysis, weight loss**, central hilar mass",
+     "then": "Bronchogenic carcinoma"
+    }
+   ]
   },
   "c-im-02-p02q009": {
    "task": "Diagnosis",
-   "boardCall": "Hypernatremia + dilute urine concentrating briskly to 1000 mOsmol/kg after desmopressin -> central diabetes insipidus.",
-   "hinge": "Urine osmolality rising to 1000 mOsmol/kg after desmopressin confirms intact renal response and central ADH deficiency.",
+   "boardCall": "hypernatremia + dilute urine + **urine osmolality jumps to 1000 post-DDAVP** → Idiopathic central diabetes insipidus",
+   "hinge": "Brisk urinary concentration after desmopressin confirms intact kidneys and central ADH deficiency.",
    "trap": "Current hydrochlorothiazide therapy pulls toward medication-induced nephrogenic diabetes insipidus.",
    "options": {
     "A": {
@@ -863,12 +1002,29 @@
      "text": "history of hypertension treated with hydrochlorothiazide"
     }
    ],
-   "topic": "polyuria-diabetes-insipidus"
+   "topic": "polyuria-diabetes-insipidus",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Lithium use** with minimal urine response to DDAVP",
+     "then": "Medication-induced nephrogenic DI"
+    },
+    {
+     "opt": "C",
+     "if": "**No DDAVP response** after water deprivation, no meds",
+     "then": "Idiopathic nephrogenic diabetes insipidus"
+    },
+    {
+     "opt": "D",
+     "if": "**Hyponatremia**, urine concentrates spontaneously with water deprivation",
+     "then": "Primary polydipsia"
+    }
+   ]
   },
   "c-im-02-p02q010": {
    "task": "Next step",
-   "boardCall": "Chronic hypertension with end-organ damage (retinopathy, cardiomegaly) -> initial testing includes serum creatinine.",
-   "hinge": "Initial evaluation of essential hypertension requires assessing renal function and end-organ damage with serum creatinine.",
+   "boardCall": "BP 150/102 + **grade 2 retinopathy** + **displaced PMI** → Measurement of serum creatinine",
+   "hinge": "Initial hypertension workup screens for renal end-organ damage alongside metabolic cardiovascular risks.",
    "trap": "Premature family cardiovascular deaths pull toward secondary hypertension screening rather than baseline testing.",
    "options": {
     "A": {
@@ -960,12 +1116,29 @@
      "text": "both of his parents died while in their 40s"
     }
    ],
-   "topic": "essential-hypertension"
+   "topic": "essential-hypertension",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Spontaneous hypokalemia** (<3.5) with resistant hypertension",
+     "then": "Measurement of serum aldosterone"
+    },
+    {
+     "opt": "D",
+     "if": "**Paroxysmal headaches, diaphoresis**, palpitations",
+     "then": "Measurement of urine metanephrine"
+    },
+    {
+     "opt": "A",
+     "if": "**Abdominal bruit**, flash pulmonary edema, refractory HTN",
+     "then": "Plasma renin and renal duplex"
+    }
+   ]
   },
   "c-im-02-p02q011": {
    "task": "Pharmacology",
-   "boardCall": "Acute renal failure + muddy brown casts after antibiotic therapy -> amikacin nephrotoxicity (acute tubular necrosis).",
-   "hinge": "Muddy brown granular casts identify acute tubular necrosis from aminoglycoside (amikacin) toxicity.",
+   "boardCall": "hospitalized 2 weeks + acute renal failure + **muddy brown casts** → Amikacin",
+   "hinge": "Aminoglycosides cause direct proximal tubular necrosis producing characteristic granular casts.",
    "trap": "Naproxen and lisinopril cause hemodynamic AKI, but muddy brown casts point to aminoglycoside ATN.",
    "options": {
     "A": {
@@ -1057,12 +1230,30 @@
      "text": "naproxen"
     }
    ],
-   "topic": "acute-kidney-injury"
+   "topic": "acute-kidney-injury",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Fever, rash, eosinophiluria**, WBC casts after new drug",
+     "then": "Naproxen"
+    },
+    {
+     "opt": "D",
+     "if": "**Bland urine sediment**, FENa < 1%, bilateral RAS",
+     "then": "Lisinopril"
+    },
+    {
+     "opt": "C",
+     "if": "**Thrombocytopenia ≥50%** 5–10 days after starting drug",
+     "then": "Heparin",
+     "step": "switch to argatroban"
+    }
+   ]
   },
   "c-im-02-p02q012": {
    "task": "Diagnosis",
-   "boardCall": "Regional enteritis + chronic diarrhea + alopecia + acral hyperkeratotic rash -> zinc deficiency.",
-   "hinge": "The triad of chronic diarrhea, alopecia, and periorificial/acral rash is classic for zinc deficiency.",
+   "boardCall": "Crohn disease + chronic diarrhea + **alopecia** + **acral hyperkeratotic rash** → Zinc",
+   "hinge": "Malabsorption with hair loss and periorificial dermatitis defines acrodermatitis enteropathica.",
    "trap": "Corticosteroid use and inflammatory bowel disease pull toward Crohn skin manifestations or steroid side effects.",
    "options": {
     "A": {
@@ -1154,12 +1345,29 @@
      "text": "treated on several occasions with 2- to 3-month courses of oral corticosteroids"
     }
    ],
-   "topic": "nutritional-deficiencies"
+   "topic": "nutritional-deficiencies",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Microcytic anemia, neutropenia**, myeloneuropathy after gastric bypass",
+     "then": "Copper"
+    },
+    {
+     "opt": "D",
+     "if": "**Dilated cardiomyopathy**, myalgias on long-term TPN",
+     "then": "Selenium"
+    },
+    {
+     "opt": "A",
+     "if": "**Macrocytic anemia**, paresthesias after ileal resection",
+     "then": "Cobalt"
+    }
+   ]
   },
   "c-im-02-p02q013": {
    "task": "Diagnosis",
-   "boardCall": "Pneumonia + pleural effusion with pH 6.9 and gram-positive diplococci -> complicated parapneumonic effusion / empyema.",
-   "hinge": "Pleural fluid with pH < 7.2 and bacteria on Gram stain defines a complicated effusion or empyema requiring tube thoracostomy.",
+   "boardCall": "pneumonia + pleural effusion + **pH 6.9** + **gram-positive diplococci** → Empyema",
+   "hinge": "Pleural acidosis or visible bacteria on stain mandates urgent chest-tube drainage.",
    "trap": "Yellow fluid and modest leukocyte count pull toward uncomplicated parapneumonic effusion, but low pH and bacteria confirm empyema.",
    "options": {
     "A": {
@@ -1246,12 +1454,29 @@
      "text": "pH 6.9"
     }
    ],
-   "topic": "pleural-effusion"
+   "topic": "pleural-effusion",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Pleural pH > 7.2**, normal glucose, negative Gram stain",
+     "then": "Uncomplicated parapneumonic effusion"
+    },
+    {
+     "opt": "D",
+     "if": "**Lymphocytic exudate**, elevated ADA, apical cavitary lesion",
+     "then": "Tuberculous pleuritis"
+    },
+    {
+     "opt": "A",
+     "if": "**Milky white fluid** with triglycerides > 110",
+     "then": "Chylothorax"
+    }
+   ]
   },
   "c-im-02-p02q014": {
    "task": "Prevention",
-   "boardCall": "Acute hepatitis with isolated anti-HBc IgM in window period -> prevent with hepatitis B vaccine.",
-   "hinge": "Isolated anti-HBc in acute hepatitis indicates HBV window period, which is prevented by hepatitis B vaccination.",
+   "boardCall": "acute icteric hepatitis + **HBsAg negative** + **isolated anti-HBc positive** → Administration of hepatitis B vaccine",
+   "hinge": "Isolated anti-HBc signals the acute HBV window period, preventable by prior immunization.",
    "trap": "Maternal hemochromatosis pulls toward iron overload screening rather than recognizing viral hepatitis.",
    "options": {
     "A": {
@@ -1347,12 +1572,29 @@
      "trap": true
     }
    ],
-   "topic": "viral-hepatitis"
+   "topic": "viral-hepatitis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Fecal-oral outbreak** after raw shellfish, IgM anti-HAV+",
+     "then": "Good hand washing"
+    },
+    {
+     "opt": "D",
+     "if": "**Bronze diabetes**, elevated ferritin, arthritis, cirrhosis",
+     "then": "Transferrin saturation testing"
+    },
+    {
+     "opt": "C",
+     "if": "**Young adult** with hemolysis, dystonia, low ceruloplasmin",
+     "then": "Screen for Kayser-Fleischer rings"
+    }
+   ]
   },
   "c-im-02-p02q015": {
    "task": "Diagnosis",
-   "boardCall": "Tall stature + bilateral gynecomastia + small testes + elevated FSH/LH -> Klinefelter syndrome confirmed by karyotype.",
-   "hinge": "Hypergonadotropic hypogonadism with tall eunuchoid habitus indicates Klinefelter syndrome, confirmed by karyotype (47,XXY).",
+   "boardCall": "tall eunuchoid habitus + gynecomastia + **small testes** + **high FSH/LH** → Karyotype analysis",
+   "hinge": "Hypergonadotropic hypogonadism in an eunuchoid adult indicates Klinefelter syndrome, confirmed cytogenetically.",
    "trap": "Elevated LH and FSH tempt further hormonal or pituitary imaging rather than cytogenetic confirmation.",
    "options": {
     "A": {
@@ -1468,12 +1710,29 @@
      "text": "follicle-stimulating hormone (FSH) concentration of 50 mIU/mL"
     }
    ],
-   "topic": "chromosomal-and-genetic-disorders"
+   "topic": "chromosomal-and-genetic-disorders",
+   "branches": [
+    {
+     "opt": "I",
+     "if": "**Low LH/FSH**, bitemporal hemianopsia, low testosterone",
+     "then": "MRI of hypothalamus and pituitary"
+    },
+    {
+     "opt": "G",
+     "if": "**Galactorrhea**, headaches, low LH/FSH, low testosterone",
+     "then": "Serum prolactin concentration"
+    },
+    {
+     "opt": "A",
+     "if": "**Macroorchidism**, intellectual disability, long face",
+     "then": "DNA analysis for trinucleotide repeats"
+    }
+   ]
   },
   "c-im-02-p02q016": {
    "task": "Diagnosis",
-   "boardCall": "Generalized itching + weight loss + excoriations + BUN 45 / Cr 3 -> uremic anorexia from renal failure.",
-   "hinge": "Advanced renal failure with azotemia (BUN 45, Cr 3) causes uremic anorexia, pruritus, and hyperkalemia.",
+   "boardCall": "generalized pruritus + anorexia + **K+ 5.9** + **BUN 45, Cr 3** → Renal failure",
+   "hinge": "Azotemia with hyperkalemia and metabolic acidosis indicates uremic syndrome driving appetite loss.",
    "trap": "Weight loss and anorexia in an elderly patient pull toward depression or occult malignancy.",
    "options": {
     "A": {
@@ -1563,12 +1822,29 @@
      "text": "Creatinine 3 mg/dL"
     }
    ],
-   "topic": "chronic-kidney-disease"
+   "topic": "chronic-kidney-disease",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Normal BUN/Cr**, insomnia, anhedonia, hopelessness",
+     "then": "Major depressive disorder"
+    },
+    {
+     "opt": "C",
+     "if": "**Heat intolerance**, lid lag, hyperreflexia, tachycardia",
+     "then": "Hyperthyroidism"
+    },
+    {
+     "opt": null,
+     "if": "**Pericardial friction rub** or uremic encephalopathy",
+     "then": "Urgent hemodialysis"
+    }
+   ]
   },
   "c-im-02-p02q017": {
    "task": "Mechanism",
-   "boardCall": "Farmworker + bradycardia + hypotension + diaphoresis + miosis -> organophosphate poisoning from acetylcholinesterase inhibition.",
-   "hinge": "Organophosphate pesticides irreversibly inhibit acetylcholinesterase, leading to decreased synaptic breakdown of acetylcholine.",
+   "boardCall": "farmworker + bradycardia + **diaphoresis** + **pinpoint pupils** → Decreased synaptic activity of cholinesterase",
+   "hinge": "Organophosphates phosphorylate acetylcholinesterase, causing excess acetylcholine at muscarinic and nicotinic synapses.",
    "trap": "Generalized weakness tempts neuromuscular junction blockade rather than recognizing central cholinergic excess.",
    "options": {
     "A": {
@@ -1654,12 +1930,29 @@
      "text": "generalized weakness, diaphoresis, and pinpoint pupils"
     }
    ],
-   "topic": "organophosphate-poisoning"
+   "topic": "organophosphate-poisoning",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Anticholinergic toxidrome** (mydriasis, dry skin, delirium)",
+     "then": "Decreased postsynaptic acetylcholine stimulation"
+    },
+    {
+     "opt": "A",
+     "if": "**Descending paralysis**, diplopia after home-canned food",
+     "then": "Decreased presynaptic acetylcholine release"
+    },
+    {
+     "opt": "E",
+     "if": "**Tachycardia, hypertension**, mydriasis after cocaine",
+     "then": "Release of synaptic norepinephrine"
+    }
+   ]
   },
   "c-im-02-p02q018": {
    "task": "Next step",
-   "boardCall": "Nocturnal burning substernal chest pain relieved by upright posture -> trial of oral H2-receptor blocker for GERD.",
-   "hinge": "Nocturnal burning retrosternal pain relieved by sitting upright is gastroesophageal reflux, treated initially with acid suppression.",
+   "boardCall": "32-year-old + **nocturnal burning substernal pain** + **relieved upright** → Oral H2-receptor blocking agent",
+   "hinge": "Postural nocturnal burning without alarm features points to reflux over ischemia.",
    "trap": "Smoking and family history of MI pull toward cardiac ischemia testing rather than empiric GERD therapy.",
    "options": {
     "A": {
@@ -1797,12 +2090,29 @@
      "trap": true
     }
    ],
-   "topic": "gastroesophageal-reflux-disease"
+   "topic": "gastroesophageal-reflux-disease",
+   "branches": [
+    {
+     "opt": "J",
+     "if": "**Solid-food dysphagia** or recurrent hematemesis",
+     "then": "Upper endoscopy"
+    },
+    {
+     "opt": "F",
+     "if": "**Exertional substernal pressure** relieved by rest, normal ECG",
+     "then": "Outpatient exercise stress test"
+    },
+    {
+     "opt": "I",
+     "if": "**Postprandial RUQ pain** radiating to right scapula",
+     "then": "Ultrasonography of the abdomen"
+    }
+   ]
   },
   "c-im-02-p02q019": {
    "task": "Next step",
-   "boardCall": "15-year-old girl + fleeting chest pain + midsystolic click + normal ECG -> reassurance only for benign mitral valve prolapse.",
-   "hinge": "Fleeting nonexertional pain with a midsystolic click and normal ECG represents benign MVP, managed with reassurance.",
+   "boardCall": "15-year-old + **fleeting left breast pain** + **midsystolic click** + normal ECG → Reassurance only",
+   "hinge": "Fleeting nonexertional discomfort with an isolated click indicates benign mitral prolapse.",
    "trap": "Father and uncle with premature MI tempt extensive cardiac stress testing or beta-blocker therapy.",
    "options": {
     "A": {
@@ -1947,12 +2257,29 @@
      "trap": true
     }
    ],
-   "topic": "valvular-heart-disease"
+   "topic": "valvular-heart-disease",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Symptomatic PVCs** or frequent tachycardia from MVP",
+     "then": "Beta-adrenergic blocking agent"
+    },
+    {
+     "opt": "E",
+     "if": "**Reproducible tenderness** along costochondral junctions",
+     "then": "Oral NSAID agent"
+    },
+    {
+     "opt": null,
+     "if": "**Exertional syncope** or holosystolic murmur with click",
+     "then": "Transthoracic echocardiography"
+    }
+   ]
   },
   "c-im-02-p02q020": {
    "task": "Diagnosis",
-   "boardCall": "Nocturnal rest chest pain + transient inferior ST elevation resolving spontaneously -> variant angina pectoris (vasospasm).",
-   "hinge": "Episodic rest chest pain with transient ST elevation that normalizes between attacks defines variant (Prinzmetal) angina.",
+   "boardCall": "nocturnal rest pain + **transient inferior ST elevation** + **subsequent normal ECG** → Variant angina pectoris",
+   "hinge": "Episodic rest angina with reversible ST elevation reflects coronary vasospasm.",
    "trap": "Anxiety and migraine history tempt a noncardiac diagnosis like panic disorder, but ECG showed focal ST elevation.",
    "options": {
     "A": {
@@ -2062,12 +2389,29 @@
      "trap": true
     }
    ],
-   "topic": "stable-ischemic-heart-disease"
+   "topic": "stable-ischemic-heart-disease",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Exertional pain** with fixed coronary stenosis",
+     "then": "Atherosclerotic coronary artery disease"
+    },
+    {
+     "opt": "E",
+     "if": "**Pleuritic positional pain**, diffuse concave ST elevation",
+     "then": "Pericarditis"
+    },
+    {
+     "opt": "C",
+     "if": "**Retrosternal pain** triggered by cold liquids, normal ECG",
+     "then": "Esophageal spasm"
+    }
+   ]
   },
   "c-im-02-p02q021": {
    "task": "Diagnosis",
-   "boardCall": "Unilateral flank pain + dermatomal grouped vesicles on erythematous base -> varicella-zoster virus (herpes zoster).",
-   "hinge": "Dermatomal distribution of clustered vesicles following neuropathic pain indicates varicella-zoster virus reactivation.",
+   "boardCall": "elderly + **right flank pain** + **grouped dermatomal vesicles** → Varicella-zoster virus",
+   "hinge": "Painful unilateral grouped vesicles restricted to one thoracic dermatome define zoster reactivation.",
    "trap": "Grouped vesicles can suggest herpes simplex virus, but a unilateral thoracic dermatomal pattern confirms herpes zoster.",
    "options": {
     "A": {
@@ -2154,12 +2498,30 @@
      "text": "fever, headache, malaise"
     }
    ],
-   "topic": "herpes-zoster"
+   "topic": "herpes-zoster",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Recurrent grouped vesicles** on lip or genitalia",
+     "then": "Herpes simplex virus 1"
+    },
+    {
+     "opt": "A",
+     "if": "**Immunocompromised** with retinitis or esophagitis ulcers",
+     "then": "Cytomegalovirus"
+    },
+    {
+     "opt": null,
+     "if": "**V1 ophthalmic involvement** with Hutchinson sign",
+     "then": "Urgent ophthalmology consult",
+     "step": "start IV or high-dose oral antiviral"
+    }
+   ]
   },
   "c-im-02-p02q022": {
    "task": "Diagnosis",
-   "boardCall": "Exertional dyspnea + angina + pulsus parvus et tardus + late-peaking systolic ejection murmur at age 62 -> bicuspid aortic valve stenosis.",
-   "hinge": "Harsh late-peaking systolic murmur with pulsus parvus et tardus in a 60-year-old indicates severe calcific aortic stenosis from a bicuspid valve.",
+   "boardCall": "age 62 + **late-peaking systolic murmur** + **pulsus parvus et tardus** → Bicuspid aortic valve",
+   "hinge": "Severe calcific aortic stenosis before age 70 implicates a congenital bicuspid valve.",
    "trap": "Previously healthy older adult tempts degenerative tricuspid stenosis, but presentation in the 60s favors congenital bicuspid valve.",
    "options": {
     "A": {
@@ -2255,12 +2617,29 @@
      "text": "grade 4/6, harsh systolic ejection murmur is heard; it peaks in late systole"
     }
    ],
-   "topic": "valvular-heart-disease"
+   "topic": "valvular-heart-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Opening snap**, diastolic rumble, immigrant from endemic area",
+     "then": "Rheumatic valvular disease"
+    },
+    {
+     "opt": "C",
+     "if": "**Upper-extremity hypertension**, weak femoral pulses, rib notching",
+     "then": "Coarctation of the aorta"
+    },
+    {
+     "opt": "A",
+     "if": "**Wide fixed split S2** with pulmonic flow murmur",
+     "then": "Atrial septal defect"
+    }
+   ]
   },
   "c-im-02-p02q023": {
    "task": "Next step",
-   "boardCall": "Type 2 diabetes + blood pressure 138/88 mm Hg -> add ACE inhibitor (enalapril) to reduce diabetic complications.",
-   "hinge": "Elevated blood pressure in diabetes increases cardiovascular and renal risk, requiring ACE inhibitor therapy.",
+   "boardCall": "type 2 diabetes + A1c 5.8% + **BP 138/88** → Enalapril",
+   "hinge": "Diabetic blood pressure ≥130/80 needs ACE inhibition to protect kidneys and heart.",
    "trap": "Normal urinalysis and excellent HbA1c 5.8% tempt selecting no additional medications, but blood pressure is uncontrolled.",
    "options": {
     "A": {
@@ -2355,12 +2734,29 @@
      "trap": true
     }
    ],
-   "topic": "type-2-diabetes-mellitus"
+   "topic": "type-2-diabetes-mellitus",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**LDL > 70** in diabetic adult age 40–75",
+     "then": "Simvastatin"
+    },
+    {
+     "opt": "D",
+     "if": "**Normal BP**, elevated A1c on glipizide alone",
+     "then": "Metformin"
+    },
+    {
+     "opt": "F",
+     "if": "**BP < 120/80**, A1c < 7%, normal lipids",
+     "then": "No additional medications indicated"
+    }
+   ]
   },
   "c-im-02-p02q024": {
    "task": "Screening",
-   "boardCall": "Asymptomatic HIV patient with CD4 110/mm³ on TMP-SMX -> screen for latent tuberculosis with PPD skin test.",
-   "hinge": "All HIV patients require baseline screening for latent tuberculosis with tuberculin skin testing (>= 5 mm positive).",
+   "boardCall": "asymptomatic HIV + CD4 110 + **on TMP-SMX** → PPD skin test",
+   "hinge": "HIV patients need latent tuberculosis screening regardless of CD4 count.",
    "trap": "Positive Toxoplasma IgG and low CD4 tempt testing for active opportunistic infection rather than TB screening.",
    "options": {
     "A": {
@@ -2452,12 +2848,30 @@
      "text": "positive Toxoplasma IgG antibody assay"
     }
    ],
-   "topic": "tuberculosis"
+   "topic": "tuberculosis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Productive cough, night sweats**, positive tuberculin test",
+     "then": "X-ray of the chest",
+     "step": "rule out active TB before isoniazid"
+    },
+    {
+     "opt": "C",
+     "if": "**CD4 < 50/mm³** with chorioretinitis or colitis",
+     "then": "Urine cytomegalovirus antigen assay"
+    },
+    {
+     "opt": "D",
+     "if": "**CD4 < 50/mm³** with chronic watery diarrhea, fever",
+     "then": "Stool culture for MAC"
+    }
+   ]
   },
   "c-im-02-p02q025": {
    "task": "Next step",
-   "boardCall": "Stable symptomatic COPD with PaO2 74 mm Hg -> initiate inhaled bronchodilator (ipratropium).",
-   "hinge": "Ipratropium is the available inhaled bronchodilator for symptomatic COPD; home oxygen requires qualifying resting hypoxemia.",
+   "boardCall": "COPD + **mildly increased dyspnea** + **PaO2 74** → Ipratropium therapy",
+   "hinge": "Symptomatic COPD without severe resting hypoxemia needs bronchodilation rather than home oxygen.",
    "trap": "Mildly abnormal PaO2 of 74 mm Hg tempts home oxygen therapy, which is not indicated.",
    "options": {
     "A": {
@@ -2544,12 +2958,30 @@
      "trap": true
     }
    ],
-   "topic": "copd"
+   "topic": "copd",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Resting PaO2 ≤ 55** or SpO2 ≤ 88%",
+     "then": "Home oxygen therapy"
+    },
+    {
+     "opt": "D",
+     "if": "**Acute exacerbation** with wheezing, purulent sputum",
+     "then": "Prednisone therapy",
+     "step": "add antibiotics if purulent"
+    },
+    {
+     "opt": "A",
+     "if": "**Persistent functional limitation** despite bronchodilators",
+     "then": "Pulmonary rehabilitation"
+    }
+   ]
   },
   "c-im-02-p02q026": {
    "task": "Next step",
-   "boardCall": "Periorbital edema + bradycardia + weight gain + menorrhagia + hypercholesterolemia -> check serum TSH for hypothyroidism.",
-   "hinge": "The constellation of weight gain, bradycardia, periorbital edema, menorrhagia, and hypercholesterolemia indicates hypothyroidism, diagnosed by TSH.",
+   "boardCall": "periorbital edema + **bradycardia 55/min** + **menorrhagia** + cholesterol 300 → Serum TSH",
+   "hinge": "Hypometabolism, mucopolysaccharide edema, and heavy menses with normal kidneys point to hypothyroidism.",
    "trap": "Bilateral leg edema with puffy eyes tempts nephrotic syndrome workup, but normal kidney function points to thyroid disease.",
    "options": {
     "A": {
@@ -2648,12 +3080,34 @@
      "text": "Cholesterol 300 mg/dL"
     }
    ],
-   "topic": "hypothyroidism"
+   "topic": "hypothyroidism",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Postmenopausal woman** with **ascites** and adnexal mass",
+     "then": "Serum CA 125"
+    },
+    {
+     "opt": "C",
+     "if": "**Amenorrhea and hot flashes** in a **38-year-old woman**",
+     "then": "Serum FSH"
+    },
+    {
+     "opt": "F",
+     "if": "**Proximal muscle weakness** with **CK 4000** and normal TSH",
+     "then": "Muscle biopsy"
+    },
+    {
+     "opt": null,
+     "if": "**Edema with 4+ proteinuria** and **albumin 2.1**",
+     "then": "Nephrotic syndrome workup"
+    }
+   ]
   },
   "c-im-02-p02q027": {
    "task": "Diagnosis",
-   "boardCall": "Nonsmoking woman + chronic cough + 3-cm peripheral solitary pulmonary nodule -> adenocarcinoma of the lung.",
-   "hinge": "A solitary peripheral pulmonary lesion in a nonsmoking female is the classic presentation of lung adenocarcinoma.",
+   "boardCall": "**never-smoker woman** + 10-wk cough + **3-cm peripheral lung lesion** → Adenocarcinoma of the lung",
+   "hinge": "Peripheral solitary pulmonary nodules in nonsmoking women classically represent primary adenocarcinoma.",
    "trap": "Prior deep venous thrombosis tempts pulmonary embolism or pulmonary infarction rather than primary lung neoplasm.",
    "options": {
     "A": {
@@ -2761,12 +3215,34 @@
      "text": "x-ray of the chest shows a 3-cm peripheral lesion"
     }
    ],
-   "topic": "lung-cancer"
+   "topic": "lung-cancer",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Heavy smoker** with **central hilar mass** and hyponatremia",
+     "then": "Small cell lung cancer"
+    },
+    {
+     "opt": "G",
+     "if": "**Heavy smoker** with **central cavitary mass** and hypercalcemia",
+     "then": "Squamous cell lung carcinoma"
+    },
+    {
+     "opt": "H",
+     "if": "**Night sweats, hemoptysis**, and **apical cavitary infiltrate**",
+     "then": "Tuberculosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Bilateral hilar adenopathy** with **anterior uveitis** and erythema nodosum",
+     "then": "Sarcoidosis"
+    }
+   ]
   },
   "c-im-02-p02q028": {
    "task": "Diagnosis",
-   "boardCall": "Early satiety + splenomegaly + marked leukocytosis with full myeloid spectrum and basophilia -> chronic myelogenous leukemia (CML).",
-   "hinge": "Massive splenomegaly with leukocytosis showing complete granulocytic differentiation and basophilia indicates chronic myelogenous leukemia.",
+   "boardCall": "early satiety + **splenomegaly** + **WBC 23,600 with basophilia** → Chronic myelogenous leukemia",
+   "hinge": "Marked leukocytosis spanning all myeloid maturation stages plus basophilia distinguishes CML.",
    "trap": "Marked leukocytosis with left shift tempts leukemoid reaction, but basophilia and thrombocytosis identify CML.",
    "options": {
     "A": {
@@ -2856,12 +3332,34 @@
      "text": "Platelet count 500,000/mm³"
     }
    ],
-   "topic": "myeloproliferative-neoplasms"
+   "topic": "myeloproliferative-neoplasms",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Severe bacterial sepsis** with **left shift**, no basophilia, high LAP",
+     "then": "Leukemoid reaction"
+    },
+    {
+     "opt": "A",
+     "if": "**Older adult** with **mature lymphocytosis** and smudge cells",
+     "then": "Chronic lymphocytic leukemia"
+    },
+    {
+     "opt": "C",
+     "if": "**Massive splenomegaly and pancytopenia** with **TRAP-positive projections**",
+     "then": "Hairy cell leukemia"
+    },
+    {
+     "opt": "E",
+     "if": "**Portal hypertension** with **normal WBC** after pancreatitis",
+     "then": "Splenic vein thrombosis"
+    }
+   ]
   },
   "c-im-02-p02q029": {
    "task": "Next step",
-   "boardCall": "Acute pulmonary edema + orthopnea + JVD + bibasilar crackles -> intravenous furosemide.",
-   "hinge": "Acute decompensated heart failure with volume overload and pulmonary congestion requires immediate intravenous loop diuretic therapy.",
+   "boardCall": "orthopnea + **JVD** + **bibasilar crackles** + pitting edema → Intravenous furosemide",
+   "hinge": "Acute decompensated heart failure with pulmonary venous congestion demands rapid diuresis.",
    "trap": "Recent upper respiratory tract infection tempts treating with bronchodilators, but JVD and crackles prove heart failure.",
    "options": {
     "A": {
@@ -2969,12 +3467,34 @@
      "trap": true
     }
    ],
-   "topic": "heart-failure"
+   "topic": "heart-failure",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Expiratory wheezing** with **clear JVP** and asthma history",
+     "then": "Inhaled albuterol"
+    },
+    {
+     "opt": "F",
+     "if": "**Atrial fibrillation with RVR** and **preserved systolic function**",
+     "then": "Intravenous metoprolol"
+    },
+    {
+     "opt": "D",
+     "if": "**Cardiogenic shock** with **SBP 78** and cold extremities",
+     "then": "Intravenous dobutamine"
+    },
+    {
+     "opt": null,
+     "if": "**Hypotension (BP 75/45)** with **oliguria and cold skin**",
+     "then": "Norepinephrine plus dobutamine"
+    }
+   ]
   },
   "c-im-02-p02q030": {
    "task": "Next step",
-   "boardCall": "Closed head injury + asymptomatic hyponatremia 120 mEq/L + urine osmolality 340 -> SIADH managed with fluid restriction.",
-   "hinge": "Euvolemic hyponatremia with concentrated urine after head trauma indicates SIADH, treated primarily with fluid restriction in alert patients.",
+   "boardCall": "head trauma + **alert, normal neuro exam** + **Na 120, urine osm 340** → Fluid restriction",
+   "hinge": "Asymptomatic euvolemic hyponatremia from post-traumatic SIADH resolves safely with water restriction.",
    "trap": "Serum sodium of 120 mEq/L tempts 3% hypertonic saline, which is reserved for severe neurologic symptoms or seizures.",
    "options": {
     "A": {
@@ -3065,12 +3585,34 @@
      "trap": true
     }
    ],
-   "topic": "hyponatremia"
+   "topic": "hyponatremia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Acute seizures or coma** with **Na 116 mEq/L**",
+     "then": "Bolus of 3% saline"
+    },
+    {
+     "opt": "D",
+     "if": "**Vomiting and diarrhea** with **orthostatic hypotension**",
+     "then": "Bolus of 0.9% saline"
+    },
+    {
+     "opt": "B",
+     "if": "**New anisocoria** or **declining consciousness** after head injury",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": null,
+     "if": "**Polyuria with Na 154** and **urine osmolality 120**",
+     "then": "Desmopressin for central DI"
+    }
+   ]
   },
   "c-im-02-p02q031": {
    "task": "Diagnosis",
-   "boardCall": "Refractory heartburn + Raynaud phenomenon + fingertip edema -> systemic sclerosis (scleroderma).",
-   "hinge": "The combination of severe GERD from esophageal dysmotility, Raynaud phenomenon, and sclerodactyly confirms systemic sclerosis.",
+   "boardCall": "refractory GERD + diarrhea + **Raynaud phenomenon** + **fingertip edema** → Systemic sclerosis",
+   "hinge": "Esophageal dysmotility, cold-induced digital vasospasm, and puffy fingers unify scleroderma.",
    "trap": "Refractory heartburn and diarrhea tempt Zollinger-Ellison syndrome, but Raynaud phenomenon and fingertip edema prove systemic sclerosis.",
    "options": {
     "A": {
@@ -3158,12 +3700,34 @@
      "trap": true
     }
    ],
-   "topic": "systemic-sclerosis"
+   "topic": "systemic-sclerosis",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Multiple refractory duodenal ulcers** with **high fasting gastrin**",
+     "then": "Zollinger-Ellison syndrome"
+    },
+    {
+     "opt": "B",
+     "if": "**Flushing, watery diarrhea**, and **tricuspid regurgitation**",
+     "then": "Carcinoid syndrome"
+    },
+    {
+     "opt": "C",
+     "if": "**Malar rash and oral ulcers** with **anti-dsDNA positivity**",
+     "then": "Systemic lupus erythematosus"
+    },
+    {
+     "opt": "A",
+     "if": "**Macroglossia and nephrotic proteinuria** with **restrictive cardiomyopathy**",
+     "then": "Amyloidosis"
+    }
+   ]
   },
   "c-im-02-p02q032": {
    "task": "Prognosis",
-   "boardCall": "Autosomal dominant polycystic kidney disease in a parent -> 50% inheritance risk for each child.",
-   "hinge": "ADPKD is an autosomal dominant disorder; each offspring of an affected parent has a 50% transmission risk.",
+   "boardCall": "newly diagnosed PKD + **unaffected parents** + asks child risk → 50% (autosomal dominant)",
+   "hinge": "De novo autosomal dominant mutations still transmit to each child equally.",
    "trap": "Negative family history tempts non-genetic or zero recurrence risk, but de novo mutations carry standard 50% dominant inheritance.",
    "options": {
     "A": {
@@ -3250,12 +3814,34 @@
      "text": "risk for PKD in her children"
     }
    ],
-   "topic": "polycystic-kidney-disease"
+   "topic": "polycystic-kidney-disease",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Infantile cystic kidneys** with **hepatic fibrosis** and affected siblings",
+     "then": "25% (autosomal recessive)"
+    },
+    {
+     "opt": "C",
+     "if": "**Carrier mother** with **X-linked recessive Alport syndrome**",
+     "then": "50% for each son"
+    },
+    {
+     "opt": "D",
+     "if": "**Somatic mosaicism** confined solely to **kidney tissue**",
+     "then": "Minimal germline risk"
+    },
+    {
+     "opt": null,
+     "if": "**Adult with PKD** and **family history of ruptured aneurysm**",
+     "then": "Screen with brain MRA"
+    }
+   ]
   },
   "c-im-02-p02q033": {
    "task": "Pharmacology",
-   "boardCall": "Alcoholism + poor dentition + foul-smelling sputum + cavitary lesion with air-fluid level -> clindamycin for anaerobic lung abscess.",
-   "hinge": "Aspiration lung abscess caused by oral anaerobes produces foul sputum with an air-fluid level, treated with clindamycin.",
+   "boardCall": "alcoholism + poor dentition + **foul sputum** + **RLL cavity with air-fluid level** → Clindamycin",
+   "hinge": "Anaerobic aspiration lung abscess requires anaerobic coverage rather than routine pneumonia antibiotics.",
    "trap": "Presentation with fever and cough tempts macrolide therapy for routine pneumonia, overlooking anaerobic cavitary disease.",
    "options": {
     "A": {
@@ -3342,12 +3928,35 @@
      "text": "3 x 5-cm, round lesion in the right lower lung with an air-fluid level"
     }
    ],
-   "topic": "pneumonia"
+   "topic": "pneumonia",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Healthy young adult** with **patchy infiltrates**, no cavity",
+     "then": "Azithromycin"
+    },
+    {
+     "opt": "E",
+     "if": "**HIV with CD4 < 200** and **bilateral ground-glass opacities**",
+     "then": "Trimethoprim-sulfamethoxazole"
+    },
+    {
+     "opt": "C",
+     "if": "**Immunocompromised host** with **coccidioidal thin-walled cavity**",
+     "then": "Fluconazole"
+    },
+    {
+     "opt": null,
+     "if": "**Night sweats, weight loss**, and **upper-lobe cavitary lesion**",
+     "then": "RIPE therapy for TB",
+     "step": "isolate and check sputum AFB"
+    }
+   ]
   },
   "c-im-02-p02q034": {
    "task": "Next step",
-   "boardCall": "Severe hypercalcemia (calcium 16 mg/dL) + dehydration + lethargy -> intravenous 0.9% saline.",
-   "hinge": "Immediate management of severe symptomatic hypercalcemia requires vigorous volume repletion with intravenous normal saline.",
+   "boardCall": "metastatic breast cancer + **lethargy and dehydration** + **Ca 16 mg/dL** → Intravenous 0.9% saline",
+   "hinge": "Severe hypercalcemia causes profound natriuresis, making rapid volume expansion the urgent priority.",
    "trap": "Metastatic bone disease tempts bisphosphonate administration, but volume resuscitation with normal saline comes first.",
    "options": {
     "A": {
@@ -3434,12 +4043,34 @@
      "text": "serum calcium concentration is 16 mg/dL"
     }
    ],
-   "topic": "hypercalcemia"
+   "topic": "hypercalcemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**After saline repletion** for **sustained osteoclast inhibition**",
+     "then": "Intravenous pamidronate"
+    },
+    {
+     "opt": "A",
+     "if": "**Need for calcium drop** within **hours while hydrating**",
+     "then": "Intramuscular calcitonin"
+    },
+    {
+     "opt": "B",
+     "if": "**Volume overload** develops **after aggressive saline hydration**",
+     "then": "Intravenous furosemide"
+    },
+    {
+     "opt": null,
+     "if": "**Severe renal failure** preventing **IV saline hydration**",
+     "then": "Emergent hemodialysis"
+    }
+   ]
   },
   "c-im-02-p02q035": {
    "task": "Diagnosis",
-   "boardCall": "Severe rheumatoid arthritis + splenomegaly + neutropenia/pancytopenia -> Felty syndrome.",
-   "hinge": "The triad of seropositive rheumatoid arthritis, splenomegaly, and neutropenia defines Felty syndrome.",
+   "boardCall": "**10-yr seropositive RA** + **splenomegaly** + WBC 2000 → Felty syndrome",
+   "hinge": "Long-standing rheumatoid arthritis with splenic sequestration and neutropenia defines Felty syndrome.",
    "trap": "Prior methotrexate therapy tempts drug-induced marrow suppression, but splenomegaly and 8-month delay confirm Felty syndrome.",
    "options": {
     "A": {
@@ -3524,12 +4155,35 @@
      "text": "Leukocyte count 2000/mm³"
     }
    ],
-   "topic": "rheumatoid-arthritis"
+   "topic": "rheumatoid-arthritis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Active high-dose methotrexate** causing **macrocytosis** without splenomegaly",
+     "then": "Drug-induced myelotoxicity"
+    },
+    {
+     "opt": "C",
+     "if": "**Older adult** with **lymphocytosis**, smudge cells, and adenopathy",
+     "then": "Chronic lymphocytic leukemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Reticulocytopenia and hypocellular marrow** with **absent splenomegaly**",
+     "then": "Aplastic anemia"
+    },
+    {
+     "opt": null,
+     "if": "**RA with fever** and **WBC 2000** on active methotrexate",
+     "then": "Hold methotrexate",
+     "step": "check ANC and blood cultures"
+    }
+   ]
   },
   "c-im-02-p02q036": {
    "task": "Mechanism",
-   "boardCall": "Acute anterior MI + hypotension + cool clammy skin + pulmonary crackles -> cardiogenic shock from decreased myocardial contractility.",
-   "hinge": "Large anterior myocardial infarction impairs left ventricular systolic function, causing cardiogenic shock via decreased contractility.",
+   "boardCall": "**anterior wall MI** + **SBP 80** + clammy skin + crackles → Decreased myocardial contractility",
+   "hinge": "Extensive anterior necrosis impairs systolic pumping, dropping cardiac output and arterial pressure.",
    "trap": "Diffuse crackles tempt selecting pulmonary edema as the cause, but pulmonary congestion is downstream of contractile failure.",
    "options": {
     "A": {
@@ -3618,12 +4272,35 @@
      "text": "Diffuse bilateral pulmonary crackles are heard"
     }
    ],
-   "topic": "shock"
+   "topic": "shock",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Inferior MI** with **clear lungs** and JVD",
+     "then": "Decreased intravascular volume",
+     "step": "give IV fluid bolus"
+    },
+    {
+     "opt": "A",
+     "if": "**Inferior MI** with **pulse 36/min** and AV dissociation",
+     "then": "Third-degree AV block"
+    },
+    {
+     "opt": null,
+     "if": "**Anterior MI day 4** with **new holosystolic murmur**",
+     "then": "Ventricular septal rupture"
+    },
+    {
+     "opt": null,
+     "if": "**MI day 5** with **JVD, muffled sounds**, pulsus paradoxus",
+     "then": "Free wall rupture tamponade"
+    }
+   ]
   },
   "c-im-02-p02q037": {
    "task": "Mechanism",
-   "boardCall": "Young nonsmoker + basilar emphysema + brother with COPD lung transplant -> alpha-1 antitrypsin deficiency (antiprotease defect).",
-   "hinge": "Panacinar emphysema with basilar hyperlucency in a young nonsmoker indicates alpha-1 antitrypsin deficiency from unchecked elastase activity.",
+   "boardCall": "**42-yr nonsmoker** + brother lung transplant + **basilar hyperlucency** → Antiprotease defect",
+   "hinge": "Unchecked neutrophil elastase destroys lower-lobe alveolar walls in alpha-1 antitrypsin deficiency.",
    "trap": "Severe COPD on oxygen tempts chronic bronchitis or smoking-induced disease, but nonsmoking status and basilar lucency confirm A1AT.",
    "options": {
     "A": {
@@ -3715,12 +4392,34 @@
      "text": "hyperlucent lung fields most prominent at the bases and flattened diaphragms"
     }
    ],
-   "topic": "alpha-1-antitrypsin-deficiency"
+   "topic": "alpha-1-antitrypsin-deficiency",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Chronic sinusitis and steatorrhea** with **upper-lobe bronchiectasis**",
+     "then": "Abnormal chloride transport"
+    },
+    {
+     "opt": "E",
+     "if": "**Heavy smoker** with **productive cough ≥ 3 mo** for 2 yr",
+     "then": "Chronic bronchitis"
+    },
+    {
+     "opt": "D",
+     "if": "**Episodic wheezing** with **reversible airflow obstruction**",
+     "then": "Airway inflammation and hyperresponsiveness"
+    },
+    {
+     "opt": null,
+     "if": "**Cirrhosis** with **PAS-positive hepatocyte globules** in nonsmoker",
+     "then": "Alpha-1 antitrypsin liver disease"
+    }
+   ]
   },
   "c-im-02-p02q038": {
    "task": "Ethics",
-   "boardCall": "Fluctuating mental status + visual hallucinations + requesting discharge AMA -> assess decision-making capacity.",
-   "hinge": "Patients may sign out AMA only if they possess decision-making capacity, which must be assessed given fluctuating delirium.",
+   "boardCall": "fluctuating delirium + **hallucinations at 4 am** + **requests AMA discharge** → Assess capacity",
+   "hinge": "Recent waxing-and-waning delirium requires formal capacity evaluation before honoring an AMA refusal.",
    "trap": "Current alertness and orientation tempt allowing AMA discharge, but fluctuating delirium impairs decision-making capacity.",
    "options": {
     "A": {
@@ -3816,12 +4515,35 @@
      "trap": true
     }
    ],
-   "topic": "informed-consent-and-capacity"
+   "topic": "informed-consent-and-capacity",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Full capacity confirmed** after **explaining risks** of leaving",
+     "then": "Allow AMA discharge"
+    },
+    {
+     "opt": "E",
+     "if": "**Clinically stable and afebrile** while **agreeing to oral therapy**",
+     "then": "Routine outpatient discharge"
+    },
+    {
+     "opt": null,
+     "if": "**Patient lacks capacity** due to **active delirium**",
+     "then": "Treat inpatient",
+     "step": "contact surrogate decision-maker"
+    },
+    {
+     "opt": null,
+     "if": "**Unconscious trauma** with **no surrogate reachable**",
+     "then": "Emergency implied consent"
+    }
+   ]
   },
   "c-im-02-p02q039": {
    "task": "Next step",
-   "boardCall": "Elderly man + recurrent unheralded syncope without prodrome + normal exam -> ambulatory ECG monitoring for arrhythmia.",
-   "hinge": "Sudden unprovoked syncope without warning in an older adult suggests an intermittent cardiac arrhythmia, evaluated by ambulatory ECG.",
+   "boardCall": "73-year-old + **recurrent unheralded syncope** + normal exam → Ambulatory ECG monitoring",
+   "hinge": "Sudden syncope without prodrome points to paroxysmal arrhythmia requiring prolonged rhythm capture.",
    "trap": "Unexplained loss of consciousness tempts cranial CT or carotid Doppler, but sudden syncope is predominantly cardiogenic.",
    "options": {
     "A": {
@@ -3908,12 +4630,34 @@
      "text": "takes no medications"
     }
    ],
-   "topic": "syncope"
+   "topic": "syncope",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Transient unilateral weakness** or **amaurosis fugax**",
+     "then": "Carotid Doppler scan"
+    },
+    {
+     "opt": "C",
+     "if": "**Focal neurologic deficit** or **head trauma** on collapse",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": null,
+     "if": "**Syncope after prolonged standing** with **warmth and nausea**",
+     "then": "Vasovagal reassurance"
+    },
+    {
+     "opt": null,
+     "if": "**Systolic ejection murmur** with **exertional syncope**",
+     "then": "Transthoracic echocardiography"
+    }
+   ]
   },
   "c-im-02-p02q040": {
    "task": "Diagnosis",
-   "boardCall": "Alcoholism + severe LUQ abdominal pain + fever + hypotension + hypocalcemia 7.6 mg/dL -> acute pancreatitis.",
-   "hinge": "Acute alcoholic abdominal pain with shock, absent bowel sounds, and hypocalcemia from fat saponification indicates pancreatitis.",
+   "boardCall": "heavy beer use + LUQ tenderness + **BP 90/55** + **Ca 7.6** → Pancreatitis",
+   "hinge": "Alcohol-triggered acute abdomen with shock and hypocalcemia from fat saponification indicates pancreatitis.",
    "trap": "Long-standing heavy smoking and chronic cough tempt malignancy or tuberculosis, but acute abdomen with hypocalcemia is pancreatitis.",
    "options": {
     "A": {
@@ -4072,12 +4816,34 @@
      "trap": true
     }
    ],
-   "topic": "pancreatitis"
+   "topic": "pancreatitis",
+   "branches": [
+    {
+     "opt": "K",
+     "if": "**Crush injury** with **dark urine** and CK 40,000",
+     "then": "Rhabdomyolysis"
+    },
+    {
+     "opt": "C",
+     "if": "**Serum albumin 1.8** with **normal ionized calcium**",
+     "then": "Hypoalbuminemia"
+    },
+    {
+     "opt": "D",
+     "if": "**Refractory hypokalemia** and **hypocalcemia** after alcohol binge",
+     "then": "Hypomagnesemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Hyperpigmentation and hyponatremia** with **hyperkalemia and hypotension**",
+     "then": "Addison disease"
+    }
+   ]
   },
   "c-im-02-p02q041": {
    "task": "Other",
-   "boardCall": "Raising diagnostic test cutoff from 5% to 8% -> decreased sensitivity and increased specificity.",
-   "hinge": "Raising a diagnostic cutoff threshold reduces false positives (higher specificity) but increases false negatives (lower sensitivity).",
+   "boardCall": "acute MI diagnosis + CK-MB cutoff raised + **5% to 8%** → Decreased | increased",
+   "hinge": "Raising the positive cutoff cuts false positives while missing more true cases.",
    "trap": "Raising the cutoff sounds like making the test stricter and higher quality, tempting increased for both parameters.",
    "options": {
     "A": {
@@ -4169,12 +4935,34 @@
      "text": "diagnosing acute myocardial infarction"
     }
    ],
-   "topic": "diagnostic-test-accuracy"
+   "topic": "diagnostic-test-accuracy",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Cutoff lowered** from **5% down to 2%**",
+     "then": "Increased | decreased"
+    },
+    {
+     "opt": null,
+     "if": "**Disease prevalence rises** with **unchanged test cutoff**",
+     "then": "Higher PPV, lower NPV"
+    },
+    {
+     "opt": null,
+     "if": "**Two-test confirmation** applied in **series (both positive)**",
+     "then": "Higher specificity, lower sensitivity"
+    },
+    {
+     "opt": null,
+     "if": "**Two-test screening** applied in **parallel (either positive)**",
+     "then": "Higher sensitivity, lower specificity"
+    }
+   ]
   },
   "c-im-02-p02q042": {
    "task": "Next step",
-   "boardCall": "Cirrhosis + ascites + fever + abdominal tenderness + septic shock -> diagnostic abdominal paracentesis.",
-   "hinge": "Cirrhotic ascites with fever, abdominal pain, or unexplained decompensation mandates urgent diagnostic paracentesis to rule out SBP.",
+   "boardCall": "cirrhosis + **ascites** + **fever and abdominal pain** + shock → Abdominal paracentesis",
+   "hinge": "Fever and abdominal tenderness in cirrhotic ascites demand urgent diagnostic sampling.",
    "trap": "Unresponsiveness and fever tempt lumbar puncture for meningitis, but tender ascites localizes infection to the peritoneum.",
    "options": {
     "A": {
@@ -4270,12 +5058,35 @@
      "trap": true
     }
    ],
-   "topic": "cirrhosis-and-portal-hypertension"
+   "topic": "cirrhosis-and-portal-hypertension",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Nuchal rigidity and photophobia** with **no abdominal tenderness**",
+     "then": "Lumbar puncture"
+    },
+    {
+     "opt": "B",
+     "if": "**Polymicrobial ascitic culture** suggesting **secondary bowel perforation**",
+     "then": "CT scan of the abdomen"
+    },
+    {
+     "opt": "C",
+     "if": "**Hematemesis** or **melena** precipitating hepatic encephalopathy",
+     "then": "Esophagogastroduodenoscopy",
+     "step": "octreotide + ceftriaxone first"
+    },
+    {
+     "opt": null,
+     "if": "**Ascitic PMN ≥ 250** with **creatinine 1.8**",
+     "then": "Ceftriaxone plus IV albumin"
+    }
+   ]
   },
   "c-im-02-p02q043": {
    "task": "Next step",
-   "boardCall": "Transient ischemic attack with right carotid bruit and negative head CT -> duplex ultrasonography of carotid arteries.",
-   "hinge": "A TIA matching an audible ipsilateral carotid bruit requires noninvasive duplex ultrasound to quantify carotid stenosis.",
+   "boardCall": "2-h left hemiparesis + **resolved** + **right carotid bruit** + normal CT → Carotid duplex ultrasonography",
+   "hinge": "Ipsilateral carotid bruit after TIA warrants noninvasive duplex imaging to grade stenosis.",
    "trap": "Audible bruit tempts invasive carotid angiography, but initial noninvasive quantification is performed with duplex ultrasound.",
    "options": {
     "A": {
@@ -4361,12 +5172,34 @@
      "text": "CT scan of the head show no other abnormalities"
     }
    ],
-   "topic": "carotid-artery-stenosis"
+   "topic": "carotid-artery-stenosis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Normal carotid duplex** with **palpitations** or cryptogenic TIA",
+     "then": "Ambulatory ECG monitoring"
+    },
+    {
+     "opt": "B",
+     "if": "**Young TIA patient** or **suspected cardiac thrombus**",
+     "then": "Echocardiography"
+    },
+    {
+     "opt": "E",
+     "if": "**Persistent mild deficit** needing **ischemic core confirmation**",
+     "then": "MRI of the brain"
+    },
+    {
+     "opt": null,
+     "if": "**Duplex shows 80% symptomatic stenosis** in **good candidate**",
+     "then": "Carotid endarterectomy"
+    }
+   ]
   },
   "c-im-02-p02q044": {
    "task": "Next step",
-   "boardCall": "Acute fluctuant tender mass in intergluteal cleft with purulence -> surgical drainage of pilonidal abscess.",
-   "hinge": "An acute fluctuant pilonidal abscess requires immediate incision and drainage; wide excision is reserved for elective chronic disease.",
+   "boardCall": "20-year-old + **midline intergluteal cleft** + **fluctuant purulent mass** → Surgical drainage",
+   "hinge": "Fluctuant pilonidal abscess demands immediate drainage rather than elective wide excision.",
    "trap": "Chronic 1-month history and sinus opening tempt wide excision, but acute fluctuance dictates urgent drainage.",
    "options": {
     "A": {
@@ -4454,12 +5287,35 @@
      "trap": true
     }
    ],
-   "topic": "pilonidal-disease"
+   "topic": "pilonidal-disease",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Quiescent chronic pilonidal sinus** after **infection resolves**",
+     "then": "Wide excision"
+    },
+    {
+     "opt": "A",
+     "if": "**Small nonfluctuant anal fissure** with **painful defecation**",
+     "then": "Sitz baths"
+    },
+    {
+     "opt": null,
+     "if": "**Surrounding spreading cellulitis** or **fever after drainage**",
+     "then": "Add oral antibiotics"
+    },
+    {
+     "opt": null,
+     "if": "**Perianal fluctuant mass** with **high fever in neutropenia**",
+     "then": "Broad-spectrum IV antibiotics",
+     "step": "urgent surgical evaluation"
+    }
+   ]
   },
   "c-im-02-p02q045": {
    "task": "Pharmacology",
-   "boardCall": "Sudden urge followed by incontinence before reaching bathroom -> urge incontinence treated with oxybutynin.",
-   "hinge": "Urgency followed by involuntary urine loss reflects detrusor overactivity, managed pharmacologically with antimuscarinics like oxybutynin.",
+   "boardCall": "62-year-old + **sudden urge before toilet** + **persists off thiazide** → Oxybutynin",
+   "hinge": "Urgency preceding leakage reflects detrusor overactivity, managed with antimuscarinic therapy.",
    "trap": "Recent thiazide use tempts attributing symptoms to diuretics, but persistence off thiazide proves urge incontinence.",
    "options": {
     "A": {
@@ -4551,12 +5407,34 @@
      "text": "blood pressure is 140/92 mm Hg"
     }
    ],
-   "topic": "urinary-incontinence"
+   "topic": "urinary-incontinence",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Vaginal dryness and dyspareunia** with **recurrent UTIs** postmenopause",
+     "then": "Topical conjugated estrogens"
+    },
+    {
+     "opt": "A",
+     "if": "**Detrusor underactivity** with **high postvoid residual**, no obstruction",
+     "then": "Bethanechol"
+    },
+    {
+     "opt": "E",
+     "if": "**Older man with weak stream** and **prostatic hyperplasia**",
+     "then": "Terazosin"
+    },
+    {
+     "opt": null,
+     "if": "**Leakage with coughing** and **normal postvoid residual**",
+     "then": "Pelvic floor exercises"
+    }
+   ]
   },
   "c-im-02-p02q046": {
    "task": "Mechanism",
-   "boardCall": "Long-term hemodialysis + atraumatic femoral neck fracture -> renal osteodystrophy from deficient mineralization of osteoid.",
-   "hinge": "Impaired 1-alpha hydroxylation of vitamin D in ESRD impairs bone mineralization, causing osteomalacia and atraumatic fracture.",
+   "boardCall": "6-yr hemodialysis + 1-mo hip pain + **no trauma** + **nondisplaced femoral neck fracture** → Deficient mineralization of osteoid",
+   "hinge": "Impaired renal vitamin D activation causes osteomalacia, weakening bone against atraumatic fractures.",
    "trap": "Chronic hip pain in a dialysis patient tempts avascular necrosis, but atraumatic fragility fracture reflects defective osteoid mineralization.",
    "options": {
     "A": {
@@ -4655,12 +5533,34 @@
      "text": "nondisplaced fracture of the femoral neck"
     }
    ],
-   "topic": "chronic-kidney-disease"
+   "topic": "chronic-kidney-disease",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Fever and hot tender joint** with **fistula bacteremia**",
+     "then": "Hematogenous bacterial seeding"
+    },
+    {
+     "opt": "B",
+     "if": "**Chronic steroid use** with **crescent sign** on hip radiograph",
+     "then": "Decreased vascular perfusion"
+    },
+    {
+     "opt": null,
+     "if": "**High phosphate and PTH** in **dialysis patient**",
+     "then": "Phosphate binder + calcitriol"
+    },
+    {
+     "opt": null,
+     "if": "**PTH < 100** with **bone pain** and aluminum exposure",
+     "then": "Adynamic bone disease"
+    }
+   ]
   },
   "c-im-02-p02q047": {
    "task": "Next step",
-   "boardCall": "Acute confusion + calcium 13 mg/dL + elevated total protein 9.5 g/dL -> intravenous 0.9% saline.",
-   "hinge": "Symptomatic severe hypercalcemia presenting with delirium requires immediate aggressive volume repletion with normal saline.",
+   "boardCall": "2-day confusion + **Ca 13 mg/dL** + Cr 2 + **protein gap 5.0** → IV 0.9% saline",
+   "hinge": "Hypercalcemic encephalopathy requires immediate volume repletion before pursuing myeloma workup.",
    "trap": "Acute disorientation tempts neuroimaging or lumbar puncture, but metabolic encephalopathy from hypercalcemia takes priority.",
    "options": {
     "A": {
@@ -4752,12 +5652,34 @@
      "text": "Protein, total 9.5 g/dL"
     }
    ],
-   "topic": "hypercalcemia"
+   "topic": "hypercalcemia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Oliguric renal failure** or **pulmonary edema** preventing hydration",
+     "then": "Hemodialysis"
+    },
+    {
+     "opt": "A",
+     "if": "**Focal neurologic deficit** or **head trauma** with normal Ca",
+     "then": "CT scan of the head"
+    },
+    {
+     "opt": "D",
+     "if": "**Fever, nuchal rigidity**, and **normal serum calcium**",
+     "then": "Lumbar puncture"
+    },
+    {
+     "opt": null,
+     "if": "**Normocalcemic after saline** with **anemia and protein gap**",
+     "then": "Order SPEP and UPEP"
+    }
+   ]
   },
   "c-im-02-p02q048": {
    "task": "Next step",
-   "boardCall": "Photosensitive rash + inflammatory polyarthritis + leukopenia 1500 + positive Smith antibody -> prednisone therapy for active SLE.",
-   "hinge": "Positive anti-Smith antibody confirms systemic lupus erythematosus; active inflammatory symptoms and cytopenias require systemic glucocorticoid therapy.",
+   "boardCall": "sun-exposed rash + polyarthritis + **WBC 1500** + **anti-Smith positive** → Prednisone therapy",
+   "hinge": "Active lupus with arthritis and severe leukopenia requires systemic glucocorticoids.",
    "trap": "Cervical and axillary lymphadenopathy with cytopenias tempt lymph node or bone marrow biopsy, but specific SLE serology establishes the diagnosis.",
    "options": {
     "A": {
@@ -4854,12 +5776,35 @@
      "trap": true
     }
    ],
-   "topic": "systemic-lupus-erythematosus"
+   "topic": "systemic-lupus-erythematosus",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Weight loss and adenopathy** with **positive HIV screen**",
+     "then": "Antiretroviral therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Painless firm node** with **B symptoms** and negative ANA",
+     "then": "Lymph node biopsy"
+    },
+    {
+     "opt": null,
+     "if": "**Mild SLE rash** and **arthralgias without organ involvement**",
+     "then": "Hydroxychloroquine alone"
+    },
+    {
+     "opt": null,
+     "if": "**Active SLE** with **RBC casts** and proteinuria",
+     "then": "Kidney biopsy",
+     "step": "mycophenolate or cyclophosphamide"
+    }
+   ]
   },
   "c-im-02-p02q049": {
    "task": "Mechanism",
-   "boardCall": "Septic shock + hypoxemia + diffuse crackles with normal PCWP 14 mm Hg -> ARDS from increased vascular permeability.",
-   "hinge": "Noncardiogenic pulmonary edema with normal pulmonary capillary wedge pressure in sepsis reflects increased alveolar-capillary permeability.",
+   "boardCall": "sepsis + hypoxemia + diffuse crackles + **normal PCWP 14** → Increased vascular permeability",
+   "hinge": "Noncardiogenic pulmonary edema with normal wedge pressure reflects cytokine-mediated capillary leak.",
    "trap": "Diffuse crackles and systolic murmur tempt cardiogenic failure, but normal PCWP (14) and high cardiac output rule out heart failure.",
    "options": {
     "A": {
@@ -4959,12 +5904,34 @@
      "trap": true
     }
    ],
-   "topic": "ards"
+   "topic": "ards",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**S3 gallop and PCWP 26** with **low cardiac output**",
+     "then": "Decreased myocardial contractility"
+    },
+    {
+     "opt": "D",
+     "if": "**Beck triad and equalized pressures** with **pulsus paradoxus**",
+     "then": "Increased pericardial pressure"
+    },
+    {
+     "opt": "E",
+     "if": "**Acute flail leaflet** with **giant V waves** on PCWP",
+     "then": "Increased regurgitant mitral flow"
+    },
+    {
+     "opt": "A",
+     "if": "**Opioid overdose** with **hypercapnia** and normal A-a gradient",
+     "then": "Decreased hypoxic drive"
+    }
+   ]
   },
   "c-im-02-p02q050": {
    "task": "Diagnosis",
-   "boardCall": "Chronic steroid therapy in lupus + weight-bearing hip pain with limp -> osteonecrosis (avascular necrosis) of femoral head.",
-   "hinge": "Glucocorticoid exposure in systemic lupus erythematosus is the classic risk factor for osteonecrosis of the femoral head.",
+   "boardCall": "SLE + **chronic methylprednisolone** + **weight-bearing hip pain** + limp → Osteonecrosis",
+   "hinge": "Glucocorticoid therapy in lupus disrupts femoral head blood supply, causing avascular collapse.",
    "trap": "History of systemic lupus erythematosus tempts inflammatory lupus arthritis, but localized weight-bearing hip pain indicates osteonecrosis.",
    "options": {
     "A": {
@@ -5058,7 +6025,30 @@
      "text": "Passive and active movement of the hip causes pain"
     }
    ],
-   "topic": "osteonecrosis"
+   "topic": "osteonecrosis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**High fever and acute inability to walk** with **WBC 18,000**",
+     "then": "Septic arthritis",
+     "step": "urgent arthrocentesis"
+    },
+    {
+     "opt": "E",
+     "if": "**Long-distance runner** with **normal X-ray** and groin pain",
+     "then": "Stress fracture"
+    },
+    {
+     "opt": "B",
+     "if": "**Post-chlamydial urethritis** with **asymmetric knee arthritis** and uveitis",
+     "then": "Reactive arthritis"
+    },
+    {
+     "opt": null,
+     "if": "**Early pre-collapse hip pain** with **normal plain radiograph**",
+     "then": "Obtain hip MRI"
+    }
+   ]
   }
  },
  "topics": {
@@ -9218,5 +10208,5 @@
    "evidence": "Checked 2026-10-30: [CDC HCV care](https://www.cdc.gov/hepatitis-c/hcp/clinical-care/), [CDC HBV exposure guidance](https://www.cdc.gov/std/treatment-guidelines/hbv.htm)."
   }
  },
- "updatedAt": "2026-11-07T08:13:46Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

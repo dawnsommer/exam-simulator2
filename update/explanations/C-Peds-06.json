@@ -8,8 +8,8 @@
  "items": {
   "746326": {
    "task": "Diagnosis",
-   "boardCall": "24-hour-old + respiratory distress + seizures + diffuse hazy infiltrates -> Group B streptococcal sepsis",
-   "hinge": "Early onset (<72 hours) neonatal sepsis presents with respiratory distress and hazy infiltrates, most commonly due to GBS.",
+   "boardCall": "term newborn + **day 1 onset** + respiratory distress + seizures + hazy bilateral infiltrates + **normal CSF** → Group B streptococcal sepsis",
+   "hinge": "Early-onset sepsis mimics RDS on film; bland CSF excludes meningitis.",
    "trap": "Normal CSF leukocyte count and protein exclude meningitis despite seizures.",
    "options": {
     "A": {
@@ -98,12 +98,34 @@
      "trap": true
     }
    ],
-   "topic": "neonatal-sepsis"
+   "topic": "neonatal-sepsis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Post-term**, meconium-stained fluid, patchy infiltrates with hyperinflation",
+     "then": "Meconium aspiration"
+    },
+    {
+     "opt": "C",
+     "if": "**CSF neutrophils**, low glucose, gram-positive diplococci",
+     "then": "Pneumococcal meningitis"
+    },
+    {
+     "opt": "E",
+     "if": "**Age 3 months**, winter, wheeze and crackles",
+     "then": "RSV pneumonia"
+    },
+    {
+     "opt": "D",
+     "if": "**HIV-exposed infant** at 3 months, hypoxemia, thrush",
+     "then": "Pneumocystis jirovecii pneumonia"
+    }
+   ]
   },
   "746327": {
    "task": "Diagnosis",
-   "boardCall": "Diarrhea prodrome + anemia + thrombocytopenia + acute renal failure -> Hemolytic uremic syndrome",
-   "hinge": "Microangiopathic hemolytic anemia, thrombocytopenia, and acute renal failure following diarrheal illness define classic HUS.",
+   "boardCall": "toddler + diarrhea prodrome + **Hct 24%** + **platelets 30,000** + creatinine 2.6 + dark urine → Hemolytic uremic syndrome",
+   "hinge": "Anemia plus thrombocytopenia with renal failure means microangiopathy, not nephritis alone.",
    "trap": "Cough and coryza suggest viral illness, but hemolytic anemia with renal failure points to Shiga toxin HUS.",
    "options": {
     "A": {
@@ -191,12 +213,34 @@
      "text": "Creatinine 2.6 mg/dL"
     }
    ],
-   "topic": "thrombotic-microangiopathies"
+   "topic": "thrombotic-microangiopathies",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Pharyngitis 2 weeks earlier**, low C3, normal platelets",
+     "then": "Postinfectious glomerulonephritis"
+    },
+    {
+     "opt": "C",
+     "if": "**Palpable purpura** on legs, normal platelets",
+     "then": "Henoch-Schönlein nephritis"
+    },
+    {
+     "opt": "A",
+     "if": "**Hemoptysis**, anti-GBM antibodies",
+     "then": "Goodpasture syndrome"
+    },
+    {
+     "opt": "E",
+     "if": "**c-ANCA**, sinusitis and lung nodules",
+     "then": "Systemic vasculitis (GPA)"
+    }
+   ]
   },
   "746328": {
    "task": "Pharmacology",
-   "boardCall": "Space heater exposure + headache + confusion + dyspnea -> 100% normobaric oxygen",
-   "hinge": "Space heater exposure with neurocognitive symptoms indicates acute carbon monoxide poisoning, treated with 100% oxygen.",
+   "boardCall": "child home alone + **space heater on** + headache + confusion + dyspnea → Oxygen",
+   "hinge": "Carbon monoxide displaces oxygen from hemoglobin; high-flow oxygen speeds its elimination.",
    "trap": "Milk and cookies suggest accidental ingestion, tempting an antidote like naloxone or atropine.",
    "options": {
     "A": {
@@ -311,12 +355,35 @@
      "trap": true
     }
    ],
-   "topic": "carbon-monoxide-poisoning"
+   "topic": "carbon-monoxide-poisoning",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**House fire**, almond odor, severe lactic acidosis",
+     "then": "Amyl nitrite (cyanide)",
+     "step": "hydroxocobalamin preferred"
+    },
+    {
+     "opt": "F",
+     "if": "**Chocolate-brown blood**, SpO2 85% unchanged by oxygen",
+     "then": "Methylene blue"
+    },
+    {
+     "opt": "G",
+     "if": "**Pinpoint pupils**, apnea, found with pills",
+     "then": "Naloxone"
+    },
+    {
+     "opt": "C",
+     "if": "**Salivation, bradycardia**, wheeze after pesticide exposure",
+     "then": "Atropine"
+    }
+   ]
   },
   "746329": {
    "task": "Mechanism",
-   "boardCall": "Firecracker trauma + eye pain + tearing + normal acuity -> Loss of corneal epithelium (corneal abrasion)",
-   "hinge": "Corneal abrasions involve loss of corneal epithelial layer caused by trauma, presenting with intense pain and tearing.",
+   "boardCall": "firecracker injury + **eye pain and tearing** + **normal-appearing eye** + 20/20 vision + equal pupils → Loss of corneal epithelium",
+   "hinge": "Exposed corneal nerves cause severe pain despite a grossly normal eye.",
    "trap": "Normal gross eye appearance distracts from a microscopic epithelial defect seen only on fluorescein.",
    "options": {
     "A": {
@@ -401,12 +468,34 @@
      "text": "visual acuity is 20/20"
     }
    ],
-   "topic": "corneal-abrasion"
+   "topic": "corneal-abrasion",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Fixed mid-dilated pupil**, rock-hard eye, halos",
+     "then": "Increased intraocular pressure"
+    },
+    {
+     "opt": "E",
+     "if": "**Flashes, floaters**, curtain over vision",
+     "then": "Retinal detachment"
+    },
+    {
+     "opt": "B",
+     "if": "**Eyelid swelling and erythema**, painless eye movement",
+     "then": "Periorbital inflammation"
+    },
+    {
+     "opt": "D",
+     "if": "**Infant with chronic tearing** and crusting since birth",
+     "then": "Lacrimal duct obstruction"
+    }
+   ]
   },
   "746330": {
    "task": "Diagnosis",
-   "boardCall": "6-year-old boy + tall stature + mature penis + pubic hair + normal prepubertal testes -> Adrenal cortex",
-   "hinge": "Precocious puberty with adult penis and pubic hair but normal prepubertal testicular volume indicates peripheral androgen excess from the adrenal cortex.",
+   "boardCall": "age 6 + Tanner 5 pubic hair + mature penis + tall, muscular + **prepubertal testicular volume** → Adrenal cortex",
+   "hinge": "Gonadotropins would enlarge testes; small testes mean androgen comes from elsewhere.",
    "trap": "Advanced secondary sexual characteristics suggest central activation, but prepubertal testes rule out pituitary or hypothalamic drive.",
    "options": {
     "A": {
@@ -495,12 +584,34 @@
      "trap": true
     }
    ],
-   "topic": "pubertal-development"
+   "topic": "pubertal-development",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Bilateral testicular enlargement**, high LH",
+     "then": "Pituitary gland (central)"
+    },
+    {
+     "opt": "E",
+     "if": "**One enlarged testis**",
+     "then": "Testes (Leydig cell tumor)"
+    },
+    {
+     "opt": "C",
+     "if": "**Hepatic mass**, high β-hCG",
+     "then": "Liver (hepatoblastoma)"
+    },
+    {
+     "opt": "B",
+     "if": "**Gelastic seizures**, enlarging testes",
+     "then": "Hypothalamus (hamartoma)"
+    }
+   ]
   },
   "746331": {
    "task": "Mechanism",
-   "boardCall": "Stillborn infant + multiple fractures + blue sclerae + bent short extremities -> Abnormality in type I collagen (osteogenesis imperfecta type II)",
-   "hinge": "Perinatal lethal fractures, crumpled long bones, and blue sclerae are classic for osteogenesis imperfecta type II from COL1A1/COL1A2 defect.",
+   "boardCall": "stillbirth + **multiple fractures in utero** + **blue sclerae** + soft calvaria + short bent limbs → Abnormality in type I collagen",
+   "hinge": "Intrinsic bone fragility comes from the fetus, not maternal exposures.",
    "trap": "Maternal trauma, alcohol, cocaine, and phenytoin are distractors; fetal fractures and blue sclerae reflect intrinsic collagen defect.",
    "options": {
     "A": {
@@ -589,12 +700,34 @@
      "trap": true
     }
    ],
-   "topic": "osteogenesis-imperfecta"
+   "topic": "osteogenesis-imperfecta",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Smooth philtrum**, thin upper lip, microcephaly",
+     "then": "Alcohol-induced fetal abnormalities"
+    },
+    {
+     "opt": "E",
+     "if": "**Digital hypoplasia**, nail hypoplasia, cleft lip",
+     "then": "Phenytoin teratogenicity"
+    },
+    {
+     "opt": "D",
+     "if": "**Abruption** with growth restriction",
+     "then": "Placental insufficiency from cocaine"
+    },
+    {
+     "opt": "C",
+     "if": "**Single fracture** at site of abdominal blow, normal sclerae",
+     "then": "Intrauterine trauma from abuse"
+    }
+   ]
   },
   "746332": {
    "task": "Next step",
-   "boardCall": "Elevated newborn screen TSH + maternal propylthiouracil exposure -> Serum free T4 and TSH confirmation",
-   "hinge": "Abnormal newborn thyroid screen requires immediate confirmatory serum TSH and free T4 to prevent irreversible cognitive impairment.",
+   "boardCall": "2-week-old + **high TSH on newborn screen** + maternal PTU + feeding well + normal exam → Serum T4 and TSH",
+   "hinge": "A screen is not a diagnosis; confirm before treating or reassuring.",
    "trap": "Maternal propylthiouracil can cause transient hypothyroidism, but empiric reassurance without confirmatory serum testing risks permanent neurodevelopmental delay.",
    "options": {
     "A": {
@@ -687,12 +820,35 @@
      "trap": true
     }
    ],
-   "topic": "newborn-screening"
+   "topic": "newborn-screening",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**Low free T4** on confirmatory testing",
+     "then": "Levothyroxine therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Low total T4, normal TSH and free T4**",
+     "then": "Thyroid-binding globulin"
+    },
+    {
+     "opt": "E",
+     "if": "**Confirmed hypothyroidism**, cause unknown",
+     "then": "Thyroid scan",
+     "step": "do not delay levothyroxine"
+    },
+    {
+     "opt": "B",
+     "if": "**Hypoglycemia, micropenis**, prolonged jaundice",
+     "then": "Growth hormone (hypopituitarism)"
+    }
+   ]
   },
   "746333": {
    "task": "Diagnosis",
-   "boardCall": "Temper tantrum + perioral cyanosis + brief limpness + rapid recovery -> Breath-holding spell",
-   "hinge": "Cyanosis and unresponsiveness provoked by emotional distress with immediate full recovery indicate a cyanotic breath-holding spell.",
+   "boardCall": "age 2 + **temper tantrum trigger** + perioral cyanosis + brief stiffening + **immediate full recovery** → Breath holding",
+   "hinge": "Crying-triggered apnea causes brief anoxia; no postictal phase argues against seizure.",
    "trap": "Rigid posturing and clonic jerking tempt a seizure diagnosis, but reflex anoxic twitching occurs after prolonged breath-holding.",
    "options": {
     "A": {
@@ -781,12 +937,34 @@
      "trap": true
     }
    ],
-   "topic": "syncope"
+   "topic": "syncope",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Unprovoked**, lip smacking, prolonged postictal confusion",
+     "then": "Complex partial seizure"
+    },
+    {
+     "opt": "A",
+     "if": "**Unprovoked sudden drops** with repeated head injuries",
+     "then": "Atonic seizure"
+    },
+    {
+     "opt": "D",
+     "if": "**Syncope with exertion**, loud murmur, gallop",
+     "then": "Low cardiac output"
+    },
+    {
+     "opt": null,
+     "if": "**Minor head bump** then pallor and limpness",
+     "then": "Pallid breath-holding spell"
+    }
+   ]
   },
   "746334": {
    "task": "Next step",
-   "boardCall": "Scalp alopecia + boggy purulent inflamed mass -> Oral griseofulvin or terbinafine (kerion from tinea capitis)",
-   "hinge": "A kerion is an inflammatory, boggy mass caused by tinea capitis and requires systemic oral antifungal therapy to prevent scarring alopecia.",
+   "boardCall": "age 6 + **4 weeks of hair loss** + **boggy purulent scalp mass** + otherwise well → Oral antifungal therapy",
+   "hinge": "Kerion is dermatophyte hypersensitivity; the hair shaft infection needs systemic therapy.",
    "trap": "Purulent exudate mimics bacterial abscess and tempts oral antibacterials or incision, but the primary cause is dermatophyte infection.",
    "options": {
     "A": {
@@ -869,12 +1047,29 @@
      "text": "The remainder of the examination shows no abnormalities."
     }
    ],
-   "topic": "dermatophyte-infections"
+   "topic": "dermatophyte-infections",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Honey-colored crusts**, fever, spreading cellulitis",
+     "then": "Oral antibacterial therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**Smooth round bald patches**, exclamation-point hairs",
+     "then": "Topical corticosteroid (alopecia areata)"
+    },
+    {
+     "opt": null,
+     "if": "**Broken hairs of varying length**, anxious child",
+     "then": "Behavioral therapy (trichotillomania)"
+    }
+   ]
   },
   "746335": {
    "task": "Next step",
-   "boardCall": "Blunt abdominal trauma + epigastric mass + elevated amylase and lipase -> Abdominal CT scan",
-   "hinge": "Blunt abdominal trauma followed by delayed epigastric pain, mass, and elevated pancreatic enzymes requires abdominal CT with IV contrast to diagnose pancreatic injury or pseudocyst.",
+   "boardCall": "age 3 + **blunt epigastric trauma 4 days ago** + **midline mass** + high amylase and lipase → CT scan of the abdomen",
+   "hinge": "Retroperitoneal injury and pseudocyst need cross-sectional imaging, not plain films.",
    "trap": "Plain abdominal x-ray is quick, but it lacks sensitivity to detect traumatic pancreatic duct injury or retroperitoneal hematoma.",
    "options": {
     "A": {
@@ -956,12 +1151,35 @@
      "text": "increased amylase and lipase activities"
     }
    ],
-   "topic": "pancreatitis"
+   "topic": "pancreatitis",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Bilious vomiting** days after handlebar injury",
+     "then": "Upper GI series (duodenal hematoma)"
+    },
+    {
+     "opt": "A",
+     "if": "**Free air suspected**, unstable for CT",
+     "then": "X-ray of the abdomen"
+    },
+    {
+     "opt": "B",
+     "if": "**Currant-jelly stool**, sausage-shaped mass, no trauma",
+     "then": "Enema (intussusception)"
+    },
+    {
+     "opt": null,
+     "if": "**Unexplained injuries** of differing ages",
+     "then": "Child abuse evaluation",
+     "step": "skeletal survey"
+    }
+   ]
   },
   "746336": {
    "task": "Mechanism",
-   "boardCall": "Goiter with bruit + exophthalmos + tachycardia + weight loss -> TSH receptor autoantibodies (Graves disease)",
-   "hinge": "Diffuse goiter with a vascular bruit and exophthalmos is pathognomonic for Graves disease caused by stimulating TSH receptor antibodies.",
+   "boardCall": "age 16 + weight loss with increased appetite + tremor + **exophthalmos** + **goiter with bruit** → TSH receptor autoantibodies",
+   "hinge": "Eye disease and a vascular goiter occur only with stimulating TSH-receptor antibodies.",
    "trap": "Family history of hypothyroidism suggests Hashimoto thyroiditis, but exophthalmos and thyroid bruit confirm Graves thyrotoxicosis.",
    "options": {
     "A": {
@@ -1054,12 +1272,34 @@
      "trap": true
     }
    ],
-   "topic": "hyperthyroidism"
+   "topic": "hyperthyroidism",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Firm nontender goiter**, high TSH, anti-TPO",
+     "then": "Lymphocytic infiltration (Hashimoto)"
+    },
+    {
+     "opt": "A",
+     "if": "**Small gland**, low thyroglobulin, sister's pills missing",
+     "then": "Levothyroxine overdose"
+    },
+    {
+     "opt": "D",
+     "if": "**High TSH** with high free T4, headaches",
+     "then": "TSH-producing pituitary tumor"
+    },
+    {
+     "opt": "C",
+     "if": "**Hard fixed nodule**, cervical nodes",
+     "then": "Malignant infiltration of the thyroid"
+    }
+   ]
   },
   "746337": {
    "task": "Diagnosis",
-   "boardCall": "Paroxysmal cough + facial plethora + inspiratory whoop + maternal cough -> Pertussis (Bordetella pertussis)",
-   "hinge": "Paroxysms of staccato coughing ending with an inspiratory whoop and facial plethora after contact with a coughing adult indicate pertussis.",
+   "boardCall": "age 1 month + **coughing mother for 3 weeks** + **paroxysms ending in whoop** + facial plethora + low fever → Pertussis",
+   "hinge": "An infected adult household contact plus paroxysmal cough is classic for Bordetella.",
    "trap": "Clear rhinorrhea and feeding difficulty mimic viral bronchiolitis, but paroxysmal coughing fits with inspiratory whoop define pertussis.",
    "options": {
     "A": {
@@ -1140,12 +1380,34 @@
      "text": "long series of single coughs ending with a loud, high-pitched inhalation"
     }
    ],
-   "topic": "pertussis"
+   "topic": "pertussis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Wheezing and crackles**, winter, RSV season",
+     "then": "Acute bronchiolitis"
+    },
+    {
+     "opt": "B",
+     "if": "**Staccato cough**, conjunctivitis, afebrile",
+     "then": "Chlamydial pneumonia"
+    },
+    {
+     "opt": "E",
+     "if": "**Barking cough**, stridor, age 2",
+     "then": "Viral laryngotracheobronchitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Sudden choking**, unilateral wheeze",
+     "then": "Foreign body aspiration"
+    }
+   ]
   },
   "746338": {
    "task": "Diagnosis",
-   "boardCall": "Alert infant + progressive weakness + profound hypotonia + tongue fasciculations + absent reflexes -> Spinal muscular atrophy (SMA type 1)",
-   "hinge": "Profound hypotonia, absent reflexes, and tongue fasciculations in an alert infant indicate anterior horn cell degeneration from spinal muscular atrophy.",
+   "boardCall": "age 1 + **alert floppy infant** + **tongue fasciculations** + absent reflexes + feeding difficulty → Infantile spinal muscular atrophy",
+   "hinge": "Fasciculations localize to anterior horn cells; alertness spares the brain.",
    "trap": "Descending paralysis and feeding difficulty mimic infant botulism, but pupil reactivity is preserved and tongue fasciculations point to SMA.",
    "options": {
     "A": {
@@ -1230,12 +1492,34 @@
      "text": "Deep tendon reflexes are absent."
     }
    ],
-   "topic": "spinal-muscular-atrophy"
+   "topic": "spinal-muscular-atrophy",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Honey exposure**, constipation, dilated sluggish pupils",
+     "then": "Botulism"
+    },
+    {
+     "opt": "C",
+     "if": "**Newborn of myasthenic mother**, weak suck",
+     "then": "Myasthenia gravis (transient neonatal)"
+    },
+    {
+     "opt": "B",
+     "if": "**Age 6**, areflexic paralysis after Campylobacter",
+     "then": "Guillain-Barré syndrome"
+    },
+    {
+     "opt": "E",
+     "if": "**Sensory level** and urinary retention",
+     "then": "Transverse myelitis"
+    }
+   ]
   },
   "746339": {
    "task": "Mechanism",
-   "boardCall": "Irregular heavy menses + day 21 progesterone < 1 ng/mL -> Anovulation (immature HPO axis)",
-   "hinge": "Low mid-luteal progesterone (0.5 ng/mL) confirms the absence of a corpus luteum, indicating anovulatory abnormal uterine bleeding from an immature hypothalamic-pituitary-ovarian axis.",
+   "boardCall": "age 16 + irregular 30–45-day cycles + **heavy bleeding for 5 weeks** + normal exam + **day-21 progesterone 0.5** → Anovulation",
+   "hinge": "No corpus luteum means no progesterone; unopposed estrogen sheds irregularly.",
    "trap": "Prolonged bleeding in an adolescent tempts von Willebrand disease, but low day-21 progesterone specifically documents failure of ovulation.",
    "options": {
     "A": {
@@ -1324,12 +1608,34 @@
      "text": "serum progesterone concentration is 0.5 ng/mL"
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Heavy since menarche**, epistaxis, gum bleeding",
+     "then": "von Willebrand disease"
+    },
+    {
+     "opt": "B",
+     "if": "**Short stature**, no breasts, primary amenorrhea",
+     "then": "Turner syndrome"
+    },
+    {
+     "opt": "C",
+     "if": "**Galactorrhea**, headaches, high prolactin",
+     "then": "Pituitary tumor"
+    },
+    {
+     "opt": "D",
+     "if": "**Genital trauma** or STI in a young girl",
+     "then": "Sexual abuse"
+    }
+   ]
   },
   "746340": {
    "task": "Diagnosis",
-   "boardCall": "Nephrotic syndrome + fever + ascites + diffuse rebound peritonitis -> Spontaneous bacterial peritonitis",
-   "hinge": "Nephrotic ascites with acute fever and diffuse peritonitis indicates spontaneous bacterial peritonitis, most often from Streptococcus pneumoniae.",
+   "boardCall": "nephrotic syndrome + **fever 39.4** + abdominal swelling + **diffuse rebound tenderness** → Spontaneous bacterial peritonitis",
+   "hinge": "Ascites and urinary IgG loss leave nephrotic children open to pneumococcal peritonitis.",
    "trap": "Fever and loose stools suggest acute gastroenteritis or celiac disease, but peritoneal signs in nephrotic ascites indicate SBP.",
    "options": {
     "A": {
@@ -1429,12 +1735,35 @@
      "trap": true
     }
    ],
-   "topic": "nephrotic-syndrome"
+   "topic": "nephrotic-syndrome",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Episodic colicky pain**, currant-jelly stool, toddler",
+     "then": "Intussusception"
+    },
+    {
+     "opt": "E",
+     "if": "**Preterm neonate**, bloody stool, pneumatosis",
+     "then": "Necrotizing enterocolitis"
+    },
+    {
+     "opt": "C",
+     "if": "**Months of bloody diarrhea**, weight loss",
+     "then": "Inflammatory bowel disease"
+    },
+    {
+     "opt": null,
+     "if": "**Free air** or polymicrobial ascitic fluid",
+     "then": "Secondary peritonitis",
+     "step": "surgical consult"
+    }
+   ]
   },
   "746341": {
    "task": "Mechanism",
-   "boardCall": "Forceps delivery + torticollis + neck mass + positional plagiocephaly -> Sternomastoid injury (congenital muscular torticollis)",
-   "hinge": "Neck SCM mass after forceps delivery, chin turned away from the mass, ipsilateral occipital flattening = congenital muscular torticollis (SCM injury).",
+   "boardCall": "forceps delivery + **head turned right** + right occipital flattening + **left neck mass** → Sternomastoid injury",
+   "hinge": "A fibrotic SCM tilts the head toward it, chin away.",
    "trap": "Positional occipital flattening tempts craniosynostosis, but ipsilateral occipital flattening is a secondary consequence of torticollis.",
    "options": {
     "A": {
@@ -1540,12 +1869,34 @@
      "text": "1.5-cm mass is palpated in the left side of the neck"
     }
    ],
-   "topic": "pediatric-neck-masses"
+   "topic": "pediatric-neck-masses",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Crepitus over left clavicle**, absent left Moro",
+     "then": "Left clavicle fracture"
+    },
+    {
+     "opt": "A",
+     "if": "**No neck mass**, rigid head tilt, abnormal spine film",
+     "then": "Cervical spine hemivertebrae"
+    },
+    {
+     "opt": "B",
+     "if": "**Palpable ridged suture**, skull shape from birth",
+     "then": "Craniosynostosis"
+    },
+    {
+     "opt": "E",
+     "if": "**Early hand preference**, focal seizures",
+     "then": "Prenatal stroke"
+    }
+   ]
   },
   "746342": {
    "task": "Diagnosis",
-   "boardCall": "Obesity + oligomenorrhea + acanthosis nigricans + polyuria -> Type 2 diabetes mellitus",
-   "hinge": "Insulin resistance with acanthosis nigricans, obesity, and painless urinary frequency in an adolescent indicates type 2 diabetes mellitus.",
+   "boardCall": "age 17 + BMI 30 + oligomenorrhea + **acanthosis nigricans** + **painless frequency with normal urinalysis** → Type 2 diabetes mellitus",
+   "hinge": "Osmotic diuresis explains frequency once infection is excluded; acanthosis marks insulin resistance.",
    "trap": "Urinary frequency without dysuria suggests a urinary tract infection, but acanthosis nigricans and normal urinalysis reveal osmotic polyuria.",
    "options": {
     "A": {
@@ -1633,12 +1984,34 @@
      "text": "Urinalysis shows no abnormalities."
     }
    ],
-   "topic": "type-2-diabetes-mellitus"
+   "topic": "type-2-diabetes-mellitus",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Purple striae**, hypertension, proximal weakness",
+     "then": "Cushing syndrome"
+    },
+    {
+     "opt": "C",
+     "if": "**Rapid virilization**, clitoromegaly, adnexal mass",
+     "then": "Ovarian neoplasm"
+    },
+    {
+     "opt": "E",
+     "if": "**Dysuria**, pyuria, nitrites",
+     "then": "Urinary tract infection"
+    },
+    {
+     "opt": "B",
+     "if": "**Cold intolerance**, constipation, high TSH",
+     "then": "Hypothyroidism"
+    }
+   ]
   },
   "746343": {
    "task": "Mechanism",
-   "boardCall": "Severe microcytosis (MCV 64) + mild anemia (Hb 10) + normal/low RDW (10%) + Southeast Asian heritage -> Thalassemia minor",
-   "hinge": "Marked microcytosis out of proportion to mild anemia with a low/normal RDW and Southeast Asian ancestry is diagnostic of thalassemia minor.",
+   "boardCall": "Vietnamese descent + Hb 10 + **MCV 64** + **RDW 10%** + target cells → Thalassemia minor",
+   "hinge": "Uniform tiny cells with mild anemia fit globin underproduction, not iron lack.",
    "trap": "Diet lacking red meat tempts iron deficiency, but normal or low RDW and Mentzer index < 13 distinguish thalassemia.",
    "options": {
     "A": {
@@ -1730,12 +2103,34 @@
      "trap": true
     }
    ],
-   "topic": "microcytic-anemia"
+   "topic": "microcytic-anemia",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**High RDW**, low ferritin, heavy milk intake",
+     "then": "Iron deficiency"
+    },
+    {
+     "opt": "A",
+     "if": "**Spherocytes**, positive direct Coombs after antibiotic",
+     "then": "Antibiotic-induced autoimmune hemolysis"
+    },
+    {
+     "opt": "D",
+     "if": "**Normocytic, reticulocytes near zero** after viral illness",
+     "then": "Transient postinfectious marrow suppression"
+    },
+    {
+     "opt": "E",
+     "if": "**MCV 110**, hypersegmented neutrophils, vegan diet",
+     "then": "Vitamin B12 deficiency"
+    }
+   ]
   },
   "746344": {
    "task": "Next step",
-   "boardCall": "Simple ovarian cyst < 5 cm + luteal phase timing + hemodynamically stable -> Observation",
-   "hinge": "A simple, fluid-filled ovarian cyst < 5 cm in an adolescent is a physiologic corpus luteum or follicular cyst managed with observation and repeat ultrasound.",
+   "boardCall": "age 17 + RLQ pain, at school + afebrile + no rebound + negative hCG + **3.5-cm simple fluid-filled cyst** → Observation",
+   "hinge": "A small simple cyst in a stable teen is physiologic and resolves.",
    "trap": "Right lower quadrant tenderness tempts appendectomy or laparoscopy, but absence of peritoneal signs and benign ultrasound favor observation.",
    "options": {
     "A": {
@@ -1820,12 +2215,34 @@
      "text": "3.5-cm right ovarian cyst that appears to be filled with fluid"
     }
    ],
-   "topic": "ovarian-cysts"
+   "topic": "ovarian-cysts",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Sudden severe pain**, vomiting, absent ovarian Doppler flow",
+     "then": "Diagnostic laparoscopy"
+    },
+    {
+     "opt": "E",
+     "if": "**Anorexia, fever**, McBurney tenderness, normal ovary",
+     "then": "Appendectomy"
+    },
+    {
+     "opt": "B",
+     "if": "**Cervical motion tenderness**, fever, sexually active",
+     "then": "IV antibiotic therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Solid complex mass**, high AFP or hCG",
+     "then": "Surgical evaluation of mass"
+    }
+   ]
   },
   "746345": {
    "task": "Diagnosis",
-   "boardCall": "Infant + Pneumocystis pneumonia + oral candidiasis + generalized lymphadenopathy + hepatosplenomegaly -> HIV infection",
-   "hinge": "Vertical HIV transmission presents in infancy with opportunistic Pneumocystis pneumonia, oral thrush, generalized lymphadenopathy, and failure to thrive.",
+   "boardCall": "age 7 months + **Pneumocystis pneumonia** + oral thrush + **diffuse lymphadenopathy** + splenomegaly → HIV infection",
+   "hinge": "Lymphoid tissue is present, so this is acquired T-cell loss, not SCID.",
    "trap": "Severe combined immunodeficiency also causes Pneumocystis pneumonia, but generalized lymphadenopathy and normal lymphocyte counts point away from SCID toward HIV.",
    "options": {
     "A": {
@@ -1945,12 +2362,34 @@
      "text": "Bronchoalveolar lavage shows Pneumocystis jirovecii"
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "F",
+     "if": "**No lymph nodes**, absent thymus, lymphopenia",
+     "then": "Severe combined immunodeficiency"
+    },
+    {
+     "opt": "G",
+     "if": "**Hypocalcemic seizures**, truncus arteriosus",
+     "then": "DiGeorge syndrome"
+    },
+    {
+     "opt": "I",
+     "if": "**Boy after 6 months**, recurrent sinopulmonary bacterial infections, no tonsils",
+     "then": "X-linked agammaglobulinemia"
+    },
+    {
+     "opt": "B",
+     "if": "**Catalase-positive abscesses**, abnormal DHR test",
+     "then": "Chronic granulomatous disease"
+    }
+   ]
   },
   "746346": {
    "task": "Pharmacology",
-   "boardCall": "Aspirin overdose + tachypnea + hyperthermia -> High anion gap metabolic acidosis (Na 141, Cl 102, HCO3 8, AG 31)",
-   "hinge": "Salicylate poisoning causes mixed respiratory alkalosis and high anion gap metabolic acidosis with markedly decreased bicarbonate (8 mEq/L) and high anion gap (31).",
+   "boardCall": "aspirin overdose + **RR 34, deep sighing** + fever + agitation + **HCO3 8** → Na 141, K 4.2, Cl 102, HCO3 8",
+   "hinge": "Uncoupled metabolism adds unmeasured acids, opening an anion gap near 31.",
    "trap": "Initial respiratory alkalosis lowers bicarbonate slightly, but salicylate uncoupling of oxidative phosphorylation creates a severe high anion gap acidosis.",
    "options": {
     "A": {
@@ -2039,12 +2478,34 @@
      "text": "\"sigh-like\" respirations"
     }
    ],
-   "topic": "salicylate-toxicity"
+   "topic": "salicylate-toxicity",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Diarrhea**, normal anion gap, high chloride",
+     "then": "Na 136, Cl 112, HCO3 13"
+    },
+    {
+     "opt": "D",
+     "if": "**Repeated vomiting**, low chloride",
+     "then": "Na 148, Cl 98, HCO3 28"
+    },
+    {
+     "opt": "E",
+     "if": "**Chronic COPD** with retained CO2",
+     "then": "HCO3 34 (compensated)"
+    },
+    {
+     "opt": "A",
+     "if": "**Adrenal crisis**: hypotension, hyperpigmentation",
+     "then": "Na 129, K 5.3, HCO3 21"
+    }
+   ]
   },
   "746347": {
    "task": "Mechanism",
-   "boardCall": "Infant failure to thrive + diaphoresis with feeds + holosystolic murmur + pulmonary plethora -> Left-to-right shunt (ventricular septal defect)",
-   "hinge": "A large VSD presents at 2 months as pulmonary vascular resistance drops, creating a left-to-right shunt with pulmonary overcirculation and heart failure.",
+   "boardCall": "age 2 months + sweating with feeds + poor weight gain + **holosystolic LLSB murmur** + **cardiomegaly, plethoric lungs** → Left-to-right shunt",
+   "hinge": "Falling pulmonary resistance after birth lets the VSD overcirculate the lungs.",
    "trap": "Pounding heart rate and tachypnea mimic SVT, but a harsh holosystolic murmur with cardiomegaly points to a structural left-to-right shunt.",
    "options": {
     "A": {
@@ -2132,12 +2593,34 @@
      "text": "chest x-ray shows cardiomegaly and increased pulmonary vascular markings"
     }
    ],
-   "topic": "congenital-heart-disease"
+   "topic": "congenital-heart-disease",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**HR 260**, narrow QRS, no murmur",
+     "then": "Supraventricular tachycardia"
+    },
+    {
+     "opt": "A",
+     "if": "**Cyanosis**, snowman heart on x-ray",
+     "then": "Anomalous pulmonary venous return"
+    },
+    {
+     "opt": "C",
+     "if": "**Arm BP high, weak femorals**",
+     "then": "Increased systemic vascular resistance"
+    },
+    {
+     "opt": null,
+     "if": "**Continuous machinery murmur**, bounding pulses, preterm",
+     "then": "Patent ductus arteriosus"
+    }
+   ]
   },
   "746348": {
    "task": "Next step",
-   "boardCall": "Exertional syncope + family history of sudden unexplained cardiac death -> 12-lead ECG",
-   "hinge": "Exertional syncope combined with sudden death in a young relative requires an immediate 12-lead ECG to rule out channelopathies, WPW, and hypertrophic cardiomyopathy.",
+   "boardCall": "age 16 + **syncope while running** + no prodrome or movements + **cousin's sudden death at 22** + normal exam → ECG",
+   "hinge": "Exertional syncope is cardiac until proven otherwise; ECG screens channelopathies cheaply.",
    "trap": "Unconscious for 15 seconds tempts an EEG for seizure, but sudden collapse during running without postictal confusion points to cardiogenic syncope.",
    "options": {
     "A": {
@@ -2227,12 +2710,35 @@
      "trap": true
     }
    ],
-   "topic": "ventricular-arrhythmias"
+   "topic": "ventricular-arrhythmias",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Standing in heat**, prodrome, no family history",
+     "then": "Reassurance (vasovagal)"
+    },
+    {
+     "opt": "D",
+     "if": "**Tongue biting**, prolonged postictal confusion",
+     "then": "EEG"
+    },
+    {
+     "opt": "E",
+     "if": "**Ongoing arrhythmia** or chest pain on arrival",
+     "then": "Hospital admission"
+    },
+    {
+     "opt": null,
+     "if": "**Harsh murmur louder with Valsalva**",
+     "then": "Echocardiography (HCM)",
+     "step": "no competitive sports"
+    }
+   ]
   },
   "746349": {
    "task": "Mechanism",
-   "boardCall": "Right mainstem intubation + right upper lobe haziness + decreased breath sounds -> Alveolar collapse (atelectasis)",
-   "hinge": "Advancement of the endotracheal tube past the right upper lobe bronchus orifice occludes its ventilation, causing rapid alveolar collapse (atelectasis).",
+   "boardCall": "intubated for asthma + **ETT tip in right mainstem** + absent RUL breath sounds + **RUL haziness** → Alveolar collapse",
+   "hinge": "The tube bypasses the RUL bronchus, so trapped gas is absorbed.",
    "trap": "Status asthmaticus causes diffuse air trapping, but the right mainstem tube selectively occludes the right upper lobe bronchus.",
    "options": {
     "A": {
@@ -2320,12 +2826,34 @@
      "text": "haziness in the right upper lobe"
     }
    ],
-   "topic": "airway-management"
+   "topic": "airway-management",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Hyperinflation**, flat diaphragms, rising plateau pressure",
+     "then": "Air trapping"
+    },
+    {
+     "opt": "E",
+     "if": "**Meniscus sign**, dull to percussion",
+     "then": "Pleural effusion"
+    },
+    {
+     "opt": "D",
+     "if": "**Kerley B lines**, after fluid overload",
+     "then": "Interstitial edema"
+    },
+    {
+     "opt": null,
+     "if": "**Hypotension, tracheal deviation**, hyperlucent side",
+     "then": "Tension pneumothorax"
+    }
+   ]
   },
   "746350": {
    "task": "Next step",
-   "boardCall": "Severe hyperkalemia (K 9 mEq/L) + ECG changes + oliguria -> IV calcium chloride (membrane stabilization)",
-   "hinge": "Serum potassium of 9 mEq/L is life-threatening and requires immediate IV calcium chloride (or gluconate) to stabilize the cardiac myocyte membrane before shifting or removing potassium.",
+   "boardCall": "lupus nephritis + oliguria + creatinine 10.2 + **K 9** + **ECG changes** → IV calcium chloride",
+   "hinge": "Membrane stabilization comes first; dialysis removes potassium too slowly to prevent arrest.",
    "trap": "Serum creatinine 10.2 mg/dL requires hemodialysis, but IV calcium is the mandatory first step to prevent fatal ventricular arrhythmia.",
    "options": {
     "A": {
@@ -2410,7 +2938,29 @@
      "text": "Creatinine 10.2 mg/dL"
     }
    ],
-   "topic": "potassium-disorders"
+   "topic": "potassium-disorders",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**After calcium and shifting**, still oliguric",
+     "then": "Hemodialysis"
+    },
+    {
+     "opt": "A",
+     "if": "**K normal**, active lupus nephritis flare",
+     "then": "Methylprednisolone bolus"
+    },
+    {
+     "opt": "D",
+     "if": "**Pulmonary hemorrhage** with nephritis",
+     "then": "Plasmapheresis"
+    },
+    {
+     "opt": "C",
+     "if": "**Prerenal azotemia**, dry mucosa, low BP",
+     "then": "IV 0.9% sodium chloride"
+    }
+   ]
   },
   "746351": {
    "task": "Mechanism",
@@ -9212,5 +9762,5 @@
    "evidence": "Checked 2026-10-30: [AHA adult advanced life support 2025](https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support)."
   }
  },
- "updatedAt": "2026-11-07T08:13:48Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

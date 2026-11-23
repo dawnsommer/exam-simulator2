@@ -8,8 +8,8 @@
  "items": {
   "c-fm-05-fm5_q001": {
    "task": "Prevention",
-   "boardCall": "Postmenopausal obesity + sedentary lifestyle + low familial risk -> Weight loss via exercise and caloric restriction",
-   "hinge": "Adipose tissue produces excess estrogen after menopause, making weight loss and exercise the primary modifiable risk reducers.",
+   "boardCall": "postmenopausal + **BMI 34** + sedentary + no family history + 1 beer daily → Exercising and reducing caloric intake",
+   "hinge": "After menopause, fat tissue aromatizes androgens into estrogen; weight loss cuts that.",
    "trap": "Alcohol cessation reduces risk slightly, but obesity has a far larger impact in a postmenopausal woman.",
    "options": {
     "A": {
@@ -92,12 +92,34 @@
      "trap": true
     }
    ],
-   "topic": "lifestyle-counseling"
+   "topic": "lifestyle-counseling",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**BRCA-negative, high 5-year risk** (atypical hyperplasia)",
+     "then": "Raloxifene therapy"
+    },
+    {
+     "opt": "B",
+     "if": "**Normal BMI**, 3 drinks daily",
+     "then": "Alcohol cessation"
+    },
+    {
+     "opt": null,
+     "if": "**BRCA1 mutation**",
+     "then": "Discuss prophylactic mastectomy"
+    },
+    {
+     "opt": "A",
+     "if": "**Cyclic breast tenderness** only",
+     "then": "Caffeine abstinence won't change risk"
+    }
+   ]
   },
   "c-fm-05-fm5_q002": {
    "task": "Prevention",
-   "boardCall": "Large population health system + goal to improve statewide health equity and efficiency -> Increased investment in primary care",
-   "hinge": "Primary care investment delivers preventive care broadly, lowers hospitalization rates, and reduces health disparities across entire populations.",
+   "boardCall": "statewide system + all ages and incomes + **goal: quality, efficiency, equity** + **specialists already ample** → Invest in primary care",
+   "hinge": "Population outcomes improve most per dollar with prevention and chronic care.",
    "trap": "Expanding specialty or telemedicine services aids niche populations but does not improve overall population health efficiently.",
    "options": {
     "A": {
@@ -179,12 +201,34 @@
      "text": "prioritize key areas for proactive improvement"
     }
    ],
-   "topic": "population-health-and-quality-improvement"
+   "topic": "population-health-and-quality-improvement",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Remote rural regions** with few clinicians",
+     "then": "Expand telemedicine services"
+    },
+    {
+     "opt": "B",
+     "if": "**Specialists scarce** in underserved counties",
+     "then": "Mobile specialty clinic"
+    },
+    {
+     "opt": "C",
+     "if": "**Long surgical waitlists**, primary care strong",
+     "then": "Expand specialty, imaging access"
+    },
+    {
+     "opt": "A",
+     "if": "**Delays from prior authorization** harming care",
+     "then": "Eliminate prior authorization"
+    }
+   ]
   },
   "c-fm-05-fm5_q003": {
    "task": "Next step",
-   "boardCall": "6-year-old child + primary nocturnal enuresis + normal exam and urinalysis -> Reassurance and education",
-   "hinge": "Nocturnal enuresis is normal up to age 5 to 7, and asymptomatic children with normal urinalysis require initial reassurance and lifestyle advice.",
+   "boardCall": "6 yo girl + **never dry at night** + daytime continent + **normal urinalysis, glucose** → Reassurance only",
+   "hinge": "Primary nocturnal enuresis resolves spontaneously; under 7 needs no treatment.",
    "trap": "Desmopressin is second-line pharmacotherapy used only when behavioral strategies fail or for sleepovers in older children.",
    "options": {
     "A": {
@@ -270,12 +314,34 @@
      "text": "dry through the night by age 5 years"
     }
    ],
-   "topic": "nocturnal-enuresis"
+   "topic": "nocturnal-enuresis",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Age 8**, distressed, wetting persists",
+     "then": "Bed-wetting alarm"
+    },
+    {
+     "opt": "A",
+     "if": "**Sleepover soon**, alarm failed",
+     "then": "Desmopressin therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Daytime wetting**, weak stream",
+     "then": "Renal ultrasonography"
+    },
+    {
+     "opt": "D",
+     "if": "**New wetting** after dryness with dysuria",
+     "then": "Urine culture"
+    }
+   ]
   },
   "c-fm-05-fm5_q004": {
    "task": "Next step",
-   "boardCall": "5-year stable subcutaneous mass + mobile + homogeneous ultrasound -> Clinical observation",
-   "hinge": "A stable, mobile, superficial subcutaneous mass with benign ultrasound features is a lipoma and requires only observation if asymptomatic.",
+   "boardCall": "**unchanged 5 years** + 4-cm soft mobile mass + **homogeneous on ultrasound** + no skin change → Continued observation",
+   "hinge": "Long-stable superficial lipoma lacks every sarcoma red flag.",
    "trap": "A 4-cm size might raise cancer worry, but 5-year stability and homogeneous features confirm benign lipoma.",
    "options": {
     "A": {
@@ -357,12 +423,34 @@
      "text": "well-defined mass with a homogeneous echotexture"
     }
    ],
-   "topic": "benign-skin-growths"
+   "topic": "benign-skin-growths",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Mass deep to fascia**, growing over months",
+     "then": "MRI"
+    },
+    {
+     "opt": "A",
+     "if": "**Painful or cosmetically bothersome**",
+     "then": "Excisional biopsy"
+    },
+    {
+     "opt": "B",
+     "if": "**Firm enlarging neck node**",
+     "then": "Fine-needle biopsy"
+    },
+    {
+     "opt": "D",
+     "if": "**New mass**, indeterminate ultrasound",
+     "then": "Repeat ultrasonography in 3 months"
+    }
+   ]
   },
   "c-fm-05-fm5_q005": {
    "task": "Diagnosis",
-   "boardCall": "Severe sore throat + muffled voice + high fever -> Uvular deviation indicating peritonsillar abscess drainage",
-   "hinge": "Uvular deviation and asymmetric tonsillar bulge indicate a peritonsillar abscess requiring needle aspiration or incision and drainage.",
+   "boardCall": "19 yo + 1 week sore throat + dysphagia + **muffled voice** + fever 39.4 → Lateral deviation of the uvula",
+   "hinge": "A pushed uvula signals a peritonsillar pus collection needing drainage.",
    "trap": "Pharyngeal exudates and anterior lymphadenopathy occur in standard streptococcal pharyngitis and do not warrant surgery.",
    "options": {
     "A": {
@@ -444,12 +532,34 @@
      "text": "temperature is 39.4°C (103°F)"
     }
    ],
-   "topic": "pharyngitis"
+   "topic": "pharyngitis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**No cough**, fever, exudates",
+     "then": "Pharyngeal exudates: strep test"
+    },
+    {
+     "opt": "C",
+     "if": "**Splenomegaly**, posterior nodes, fatigue",
+     "then": "Palatal petechiae: mononucleosis"
+    },
+    {
+     "opt": null,
+     "if": "**Drooling, tripod**, normal pharynx",
+     "then": "Epiglottitis: secure airway"
+    },
+    {
+     "opt": "A",
+     "if": "**No cough**, fever, tender anterior nodes",
+     "then": "Anterior cervical lymphadenopathy: strep test"
+    }
+   ]
   },
   "c-fm-05-fm5_q006": {
    "task": "Next step",
-   "boardCall": "Epigastric postprandial pain + relief with antacids + age < 60 without alarm signs -> Helicobacter pylori noninvasive testing",
-   "hinge": "In patients under age 60 with dyspepsia and no alarm features, noninvasive Helicobacter pylori testing is the next diagnostic step.",
+   "boardCall": "37 yo + epigastric pain after meals + **relieved by antacids** + **no alarm features** → Serum H pylori antibody",
+   "hinge": "Young dyspeptic patients without red flags get test-and-treat for H pylori.",
    "trap": "Abdominal ultrasound or CT tests for biliary colic or pancreatitis, which present with acute continuous or radiating pain.",
    "options": {
     "A": {
@@ -534,12 +644,34 @@
      "text": "stool is brown, and test for occult blood is negative"
     }
    ],
-   "topic": "dyspepsia-and-peptic-ulcer-disease"
+   "topic": "dyspepsia-and-peptic-ulcer-disease",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Age ≥60** or weight loss, anemia",
+     "then": "Upper endoscopy"
+    },
+    {
+     "opt": "A",
+     "if": "**Heartburn persists** despite PPI, normal EGD",
+     "then": "Esophageal pH monitoring"
+    },
+    {
+     "opt": "D",
+     "if": "**RUQ pain** after fatty meals",
+     "then": "Abdominal ultrasonography"
+    },
+    {
+     "opt": "B",
+     "if": "**Severe pain to back** with vomiting",
+     "then": "Serum amylase"
+    }
+   ]
   },
   "c-fm-05-fm5_q007": {
    "task": "Next step",
-   "boardCall": "Suppressed TSH + clinical hyperthyroidism + no palpable nodule or Graves signs -> Thyroid ultrasonography",
-   "hinge": "Hyperthyroidism without a palpable nodule or pathognomonic Graves features requires thyroid ultrasonography or radioactive iodine uptake to establish the etiology.",
+   "boardCall": "palpitations, heat intolerance + **weight loss** + HR 112 + **TSH 0.1** + no goiter or eye signs → Thyroid ultrasonography",
+   "hinge": "Find the cause first; no exam clue separates Graves from nodules.",
    "trap": "Radioiodine ablation or fine needle biopsy is premature before characterizing the underlying thyroid structure and cause.",
    "options": {
     "A": {
@@ -629,12 +761,34 @@
      "trap": true
     }
    ],
-   "topic": "hyperthyroidism"
+   "topic": "hyperthyroidism",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Confirmed Graves**, prefers definitive therapy",
+     "then": "¹³¹I therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Cold nodule** >1 cm, normal TSH",
+     "then": "Fine-needle biopsy"
+    },
+    {
+     "opt": "A",
+     "if": "**Fever, delirium**, heart failure",
+     "then": "Admission: thyroid storm"
+    },
+    {
+     "opt": "B",
+     "if": "**Heavy irregular bleeding** at 47, thickened stripe",
+     "then": "Endometrial biopsy"
+    }
+   ]
   },
   "c-fm-05-fm5_q008": {
    "task": "Next step",
-   "boardCall": "6 months of persistent anxiety + insomnia + intact functioning -> Office-based counseling and lifestyle modification",
-   "hinge": "Mild generalized anxiety disorder without functional impairment is managed initially with office-based counseling, education, and cognitive behavioral therapy.",
+   "boardCall": "6 months worry + **edgy, poor sleep** + **working, functioning well** + normal exam → Office-based counseling",
+   "hinge": "Mild generalized anxiety starts with psychotherapy; drugs add risk first.",
    "trap": "Benzodiazepines cause dependence and sedation, making them inappropriate as first-line therapy for mild GAD.",
    "options": {
     "A": {
@@ -720,12 +874,34 @@
      "text": "anxious mood and jittery affect"
     }
    ],
-   "topic": "generalized-anxiety-disorder"
+   "topic": "generalized-anxiety-disorder",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Wants sleep aid**, young, no other drugs",
+     "then": "Diphenhydramine therapy"
+    },
+    {
+     "opt": "D",
+     "if": "**SSRI and SNRI failed** or not tolerated",
+     "then": "Pregabalin therapy"
+    },
+    {
+     "opt": "A",
+     "if": "**Panic attack** in ED, short use only",
+     "then": "Alprazolam"
+    },
+    {
+     "opt": "E",
+     "if": "**Insists on herbal remedy**, mild insomnia",
+     "then": "Valerian root"
+    }
+   ]
   },
   "c-fm-05-fm5_q009": {
    "task": "Diagnosis",
-   "boardCall": "14-year-old boy + delayed puberty + bone age 12 (< chronological age) + normal-height parents -> Constitutional growth delay",
-   "hinge": "Bone age younger than chronological age with delayed pubertal onset and normal parental height defines constitutional growth delay.",
+   "boardCall": "14 yo + short + **tall parents** + early puberty signs + **bone age 12** → Constitutional growth delay",
+   "hinge": "Delayed bone age leaves growth potential; he will reach target height late.",
    "trap": "Familial short stature features bone age matching chronological age and short parents.",
    "options": {
     "A": {
@@ -813,12 +989,34 @@
      "text": "bone age of 12 years (±4 months)"
     }
    ],
-   "topic": "pubertal-development"
+   "topic": "pubertal-development",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Parents at 5th percentile**, normal puberty timing",
+     "then": "Familial short stature"
+    },
+    {
+     "opt": "C",
+     "if": "**Falling growth velocity**, weight gain, fatigue",
+     "then": "Hypothyroidism"
+    },
+    {
+     "opt": "D",
+     "if": "**Weight drops first**, then height",
+     "then": "Nutritional deficiency"
+    },
+    {
+     "opt": "E",
+     "if": "**50th percentile**, matching bone age",
+     "then": "Normal development"
+    }
+   ]
   },
   "c-fm-05-fm5_q010": {
    "task": "Diagnosis",
-   "boardCall": "Prior MI + orthopnea + JVD + bibasilar crackles + S3 gallop -> Decompensated heart failure from ischemic cardiomyopathy",
-   "hinge": "An S3 gallop, bilateral pulmonary crackles, orthopnea, and rapid weight gain in a patient with coronary disease define decompensated left ventricular failure.",
+   "boardCall": "prior MI, CABG + orthopnea + **10-lb gain** + JVD, crackles + **S3** → Ischemic cardiomyopathy",
+   "hinge": "S3 with pulmonary crackles is left ventricular failure; COPD does neither.",
    "trap": "COPD causes wheezing and right-sided overload, but pulmonary crackles and an S3 gallop signify left heart failure.",
    "options": {
     "A": {
@@ -906,12 +1104,34 @@
      "trap": true
     }
    ],
-   "topic": "heart-failure"
+   "topic": "heart-failure",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Wheezing, hyperinflation**, no S3 or edema",
+     "then": "Chronic obstructive pulmonary disease"
+    },
+    {
+     "opt": "B",
+     "if": "**Fever, productive cough**, focal consolidation",
+     "then": "Community-acquired pneumonia"
+    },
+    {
+     "opt": "E",
+     "if": "**Clear lungs**, sudden pleuritic pain, hypoxemia",
+     "then": "Pulmonary embolus"
+    },
+    {
+     "opt": null,
+     "if": "**Gain after starting NSAIDs**",
+     "then": "Drug-precipitated HF"
+    }
+   ]
   },
   "c-fm-05-fm5_q011": {
    "task": "Next step",
-   "boardCall": "HFrEF (EF 20%) on furosemide + ACE inhibitor + beta-blocker -> Mineralocorticoid receptor antagonist (spironolactone or eplerenone)",
-   "hinge": "In symptomatic heart failure with reduced ejection fraction (< 35%) already on foundational therapy, an aldosterone antagonist reduces mortality.",
+   "boardCall": "already on ACE inhibitor, β-blocker + **EF 20%** + **still congested on furosemide** → Aldosterone antagonist",
+   "hinge": "MRAs cut mortality in severe HFrEF beyond ACE inhibitor and β-blocker.",
    "trap": "An ARB should not be added on top of an existing ACE inhibitor due to adverse renal and hyperkalemia risks.",
    "options": {
     "A": {
@@ -994,12 +1214,34 @@
      "text": "no evidence of myocardial infarction"
     }
    ],
-   "topic": "heart-failure"
+   "topic": "heart-failure",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**ACE inhibitor cough**, stop lisinopril",
+     "then": "Angiotensin II receptor blocker"
+    },
+    {
+     "opt": null,
+     "if": "**K 5.5** or eGFR <30",
+     "then": "Hold MRA"
+    },
+    {
+     "opt": "D",
+     "if": "**Symptomatic despite all GDMT**, AF rate control",
+     "then": "Cardiac glycoside"
+    },
+    {
+     "opt": "E",
+     "if": "**Black patient**, NYHA III on GDMT",
+     "then": "Nitrate with hydralazine"
+    }
+   ]
   },
   "c-fm-05-fm5_q012": {
    "task": "Diagnosis",
-   "boardCall": "Older man + BPH + costovertebral tenderness + fever + positive nitrites -> Escherichia coli pyelonephritis",
-   "hinge": "Escherichia coli is the predominant uropathogen causing acute uncomplicated and complicated pyelonephritis.",
+   "boardCall": "72 yo + BPH + **fever, back pain, CVA tenderness** + dysuria + **nitrite positive** → Escherichia coli",
+   "hinge": "E coli dominates pyelonephritis, including in older men with obstruction.",
    "trap": "Proteus causes alkaline urine and struvite stones, but E coli remains the most common organism overall.",
    "options": {
     "A": {
@@ -1092,12 +1334,34 @@
      "trap": true
     }
    ],
-   "topic": "urinary-tract-infections"
+   "topic": "urinary-tract-infections",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Urine pH 8**, staghorn calculus",
+     "then": "Proteus mirabilis"
+    },
+    {
+     "opt": "E",
+     "if": "**Sexually active young woman**, nitrite negative",
+     "then": "Staphylococcus saprophyticus"
+    },
+    {
+     "opt": "C",
+     "if": "**Long-term catheter**, mucoid colonies",
+     "then": "Klebsiella pneumoniae"
+    },
+    {
+     "opt": null,
+     "if": "**Indwelling catheter**, recent antibiotics",
+     "then": "Pseudomonas or Enterococcus"
+    }
+   ]
   },
   "c-fm-05-fm5_q013": {
    "task": "Screening",
-   "boardCall": "10-year-old child + BMI > 95th percentile (obesity) -> Fasting blood glucose or HbA1c screening",
-   "hinge": "Children age ≥ 10 with BMI ≥ 95th percentile require screening for type 2 diabetes with fasting glucose or HbA1c.",
+   "boardCall": "10 yo + **BMI >95th percentile** + **age ≥10** + immigrant from Bolivia 7 years ago → Fasting serum glucose",
+   "hinge": "Obese children from 10 need diabetes screening; other tests lack specific risk.",
    "trap": "Living in a pre-1978 home or immigrant status tempts lead or TB screening, which are not indicated without specific risk.",
    "options": {
     "A": {
@@ -1183,12 +1447,34 @@
      "trap": true
     }
    ],
-   "topic": "type-2-diabetes-mellitus"
+   "topic": "type-2-diabetes-mellitus",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Arrived within 1 year** from endemic country",
+     "then": "PPD skin test"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 1–2** in a pre-1978 home",
+     "then": "Blood lead concentration"
+    },
+    {
+     "opt": "C",
+     "if": "**Unvaccinated** with HBsAg-positive mother",
+     "then": "Hepatitis B surface antibody"
+    },
+    {
+     "opt": "E",
+     "if": "**Edema** or hypertension",
+     "then": "Urinalysis"
+    }
+   ]
   },
   "c-fm-05-fm5_q014": {
    "task": "Diagnosis",
-   "boardCall": "9-month-old infant + microcytic anemia (MCV 65) + pallor -> Dietary history for cow's milk intake and iron sources",
-   "hinge": "Nutritional iron deficiency is the leading cause of microcytic anemia in infants, best identified by evaluating dietary intake.",
+   "boardCall": "infant + well visit + **Hct 29%** + **MCV 65** + mild pallor + normal growth → \"What does she eat?\"",
+   "hinge": "Microcytosis at this age is dietary iron deficiency, usually excess cow milk.",
    "trap": "Family history of splenectomy suggests hereditary spherocytosis, which causes normocytic or macrocytic hemolytic anemia.",
    "options": {
     "A": {
@@ -1266,12 +1552,34 @@
      "text": "Developmental milestones are appropriate for age"
     }
    ],
-   "topic": "microcytic-anemia"
+   "topic": "microcytic-anemia",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Spherocytes**, high MCHC, splenomegaly",
+     "then": "Family splenectomy question"
+    },
+    {
+     "opt": "A",
+     "if": "**Normocytic anemia**, reticulocytosis, jaundice",
+     "then": "Neonatal jaundice question"
+    },
+    {
+     "opt": "B",
+     "if": "**Petechiae**, prolonged bleeding",
+     "then": "Does she bruise easily?"
+    },
+    {
+     "opt": null,
+     "if": "**Target cells**, normal iron, Mediterranean family",
+     "then": "Ask about thalassemia in family"
+    }
+   ]
   },
   "c-fm-05-fm5_q015": {
    "task": "Next step",
-   "boardCall": "4-year-old child + postviral hip limp + normal vitals + small effusion -> Ibuprofen and conservative management for transient synovitis",
-   "hinge": "Transient synovitis presents as an acute limp after a viral illness in a well-appearing, afebrile child and is managed with NSAIDs.",
+   "boardCall": "4 yo + **URI 10 days ago** + limp + **afebrile, well-appearing** + small hip effusion → Ibuprofen therapy",
+   "hinge": "Post-viral transient synovitis settles with NSAIDs; septic hip looks toxic.",
    "trap": "Septic arthritis requires IV antibiotics and urgent aspiration, but requires fever, non-weight bearing, and high inflammatory markers.",
    "options": {
     "A": {
@@ -1360,12 +1668,34 @@
      "text": "small amount of fluid"
     }
    ],
-   "topic": "pediatric-hip-disorders"
+   "topic": "pediatric-hip-disorders",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Fever, refuses weight-bearing**, high CRP",
+     "then": "Urgent hip aspiration"
+    },
+    {
+     "opt": "D",
+     "if": "**Purulent aspirate**, MRSA prevalent",
+     "then": "Vancomycin therapy"
+    },
+    {
+     "opt": "E",
+     "if": "**Limp persists weeks**, age 4–8",
+     "then": "X-ray: Legg-Calvé-Perthes"
+    },
+    {
+     "opt": "C",
+     "if": "**Normal x-ray**, focal bone pain, fever",
+     "then": "MRI for osteomyelitis"
+    }
+   ]
   },
   "c-fm-05-fm5_q016": {
    "task": "Diagnosis",
-   "boardCall": "Adolescent boy + painless scrotal mass + bag-of-worms sensation + decreases when supine -> Varicocele",
-   "hinge": "A scrotal mass described as a 'bag of worms' that collapses when supine is the classic presentation of a varicocele.",
+   "boardCall": "16 yo + painless scrotal mass + **bag of worms** + **shrinks supine** → Varicocele",
+   "hinge": "Dilated pampiniform veins drain when lying flat.",
    "trap": "A hydrocele is also painless, but it transilluminates and does not decompress when lying flat.",
    "options": {
     "A": {
@@ -1468,12 +1798,34 @@
      "text": "examination prior to participation in school sports"
     }
    ],
-   "topic": "scrotal-masses"
+   "topic": "scrotal-masses",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Transilluminates**, does not change supine",
+     "then": "Hydrocele"
+    },
+    {
+     "opt": "C",
+     "if": "**Bowel sounds** in scrotum, cough impulse",
+     "then": "Inguinal hernia"
+    },
+    {
+     "opt": "E",
+     "if": "**Firm intratesticular mass**, no transillumination",
+     "then": "Teratoma of the testis"
+    },
+    {
+     "opt": null,
+     "if": "**Right-sided**, does not decompress",
+     "then": "Image retroperitoneum"
+    }
+   ]
   },
   "c-fm-05-fm5_q017": {
    "task": "Next step",
-   "boardCall": "57-year-old woman + prior wrist fracture + smoking history + family hip fracture -> Dual-energy x-ray absorptiometry (DEXA) now",
-   "hinge": "Postmenopausal women under age 65 with a prior fragility fracture or high clinical risk require immediate DEXA scanning rather than waiting until age 65.",
+   "boardCall": "57 yo postmenopausal + **prior wrist fracture** + smoker, low weight + sister's hip fracture → DEXA scan now",
+   "hinge": "Fragility fracture before 65 warrants density testing immediately, not at 65.",
    "trap": "Bisphosphonates are first-line for documented osteoporosis, but bone mineral density must be measured first.",
    "options": {
     "A": {
@@ -1562,12 +1914,34 @@
      "text": "Menopause occurred 10 years ago"
     }
    ],
-   "topic": "osteoporosis"
+   "topic": "osteoporosis",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**No risk factors**, age 57",
+     "then": "DEXA scan at 65"
+    },
+    {
+     "opt": "A",
+     "if": "**T-score −2.7** on DEXA",
+     "then": "Bisphosphonate therapy"
+    },
+    {
+     "opt": "D",
+     "if": "**Disabling hot flashes**, age 50",
+     "then": "Estrogen and progestin"
+    },
+    {
+     "opt": null,
+     "if": "**Hip fracture** on bisphosphonate failure",
+     "then": "Teriparatide"
+    }
+   ]
   },
   "c-fm-05-fm5_q018": {
    "task": "Prevention",
-   "boardCall": "Competitive open-water swimmer + recurrent otitis externa prevention -> Alcohol-acetic acid otic drops after swimming",
-   "hinge": "Instilling alcohol-acetic acid otic drops after water exposure dries the canal and inhibits bacterial growth, preventing recurrent otitis externa.",
+   "boardCall": "ocean swimmer + **pain with pinna traction** + canal edema, discharge + **normal TM** → Alcohol-acetic acid ear drops",
+   "hinge": "Drying and acidifying the canal blocks bacterial overgrowth after swimming.",
    "trap": "Topical steroids or anesthetics relieve acute pain and inflammation, but they do not prevent bacterial colonization and recurrence.",
    "options": {
     "A": {
@@ -1652,12 +2026,34 @@
      "text": "left tympanic membrane appears normal"
     }
    ],
-   "topic": "otitis-externa"
+   "topic": "otitis-externa",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Perforated TM**",
+     "then": "Avoid acetic acid; ofloxacin drops"
+    },
+    {
+     "opt": "D",
+     "if": "**Cerumen impaction**, intact TM",
+     "then": "Carbamide peroxide drops"
+    },
+    {
+     "opt": null,
+     "if": "**Diabetic elderly**, granulation tissue, cranial nerve palsy",
+     "then": "Malignant otitis externa: IV antipseudomonal"
+    },
+    {
+     "opt": "E",
+     "if": "**Itchy scaly canal** from eczema",
+     "then": "Hydrocortisone ear drops"
+    }
+   ]
   },
   "c-fm-05-fm5_q019": {
    "task": "Mechanism",
-   "boardCall": "Chronic diarrhea + weight loss + microcytic iron deficiency anemia -> Small-bowel villous atrophy from celiac disease",
-   "hinge": "Duodenal villous atrophy and crypt hyperplasia cause malabsorption of fat, nutrients, and iron in celiac sprue.",
+   "boardCall": "chronic diarrhea + flatulence + **weight loss** + **microcytic anemia, low ferritin** → Villous atrophy",
+   "hinge": "Duodenal mucosal loss impairs iron absorption, explaining anemia with diarrhea.",
    "trap": "Travel history to Peru tempts chronic infectious diarrhea, but microcytic anemia and flatulence indicate celiac malabsorption.",
    "options": {
     "A": {
@@ -1753,12 +2149,34 @@
      "trap": true
     }
    ],
-   "topic": "celiac-disease"
+   "topic": "celiac-disease",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Bloating after milk**, no anemia",
+     "then": "Enzyme deficiency"
+    },
+    {
+     "opt": "B",
+     "if": "**Bloody diarrhea**, fever after travel",
+     "then": "Bacterial invasion of bowel wall"
+    },
+    {
+     "opt": "D",
+     "if": "**Diarrhea only while running**, labs normal",
+     "then": "Intestinal hypermotility"
+    },
+    {
+     "opt": "A",
+     "if": "**Macroglossia**, proteinuria, myeloma",
+     "then": "Amyloid infiltration"
+    }
+   ]
   },
   "c-fm-05-fm5_q020": {
    "task": "Ethics",
-   "boardCall": "Capacitated patient verbalizes full code on admission + prior DNR living will + acute respiratory failure -> Mechanical ventilation according to current expressed wishes",
-   "hinge": "A competent patient’s contemporaneous verbal decision supersedes any prior advance directive or living will.",
+   "boardCall": "living will declining ventilation + **now oriented, requests full code** + SpO₂ 85% on 40% → Provide ventilator support",
+   "hinge": "A capable patient's current wish overrides any earlier written directive.",
    "trap": "A notarized living will seems legally binding, but advance directives take effect only when a patient lacks decision-making capacity.",
    "options": {
     "A": {
@@ -1841,12 +2259,34 @@
      "trap": true
     }
    ],
-   "topic": "advance-directives-and-surrogates"
+   "topic": "advance-directives-and-surrogates",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Lacks capacity**, no newer statement",
+     "then": "Follow living will, morphine"
+    },
+    {
+     "opt": "D",
+     "if": "**Incapacitated**, no directive",
+     "then": "Contact family"
+    },
+    {
+     "opt": "C",
+     "if": "**Surrogates disagree** about unclear wishes",
+     "then": "Ethics committee"
+    },
+    {
+     "opt": "B",
+     "if": "**Stable**, no emergency",
+     "then": "Ask why wishes changed"
+    }
+   ]
   },
   "c-fm-05-fm5_q021": {
    "task": "Diagnosis",
-   "boardCall": "Fever + sore throat + diarrhea + oral ulcers 2 weeks after condomless sex with men -> HIV viral load (RNA PCR)",
-   "hinge": "In acute retroviral syndrome, antibody tests are negative during the window period, requiring viral load (RNA PCR) for diagnosis.",
+   "boardCall": "MSM, no condoms + **exposure 2 weeks ago** + fever, pharyngitis, oral ulcers + **negative monospot** → HIV viral load",
+   "hinge": "Antibodies lag weeks behind infection; RNA is detectable first.",
    "trap": "HIV antibody testing is negative in acute infection before seroconversion occurs (window period).",
    "options": {
     "A": {
@@ -1937,12 +2377,34 @@
      "text": "temperature is 38.5°C (101.3°F)"
     }
    ],
-   "topic": "hiv-infection"
+   "topic": "hiv-infection",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Routine screen**, no recent symptoms",
+     "then": "HIV antibody testing"
+    },
+    {
+     "opt": "B",
+     "if": "**Heterophile negative**, posterior nodes, splenomegaly, atypical lymphocytes",
+     "then": "EBV-specific antibodies"
+    },
+    {
+     "opt": "E",
+     "if": "**Exudative pharyngitis** after oral sex",
+     "then": "Throat culture for gonorrhea"
+    },
+    {
+     "opt": "F",
+     "if": "**Negative rapid strep** in a child",
+     "then": "Throat culture for strep"
+    }
+   ]
   },
   "c-fm-05-fm5_q022": {
    "task": "Ethics",
-   "boardCall": "15-year-old minor + experimental marijuana use + good functioning + requests parental confidentiality -> Schedule follow-up visit with the patient",
-   "hinge": "Adolescents have the right to confidential substance use counseling, and experimental use without impairment is managed with counseling and planned follow-up.",
+   "boardCall": "15 yo + **marijuana 4 times** + **good grades, healthy** + asks parents not told → Follow-up examination",
+   "hinge": "Experimental use without impairment stays confidential and is monitored.",
    "trap": "Informing parents or demanding urine drug screening breaches adolescent confidentiality when there is no imminent danger.",
    "options": {
     "A": {
@@ -2028,12 +2490,34 @@
      "text": "During a routine health maintenance examination"
     }
    ],
-   "topic": "adolescent-confidentiality-and-care"
+   "topic": "adolescent-confidentiality-and-care",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Failing school**, daily use, cravings",
+     "then": "Referral for substance use disorder"
+    },
+    {
+     "opt": "B",
+     "if": "**Patient agrees** to involve parents",
+     "then": "Family conference"
+    },
+    {
+     "opt": null,
+     "if": "**Suicidal plan** or overdose",
+     "then": "Break confidentiality"
+    },
+    {
+     "opt": "E",
+     "if": "**Unexplained psychosis** or altered mental status",
+     "then": "Urine toxicology screening"
+    }
+   ]
   },
   "c-fm-05-fm5_q023": {
    "task": "Next step",
-   "boardCall": "Acute warm, swollen, erythematous knee + low-grade fever + pain with passive motion -> Arthrocentesis (synovial fluid aspiration)",
-   "hinge": "Acute monoarthritis with warmth, erythema, and severe restriction of passive motion requires immediate arthrocentesis to rule out septic arthritis.",
+   "boardCall": "**acute warm, red, swollen knee** + low-grade fever + diabetes, inhaled steroid + **severe pain on motion** → Knee aspiration",
+   "hinge": "Septic joint must be excluded before steroids; only fluid analysis does it.",
    "trap": "Medial joint narrowing suggests osteoarthritis, but acute inflammatory signs mandate synovial aspiration first.",
    "options": {
     "A": {
@@ -2123,12 +2607,34 @@
      "trap": true
     }
    ],
-   "topic": "septic-arthritis"
+   "topic": "septic-arthritis",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Fluid sterile**, CPP crystals",
+     "then": "Intra-articular corticosteroids"
+    },
+    {
+     "opt": "E",
+     "if": "**Negatively birefringent needles**, culture negative",
+     "then": "Naproxen therapy"
+    },
+    {
+     "opt": "B",
+     "if": "**Twisting injury**, locking, no warmth",
+     "then": "MRI of the knee"
+    },
+    {
+     "opt": "A",
+     "if": "**Recurrent gout**, considering urate-lowering",
+     "then": "Serum uric acid"
+    }
+   ]
   },
   "c-fm-05-fm5_q024": {
    "task": "Next step",
-   "boardCall": "Loud snoring + daytime drowsiness + loud P2 (pulmonary hypertension) -> Polysomnography (overnight sleep study)",
-   "hinge": "Daytime somnolence and habitual snoring with physical signs of secondary pulmonary hypertension require overnight polysomnography to diagnose obstructive sleep apnea.",
+   "boardCall": "**loud snoring** + daytime drowsiness + hypertension + **loud P2** → Polysomnography",
+   "hinge": "Suspected OSA with pulmonary hypertension needs in-lab sleep study.",
    "trap": "A loud P2 suggests pulmonary hypertension, tempting echocardiography, but the primary underlying etiology is OSA requiring polysomnography.",
    "options": {
     "A": {
@@ -2225,12 +2731,34 @@
      "trap": true
     }
    ],
-   "topic": "obstructive-sleep-apnea"
+   "topic": "obstructive-sleep-apnea",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**OSA confirmed**, edema, persistent loud P2",
+     "then": "Echocardiography"
+    },
+    {
+     "opt": "F",
+     "if": "**Snoring supine only**, normal sleep study",
+     "then": "Sleep positioning therapy"
+    },
+    {
+     "opt": "D",
+     "if": "**Sleepiness persists** on adherent CPAP",
+     "then": "Modafinil therapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Cataplexy**, hypnagogic hallucinations, narcolepsy",
+     "then": "Methylphenidate therapy"
+    }
+   ]
   },
   "c-fm-05-fm5_q025": {
    "task": "Next step",
-   "boardCall": "Asymptomatic hypercalcemia (calcium 11.9 mg/dL) + chronic lithium therapy -> Serum intact parathyroid hormone (PTH)",
-   "hinge": "The first step in evaluating hypercalcemia is measuring intact serum PTH to differentiate PTH-dependent from PTH-independent etiologies.",
+   "boardCall": "**long-term lithium** + **calcium 11.9** + creatinine 1.6 + normal albumin, vitamin D → Serum PTH",
+   "hinge": "Lithium raises the calcium set point; PTH separates PTH-mediated from other causes.",
    "trap": "Lithium impairs calcium sensing and can cause primary or tertiary hyperparathyroidism, which is confirmed by measuring PTH first.",
    "options": {
     "A": {
@@ -2312,12 +2840,34 @@
      "text": "25-hydroxyvitamin D: 42 ng/mL (N>20)"
     }
    ],
-   "topic": "hypercalcemia"
+   "topic": "hypercalcemia",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Elevated PTH**, family history of mild hypercalcemia",
+     "then": "Urinary calcium"
+    },
+    {
+     "opt": "E",
+     "if": "**Suppressed PTH**, back pain, anemia",
+     "then": "X-ray of the spine"
+    },
+    {
+     "opt": "A",
+     "if": "**Primary hyperparathyroidism confirmed**",
+     "then": "Bone density test"
+    },
+    {
+     "opt": "B",
+     "if": "**Flank pain**, hematuria",
+     "then": "Renal ultrasonography"
+    }
+   ]
   },
   "c-fm-05-fm5_q026": {
    "task": "Prevention",
-   "boardCall": "Obese patient (BMI 33 kg/m²) + essential hypertension (148/94 mm Hg) -> Weight reduction of ~10 kg (largest nonpharmacologic blood pressure drop)",
-   "hinge": "Weight loss produces a blood pressure reduction of approximately 1 mm Hg per 1 kg lost, the largest single lifestyle reduction in an obese patient.",
+   "boardCall": "new hypertension + **BMI 33** + smoker + daily beer + sedentary → Weight loss of 9 kg",
+   "hinge": "Obesity is his biggest driver; each kilogram lost lowers pressure.",
    "trap": "Smoking cessation is critical for overall cardiovascular risk, but it does not significantly reduce resting blood pressure.",
    "options": {
     "A": {
@@ -2410,12 +2960,34 @@
      "text": "drinks four to five cups of coffee daily"
     }
    ],
-   "topic": "essential-hypertension"
+   "topic": "essential-hypertension",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Normal weight**, drinks **6 beers daily**",
+     "then": "Abstinence from alcohol"
+    },
+    {
+     "opt": "C",
+     "if": "**Asks what most cuts MI risk**",
+     "then": "Smoking cessation"
+    },
+    {
+     "opt": null,
+     "if": "**Normal weight**, high-sodium diet",
+     "then": "DASH diet with sodium restriction"
+    },
+    {
+     "opt": "B",
+     "if": "**Palpitations** after several cups, BP normal",
+     "then": "Abstinence from coffee"
+    }
+   ]
   },
   "c-fm-05-fm5_q027": {
    "task": "Screening",
-   "boardCall": "88-year-old woman living alone + routine health examination + stable chronic conditions -> Screening for depression (PHQ-2/PHQ-9)",
-   "hinge": "Universal depression screening is recommended for all adults, especially elderly individuals living alone, even when asymptomatic.",
+   "boardCall": "**88yo** + **lives alone** + osteoporosis stable on alendronate + DEXA within the year → Obtain depression screening",
+   "hinge": "Depression screening applies to all adults; other tests are not due.",
    "trap": "Mammography screening is not recommended beyond age 75 or when life expectancy is under 10 years.",
    "options": {
     "A": {
@@ -2501,12 +3073,34 @@
      "text": "demonstrated a stable bone density with a T-score of -2.3"
     }
    ],
-   "topic": "geriatric-assessment"
+   "topic": "geriatric-assessment",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Missed bills**, getting lost, family concern",
+     "then": "Mental status examination"
+    },
+    {
+     "opt": "C",
+     "if": "**Age 70**, healthy, long life expectancy",
+     "then": "Order mammography"
+    },
+    {
+     "opt": "B",
+     "if": "**Fatigue, weight gain**, cold intolerance",
+     "then": "Serum TSH concentration"
+    },
+    {
+     "opt": "E",
+     "if": "**Untreated osteopenia**, last DEXA 4 years ago",
+     "then": "Follow-up DEXA scan"
+    }
+   ]
   },
   "c-fm-05-fm5_q028": {
    "task": "Diagnosis",
-   "boardCall": "Frail elderly woman on oxybutynin + cramping + overflow loose stool + firm rectal stool -> Fecal impaction",
-   "hinge": "Firm, palpable stool in the rectal vault in an elderly patient on anticholinergic medications presenting with paradoxical liquid stool confirms fecal impaction.",
+   "boardCall": "frail 77yo + **oxybutynin** + cramps + loose stool after 5 days + **firm stool in rectal vault** → Fecal impaction",
+   "hinge": "Anticholinergic slowing causes impaction; liquid stool leaks around it.",
    "trap": "A history of pelvic surgery tempts adhesive small bowel obstruction, but firm rectal stool confirms distal fecal impaction.",
    "options": {
     "A": {
@@ -2602,12 +3196,34 @@
      "text": "abdomen is soft and diffusely tender"
     }
    ],
-   "topic": "constipation-and-fecal-impaction"
+   "topic": "constipation-and-fecal-impaction",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Empty rectum**, bilious vomiting, prior surgery",
+     "then": "Adhesions"
+    },
+    {
+     "opt": "F",
+     "if": "**Coffee-bean loop** on x-ray, marked distension",
+     "then": "Volvulus"
+    },
+    {
+     "opt": "E",
+     "if": "**AF** with pain out of proportion",
+     "then": "Ischemic bowel"
+    },
+    {
+     "opt": "C",
+     "if": "**Fever** with LLQ tenderness",
+     "then": "Diverticulitis"
+    }
+   ]
   },
   "c-fm-05-fm5_q029": {
    "task": "Screening",
-   "boardCall": "Treated chlamydial infection 3 months ago + asymptomatic -> Retesting for Chlamydia trachomatis (test of reinfection)",
-   "hinge": "Patients treated for chlamydial infection should be retested 3 months after treatment due to high rates of reinfection.",
+   "boardCall": "prior chlamydia + **treated 3 months ago** + asymptomatic + inconsistent condoms + 5 partners → Chlamydia trachomatis",
+   "hinge": "Reinfection is common, so retest by NAAT at 3 months.",
    "trap": "Asymptomatic patients do not require serologic screening for HSV or HPV, but previously treated chlamydia requires repeat NAAT.",
    "options": {
     "A": {
@@ -2688,12 +3304,34 @@
      "text": "used condoms inconsistently"
     }
    ],
-   "topic": "cervicitis-pid"
+   "topic": "cervicitis-pid",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Painful grouped vesicles** on genitals",
+     "then": "Herpes simplex virus, type 2"
+    },
+    {
+     "opt": "D",
+     "if": "**Woman aged 30**, routine cervical screening",
+     "then": "Human papillomavirus"
+    },
+    {
+     "opt": "E",
+     "if": "**Monogamous**, negative retest already done",
+     "then": "No further testing"
+    },
+    {
+     "opt": null,
+     "if": "**Pregnant** after chlamydia treatment",
+     "then": "Test of cure at 4 weeks"
+    }
+   ]
   },
   "c-fm-05-fm5_q030": {
    "task": "Next step",
-   "boardCall": "Post-CABG older adult + loss of interest in walking + social withdrawal + fatigue -> Geriatric Depression Scale (GDS)",
-   "hinge": "Loss of desire to exercise, social withdrawal, and fatigue in an older patient after major cardiac surgery point to depression, best evaluated with a geriatric depression screen.",
+   "boardCall": "CABG 6 months ago + **lacks desire to walk** + **social withdrawal** + fatigue + left leg edema → Geriatric Depression Scale",
+   "hinge": "Post-CABG depression is common; vein-harvest edema does not explain anhedonia.",
    "trap": "Asymmetric leg edema following saphenous vein harvest is normal postoperative vein insufficiency and does not explain social withdrawal.",
    "options": {
     "A": {
@@ -2776,12 +3414,34 @@
      "trap": true
     }
    ],
-   "topic": "depressive-disorders"
+   "topic": "depressive-disorders",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Orthopnea**, JVD, bilateral crackles",
+     "then": "Echocardiography"
+    },
+    {
+     "opt": "D",
+     "if": "**Sudden painful swelling** of one calf",
+     "then": "Doppler ultrasonography"
+    },
+    {
+     "opt": "B",
+     "if": "**Calf pain on walking**, relieved by rest",
+     "then": "Ankle brachial indices"
+    },
+    {
+     "opt": "C",
+     "if": "**Jaw claudication** and headache",
+     "then": "Erythrocyte sedimentation rate"
+    }
+   ]
   },
   "c-fm-05-fm5_q031": {
    "task": "Other",
-   "boardCall": "65 patients with proven disease + 38 test positive -> Sensitivity (true positive rate: 38/65 = 58%)",
-   "hinge": "Sensitivity measures the proportion of individuals with the target disease who yield a positive test result.",
+   "boardCall": "**65 men with known CAD** + **38 test positive** + exercise stress test → Sensitivity",
+   "hinge": "Denominator is everyone with disease, so this is the true-positive rate.",
    "trap": "Positive predictive value calculates the proportion of test-positive individuals who truly have the disease.",
    "options": {
     "A": {
@@ -2863,12 +3523,34 @@
      "text": "abnormal exercise stress test"
     }
    ],
-   "topic": "diagnostic-test-accuracy"
+   "topic": "diagnostic-test-accuracy",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Men without CAD** testing negative",
+     "then": "Specificity"
+    },
+    {
+     "opt": "C",
+     "if": "**Among positive tests**, fraction with CAD",
+     "then": "Predictive value of a positive test"
+    },
+    {
+     "opt": "A",
+     "if": "**27 with CAD tested normal**",
+     "then": "False-negative rate"
+    },
+    {
+     "opt": "B",
+     "if": "**Sensitivity divided by 1 − specificity**",
+     "then": "Likelihood ratio"
+    }
+   ]
   },
   "c-fm-05-fm5_q032": {
    "task": "Prevention",
-   "boardCall": "Adolescent female + vegan diet without dairy or fortified supplements -> Calcium supplementation (plus vitamin D and B12)",
-   "hinge": "Strict vegan diets eliminate dairy and animal foods, creating nutritional deficiencies in calcium, vitamin D, and vitamin B12.",
+   "boardCall": "16yo girl + **new vegan diet** + no dairy + **no supplements** + peak bone accrual → Calcium",
+   "hinge": "Dairy is the main calcium source during peak bone-building years.",
    "trap": "Folate, magnesium, and vitamin A are abundant in vegetables, grains, and fruits, so supplementation is unnecessary.",
    "options": {
     "A": {
@@ -2954,12 +3636,34 @@
      "text": "16-year-old girl"
     }
    ],
-   "topic": "nutritional-deficiencies"
+   "topic": "nutritional-deficiencies",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Planning pregnancy**",
+     "then": "Folic acid"
+    },
+    {
+     "opt": null,
+     "if": "**Years vegan**, paresthesias, macrocytosis",
+     "then": "Vitamin B12"
+    },
+    {
+     "opt": "E",
+     "if": "**Night blindness** with fat malabsorption",
+     "then": "Vitamin A"
+    },
+    {
+     "opt": "C",
+     "if": "**Refractory hypokalemia** on diuretics",
+     "then": "Magnesium"
+    }
+   ]
   },
   "c-fm-05-fm5_q033": {
    "task": "Diagnosis",
-   "boardCall": "Biphasic illness (viral URI then high fever + productive cough) + lobar consolidation + leukocytosis -> Streptococcus pneumoniae",
-   "hinge": "Streptococcus pneumoniae is the most common cause of community-acquired lobar pneumonia, frequently presenting as a secondary bacterial infection after viral rhinitis.",
+   "boardCall": "viral URI + **abrupt fever 40** + productive cough + **lobar consolidation** + WBC 16,000 → Streptococcus pneumoniae",
+   "hinge": "Acute lobar pneumonia after a cold is pneumococcal; TB is subacute.",
    "trap": "Left upper lobe consolidation tempts tuberculosis, but an acute 2-day high fever with high leukocytosis indicates typical bacterial pneumonia.",
    "options": {
     "A": {
@@ -3072,12 +3776,34 @@
      "trap": true
     }
    ],
-   "topic": "pneumonia"
+   "topic": "pneumonia",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Weeks of night sweats**, apical cavity",
+     "then": "Mycobacterium tuberculosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Dry cough**, patchy infiltrates, college student",
+     "then": "Mycoplasma pneumoniae"
+    },
+    {
+     "opt": "D",
+     "if": "**HIV with CD4 <200**, bilateral infiltrates",
+     "then": "Pneumocystis jiroveci"
+    },
+    {
+     "opt": "E",
+     "if": "**Cystic fibrosis** or ventilator patient",
+     "then": "Pseudomonas aeruginosa"
+    }
+   ]
   },
   "c-fm-05-fm5_q034": {
    "task": "Next step",
-   "boardCall": "Acute gout flare + intolerant to colchicine (severe diarrhea) -> Oral NSAID (indomethacin or naproxen)",
-   "hinge": "First-line therapies for acute gout are NSAIDs, colchicine, and corticosteroids; when colchicine causes GI toxicity, NSAIDs like indomethacin are preferred.",
+   "boardCall": "known gout + **sudden exquisitely tender knee** + **diarrhea with colchicine** + no meds → Indomethacin",
+   "hinge": "Colchicine intolerance leaves an NSAID as first choice for the flare.",
    "trap": "Allopurinol and probenecid are urate-lowering therapies that precipitate or worsen acute flares and must not be started during an acute attack.",
    "options": {
     "A": {
@@ -3163,12 +3889,34 @@
      "text": "man with gout"
     }
    ],
-   "topic": "gout"
+   "topic": "gout",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**CKD** or peptic ulcer disease",
+     "then": "Prednisone"
+    },
+    {
+     "opt": "A",
+     "if": "**Weeks after flare**, recurrent attacks or tophi",
+     "then": "Allopurinol"
+    },
+    {
+     "opt": "E",
+     "if": "**Urate underexcreter**, normal kidneys, no stones",
+     "then": "Probenecid"
+    },
+    {
+     "opt": null,
+     "if": "**Single large joint**, fever",
+     "then": "Arthrocentesis to exclude infection"
+    }
+   ]
   },
   "c-fm-05-fm5_q035": {
    "task": "Risk factor",
-   "boardCall": "Pulsatile abdominal mass (abdominal aortic aneurysm) -> Blood pressure control predicts expansion and rupture rate",
-   "hinge": "In a nonsmoker with an existing abdominal aortic aneurysm, elevated blood pressure and aneurysm diameter are the main drivers of expansion and rupture.",
+   "boardCall": "72yo + **pulsatile midline mass** + nonsmoker + **BP 156/97** + diabetes, high cholesterol → Blood pressure",
+   "hinge": "Wall stress drives aneurysm growth; diabetes is actually protective.",
    "trap": "Cigarette smoking is the strongest modifiable risk factor for aneurysm formation, but in this nonsmoker, blood pressure predicts rupture.",
    "options": {
     "A": {
@@ -3249,12 +3997,34 @@
      "text": "serum total cholesterol concentration of 260 mg/dL"
     }
    ],
-   "topic": "abdominal-aortic-aneurysm"
+   "topic": "abdominal-aortic-aneurysm",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Asks about atrial fibrillation** risk from wine",
+     "then": "Alcohol consumption"
+    },
+    {
+     "opt": "E",
+     "if": "**Asks about coronary risk**, not aneurysm",
+     "then": "Serum total cholesterol concentration"
+    },
+    {
+     "opt": "D",
+     "if": "**Asks about retinopathy** risk",
+     "then": "Hemoglobin A1c measurement"
+    },
+    {
+     "opt": "C",
+     "if": "**Asks about prostate cancer** risk in this man",
+     "then": "Ethnicity"
+    }
+   ]
   },
   "c-fm-05-fm5_q036": {
    "task": "Diagnosis",
-   "boardCall": "Longstanding type 1 diabetes + weak urinary stream + postvoid residual 800 mL -> Overflow incontinence (diabetic neurogenic bladder)",
-   "hinge": "A massively elevated postvoid residual (> 300 mL, here 800 mL) with urinary dribbling and weak stream defines overflow incontinence.",
+   "boardCall": "type 1 diabetes 26 years + **weak stream** + constant leakage + recurrent UTIs + **PVR 800 mL** → Overflow incontinence",
+   "hinge": "Autonomic neuropathy causes detrusor underactivity; a full bladder leaks with cough too.",
    "trap": "A positive cough stress test suggests stress incontinence, but stress incontinence has a normal postvoid residual (< 50 mL).",
    "options": {
     "A": {
@@ -3350,12 +4120,34 @@
      "text": "wears an absorbent pad each night; it is soaked by morning"
     }
    ],
-   "topic": "urinary-incontinence"
+   "topic": "urinary-incontinence",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**PVR <50 mL**, leaks only with cough",
+     "then": "Stress incontinence"
+    },
+    {
+     "opt": "D",
+     "if": "**Can't reach toilet in time**, MS or stroke",
+     "then": "Urge incontinence"
+    },
+    {
+     "opt": "F",
+     "if": "**Constant leakage** after pelvic surgery or radiation",
+     "then": "Vesicovaginal fistula"
+    },
+    {
+     "opt": "A",
+     "if": "**Dementia** or immobility, normal bladder",
+     "then": "Functional incontinence"
+    }
+   ]
   },
   "c-fm-05-fm5_q037": {
    "task": "Screening",
-   "boardCall": "20-year-old asymptomatic woman + routine health maintenance + multiple sexual partners -> No cervical cancer screening before age 21",
-   "hinge": "Cervical cancer screening begins at age 21 regardless of the age of sexual debut or number of sexual partners.",
+   "boardCall": "**20yo** + healthy + 5 partners + no condoms + on OCP → No screening is indicated",
+   "hinge": "Cervical screening starts at 21 regardless of sexual history.",
    "trap": "Unprotected intercourse with multiple partners tempts screening with Pap or HPV, but routine cervical screening is strictly contraindicated under age 21.",
    "options": {
     "A": {
@@ -3441,12 +4233,34 @@
      "text": "monogamous with one male partner"
     }
    ],
-   "topic": "cervical-cancer-screening"
+   "topic": "cervical-cancer-screening",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Age 24**, last Pap 3 years ago",
+     "then": "Pap smear only"
+    },
+    {
+     "opt": "A",
+     "if": "**Age 35**, primary HPV strategy",
+     "then": "High-risk HPV testing only"
+    },
+    {
+     "opt": "B",
+     "if": "**Age 40** choosing cotesting",
+     "then": "Pap smear and HPV testing"
+    },
+    {
+     "opt": null,
+     "if": "**HIV-positive**, sexually active at 19",
+     "then": "Begin cytology screening now"
+    }
+   ]
   },
   "c-fm-05-fm5_q038": {
    "task": "Prevention",
-   "boardCall": "Newly diagnosed type 2 diabetes mellitus + asymptomatic -> Comprehensive dilated eye examination at diagnosis and annually",
-   "hinge": "Patients with type 2 diabetes require a dilated eye examination at the time of diagnosis and annually thereafter to detect diabetic retinopathy.",
+   "boardCall": "**new type 2 diabetes** + 28yo + HbA1c 6.1% + asymptomatic + normal exam → Annual eye examination",
+   "hinge": "Retinopathy may exist at diagnosis; eye screening starts now.",
    "trap": "Asymptomatic patients with diabetes do not require routine cardiac stress testing or monthly A1c monitoring.",
    "options": {
     "A": {
@@ -3528,12 +4342,34 @@
      "text": "excessive urination and a nonfasting serum glucose concentration of 225 mg/dL"
     }
    ],
-   "topic": "type-2-diabetes-mellitus"
+   "topic": "type-2-diabetes-mellitus",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Never received** pneumococcal vaccine",
+     "then": "Pneumococcal vaccination"
+    },
+    {
+     "opt": "B",
+     "if": "**Exertional chest pressure**",
+     "then": "Exercise stress test"
+    },
+    {
+     "opt": "C",
+     "if": "**Age 50** or older",
+     "then": "Herpes zoster vaccination"
+    },
+    {
+     "opt": "D",
+     "if": "**Insulin pump** pregnancy needing tight control",
+     "then": "Monthly hemoglobin A1c"
+    }
+   ]
   },
   "c-fm-05-fm5_q039": {
    "task": "Diagnosis",
-   "boardCall": "5-year-old boy + splenomegaly + pigment gallstones + hemolytic anemia + spherocytes -> Change in RBC shape (hereditary spherocytosis)",
-   "hinge": "Defects in red cell membrane cytoskeleton proteins (ankyrin, spectrin) cause spherocyte formation, splenic entrapment, and black pigment gallstones.",
+   "boardCall": "5yo + postprandial RUQ pain + **gallstones** + splenomegaly + Hb 7.7 + **spherocytes** → Change in the shape of red blood cells",
+   "hinge": "Membrane defect makes spherocytes; splenic hemolysis causes pigment stones.",
    "trap": "Autoimmune hemolytic anemia also produces spherocytes, but family history and early childhood gallstones favor congenital cytoskeletal shape change.",
    "options": {
     "A": {
@@ -3622,12 +4458,34 @@
      "trap": true
     }
    ],
-   "topic": "hemolytic-anemias"
+   "topic": "hemolytic-anemias",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Positive direct Coombs test**",
+     "then": "Autoantibodies against RBC membrane"
+    },
+    {
+     "opt": "E",
+     "if": "**Sickle cells** with dactylitis",
+     "then": "Glutamic acid to valine switch"
+    },
+    {
+     "opt": "C",
+     "if": "**Isolated thrombocytopenia** after viral illness",
+     "then": "Antiplatelet IgG antibodies"
+    },
+    {
+     "opt": "B",
+     "if": "**Obese teen**, cholesterol stones, normal Hb",
+     "then": "A fat-rich diet"
+    }
+   ]
   },
   "c-fm-05-fm5_q040": {
    "task": "Diagnosis",
-   "boardCall": "Slowly enlarging facial pearly papule with rolled border and telangiectasias -> Basal cell carcinoma",
-   "hinge": "A pearly, translucent papule or nodule with rolled borders and prominent telangiectasias on sun-exposed skin is diagnostic of basal cell carcinoma.",
+   "boardCall": "50yo + **6-month slow-growing facial lesion** + painless + nonitchy + **pearly with telangiectasias** → Basal cell carcinoma",
+   "hinge": "Slow pearly nodule on the face is the commonest skin cancer.",
    "trap": "Squamous cell carcinoma presents as an indurated, scaly plaque or ulcerated crusted lesion rather than a smooth pearly papule.",
    "options": {
     "A": {
@@ -3713,12 +4571,34 @@
      "text": "nonitchy"
     }
    ],
-   "topic": "skin-cancer"
+   "topic": "skin-cancer",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Weeks of rapid growth**, keratin-filled crater",
+     "then": "Keratoacanthoma"
+    },
+    {
+     "opt": "E",
+     "if": "**Ulcerated scaly plaque** on lower lip",
+     "then": "Squamous cell carcinoma"
+    },
+    {
+     "opt": "D",
+     "if": "**Waxy brown lesion** that looks pasted on",
+     "then": "Seborrheic keratosis"
+    },
+    {
+     "opt": "A",
+     "if": "**Gritty rough patch**, sun-damaged skin",
+     "then": "Actinic keratosis"
+    }
+   ]
   },
   "c-fm-05-fm5_q041": {
    "task": "Ethics",
-   "boardCall": "16-year-old adolescent + newly positive pregnancy test + distressed -> Encourage involving supportive parents ('Is this a situation we could discuss with your mother?')",
-   "hinge": "While pregnant adolescents can access confidential prenatal care, the physician should first encourage voluntary disclosure to and support from a parent.",
+   "boardCall": "16yo + **positive pregnancy test** + 18yo boyfriend + **unsure what to do** + mother outside → Discuss this situation with your mother?",
+   "hinge": "Open with support: invite parental involvement without forcing it.",
    "trap": "Directly asking about abortion or adoption is leading and non-neutral; CPS notification is only mandated for nonconsensual abuse.",
    "options": {
     "A": {
@@ -3804,12 +4684,34 @@
      "trap": true
     }
    ],
-   "topic": "adolescent-confidentiality-and-care"
+   "topic": "adolescent-confidentiality-and-care",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Partner is 30** or coercion disclosed",
+     "then": "Contact child protective services"
+    },
+    {
+     "opt": "E",
+     "if": "**Has decided against continuing** the pregnancy",
+     "then": "Confidential abortion referral"
+    },
+    {
+     "opt": "B",
+     "if": "**Wants to continue** but cannot parent",
+     "then": "Discuss adoption"
+    },
+    {
+     "opt": "C",
+     "if": "**Fears partner violence**",
+     "then": "Ask how boyfriend will react"
+    }
+   ]
   },
   "c-fm-05-fm5_q042": {
    "task": "Diagnosis",
-   "boardCall": "Elderly woman + 'tea and toast' diet for 6 months + severe macrocytic pancytopenia (MCV 120) + glossitis + NO neurologic signs -> Folic acid deficiency",
-   "hinge": "Folate hepatic stores deplete within 3 to 5 months of poor intake, producing severe megaloblastic pancytopenia without posterior column neurologic defects.",
+   "boardCall": "widowed 82yo + **tea-and-bread diet 6 months** + glossitis + **MCV 120 pancytopenia** + normal neuro exam → Folic acid",
+   "hinge": "Folate stores last months, B12 years; no neuropathy fits folate.",
    "trap": "Vitamin B12 deficiency also causes megaloblastic anemia and glossitis, but hepatic stores last 3 to 5 years and neurologic signs are typically present.",
    "options": {
     "A": {
@@ -3897,12 +4799,34 @@
      "text": "Platelet count: 20,000/mm³"
     }
    ],
-   "topic": "macrocytic-anemia"
+   "topic": "macrocytic-anemia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Vegan for years** or **posterior column loss**",
+     "then": "Vitamin B12 (cobalamin)"
+    },
+    {
+     "opt": "B",
+     "if": "**Dermatitis, diarrhea**, dementia",
+     "then": "Niacin"
+    },
+    {
+     "opt": "C",
+     "if": "**Confusion, ataxia**, ophthalmoplegia in alcoholic",
+     "then": "Vitamin B1 (thiamine)"
+    },
+    {
+     "opt": "D",
+     "if": "**Isoniazid** with neuropathy and sideroblastic anemia",
+     "then": "Vitamin B6"
+    }
+   ]
   },
   "c-fm-05-fm5_q043": {
    "task": "Ethics",
-   "boardCall": "Alzheimer dementia + visuospatial impairment (cannot copy pentagons) -> Restrict car keys immediately until formal on-road driving evaluation",
-   "hinge": "Patients with dementia and visuospatial deficits pose immediate safety risks and must not have access to keys while awaiting formal on-road driving evaluation.",
+   "boardCall": "Alzheimer dementia + **cannot copy pentagons** + recalls 1/3 + **wants to drive** + recent bereavement → No car keys until skills formally assessed",
+   "hinge": "Visuospatial failure makes driving unsafe now; testing decides the long term.",
    "trap": "Allowing driving with supervision or short distances is unsafe with visuospatial impairment, while outright license revocation before formal testing is premature.",
    "options": {
     "A": {
@@ -3988,12 +4912,34 @@
      "text": "dementia, Alzheimer type"
     }
    ],
-   "topic": "dementia"
+   "topic": "dementia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Failed formal road test** or recent crash",
+     "then": "Driver license revoked"
+    },
+    {
+     "opt": "C",
+     "if": "**Mild deficits**, normal visuospatial testing",
+     "then": "Drive until formally assessed"
+    },
+    {
+     "opt": "A",
+     "if": "**Normal cognition**, newly learning to drive",
+     "then": "Drive only with supervision"
+    },
+    {
+     "opt": "B",
+     "if": "**Mild night vision loss**, cognition intact",
+     "then": "Drive short distances only"
+    }
+   ]
   },
   "c-fm-05-fm5_q044": {
    "task": "Next step",
-   "boardCall": "4-week-old firstborn boy + projectile postprandial vomiting + 1.5-cm RUQ olive mass -> Abdominal ultrasonography (hypertrophic pyloric stenosis)",
-   "hinge": "Abdominal ultrasonography is the diagnostic test of choice to visualize pyloric muscle thickness and canal elongation in infantile hypertrophic pyloric stenosis.",
+   "boardCall": "4-week-old firstborn boy + **projectile vomiting after feeds** + **1.5-cm RUQ olive** → Ultrasonography of the abdomen",
+   "hinge": "Ultrasound measures pyloric thickening without radiation.",
    "trap": "Checking serum electrolytes is essential to manage hypochloremic alkalosis, but ultrasound is required to determine the anatomic cause.",
    "options": {
     "A": {
@@ -4079,12 +5025,34 @@
      "text": "uncomplicated spontaneous vaginal delivery to a primigravid mother"
     }
    ],
-   "topic": "hypertrophic-pyloric-stenosis"
+   "topic": "hypertrophic-pyloric-stenosis",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Confirmed stenosis**, lethargic and dehydrated",
+     "then": "CBC and metabolic panel"
+    },
+    {
+     "opt": "A",
+     "if": "**Bilious vomiting**, distended abdomen",
+     "then": "Abdominal x-rays"
+    },
+    {
+     "opt": "B",
+     "if": "**Delayed meconium**, distension, newborn",
+     "then": "Barium enema"
+    },
+    {
+     "opt": "E",
+     "if": "**Effortless spit-up**, gaining weight, no mass",
+     "then": "Observe feeding; reassure"
+    }
+   ]
   },
   "c-fm-05-fm5_q045": {
    "task": "Prevention",
-   "boardCall": "Pregnant woman with unknown immunization status -> Tdap vaccination (administered during pregnancy to transfer passive immunity to newborn)",
-   "hinge": "Tdap vaccination is recommended during every pregnancy (optimally between 27 and 36 weeks, but safe at any gestation if unimmunized) to protect against neonatal pertussis.",
+   "boardCall": "**10 weeks pregnant** + unknown childhood vaccines + healthy + first prenatal visit → Tetanus-diphtheria-acellular pertussis",
+   "hinge": "Tdap is inactivated and given every pregnancy; MMR and varicella are live.",
    "trap": "Live attenuated vaccines (MMR, varicella) are strictly contraindicated during pregnancy due to the risk of fetal congenital infection.",
    "options": {
     "A": {
@@ -4166,12 +5134,34 @@
      "text": "uterus consistent in size with a 10-week gestation"
     }
    ],
-   "topic": "adult-immunizations"
+   "topic": "adult-immunizations",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Postpartum**, rubella nonimmune",
+     "then": "Measles-mumps-rubella"
+    },
+    {
+     "opt": "E",
+     "if": "**Postpartum**, no varicella immunity",
+     "then": "Varicella"
+    },
+    {
+     "opt": "A",
+     "if": "**HBsAg-negative**, injection drug use or multiple partners",
+     "then": "Hepatitis B"
+    },
+    {
+     "opt": "B",
+     "if": "**Nonpregnant, age 24**, unvaccinated",
+     "then": "Human papillomavirus"
+    }
+   ]
   },
   "c-fm-05-fm5_q046": {
    "task": "Next step",
-   "boardCall": "Daily daytime wheezing + nocturnal and exercise symptoms on SABA alone -> Inhaled corticosteroids (daily low-dose ICS)",
-   "hinge": "Daily daytime asthma symptoms and nighttime coughing define moderate persistent asthma, requiring controller therapy with a daily inhaled corticosteroid.",
+   "boardCall": "9yo + **daily wheezing** + **night and exercise cough** + albuterol only → Inhaled corticosteroids",
+   "hinge": "Daily symptoms are persistent asthma, needing a daily controller.",
    "trap": "Oral prednisone is used for acute severe exacerbations; chronic persistent symptoms require daily maintenance inhaled corticosteroids.",
    "options": {
     "A": {
@@ -4261,12 +5251,34 @@
      "text": "Examination shows bilateral expiratory wheezes"
     }
    ],
-   "topic": "asthma"
+   "topic": "asthma",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Acute exacerbation**, poor response to albuterol",
+     "then": "Oral prednisone"
+    },
+    {
+     "opt": "E",
+     "if": "**Symptoms twice monthly**, no night cough",
+     "then": "No additional pharmacotherapy"
+    },
+    {
+     "opt": "C",
+     "if": "**Refuses inhalers**, mild persistent asthma",
+     "then": "Oral leukotriene inhibitor"
+    },
+    {
+     "opt": "B",
+     "if": "**Before predictable allergen exposure**",
+     "then": "Inhaled cromolyn sodium"
+    }
+   ]
   },
   "c-fm-05-fm5_q047": {
    "task": "Next step",
-   "boardCall": "Pruritic papules on hands, forearms, and waistline + roommate with identical rash -> Topical 5% permethrin cream for scabies",
-   "hinge": "Intensely pruritic papules and excoriations in characteristic distributions (web spaces, wrists, waistline) shared among cohabitants are diagnostic of scabies, treated with permethrin.",
+   "boardCall": "**itchy papules on hands** + waistline spread + **roommate with same rash** + no crusting → Topical permethrin",
+   "hinge": "Shared itch with web-space and waistband papules means scabies.",
    "trap": "Topical or oral steroids reduce itching temporarily but mask and worsen the underlying Sarcoptes scabiei infestation.",
    "options": {
     "A": {
@@ -4356,12 +5368,34 @@
      "text": "similar findings are noted over the waistline"
     }
    ],
-   "topic": "scabies"
+   "topic": "scabies",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Linear vesicles** after yard work",
+     "then": "Topical triamcinolone"
+    },
+    {
+     "opt": "C",
+     "if": "**Severe widespread poison ivy**, face involved",
+     "then": "Oral prednisone"
+    },
+    {
+     "opt": "B",
+     "if": "**Honey-colored crusts** spreading",
+     "then": "Oral cephalexin"
+    },
+    {
+     "opt": "A",
+     "if": "**Painful dermatomal vesicles**",
+     "then": "Oral acyclovir"
+    }
+   ]
   },
   "c-fm-05-fm5_q048": {
    "task": "Next step",
-   "boardCall": "Acute mechanical low back pain + radicular symptoms without red flags or neurologic deficits -> Oral NSAID (ibuprofen) + maintain activity",
-   "hinge": "Acute lumbosacral strain or radiculopathy without neurological deficits or red flags is managed conservatively with NSAIDs and continuation of normal daily activities.",
+   "boardCall": "lifting furniture + low back pain to lateral leg + **normal strength, reflexes, sensation** + **no red flags** → Oral ibuprofen therapy",
+   "hinge": "Acute radicular back pain without deficits improves with NSAIDs and activity.",
    "trap": "Bed rest is actively harmful and prolongs disability; advanced imaging (CT/MRI) is not indicated without red flags or 4 to 6 weeks of conservative therapy.",
    "options": {
     "A": {
@@ -4450,12 +5484,34 @@
      "text": "tenderness over the paraspinal muscles of the lumbosacral area"
     }
    ],
-   "topic": "low-back-pain"
+   "topic": "low-back-pain",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Prior cancer** with new spinal tenderness, MRI unavailable",
+     "then": "CT scan of the lumbosacral spine"
+    },
+    {
+     "opt": "C",
+     "if": "**Radicular pain beyond 6 weeks** despite therapy",
+     "then": "Epidural corticosteroid injection"
+    },
+    {
+     "opt": null,
+     "if": "**Midline spinal tenderness** after minor fall, age 75",
+     "then": "X-ray for compression fracture"
+    },
+    {
+     "opt": "E",
+     "if": "**NSAIDs contraindicated**, severe radicular pain",
+     "then": "Short oral prednisone course"
+    }
+   ]
   },
   "c-fm-05-fm5_q049": {
    "task": "Diagnosis",
-   "boardCall": "Transient pruritic wheals resolving within 24 hours + < 6 weeks duration + no systemic signs -> Acute urticaria (no laboratory workup indicated)",
-   "hinge": "Acute uncomplicated urticaria is clinical and self-limiting; extensive laboratory testing or allergy panels are not indicated in the absence of red flags.",
+   "boardCall": "2 weeks + **itchy wheals resolving in hours** + no fever or systemic symptoms + antihistamine relief → No further diagnostic studies",
+   "hinge": "Acute urticaria under 6 weeks without red flags needs no testing.",
    "trap": "C1-esterase inhibitor or complement testing evaluates hereditary angioedema or urticarial vasculitis, which cause non-pruritic swelling or lesions lasting > 24 hours.",
    "options": {
     "A": {
@@ -4544,12 +5600,34 @@
      "text": "diphenhydramine during the episodes provides moderate relief"
     }
    ],
-   "topic": "urticaria"
+   "topic": "urticaria",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Hives persist over 6 weeks**",
+     "then": "CBC with differential"
+    },
+    {
+     "opt": "A",
+     "if": "**Family history** of facial swelling without hives",
+     "then": "C1-esterase inhibitor testing"
+    },
+    {
+     "opt": "D",
+     "if": "**Lesions over 24 h**, painful, bruising",
+     "then": "Serum C3 and C4"
+    },
+    {
+     "opt": "C",
+     "if": "**Hives within minutes** of eating peanuts",
+     "then": "Radioallergosorbent testing"
+    }
+   ]
   },
   "c-fm-05-fm5_q050": {
    "task": "Next step",
-   "boardCall": "Hypercholesterolemia (cholesterol 260 mg/dL) treated with diet 1 year ago -> Repeat fasting lipid profile to assess response",
-   "hinge": "Patients initiated on lifestyle modification for hyperlipidemia require repeat lipid panel monitoring to assess efficacy and determine the need for statin therapy.",
+   "boardCall": "**cholesterol 260** + **low-fat diet for 1 year** + BMI 31 + father colon cancer at 62 + Pap 1 year ago normal → Measurement of serum cholesterol",
+   "hinge": "Recheck lipids to judge diet response; other screenings are not yet due.",
    "trap": "Her father had colon cancer at age 62, meaning screening starts at age 40 or 10 years before diagnosis (age 52), so colonoscopy is premature at age 37.",
    "options": {
     "A": {
@@ -4636,7 +5714,29 @@
      "text": "BMI is 31 kg/m²"
     }
    ],
-   "topic": "dyslipidemia"
+   "topic": "dyslipidemia",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Age 52** with father diagnosed at 62",
+     "then": "Colonoscopy"
+    },
+    {
+     "opt": "C",
+     "if": "**Age 40–50** or palpable breast mass",
+     "then": "Mammography"
+    },
+    {
+     "opt": "E",
+     "if": "**Last cytology 3 years ago**",
+     "then": "Pap smear"
+    },
+    {
+     "opt": "B",
+     "if": "**Postprandial sweating** and tremor hours after meals",
+     "then": "5-hour glucose tolerance test"
+    }
+   ]
   }
  },
  "topics": {
@@ -8848,5 +9948,5 @@
    "evidence": "Management checked 2026-10-30: [AAD-endorsed urticaria guidance](https://www.aad.org/member/clinical-quality/guidelines/urticaria); [international guideline, 2026](https://pmc.ncbi.nlm.nih.gov/articles/PMC13466004/)."
   }
  },
- "updatedAt": "2026-11-07T08:13:46Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

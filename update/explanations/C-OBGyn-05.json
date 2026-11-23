@@ -8,8 +8,8 @@
  "items": {
   "795672": {
    "task": "Prevention",
-   "boardCall": "52-year-old adult needing routine immunization update -> annual influenza vaccine",
-   "hinge": "Annual influenza vaccination is indicated for all adults regardless of age or risk factors.",
+   "boardCall": "52-year-old woman + childhood vaccines only + **routine adult visit** → Influenza virus",
+   "hinge": "All adults need yearly influenza vaccination; HPV is routine through age 26.",
    "trap": "New sexual activity tempts HPV, but HPV vaccination is not routinely recommended after age 26.",
    "options": {
     "A": {
@@ -92,12 +92,29 @@
      "trap": true
     }
    ],
-   "topic": "adult-immunizations"
+   "topic": "adult-immunizations",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Age ≤ 26** with incomplete catch-up series",
+     "then": "Human papillomavirus"
+    },
+    {
+     "opt": "E",
+     "if": "**Age < 50**, nonimmune IgG, never had chickenpox",
+     "then": "Varicella"
+    },
+    {
+     "opt": "D",
+     "if": "**Asplenia**, complement deficiency, or college dorm freshman",
+     "then": "Meningococcal"
+    }
+   ]
   },
   "795673": {
    "task": "Risk factor",
-   "boardCall": "Postmenopausal compression fracture + low impact -> Caucasian race is major risk",
-   "hinge": "Caucasian ethnicity and advanced age are major non-modifiable risks for low bone density.",
+   "boardCall": "69-year-old white woman + **T10 compression fracture** + minimal trauma → Race",
+   "hinge": "White ethnicity lowers peak bone density more than modest alcohol or nulliparity.",
    "trap": "Alcohol use causes bone loss with heavy drinking, but one drink nightly is not the strongest risk.",
    "options": {
     "A": {
@@ -185,12 +202,29 @@
      "trap": true
     }
    ],
-   "topic": "osteoporosis"
+   "topic": "osteoporosis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Heavy chronic drinking** (≥3 drinks daily) causing bone loss",
+     "then": "Alcohol use"
+    },
+    {
+     "opt": null,
+     "if": "**Long-term oral prednisone** for polymyalgia rheumatica",
+     "then": "Glucocorticoid therapy"
+    },
+    {
+     "opt": null,
+     "if": "**Early menopause** before age 40 without estrogen",
+     "then": "Premature estrogen deficiency"
+    }
+   ]
   },
   "795674": {
    "task": "Mechanism",
-   "boardCall": "Postpartum pleuritic pain + hypoxemia + respiratory alkalosis -> pulmonary artery thrombus",
-   "hinge": "Postpartum hypercoagulability presenting with acute pleuritic pain, hypoxia, and respiratory alkalosis indicates pulmonary embolism.",
+   "boardCall": "day 2 postpartum + pleuritic pain + **SpO2 89%** + **pH 7.45, PCO2 21** → Thrombus within the pulmonary arteries",
+   "hinge": "Postpartum hypercoagulability causing acute hypoxemia and hyperventilation indicates thromboembolism over amniotic fluid.",
    "trap": "Amniotic fluid embolism also occurs postpartum, but presents immediately during labor with collapse and DIC.",
    "options": {
     "A": {
@@ -275,12 +309,29 @@
      "text": "Breath sounds are normal bilaterally"
     }
    ],
-   "topic": "venous-thromboembolism"
+   "topic": "venous-thromboembolism",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Intrapartum cardiovascular collapse** with severe DIC and bleeding",
+     "then": "Fetal squamous cells in pulmonary veins"
+    },
+    {
+     "opt": "B",
+     "if": "**Fever, purulent sputum**, lobar infiltrate on chest x-ray",
+     "then": "Exudates in the alveoli"
+    },
+    {
+     "opt": "A",
+     "if": "**Expiratory wheezing**, asthma history, normal D-dimer",
+     "then": "Bronchial smooth muscle contractions"
+    }
+   ]
   },
   "795675": {
    "task": "Diagnosis",
-   "boardCall": "Post-hysterectomy anuria + 25 cm suprapubic mass + high creatinine -> urinary retention",
-   "hinge": "Large symmetric midline mass 25 cm above symphysis with acute anuria represents a distended bladder.",
+   "boardCall": "post-hysterectomy + **anuria 36 h** + **25-cm symmetric midline mass** + Cr 3 → Urinary retention",
+   "hinge": "Painless postoperative anuria with a smooth suprapubic mass signifies an overdistended bladder.",
    "trap": "Ureteral transection is a classic post-hysterectomy injury but does not cause a giant midline suprapubic mass.",
    "options": {
     "A": {
@@ -367,12 +418,29 @@
      "text": "Creatinine 3 mg/dL"
     }
    ],
-   "topic": "urinary-retention"
+   "topic": "urinary-retention",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Flank pain, fever**, ileus, empty bladder on ultrasound",
+     "then": "Ureteral transection"
+    },
+    {
+     "opt": "A",
+     "if": "**Falling hematocrit**, hypotension, unilateral pelvic fullness",
+     "then": "Pelvic hematoma"
+    },
+    {
+     "opt": "B",
+     "if": "**Hypotension, tachycardia**, dry mucosae, empty bladder",
+     "then": "Prerenal azotemia"
+    }
+   ]
   },
   "795676": {
    "task": "Prevention",
-   "boardCall": "Pregnant + STI history + HBsAg negative -> administer Hepatitis B vaccine",
-   "hinge": "Hepatitis B vaccine is inactivated and indicated in high-risk pregnant patients, while MMR is contraindicated.",
+   "boardCall": "14 weeks pregnant + **multiple STIs** + **HBsAg negative** + rubella <1:8 → Hepatitis B",
+   "hinge": "Inactivated hepatitis B vaccine protects high-risk pregnancies, whereas live rubella is teratogenic.",
    "trap": "Low rubella titer tempts rubella vaccination, but live-attenuated MMR is contraindicated in pregnancy.",
    "options": {
     "A": {
@@ -467,12 +535,29 @@
      "trap": true
     }
    ],
-   "topic": "adult-immunizations"
+   "topic": "adult-immunizations",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Immediately postpartum** with nonimmune rubella titer",
+     "then": "Rubella"
+    },
+    {
+     "opt": "F",
+     "if": "**Ten years since last booster** or dirty wound",
+     "then": "Tetanus toxoid"
+    },
+    {
+     "opt": null,
+     "if": "**First-trimester flu season** in pregnant woman",
+     "then": "Inactivated influenza vaccine"
+    }
+   ]
   },
   "795677": {
    "task": "Next step",
-   "boardCall": "Rh-negative unsensitized + bloody amniocentesis -> immediate intramuscular Rh(D) immune globulin",
-   "hinge": "Invasive procedures with fetomaternal hemorrhage in unsensitized Rh-negative women require immediate Rh(D) immune globulin.",
+   "boardCall": "17 weeks + **Rh-negative, antibody negative** + **bloody amniocentesis** → Maternal IM Rh(D) immune globulin now",
+   "hinge": "Invasive procedures causing fetomaternal bleeding demand immediate anti-D prophylaxis.",
    "trap": "Routine Rh(D) immune globulin at 28 weeks and delivery is standard, but does not cover acute fetomaternal exposure now.",
    "options": {
     "A": {
@@ -595,12 +680,29 @@
      "trap": true
     }
    ],
-   "topic": "rh-alloimmunization"
+   "topic": "rh-alloimmunization",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Uncomplicated pregnancy** with negative antibody screen, no trauma",
+     "then": "Rh(D) IG at 28 weeks"
+    },
+    {
+     "opt": "J",
+     "if": "**Already alloimmunized** with positive anti-D antibody screen",
+     "then": "No action"
+    },
+    {
+     "opt": "G",
+     "if": "**Severe fetal anemia** with MCA velocity > 1.5 MoM",
+     "then": "Fetal transfusion of Rh-negative blood"
+    }
+   ]
   },
   "795678": {
    "task": "Next step",
-   "boardCall": "Maternal anti-Kell titer 1:256 -> paternal Kell antigen typing",
-   "hinge": "When maternal red cell alloimmunization is identified, testing paternal antigen status determines fetal risk.",
+   "boardCall": "8 weeks pregnant + prior blood transfusion + **anti-Kell titer 1:256** → Kell typing of the father's blood",
+   "hinge": "Paternal antigen negativity rules out fetal inheritance and avoids unnecessary invasive monitoring.",
    "trap": "Amniotic bilirubin or fetal monitoring tempts invasive testing, but if the father lacks Kell, the fetus is not at risk.",
    "options": {
     "A": {
@@ -699,12 +801,29 @@
      "text": "Indirect antiglobulin (Coombs) test is positive for anti-Kell antibody at a titer of 1:256"
     }
    ],
-   "topic": "rh-alloimmunization"
+   "topic": "rh-alloimmunization",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Kell-positive father** and elevated fetal MCA Doppler",
+     "then": "Amniotic bilirubin or fetal sampling"
+    },
+    {
+     "opt": null,
+     "if": "**Kell-negative father** confirmed on blood typing",
+     "then": "Resume routine prenatal care"
+    },
+    {
+     "opt": "E",
+     "if": "**Severe alloimmunization < 20 weeks** precluding fetal transfusion",
+     "then": "Intravenous IgG therapy"
+    }
+   ]
   },
   "795679": {
    "task": "Diagnosis",
-   "boardCall": "Maternal fever 38.4 C + CVA tenderness + fetal heart rate 180 -> maternal fever",
-   "hinge": "Maternal fever is the most common cause of fetal tachycardia, especially in acute pyelonephritis.",
+   "boardCall": "27 weeks + **temp 38.4°C** + right CVA tenderness + **fetal HR 180** → Maternal fever",
+   "hinge": "Pyelonephritis-induced maternal pyrexia accelerates the fetal sinoatrial node, driving baseline tachycardia.",
    "trap": "Maternal anemia is present (Hb 9.7 g/dL) but physiologic dilution does not cause fetal heart rate of 180/min.",
    "options": {
     "A": {
@@ -795,12 +914,29 @@
      "trap": true
     }
    ],
-   "topic": "intrapartum-fetal-monitoring"
+   "topic": "intrapartum-fetal-monitoring",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Afebrile Rh-alloimmunized mother**, sinusoidal fetal tracing",
+     "then": "Fetal anemia"
+    },
+    {
+     "opt": "C",
+     "if": "**Afebrile mother** with Hb 6.0 and fetal growth restriction",
+     "then": "Maternal anemia"
+    },
+    {
+     "opt": null,
+     "if": "**Uterine tenderness**, foul discharge, maternal fever during labor",
+     "then": "Chorioamnionitis"
+    }
+   ]
   },
   "795680": {
    "task": "Diagnosis",
-   "boardCall": "Maternal slapped-cheek rash + reticular limb rash -> Parvovirus B19",
-   "hinge": "Erythematous facial rash followed by a reticular marble-like extremity rash is classic for parvovirus B19.",
+   "boardCall": "34 weeks pregnant + **bright cheek rash** + **lacy extremity rash** → Parvovirus",
+   "hinge": "Slapped-cheek erythema followed by a reticular marble-like limb exanthem identifies erythema infectiosum.",
    "trap": "Rubella causes rash and fetal risk, but presents with descending maculopapular rash and posterior lymphadenopathy.",
    "options": {
     "A": {
@@ -887,12 +1023,29 @@
      "text": "marble-appearing rash over the upper and lower extremities"
     }
    ],
-   "topic": "congenital-infections"
+   "topic": "congenital-infections",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Descending maculopapular rash**, postauricular nodes, arthralgias",
+     "then": "Rubella"
+    },
+    {
+     "opt": "A",
+     "if": "**Mononucleosis-like illness** with fetal periventricular calcifications",
+     "then": "Cytomegalovirus"
+    },
+    {
+     "opt": "B",
+     "if": "**Grouped painful vesicles** on erythematous vulvar base",
+     "then": "Herpes simplex virus 1"
+    }
+   ]
   },
   "795681": {
    "task": "Diagnosis",
-   "boardCall": "Positive pregnancy test + spotting + unilateral adnexal tenderness -> ectopic pregnancy",
-   "hinge": "First-trimester abdominal pain, vaginal spotting, and adnexal tenderness with positive beta-hCG indicates ectopic pregnancy.",
+   "boardCall": "6 weeks amenorrhea + **positive hCG** + spotting + **adnexal tenderness** → Ectopic pregnancy",
+   "hinge": "First-trimester adnexal pain and bleeding indicate ectopic gestation until ultrasound excludes it.",
    "trap": "Cervical motion tenderness mimics PID, but a positive pregnancy test and unilateral adnexal tenderness make ectopic primary.",
    "options": {
     "A": {
@@ -981,12 +1134,29 @@
      "trap": true
     }
    ],
-   "topic": "ectopic-pregnancy"
+   "topic": "ectopic-pregnancy",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Negative pregnancy test**, mucopurulent discharge, fever, CMT",
+     "then": "Pelvic inflammatory disease"
+    },
+    {
+     "opt": "C",
+     "if": "**Negative pregnancy test**, sudden midcycle unilateral pelvic pain",
+     "then": "Hemorrhagic corpus luteal cyst"
+    },
+    {
+     "opt": "A",
+     "if": "**Negative pregnancy test**, anorexia, fever, rebound RLQ tenderness",
+     "then": "Appendicitis"
+    }
+   ]
   },
   "795682": {
    "task": "Prognosis",
-   "boardCall": "Painless third-trimester bleeding + unengaged fetal vertex -> placenta previa risking hemorrhagic shock",
-   "hinge": "Painless vaginal bleeding with a soft nontender uterus indicates placenta previa, which risks severe maternal hemorrhagic shock.",
+   "boardCall": "33 weeks + **heavy painless vaginal bleeding** + **soft uterus** + unengaged vertex → Hemorrhagic shock",
+   "hinge": "Painless late-pregnancy bleeding from placenta previa risks rapid massive maternal blood loss.",
    "trap": "Placental abruption also causes third-trimester bleeding, but typically presents with painful uterine contractions and tenderness.",
    "options": {
     "A": {
@@ -1073,12 +1243,29 @@
      "text": "vertex is not engaged in the pelvis"
     }
    ],
-   "topic": "antepartum-bleeding"
+   "topic": "antepartum-bleeding",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Painful rigid uterus**, concealed abruption, fetal demise",
+     "then": "Disseminated intravascular coagulation"
+    },
+    {
+     "opt": "E",
+     "if": "**Prior cesarean**, sudden tearing pain, palpable fetal parts",
+     "then": "Uterine rupture"
+    },
+    {
+     "opt": "A",
+     "if": "**Intrapartum hypoxia**, sudden collapse, coagulopathy",
+     "then": "Amniotic fluid embolism"
+    }
+   ]
   },
   "795683": {
    "task": "Prognosis",
-   "boardCall": "Maternal achondroplasia + contracted pelvic diameters -> scheduled cesarean delivery",
-   "hinge": "Marked pelvic contraction in maternal achondroplasia causes absolute cephalopelvic disproportion, requiring cesarean delivery.",
+   "boardCall": "8 weeks pregnant + maternal achondroplasia + **conjugate 7 cm, intraspinous 5 cm** → Cesarean delivery",
+   "hinge": "Severe pelvic contraction causes absolute cephalopelvic disproportion requiring surgical birth.",
    "trap": "Fetal achondroplasia is 50% possible, but maternal pelvic anatomy guarantees cephalopelvic disproportion and cesarean.",
    "options": {
     "A": {
@@ -1166,12 +1353,29 @@
      "trap": true
     }
    ],
-   "topic": "normal-and-abnormal-labor"
+   "topic": "normal-and-abnormal-labor",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Both parents have achondroplasia** (homozygous risk)",
+     "then": "Fetal achondroplasia"
+    },
+    {
+     "opt": "C",
+     "if": "**BP ≥ 140/90** after 20 weeks with proteinuria",
+     "then": "Preeclampsia"
+    },
+    {
+     "opt": null,
+     "if": "**Neuraxial anesthesia planned** with severe spinal stenosis",
+     "then": "Anesthesia consult for airway/dosing"
+    }
+   ]
   },
   "795684": {
    "task": "Next step",
-   "boardCall": "Retained intrauterine demise + thrombocytopenia -> induction of labor",
-   "hinge": "Prolonged retention of fetal demise beyond 2-4 weeks causes consumptive coagulopathy; prompt induction is required.",
+   "boardCall": "IUFD retained 4 weeks + **platelets 90,000** + fibrinogen 250 → Induction of labor",
+   "hinge": "Retained fetal demise triggers tissue-factor consumptive coagulopathy, cured definitively by uterine evacuation.",
    "trap": "Platelets 90,000/mm3 tempts platelet transfusion, but transfusion is not indicated without active bleeding or count < 50,000/mm3.",
    "options": {
     "A": {
@@ -1259,12 +1463,29 @@
      "trap": true
     }
    ],
-   "topic": "intrauterine-fetal-demise"
+   "topic": "intrauterine-fetal-demise",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Prior classical cesarean** or active maternal hemorrhage",
+     "then": "Cesarean delivery"
+    },
+    {
+     "opt": "C",
+     "if": "**Active bleeding** with platelets < 50,000 before delivery",
+     "then": "Transfusion of platelets"
+    },
+    {
+     "opt": "B",
+     "if": "**Overt DIC bleeding** with prolonged PT/PTT",
+     "then": "Transfusion of fresh frozen plasma"
+    }
+   ]
   },
   "795685": {
    "task": "Next step",
-   "boardCall": "18 weeks' gestation + fundal height 23 cm -> pelvic ultrasonography for dating",
-   "hinge": "Fundal height discrepancy > 3 cm requires ultrasonography to confirm gestational age and rule out twins or polyhydramnios.",
+   "boardCall": "18 weeks gestation + **fundal height 23 cm** + normal BP → Ultrasonography for dating",
+   "hinge": "Size-date discrepancy over 3 cm requires ultrasound for dating, twins, or fluid.",
    "trap": "Trace glucose or 10-lb weight gain tempts glucose testing, but large-for-gestational-age fundus mandates ultrasound first.",
    "options": {
     "A": {
@@ -1351,12 +1572,29 @@
      "trap": true
     }
    ],
-   "topic": "multiple-gestation"
+   "topic": "multiple-gestation",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Ultrasound shows singleton macrosomia** or polyhydramnios at 24–28 weeks",
+     "then": "Glucose tolerance test"
+    },
+    {
+     "opt": null,
+     "if": "**Normal singleton dating** matching fundal height within 2 cm",
+     "then": "Routine prenatal follow-up"
+    },
+    {
+     "opt": null,
+     "if": "**Snowstorm intrauterine pattern** on ultrasound",
+     "then": "Quantitative hCG and suction curettage"
+    }
+   ]
   },
   "795686": {
    "task": "Mechanism",
-   "boardCall": "Crack cocaine in pregnancy + refractory preterm labor -> increasing catecholamines stimulating contractions",
-   "hinge": "Cocaine inhibits synaptic monoamine reuptake, increasing circulating catecholamines that activate alpha-1 adrenergic myometrial receptors.",
+   "boardCall": "24 weeks + **crack cocaine use** + **refractory preterm labor** → Increasing catecholamine",
+   "hinge": "Cocaine blocks catecholamine reuptake, increasing synaptic norepinephrine to stimulate myometrial contractions.",
    "trap": "Cocaine increases synaptic norepinephrine, but does so by inhibiting reuptake rather than increasing reuptake.",
    "options": {
     "A": {
@@ -1434,12 +1672,29 @@
      "text": "She has used crack cocaine during the pregnancy"
     }
    ],
-   "topic": "substance-use-disorders"
+   "topic": "substance-use-disorders",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Severe hypertension** with painful bleeding on cocaine",
+     "then": "Monitor for placental abruption"
+    },
+    {
+     "opt": null,
+     "if": "**Chest pain** with hypertension from cocaine vasoconstriction",
+     "then": "Benzodiazepine and nitroglycerin"
+    },
+    {
+     "opt": null,
+     "if": "**Anticipated birth** within 7 days before 34 weeks",
+     "then": "Administer betamethasone"
+    }
+   ]
   },
   "795687": {
    "task": "Diagnosis",
-   "boardCall": "Arrest at 6 cm + contractions every 5 min at 30 mm Hg -> hypotonic contractions",
-   "hinge": "Contractions every 5 minutes lasting 30 seconds with peak 30 mm Hg are inadequate to advance active labor.",
+   "boardCall": "6 cm × 3 hours + **contractions q5m, 30 mm Hg** + prior larger vaginal birth → Hypotonic contractions",
+   "hinge": "Weak contractions below 200 Montevideo units fail to dilate an adequate pelvis.",
    "trap": "Occiput posterior position can prolong labor, but prior delivery of a larger baby with weak contractions points to hypotonic dysfunction.",
    "options": {
     "A": {
@@ -1527,12 +1782,29 @@
      "trap": true
     }
    ],
-   "topic": "normal-and-abnormal-labor"
+   "topic": "normal-and-abnormal-labor",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Contractions > 200 MVUs × 4 h** without cervical change",
+     "then": "Cephalopelvic disproportion"
+    },
+    {
+     "opt": "B",
+     "if": "**Diabetic mother** with suspected marked macrosomia",
+     "then": "Fetal macrosomia"
+    },
+    {
+     "opt": null,
+     "if": "**Hypotonic arrest** with reassuring fetal tracing",
+     "then": "Start IV oxytocin augmentation"
+    }
+   ]
   },
   "795688": {
    "task": "Next step",
-   "boardCall": "Preterm fluid leakage without contractions -> sterile speculum examination",
-   "hinge": "Suspected premature rupture of membranes must be evaluated first with a sterile speculum exam; avoid digital exam.",
+   "boardCall": "33 weeks + **vaginal fluid leak 2 days** + **no contractions** → Sterile speculum examination",
+   "hinge": "Suspected preterm rupture requires sterile speculum pooling and ferning; avoid digital exam.",
    "trap": "Digital cervical examination evaluates dilation but introduces microorganisms and significantly shortens the latency period in PPROM.",
    "options": {
     "A": {
@@ -1624,12 +1896,29 @@
      "text": "fetal heart rate is 140/min"
     }
    ],
-   "topic": "prelabor-rupture-of-membranes"
+   "topic": "prelabor-rupture-of-membranes",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Term active labor** with intact membranes and regular contractions",
+     "then": "Digital examination of cervix"
+    },
+    {
+     "opt": "A",
+     "if": "**Preterm contractions**, intact membranes, equivocal cervical length",
+     "then": "Fetal fibronectin test"
+    },
+    {
+     "opt": "E",
+     "if": "**Fever, uterine tenderness**, unclear intra-amniotic infection",
+     "then": "Amniocentesis"
+    }
+   ]
   },
   "795689": {
    "task": "Diagnosis",
-   "boardCall": "Prolonged ROM + maternal fever 38.8 C + uterine tenderness -> chorioamnionitis",
-   "hinge": "Prolonged rupture of membranes with maternal fever, leukocytosis, and uterine tenderness establishes chorioamnionitis.",
+   "boardCall": "32-hour ROM + **fever 38.8°C** + **uterine tenderness** + clean UA → Chorioamnionitis",
+   "hinge": "Prolonged rupture with fever, leukocytosis, and fundal tenderness establishes intra-amniotic infection.",
    "trap": "Pyelonephritis also causes fever and leukocytosis, but catheterized urine is negative and CVA tenderness is absent.",
    "options": {
     "A": {
@@ -1720,12 +2009,29 @@
      "trap": true
     }
    ],
-   "topic": "intra-amniotic-infection"
+   "topic": "intra-amniotic-infection",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**CVA tenderness**, pyuria, bacteriuria, nontender uterus",
+     "then": "Pyelonephritis"
+    },
+    {
+     "opt": "E",
+     "if": "**Afebrile mother**, chronic HTN, recurrent late decelerations",
+     "then": "Uteroplacental insufficiency"
+    },
+    {
+     "opt": "B",
+     "if": "**Afebrile**, normal WBC, recurrent variable decelerations",
+     "then": "Oligohydramnios"
+    }
+   ]
   },
   "795690": {
    "task": "Diagnosis",
-   "boardCall": "TOLAC + severe acute abdominal pain + prolonged deceleration -> uterine rupture",
-   "hinge": "Prior cesarean hysterotomy presenting in labor with acute breakthrough abdominal pain and prolonged fetal bradycardia is uterine rupture.",
+   "boardCall": "TOLAC + 10 cm dilated + **severe abdominal pain** + **3-min FHR drop to 60** → Uterine rupture",
+   "hinge": "Prior scar separation during active labor causes acute pain and fetal bradycardia.",
    "trap": "Umbilical cord compression causes decelerations, but does not explain sudden severe maternal abdominal pain in a scarred uterus.",
    "options": {
     "A": {
@@ -1812,12 +2118,29 @@
      "text": "no vaginal bleeding"
     }
    ],
-   "topic": "antepartum-bleeding"
+   "topic": "antepartum-bleeding",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Unscarred uterus**, painful dark bleeding, tetanic contractions",
+     "then": "Abruptio placentae"
+    },
+    {
+     "opt": "C",
+     "if": "**Brief intermittent variable dips** returning rapidly to baseline",
+     "then": "Umbilical cord compression"
+    },
+    {
+     "opt": "B",
+     "if": "**Maternal hypotension** lying flat without abdominal pain",
+     "then": "Maternal supine position"
+    }
+   ]
   },
   "795691": {
    "task": "Diagnosis",
-   "boardCall": "Post-cesarean serosanguineous wound discharge + obesity -> wound dehiscence",
-   "hinge": "Profuse serosanguineous (pink, watery) wound discharge 48 hours post-laparotomy is pathognomonic for fascial dehiscence.",
+   "boardCall": "obese diabetic + 48 h post-cesarean + **profuse serosanguineous drainage** → Dehiscence",
+   "hinge": "Copious pink watery incisional fluid early postoperatively indicates deep fascial separation.",
    "trap": "Wound infection causes discharge, but it is typically purulent and accompanied by erythema, induration, and fever after day 4.",
    "options": {
     "A": {
@@ -1904,12 +2227,30 @@
      "text": "profuse serosanguineous drainage from the midline skin incision"
     }
    ],
-   "topic": "surgical-wound-complications"
+   "topic": "surgical-wound-complications",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Day 5–7 purulent drainage**, erythema, warmth, fever",
+     "then": "Infection"
+    },
+    {
+     "opt": "B",
+     "if": "**Visible bowel loops** protruding through open fascia",
+     "then": "Evisceration",
+     "step": "cover with moist sterile gauze"
+    },
+    {
+     "opt": "C",
+     "if": "**Firm tender fluctuant mass** under closed skin without fluid",
+     "then": "Hematoma"
+    }
+   ]
   },
   "795692": {
    "task": "Diagnosis",
-   "boardCall": "Postpartum hemorrhage + vessel extending to membrane margin -> succenturiate placental lobe",
-   "hinge": "Vessels traversing the membranes to the margin without tapering indicate a retained accessory succenturiate lobe.",
+   "boardCall": "postpartum hemorrhage + moderate tone + **nontapering vessel to membrane edge** → Succenturiate placental lobe",
+   "hinge": "Torn vessels ending abruptly at the membrane edge indicate a retained accessory lobe.",
    "trap": "Placenta accreta causes retained placenta from deep adherence, but does not present with accessory vessels extending across membranes.",
    "options": {
     "A": {
@@ -1996,12 +2337,29 @@
      "text": "uterus has moderate tone and is consistent in size with a 24-week gestation"
     }
    ],
-   "topic": "postpartum-hemorrhage"
+   "topic": "postpartum-hemorrhage",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Placenta fails to detach** after delivery with heavy bleeding",
+     "then": "Placenta accreta"
+    },
+    {
+     "opt": "D",
+     "if": "**Antepartum painless bleeding** with placenta covering internal os",
+     "then": "Placenta previa"
+    },
+    {
+     "opt": "A",
+     "if": "**Antepartum painful bleeding** with hypertonic tender uterus",
+     "then": "Abruptio placentae"
+    }
+   ]
   },
   "795693": {
    "task": "Next step",
-   "boardCall": "Postpartum hemorrhage refractory to oxytocin and massage -> administer ergonovine",
-   "hinge": "Persistent uterine atony despite oxytocin infusion and bimanual massage requires second-line uterotonics such as ergonovine.",
+   "boardCall": "postpartum hemorrhage + **boggy uterus** + **failed oxytocin and massage** → Ergonovine therapy",
+   "hinge": "Refractory uterine atony warrants second-line uterotonics such as ergot alkaloids before surgery.",
    "trap": "Coagulation labs or exploratory laparotomy are inappropriate delays or prematurely invasive before trying second-line uterotonics.",
    "options": {
     "A": {
@@ -2088,12 +2446,29 @@
      "text": "bleeding continues after uterine massage"
     }
    ],
-   "topic": "postpartum-hemorrhage"
+   "topic": "postpartum-hemorrhage",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Retained placental cotyledon** on bedside ultrasound",
+     "then": "Endometrial curettage"
+    },
+    {
+     "opt": "D",
+     "if": "**Ongoing hemorrhage** despite multiple uterotonics and tamponade",
+     "then": "Uterine artery embolization"
+    },
+    {
+     "opt": null,
+     "if": "**Hypertension or preeclampsia** contraindicating ergot alkaloids",
+     "then": "Carboprost or misoprostol"
+    }
+   ]
   },
   "795694": {
    "task": "Diagnosis",
-   "boardCall": "Forceps delivery + unilateral facial paralysis with crying -> facial nerve injury",
-   "hinge": "Forceps compression over the stylomastoid foramen causes unilateral facial nerve palsy.",
+   "boardCall": "4508-g newborn + **forceps delivery** + **right facial paralysis crying** → Facial nerve injury",
+   "hinge": "Forceps blades compress the peripheral facial nerve over the stylomastoid foramen.",
    "trap": "Shoulder dystocia maneuvers cause brachial plexus palsy (Erb palsy), not isolated cranial nerve VII facial paralysis.",
    "options": {
     "A": {
@@ -2188,12 +2563,29 @@
      "trap": true
     }
    ],
-   "topic": "birth-trauma"
+   "topic": "birth-trauma",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Adducted internally rotated arm**, intact grasp after dystocia",
+     "then": "Brachial plexus injury"
+    },
+    {
+     "opt": "D",
+     "if": "**Bulging fontanel**, lethargy, seizures after vacuum/forceps",
+     "then": "Intracranial hemorrhage"
+    },
+    {
+     "opt": "F",
+     "if": "**Symmetric hypotonia**, poor respiratory effort, depressed reflexes",
+     "then": "Magnesium toxicity"
+    }
+   ]
   },
   "795695": {
    "task": "Diagnosis",
-   "boardCall": "Polyhydramnios + fundal height > dates + BMI 29 -> undiagnosed maternal diabetes mellitus",
-   "hinge": "Maternal hyperglycemia causes fetal hyperglycemia and osmotic polyuria, resulting in polyhydramnios.",
+   "boardCall": "28 weeks + BMI 29 + **14-kg weight gain** + **polyhydramnios** → Undiagnosed maternal diabetes mellitus",
+   "hinge": "Maternal hyperglycemia crosses the placenta, inducing fetal hyperglycemia and osmotic polyuria.",
    "trap": "Renal agenesis causes oligohydramnios, whereas maternal diabetes increases fetal urination.",
    "options": {
     "A": {
@@ -2278,12 +2670,29 @@
      "text": "moderate polyhydramnios"
     }
    ],
-   "topic": "gestational-diabetes-mellitus"
+   "topic": "gestational-diabetes-mellitus",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Severe oligohydramnios**, pulmonary hypoplasia, absent kidneys",
+     "then": "Fetal renal agenesis"
+    },
+    {
+     "opt": "C",
+     "if": "**Hypotonia**, tented upper lip, maternal hand grip myotonia",
+     "then": "Fetal myotonic dystrophy"
+    },
+    {
+     "opt": "B",
+     "if": "**Duodenal atresia** double-bubble sign with polyhydramnios",
+     "then": "Fetal aneuploidy"
+    }
+   ]
   },
   "795696": {
    "task": "Diagnosis",
-   "boardCall": "Pregnant + flank pain + fever 38.6 C + pyuria -> pyelonephritis",
-   "hinge": "Fever, constant flank pain, pyuria, and hematuria in pregnancy establish acute pyelonephritis; ureteral dilation is physiologic.",
+   "boardCall": "31 weeks + **constant right flank pain** + **fever 38.6°C** + pyuria → Pyelonephritis",
+   "hinge": "Fever and pyuria establish pyelonephritis; mild right ureteral dilation is physiologic in pregnancy.",
    "trap": "Right ureteral dilation is normal hydronephrosis of pregnancy (dextrorotation), not mechanical ureteral calculus or obstruction.",
    "options": {
     "A": {
@@ -2365,7 +2774,24 @@
      "trap": true
     }
    ],
-   "topic": "urinary-tract-infections"
+   "topic": "urinary-tract-infections",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Afebrile colicky pain** radiating to groin, gross hematuria",
+     "then": "Ureteral calculus"
+    },
+    {
+     "opt": "D",
+     "if": "**Nephrotic syndrome**, sudden flank pain, hematuria, afebrile",
+     "then": "Renal vein thrombosis"
+    },
+    {
+     "opt": "B",
+     "if": "**Afebrile dysuria**, suprapubic pain, cyclophosphamide exposure",
+     "then": "Hemorrhagic cystitis"
+    }
+   ]
   },
   "795697": {
    "task": "Diagnosis",
@@ -8349,5 +8775,5 @@
    "evidence": "Checked 2026-10-30: [AHA/ACC PE (2026)](https://www.jacc.org/doi/10.1016/j.jacc.2025.11.005), [ASH diagnosis (2018)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6258916/)."
   }
  },
- "updatedAt": "2026-11-07T08:13:47Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }

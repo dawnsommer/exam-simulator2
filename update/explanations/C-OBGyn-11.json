@@ -8,8 +8,8 @@
  "items": {
   "C-OBGyn-11:Q001": {
    "task": "Next step",
-   "boardCall": "Ovulation induction + sudden unilateral pelvic pain + adnexal fullness + negative β-hCG -> pelvic ultrasonography.",
-   "hinge": "Sudden unilateral pelvic pain with adnexal fullness after clomiphene citrate points to ovarian torsion, evaluated first by pelvic ultrasound.",
+   "boardCall": "clomiphene + sudden right pelvic pain + nausea + **right adnexal fullness** + **negative β-hCG** → Pelvic ultrasonography",
+   "hinge": "Doppler ultrasound is fast and shows flow; MRI and surgery come later.",
    "trap": "Fever and right lower quadrant tenderness can mimic appendicitis or push toward invasive laparoscopy before imaging.",
    "options": {
     "A": {
@@ -98,12 +98,35 @@
      "trap": true
     }
    ],
-   "topic": "ovarian-torsion"
+   "topic": "ovarian-torsion",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Hypotension** with free fluid suggesting hemoperitoneum",
+     "then": "Laparoscopy"
+    },
+    {
+     "opt": "E",
+     "if": "**Dysuria and flank pain**, normal adnexa",
+     "then": "Urinalysis"
+    },
+    {
+     "opt": "C",
+     "if": "**Pregnant** with nondiagnostic ultrasound for appendicitis",
+     "then": "MRI of the abdomen and pelvis"
+    },
+    {
+     "opt": null,
+     "if": "**Positive β-hCG** with empty uterus",
+     "then": "Ectopic pregnancy workup",
+     "step": "trend quantitative hCG"
+    }
+   ]
   },
   "C-OBGyn-11:Q002": {
    "task": "Risk factor",
-   "boardCall": "Prior second-trimester spontaneous abortion with painless gush then contractions -> preterm labor risk.",
-   "hinge": "A history of spontaneous abortion at 18 weeks is the strongest risk factor here for preterm labor.",
+   "boardCall": "G2A1 + loss at 18 weeks + **gush of fluid then contractions** + normal cervix now → Preterm labor",
+   "hinge": "A prior mid-trimester loss after labor-like events predicts recurrent preterm birth.",
    "trap": "Past gush of fluid and contractions might pull toward bleeding or placenta previa in the next pregnancy.",
    "options": {
     "A": {
@@ -184,12 +207,34 @@
      "text": "cervix is normal to examination"
     }
    ],
-   "topic": "preterm-labor"
+   "topic": "preterm-labor",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Multiple prior cesareans**, placenta low on ultrasound",
+     "then": "Placenta previa"
+    },
+    {
+     "opt": "B",
+     "if": "**Prior molar pregnancy**",
+     "then": "Gestational trophoblastic disease"
+    },
+    {
+     "opt": "D",
+     "if": "**Age 40** or prior trisomic pregnancy",
+     "then": "Fetal aneuploidy"
+    },
+    {
+     "opt": "A",
+     "if": "**Prior abruption**, chronic hypertension, or cocaine use",
+     "then": "Bleeding"
+    }
+   ]
   },
   "C-OBGyn-11:Q003": {
    "task": "Next step",
-   "boardCall": "Dysuria + urgency + afebrile + positive leukocyte esterase -> empiric trimethoprim-sulfamethoxazole.",
-   "hinge": "Classic uncomplicated lower UTI symptoms with positive leukocyte esterase warrant immediate empiric oral antibiotics without waiting for culture.",
+   "boardCall": "dysuria + urgency + afebrile + normal pelvic exam + **leukocyte esterase positive** → Trimethoprim-sulfamethoxazole",
+   "hinge": "Uncomplicated cystitis is treated empirically; waiting for culture only delays relief.",
    "trap": "Inconsistent condom use with an IUD can pull toward STI or PID workup, or waiting for urine culture.",
    "options": {
     "A": {
@@ -275,12 +320,35 @@
      "trap": true
     }
    ],
-   "topic": "urinary-tract-infections"
+   "topic": "urinary-tract-infections",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Recurrence** within weeks of treatment",
+     "then": "Urine culture"
+    },
+    {
+     "opt": "C",
+     "if": "**Fishy discharge**, clue cells, pH above 4.5",
+     "then": "Metronidazole therapy"
+    },
+    {
+     "opt": "B",
+     "if": "**Painless gross hematuria** in a smoker over 35",
+     "then": "Cystoscopy"
+    },
+    {
+     "opt": null,
+     "if": "**Cervical motion tenderness** with mucopurulent discharge",
+     "then": "Ceftriaxone + doxycycline + metronidazole",
+     "step": "treat partner too"
+    }
+   ]
   },
   "C-OBGyn-11:Q004": {
    "task": "Mechanism",
-   "boardCall": "Sexually active teen + small flesh-colored papules on posterior fourchette -> condylomata acuminata (HPV).",
-   "hinge": "Small, raised, flesh-colored perineal papules in a sexually active adolescent are condylomata acuminata from HPV.",
+   "boardCall": "sexually active teen + inconsistent condoms + **small flesh-colored raised papules** + posterior fourchette + no other lesions → Condylomata acuminata (HPV)",
+   "hinge": "Painless, nonulcerated, nonumbilicated papules fit low-risk HPV warts.",
    "trap": "Use of spermicidal foam might pull toward contact dermatitis, or condylomata latum from syphilis.",
    "options": {
     "A": {
@@ -370,12 +438,34 @@
      "trap": true
     }
    ],
-   "topic": "human-papillomavirus-infection"
+   "topic": "human-papillomavirus-infection",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Positive RPR** with palmar rash",
+     "then": "Condylomata lata (T. pallidum)"
+    },
+    {
+     "opt": "D",
+     "if": "**Pearly dome-shaped papules** in clusters",
+     "then": "Molluscum contagiosum"
+    },
+    {
+     "opt": "E",
+     "if": "**Painful grouped vesicles** on red base",
+     "then": "Herpes simplex virus"
+    },
+    {
+     "opt": "C",
+     "if": "**Burning and erythema** after new spermicide",
+     "then": "Contact dermatitis from foam"
+    }
+   ]
   },
   "C-OBGyn-11:Q005": {
    "task": "Next step",
-   "boardCall": "37 weeks + painless vaginal bleeding + soft nontender uterus + no prenatal care -> pelvic ultrasonography.",
-   "hinge": "Third-trimester painless bleeding with a soft uterus requires pelvic ultrasound to rule out placenta previa before any digital exam.",
+   "boardCall": "37 weeks + **painless bleeding** + **soft nontender uterus** + reassuring FHR + no prenatal care → Pelvic ultrasonography",
+   "hinge": "Placenta site is unknown; a digital exam on previa can cause hemorrhage.",
    "trap": "Active contractions and bleeding tempt doing a digital cervical exam to check labor progress.",
    "options": {
     "A": {
@@ -465,12 +555,35 @@
      "trap": true
     }
    ],
-   "topic": "antepartum-bleeding"
+   "topic": "antepartum-bleeding",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Prior ultrasound** shows fundal placenta",
+     "then": "Digital cervical examination"
+    },
+    {
+     "opt": "A",
+     "if": "**Prolonged fetal bradycardia** despite resuscitation",
+     "then": "Cesarean delivery"
+    },
+    {
+     "opt": "E",
+     "if": "**Hematocrit falls to 20%** with tachycardia",
+     "then": "Transfuse packed RBCs"
+    },
+    {
+     "opt": null,
+     "if": "**Painful bleeding**, rigid tender uterus",
+     "then": "Placental abruption",
+     "step": "check fibrinogen and coags"
+    }
+   ]
   },
   "C-OBGyn-11:Q006": {
    "task": "Ethics",
-   "boardCall": "Hospice patient with 10/10 pain on IV morphine + RR 9/min -> increase morphine dosage.",
-   "hinge": "Under the principle of double effect in hospice care, relieve severe pain with higher morphine even if it may hasten death.",
+   "boardCall": "hospice for metastatic cancer + **pain 10/10** + **arousable with RR 9** + wants no suffering → Increase morphine",
+   "hinge": "Double effect allows opioid titration for comfort despite foreseeable respiratory depression.",
    "trap": "Respirations of 9/min pull toward decreasing or maintaining morphine to avoid respiratory depression.",
    "options": {
     "A": {
@@ -552,12 +665,34 @@
      "trap": true
     }
    ],
-   "topic": "palliative-and-hospice-care"
+   "topic": "palliative-and-hospice-care",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Unarousable**, pinpoint pupils, pain already relieved",
+     "then": "Decrease the morphine dosage"
+    },
+    {
+     "opt": "E",
+     "if": "**Pain controlled**, alert and comfortable",
+     "then": "Maintain the current regimen"
+    },
+    {
+     "opt": "D",
+     "if": "**Agitated delirium** with hallucinations",
+     "then": "Add an antipsychotic"
+    },
+    {
+     "opt": null,
+     "if": "**Requests lethal dose** to end her life",
+     "then": "Decline; continue comfort care"
+    }
+   ]
   },
   "C-OBGyn-11:Q007": {
    "task": "Risk factor",
-   "boardCall": "22 weeks' gestation + unable to take supplemental vitamins or iron -> maternal iron deficiency anemia.",
-   "hinge": "Iron deficiency anemia is the most common nutritional complication of pregnancy when iron supplementation is missed.",
+   "boardCall": "22 weeks + first prenatal visit + **no iron supplements** + nausea limits vitamins → Maternal iron deficiency anemia",
+   "hinge": "Pregnancy iron demand outstrips diet; the neural tube closed by week 4.",
    "trap": "Lack of prenatal vitamins also risks folate deficiency and neural tube defects, though neural tube closure already occurred before 22 weeks.",
    "options": {
     "A": {
@@ -641,12 +776,29 @@
      "text": "uterus consistent in size with a 22-week gestation"
     }
    ],
-   "topic": "microcytic-anemia"
+   "topic": "microcytic-anemia",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Valproate** in the first trimester",
+     "then": "Neonatal neural tube defect"
+    },
+    {
+     "opt": "D",
+     "if": "**Prior gastric bypass**, no B12 injections",
+     "then": "Vitamin B12 deficiency anemia"
+    },
+    {
+     "opt": "A",
+     "if": "**Phenytoin use** and heavy alcohol, no supplements",
+     "then": "Folic acid deficiency anemia"
+    }
+   ]
   },
   "C-OBGyn-11:Q008": {
    "task": "Diagnosis",
-   "boardCall": "Breast-feeding + multiple discrete mobile mildly tender unilateral breast masses + no fever -> galactocele.",
-   "hinge": "Multiple discrete, mobile, mildly tender breast masses in a lactating woman without fever or lymphadenopathy indicate galactoceles.",
+   "boardCall": "3 months postpartum + breast-feeding + **multiple discrete mobile masses** + mild tenderness + **no fever** → Galactocele",
+   "hinge": "Blocked ducts form milk cysts; no signs of infection or diffuse swelling.",
    "trap": "Mild tenderness during breast-feeding can pull toward lactational mastitis or breast engorgement.",
    "options": {
     "A": {
@@ -723,12 +875,35 @@
      "text": "two 2-cm masses palpated in the same quadrant"
     }
    ],
-   "topic": "benign-breast-conditions"
+   "topic": "benign-breast-conditions",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Fluctuant tender mass** with fever despite antibiotics",
+     "then": "Breast abscess",
+     "step": "ultrasound-guided drainage"
+    },
+    {
+     "opt": "C",
+     "if": "**Firm painless mass** enlarging through pregnancy",
+     "then": "Lactating adenoma"
+    },
+    {
+     "opt": "E",
+     "if": "**Soft painless mass** present before pregnancy",
+     "then": "Lipoma"
+    },
+    {
+     "opt": "D",
+     "if": "**Wedge of erythema** with fever and myalgias",
+     "then": "Lactational mastitis"
+    }
+   ]
   },
   "C-OBGyn-11:Q009": {
    "task": "Pharmacology",
-   "boardCall": "Menopausal hot flashes + prior hysterectomy -> estrogen-only therapy.",
-   "hinge": "Estrogen is the most effective therapy for menopausal hot flashes, and prior hysterectomy eliminates the need for progestogen.",
+   "boardCall": "age 52 + frequent hot flashes + night waking + **prior hysterectomy** + normal mammogram → Estrogen only",
+   "hinge": "No endometrium to protect, so progestogen adds risk without benefit.",
    "trap": "Adding progestogen is standard for intact uteri, making combined estrogen-progestogen a classic distractor.",
    "options": {
     "A": {
@@ -817,12 +992,29 @@
      "text": "Mammography shows no abnormalities"
     }
    ],
-   "topic": "menopause"
+   "topic": "menopause",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Endometrial ablation**, uterus still in place",
+     "then": "Estrogen and progestogen"
+    },
+    {
+     "opt": null,
+     "if": "**Declines hormones**, has depressive symptoms",
+     "then": "SSRI or SNRI"
+    },
+    {
+     "opt": null,
+     "if": "**Only vaginal dryness**, no hot flashes",
+     "then": "Low-dose vaginal estrogen"
+    }
+   ]
   },
   "C-OBGyn-11:Q010": {
    "task": "Other",
-   "boardCall": "Repeated forms + unreviewed questionnaire + long hallway walks + duplicate interviews -> Lean thinking.",
-   "hinge": "Eliminating non-value-added steps, redundant paperwork, duplicate interviews, and wasted motion is the core of Lean thinking.",
+   "boardCall": "repeated HIPAA forms + **unreviewed questionnaire** + **long hallway walks** + duplicate interviews → Lean thinking",
+   "hinge": "The problem is waste, not variation or a single bottleneck.",
    "trap": "Iterative clinic improvement or bottlenecks can pull toward Plan-Do-Study-Act or Theory of Constraints.",
    "options": {
     "A": {
@@ -903,12 +1095,34 @@
      "text": "Both a medical assistant and nurse interview the patient"
     }
    ],
-   "topic": "population-health-and-quality-improvement"
+   "topic": "population-health-and-quality-improvement",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Frequent specimen labeling errors** need near-zero defects",
+     "then": "Six Sigma"
+    },
+    {
+     "opt": "E",
+     "if": "**One understaffed check-in desk** backs up every patient",
+     "then": "Theory of Constraints"
+    },
+    {
+     "opt": "C",
+     "if": "**Piloting** a new intake form for one week",
+     "then": "Plan-Do-Study-Act"
+    },
+    {
+     "opt": "B",
+     "if": "**Comparing wait times** with top-performing clinics",
+     "then": "Performance benchmarking"
+    }
+   ]
   },
   "C-OBGyn-11:Q011": {
    "task": "Next step",
-   "boardCall": "Intermenstrual + postcoital spotting + pink tongue-shaped lesion at cervical os -> polypectomy.",
-   "hinge": "A visible 1-cm pink tongue-shaped lesion in the cervical os with contact bleeding is an endocervical polyp, diagnosed and treated by polypectomy.",
+   "boardCall": "age 42 + intermenstrual spotting + postcoital spotting + **pink tongue-shaped lesion at os** + normal cytology → Polypectomy",
+   "hinge": "Removal both treats and gives histology; the bleeding source is already visible.",
    "trap": "Irregular menses and postcoital bleeding in a 42-year-old can raise concern for malignancy or intra-abdominal pathology.",
    "options": {
     "A": {
@@ -986,12 +1200,34 @@
      "text": "normal-sized uterus with no adnexal masses"
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Positive stool occult blood** with iron deficiency",
+     "then": "Colonoscopy"
+    },
+    {
+     "opt": "C",
+     "if": "**Gross hematuria** in a smoker",
+     "then": "Cystoscopy"
+    },
+    {
+     "opt": "D",
+     "if": "**Cyclic pelvic pain**, dyspareunia, nodular uterosacral ligaments",
+     "then": "Laparoscopy"
+    },
+    {
+     "opt": null,
+     "if": "**Friable cervical mass** with abnormal cytology",
+     "then": "Cervical biopsy"
+    }
+   ]
   },
   "C-OBGyn-11:Q012": {
    "task": "Next step",
-   "boardCall": "36 weeks + prior cesarean for breech + vertex fetus + desires vaginal delivery -> await spontaneous labor.",
-   "hinge": "At 36 weeks with one prior uncomplicated cesarean for breech and a vertex fetus, awaiting spontaneous labor allows a safe TOLAC.",
+   "boardCall": "36 weeks + **prior cesarean for breech** + **vertex now** + unripe cervix + wants vaginal birth → Await spontaneous labor",
+   "hinge": "Breech was a nonrecurring indication; TOLAC needs no intervention before labor.",
    "trap": "Prior cesarean delivery can tempt scheduling a repeat cesarean or misoprostol ripening at term.",
    "options": {
     "A": {
@@ -1073,12 +1309,34 @@
      "trap": true
     }
    ],
-   "topic": "normal-and-abnormal-labor"
+   "topic": "normal-and-abnormal-labor",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Breech again at 37 weeks**, wants vaginal birth",
+     "then": "External cephalic version"
+    },
+    {
+     "opt": "D",
+     "if": "**Preeclampsia with severe features** now",
+     "then": "Induction of labor today"
+    },
+    {
+     "opt": null,
+     "if": "**Declines TOLAC** after counseling",
+     "then": "Repeat cesarean at 39 weeks"
+    },
+    {
+     "opt": "B",
+     "if": "**No prior cesarean**, at 41 weeks, unripe cervix",
+     "then": "Misoprostol cervical ripening"
+    }
+   ]
   },
   "C-OBGyn-11:Q013": {
    "task": "Mechanism",
-   "boardCall": "Primary amenorrhea + stage 4 breasts + absent pubic/axillary hair -> androgen receptors not recognizing androgen.",
-   "hinge": "Normal breast development with absent pubic and axillary hair in primary amenorrhea reflects peripheral estrogen from testosterone alongside unresponsive androgen receptors.",
+   "boardCall": "primary amenorrhea + tall + **breasts SMR 4** + **pubic hair SMR 1** + no axillary hair → Androgen receptors not recognizing androgen",
+   "hinge": "Testosterone aromatizes to estrogen for breasts, but hair needs working androgen receptors.",
    "trap": "Tall stature and primary amenorrhea can tempt mosaic Turner syndrome, or headaches can tempt a Rathke pouch mass.",
    "options": {
     "A": {
@@ -1160,12 +1418,34 @@
      "trap": true
     }
    ],
-   "topic": "amenorrhea"
+   "topic": "amenorrhea",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Short stature**, webbed neck, streak gonads",
+     "then": "46,XX/45,XO karyotype"
+    },
+    {
+     "opt": "D",
+     "if": "**Bitemporal hemianopia**, delayed puberty, calcified suprasellar mass",
+     "then": "Rathke pouch remnant mass"
+    },
+    {
+     "opt": "B",
+     "if": "**Cyclic pelvic pain**, normal hair, blind vaginal pouch",
+     "then": "Vaginal septum failed to resorb"
+    },
+    {
+     "opt": "C",
+     "if": "**No breast development**, female genitalia, 46,XY",
+     "then": "Y chromosome deletion (SRY)"
+    }
+   ]
   },
   "C-OBGyn-11:Q014": {
    "task": "Next step",
-   "boardCall": "12 months infertility + regular menses + normal semen + no HSG spill -> in vitro fertilization.",
-   "hinge": "No peritoneal contrast spill on hysterosalpingography indicates bilateral tubal obstruction, which is bypassed by in vitro fertilization.",
+   "boardCall": "12 months infertility + regular menses + normal semen + BMI 37 + **no HSG spill** → In vitro fertilization",
+   "hinge": "Both tubes are blocked, so only IVF lets egg and sperm meet.",
    "trap": "BMI of 37 kg/m2 can pull toward clomiphene or metformin, even though menses are regular every 28 days.",
    "options": {
     "A": {
@@ -1250,12 +1530,30 @@
      "trap": true
     }
    ],
-   "topic": "infertility"
+   "topic": "infertility",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Irregular cycles**, hirsutism, patent tubes",
+     "then": "Ovulation induction (letrozole/clomiphene)"
+    },
+    {
+     "opt": "C",
+     "if": "**Mild male factor**, patent tubes",
+     "then": "Intrauterine insemination"
+    },
+    {
+     "opt": "E",
+     "if": "**Prior tubal ligation**, young, wants reversal",
+     "then": "Surgical tubal repair (reanastomosis)",
+     "step": "check semen analysis first"
+    }
+   ]
   },
   "C-OBGyn-11:Q015": {
    "task": "Mechanism",
-   "boardCall": "37 weeks + dark vaginal bleeding + severe abdominal pain + tense tender uterus + FHR 90/min -> fetal asphyxia.",
-   "hinge": "Painful third-trimester bleeding with a tense, tender uterus indicates placental abruption causing acute fetal asphyxia and bradycardia.",
+   "boardCall": "37 weeks + dark bleeding + severe pain + **tense tender fundus** + **FHR 90** → Fetal asphyxia",
+   "hinge": "Abruption cuts oxygen acutely; nothing suggests a chronic fetal process.",
    "trap": "Fetal bradycardia (90/min) can pull toward chronic fetal growth restriction, though chronic FGR lacks acute painful bleeding.",
    "options": {
     "A": {
@@ -1346,12 +1644,34 @@
      "text": "anterior fundal placenta"
     }
    ],
-   "topic": "antepartum-bleeding"
+   "topic": "antepartum-bleeding",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Chronic hypertension**, lagging fundal height, oligohydramnios",
+     "then": "Fetal growth restriction"
+    },
+    {
+     "opt": "D",
+     "if": "**Rising anti-D titer**, fetal ascites on ultrasound",
+     "then": "Fetal hydrops"
+    },
+    {
+     "opt": "E",
+     "if": "**Maternal fever**, foul fluid, fetal tachycardia",
+     "then": "Fetal in utero infection"
+    },
+    {
+     "opt": "G",
+     "if": "**Membranes ruptured at 18 weeks**, persistent anhydramnios",
+     "then": "Pulmonary hypoplasia"
+    }
+   ]
   },
   "C-OBGyn-11:Q016": {
    "task": "Next step",
-   "boardCall": "Fever + severe pelvic/cervical motion tenderness + mucoid cervical discharge + negative NAAT -> IV cefoxitin and doxycycline.",
-   "hinge": "PID is a clinical diagnosis requiring empiric IV cefoxitin and doxycycline even when gonorrhea/chlamydia NAAT is negative.",
+   "boardCall": "fever + vomiting + **cervical, uterine, adnexal tenderness** + mucoid cervical discharge + normal CT → IV cefoxitin + doxycycline",
+   "hinge": "PID is clinical; vomiting and rebound make inpatient parenteral therapy necessary.",
    "trap": "Negative gonorrhea/chlamydia NAAT and a female sexual partner can pull away from PID toward diagnostic laparoscopy or piperacillin-tazobactam.",
    "options": {
     "A": {
@@ -1441,12 +1761,30 @@
      "trap": true
     }
    ],
-   "topic": "cervicitis-pid"
+   "topic": "cervicitis-pid",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**No response after 72 h** of IV antibiotics",
+     "then": "Diagnostic laparoscopy"
+    },
+    {
+     "opt": null,
+     "if": "**Positive hCG** with adnexal mass",
+     "then": "Ectopic pregnancy",
+     "step": "transvaginal ultrasound"
+    },
+    {
+     "opt": null,
+     "if": "**Enlarged appendix** on CT, RLQ-focused pain",
+     "then": "Appendectomy"
+    }
+   ]
   },
   "C-OBGyn-11:Q017": {
    "task": "Screening",
-   "boardCall": "67-year-old woman + BMI 18 + prior hysterectomy with normal Pap history -> DEXA scan of the hip.",
-   "hinge": "All women age 65 and older (especially with low BMI) need osteoporosis screening with a DEXA scan; cervical cytology stops at 65 or after hysterectomy.",
+   "boardCall": "age 67 + **BMI 18** + benign hysterectomy + no abnormal Pap history + family breast cancer → DEXA of the hip",
+   "hinge": "Age alone triggers bone screening; Pap no longer applies here.",
    "trap": "Family history of breast cancer pulls toward breast MRI or ultrasound, and prior hysterectomy pulls toward cervical cytology.",
    "options": {
     "A": {
@@ -1532,12 +1870,34 @@
      "trap": true
     }
    ],
-   "topic": "osteoporosis"
+   "topic": "osteoporosis",
+   "branches": [
+    {
+     "opt": "A",
+     "if": "**Hysterectomy for CIN 3** or cervical cancer",
+     "then": "Vaginal cuff cytology"
+    },
+    {
+     "opt": "D",
+     "if": "**Known BRCA mutation** or lifetime risk 20% or more",
+     "then": "MRI of the breasts"
+    },
+    {
+     "opt": "B",
+     "if": "**Palpable breast mass**, mammogram nondiagnostic",
+     "then": "Ultrasonography of the breasts"
+    },
+    {
+     "opt": "E",
+     "if": "**Age 52 with disabling hot flashes**",
+     "then": "Estrogen therapy"
+    }
+   ]
   },
   "C-OBGyn-11:Q018": {
    "task": "Diagnosis",
-   "boardCall": "16 weeks by IVF + singleton + MSAFP 3.5 MoM -> neural tube defect.",
-   "hinge": "With accurate IVF dating and a singleton-sized uterus, an elevated MSAFP of 3.5 MoM is most likely due to a fetal neural tube defect.",
+   "boardCall": "16 weeks + **IVF dating** + size equals dates + **MSAFP 3.5 MoM** → Neural tube defect",
+   "hinge": "Certain dates remove dating error, the usual cause of high MSAFP.",
    "trap": "Incorrect dates is the most common overall cause of high MSAFP, but IVF conception makes dating certain.",
    "options": {
     "A": {
@@ -1611,12 +1971,29 @@
      "text": "maternal serum α-fetoprotein concentration is 3.5 multiples of the median"
     }
    ],
-   "topic": "neural-tube-defects"
+   "topic": "neural-tube-defects",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Ultrasound biometry measures 19 weeks**",
+     "then": "Incorrect dates"
+    },
+    {
+     "opt": "E",
+     "if": "**Low MSAFP, hCG, and estriol**",
+     "then": "Trisomy 18 syndrome"
+    },
+    {
+     "opt": "B",
+     "if": "**Uterus large for dates**, very high hCG, no heart tones",
+     "then": "Hydatidiform mole"
+    }
+   ]
   },
   "C-OBGyn-11:Q019": {
    "task": "Risk factor",
-   "boardCall": "33 weeks' gestation + ibuprofen three times daily -> premature closure of ductus arteriosus.",
-   "hinge": "Third-trimester NSAID exposure inhibits prostaglandins that keep the fetal ductus arteriosus patent, risking premature closure.",
+   "boardCall": "33 weeks + **ibuprofen three times daily** + low back pain + fundal height 31 cm → Premature ductus closure",
+   "hinge": "The fetal ductus stays open on prostaglandins, which NSAIDs block.",
    "trap": "NSAIDs used as tocolytics might pull away from preterm birth, or oligohydramnios confusion might pull toward polyhydramnios or renal disease.",
    "options": {
     "A": {
@@ -1695,12 +2072,34 @@
      "text": "Fundal height is 31 cm"
     }
    ],
-   "topic": "nonsteroidal-anti-inflammatory-drugs"
+   "topic": "nonsteroidal-anti-inflammatory-drugs",
+   "branches": [
+    {
+     "opt": "B",
+     "if": "**Poorly controlled diabetes** in pregnancy",
+     "then": "Polyhydramnios"
+    },
+    {
+     "opt": "D",
+     "if": "**Prior spontaneous preterm birth** or short cervix",
+     "then": "Preterm birth"
+    },
+    {
+     "opt": "E",
+     "if": "**Acetaminophen** used instead",
+     "then": "No increased risk"
+    },
+    {
+     "opt": null,
+     "if": "**ACE inhibitor** in second trimester",
+     "then": "Fetal renal failure, oligohydramnios"
+    }
+   ]
   },
   "C-OBGyn-11:Q020": {
    "task": "Diagnosis",
-   "boardCall": "Age 47 + irregular cycles every few months + hot flashes + heavy bleeding + normal pelvic exam -> anovulation.",
-   "hinge": "Perimenopausal irregular cycles with hot flashes, heavy prolonged bleeding, and a normal pelvic exam indicate anovulatory bleeding from unopposed estrogen.",
+   "boardCall": "age 47 + **cycles every few months** + hot flashes + heavy prolonged bleeding + **normal pelvic exam** → Anovulation",
+   "hinge": "Erratic spacing with vasomotor symptoms marks perimenopausal failed ovulation, not a lesion.",
    "trap": "Heavy bleeding with clots in a 47-year-old can raise concern for endometrial cancer or leiomyomata uteri.",
    "options": {
     "A": {
@@ -1781,12 +2180,35 @@
      "trap": true
     }
    ],
-   "topic": "abnormal-uterine-bleeding"
+   "topic": "abnormal-uterine-bleeding",
+   "branches": [
+    {
+     "opt": "E",
+     "if": "**Regular cycles**, heavy flow, bulky irregular uterus",
+     "then": "Leiomyomata uteri"
+    },
+    {
+     "opt": "C",
+     "if": "**Bleeding after 12 months of amenorrhea**, obesity",
+     "then": "Endometrial cancer"
+    },
+    {
+     "opt": "B",
+     "if": "**Postcoital bleeding**, friable cervical lesion",
+     "then": "Cervical cancer"
+    },
+    {
+     "opt": "D",
+     "if": "**Regular cycles** with intermenstrual spotting",
+     "then": "Endometrial polyp",
+     "step": "saline sonohysterography"
+    }
+   ]
   },
   "C-OBGyn-11:Q021": {
    "task": "Next step",
-   "boardCall": "BRCA1 carrier + age 29 + desires future childbearing -> genetic counseling.",
-   "hinge": "A young BRCA1 carrier interested in future childbearing should receive genetic counseling first to review risks, surveillance, and timing of preventive options.",
+   "boardCall": "age 29 + **BRCA1 carrier** + **wants future children** + mother and sister with breast cancer → Genetic counseling",
+   "hinge": "Counseling plans surveillance and times surgery around her childbearing goals.",
    "trap": "Family history of breast cancer and known BRCA1 status can tempt immediate mastectomy or salpingo-oophorectomy.",
    "options": {
     "A": {
@@ -1864,12 +2286,34 @@
      "text": "interested in future childbearing"
     }
    ],
-   "topic": "hereditary-breast-and-ovarian-cancer"
+   "topic": "hereditary-breast-and-ovarian-cancer",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Counseled, age 40**, no further pregnancy plans",
+     "then": "Salpingo-oophorectomy"
+    },
+    {
+     "opt": "B",
+     "if": "**Counseled, wants maximal breast protection**",
+     "then": "Consultation for mastectomy"
+    },
+    {
+     "opt": "E",
+     "if": "**Premenopausal**, declines surgery, wants medication",
+     "then": "Selective estrogen receptor modulator"
+    },
+    {
+     "opt": "A",
+     "if": "**Postmenopausal**, declines surgery, wants medication",
+     "then": "Aromatase inhibitor therapy"
+    }
+   ]
   },
   "C-OBGyn-11:Q022": {
    "task": "Next step",
-   "boardCall": "62-year-old + multiparous + bladder and cervix descend to hymen + asymptomatic -> no treatment indicated.",
-   "hinge": "Asymptomatic pelvic organ prolapse requires no treatment; intervention is reserved for bothersome symptoms.",
+   "boardCall": "age 62 + multiparous + **bladder and cervix to hymen** + **feels well, no symptoms** → No treatment",
+   "hinge": "Prolapse is treated for bother, not anatomy; the exam alone justifies nothing.",
    "trap": "Visible descent of bladder and cervix to the hymen on exam can tempt surgical suspension or hysterectomy.",
    "options": {
     "A": {
@@ -1956,12 +2400,29 @@
      "text": "atrophy of the external genitalia"
     }
    ],
-   "topic": "pelvic-organ-prolapse"
+   "topic": "pelvic-organ-prolapse",
+   "branches": [
+    {
+     "opt": "C",
+     "if": "**Bothersome bulge** limiting intercourse, declines pessary",
+     "then": "Uterine and bladder suspension"
+    },
+    {
+     "opt": "B",
+     "if": "**Mixed incontinence** before planned prolapse surgery",
+     "then": "Cystometry"
+    },
+    {
+     "opt": null,
+     "if": "**Dyspareunia** from vaginal atrophy",
+     "then": "Low-dose vaginal estrogen"
+    }
+   ]
   },
   "C-OBGyn-11:Q023": {
    "task": "Pharmacology",
-   "boardCall": "39 weeks in labor + GBS-positive vaginal culture + no penicillin allergy -> maternal IV penicillin G prior to delivery.",
-   "hinge": "GBS-positive mothers in labor receive intrapartum IV penicillin G prior to delivery to prevent vertical neonatal GBS sepsis.",
+   "boardCall": "39 weeks in labor + **GBS-positive culture** + no allergies + **no perineal lesions** → Maternal IV penicillin G",
+   "hinge": "Intrapartum penicillin clears colonization; old HSV without lesions needs nothing now.",
    "trap": "History of herpetic vulvitis can tempt acyclovir, even though there are no active perineal lesions.",
    "options": {
     "A": {
@@ -2050,12 +2511,35 @@
      "trap": true
     }
    ],
-   "topic": "group-b-streptococcus-prophylaxis"
+   "topic": "group-b-streptococcus-prophylaxis",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Recurrent genital HSV** at 36 weeks",
+     "then": "Suppressive oral valacyclovir"
+    },
+    {
+     "opt": "B",
+     "if": "**Chorioamnionitis**: fever, fundal tenderness, fetal tachycardia",
+     "then": "IV ampicillin + aminoglycoside"
+    },
+    {
+     "opt": "D",
+     "if": "**Neonate with vesicles** or seizures at 2 weeks",
+     "then": "Neonatal IV acyclovir",
+     "step": "CSF HSV PCR"
+    },
+    {
+     "opt": "E",
+     "if": "**Febrile, lethargic neonate** on day 1",
+     "then": "Neonatal IV ampicillin + aminoglycoside"
+    }
+   ]
   },
   "C-OBGyn-11:Q024": {
    "task": "Diagnosis",
-   "boardCall": "Postmenopausal woman + ascites + bilateral ovarian masses + papillary serous adenocarcinoma -> elevated serum CA 125.",
-   "hinge": "Stage IIIC papillary serous epithelial ovarian cancer with ascites characteristically elevates serum CA 125.",
+   "boardCall": "age 67 + ascites + **bilateral ovarian masses** + **papillary serous adenocarcinoma** → Elevated CA 125",
+   "hinge": "Epithelial ovarian cancers secrete CA 125; other markers track other tumors.",
    "trap": "Other tumor markers (AFP, β-hCG, CEA) correspond to germ cell or GI tumors rather than epithelial ovarian cancer.",
    "options": {
     "A": {
@@ -2129,12 +2613,34 @@
      "text": "stage IIIC papillary serous ovarian adenocarcinoma"
     }
    ],
-   "topic": "ovarian-cancer"
+   "topic": "ovarian-cancer",
+   "branches": [
+    {
+     "opt": "D",
+     "if": "**Adolescent**, yolk sac tumor histology",
+     "then": "Serum α-fetoprotein"
+    },
+    {
+     "opt": "E",
+     "if": "**Young woman**, ovarian choriocarcinoma",
+     "then": "Serum β-hCG"
+    },
+    {
+     "opt": "C",
+     "if": "**Signet-ring cells** in both ovaries (Krukenberg)",
+     "then": "Serum CEA"
+    },
+    {
+     "opt": "A",
+     "if": "**Ashkenazi ancestry**, early breast cancer in family",
+     "then": "BRCA1"
+    }
+   ]
   },
   "C-OBGyn-11:Q025": {
    "task": "Ethics",
-   "boardCall": "Consented for lumpectomy + unexpected extensive DCIS under anesthesia -> conclude lumpectomy and discuss with patient.",
-   "hinge": "Nonemergent mastectomy exceeds the patient's written consent for lumpectomy, so conclude the lumpectomy and obtain her informed consent afterward.",
+   "boardCall": "**lumpectomy-only consent** + extensive DCIS found + **not an emergency** + under anesthesia + husband waiting → Conclude lumpectomy, discuss with patient",
+   "hinge": "Consent cannot stretch to a different elective operation; she decides after waking.",
    "trap": "The husband in the waiting room tempts surrogate consent, which is invalid for a capacitated patient in a non-emergency.",
    "options": {
     "A": {
@@ -2213,7 +2719,24 @@
      "trap": true
     }
    ],
-   "topic": "informed-consent-and-capacity"
+   "topic": "informed-consent-and-capacity",
+   "branches": [
+    {
+     "opt": null,
+     "if": "**Preoperative consent included** possible mastectomy",
+     "then": "Proceed with mastectomy"
+    },
+    {
+     "opt": "E",
+     "if": "**Exsanguinating hemorrhage** from vessel injury",
+     "then": "Act without consent to stabilize"
+    },
+    {
+     "opt": "B",
+     "if": "**Patient permanently incapacitated**, husband is legal surrogate",
+     "then": "Husband's consent for mastectomy"
+    }
+   ]
   },
   "C-OBGyn-11:Q026": {
    "task": "Next step",
@@ -8140,5 +8663,5 @@
    "evidence": "Not checked online; established vulvar dermatology and biopsy-directed management."
   }
  },
- "updatedAt": "2026-11-18T23:36:14Z"
+ "updatedAt": "2026-11-23T05:02:05Z"
 }
